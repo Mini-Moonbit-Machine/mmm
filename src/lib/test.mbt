@@ -6,7 +6,7 @@ test "interp" {
     Value::bool(false),
   )
   let fib = fn(n) {
-    Node::LetRec(
+    Expr::LetRec(
       [
         {
           name: "fib",
@@ -26,8 +26,11 @@ test "interp" {
           ),
         },
       ],
-      Node::App(Var("fib"), [Int(n)]),
+      Expr::App(Var("fib"), [Int(n)]),
     )
   }
-  assert_eq!(Interpreter::new().eval!(fib(10)), Value::int(55))
+  let anf = fn(n) { to_anf(fib(n)) }
+  let renamed = fn(n) { IrBuilder::new().alpha_rename(anf(n)) }
+  assert_eq!(Interpreter::new().eval!(anf(10)), Value::int(55))
+  assert_eq!(Interpreter::new().eval!(renamed(20)), Value::int(6765))
 }

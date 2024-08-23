@@ -23,6 +23,6 @@ pub enum Op {
 
 pub struct Fun {
   name : String
-  args : Array[String]
+  params : Array[String]
   body : Expr
 } derive(Show)
