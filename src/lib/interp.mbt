@@ -161,7 +161,7 @@ pub fn eval(self : Interpreter, x : Node) -> Value!Failure {
     }
     Let(x, e1, e2) => {
       let v = self.eval!(e1)
-      let env = self.env.add(x, v)
+      let env = x.map_or_else(fn() { self.env }, fn(it) { self.env.add(it, v) })
       let interp = Interpreter::new_with_env(env)
       interp.eval!(e2)
     }
