@@ -131,7 +131,7 @@ pub fn to_json(self : Syntax) -> Json {
     Neg(e, kind=Some(Double)) => ["FNeg", e.to_json()]
     Neg(e, kind=_) => ["Neg", e.to_json()]
     Prim(e1, e2, op, ~kind) => {
-      let op = if kind == Some(Double) { "F\{op}" } else { "{op}" }
+      let op = if kind == Some(Double) { "F\{op}" } else { "I\{op}" }
       [op |> Json::String, e1.to_json(), e2.to_json()]
     }
     Eq(e1, e2) => ["Eq", e1.to_json(), e2.to_json()]

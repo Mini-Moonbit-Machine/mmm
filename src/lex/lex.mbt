@@ -163,11 +163,11 @@ fn Lexer::operator(self : Lexer, loc : Loc, first_c : Char) -> Token {
   let buf = Buffer::new()
   buf.write_char(first_c)
   match first_c {
-    ',' | ';' | ':' | '.' =>
+    ',' | ';' | '.' =>
       return self.make_token(TokenTag::Op(buf.to_string()), loc)
-    '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' =>
+    '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' | ':' =>
       while match self.ch() {
-              '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' => true
+              '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' | ':' => true
               _ => false
             } {
         buf.write_char(self.ch())
