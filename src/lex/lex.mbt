@@ -52,7 +52,7 @@ pub struct Token {
   tag : TokenTag
   loc : Loc
   span : String
-}
+} derive(Eq, Show)
 
 fn Token::new(tag : TokenTag, loc : Loc, span : String) -> Token {
   { tag, loc, span }
