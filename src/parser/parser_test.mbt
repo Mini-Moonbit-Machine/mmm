@@ -14,6 +14,20 @@ fn test_parse_type(
   assert_eq!(last.inner.tag, @lex.TokenTag::Eof)
 }
 
+fn test_parse_expr(
+  source : String,
+  expected_str : String,
+  expected_ntokens : Int
+) -> Unit!Error {
+  let parser = Parser::new(source)
+  let expr = parser.parse_expr!()
+  let expr_ntokens = expr.ntokens
+  assert_eq!(expr.inner.to_json().stringify(), expected_str)
+  assert_eq!(expr_ntokens, expected_ntokens)
+  let last = parser.next_token!()
+  assert_eq!(last.inner.tag, @lex.TokenTag::Eof)
+}
+
 test "parse type" {
   test_parse_type!(
     "Unit",
@@ -62,5 +76,142 @@ test "parse type" {
     #|["Fun",["Int",["Tuple",["Float","Unit"]]],["Tuple",["Int","Float"]]]
     ,
     15,
+  )
+}
+
+test "parse expr" {
+  test_parse_expr!(
+    "1",
+    #|["Int",1]
+    ,
+    1,
+  )
+  test_parse_expr!(
+    "1 + 2",
+    #|["IAdd",["Int",1],["Int",2]]
+    ,
+    3,
+  )
+  test_parse_expr!(
+    "1 + 2 * 3",
+    #|["IAdd",["Int",1],["IMul",["Int",2],["Int",3]]]
+    ,
+    5,
+  )
+  test_parse_expr!(
+    "1 * 2 + 3",
+    #|["IAdd",["IMul",["Int",1],["Int",2]],["Int",3]]
+    ,
+    5,
+  )
+  test_parse_expr!(
+    "1 * (2 + 3)",
+    #|["IMul",["Int",1],["IAdd",["Int",2],["Int",3]]]
+    ,
+    7,
+  )
+  test_parse_expr!(
+    "1 * (2 + 3) * 4",
+    #|["IMul",["IMul",["Int",1],["IAdd",["Int",2],["Int",3]]],["Int",4]]
+    ,
+    9,
+  )
+  test_parse_expr!(
+    "()",
+    #|"Unit"
+    ,
+    2,
+  )
+  test_parse_expr!(
+    "true",
+    #|["Bool",true]
+    ,
+    1,
+  )
+  test_parse_expr!(
+    "false",
+    #|["Bool",false]
+    ,
+    1,
+  )
+  test_parse_expr!(
+    "(1)",
+    #|["Int",1]
+    ,
+    3,
+  )
+  test_parse_expr!(
+    "(1, 2)",
+    #|["Tuple",[["Int",1],["Int",2]]]
+    ,
+    5,
+  )
+  test_parse_expr!(
+    "(1, 2, 3)",
+    #|["Tuple",[["Int",1],["Int",2],["Int",3]]]
+    ,
+    7,
+  )
+  test_parse_expr!(
+    "Array::make(1, 2)",
+    #|["Array",["Int",1],["Int",2]]
+    ,
+    8,
+  )
+  test_parse_expr!(
+    "not(true)",
+    #|["Not",["Bool",true]]
+    ,
+    4,
+  )
+  test_parse_expr!(
+    "1 == 2",
+    #|["Eq",["Int",1],["Int",2]]
+    ,
+    3,
+  )
+  test_parse_expr!(
+    "1 <= 2",
+    #|["LE",["Int",1],["Int",2]]
+    ,
+    3,
+  )
+  test_parse_expr!(
+    "if true { 1 } else { 2 }",
+    #|["If",["Bool",true],["Int",1],["Int",2]]
+    ,
+    9,
+  )
+}
+
+test "parse stmt" {
+  test_parse_expr!(
+    #|{
+    #|2
+    #|}
+    ,
+    #|["Int",2]
+    ,
+    3,
+  )
+  test_parse_expr!(
+    #|{
+    #|  let x : Int = 2;
+    #|  3
+    #|}
+    ,
+    #|["Let",["x","Int"],["Int",2],["Int",3]]
+    ,
+    10,
+  )
+  test_parse_expr!(
+    #|{
+    #|  let (x, y): (Int, Double) = (1, 2);
+    #|  3
+    #|}
+    ,
+    #|["LetTuple",[["x","Int"],["y","Float"]],["Tuple",[["Int",1],["Int",2]]],["Int",3]]
+    ,
+    22,
   )
 }

@@ -12,6 +12,8 @@ typealias Type = @types.Type
 
 typealias Syntax = @types.Syntax
 
+typealias Op = @types.Op
+
 pub struct Parser {
   tokenizer : Lexer
   mut token : Token?
@@ -27,7 +29,6 @@ typealias PToken = PResult[Token]
 typealias PType = PResult[Type]
 
 typealias PSyntax = PResult[Syntax]
-
 
 fn Parser::level_none() -> Int {
   0x7fffffff
@@ -45,7 +46,7 @@ fn Parser::prefix_start() -> Int {
   1000
 }
 
-fn Parser::prefix(op: String) -> (Int, Int)? {
+fn Parser::prefix(op : String) -> (Int, Int)? {
   match op {
     "+" => Some((Parser::level_none(), Parser::prefix_start() + 1))
     "-" => Some((Parser::level_none(), Parser::prefix_start() + 1))
@@ -53,7 +54,7 @@ fn Parser::prefix(op: String) -> (Int, Int)? {
   }
 }
 
-fn Parser::postfix(op: String) -> (Int, Int)? {
+fn Parser::postfix(op : String) -> (Int, Int)? {
   match op {
     "(" => Some((Parser::postfix_start() + 1, Parser::level_none()))
     "[" => Some((Parser::postfix_start() + 1, Parser::level_none()))
@@ -61,7 +62,7 @@ fn Parser::postfix(op: String) -> (Int, Int)? {
   }
 }
 
-fn Parser::infix(op: String) -> (Int, Int)? {
+fn Parser::infix(op : String) -> (Int, Int)? {
   match op {
     "<=" => Some((Parser::infix_start() + 1, Parser::infix_start() + 2))
     "==" => Some((Parser::infix_start() + 1, Parser::infix_start() + 2))
@@ -73,7 +74,7 @@ fn Parser::infix(op: String) -> (Int, Int)? {
   }
 }
 
-fn Parser::type_postfix(op: String) -> (Int, Int)? {
+fn Parser::type_postfix(op : String) -> (Int, Int)? {
   match op {
     "(" => Some((Parser::postfix_start() + 1, Parser::level_none()))
     "[" => Some((Parser::postfix_start() + 1, Parser::level_none()))
@@ -81,7 +82,7 @@ fn Parser::type_postfix(op: String) -> (Int, Int)? {
   }
 }
 
-fn Parser::type_infix(op: String) -> (Int, Int)? {
+fn Parser::type_infix(op : String) -> (Int, Int)? {
   match op {
     "->" => Some((Parser::infix_start() + 2, Parser::infix_start() + 1))
     _ => None
@@ -100,25 +101,29 @@ fn Parser::peek_token(self : Parser) -> PToken!Failure {
   let token = match self.token {
     Some(tok) => { inner: tok, ntokens: 1 }
     None => {
-      let tok = self.tokenizer.next_err!()
+      let mut tok = self.tokenizer.next_err!()
+      while tok.tag == TokenTag::Newline {
+        tok = self.tokenizer.next_err!()
+      }
       self.token = Some(tok)
       { inner: tok, ntokens: 1 }
     }
   }
-  if token.inner.tag == TokenTag::Newline {
-    self.peek_token!()
-  } else {
-    token
-  }
+  token
 }
-
 pub fn Parser::next_token(self : Parser) -> PToken!Failure {
   match self.token {
     Some(tok) => {
       self.token = None
       { inner: tok, ntokens: 1 }
     }
-    None => { inner: self.tokenizer.next_err!(), ntokens: 1 }
+    None => {
+      let mut tok = self.tokenizer.next_err!()
+      while tok.tag == TokenTag::Newline {
+        tok = self.tokenizer.next_err!()
+      }
+      { inner: tok, ntokens: 1 }
+    }
   }
 }
 
@@ -181,7 +186,7 @@ fn Parser::expect_keyword(self : Parser, kw : Keyword) -> PToken!Failure {
   if self.peek_keyword(kw) {
     self.next_token!()
   } else {
-    fail!("expected keyword")
+    fail!("expected keyword \{kw}")
   }
 }
 
@@ -189,7 +194,7 @@ fn Parser::expect_operator(self : Parser, op : String) -> PToken!Failure {
   if self.peek_operator(op) {
     self.next_token!()
   } else {
-    fail!("expected operator")
+    fail!("expected operator \{op}")
   }
 }
 
@@ -250,24 +255,19 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
       IntLiteral(_) => break
       _ => fail!("unexpected token when parsing type")
     }
-
     match Parser::type_postfix(op_str) {
       Some((laff, _)) => {
         if laff < level {
           break
         }
-
         self.skip_token()
         ntokens += 1
-
         match op_token.inner.tag {
-          PairedOpen(Bracket) => { 
+          PairedOpen(Bracket) => {
             let ty = self.parse_type!()
             ntokens += ty.ntokens
-
             let _ = self.expect_paired_close!(Bracket)
             ntokens += 1
-
             lhs = match lhs {
               Array(_) => Type::Array(ty.inner)
               _ => fail!("expect left hand side to be Array")
@@ -275,38 +275,331 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
           }
           _ => fail!("unexpected token when parsing type")
         }
-
         continue
       }
       None => ()
     }
-
     match Parser::type_infix(op_str) {
       Some((laff, raff)) => {
         if laff < level {
           break
         }
-
         if self.peek_operator("->") {
           self.skip_token()
           ntokens += 1
-
           let rhs = self.parse_type_with_level!(raff)
           ntokens += rhs.ntokens
-
           match lhs {
             Type::Tuple(inner) => lhs = Type::Fun(inner, rhs.inner)
             _ => lhs = Type::Fun([lhs], rhs.inner)
           }
         }
-
         continue
       }
       None => ()
     }
-
     break
   }
+  { inner: lhs, ntokens }
+}
+
+pub fn Parser::parse_expr(self : Parser) -> PSyntax!Failure {
+  self.parse_expr_with_level!(0)
+}
+
+pub fn Parser::parse_expr_with_level(
+  self : Parser,
+  level : Int
+) -> PSyntax!Failure {
+  let lhs_token = self.next_token!()
+  let mut ntokens = lhs_token.ntokens
+  let mut lhs = match lhs_token.inner.tag {
+    IntLiteral(n) => Syntax::Int(n)
+    Identifer =>
+      match lhs_token.inner.span {
+        "true" => Syntax::Bool(true)
+        "false" => Syntax::Bool(false)
+        "Array" => {
+          let _ = self.expect_operator!("::")
+          ntokens += 1
+          let make = self.next_token!()
+          ntokens += 1
+          if make.inner.span != "make" {
+            fail!("expected Array::make")
+          }
+          Syntax::Var("<Array::make>")
+        }
+        _ => Syntax::Var(lhs_token.inner.span)
+      }
+    PairedOpen(po) =>
+      if self.peek_token!().inner.tag == PairedClose(po) &&
+        po == Paired::Parenthesis {
+        self.skip_token()
+        ntokens += 1
+        Syntax::Unit
+      } else if po == Paired::Parenthesis {
+        let expr = self.parse_expr!()
+        ntokens += expr.ntokens
+        if self.peek_operator(",") {
+          let exprs = [expr.inner]
+          while self.peek_operator(",") {
+            self.skip_token()
+            ntokens += 1
+            let expr = self.parse_expr!()
+            ntokens += expr.ntokens
+            exprs.push(expr.inner)
+          }
+          let _ = self.expect_paired_close!(po)
+          ntokens += 1
+          Syntax::Tuple(exprs)
+        } else {
+          let _ = self.expect_paired_close!(po)
+          ntokens += 1
+          expr.inner
+        }
+      } else if po == Paired::Brace {
+        let block = self.parse_stmt!()
+        ntokens += block.ntokens
+        let _ = self.expect_paired_close!(Paired::Brace)
+        ntokens += 1
+        block.inner
+      } else {
+        fail!("unexpected paired when parsing expr: \{lhs_token.inner.span}")
+      }
+    Kw(kw) =>
+      match kw {
+        Keyword::If => {
+          let cond = self.parse_expr!()
+          ntokens += cond.ntokens
+
+          let then = self.parse_expr!()
+          ntokens += then.ntokens
+
+          let _ = self.expect_keyword!(Keyword::Else)
+          ntokens += 1
+
+          let els = self.parse_expr!()
+          ntokens += els.ntokens
+          
+          Syntax::If(cond.inner, then.inner, els.inner)
+        }
+        _ => fail!("keyword not supported in expression: \{kw}")
+      }
+    _ => panic()
+  }
+  while true {
+    let op_token = self.peek_token!()
+    let op_str = match op_token.inner.tag {
+      Op(op) => op
+      PairedOpen(po) =>
+        match po {
+          Paired::Parenthesis => "("
+          Paired::Bracket => "["
+          Paired::Brace => break
+        }
+      PairedClose(_) => break
+      Eof | Newline => break
+      Kw(_) => break
+      _ => fail!("unexpected trailing token when parsing expr")
+    }
+    match Parser::postfix(op_str) {
+      Some((laff, _)) => {
+        if laff < level {
+          break
+        }
+        self.skip_token()
+        ntokens += 1
+        match op_token.inner.tag {
+          PairedOpen(Bracket) => {
+            let expr = self.parse_expr!()
+            ntokens += expr.ntokens
+            let _ = self.expect_paired_close!(Bracket)
+            ntokens += 1
+            if self.peek_operator("=") {
+              self.skip_token()
+              ntokens += 1
+              let rhs = self.parse_expr!()
+              ntokens += rhs.ntokens
+              lhs = Syntax::Put(lhs, expr.inner, rhs.inner)
+            } else {
+              lhs = Syntax::Get(lhs, expr.inner)
+            }
+          }
+          PairedOpen(Parenthesis) =>
+            if self.peek_token!().inner.tag == PairedClose(Parenthesis) {
+              self.skip_token()
+              ntokens += 1
+              lhs = Syntax::App(lhs, [])
+            } else {
+              let expr = self.parse_expr!()
+              ntokens += expr.ntokens
+              let exprs = [expr.inner]
+              while self.peek_operator(",") {
+                self.skip_token()
+                ntokens += 1
+                let expr = self.parse_expr!()
+                ntokens += expr.ntokens
+                exprs.push(expr.inner)
+              }
+              let _ = self.expect_paired_close!(Parenthesis)
+              ntokens += 1
+              match (lhs, exprs) {
+                (Syntax::Var("not"), [expr]) => lhs = Syntax::Not(expr)
+                (Syntax::Var("<Array::make>"), [e1, e2]) =>
+                  lhs = Syntax::Array(e1, e2)
+                _ => lhs = Syntax::App(lhs, exprs)
+              }
+            }
+          _ => fail!("unexpected token when parsing expr")
+        }
+        continue
+      }
+      None => ()
+    }
+    match Parser::infix(op_str) {
+      Some((laff, raff)) => {
+        if laff < level {
+          break
+        }
+        self.skip_token()
+        ntokens += 1
+        let rhs = self.parse_expr_with_level!(raff)
+        ntokens += rhs.ntokens
+        match op_str {
+          "<=" => lhs = Syntax::LE(lhs, rhs.inner)
+          "==" => lhs = Syntax::Eq(lhs, rhs.inner)
+          "+" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Add, kind=None)
+          "-" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Sub, kind=None)
+          "*" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Mul, kind=None)
+          "/" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Div, kind=None)
+          _ => fail!("unexpected operator in infix expression")
+        }
+        continue
+      }
+      None => ()
+    }
+    break
+  }
+  { inner: lhs, ntokens }
+}
+
+fn Parser::bind_types(
+  names : Array[String],
+  types : Type?
+) -> Array[(String, Type)]!Failure {
+  match types {
+    Some(Type::Tuple(tys)) => {
+      if names.length() != tys.length() {
+        fail!("number of names and types do not match")
+      }
+      let x = []
+      for i = 0; i < names.length(); i = i + 1 {
+        x.push((names[i], tys[i]))
+      }
+      x
+    }
+    Some(_) => fail!("expected tuple type")
+    None => names.map(fn(name) { (name, Type::Var(Ref::new(None))) })
+  }
+}
+
+fn Parser::bind_type(name : String, ty : Type?) -> (String, Type) {
+  (name, ty.or(Type::Var(Ref::new(None))))
+}
+
+fn Parser::parse_stmt(self : Parser) -> PSyntax!Failure {
+  let lookahead = self.peek_token!()
+  let mut ntokens = 0
+  let expr = match lookahead.inner.tag {
+    Kw(Keyword::Let) => {
+      self.skip_token()
+      ntokens += 1
   
-  { inner: lhs, ntokens: ntokens }
+      let lookahead2 = self.peek_token!()
+      match lookahead2.inner.tag {
+        PairedOpen(Parenthesis) => {
+          // let (...) : ... = ...
+          self.skip_token()
+          ntokens += 1
+          let ident = self.next_token!()
+          ntokens += ident.ntokens
+          if ident.inner.tag != Identifer {
+            fail!("expected identifier")
+          }
+          let idents = [ident.inner.span]
+          while self.peek_operator(",") {
+            self.skip_token()
+            ntokens += 1
+            let ident = self.next_token!()
+            ntokens += ident.ntokens
+            if ident.inner.tag != Identifer {
+              fail!("expected identifier")
+            }
+            idents.push(ident.inner.span)
+          }
+          let _ = self.expect_paired_close!(Parenthesis)
+          ntokens += 1
+          let ty = if self.peek_operator(":") {
+            self.skip_token()
+            ntokens += 1
+            let ty = self.parse_type!()
+            ntokens += ty.ntokens
+            Some(ty.inner)
+          } else {
+            None
+          }
+          let _ = self.expect_operator!("=")
+          ntokens += 1
+          let expr = self.parse_expr!()
+          ntokens += expr.ntokens
+          let _ = self.expect_operator!(";")
+          ntokens += 1
+          let stmt = self.parse_stmt!()
+          ntokens += stmt.ntokens
+          Syntax::LetTuple(
+            Parser::bind_types!(idents, ty),
+            expr.inner,
+            stmt.inner,
+          )
+        }
+        Identifer => {
+          // let ... : ... = ...
+          self.skip_token()
+          ntokens += 1
+
+          let ident = lookahead2
+          let ty = if self.peek_operator(":") {
+            self.skip_token()
+            ntokens += 1
+            let ty = self.parse_type!()
+            ntokens += ty.ntokens
+            Some(ty.inner)
+          } else {
+            None
+          }
+          let _ = self.expect_operator!("=")
+          ntokens += 1
+          let expr = self.parse_expr!()
+          ntokens += expr.ntokens
+          let _ = self.expect_operator!(";")
+          ntokens += 1
+          let stmt = self.parse_stmt!()
+          ntokens += stmt.ntokens
+          Syntax::Let(
+            Parser::bind_type(ident.inner.span, ty),
+            expr.inner,
+            stmt.inner,
+          )
+        }
+        _ => fail!("unexpected token after let")
+      }
+    }
+    Kw(Keyword::Fn) => fail!("not implemented")
+    _ => {
+      let expr = self.parse_expr!()
+      ntokens += expr.ntokens
+      expr.inner
+    }
+  }
+  { inner: expr, ntokens }
 }
