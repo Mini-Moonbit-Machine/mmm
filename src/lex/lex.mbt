@@ -1,0 +1,267 @@
+typealias MutMap = @hashmap.T[String, Keyword]
+
+pub struct Lexer {
+  buffer : String
+  mut index : Int
+  mut colstart : Int
+  mut line : Int
+} derive(Eq, Show)
+
+pub struct Loc {
+  mut line : Int
+  mut column : Int
+  mut index : Int
+} derive(Eq, Show)
+
+pub enum Keyword {
+  Fn
+  Let
+  If
+  Else
+} derive(Eq, Show)
+
+pub enum Paired {
+  Parenthesis
+  Bracket
+  Brace
+} derive(Eq, Show)
+
+pub enum TokenTag {
+  Eof
+  Newline
+  Identifer
+  Kw(Keyword)
+  Op(String)
+  StrLiteral(String)
+  IntLiteral(Int)
+  PairedOpen(Paired)
+  PairedClose(Paired)
+  Error(String)
+} derive(Eq, Show)
+
+let keywords : MutMap = MutMap::new()
+
+fn init {
+  keywords["fn"] = Keyword::Fn
+  keywords["let"] = Keyword::Let
+  keywords["if"] = Keyword::If
+  keywords["else"] = Keyword::Else
+}
+
+pub struct Token {
+  tag : TokenTag
+  loc : Loc
+  span : String
+}
+
+fn Token::new(tag : TokenTag, loc : Loc, span : String) -> Token {
+  { tag, loc, span }
+}
+
+pub fn Lexer::new(s : String) -> Lexer {
+  let buffer = Buffer::new(size_hint=s.length() + 1)
+  buffer.write_string(s)
+  buffer.write_char(Char::from_int(0))
+  { buffer: buffer.to_string(), index: 0, colstart: 0, line: 1 }
+}
+
+fn Lexer::move_to_newline(self : Lexer) -> Unit {
+  self.colstart = self.index
+  self.line += 1
+}
+
+fn Lexer::get_loc(self : Lexer) -> Loc {
+  { line: self.line, column: self.index - self.colstart + 1, index: self.index }
+}
+
+fn Lexer::make_span(self : Lexer, start : Int) -> String {
+  self.buffer.substring(~start, end=self.index)
+}
+
+fn Lexer::make_token(self : Lexer, tag : TokenTag, loc : Loc) -> Token {
+  Token::new(tag, loc, self.make_span(loc.index))
+}
+
+fn Lexer::make_error(self : Lexer, loc : Loc, msg : String) -> Token {
+  Token::new(TokenTag::Error(msg), loc, self.make_span(loc.index))
+}
+
+fn Lexer::eof(self : Lexer) -> Token {
+  Token::new(TokenTag::Eof, self.get_loc(), "<empty>")
+}
+
+fn Lexer::is_keyword(s : String) -> Keyword? {
+  keywords.get(s)
+}
+
+fn Lexer::ch(self : Lexer) -> Char {
+  self.buffer[self.index]
+}
+
+fn Lexer::ch_at(self : Lexer, i : Int) -> Char {
+  self.buffer[self.index + i]
+}
+
+fn Lexer::integer_literal(
+  self : Lexer,
+  loc : Loc,
+  first_c : Char,
+  neg : Bool
+) -> Token {
+  self.index += 1
+  let base = 10
+  let mut value = first_c.to_int() - '0'.to_int()
+  if neg {
+    value = -value
+  }
+  while true {
+    let n = self.ch()
+    if n < '0' || n > '9' {
+      break
+    }
+    let n2 = n.to_int() - '0'.to_int()
+    value *= base
+    value = if neg { value - n2 } else { value + n2 }
+    self.index += 1
+  }
+  self.make_token(TokenTag::IntLiteral(value), loc)
+}
+
+fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
+  while true {
+    let cond = (self.ch() >= 'a' && self.ch() <= 'z') ||
+      (self.ch() >= 'A' && self.ch() <= 'Z') ||
+      self.ch() == '_'
+    if cond {
+
+    } else {
+      break
+    }
+    self.index += 1
+  }
+  let tok = self.make_token(TokenTag::Identifer, loc)
+  Lexer::is_keyword(tok.span).map_or(
+    tok,
+    fn(kw) { Token::new(TokenTag::Kw(kw), loc, tok.span) },
+  )
+}
+
+fn Lexer::skip_comment(self : Lexer) -> Unit {
+  self.index += 2
+  while true {
+    if self.ch() == '\n' {
+      self.index += 1
+      self.move_to_newline()
+      break
+    }
+    self.index += 1
+  }
+}
+
+fn Lexer::operator(self : Lexer, loc : Loc, first_c : Char) -> Token {
+  self.index += 1
+  let buf = Buffer::new()
+  buf.write_char(first_c)
+  match first_c {
+    ',' | ';' | ':' | '.' =>
+      return self.make_token(TokenTag::Op(buf.to_string()), loc)
+    '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' =>
+      while match self.ch() {
+              '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' => true
+              _ => false
+            } {
+        buf.write_char(self.ch())
+        self.index += 1
+      }
+    _ => return self.make_error(loc, "invalid operator")
+  }
+  self.make_token(TokenTag::Op(buf.to_string()), loc)
+}
+
+pub fn Lexer::next_err(self : Lexer) -> Token!Failure {
+  let tok = self.next()
+  match tok.tag {
+    TokenTag::Error(msg) => fail!(msg)
+    _ => tok
+  }
+}
+
+fn Lexer::next(self : Lexer) -> Token {
+  while true {
+    let c = self.ch()
+    let loc = self.get_loc()
+    match c {
+      '\x00' => return self.eof()
+      ' ' | '\t' | '\r' => {
+        self.index += 1
+        while match self.ch() {
+                ' ' | '\t' | '\r' => true
+                _ => false
+              } {
+          self.index += 1
+        }
+        continue
+      }
+      '\n' => {
+        self.index += 1
+        self.move_to_newline()
+        return self.make_token(TokenTag::Newline, loc)
+      }
+      '(' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedOpen(Paired::Parenthesis), loc)
+      }
+      ')' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedClose(Paired::Parenthesis), loc)
+      }
+      '[' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedOpen(Paired::Bracket), loc)
+      }
+      ']' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedClose(Paired::Bracket), loc)
+      }
+      '{' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedOpen(Paired::Brace), loc)
+      }
+      '}' => {
+        self.index += 1
+        return self.make_token(TokenTag::PairedClose(Paired::Brace), loc)
+      }
+      '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
+        return self.integer_literal(loc, c, false)
+      '+' | '-' => {
+        let next_c = self.ch_at(1)
+        if next_c >= '0' && next_c <= '9' {
+          self.index += 1
+          return self.integer_literal(loc, next_c, c == '-')
+        } else {
+          return self.operator(loc, c)
+        }
+      }
+      '/' =>
+        if self.ch_at(1) == '/' {
+          self.skip_comment()
+          continue
+        } else {
+          return self.operator(loc, c)
+        }
+      ',' | ';' | ':' | '.' | '*' | '=' | '>' | '<' | '^' | '|' | '%' =>
+        return self.operator(loc, c)
+      _ =>
+        if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' {
+          return self.ident(loc)
+        } else {
+          return self.make_error(
+            loc,
+            "invalid character: " + c.to_int().to_string(),
+          )
+        }
+    }
+  } else {
+    return self.make_error(self.get_loc(), "unreachable")
+  }
+}
