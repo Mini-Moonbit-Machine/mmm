@@ -214,4 +214,16 @@ test "parse stmt" {
     ,
     22,
   )
+  test_parse_expr!(
+    #|{
+    #|  fn f(x: Int) -> Int {
+    #|    x
+    #|  };
+    #|  3
+    #|}
+    ,
+    #|["LetRec",{"name":["f","Int"],"args":[["x","Int"]],"body":["Var","x"]},["Int",3]]
+    ,
+    16,
+  )
 }
