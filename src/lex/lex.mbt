@@ -131,10 +131,9 @@ fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
   while true {
     let cond = (self.ch() >= 'a' && self.ch() <= 'z') ||
       (self.ch() >= 'A' && self.ch() <= 'Z') ||
-      self.ch() == '_'
-    if cond {
-
-    } else {
+      self.ch() == '_' ||
+      (self.ch() >= '0' && self.ch() <= '9')
+    if not(cond) {
       break
     }
     self.index += 1
@@ -167,7 +166,8 @@ fn Lexer::operator(self : Lexer, loc : Loc, first_c : Char) -> Token {
       return self.make_token(TokenTag::Op(buf.to_string()), loc)
     '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' | ':' =>
       while match self.ch() {
-              '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' | ':' => true
+              '*' | '+' | '-' | '/' | '=' | '>' | '<' | '^' | '|' | '%' | ':' =>
+                true
               _ => false
             } {
         buf.write_char(self.ch())
@@ -233,15 +233,7 @@ fn Lexer::next(self : Lexer) -> Token {
       }
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
         return self.integer_literal(loc, c, false)
-      '+' | '-' => {
-        let next_c = self.ch_at(1)
-        if next_c >= '0' && next_c <= '9' {
-          self.index += 1
-          return self.integer_literal(loc, next_c, c == '-')
-        } else {
-          return self.operator(loc, c)
-        }
-      }
+      '+' | '-' => return self.operator(loc, c)
       '/' =>
         if self.ch_at(1) == '/' {
           self.skip_comment()
