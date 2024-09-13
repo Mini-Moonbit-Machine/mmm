@@ -94,7 +94,14 @@ pub fn Parser::new(input : String) -> Parser {
 }
 
 fn Parser::skip_token(self : Parser) -> Unit {
-  self.token = None
+  // if it's eof, don't skip
+  match self.token {
+    Some({ tag: TokenTag::Eof, .. }) => {
+      println("trying to skip eof")
+      panic()
+    }
+    _ => self.token = None
+  }
 }
 
 fn Parser::peek_token(self : Parser) -> PToken!Failure {
@@ -111,6 +118,7 @@ fn Parser::peek_token(self : Parser) -> PToken!Failure {
   }
   token
 }
+
 pub fn Parser::next_token(self : Parser) -> PToken!Failure {
   match self.token {
     Some(tok) => {
@@ -127,10 +135,14 @@ pub fn Parser::next_token(self : Parser) -> PToken!Failure {
   }
 }
 
-fn Parser::expect_reach_eof(self : Parser) -> Unit!Failure {
-  match self.peek_token!() {
-    { inner: { tag: TokenTag::Eof, .. }, .. } => ()
-    _ => fail!("expected eof")
+fn Parser::reach_eof(self : Parser) -> Bool {
+  try {
+    match self.peek_token!() {
+      { inner: { tag: TokenTag::Eof, .. }, .. } => true
+      _ => false
+    }
+  } catch {
+    _ => false
   }
 }
 
@@ -236,7 +248,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         ty.inner
       }
     }
-    _ => fail!("unexpected token when parsing type")
+    _ => fail!("unexpected token when parsing type: \{lhs_token.inner.span}")
   }
   while true {
     let op_token = self.peek_token!()
@@ -358,7 +370,7 @@ pub fn Parser::parse_expr_with_level(
           expr.inner
         }
       } else if po == Paired::Brace {
-        let block = self.parse_stmt!()
+        let block = self.parse_stmt!(false)
         ntokens += block.ntokens
         let _ = self.expect_paired_close!(Paired::Brace)
         ntokens += 1
@@ -371,16 +383,12 @@ pub fn Parser::parse_expr_with_level(
         Keyword::If => {
           let cond = self.parse_expr!()
           ntokens += cond.ntokens
-
           let then = self.parse_expr!()
           ntokens += then.ntokens
-
           let _ = self.expect_keyword!(Keyword::Else)
           ntokens += 1
-
           let els = self.parse_expr!()
           ntokens += els.ntokens
-          
           Syntax::If(cond.inner, then.inner, els.inner)
         }
         _ => fail!("keyword not supported in expression: \{kw}")
@@ -507,14 +515,13 @@ fn Parser::bind_type(name : String, ty : Type?) -> (String, Type) {
   (name, ty.or(Type::Var(Ref::new(None))))
 }
 
-fn Parser::parse_stmt(self : Parser) -> PSyntax!Failure {
+fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
   let lookahead = self.peek_token!()
   let mut ntokens = 0
   let expr = match lookahead.inner.tag {
     Kw(Keyword::Let) => {
       self.skip_token()
       ntokens += 1
-  
       let lookahead2 = self.peek_token!()
       match lookahead2.inner.tag {
         PairedOpen(Parenthesis) => {
@@ -552,21 +559,36 @@ fn Parser::parse_stmt(self : Parser) -> PSyntax!Failure {
           ntokens += 1
           let expr = self.parse_expr!()
           ntokens += expr.ntokens
-          let _ = self.expect_operator!(";")
-          ntokens += 1
-          let stmt = self.parse_stmt!()
-          ntokens += stmt.ntokens
-          Syntax::LetTuple(
-            Parser::bind_types!(idents, ty),
-            expr.inner,
-            stmt.inner,
-          )
+          if self.peek_operator(";") {
+            self.skip_token()
+            ntokens += 1
+            if self.reach_eof() == false {
+              let stmt = self.parse_stmt!(top)
+              ntokens += stmt.ntokens
+              Syntax::LetTuple(
+                Parser::bind_types!(idents, ty),
+                expr.inner,
+                stmt.inner,
+              )
+            } else {
+              Syntax::LetTuple(
+                Parser::bind_types!(idents, ty),
+                expr.inner,
+                Syntax::Unit,
+              )
+            }
+          } else {
+            Syntax::LetTuple(
+              Parser::bind_types!(idents, ty),
+              expr.inner,
+              Syntax::Unit,
+            )
+          }
         }
         Identifer => {
           // let ... : ... = ...
           self.skip_token()
           ntokens += 1
-
           let ident = lookahead2
           let ty = if self.peek_operator(":") {
             self.skip_token()
@@ -581,20 +603,131 @@ fn Parser::parse_stmt(self : Parser) -> PSyntax!Failure {
           ntokens += 1
           let expr = self.parse_expr!()
           ntokens += expr.ntokens
-          let _ = self.expect_operator!(";")
-          ntokens += 1
-          let stmt = self.parse_stmt!()
-          ntokens += stmt.ntokens
-          Syntax::Let(
-            Parser::bind_type(ident.inner.span, ty),
-            expr.inner,
-            stmt.inner,
-          )
+          if self.peek_operator(";") {
+            self.skip_token()
+            ntokens += 1
+            if self.reach_eof() == false {
+              let stmt = self.parse_stmt!(top)
+              ntokens += stmt.ntokens
+              Syntax::Let(
+                Parser::bind_type(ident.inner.span, ty),
+                expr.inner,
+                stmt.inner,
+              )
+            } else {
+              Syntax::Let(
+                Parser::bind_type(ident.inner.span, ty),
+                expr.inner,
+                Syntax::Unit,
+              )
+            }
+          } else {
+            Syntax::Let(
+              Parser::bind_type(ident.inner.span, ty),
+              expr.inner,
+              Syntax::Unit,
+            )
+          }
         }
         _ => fail!("unexpected token after let")
       }
     }
-    Kw(Keyword::Fn) => fail!("not implemented")
+    Kw(Keyword::Fn) => {
+      self.skip_token()
+      ntokens += 1
+      let ident = self.next_token!()
+      ntokens += ident.ntokens
+      if ident.inner.tag != Identifer {
+        fail!("expected identifier")
+      }
+      let fdef = match ident.inner.span {
+        "main" | "init" => {
+          let _ = self.expect_paired_open!(Paired::Brace)
+          ntokens += 1
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          let _ = self.expect_paired_close!(Paired::Brace)
+          ntokens += 1
+          let fdef = @types.Fundef::{
+            name: Parser::bind_type(ident.inner.span, None),
+            args: [],
+            body: stmt.inner,
+          }
+          fdef
+        }
+        _ => {
+          let name = ident.inner.span
+          let _ = self.expect_paired_open!(Paired::Parenthesis)
+          ntokens += 1
+          let args = []
+          if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
+            let arg = self.next_token!()
+            ntokens += arg.ntokens
+            if arg.inner.tag != Identifer {
+              fail!("expected identifier")
+            }
+            if self.peek_operator(":") {
+              self.skip_token()
+              ntokens += 1
+              let ty = self.parse_type!()
+              ntokens += ty.ntokens
+              args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
+            } else {
+              args.push(Parser::bind_type(arg.inner.span, None))
+            }
+            while self.peek_operator(",") {
+              self.skip_token()
+              ntokens += 1
+              let arg = self.next_token!()
+              ntokens += arg.ntokens
+              if arg.inner.tag != Identifer {
+                fail!("expected identifier")
+              }
+              if self.peek_operator(":") {
+                self.skip_token()
+                ntokens += 1
+                let ty = self.parse_type!()
+                ntokens += ty.ntokens
+                args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
+              } else {
+                args.push(Parser::bind_type(arg.inner.span, None))
+              }
+            }
+          }
+          let _ = self.expect_paired_close!(Paired::Parenthesis)
+          ntokens += 1
+          let _ = self.expect_operator!("->")
+          ntokens += 1
+          let ty = self.parse_type!()
+          ntokens += ty.ntokens
+          let _ = self.expect_paired_open!(Paired::Brace)
+          ntokens += 1
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          let _ = self.expect_paired_close!(Paired::Brace)
+          ntokens += 1
+          let fdef = @types.Fundef::{
+            name: Parser::bind_type(name, Some(ty.inner)),
+            args,
+            body: stmt.inner,
+          }
+          fdef
+        }
+      }
+      if self.peek_operator(";") {
+        self.skip_token()
+        ntokens += 1
+        if self.reach_eof() {
+          Syntax::LetRec(fdef, Syntax::Unit)
+        } else {
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          Syntax::LetRec(fdef, stmt.inner)
+        }
+      } else {
+        Syntax::LetRec(fdef, Syntax::Unit)
+      }
+    }
     _ => {
       let expr = self.parse_expr!()
       ntokens += expr.ntokens
@@ -602,4 +735,12 @@ fn Parser::parse_stmt(self : Parser) -> PSyntax!Failure {
     }
   }
   { inner: expr, ntokens }
+}
+
+pub fn Parser::parse(self : Parser) -> PSyntax!Failure {
+  let stmt = self.parse_stmt!(true)
+  if self.reach_eof() == false {
+    fail!("unexpected token after parsing")
+  }
+  stmt
 }
