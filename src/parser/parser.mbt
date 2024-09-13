@@ -166,7 +166,7 @@ fn Parser::expect_paired_close(self : Parser, pc : Paired) -> PToken!Failure {
       } else {
         fail!("expected paired close")
       }
-    _ => fail!("expected paired close")
+    tok => fail!("expected paired close, got \{tok.inner.span}")
   }
 }
 
@@ -522,6 +522,11 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
     Kw(Keyword::Let) => {
       self.skip_token()
       ntokens += 1
+
+      if top && lookahead.inner.loc.column != 1 {
+        fail!("function definition must be at the beginning of the line")
+      }
+
       let lookahead2 = self.peek_token!()
       match lookahead2.inner.tag {
         PairedOpen(Parenthesis) => {
@@ -635,6 +640,11 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
     Kw(Keyword::Fn) => {
       self.skip_token()
       ntokens += 1
+
+      if top && lookahead.inner.loc.column != 1 {
+        fail!("function definition must be at the beginning of the line")
+      }
+
       let ident = self.next_token!()
       ntokens += ident.ntokens
       if ident.inner.tag != Identifer {
@@ -696,10 +706,17 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           }
           let _ = self.expect_paired_close!(Paired::Parenthesis)
           ntokens += 1
-          let _ = self.expect_operator!("->")
-          ntokens += 1
-          let ty = self.parse_type!()
-          ntokens += ty.ntokens
+
+          let ty = if self.peek_operator("->") {
+            self.skip_token()
+            ntokens += 1
+            let ty = self.parse_type!()
+            ntokens += ty.ntokens
+            Some(ty.inner)
+          } else {
+            None
+          }
+
           let _ = self.expect_paired_open!(Paired::Brace)
           ntokens += 1
           let stmt = self.parse_stmt!(top)
@@ -707,7 +724,7 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           let _ = self.expect_paired_close!(Paired::Brace)
           ntokens += 1
           let fdef = @types.Fundef::{
-            name: Parser::bind_type(name, Some(ty.inner)),
+            name: Parser::bind_type(name, ty),
             args,
             body: stmt.inner,
           }
