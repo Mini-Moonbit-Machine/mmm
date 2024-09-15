@@ -151,9 +151,9 @@ fn Parser::expect_paired_open(self : Parser, po : Paired) -> PToken!Failure {
       if po == po2 {
         r
       } else {
-        fail!("expected paired open")
+        fail!("expected paired open \{po}, got \{r.inner}")
       }
-    _ => fail!("expected paired open")
+    tok => fail!("expected paired open \{po}, got \{tok.inner}")
   }
 }
 
@@ -163,9 +163,9 @@ fn Parser::expect_paired_close(self : Parser, pc : Paired) -> PToken!Failure {
       if pc == pc2 {
         r
       } else {
-        fail!("expected paired close")
+        fail!("expected paired close \{pc}, got \{r.inner}")
       }
-    tok => fail!("expected paired close, got \{tok.inner.span}")
+    tok => fail!("expected paired close \{pc}, got \{tok.inner}")
   }
 }
 
@@ -247,7 +247,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         ty.inner
       }
     }
-    _ => fail!("unexpected token when parsing type: \{lhs_token.inner.span}")
+    _ => fail!("unexpected token when parsing type: \{lhs_token.inner}")
   }
   while true {
     let op_token = self.peek_token!()
@@ -377,7 +377,7 @@ pub fn Parser::parse_expr_with_level(
         ntokens += 1
         block.inner
       } else {
-        fail!("unexpected paired when parsing expr: \{lhs_token.inner.span}")
+        fail!("unexpected paired when parsing expr: \{lhs_token.inner}")
       }
     Kw(kw) =>
       match kw {
@@ -410,7 +410,7 @@ pub fn Parser::parse_expr_with_level(
         }
         None => fail!("unexpected prefix operator in expression")
       }
-    _ => fail!("unexpected token when parsing expr: \{lhs_token.inner.span}")
+    _ => fail!("unexpected token when parsing expr: \{lhs_token.inner}")
   }
   while true {
     let op_token = self.peek_token!()
@@ -540,7 +540,9 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       self.skip_token()
       ntokens += 1
       if top && lookahead.inner.loc.column != 1 {
-        fail!("function definition must be at the beginning of the line")
+        fail!(
+          "let definition must be at the beginning of the line, but got let at \{lookahead.inner.loc}",
+        )
       }
       let lookahead2 = self.peek_token!()
       match lookahead2.inner.tag {
@@ -656,7 +658,9 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       self.skip_token()
       ntokens += 1
       if top && lookahead.inner.loc.column != 1 {
-        fail!("function definition must be at the beginning of the line")
+        fail!(
+          "fn definition must be at the beginning of the line, but got let at \{lookahead.inner.loc}",
+        )
       }
       let ident = self.next_token!()
       ntokens += ident.ntokens
@@ -664,43 +668,13 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         fail!("expected identifier")
       }
       let fdef = match ident.inner.span {
-        "main" | "init" => {
-          let _ = self.expect_paired_open!(Paired::Brace)
-          ntokens += 1
-          let stmt = self.parse_stmt!(top)
-          ntokens += stmt.ntokens
-          let _ = self.expect_paired_close!(Paired::Brace)
-          ntokens += 1
-          let fdef = @types.Fundef::{
-            name: Parser::bind_type(ident.inner.span, None),
-            args: [],
-            body: stmt.inner,
-          }
-          fdef
-        }
         _ => {
           let name = ident.inner.span
-          let _ = self.expect_paired_open!(Paired::Parenthesis)
-          ntokens += 1
           let args = []
-          if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
-            let arg = self.next_token!()
-            ntokens += arg.ntokens
-            if arg.inner.tag != Identifer {
-              fail!("expected identifier")
-            }
-            if self.peek_operator(":") {
-              self.skip_token()
-              ntokens += 1
-              let ty = self.parse_type!()
-              ntokens += ty.ntokens
-              args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
-            } else {
-              args.push(Parser::bind_type(arg.inner.span, None))
-            }
-            while self.peek_operator(",") {
-              self.skip_token()
-              ntokens += 1
+          if self.peek_token!().inner.tag == PairedOpen(Parenthesis) {
+            let _ = self.expect_paired_open!(Paired::Parenthesis)
+            ntokens += 1
+            if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
               let arg = self.next_token!()
               ntokens += arg.ntokens
               if arg.inner.tag != Identifer {
@@ -715,10 +689,28 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
               } else {
                 args.push(Parser::bind_type(arg.inner.span, None))
               }
+              while self.peek_operator(",") {
+                self.skip_token()
+                ntokens += 1
+                let arg = self.next_token!()
+                ntokens += arg.ntokens
+                if arg.inner.tag != Identifer {
+                  fail!("expected identifier")
+                }
+                if self.peek_operator(":") {
+                  self.skip_token()
+                  ntokens += 1
+                  let ty = self.parse_type!()
+                  ntokens += ty.ntokens
+                  args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
+                } else {
+                  args.push(Parser::bind_type(arg.inner.span, None))
+                }
+              }
             }
+            let _ = self.expect_paired_close!(Paired::Parenthesis)
+            ntokens += 1
           }
-          let _ = self.expect_paired_close!(Paired::Parenthesis)
-          ntokens += 1
           let ty = if self.peek_operator("->") {
             self.skip_token()
             ntokens += 1
@@ -730,7 +722,7 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           }
           let _ = self.expect_paired_open!(Paired::Brace)
           ntokens += 1
-          let stmt = self.parse_stmt!(top)
+          let stmt = self.parse_stmt!(false)
           ntokens += stmt.ntokens
           let _ = self.expect_paired_close!(Paired::Brace)
           ntokens += 1
@@ -759,7 +751,15 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
     _ => {
       let expr = self.parse_expr!()
       ntokens += expr.ntokens
-      expr.inner
+      if self.peek_operator(";") {
+        self.skip_token()
+        ntokens += 1
+        let stmt = self.parse_stmt!(top)
+        ntokens += stmt.ntokens
+        Syntax::Let(Parser::bind_type("_", None), expr.inner, stmt.inner)
+      } else {
+        expr.inner
+      }
     }
   }
   { inner: expr, ntokens }
