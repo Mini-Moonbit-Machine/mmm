@@ -87,6 +87,12 @@ test "parse expr" {
     1,
   )
   test_parse_expr!(
+    "10.000000001",
+    #|["Float",10.000000001]
+    ,
+    1,
+  )
+  test_parse_expr!(
     "1 + 2",
     #|["IAdd",["Int",1],["Int",2]]
     ,
@@ -177,10 +183,28 @@ test "parse expr" {
     3,
   )
   test_parse_expr!(
+    "2 + 1 * 3 / 2 - 1 <= 5 + 2 * f(x, y) + arr[2] + y()",
+    #|["LE",["ISub",["IAdd",["Int",2],["IDiv",["IMul",["Int",1],["Int",3]],["Int",2]]],["Int",1]],["IAdd",["IAdd",["IAdd",["Int",5],["IMul",["Int",2],["App",["Var","f"],[["Var","x"],["Var","y"]]]]],["Get",["Var","arr"],["Int",2]]],["App",["Var","y"],[]]]]
+    ,
+    29,
+  )
+  test_parse_expr!(
+    "if true { 1 }",
+    #|["If",["Bool",true],["Int",1],"Unit"]
+    ,
+    5,
+  )
+  test_parse_expr!(
     "if true { 1 } else { 2 }",
     #|["If",["Bool",true],["Int",1],["Int",2]]
     ,
     9,
+  )
+  test_parse_expr!(
+    "(sin(cos(sqrt(abs_float(-12.3)))) + 4.5 - 6.7 * 8.9 / 1.23456789) * float_of_int(1000000)",
+    #|["IMul",["ISub",["IAdd",["App",["Var","sin"],[["App",["Var","cos"],[["App",["Var","sqrt"],[["App",["Var","abs_float"],[["Neg",["Float",12.3]]]]]]]]]],["Float",4.5]],["IDiv",["IMul",["Float",6.7],["Float",8.9]],["Float",1.2345678900000001]]],["App",["Var","float_of_int"],[["Int",1000000]]]]
+    ,
+    29,
   )
 }
 
@@ -226,4 +250,7 @@ test "parse stmt" {
     ,
     16,
   )
+}
+
+test "debug" {
 }

@@ -48,7 +48,6 @@ fn Parser::prefix_start() -> Int {
 
 fn Parser::prefix(op : String) -> (Int, Int)? {
   match op {
-    "+" => Some((Parser::level_none(), Parser::prefix_start() + 1))
     "-" => Some((Parser::level_none(), Parser::prefix_start() + 1))
     _ => None
   }
@@ -265,6 +264,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
       Identifer => break
       StrLiteral(_) => break
       IntLiteral(_) => break
+      DoubleLiteral(_) => break
       _ => fail!("unexpected token when parsing type")
     }
     match Parser::type_postfix(op_str) {
@@ -327,6 +327,7 @@ pub fn Parser::parse_expr_with_level(
   let mut ntokens = lhs_token.ntokens
   let mut lhs = match lhs_token.inner.tag {
     IntLiteral(n) => Syntax::Int(n)
+    DoubleLiteral(n) => Syntax::Double(n)
     Identifer =>
       match lhs_token.inner.span {
         "true" => Syntax::Bool(true)
@@ -385,15 +386,31 @@ pub fn Parser::parse_expr_with_level(
           ntokens += cond.ntokens
           let then = self.parse_expr!()
           ntokens += then.ntokens
-          let _ = self.expect_keyword!(Keyword::Else)
-          ntokens += 1
-          let els = self.parse_expr!()
-          ntokens += els.ntokens
-          Syntax::If(cond.inner, then.inner, els.inner)
+          if self.peek_keyword(Keyword::Else) {
+            self.skip_token()
+            ntokens += 1
+            let els = self.parse_expr!()
+            ntokens += els.ntokens
+            Syntax::If(cond.inner, then.inner, els.inner)
+          } else {
+            Syntax::If(cond.inner, then.inner, Syntax::Unit)
+          }
         }
         _ => fail!("keyword not supported in expression: \{kw}")
       }
-    _ => panic()
+    Op(op) =>
+      match Parser::prefix(op) {
+        Some((_, raff)) => {
+          let rhs = self.parse_expr_with_level!(raff)
+          ntokens += rhs.ntokens
+          match op {
+            "-" => Syntax::Neg(rhs.inner, kind=None)
+            _ => fail!("unexpected prefix operator in expression")
+          }
+        }
+        None => fail!("unexpected prefix operator in expression")
+      }
+    _ => fail!("unexpected token when parsing expr: \{lhs_token.inner.span}")
   }
   while true {
     let op_token = self.peek_token!()
@@ -522,11 +539,9 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
     Kw(Keyword::Let) => {
       self.skip_token()
       ntokens += 1
-
       if top && lookahead.inner.loc.column != 1 {
         fail!("function definition must be at the beginning of the line")
       }
-
       let lookahead2 = self.peek_token!()
       match lookahead2.inner.tag {
         PairedOpen(Parenthesis) => {
@@ -640,11 +655,9 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
     Kw(Keyword::Fn) => {
       self.skip_token()
       ntokens += 1
-
       if top && lookahead.inner.loc.column != 1 {
         fail!("function definition must be at the beginning of the line")
       }
-
       let ident = self.next_token!()
       ntokens += ident.ntokens
       if ident.inner.tag != Identifer {
@@ -706,7 +719,6 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           }
           let _ = self.expect_paired_close!(Paired::Parenthesis)
           ntokens += 1
-
           let ty = if self.peek_operator("->") {
             self.skip_token()
             ntokens += 1
@@ -716,7 +728,6 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           } else {
             None
           }
-
           let _ = self.expect_paired_open!(Paired::Brace)
           ntokens += 1
           let stmt = self.parse_stmt!(top)
