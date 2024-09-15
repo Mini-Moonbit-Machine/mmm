@@ -202,7 +202,7 @@ test "parse expr" {
   )
   test_parse_expr!(
     "(sin(cos(sqrt(abs_float(-12.3)))) + 4.5 - 6.7 * 8.9 / 1.23456789) * float_of_int(1000000)",
-    #|["IMul",["ISub",["IAdd",["App",["Var","sin"],[["App",["Var","cos"],[["App",["Var","sqrt"],[["App",["Var","abs_float"],[["Neg",["Float",12.3]]]]]]]]]],["Float",4.5]],["IDiv",["IMul",["Float",6.7],["Float",8.9]],["Float",1.2345678900000001]]],["App",["Var","float_of_int"],[["Int",1000000]]]]
+    #|["IMul",["ISub",["IAdd",["App",["Var","sin"],[["App",["Var","cos"],[["App",["Var","sqrt"],[["App",["Var","abs_float"],[["Neg",["Float",12.3]]]]]]]]]],["Float",4.5]],["IDiv",["IMul",["Float",6.7],["Float",8.9]],["Float",1.23456789]]],["App",["Var","float_of_int"],[["Int",1000000]]]]
     ,
     29,
   )
