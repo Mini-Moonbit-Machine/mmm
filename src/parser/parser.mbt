@@ -753,7 +753,7 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         Syntax::LetRec(fdef, Syntax::Unit)
       }
     }
-    PairedClose(_) => Syntax::Unit
+    Eof | PairedClose(_) => Syntax::Unit
     _ => {
       let expr = self.parse_expr!()
       ntokens += expr.ntokens
@@ -772,6 +772,14 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
 }
 
 pub fn Parser::parse(self : Parser) -> PSyntax!Failure {
+  while true {
+    let tok = self.next_token!()
+    println("\{tok.inner}")
+    if tok.inner.tag == TokenTag::Eof {
+      break
+    }
+  }
+  self.tokenizer.reset()
   let stmt = self.parse_stmt!(true)
   if self.reach_eof() == false {
     fail!("unexpected token after parsing")
