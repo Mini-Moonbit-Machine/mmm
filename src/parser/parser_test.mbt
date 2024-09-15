@@ -206,6 +206,13 @@ test "parse expr" {
     ,
     29,
   )
+  test_parse_expr!(
+    #|c[i] = x
+    ,
+    #|["Put",["Var","c"],["Var","i"],["Var","x"]]
+    ,
+    6,
+  )
 }
 
 test "parse stmt" {
@@ -249,6 +256,13 @@ test "parse stmt" {
     #|["LetRec",{"name":["f","Int"],"args":[["x","Int"]],"body":["Var","x"]},["Int",3]]
     ,
     16,
+  )
+  test_parse_expr!(
+    #| { c[i] = x; 1 }
+    ,
+    #|["Let",["_",["Var","None"]],["Put",["Var","c"],["Var","i"],["Var","x"]],["Int",1]]
+    ,
+    10,
   )
 }
 
