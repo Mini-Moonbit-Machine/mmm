@@ -140,7 +140,8 @@ fn Lexer::numeric_literal(
       value2 = if neg { value2 - n2 } else { value2 + n2 }
       self.index += 1
     }
-    let value = Double::from_int(value) + Double::from_int(value2) / Double::from_int(base2)
+    let value = Double::from_int(value) +
+      Double::from_int(value2) / Double::from_int(base2)
     self.make_token(TokenTag::DoubleLiteral(value), loc)
   } else {
     self.make_token(TokenTag::IntLiteral(value), loc)

@@ -43,12 +43,27 @@ test "Operators" {
 }
 
 test "Paired" {
-  test_tokenize!("(", [{ tag: TokenTag::PairedOpen(Paired::Parenthesis), span: "(" }])
-  test_tokenize!(")", [{ tag: TokenTag::PairedClose(Paired::Parenthesis), span: ")" }])
-  test_tokenize!("[", [{ tag: TokenTag::PairedOpen(Paired::Bracket), span: "[" }])
-  test_tokenize!("]", [{ tag: TokenTag::PairedClose(Paired::Bracket), span: "]" }])
+  test_tokenize!(
+    "(",
+    [{ tag: TokenTag::PairedOpen(Paired::Parenthesis), span: "(" }],
+  )
+  test_tokenize!(
+    ")",
+    [{ tag: TokenTag::PairedClose(Paired::Parenthesis), span: ")" }],
+  )
+  test_tokenize!(
+    "[",
+    [{ tag: TokenTag::PairedOpen(Paired::Bracket), span: "[" }],
+  )
+  test_tokenize!(
+    "]",
+    [{ tag: TokenTag::PairedClose(Paired::Bracket), span: "]" }],
+  )
   test_tokenize!("{", [{ tag: TokenTag::PairedOpen(Paired::Brace), span: "{" }])
-  test_tokenize!("}", [{ tag: TokenTag::PairedClose(Paired::Brace), span: "}" }])
+  test_tokenize!(
+    "}",
+    [{ tag: TokenTag::PairedClose(Paired::Brace), span: "}" }],
+  )
 }
 
 test "Example Ack" {
