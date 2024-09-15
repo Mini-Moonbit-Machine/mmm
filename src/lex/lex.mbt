@@ -265,7 +265,7 @@ fn Lexer::next(self : Lexer) -> Token {
       ',' | ';' | ':' | '.' | '*' | '=' | '>' | '<' | '^' | '|' | '%' =>
         return self.operator(loc, c)
       _ =>
-        if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' {
+        if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') {
           return self.ident(loc)
         } else {
           return self.make_error(
