@@ -672,6 +672,11 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           let name = ident.inner.span
           let args = []
           if self.peek_token!().inner.tag == PairedOpen(Parenthesis) {
+            if top && (name == "main" || name == "init") {
+              fail!(
+                "main and init cannot have arguments when they are top-level",
+              )
+            }
             let _ = self.expect_paired_open!(Paired::Parenthesis)
             ntokens += 1
             if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
@@ -748,6 +753,7 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         Syntax::LetRec(fdef, Syntax::Unit)
       }
     }
+    PairedClose(_) => Syntax::Unit
     _ => {
       let expr = self.parse_expr!()
       ntokens += expr.ntokens
