@@ -66,6 +66,12 @@ pub fn Lexer::new(s : String) -> Lexer {
   { buffer: buffer.to_string(), index: 0, colstart: 0, line: 1 }
 }
 
+pub fn Lexer::reset(self : Lexer) -> Unit {
+  self.index = 0
+  self.colstart = 0
+  self.line = 1
+}
+
 fn Lexer::move_to_newline(self : Lexer) -> Unit {
   self.colstart = self.index
   self.line += 1
@@ -160,6 +166,9 @@ fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
     self.index += 1
   }
   let tok = self.make_token(TokenTag::Identifer, loc)
+  if tok.span.starts_with("_") && tok.span != "_" {
+    return self.make_error(loc, "invalid identifier")
+  }
   Lexer::is_keyword(tok.span).map_or(
     tok,
     fn(kw) { Token::new(TokenTag::Kw(kw), loc, tok.span) },
@@ -265,13 +274,10 @@ fn Lexer::next(self : Lexer) -> Token {
       ',' | ';' | ':' | '.' | '*' | '=' | '>' | '<' | '^' | '|' | '%' =>
         return self.operator(loc, c)
       _ =>
-        if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') {
+        if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' {
           return self.ident(loc)
         } else {
-          return self.make_error(
-            loc,
-            "invalid character: " + c.to_int().to_string(),
-          )
+          return self.make_error(loc, "invalid character: \{c}")
         }
     }
   } else {
