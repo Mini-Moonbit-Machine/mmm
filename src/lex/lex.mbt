@@ -34,6 +34,7 @@ pub enum TokenTag {
   Op(String)
   StrLiteral(String)
   IntLiteral(Int)
+  DoubleLiteral(Double)
   PairedOpen(Paired)
   PairedClose(Paired)
   Error(String)
@@ -102,7 +103,7 @@ fn Lexer::ch_at(self : Lexer, i : Int) -> Char {
   self.buffer[self.index + i]
 }
 
-fn Lexer::integer_literal(
+fn Lexer::numeric_literal(
   self : Lexer,
   loc : Loc,
   first_c : Char,
@@ -124,7 +125,26 @@ fn Lexer::integer_literal(
     value = if neg { value - n2 } else { value + n2 }
     self.index += 1
   }
-  self.make_token(TokenTag::IntLiteral(value), loc)
+  if self.ch() == '.' {
+    self.index += 1
+    let mut value2 = 0
+    let mut base2 = 1
+    while true {
+      let n = self.ch()
+      if n < '0' || n > '9' {
+        break
+      }
+      let n2 = n.to_int() - '0'.to_int()
+      value2 *= base
+      base2 *= base
+      value2 = if neg { value2 - n2 } else { value2 + n2 }
+      self.index += 1
+    }
+    let value = Double::from_int(value) + Double::from_int(value2) / Double::from_int(base2)
+    self.make_token(TokenTag::DoubleLiteral(value), loc)
+  } else {
+    self.make_token(TokenTag::IntLiteral(value), loc)
+  }
 }
 
 fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
@@ -232,7 +252,7 @@ fn Lexer::next(self : Lexer) -> Token {
         return self.make_token(TokenTag::PairedClose(Paired::Brace), loc)
       }
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
-        return self.integer_literal(loc, c, false)
+        return self.numeric_literal(loc, c, false)
       '+' | '-' => return self.operator(loc, c)
       '/' =>
         if self.ch_at(1) == '/' {
