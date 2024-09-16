@@ -39,7 +39,7 @@ fn Typer::union(ty1 : Type, ty2 : Type) -> Unit!Failure {
   }
 }
 
-fn Typer::unify(ty1 : Type, ty2 : Type) -> Unit!Failure {
+fn Typer::unify(ty1 : Type, ty2 : Type, node : Syntax) -> Unit!Failure {
   let ty1 = Typer::find(ty1)
   let ty2 = Typer::find(ty2)
   match (ty1, ty2) {
@@ -52,22 +52,23 @@ fn Typer::unify(ty1 : Type, ty2 : Type) -> Unit!Failure {
         fail!("unify: different number of arguments")
       }
       for i, x in args1 {
-        Typer::unify!(x, args2[i])
+        Typer::unify!(x, args2[i], node)
       }
-      Typer::unify!(ret1, ret2)
+      Typer::unify!(ret1, ret2, node)
     }
     (Type::Tuple(xs), Type::Tuple(ys)) => {
       if xs.length() != ys.length() {
         fail!("unify: different number of elements")
       }
       for i, x in xs {
-        Typer::unify!(x, ys[i])
+        Typer::unify!(x, ys[i], node)
       }
     }
-    (Type::Array(x), Type::Array(y)) => Typer::unify!(x, y)
+    (Type::Array(x), Type::Array(y)) => Typer::unify!(x, y, node)
     (Type::Var(_), _) => Typer::union!(ty1, ty2)
     (_, Type::Var(_)) => Typer::union!(ty1, ty2)
-    _ => fail!("unify: mismatched types \{ty1} and \{ty2}")
+    _ =>
+      fail!("unify: mismatched types \{ty1} and \{ty2}, when handling \{node}")
   }
 }
 
@@ -83,7 +84,7 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
     (Syntax::Double(_), Type::Double) => ()
     (Syntax::Var(x), ty) =>
       match env.find(x) {
-        Some(t) => Typer::unify!(t, ty)
+        Some(t) => Typer::unify!(t, ty, node)
         None => fail!("unbound variable: \{x}")
       }
     (Syntax::Tuple(xs), Type::Tuple(ys)) => {
@@ -95,7 +96,7 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
       }
     }
     (Syntax::Not(x), Type::Bool) => Typer::check!(x, Type::Bool, env)
-    (Syntax::Array(elem, len), Type::Array(y)) => {
+    (Syntax::Array(len, elem), Type::Array(y)) => {
       Typer::check!(elem, y, env)
       Typer::check!(len, Type::Int, env)
     }
@@ -166,7 +167,7 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
       }
       if fundef.name.1.is_unknown() {
         let t = Typer::infer!(fundef.body, env)
-        Typer::unify!(t, fundef.name.1)
+        Typer::unify!(t, fundef.name.1, node)
       } else {
         Typer::check!(fundef.body, fundef.name.1, env)
       }
@@ -190,7 +191,7 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
             }
             for i, xt in xts {
               match xt {
-                (_, t) => Typer::unify!(t, ts[i])
+                (_, t) => Typer::unify!(t, ts[i], node)
               }
             }
             let mut env = env
@@ -233,7 +234,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       Typer::check!(x, Type::Bool, env)
       Type::Bool
     }
-    Syntax::Array(elem, len) => {
+    Syntax::Array(len, elem) => {
       let elem_ty = Typer::infer!(elem, env)
       Typer::check!(len, Type::Int, env)
       Type::Array(elem_ty)
@@ -290,13 +291,13 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       Typer::check!(cond, Type::Bool, env)
       let ty1 = Typer::infer!(t, env)
       let ty2 = Typer::infer!(f, env)
-      Typer::unify!(ty1, ty2)
+      Typer::unify!(ty1, ty2, node)
       Typer::find(ty1)
     }
     Syntax::Prim(x, y, _, kind=None) as r => {
       let ty1 = Typer::infer!(x, env)
       let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2)
+      Typer::unify!(ty1, ty2, node)
       let ty1 = Typer::find(ty1)
       match ty1 {
         Type::Int => {
@@ -323,13 +324,13 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
     Syntax::Eq(x, y) => {
       let ty1 = Typer::infer!(x, env)
       let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2)
+      Typer::unify!(ty1, ty2, node)
       Type::Bool
     }
     Syntax::LE(x, y) => {
       let ty1 = Typer::infer!(x, env)
       let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2)
+      Typer::unify!(ty1, ty2, node)
       Type::Bool
     }
     Syntax::Let((x, t), e1, e2) => {
@@ -355,7 +356,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       }
       if fundef.name.1.is_unknown() {
         let t = Typer::infer!(fundef.body, env)
-        Typer::unify!(t, fundef.name.1)
+        Typer::unify!(t, fundef.name.1, node)
       } else {
         Typer::check!(fundef.body, fundef.name.1, env)
       }
@@ -370,7 +371,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           }
           for i, xt in xts {
             match xt {
-              (_, t) => Typer::unify!(t, ts[i])
+              (_, t) => Typer::unify!(t, ts[i], node)
             }
           }
           let mut env = env
@@ -389,28 +390,6 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
     }
   }
 }
-
-// fn read_int() -> Int;
-// /// 打印一个整数，不带换行
-// fn print_int(i: Int) -> Unit;
-// /// 读取一个字节，如果失败返回 -1
-// fn read_char() -> Int;
-// /// 打印一个字节
-// fn print_char(c: Int) -> Unit;
-// /// 打印一个换行
-// fn print_newline() -> Unit;
-// // 数学函数
-// /// 整数和浮点数的互相转换
-// fn int_of_float(f: Double) -> Int;
-// fn float_of_int(i: Int) -> Double;
-// fn truncate(f: Double) -> Int; // 与 int_of_float 相同
-// /// 浮点数运算
-// fn floor(f: Double) -> Double;
-// fn abs_float(f: Double) -> Double;
-// fn sqrt(f: Double) -> Double;
-// fn sin(f: Double) -> Double;
-// fn cos(f: Double) -> Double;
-// fn atan(f: Double) -> Double;
 
 let init_env : Ref[TyEnv] = Ref::new(TyEnv::new())
 
