@@ -89,6 +89,17 @@ pub fn Type::size_of(self : Type, size_of_ptr : Int) -> Int {
   }
 }
 
+pub fn Type::is_unknown(self : Type) -> Bool {
+  match self {
+    Var(t) =>
+      match t.val {
+        Some(t) => t.is_unknown()
+        None => true
+      }
+    _ => false
+  }
+}
+
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {
   match (self, other) {
     (Unit, Unit) => true

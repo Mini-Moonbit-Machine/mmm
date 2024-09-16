@@ -11,7 +11,7 @@ fn test_parse_type(
   assert_eq!(ty.inner.to_json().stringify(), expected_str)
   assert_eq!(ty_ntokens, expected_ntokens)
   let last = parser.next_token!()
-  assert_eq!(last.inner.tag, @lex.TokenTag::Eof)
+  assert_eq!(last.inner.tag, @lexer.TokenTag::Eof)
 }
 
 fn test_parse_expr(
@@ -25,7 +25,7 @@ fn test_parse_expr(
   assert_eq!(expr.inner.to_json().stringify(), expected_str)
   assert_eq!(expr_ntokens, expected_ntokens)
   let last = parser.next_token!()
-  assert_eq!(last.inner.tag, @lex.TokenTag::Eof)
+  assert_eq!(last.inner.tag, @lexer.TokenTag::Eof)
 }
 
 test "parse type" {
