@@ -782,7 +782,7 @@ pub fn Parser::parse(self : Parser) -> PSyntax!Failure {
   // self.tokenizer.reset()
   let stmt = self.parse_stmt!(true)
   if self.reach_eof() == false {
-    fail!("unexpected token after parsing")
+    fail!("unexpected token after parsing: \{self.peek_token!().inner}")
   }
   stmt
 }
