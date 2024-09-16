@@ -101,8 +101,17 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.ast = Some(parsed.inner)
     }
     Typecheck => {
-      let typechecked = @util.die("TODO: typecheck")
-      self.typechecked = Some(typechecked)
+      let ast = self.ast.unwrap()
+      let typer = @typer.Typer::new(ast)
+      try {
+        typer.check_all!()
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Typecheck error")
+        }
+      }
+      self.typechecked = Some(ast)
     }
     Knf => {
       let knf = self.knf_env.to_knf(self.typechecked.unwrap())

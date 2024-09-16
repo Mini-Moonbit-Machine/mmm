@@ -1,12 +1,12 @@
-typealias Lexer = @lex.Lexer
+typealias Lexer = @lexer.Lexer
 
-typealias Token = @lex.Token
+typealias Token = @lexer.Token
 
-typealias TokenTag = @lex.TokenTag
+typealias TokenTag = @lexer.TokenTag
 
-typealias Paired = @lex.Paired
+typealias Paired = @lexer.Paired
 
-typealias Keyword = @lex.Keyword
+typealias Keyword = @lexer.Keyword
 
 typealias Type = @types.Type
 
@@ -772,14 +772,14 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
 }
 
 pub fn Parser::parse(self : Parser) -> PSyntax!Failure {
-  while true {
-    let tok = self.next_token!()
-    println("\{tok.inner}")
-    if tok.inner.tag == TokenTag::Eof {
-      break
-    }
-  }
-  self.tokenizer.reset()
+  // while true {
+  //   let tok = self.next_token!()
+  //   println("\{tok.inner}")
+  //   if tok.inner.tag == TokenTag::Eof {
+  //     break
+  //   }
+  // }
+  // self.tokenizer.reset()
   let stmt = self.parse_stmt!(true)
   if self.reach_eof() == false {
     fail!("unexpected token after parsing")

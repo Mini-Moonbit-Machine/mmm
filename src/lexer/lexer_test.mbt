@@ -3,14 +3,14 @@ struct TestToken {
   span : String
 }
 
-typealias TokenTag = @lex.TokenTag
+typealias TokenTag = @lexer.TokenTag
 
-typealias Keyword = @lex.Keyword
+typealias Keyword = @lexer.Keyword
 
-typealias Paired = @lex.Paired
+typealias Paired = @lexer.Paired
 
 fn test_tokenize(input : String, expected : Array[TestToken]) -> Unit!Error {
-  let tokenizer = @lex.Lexer::new(input)
+  let tokenizer = @lexer.Lexer::new(input)
   for etok in expected {
     let tok = tokenizer.next_err!()
     assert_eq!(tok.tag, etok.tag)
