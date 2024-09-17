@@ -115,7 +115,12 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
     }
     Knf => {
       let knf = try {
-        self.knf_env.to_knf!(self.typechecked.unwrap())
+        let preprocessed = self.knf_env.syntax_preprocess(
+          self.typechecked.unwrap(),
+          false,
+          false,
+        )
+        self.knf_env.to_knf!(preprocessed)
       } catch {
         Failure(msg) => {
           println(msg)

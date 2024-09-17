@@ -15,18 +15,7 @@ pub fn Typer::new(syntax : Syntax) -> Typer {
 }
 
 fn Typer::find(ty1 : Type) -> Type {
-  match ty1 {
-    Type::Var(t) =>
-      match t.val {
-        Some(t2) => {
-          let t3 = Typer::find(t2)
-          t.val = Some(t3)
-          t3
-        }
-        None => ty1
-      }
-    _ => ty1
-  }
+  ty1.repr()
 }
 
 fn Typer::union(ty1 : Type, ty2 : Type) -> Unit!Failure {
@@ -146,7 +135,9 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
     }
     (Syntax::Let((x, t), e1, e2), ty) => {
       let t = if t.is_unknown() {
-        Typer::infer!(e1, env)
+        let inferred = Typer::infer!(e1, env)
+        Typer::unify!(t, inferred, node)
+        t
       } else {
         Typer::check!(e1, t, env)
         t
@@ -220,7 +211,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
     Syntax::Double(_) => Type::Double
     Syntax::Var(x) =>
       match env.find(x) {
-        Some(t) => t
+        Some(t) => Typer::find(t)
         None => fail!("unbound variable: \{x}")
       }
     Syntax::Tuple(xs) => {
@@ -247,10 +238,10 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           Type::Int
         }
         Type::Double => {
-          r.kind = Some(Kind::Int)
+          r.kind = Some(Kind::Double)
           Type::Double
         }
-        _ => fail!("infer: invalid type for negation")
+        _ => fail!("infer: invalid type for negation: \{ty}")
       }
       ty
     }
@@ -272,7 +263,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           for i, arg in args {
             Typer::check!(arg, args_ty[i], env)
           }
-          ret_ty
+          Typer::find(ret_ty)
         }
         _ => fail!("infer: not a function")
       }
@@ -282,7 +273,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       match arr_ty {
         Type::Array(ty) => {
           Typer::check!(idx, Type::Int, env)
-          ty
+          Typer::find(ty)
         }
         _ => fail!("infer: not an array")
       }
@@ -308,7 +299,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           r.kind = Some(Kind::Double)
           Type::Double
         }
-        _ => fail!("infer: invalid type for prim")
+        _ => fail!("infer: invalid type for prim: \{ty1}")
       }
     }
     Syntax::Prim(x, y, _, kind=Some(Kind::Int)) => {
@@ -335,7 +326,9 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
     }
     Syntax::Let((x, t), e1, e2) => {
       let t = if t.is_unknown() {
-        Typer::infer!(e1, env)
+        let inferred = Typer::infer!(e1, env)
+        Typer::unify!(t, inferred, node)
+        t
       } else {
         Typer::check!(e1, t, env)
         t
@@ -356,7 +349,7 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       }
       if fundef.name.1.is_unknown() {
         let t = Typer::infer!(fundef.body, env)
-        Typer::unify!(t, fundef.name.1, node)
+        Typer::unify!(fundef.name.1, t, node)
       } else {
         Typer::check!(fundef.body, fundef.name.1, env)
       }

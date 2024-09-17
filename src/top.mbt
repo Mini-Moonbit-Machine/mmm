@@ -100,6 +100,21 @@ pub fn Type::is_unknown(self : Type) -> Bool {
   }
 }
 
+pub fn Type::repr(self : Type) -> Type {
+  match self {
+    Type::Var(t) =>
+      match t.val {
+        Some(t2) => {
+          let t3 = t2.repr()
+          t.val = Some(t3)
+          t3
+        }
+        None => self
+      }
+    _ => self
+  }
+}
+
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {
   match (self, other) {
     (Unit, Unit) => true
