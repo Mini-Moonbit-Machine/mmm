@@ -1,0 +1,42 @@
+package moonbitlang/minimbt/closure_eval
+
+alias @moonbitlang/core/immut/hashmap as @hashmap
+alias @moonbitlang/minimbt as @minimbt
+alias @moonbitlang/minimbt/closure as @closure
+
+// Values
+
+// Types and methods
+type ClosureInterpreter
+impl ClosureInterpreter {
+  add_extern_fn(Self, String, (Array[Value]) -> Value) -> Unit
+  eval(Self, @hashmap.T[@minimbt.Name, Value], @closure.Expr) -> Value!Failure
+  eval_fn(Self, @closure.FuncDef, Array[Value], Array[Value]) -> Value!Failure
+  eval_full(Self, @closure.Program) -> Value!Failure
+  new() -> Self
+}
+
+pub enum Value {
+  Unit
+  Int(Int)
+  Double(Double)
+  Tuple(Array[Value])
+  Array(Array[Value])
+  ExternFn(String)
+  Closure(@closure.FuncDef, Array[Value])
+}
+impl Value {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+// Type aliases
+pub typealias InterpreterLocalVars = @hashmap.T[@minimbt.Name, Value]
+
+pub typealias Name = @minimbt.Name
+
+// Traits
+
+// Extension Methods
+impl Show for Value
+

@@ -12,6 +12,8 @@ pub struct Closure {
   pub actual_free_vars : Array[@minimbt.Name]
 }
 impl Closure {
+  from_json(Json) -> Self!
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
@@ -31,30 +33,35 @@ pub enum Expr {
   FDiv(@minimbt.Name, @minimbt.Name)
   IfEq(@minimbt.Name, @minimbt.Name, Expr, Expr)
   IfLe(@minimbt.Name, @minimbt.Name, Expr, Expr)
-  Let(Tuple[@minimbt.Name, LowType], Expr, Expr)
+  Let((@minimbt.Name, LowType), Expr, Expr)
   Var(@minimbt.Name)
-  MakeClosure(Tuple[@minimbt.Name, LowType], Closure, Expr)
+  MakeClosure((@minimbt.Name, LowType), Closure, Expr)
   CallClosure(@minimbt.Name, Array[@minimbt.Name])
   CallDirect(Label, Array[@minimbt.Name])
   MakeTuple(Array[@minimbt.Name])
-  LetTuple(Array[Tuple[@minimbt.Name, LowType]], @minimbt.Name, Expr)
+  LetTuple(Array[(@minimbt.Name, LowType)], @minimbt.Name, Expr)
   ArrayGet(@minimbt.Name, @minimbt.Name)
   ArrayPut(@minimbt.Name, @minimbt.Name, @minimbt.Name)
   ExternalArray(Label)
 }
 impl Expr {
+  from_json(Json) -> Self!
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
 pub struct FuncDef {
   pub name : Label
   pub old_name : @minimbt.Name
+  pub is_closure : Bool
   pub ty : LowType
-  pub args : Array[Tuple[@minimbt.Name, LowType]]
-  pub formal_free_vars : Array[Tuple[@minimbt.Name, LowType]]
+  pub args : Array[(@minimbt.Name, LowType)]
+  pub formal_free_vars : Array[(@minimbt.Name, LowType)]
   pub body : Expr
 }
 impl FuncDef {
+  from_json(Json) -> Self!
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
@@ -75,9 +82,11 @@ pub enum LowType {
   Ptr
 }
 impl LowType {
+  from_json(Json) -> Self!
   is_float_like(Self) -> Bool
   is_ptr_like(Self) -> Bool
   size_of(Self, Int) -> Int
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
@@ -86,6 +95,8 @@ pub struct Program {
   pub body : Expr
 }
 impl Program {
+  from_json(Json) -> Self!
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
