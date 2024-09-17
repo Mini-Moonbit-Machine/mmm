@@ -128,11 +128,23 @@ fn build_knf(
       let len = self.materialize_knf(r1, let_list)
       let r2 = self.build_knf!(elem, let_list, env, ty_env)
       let elem = self.materialize_knf(r2, let_list)
-      (
-        ExternalFunctionApplication("array_make", [len, elem]),
-        Array(r2.1),
-        let_list,
-      )
+      let call = match r2.1.repr() {
+        Int => ExternalFunctionApplication("minimbt_create_array", [len, elem])
+        Double =>
+          ExternalFunctionApplication("minimbt_create_float_array", [len, elem])
+        t =>
+          if t.is_float_like() {
+            ExternalFunctionApplication(
+              "minimbt_create_float_array",
+              [len, elem],
+            )
+          } else if t.is_ptr_like() {
+            ExternalFunctionApplication("minimbt_create_ptr_array", [len, elem])
+          } else {
+            fail!("invalid array element type: \{r2.1}")
+          }
+      }
+      (call, Array(r2.1), let_list)
     }
     Neg(xs, kind=Some(@types.Kind::Int)) => {
       let r = self.build_knf!(xs, let_list, env, ty_env)
@@ -169,9 +181,9 @@ fn build_knf(
         }
         (
           Apply(fv, args),
-          match r.1 {
+          match r.1.repr() {
             @types.Type::Fun(_, t) => t
-            _ => fail!("not a function: \{r.0}")
+            _ => fail!("not a function: \{r.0} : \{r.1}")
           },
           let_list,
         )
@@ -187,26 +199,49 @@ fn build_knf(
       }
       (
         Apply(fv, args),
-        match r.1 {
+        match r.1.repr() {
           @types.Type::Fun(_, t) => t
-          _ => fail!("not a function: \{r.0}")
+          _ => fail!("not a function: \{r.0} : \{r.1}")
         },
         let_list,
       )
     }
     Get(x, y) => {
-      let r = self.build_knf!(x, let_list, env, ty_env)
-      let x = self.materialize_knf(r, let_list)
-      let r = self.build_knf!(y, let_list, env, ty_env)
-      let y = self.materialize_knf(r, let_list)
+      let r1 = self.build_knf!(x, let_list, env, ty_env)
+      let x = self.materialize_knf(r1, let_list)
+      let r2 = self.build_knf!(y, let_list, env, ty_env)
+      let y = self.materialize_knf(r2, let_list)
       (
         Get(x, y),
-        match r.1 {
+        match r1.1.repr() {
           @types.Type::Array(t) => t
-          _ => fail!("not an array: \{r.0}")
+          _ => fail!("not a array: \{r1.0} : \{r1.1}")
         },
         let_list,
       )
+    }
+    // It's possible to omit the 2 cases, but it's better to fuse them here
+    If(Eq(o1, o2), y, z) => {
+      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let o1 = self.materialize_knf(r1, let_list)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let o2 = self.materialize_knf(r2, let_list)
+      let ll1 = []
+      let r3 = self.build_knf!(y, ll1, env, ty_env)
+      let ll2 = []
+      let r4 = self.build_knf!(z, ll2, env, ty_env)
+      (IfEq(o1, o2, bind_all(r3), bind_all(r4)), r3.1, let_list)
+    }
+    If(LE(o1, o2), y, z) => {
+      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let o1 = self.materialize_knf(r1, let_list)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let o2 = self.materialize_knf(r2, let_list)
+      let ll1 = []
+      let r3 = self.build_knf!(y, ll1, env, ty_env)
+      let ll2 = []
+      let r4 = self.build_knf!(z, ll2, env, ty_env)
+      (IfLe(o1, o2, bind_all(r3), bind_all(r4)), r3.1, let_list)
     }
     If(x, y, z) => {
       let r = self.build_knf!(x, let_list, env, ty_env)
