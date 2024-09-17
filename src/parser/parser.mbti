@@ -1,8 +1,28 @@
 package moonbitlang/minimbt/parser
 
+alias @moonbitlang/minimbt as @minimbt
+alias @moonbitlang/minimbt/lexer as @lexer
+
 // Values
 
 // Types and methods
+pub struct PResult {
+  pub inner : T
+  pub ntokens : Int
+}
+
+pub struct Parser {
+  pub tokenizer : @lexer.Lexer
+  pub token : @lexer.Token?
+}
+impl Parser {
+  new(String) -> Self
+  next_token(Self) -> PResult[@lexer.Token]!Failure
+  parse(Self) -> PResult[@minimbt.Syntax]!Failure
+  parse_expr(Self) -> PResult[@minimbt.Syntax]!Failure
+  parse_expr_with_level(Self, Int) -> PResult[@minimbt.Syntax]!Failure
+  parse_type(Self) -> PResult[@minimbt.Type]!Failure
+}
 
 // Type aliases
 

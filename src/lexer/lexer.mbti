@@ -3,10 +3,93 @@ package moonbitlang/minimbt/lexer
 // Values
 
 // Types and methods
+pub enum Keyword {
+  Fn
+  Let
+  If
+  Else
+}
+impl Keyword {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct Lexer {
+  pub buffer : String
+  pub index : Int
+  pub colstart : Int
+  pub line : Int
+}
+impl Lexer {
+  new(String) -> Self
+  next_err(Self) -> Token!Failure
+  op_equal(Self, Self) -> Bool
+  reset(Self) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct Loc {
+  pub line : Int
+  pub column : Int
+  pub index : Int
+}
+impl Loc {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub enum Paired {
+  Parenthesis
+  Bracket
+  Brace
+}
+impl Paired {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct Token {
+  pub tag : TokenTag
+  pub loc : Loc
+  pub span : String
+}
+impl Token {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub enum TokenTag {
+  Eof
+  Newline
+  Identifer
+  Kw(Keyword)
+  Op(String)
+  StrLiteral(String)
+  IntLiteral(Int)
+  DoubleLiteral(Double)
+  PairedOpen(Paired)
+  PairedClose(Paired)
+  Error(String)
+}
+impl TokenTag {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
 
 // Type aliases
 
 // Traits
 
 // Extension Methods
+impl Show for Keyword
+
+impl Show for Lexer
+
+impl Show for Loc
+
+impl Show for Paired
+
+impl Show for Token
+
+impl Show for TokenTag
 

@@ -4,8 +4,8 @@ package moonbitlang/minimbt
 
 // Types and methods
 pub struct Fundef {
-  pub name : Tuple[String, Type]
-  pub args : Array[Tuple[String, Type]]
+  pub name : (String, Type)
+  pub args : Array[(String, Type)]
   pub body : Syntax
 }
 impl Fundef {
@@ -29,11 +29,14 @@ pub struct Name {
 }
 impl Name {
   compare(Self, Self) -> Int
+  from_json(Json) -> Self!
+  from_string(String) -> Self!
   hash_combine(Self, Hasher) -> Unit
   name_and_slot(String, Int) -> Self
   name_only(String) -> Self
   op_equal(Self, Self) -> Bool
   slot_only(Int) -> Self
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
@@ -64,9 +67,9 @@ pub enum Syntax {
   Prim(Syntax, Syntax, Op, Kind?)
   Eq(Syntax, Syntax)
   LE(Syntax, Syntax)
-  Let(Tuple[String, Type], Syntax, Syntax)
+  Let((String, Type), Syntax, Syntax)
   LetRec(Fundef, Syntax)
-  LetTuple(Array[Tuple[String, Type]], Syntax, Syntax)
+  LetTuple(Array[(String, Type)], Syntax, Syntax)
   Put(Syntax, Syntax, Syntax)
 }
 impl Syntax {
@@ -90,6 +93,7 @@ impl Type {
   from_json(Json) -> Self!
   is_float_like(Self) -> Bool
   is_ptr_like(Self) -> Bool
+  is_unknown(Self) -> Bool
   op_equal(Self, Self) -> Bool
   size_of(Self, Int) -> Int
   to_json(Self) -> Json

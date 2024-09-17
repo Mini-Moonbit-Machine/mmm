@@ -4,16 +4,21 @@ alias @moonbitlang/core/immut/hashmap as @hashmap
 alias @moonbitlang/minimbt as @minimbt
 
 // Values
+fn knf_max_counter(Knf) -> Int
 
 // Types and methods
+type Binding
+
 pub struct FuncDef {
   pub name : @minimbt.Name
   pub ty : @minimbt.Type
-  pub args : Array[Tuple[@minimbt.Name, @minimbt.Type]]
+  pub args : Array[(@minimbt.Name, @minimbt.Type)]
   pub body : Knf
 }
 impl FuncDef {
+  from_json(Json) -> Self!
   op_equal(Self, Self) -> Bool
+  to_json(Self) -> Json
   to_string(Self) -> String
 }
 
@@ -33,29 +38,32 @@ pub enum Knf {
   FDiv(@minimbt.Name, @minimbt.Name)
   IfEq(@minimbt.Name, @minimbt.Name, Knf, Knf)
   IfLe(@minimbt.Name, @minimbt.Name, Knf, Knf)
-  Let(Tuple[@minimbt.Name, @minimbt.Type], Knf, Knf)
+  Let((@minimbt.Name, @minimbt.Type), Knf, Knf)
   Var(@minimbt.Name)
   LetRec(FuncDef, Knf)
   Apply(@minimbt.Name, Array[@minimbt.Name])
   Tuple(Array[@minimbt.Name])
-  LetTuple(Array[Tuple[@minimbt.Name, @minimbt.Type]], @minimbt.Name, Knf)
+  LetTuple(Array[(@minimbt.Name, @minimbt.Type)], @minimbt.Name, Knf)
   Get(@minimbt.Name, @minimbt.Name)
   Put(@minimbt.Name, @minimbt.Name, @minimbt.Name)
   ExternalArray(@minimbt.Name)
   ExternalFunctionApplication(String, Array[@minimbt.Name])
 }
 impl Knf {
+  from_json(Json) -> Self!
   op_equal(Self, Self) -> Bool
+  to_json(Self) -> Json
   to_pretty_print(Self) -> PrettyKnf
   to_string(Self) -> String
 }
 
 type KnfEnv
 impl KnfEnv {
+  init_counter_from_existing(Self, Knf) -> Unit
   new(@hashmap.T[String, @minimbt.Type]) -> Self
   opt_pass(Self, Knf) -> Knf
   syntax_preprocess(Self, @minimbt.Syntax) -> @minimbt.Syntax
-  to_knf(Self, @minimbt.Syntax) -> Knf
+  to_knf(Self, @minimbt.Syntax) -> Knf!Failure
 }
 
 type PrettyKnf
@@ -64,6 +72,8 @@ type PrettyKnf
 pub typealias LocalEnv = @hashmap.T[String, @minimbt.Type]
 
 pub typealias Name = @minimbt.Name
+
+pub typealias NameEnv = @hashmap.T[String, @minimbt.Name]
 
 pub typealias Type = @minimbt.Type
 

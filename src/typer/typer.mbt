@@ -391,26 +391,28 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
   }
 }
 
-let init_env : Ref[TyEnv] = Ref::new(TyEnv::new())
-
-fn init {
-  init_env.val = init_env.val
-    .add("read_int", Type::Fun([], Type::Int))
-    .add("print_int", Type::Fun([Type::Int], Type::Unit))
-    .add("read_char", Type::Fun([], Type::Int))
-    .add("print_char", Type::Fun([Type::Int], Type::Unit))
-    .add("print_newline", Type::Fun([], Type::Unit))
-    .add("int_of_float", Type::Fun([Type::Double], Type::Int))
-    .add("float_of_int", Type::Fun([Type::Int], Type::Double))
-    .add("truncate", Type::Fun([Type::Double], Type::Int))
-    .add("floor", Type::Fun([Type::Double], Type::Double))
-    .add("abs_float", Type::Fun([Type::Double], Type::Double))
-    .add("sqrt", Type::Fun([Type::Double], Type::Double))
-    .add("sin", Type::Fun([Type::Double], Type::Double))
-    .add("cos", Type::Fun([Type::Double], Type::Double))
-    .add("atan", Type::Fun([Type::Double], Type::Double))
+pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
+  @immut/hashmap.T::new()
+  .add("read_int", @types.Fun([], Int))
+  .add("read_char", @types.Fun([], Int))
+  .add("print_int", @types.Fun([Int], Unit))
+  .add("print_char", @types.Fun([Int], Unit))
+  .add("print_endline", @types.Fun([], Unit))
+  .add("create_array", @types.Fun([Int, Int], @types.Type::Array(Int)))
+  .add(
+    "create_float_array",
+    @types.Fun([Int, Double], @types.Type::Array(Double)),
+  )
+  .add("create_ptr_array", @types.Fun([Int, Ptr], @types.Type::Array(Ptr)))
+  .add("truncate", @types.Fun([Double], Int))
+  .add("sin", @types.Fun([Double], Double))
+  .add("cos", @types.Fun([Double], Double))
+  .add("sqrt", @types.Fun([Double], Double))
+  .add("abs_float", @types.Fun([Double], Double))
+  .add("int_of_float", @types.Fun([Double], Int))
+  .add("float_of_int", @types.Fun([Int], Double))
 }
 
 pub fn Typer::check_all(self : Typer) -> Unit!Failure {
-  Typer::check!(self.syntax, Type::Unit, init_env.val)
+  Typer::check!(self.syntax, Type::Unit, externals())
 }
