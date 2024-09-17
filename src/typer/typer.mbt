@@ -64,7 +64,7 @@ fn Typer::unify(ty1 : Type, ty2 : Type, node : Syntax) -> Unit!Failure {
 fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
   let ty = Typer::find(ty)
   if ty.is_unknown() {
-    fail!("check against unknown type")
+    fail!("check \{node} against unknown type")
   }
   match (node, ty) {
     (Syntax::Unit, Type::Unit) => ()
@@ -126,12 +126,14 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
       r.kind = Some(Kind::Double)
     }
     (Syntax::Eq(x, y), Type::Bool) => {
-      let t = Typer::infer!(x, env)
-      Typer::check!(y, t, env)
+      let t1 = Typer::infer!(x, env)
+      let t2 = Typer::infer!(y, env)
+      Typer::unify!(t1, t2, node)
     }
     (Syntax::LE(x, y), Type::Bool) => {
-      let t = Typer::infer!(x, env)
-      Typer::check!(y, t, env)
+      let t1 = Typer::infer!(x, env)
+      let t2 = Typer::infer!(y, env)
+      Typer::unify!(t1, t2, node)
     }
     (Syntax::Let((x, t), e1, e2), ty) => {
       let t = if t.is_unknown() {
@@ -265,7 +267,18 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           }
           Typer::find(ret_ty)
         }
-        _ => fail!("infer: not a function")
+        Type::Var({ val: None }) => {
+          let guessed_ret_ty = Type::Var(Ref::new(None))
+          let args_ty = []
+          for arg in args {
+            let arg_ty = Typer::infer!(arg, env)
+            args_ty.push(arg_ty)
+          }
+          let guessed_fun_ty = Type::Fun(args_ty, guessed_ret_ty)
+          Typer::unify!(inferred_fun_ty, guessed_fun_ty, node)
+          Typer::find(guessed_ret_ty)
+        }
+        _ => fail!("infer: not a function type: \{inferred_fun_ty}")
       }
     }
     Syntax::Get(arr, idx) => {
@@ -314,14 +327,22 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
     }
     Syntax::Eq(x, y) => {
       let ty1 = Typer::infer!(x, env)
-      let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2, node)
+      if ty1.is_unknown() {
+        let ty2 = Typer::infer!(y, env)
+        Typer::unify!(ty1, ty2, node)
+      } else {
+        Typer::check!(y, ty1, env)
+      }
       Type::Bool
     }
     Syntax::LE(x, y) => {
       let ty1 = Typer::infer!(x, env)
-      let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2, node)
+      if ty1.is_unknown() {
+        let ty2 = Typer::infer!(y, env)
+        Typer::unify!(ty1, ty2, node)
+      } else {
+        Typer::check!(y, ty1, env)
+      }
       Type::Bool
     }
     Syntax::Let((x, t), e1, e2) => {
