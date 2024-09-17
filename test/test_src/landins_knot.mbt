@@ -7,8 +7,8 @@ fn landins_kont(f : ((Int) -> Int) -> (Int) -> Int) -> (Int) -> Int {
   fn aux(x) {
     arr[0](x)
   };
-
-  arr[0] = aux;
+  let fixedpoint = f(aux);
+  arr[0] = fixedpoint;
   fixedpoint
 };
 
