@@ -220,7 +220,7 @@ fn build_knf(
         let_list,
       )
     }
-    // It's possible to omit the 2 cases, but it's better to fuse them here
+    // It's possible to omit the 3 cases, but it's better to fuse them here
     If(Eq(o1, o2), y, z) => {
       let r1 = self.build_knf!(o1, let_list, env, ty_env)
       let o1 = self.materialize_knf(r1, let_list)
@@ -243,6 +243,7 @@ fn build_knf(
       let r4 = self.build_knf!(z, ll2, env, ty_env)
       (IfLe(o1, o2, bind_all(r3), bind_all(r4)), r3.1, let_list)
     }
+    If(Not(x), y, z) => self.build_knf!(If(x, z, y), let_list, env, ty_env)
     If(x, y, z) => {
       let r = self.build_knf!(x, let_list, env, ty_env)
       let x = self.materialize_knf(r, let_list)
