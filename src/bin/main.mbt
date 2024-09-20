@@ -4,6 +4,7 @@ enum Stages {
   Typecheck
   Knf
   KnfOpt
+  Core
   Closure
   Asm
   Finished
@@ -15,6 +16,7 @@ fn Stages::from_string(s : String) -> Stages? {
     "typecheck" => Some(Stages::Typecheck)
     "knf" => Some(Stages::Knf)
     "knf-opt" => Some(Stages::KnfOpt)
+    "core" => Some(Stages::Core)
     "closure" => Some(Stages::Closure)
     "riscv" => Some(Stages::Asm)
     "finished" => Some(Stages::Finished)
@@ -28,6 +30,9 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Typecheck => Stages::Knf
     Stages::Knf => Stages::KnfOpt
     Stages::KnfOpt => Stages::Closure
+    Stages::Closure => Stages::Asm
+    Stages::KnfOpt => Stages::Core
+    Stages::Core => Stages::Asm
     Stages::Closure => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
@@ -43,6 +48,7 @@ struct CompileStatus {
   knf_env : @knf.KnfEnv
   mut knf : @knf.Knf?
   mut opt_knf : @knf.Knf?
+  mut opt : @core.Core?
   mut closure_ir : @closure.Program?
   mut asm : Array[@riscv.AssemblyFunction]?
 }
@@ -63,6 +69,7 @@ fn CompileStatus::initialize(
     opt_knf: None,
     closure_ir: None,
     asm: None,
+    opt: None,
   }
   match start_stage {
     Parse => v.source_code = Some(file)
@@ -127,13 +134,26 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Knf error")
         }
       }
-      //println("\{Show::to_string(knf.to_pretty_print())}")
+      println("\{Show::to_string(knf.to_pretty_print())}")
       self.knf = Some(knf)
     }
     KnfOpt => {
       let knf = self.knf.unwrap()
-      // TODO: optimize
       self.opt_knf = Some(knf)
+    }
+    Core => {
+      let knf = self.opt_knf.unwrap()
+      let core_env = @core.CoreEnv::new()
+      let core = try {
+        core_env.build!(knf)
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Core error")
+        }
+      }
+      println("\{core.to_pretty_print()}")
+      self.opt = Some(core)
     }
     Closure => {
       let closure_env = @closure.ClosureEnv::new_from_existing(
@@ -169,6 +189,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => @json.stringify(self.ast.unwrap().to_json())
       Knf => @json.stringify(self.typechecked.unwrap().to_json())
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
+      Core => @util.die("TODO")
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
       Asm => @json.stringify(self.closure_ir.unwrap().to_json())
       Finished => @riscv.print_functions(self.asm.unwrap())
@@ -179,6 +200,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => self.ast.unwrap().to_string()
       Knf => self.typechecked.unwrap().to_string()
       KnfOpt => self.knf.unwrap().to_string()
+      Core => @util.die("TODO")
       Closure => self.opt_knf.unwrap().to_string()
       Asm => self.closure_ir.unwrap().to_string()
       Finished => @riscv.print_functions(self.asm.unwrap())
@@ -198,6 +220,7 @@ fn main {
   let end_stage = Ref::new(Stages::Finished)
   let knf_interpreter = Ref::new(false)
   let closure_interpreter = Ref::new(false)
+  let core_interpreter = Ref::new(false)
   let out_file = Ref::new("-")
   let print = Ref::new([])
 
@@ -241,6 +264,12 @@ fn main {
         "",
         @ArgParser.Set(closure_interpreter),
         "Run with closure interpreter",
+      ),
+      (
+        "--core-interpreter",
+        "",
+        @ArgParser.Set(core_interpreter),
+        "Run with core interpreter",
       ),
       (
         "--out-file",
@@ -303,6 +332,9 @@ fn main {
   if closure_interpreter.val {
     end_stage.val = Stages::Closure
   }
+  if core_interpreter.val {
+    end_stage.val = Stages::Core
+  }
   let stages_to_print = print.val.map(
     fn(s) {
       match Stages::from_string(s) {
@@ -362,6 +394,15 @@ fn main {
       Err(Failure(e)) => {
         println(e)
         @util.die("Closure interpreter error")
+      }
+    }
+  } else if core_interpreter.val {
+    let corei = @core_eval.CoreInterpreter::new()
+    match corei.interpret?(status.opt.unwrap()) {
+      Ok(_) => ()
+      Err(Failure(e)) => {
+        println(e)
+        @util.die("Core interpreter error")
       }
     }
   } else {

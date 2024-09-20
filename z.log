@@ -1,0 +1,3895 @@
+Testing test/test_src/ack.mbt
+let rec ack: Int = (x.1: Int, y.2: Int) {
+  let _3: Int = Int(0)
+  if (x.1 <= _3) then {
+    let _4: Int = Int(1)
+    Add(y.2, _4)
+  } else {
+    let _5: Int = Int(0)
+    if (y.2 <= _5) then {
+      let _6: Int = Int(1)
+      let _7: Int = Sub(x.1, _6)
+      let _8: Int = Int(1)
+      Apply(ack, [_7, _8, ])
+    } else {
+      let _9: Int = Int(1)
+      let _10: Int = Sub(x.1, _9)
+      let _11: Int = Int(1)
+      let _12: Int = Sub(y.2, _11)
+      let _13: Int = Apply(ack, [x.1, _12, ])
+      Apply(ack, [_10, _13, ])
+    }
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _14: Int = Int(3)
+  let _15: Int = Int(8)
+  let _16: Int = Apply(ack, [_14, _15, ])
+  ExtApply(minimbt_print_int, [_16, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn ack #f0 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .bb #b4 () {
+    let %5: int32 = sub($f0, 1)
+    let %6: int32 = sub($f1, 1)
+    let %7: int32 = call f0($f0, %6)
+    let %8: int32 = call f0(%5, %7)
+    jump b5(%8)
+  }
+  .bb #b1 () {
+    let %1: int32 = add($f1, 1)
+    jump b6(%1)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b2 () {
+    let %2: bool = le($f1, 0)
+    br %2 b3() b4()
+  }
+  .bb #b3 () {
+    let %3: int32 = sub($f0, 1)
+    let %4: int32 = call f0(%3, 1)
+    jump b5(%4)
+  }
+  .bb #b0 () {
+    let %0: bool = le($f0, 0)
+    br %0 b1() b2()
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(3, 8)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+
+
+Testing test/test_src/adder.mbt
+let rec make_adder: Fun([Int], Int) = (x.1: Int) {
+  let rec adder: Int = (y.2: Int) {
+    Add(x.1, y.2)
+  }
+  Var(adder)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _3: Int = Int(3)
+  let _4: Fun([Int], Int) = Apply(make_adder, [_3, ])
+  let _5: Int = Int(7)
+  let _6: Int = Apply(_4, [_5, ])
+  ExtApply(minimbt_print_int, [_6, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: closure(int32) -> int32 = call f0(3)
+    let %1: int32 = apply %0(7)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    return %2
+  }
+}
+.fn make_adder #f0 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f1, [1] = $f0
+    return f0.m0
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn adder #f1 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add(^1, $f0)
+    return %0
+  }
+}
+.thunk start = f3()
+
+10
+
+
+Testing test/test_src/adder2.mbt
+let rec make_adder: Fun([Int], Int) = (x.1: Int) {
+  let rec adder: Int = (y.2: Int) {
+    Add(x.1, y.2)
+  }
+  Var(adder)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _3: Int = Int(2)
+  let add2.4: Fun([Int], Int) = Apply(make_adder, [_3, ])
+  let _5: Int = Int(3)
+  let add3.6: Fun([Int], Int) = Apply(make_adder, [_5, ])
+  let _7: Int = Int(10)
+  let _8: Int = Apply(add2.4, [_7, ])
+  let _9: Int = Int(20)
+  let _10: Int = Apply(add3.6, [_9, ])
+  let _11: Int = Add(_8, _10)
+  ExtApply(minimbt_print_int, [_11, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: closure(int32) -> int32 = call f0(2)
+    let %1: closure(int32) -> int32 = call f0(3)
+    let %2: int32 = apply %0(10)
+    let %3: int32 = apply %1(20)
+    let %4: int32 = add(%2, %3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.fn make_adder #f0 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f1, [1] = $f0
+    return f0.m0
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn adder #f1 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add(^1, $f0)
+    return %0
+  }
+}
+.thunk start = f3()
+
+35
+
+
+Testing test/test_src/bf.mbt
+let rec bf: Unit = (len.1: Int, prog.2: Array(Int)) {
+  let _3: Int = Int(1)
+  let _4: Int = Int(0)
+  let ptr.5: Array(Int) = ExtApply(minimbt_create_array, [_3, _4, ])
+  let _6: Int = Int(1024)
+  let _7: Int = Int(0)
+  let cells.8: Array(Int) = ExtApply(minimbt_create_array, [_6, _7, ])
+  let rec aux: Var({val: Some(Int)}) = (pc.9: Var({val: Some(Int)})) {
+    if (len.1 <= pc.9) then {
+      Var(pc.9)
+    } else {
+      let i.10: Int = Get prog.2[pc.9]
+      let _11: Int = Int(1)
+      if (i.10 == _11) then {
+        let _12: Int = Int(0)
+        let _13: Int = Int(0)
+        let _14: Int = Get ptr.5[_13]
+        let _15: Int = Int(1)
+        let _16: Int = Add(_14, _15)
+        let _18: Unit = Put ptr.5[_12] = _16
+        let _19: Int = Int(1)
+        let _20: Int = Add(pc.9, _19)
+        Apply(aux, [_20, ])
+      } else {
+        let _21: Int = Int(2)
+        if (i.10 == _21) then {
+          let _22: Int = Int(0)
+          let _23: Int = Int(0)
+          let _24: Int = Get ptr.5[_23]
+          let _25: Int = Int(1)
+          let _26: Int = Sub(_24, _25)
+          let _28: Unit = Put ptr.5[_22] = _26
+          let _29: Int = Int(1)
+          let _30: Int = Add(pc.9, _29)
+          Apply(aux, [_30, ])
+        } else {
+          let _31: Int = Int(3)
+          if (i.10 == _31) then {
+            let _32: Int = Int(0)
+            let _33: Int = Get ptr.5[_32]
+            let _34: Int = Int(0)
+            let _35: Int = Get ptr.5[_34]
+            let _36: Int = Get cells.8[_35]
+            let _37: Int = Int(1)
+            let _38: Int = Add(_36, _37)
+            let _40: Unit = Put cells.8[_33] = _38
+            let _41: Int = Int(1)
+            let _42: Int = Add(pc.9, _41)
+            Apply(aux, [_42, ])
+          } else {
+            let _43: Int = Int(4)
+            if (i.10 == _43) then {
+              let _44: Int = Int(0)
+              let _45: Int = Get ptr.5[_44]
+              let _46: Int = Int(0)
+              let _47: Int = Get ptr.5[_46]
+              let _48: Int = Get cells.8[_47]
+              let _49: Int = Int(1)
+              let _50: Int = Sub(_48, _49)
+              let _52: Unit = Put cells.8[_45] = _50
+              let _53: Int = Int(1)
+              let _54: Int = Add(pc.9, _53)
+              Apply(aux, [_54, ])
+            } else {
+              let _55: Int = Int(5)
+              if (i.10 == _55) then {
+                let _56: Int = Int(0)
+                let _57: Int = Get ptr.5[_56]
+                let _58: Int = Get cells.8[_57]
+                let _60: Fun([Int], Unit) = ExtApply(minimbt_print_char, [_58, ])
+                let _61: Int = Int(1)
+                let _62: Int = Add(pc.9, _61)
+                Apply(aux, [_62, ])
+              } else {
+                let _63: Int = Int(7)
+                if (i.10 == _63) then {
+                  let _64: Int = Int(1)
+                  let next_pc.65: Array(Var({val: Some(Int)})) = ExtApply(minimbt_create_array, [_64, pc.9, ])
+                  let rec lp: Var({val: Some(Unit)}) = () {
+                    let _66: Int = Int(0)
+                    let _67: Int = Get ptr.5[_66]
+                    let _68: Int = Get cells.8[_67]
+                    let _69: Int = Int(0)
+                    if (_68 == _69) then {
+                      Unit
+                    } else {
+                      let _70: Int = Int(0)
+                      let _71: Int = Int(1)
+                      let _72: Int = Add(pc.9, _71)
+                      let _73: Var({val: Some(Int)}) = Apply(aux, [_72, ])
+                      let _75: Unit = Put next_pc.65[_70] = _73
+                      Apply(lp, [])
+                    }
+                  }
+                  let _77: Var({val: Some(Unit)}) = Apply(lp, [])
+                  let _78: Int = Int(0)
+                  let _79: Int = Get next_pc.65[_78]
+                  let _80: Int = Int(1)
+                  let _81: Int = Add(_79, _80)
+                  Apply(aux, [_81, ])
+                } else {
+                  let _82: Int = Int(8)
+                  if (i.10 == _82) then {
+                    Var(pc.9)
+                  } else {
+                    Var(pc.9)
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  let _83: Int = Int(0)
+  let _85: Var({val: Some(Int)}) = Apply(aux, [_83, ])
+  Unit
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _86: Int = Int(23)
+  let _87: Int = Int(0)
+  let prog.88: Array(Int) = ExtApply(minimbt_create_array, [_86, _87, ])
+  let _89: Int = Int(0)
+  let _90: Int = Int(3)
+  let _92: Unit = Put prog.88[_89] = _90
+  let _93: Int = Int(1)
+  let _94: Int = Int(3)
+  let _96: Unit = Put prog.88[_93] = _94
+  let _97: Int = Int(2)
+  let _98: Int = Int(3)
+  let _100: Unit = Put prog.88[_97] = _98
+  let _101: Int = Int(3)
+  let _102: Int = Int(3)
+  let _104: Unit = Put prog.88[_101] = _102
+  let _105: Int = Int(4)
+  let _106: Int = Int(3)
+  let _108: Unit = Put prog.88[_105] = _106
+  let _109: Int = Int(5)
+  let _110: Int = Int(3)
+  let _112: Unit = Put prog.88[_109] = _110
+  let _113: Int = Int(6)
+  let _114: Int = Int(3)
+  let _116: Unit = Put prog.88[_113] = _114
+  let _117: Int = Int(7)
+  let _118: Int = Int(3)
+  let _120: Unit = Put prog.88[_117] = _118
+  let _121: Int = Int(8)
+  let _122: Int = Int(7)
+  let _124: Unit = Put prog.88[_121] = _122
+  let _125: Int = Int(9)
+  let _126: Int = Int(1)
+  let _128: Unit = Put prog.88[_125] = _126
+  let _129: Int = Int(10)
+  let _130: Int = Int(3)
+  let _132: Unit = Put prog.88[_129] = _130
+  let _133: Int = Int(11)
+  let _134: Int = Int(3)
+  let _136: Unit = Put prog.88[_133] = _134
+  let _137: Int = Int(12)
+  let _138: Int = Int(3)
+  let _140: Unit = Put prog.88[_137] = _138
+  let _141: Int = Int(13)
+  let _142: Int = Int(3)
+  let _144: Unit = Put prog.88[_141] = _142
+  let _145: Int = Int(14)
+  let _146: Int = Int(3)
+  let _148: Unit = Put prog.88[_145] = _146
+  let _149: Int = Int(15)
+  let _150: Int = Int(3)
+  let _152: Unit = Put prog.88[_149] = _150
+  let _153: Int = Int(16)
+  let _154: Int = Int(3)
+  let _156: Unit = Put prog.88[_153] = _154
+  let _157: Int = Int(17)
+  let _158: Int = Int(3)
+  let _160: Unit = Put prog.88[_157] = _158
+  let _161: Int = Int(18)
+  let _162: Int = Int(2)
+  let _164: Unit = Put prog.88[_161] = _162
+  let _165: Int = Int(19)
+  let _166: Int = Int(4)
+  let _168: Unit = Put prog.88[_165] = _166
+  let _169: Int = Int(20)
+  let _170: Int = Int(8)
+  let _172: Unit = Put prog.88[_169] = _170
+  let _173: Int = Int(21)
+  let _174: Int = Int(1)
+  let _176: Unit = Put prog.88[_173] = _174
+  let _177: Int = Int(22)
+  let _178: Int = Int(5)
+  let _180: Unit = Put prog.88[_177] = _178
+  let _181: Int = Int(23)
+  Apply(bf, [_181, prog.88, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn lp #f2 : closure() -> unit
+.freevars (array[int32], array[int32], int32, closure(int32) -> int32, array[int32])
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset(^1, 0)
+    let %1: int32 = load int32 offset(^2, %0)
+    let %2: bool = eq(%1, 0)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %3: int32 = add(^3, 1)
+    let %4: int32 = apply ^4(%3)
+    let _ = store int32 offset(^5, 0) <- %4
+    let %6: unit = apply self()
+    jump b3(%6)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn aux #f1 : closure(int32) -> int32
+.freevars (int32, array[int32], array[int32], array[int32])
+.entry b0 {
+  .bb #b23 (int32) {
+    jump b24($b23.0)
+  }
+  .bb #b8 () {
+    let %22: bool = eq(%1, 4)
+    br %22 b9() b10()
+  }
+  .bb #b9 () {
+    let %23: int32 = load int32 offset(^3, 0)
+    let %24: int32 = load int32 offset(^3, 0)
+    let %25: int32 = load int32 offset(^4, %24)
+    let %26: int32 = sub(%25, 1)
+    let _ = store int32 offset(^4, %23) <- %26
+    let %28: int32 = add($f0, 1)
+    let %29: int32 = apply self(%28)
+    jump b20(%29)
+  }
+  .bb #b16 () {
+    jump b17($f0)
+  }
+  .bb #b13 () {
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = $f0
+    let _ = alloc <m1: closure() -> unit heap(6)> <- [0] = f2, [1] = ^3, [2] = ^4, [3] = $f0, [4] = self, [5] = f1.m0
+    let %39: unit = apply f1.m1()
+    let %40: int32 = load int32 offset(f1.m0, 0)
+    let %41: int32 = add(%40, 1)
+    let %42: int32 = apply self(%41)
+    jump b18(%42)
+  }
+  .bb #b19 (int32) {
+    jump b20($b19.0)
+  }
+  .bb #b15 () {
+    jump b17($f0)
+  }
+  .bb #b1 () {
+    jump b24($f0)
+  }
+  .bb #b11 () {
+    let %31: int32 = load int32 offset(^3, 0)
+    let %32: int32 = load int32 offset(^4, %31)
+    let %33: unit = ext_call minimbt_print_char(%32)
+    let %34: int32 = add($f0, 1)
+    let %35: int32 = apply self(%34)
+    jump b19(%35)
+  }
+  .bb #b2 () {
+    let %1: int32 = load int32 offset(^2, $f0)
+    let %2: bool = eq(%1, 1)
+    br %2 b3() b4()
+  }
+  .bb #b18 (int32) {
+    jump b19($b18.0)
+  }
+  .bb #b24 (int32) {
+    return $b24.0
+  }
+  .bb #b21 (int32) {
+    jump b22($b21.0)
+  }
+  .bb #b22 (int32) {
+    jump b23($b22.0)
+  }
+  .bb #b20 (int32) {
+    jump b21($b20.0)
+  }
+  .bb #b6 () {
+    let %14: bool = eq(%1, 3)
+    br %14 b7() b8()
+  }
+  .bb #b12 () {
+    let %36: bool = eq(%1, 7)
+    br %36 b13() b14()
+  }
+  .bb #b4 () {
+    let %8: bool = eq(%1, 2)
+    br %8 b5() b6()
+  }
+  .bb #b17 (int32) {
+    jump b18($b17.0)
+  }
+  .bb #b0 () {
+    let %0: bool = le(^1, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b10 () {
+    let %30: bool = eq(%1, 5)
+    br %30 b11() b12()
+  }
+  .bb #b5 () {
+    let %9: int32 = load int32 offset(^3, 0)
+    let %10: int32 = sub(%9, 1)
+    let _ = store int32 offset(^3, 0) <- %10
+    let %12: int32 = add($f0, 1)
+    let %13: int32 = apply self(%12)
+    jump b22(%13)
+  }
+  .bb #b3 () {
+    let %3: int32 = load int32 offset(^3, 0)
+    let %4: int32 = add(%3, 1)
+    let _ = store int32 offset(^3, 0) <- %4
+    let %6: int32 = add($f0, 1)
+    let %7: int32 = apply self(%6)
+    jump b23(%7)
+  }
+  .bb #b14 () {
+    let %43: bool = eq(%1, 8)
+    br %43 b15() b16()
+  }
+  .bb #b7 () {
+    let %15: int32 = load int32 offset(^3, 0)
+    let %16: int32 = load int32 offset(^3, 0)
+    let %17: int32 = load int32 offset(^4, %16)
+    let %18: int32 = add(%17, 1)
+    let _ = store int32 offset(^4, %15) <- %18
+    let %20: int32 = add($f0, 1)
+    let %21: int32 = apply self(%20)
+    jump b21(%21)
+  }
+}
+.fn bf #f0 : fn(int32, array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = 0
+    let _ = alloc <m1: array[int32] heap(1024)> <- [..] = 0
+    let _ = alloc <m2: closure(int32) -> int32 heap(5)> <- [0] = f1, [1] = $f0, [2] = $f1, [3] = f0.m0, [4] = f0.m1
+    let %3: int32 = apply f0.m2(0)
+    return ()
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(23)> <- [..] = 0
+    let _ = store int32 offset(f3.m0, 0) <- 3
+    let _ = store int32 offset(f3.m0, 1) <- 3
+    let _ = store int32 offset(f3.m0, 2) <- 3
+    let _ = store int32 offset(f3.m0, 3) <- 3
+    let _ = store int32 offset(f3.m0, 4) <- 3
+    let _ = store int32 offset(f3.m0, 5) <- 3
+    let _ = store int32 offset(f3.m0, 6) <- 3
+    let _ = store int32 offset(f3.m0, 7) <- 3
+    let _ = store int32 offset(f3.m0, 8) <- 7
+    let _ = store int32 offset(f3.m0, 9) <- 1
+    let _ = store int32 offset(f3.m0, 10) <- 3
+    let _ = store int32 offset(f3.m0, 11) <- 3
+    let _ = store int32 offset(f3.m0, 12) <- 3
+    let _ = store int32 offset(f3.m0, 13) <- 3
+    let _ = store int32 offset(f3.m0, 14) <- 3
+    let _ = store int32 offset(f3.m0, 15) <- 3
+    let _ = store int32 offset(f3.m0, 16) <- 3
+    let _ = store int32 offset(f3.m0, 17) <- 3
+    let _ = store int32 offset(f3.m0, 18) <- 2
+    let _ = store int32 offset(f3.m0, 19) <- 4
+    let _ = store int32 offset(f3.m0, 20) <- 8
+    let _ = store int32 offset(f3.m0, 21) <- 1
+    let _ = store int32 offset(f3.m0, 22) <- 5
+    let %24: unit = call f0(23, f3.m0)
+    return %24
+  }
+}
+.thunk start = f4()
+
+@
+
+
+Testing test/test_src/cls-bug.mbt
+let rec f: Int = (x.1: Int) {
+  let _2: Int = Int(123)
+  Add(x.1, _2)
+}
+let rec g: Fun([Int], Int) = (y.3: Int) {
+  Var(f)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _4: Int = Int(456)
+  let _5: Fun([Int], Int) = Apply(g, [_4, ])
+  let _6: Int = Int(789)
+  let _7: Int = Apply(_5, [_6, ])
+  ExtApply(minimbt_print_int, [_7, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: closure(int32) -> int32 = call f1(456)
+    let %1: int32 = apply %0(789)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    return %2
+  }
+}
+.fn f #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, 123)
+    return %0
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn g #f1 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f0
+    return f1.m0
+  }
+}
+.thunk start = f3()
+
+912
+
+
+Testing test/test_src/cls-bug2.mbt
+let rec f: Unit = (n.1: Int) {
+  let _2: Int = Int(0)
+  if (_2 <= n.1) then {
+    let t1.3: Fun([Int], Unit) = ExtApply(minimbt_print_int, [n.1, ])
+    let _4: Int = Int(1)
+    let a.5: Array(Fun([Int], Unit)) = ExtApply(minimbt_create_ptr_array, [_4, f, ])
+    let _6: Int = Int(0)
+    let a0.7: Fun([Int], Unit) = Get a.5[_6]
+    let _8: Int = Int(1)
+    let _9: Int = Sub(n.1, _8)
+    Apply(a0.7, [_9, ])
+  } else {
+    Unit
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _10: Int = Int(9)
+  Apply(f, [_10, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: unit = ext_call minimbt_print_int($f0)
+    let _ = alloc <m0: closure(int32) -> unit heap(1)> <- [0] = f0
+    let _ = alloc <m1: array[closure(int32) -> unit] heap(1)> <- [..] = f0.m0
+    let %4: closure(int32) -> unit = load closure(int32) -> unit offset(f0.m1, 0)
+    let %5: int32 = sub($f0, 1)
+    let %6: unit = apply %4(%5)
+    jump b3(%6)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0(9)
+    return %0
+  }
+}
+.thunk start = f2()
+
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+
+
+Testing test/test_src/cls-rec.mbt
+let x.1: Int = Int(10)
+let rec f: Int = (y.2: Int) {
+  let _3: Int = Int(0)
+  if (y.2 == _3) then {
+    Int(0)
+  } else {
+    let _4: Int = Int(1)
+    let _5: Int = Sub(y.2, _4)
+    let _6: Int = Apply(f, [_5, ])
+    Add(x.1, _6)
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _7: Int = Int(12)
+  let _8: Int = Apply(f, [_7, ])
+  ExtApply(minimbt_print_int, [_8, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f1 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = eq($f0, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($f0, 1)
+    let %2: int32 = call f1(%1)
+    let %3: int32 = add(f0(), %2)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn thunk_x.1 #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 10
+  }
+}
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f1(12)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk x.1 = f0()
+.thunk start = f3()
+
+120
+
+
+Testing test/test_src/cls-reg-bug.mbt
+let rec h: Int = (p.1: Tuple([Int, Int, Int, Int, Int, Int, Int, Int, Int, Int])) {
+  let (, v1.2: Var({val: Some(Int)})v2.3: Var({val: Some(Int)})v3.4: Var({val: Some(Int)})v4.5: Var({val: Some(Int)})v5.6: Var({val: Some(Int)})v6.7: Var({val: Some(Int)})v7.8: Var({val: Some(Int)})v8.9: Var({val: Some(Int)})v9.10: Var({val: Some(Int)})v10.11: Var({val: Some(Int)})) = p.1let rec g: Int = (z.12: Int) {
+    let _13: Int = Add(v1.2, v2.3)
+    let _14: Int = Add(_13, v3.4)
+    let _15: Int = Add(_14, v4.5)
+    let _16: Int = Add(_15, v5.6)
+    let _17: Int = Add(_16, v6.7)
+    let _18: Int = Add(_17, v7.8)
+    let _19: Int = Add(_18, v8.9)
+    let _20: Int = Add(_19, v9.10)
+    let r.21: Int = Add(_20, v10.11)
+    let _22: Int = Int(0)
+    if (z.12 <= _22) then {
+      let _23: Int = Neg(z.12)
+      Apply(g, [_23, ])
+    } else {
+      Var(r.21)
+    }
+  }
+  let _24: Int = Int(1)
+  Apply(g, [_24, ])
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _25: Int = Int(1)
+  let _26: Int = Int(2)
+  let _27: Int = Int(3)
+  let _28: Int = Int(4)
+  let _29: Int = Int(5)
+  let _30: Int = Int(6)
+  let _31: Int = Int(7)
+  let _32: Int = Int(8)
+  let _33: Int = Int(9)
+  let _34: Int = Int(10)
+  let _35: Tuple([Int, Int, Int, Int, Int, Int, Int, Int, Int, Int]) = Tuple([_25, _26, _27, _28, _29, _30, _31, _32, _33, _34, ])
+  let _36: Int = Apply(h, [_35, ])
+  let t1.37: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_36, ])
+  Unit
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn g #f1 : closure(int32) -> int32
+.freevars (int32, int32, int32, int32, int32, int32, int32, int32, int32, int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add(^1, ^2)
+    let %1: int32 = add(%0, ^3)
+    let %2: int32 = add(%1, ^4)
+    let %3: int32 = add(%2, ^5)
+    let %4: int32 = add(%3, ^6)
+    let %5: int32 = add(%4, ^7)
+    let %6: int32 = add(%5, ^8)
+    let %7: int32 = add(%6, ^9)
+    let %8: int32 = add(%7, ^10)
+    let %9: bool = le($f0, 0)
+    br %9 b1() b2()
+  }
+  .bb #b1 () {
+    let %10: int32 = neg($f0)
+    let %11: int32 = apply self(%10)
+    jump b3(%11)
+  }
+  .bb #b2 () {
+    jump b3(%8)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: (int32, int32, int32, int32, int32, int32, int32, int32, int32, int32) heap(10)> <- [0] = 1, [1] = 2, [2] = 3, [3] = 4, [4] = 5, [5] = 6, [6] = 7, [7] = 8, [8] = 9, [9] = 10
+    let %1: int32 = call f0(f2.m0)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    return ()
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn h #f0 : fn((int32, int32, int32, int32, int32, int32, int32, int32, int32, int32)) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 field($f0, 0)
+    let %1: int32 = load int32 field($f0, 1)
+    let %2: int32 = load int32 field($f0, 2)
+    let %3: int32 = load int32 field($f0, 3)
+    let %4: int32 = load int32 field($f0, 4)
+    let %5: int32 = load int32 field($f0, 5)
+    let %6: int32 = load int32 field($f0, 6)
+    let %7: int32 = load int32 field($f0, 7)
+    let %8: int32 = load int32 field($f0, 8)
+    let %9: int32 = load int32 field($f0, 9)
+    let _ = alloc <m0: closure(int32) -> int32 heap(11)> <- [0] = f1, [1] = %0, [2] = %1, [3] = %2, [4] = %3, [5] = %4, [6] = %5, [7] = %6, [8] = %7, [9] = %8, [10] = %9
+    let %11: int32 = apply f0.m0(1)
+    return %11
+  }
+}
+.thunk start = f3()
+
+55
+
+
+Testing test/test_src/debug.mbt
+let rec dummy: Int = (x.1: Int) {
+  Var(x.1)
+}
+let rec f: Int = (x.2: Int) {
+  let rec g: Int = (y.3: Int) {
+    Var(x.2)
+  }
+  let _4: Int = Int(1)
+  let _7: Int = Int(1)
+  if (_4 == _7) then {
+    let _5: Int = Int(1)
+    Apply(f, [_5, ])
+  } else {
+    let _6: Int = Int(2)
+    Apply(g, [_6, ])
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  Unit
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f1 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f2, [1] = $f0
+    let %1: bool = eq(1, 1)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = call f1(1)
+    jump b3(%2)
+  }
+  .bb #b2 () {
+    let %3: int32 = apply f1.m0(2)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn g #f2 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    return ^1
+  }
+}
+.fn dummy #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return $f0
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return ()
+  }
+}
+.thunk start = f4()
+
+
+
+Testing test/test_src/even-odd.mbt
+let t.1: Int = Int(123)
+let f.2: Int = Int(456)
+let rec even: Int = (x.3: Int) {
+  let rec odd: Int = (x.4: Int) {
+    let _5: Int = Int(0)
+    if (_5 <= x.4) then {
+      let _6: Int = Int(0)
+      if (x.4 == _6) then {
+        Var(f.2)
+      } else {
+        let _7: Int = Int(1)
+        let _8: Int = Sub(x.4, _7)
+        Apply(even, [_8, ])
+      }
+    } else {
+      let _9: Int = Int(1)
+      let _10: Int = Add(x.4, _9)
+      Apply(even, [_10, ])
+    }
+  }
+  let _11: Int = Int(0)
+  if (_11 <= x.3) then {
+    let _12: Int = Int(0)
+    if (x.3 == _12) then {
+      Var(t.1)
+    } else {
+      let _13: Int = Int(1)
+      let _14: Int = Sub(x.3, _13)
+      Apply(odd, [_14, ])
+    }
+  } else {
+    let _15: Int = Int(1)
+    let _16: Int = Add(x.3, _15)
+    Apply(odd, [_16, ])
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _17: Int = Int(789)
+  let _18: Int = Apply(even, [_17, ])
+  ExtApply(minimbt_print_int, [_18, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn even #f2 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .bb #b4 () {
+    let %3: int32 = sub($f0, 1)
+    let %4: int32 = apply f2.m0(%3)
+    jump b5(%4)
+  }
+  .bb #b1 () {
+    let %2: bool = eq($f0, 0)
+    br %2 b3() b4()
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b2 () {
+    let %5: int32 = add($f0, 1)
+    let %6: int32 = apply f2.m0(%5)
+    jump b6(%6)
+  }
+  .bb #b3 () {
+    jump b5(f0())
+  }
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f3
+    let %1: bool = le(0, $f0)
+    br %1 b1() b2()
+  }
+}
+.fn main #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f2(789)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.fn odd #f3 : closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .bb #b4 () {
+    let %2: int32 = sub($f0, 1)
+    let %3: int32 = call f2(%2)
+    jump b5(%3)
+  }
+  .bb #b1 () {
+    let %1: bool = eq($f0, 0)
+    br %1 b3() b4()
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b2 () {
+    let %4: int32 = add($f0, 1)
+    let %5: int32 = call f2(%4)
+    jump b6(%5)
+  }
+  .bb #b3 () {
+    jump b5(f1())
+  }
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+}
+.fn thunk_start #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f4()
+    return %0
+  }
+}
+.fn thunk_t.1 #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_f.2 #f1 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.thunk t.1 = f0()
+.thunk f.2 = f1()
+.thunk start = f5()
+
+
+
+Testing test/test_src/fib.mbt
+let rec fib: Int = (n.1: Int) {
+  let _2: Int = Int(1)
+  if (n.1 <= _2) then {
+    Var(n.1)
+  } else {
+    let _3: Int = Int(1)
+    let _4: Int = Sub(n.1, _3)
+    let _5: Int = Apply(fib, [_4, ])
+    let _6: Int = Int(2)
+    let _7: Int = Sub(n.1, _6)
+    let _8: Int = Apply(fib, [_7, ])
+    Add(_5, _8)
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _9: Int = Int(30)
+  let _10: Int = Apply(fib, [_9, ])
+  ExtApply(minimbt_print_int, [_10, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn fib #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le($f0, 1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3($f0)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($f0, 1)
+    let %2: int32 = call f0(%1)
+    let %3: int32 = sub($f0, 2)
+    let %4: int32 = call f0(%3)
+    let %5: int32 = add(%2, %4)
+    jump b3(%5)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(30)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+832040
+
+
+Testing test/test_src/float.mbt
+let rec main: Var({val: Some(Unit)}) = () {
+  let _1: Double = Double(12.3)
+  let _2: Double = FNeg(_1)
+  let _3: Fun([Double], Double) = ExtApply(minimbt_abs_float, [_2, ])
+  let _4: Fun([Double], Double) = ExtApply(minimbt_sqrt, [_3, ])
+  let _5: Fun([Double], Double) = ExtApply(minimbt_cos, [_4, ])
+  let _6: Fun([Double], Double) = ExtApply(minimbt_sin, [_5, ])
+  let _7: Double = Double(4.5)
+  let _8: Double = FAdd(_6, _7)
+  let _9: Double = Double(6.7)
+  let _10: Double = Double(8.9)
+  let _11: Double = FMul(_9, _10)
+  let _12: Double = Double(1.23456789)
+  let _13: Double = FDiv(_11, _12)
+  let _14: Double = FSub(_8, _13)
+  let _15: Int = Int(1000000)
+  let _16: Fun([Int], Double) = ExtApply(minimbt_float_of_int, [_15, ])
+  let _17: Double = FMul(_14, _16)
+  let _18: Fun([Double], Int) = ExtApply(minimbt_int_of_float, [_17, ])
+  ExtApply(minimbt_print_int, [_18, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = neg(12.3)
+    let %1: double = ext_call minimbt_abs_float(%0)
+    let %2: double = ext_call minimbt_sqrt(%1)
+    let %3: double = ext_call minimbt_cos(%2)
+    let %4: double = ext_call minimbt_sin(%3)
+    let %5: double = add(%4, 4.5)
+    let %6: double = mul(6.7, 8.9)
+    let %7: double = div(%6, 1.23456789)
+    let %8: double = sub(%5, %7)
+    let %9: double = ext_call minimbt_float_of_int(1000000)
+    let %10: double = mul(%8, %9)
+    let %11: int32 = ext_call minimbt_int_of_float(%10)
+    let %12: unit = ext_call minimbt_print_int(%11)
+    return %12
+  }
+}
+.thunk start = f1()
+
+-44604263
+
+
+Testing test/test_src/funcomp.mbt
+let rec compose: Fun([Int], Int) = (f.1: Fun([Int], Int), g.2: Fun([Int], Int)) {
+  let rec composed: Int = (x.3: Int) {
+    let _4: Int = Apply(f.1, [x.3, ])
+    Apply(g.2, [_4, ])
+  }
+  Var(composed)
+}
+let rec dbl: Int = (x.5: Int) {
+  Add(x.5, x.5)
+}
+let rec inc: Int = (x.6: Int) {
+  let _7: Int = Int(1)
+  Add(x.6, _7)
+}
+let rec dec: Int = (x.8: Int) {
+  let _9: Int = Int(1)
+  Sub(x.8, _9)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _10: Fun([Int], Int) = Apply(compose, [dbl, dec, ])
+  let h.11: Fun([Int], Int) = Apply(compose, [inc, _10, ])
+  let _12: Int = Int(123)
+  let _13: Int = Apply(h.11, [_12, ])
+  ExtApply(minimbt_print_int, [_13, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f6 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn compose #f0 : fn(closure(int32) -> int32, closure(int32) -> int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(3)> <- [0] = f1, [1] = $f0, [2] = $f1
+    return f0.m0
+  }
+}
+.fn dec #f4 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = sub($f0, 1)
+    return %0
+  }
+}
+.fn dbl #f2 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, $f0)
+    return %0
+  }
+}
+.fn composed #f1 : closure(int32) -> int32
+.freevars (closure(int32) -> int32, closure(int32) -> int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = apply ^1($f0)
+    let %1: int32 = apply ^2(%0)
+    return %1
+  }
+}
+.fn inc #f3 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, 1)
+    return %0
+  }
+}
+.fn main #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f2
+    let _ = alloc <m1: closure(int32) -> int32 heap(1)> <- [0] = f4
+    let %2: closure(int32) -> int32 = call f0(f5.m0, f5.m1)
+    let _ = alloc <m2: closure(int32) -> int32 heap(1)> <- [0] = f3
+    let %4: closure(int32) -> int32 = call f0(f5.m2, %2)
+    let %5: int32 = apply %4(123)
+    let %6: unit = ext_call minimbt_print_int(%5)
+    return %6
+  }
+}
+.thunk start = f6()
+
+247
+
+
+Testing test/test_src/gcd.mbt
+let rec gcd: Int = (m.1: Int, n.2: Int) {
+  let _3: Int = Int(0)
+  if (m.1 == _3) then {
+    Var(n.2)
+  } else {
+    if (m.1 <= n.2) then {
+      let _4: Int = Sub(n.2, m.1)
+      Apply(gcd, [m.1, _4, ])
+    } else {
+      let _5: Int = Sub(m.1, n.2)
+      Apply(gcd, [n.2, _5, ])
+    }
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _6: Int = Int(21600)
+  let _7: Int = Int(337500)
+  let _8: Int = Apply(gcd, [_6, _7, ])
+  ExtApply(minimbt_print_int, [_8, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn gcd #f0 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .bb #b4 () {
+    let %4: int32 = sub($f0, $f1)
+    let %5: int32 = call f0($f1, %4)
+    jump b5(%5)
+  }
+  .bb #b1 () {
+    jump b6($f1)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b2 () {
+    let %1: bool = le($f0, $f1)
+    br %1 b3() b4()
+  }
+  .bb #b3 () {
+    let %2: int32 = sub($f1, $f0)
+    let %3: int32 = call f0($f0, %2)
+    jump b5(%3)
+  }
+  .bb #b0 () {
+    let %0: bool = eq($f0, 0)
+    br %0 b1() b2()
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(21600, 337500)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+2700
+
+
+Testing test/test_src/id.mbt
+let rec f: Int = (x.1: Int) {
+  let _2: Int = Int(1)
+  Add(x.1, _2)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _3: Int = Int(1000)
+  let _4: Int = Apply(f, [_3, ])
+  ExtApply(minimbt_print_int, [_4, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, 1)
+    return %0
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(1000)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+1001
+
+
+Testing test/test_src/inprod-loop.mbt
+let rec inprod: Double = (v1.1: Array(Double), v2.2: Array(Double), acc.3: Double, i.4: Int) {
+  let _5: Int = Int(0)
+  if (_5 <= i.4) then {
+    let _6: Double = Get v1.1[i.4]
+    let _7: Double = Get v2.2[i.4]
+    let _8: Double = FMul(_6, _7)
+    let _9: Double = FAdd(acc.3, _8)
+    let _10: Int = Int(1)
+    let _11: Int = Sub(i.4, _10)
+    Apply(inprod, [v1.1, v2.2, _9, _11, ])
+  } else {
+    Var(acc.3)
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _12: Int = Int(3)
+  let _13: Double = Double(1.23)
+  let v1.14: Array(Double) = ExtApply(minimbt_create_float_array, [_12, _13, ])
+  let _15: Int = Int(3)
+  let _16: Double = Double(4.56)
+  let v2.17: Array(Double) = ExtApply(minimbt_create_float_array, [_15, _16, ])
+  let _18: Double = Double(1000000)
+  let _19: Double = Double(0)
+  let _20: Int = Int(2)
+  let _21: Double = Apply(inprod, [v1.14, v2.17, _19, _20, ])
+  let _22: Double = FMul(_18, _21)
+  let _23: Fun([Double], Int) = ExtApply(minimbt_truncate, [_22, ])
+  ExtApply(minimbt_print_int, [_23, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn inprod #f0 : fn(array[double], array[double], double, int32) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f3)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: double = load double offset($f0, $f3)
+    let %2: double = load double offset($f1, $f3)
+    let %3: double = mul(%1, %2)
+    let %4: double = add($f2, %3)
+    let %5: int32 = sub($f3, 1)
+    let %6: double = call f0($f0, $f1, %4, %5)
+    jump b3(%6)
+  }
+  .bb #b2 () {
+    jump b3($f2)
+  }
+  .bb #b3 (double) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[double] heap(3)> <- [..] = 1.23
+    let _ = alloc <m1: array[double] heap(3)> <- [..] = 4.56
+    let %2: double = call f0(f1.m0, f1.m1, 0, 2)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = ext_call minimbt_truncate(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.thunk start = f2()
+
+16826400
+
+
+Testing test/test_src/inprod-rec.mbt
+let rec inprod: Double = (v1.1: Array(Double), v2.2: Array(Double), i.3: Int) {
+  let _4: Int = Int(0)
+  if (_4 <= i.3) then {
+    let _5: Double = Get v1.1[i.3]
+    let _6: Double = Get v2.2[i.3]
+    let _7: Double = FMul(_5, _6)
+    let _8: Int = Int(1)
+    let _9: Int = Sub(i.3, _8)
+    let _10: Double = Apply(inprod, [v1.1, v2.2, _9, ])
+    FAdd(_7, _10)
+  } else {
+    Double(0)
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _11: Int = Int(3)
+  let _12: Double = Double(1.23)
+  let v1.13: Array(Double) = ExtApply(minimbt_create_float_array, [_11, _12, ])
+  let _14: Int = Int(3)
+  let _15: Double = Double(4.56)
+  let v2.16: Array(Double) = ExtApply(minimbt_create_float_array, [_14, _15, ])
+  let _17: Double = Double(1000000)
+  let _18: Int = Int(2)
+  let _19: Double = Apply(inprod, [v1.13, v2.16, _18, ])
+  let _20: Double = FMul(_17, _19)
+  let _21: Fun([Double], Int) = ExtApply(minimbt_truncate, [_20, ])
+  ExtApply(minimbt_print_int, [_21, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn inprod #f0 : fn(array[double], array[double], int32) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: double = load double offset($f0, $f2)
+    let %2: double = load double offset($f1, $f2)
+    let %3: double = mul(%1, %2)
+    let %4: int32 = sub($f2, 1)
+    let %5: double = call f0($f0, $f1, %4)
+    let %6: double = add(%3, %5)
+    jump b3(%6)
+  }
+  .bb #b2 () {
+    jump b3(0)
+  }
+  .bb #b3 (double) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[double] heap(3)> <- [..] = 1.23
+    let _ = alloc <m1: array[double] heap(3)> <- [..] = 4.56
+    let %2: double = call f0(f1.m0, f1.m1, 2)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = ext_call minimbt_truncate(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.thunk start = f2()
+
+16826400
+
+
+Testing test/test_src/inprod.mbt
+let rec getx: Double = (v.1: Tuple([Double, Double, Double])) {
+  let (, x.2: Var({val: Some(Double)})_4: Var({val: Some(Double)})_6: Var({val: Some(Double)})) = v.1Var(x.2)
+}
+let rec gety: Double = (v.7: Tuple([Double, Double, Double])) {
+  let (, _9: Var({val: Some(Double)})y.10: Var({val: Some(Double)})_12: Var({val: Some(Double)})) = v.7Var(y.10)
+}
+let rec getz: Double = (v.13: Tuple([Double, Double, Double])) {
+  let (, _15: Var({val: Some(Double)})_17: Var({val: Some(Double)})z.18: Var({val: Some(Double)})) = v.13Var(z.18)
+}
+let rec inprod: Double = (v1.19: Tuple([Double, Double, Double]), v2.20: Tuple([Double, Double, Double])) {
+  let _21: Double = Apply(getx, [v1.19, ])
+  let _22: Double = Apply(getx, [v2.20, ])
+  let _23: Double = FMul(_21, _22)
+  let _24: Double = Apply(gety, [v1.19, ])
+  let _25: Double = Apply(gety, [v2.20, ])
+  let _26: Double = FMul(_24, _25)
+  let _27: Double = FAdd(_23, _26)
+  let _28: Double = Apply(getz, [v1.19, ])
+  let _29: Double = Apply(getz, [v2.20, ])
+  let _30: Double = FMul(_28, _29)
+  FAdd(_27, _30)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _31: Double = Double(1000000)
+  let _32: Double = Double(1)
+  let _33: Double = Double(2)
+  let _34: Double = Double(3)
+  let _35: Tuple([Double, Double, Double]) = Tuple([_32, _33, _34, ])
+  let _36: Double = Double(4)
+  let _37: Double = Double(5)
+  let _38: Double = Double(6)
+  let _39: Tuple([Double, Double, Double]) = Tuple([_36, _37, _38, ])
+  let _40: Double = Apply(inprod, [_35, _39, ])
+  let _41: Double = FMul(_31, _40)
+  let _42: Fun([Double], Int) = ExtApply(minimbt_truncate, [_41, ])
+  ExtApply(minimbt_print_int, [_42, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn gety #f1 : fn((double, double, double)) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load double field($f0, 0)
+    let %1: double = load double field($f0, 1)
+    let %2: double = load double field($f0, 2)
+    return %1
+  }
+}
+.fn thunk_start #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f4()
+    return %0
+  }
+}
+.fn getx #f0 : fn((double, double, double)) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load double field($f0, 0)
+    let %1: double = load double field($f0, 1)
+    let %2: double = load double field($f0, 2)
+    return %0
+  }
+}
+.fn inprod #f3 : fn((double, double, double), (double, double, double)) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = call f0($f0)
+    let %1: double = call f0($f1)
+    let %2: double = mul(%0, %1)
+    let %3: double = call f1($f0)
+    let %4: double = call f1($f1)
+    let %5: double = mul(%3, %4)
+    let %6: double = add(%2, %5)
+    let %7: double = call f2($f0)
+    let %8: double = call f2($f1)
+    let %9: double = mul(%7, %8)
+    let %10: double = add(%6, %9)
+    return %10
+  }
+}
+.fn getz #f2 : fn((double, double, double)) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load double field($f0, 0)
+    let %1: double = load double field($f0, 1)
+    let %2: double = load double field($f0, 2)
+    return %2
+  }
+}
+.fn main #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: (double, double, double) heap(3)> <- [0] = 1, [1] = 2, [2] = 3
+    let _ = alloc <m1: (double, double, double) heap(3)> <- [0] = 4, [1] = 5, [2] = 6
+    let %2: double = call f3(f4.m0, f4.m1)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = ext_call minimbt_truncate(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.thunk start = f5()
+
+32000000
+
+
+Testing test/test_src/join-reg.mbt
+let rec f: Int = (x.1: Unit) {
+  Int(123)
+}
+let rec g: Int = (x.2: Unit) {
+  Int(456)
+}
+let rec h: Int = (x.3: Unit) {
+  Int(789)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _4: Unit = Unit
+  let x.5: Int = Apply(f, [_4, ])
+  let _6: Unit = Unit
+  let y.7: Int = Apply(g, [_6, ])
+  let _8: Unit = Unit
+  let _9: Int = Apply(h, [_8, ])
+  let _10: Int = Int(0)
+  let _13: Int = if (_9 == _10) then {
+    Sub(x.5, y.7)
+  } else {
+    let _11: Int = Sub(y.7, x.5)
+    let _12: Int = Add(_11, x.5)
+    Add(_12, y.7)
+  }
+  ExtApply(minimbt_print_int, [_13, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn h #f2 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 789
+  }
+}
+.fn g #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    let %1: int32 = call f1(())
+    let %2: int32 = call f2(())
+    let %3: bool = eq(%2, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: int32 = sub(%0, %1)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    let %5: int32 = sub(%1, %0)
+    let %6: int32 = add(%5, %0)
+    let %7: int32 = add(%6, %1)
+    jump b3(%7)
+  }
+  .bb #b3 (int32) {
+    let %8: unit = ext_call minimbt_print_int($b3.0)
+    return %8
+  }
+}
+.thunk start = f4()
+
+912
+
+
+Testing test/test_src/join-reg2.mbt
+let rec f: Int = (u.1: Unit) {
+  Int(123)
+}
+let rec g: Int = (u.2: Unit) {
+  Int(456)
+}
+let rec h: Int = (u.3: Unit) {
+  Int(789)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _4: Unit = Unit
+  let x.5: Int = Apply(f, [_4, ])
+  let _6: Int = Int(0)
+  let _12: Int = if (x.5 <= _6) then {
+    let _7: Unit = Unit
+    let _8: Int = Apply(g, [_7, ])
+    Add(_8, x.5)
+  } else {
+    let _9: Unit = Unit
+    let _10: Int = Apply(h, [_9, ])
+    let _11: Int = Sub(_10, x.5)
+    Add(_11, x.5)
+  }
+  ExtApply(minimbt_print_int, [_12, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn h #f2 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 789
+  }
+}
+.fn g #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    let %1: bool = le(%0, 0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = call f1(())
+    let %3: int32 = add(%2, %0)
+    jump b3(%3)
+  }
+  .bb #b2 () {
+    let %4: int32 = call f2(())
+    let %5: int32 = sub(%4, %0)
+    let %6: int32 = add(%5, %0)
+    jump b3(%6)
+  }
+  .bb #b3 (int32) {
+    let %7: unit = ext_call minimbt_print_int($b3.0)
+    return %7
+  }
+}
+.thunk start = f4()
+
+789
+
+
+Testing test/test_src/join-stack.mbt
+let rec f: Int = (u.1: Unit) {
+  Int(123)
+}
+let rec g: Int = (u.2: Unit) {
+  Int(456)
+}
+let rec h: Int = (u.3: Unit) {
+  Int(789)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _4: Unit = Unit
+  let x.5: Int = Apply(f, [_4, ])
+  let _6: Unit = Unit
+  let y.7: Int = Apply(g, [_6, ])
+  let _8: Unit = Unit
+  let _9: Int = Apply(h, [_8, ])
+  let _10: Int = Int(0)
+  let _15: Int = if (_9 == _10) then {
+    let _11: Int = Int(1)
+    Add(x.5, _11)
+  } else {
+    let _12: Int = Int(2)
+    let _13: Int = Add(y.7, _12)
+    let _14: Int = Add(_13, x.5)
+    Add(_14, y.7)
+  }
+  ExtApply(minimbt_print_int, [_15, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn h #f2 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 789
+  }
+}
+.fn g #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    let %1: int32 = call f1(())
+    let %2: int32 = call f2(())
+    let %3: bool = eq(%2, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: int32 = add(%0, 1)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    let %5: int32 = add(%1, 2)
+    let %6: int32 = add(%5, %0)
+    let %7: int32 = add(%6, %1)
+    jump b3(%7)
+  }
+  .bb #b3 (int32) {
+    let %8: unit = ext_call minimbt_print_int($b3.0)
+    return %8
+  }
+}
+.thunk start = f4()
+
+1037
+
+
+Testing test/test_src/join-stack2.mbt
+let rec f: Int = (u.1: Unit) {
+  Int(123)
+}
+let rec g: Int = (u.2: Unit) {
+  Int(456)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _3: Unit = Unit
+  let x.4: Int = Apply(f, [_3, ])
+  let _5: Int = Int(0)
+  let _8: Int = if (x.4 <= _5) then {
+    let _6: Unit = Unit
+    let _7: Int = Apply(g, [_6, ])
+    Add(_7, x.4)
+  } else {
+    Add(x.4, x.4)
+  }
+  ExtApply(minimbt_print_int, [_8, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    let %1: bool = le(%0, 0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = call f1(())
+    let %3: int32 = add(%2, %0)
+    jump b3(%3)
+  }
+  .bb #b2 () {
+    let %4: int32 = add(%0, %0)
+    jump b3(%4)
+  }
+  .bb #b3 (int32) {
+    let %5: unit = ext_call minimbt_print_int($b3.0)
+    return %5
+  }
+}
+.fn f #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn g #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.thunk start = f3()
+
+246
+
+
+Testing test/test_src/join-stack3.mbt
+let rec f: Int = (u.1: Unit) {
+  Int(123)
+}
+let rec g: Int = (u.2: Unit) {
+  Int(456)
+}
+let rec h: Int = (u.3: Unit) {
+  Int(789)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _4: Unit = Unit
+  let x.5: Int = Apply(f, [_4, ])
+  let _6: Int = Int(0)
+  let _9: Int = if (x.5 <= _6) then {
+    let _7: Unit = Unit
+    Apply(g, [_7, ])
+  } else {
+    let _8: Unit = Unit
+    Apply(h, [_8, ])
+  }
+  let _10: Int = Add(_9, x.5)
+  ExtApply(minimbt_print_int, [_10, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn thunk_start #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn h #f2 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 789
+  }
+}
+.fn g #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn main #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    let %1: bool = le(%0, 0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = call f1(())
+    jump b3(%2)
+  }
+  .bb #b2 () {
+    let %3: int32 = call f2(())
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    let %4: int32 = add($b3.0, %0)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.thunk start = f4()
+
+912
+
+
+Testing test/test_src/landins_knot.mbt
+let rec dummy: Int = (i.1: Int) {
+  Var(i.1)
+}
+let rec landins_kont: Fun([Int], Int) = (f.2: Fun([Fun([Int], Int)], Fun([Int], Int))) {
+  let _3: Int = Int(1)
+  let arr.4: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_3, dummy, ])
+  let rec aux: Var({val: Some(Int)}) = (x.5: Var({val: Some(Int)})) {
+    let _6: Int = Int(0)
+    let _7: Fun([Int], Int) = Get arr.4[_6]
+    Apply(_7, [x.5, ])
+  }
+  let fixedpoint.8: Fun([Int], Int) = Apply(f.2, [aux, ])
+  let _9: Int = Int(0)
+  let _11: Unit = Put arr.4[_9] = fixedpoint.8
+  Var(fixedpoint.8)
+}
+let rec g: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f.12: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  let rec h: Var({val: Some(Int)}) = (x.13: Var({val: Some(Int)})) {
+    let _14: Int = Int(0)
+    if (x.13 == _14) then {
+      Int(1)
+    } else {
+      let _15: Int = Int(1)
+      let _16: Int = Sub(x.13, _15)
+      let _17: Var({val: Some(Int)}) = Apply(f.12, [_16, ])
+      Mul(x.13, _17)
+    }
+  }
+  Var(h)
+}
+let factorial.18: Fun([Int], Int) = Apply(landins_kont, [g, ])
+let rec init: Var({val: Some(Unit)}) = () {
+  let _19: Int = Int(5)
+  let _20: Int = Apply(factorial.18, [_19, ])
+  ExtApply(minimbt_print_int, [_20, ])
+}
+let _21: Int = Int(5)
+let a.22: Int = Apply(factorial.18, [_21, ])
+let rec g: Var({val: Some(Int)}) = (x.23: Var({val: Some(Int)})) {
+  Add(x.23, a.22)
+}
+let rec init: Var({val: Some(Unit)}) = () {
+  let _24: Int = Int(10)
+  let _25: Int = Apply(g, [_24, ])
+  let _27: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_25, ])
+  let _28: Int = Int(31)
+  let _29: Int = Apply(g, [_28, ])
+  ExtApply(minimbt_print_int, [_29, ])
+}
+Apply(init, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn init #f10 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f9(10)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    let %2: int32 = call f9(31)
+    let %3: unit = ext_call minimbt_print_int(%2)
+    return %3
+  }
+}
+.fn thunk__21 #f7 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 5
+  }
+}
+.fn thunk_factorial.18 #f5 : fn() -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(closure(int32) -> int32) -> closure(int32) -> int32 heap(1)> <- [0] = f3
+    let %1: closure(int32) -> int32 = call f1(f5.m0)
+    return %1
+  }
+}
+.fn dummy #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return $f0
+  }
+}
+.fn landins_kont #f1 : fn(closure(closure(int32) -> int32) -> closure(int32) -> int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f0
+    let _ = alloc <m1: array[closure(int32) -> int32] heap(1)> <- [..] = f1.m0
+    let _ = alloc <m2: closure(int32) -> int32 heap(2)> <- [0] = f2, [1] = f1.m1
+    let %3: closure(int32) -> int32 = apply $f0(f1.m2)
+    let _ = store closure(int32) -> int32 offset(f1.m1, 0) <- %3
+    return %3
+  }
+}
+.fn thunk_a.22 #f8 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = apply f5()(f7())
+    return %0
+  }
+}
+.fn thunk_start #f11 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f10()
+    return %0
+  }
+}
+.fn aux #f2 : closure(int32) -> int32
+.freevars (array[closure(int32) -> int32])
+.entry b0 {
+  .bb #b0 () {
+    let %0: closure(int32) -> int32 = load closure(int32) -> int32 offset(^1, 0)
+    let %1: int32 = apply %0($f0)
+    return %1
+  }
+}
+.fn g #f9 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, f8())
+    return %0
+  }
+}
+.fn h #f4 : closure(int32) -> int32
+.freevars (closure(int32) -> int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = eq($f0, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(1)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($f0, 1)
+    let %2: int32 = apply ^1(%1)
+    let %3: int32 = mul($f0, %2)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.thunk factorial.18 = f5()
+.thunk _21 = f7()
+.thunk a.22 = f8()
+.thunk start = f11()
+
+130
+151
+
+
+Testing test/test_src/matmul-flat.mbt
+let rec loop3: Unit = (i.1: Int, j.2: Int, k.3: Int, a.4: Array(Array(Double)), b.5: Array(Array(Double)), c.6: Array(Array(Double))) {
+  let _7: Int = Int(0)
+  if (_7 <= k.3) then {
+    let _8: Array(Double) = Get c.6[i.1]
+    let _9: Array(Double) = Get c.6[i.1]
+    let _10: Double = Get _9[j.2]
+    let _11: Array(Double) = Get a.4[i.1]
+    let _12: Double = Get _11[k.3]
+    let _13: Array(Double) = Get b.5[k.3]
+    let _14: Double = Get _13[j.2]
+    let _15: Double = FMul(_12, _14)
+    let _16: Double = FAdd(_10, _15)
+    let _18: Unit = Put _8[j.2] = _16
+    let _19: Int = Int(1)
+    let _20: Int = Sub(k.3, _19)
+    Apply(loop3, [i.1, j.2, _20, a.4, b.5, c.6, ])
+  } else {
+    Unit
+  }
+}
+let rec loop2: Unit = (i.21: Int, m.22: Int, j.23: Int, a.24: Array(Array(Double)), b.25: Array(Array(Double)), c.26: Array(Array(Double))) {
+  let _27: Int = Int(0)
+  if (_27 <= j.23) then {
+    let _28: Int = Int(1)
+    let _29: Int = Sub(m.22, _28)
+    let _31: Unit = Apply(loop3, [i.21, j.23, _29, a.24, b.25, c.26, ])
+    let _32: Int = Int(1)
+    let _33: Int = Sub(j.23, _32)
+    Apply(loop2, [i.21, m.22, _33, a.24, b.25, c.26, ])
+  } else {
+    Unit
+  }
+}
+let rec loop1: Unit = (i.34: Int, m.35: Int, n.36: Int, a.37: Array(Array(Double)), b.38: Array(Array(Double)), c.39: Array(Array(Double))) {
+  let _40: Int = Int(0)
+  if (_40 <= i.34) then {
+    let _41: Int = Int(1)
+    let _42: Int = Sub(n.36, _41)
+    let _44: Unit = Apply(loop2, [i.34, m.35, _42, a.37, b.38, c.39, ])
+    let _45: Int = Int(1)
+    let _46: Int = Sub(i.34, _45)
+    Apply(loop1, [_46, m.35, n.36, a.37, b.38, c.39, ])
+  } else {
+    Unit
+  }
+}
+let rec mul: Unit = (l.47: Int, m.48: Int, n.49: Int, a.50: Array(Array(Double)), b.51: Array(Array(Double)), c.52: Array(Array(Double))) {
+  let _53: Int = Int(1)
+  let _54: Int = Sub(l.47, _53)
+  let _56: Unit = Apply(loop1, [_54, m.48, n.49, a.50, b.51, c.52, ])
+  Unit
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _57: Int = Int(0)
+  let _58: Double = Double(0)
+  let dummy.59: Array(Double) = ExtApply(minimbt_create_float_array, [_57, _58, ])
+  let rec init_arr: Unit = (i.60: Int, n.61: Int, mat.62: Array(Array(Double))) {
+    let _63: Int = Int(0)
+    if (_63 <= i.60) then {
+      let _64: Double = Double(0)
+      let _65: Array(Double) = ExtApply(minimbt_create_float_array, [n.61, _64, ])
+      let _67: Unit = Put mat.62[i.60] = _65
+      let _68: Int = Int(1)
+      let _69: Int = Sub(i.60, _68)
+      Apply(init_arr, [_69, n.61, mat.62, ])
+    } else {
+      Unit
+    }
+  }
+  let rec make_arr: Array(Array(Double)) = (m.70: Int, n.71: Int, dummy.72: Array(Double)) {
+    let mat.73: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [m.70, dummy.72, ])
+    let _74: Int = Int(1)
+    let _75: Int = Sub(m.70, _74)
+    let _77: Unit = Apply(init_arr, [_75, n.71, mat.73, ])
+    Var(mat.73)
+  }
+  let _78: Int = Int(2)
+  let _79: Int = Int(3)
+  let a.80: Array(Array(Double)) = Apply(make_arr, [_78, _79, dummy.59, ])
+  let _81: Int = Int(3)
+  let _82: Int = Int(2)
+  let b.83: Array(Array(Double)) = Apply(make_arr, [_81, _82, dummy.59, ])
+  let _84: Int = Int(2)
+  let _85: Int = Int(2)
+  let c.86: Array(Array(Double)) = Apply(make_arr, [_84, _85, dummy.59, ])
+  let _87: Int = Int(0)
+  let _88: Array(Double) = Get a.80[_87]
+  let _89: Int = Int(0)
+  let _90: Double = Double(1)
+  let _92: Unit = Put _88[_89] = _90
+  let _93: Int = Int(0)
+  let _94: Array(Double) = Get a.80[_93]
+  let _95: Int = Int(1)
+  let _96: Double = Double(2)
+  let _98: Unit = Put _94[_95] = _96
+  let _99: Int = Int(0)
+  let _100: Array(Double) = Get a.80[_99]
+  let _101: Int = Int(2)
+  let _102: Double = Double(3)
+  let _104: Unit = Put _100[_101] = _102
+  let _105: Int = Int(1)
+  let _106: Array(Double) = Get a.80[_105]
+  let _107: Int = Int(0)
+  let _108: Double = Double(4)
+  let _110: Unit = Put _106[_107] = _108
+  let _111: Int = Int(1)
+  let _112: Array(Double) = Get a.80[_111]
+  let _113: Int = Int(1)
+  let _114: Double = Double(5)
+  let _116: Unit = Put _112[_113] = _114
+  let _117: Int = Int(1)
+  let _118: Array(Double) = Get a.80[_117]
+  let _119: Int = Int(2)
+  let _120: Double = Double(6)
+  let _122: Unit = Put _118[_119] = _120
+  let _123: Int = Int(0)
+  let _124: Array(Double) = Get b.83[_123]
+  let _125: Int = Int(0)
+  let _126: Double = Double(7)
+  let _128: Unit = Put _124[_125] = _126
+  let _129: Int = Int(0)
+  let _130: Array(Double) = Get b.83[_129]
+  let _131: Int = Int(1)
+  let _132: Double = Double(8)
+  let _134: Unit = Put _130[_131] = _132
+  let _135: Int = Int(1)
+  let _136: Array(Double) = Get b.83[_135]
+  let _137: Int = Int(0)
+  let _138: Double = Double(9)
+  let _140: Unit = Put _136[_137] = _138
+  let _141: Int = Int(1)
+  let _142: Array(Double) = Get b.83[_141]
+  let _143: Int = Int(1)
+  let _144: Double = Double(10)
+  let _146: Unit = Put _142[_143] = _144
+  let _147: Int = Int(2)
+  let _148: Array(Double) = Get b.83[_147]
+  let _149: Int = Int(0)
+  let _150: Double = Double(11)
+  let _152: Unit = Put _148[_149] = _150
+  let _153: Int = Int(2)
+  let _154: Array(Double) = Get b.83[_153]
+  let _155: Int = Int(1)
+  let _156: Double = Double(12)
+  let _158: Unit = Put _154[_155] = _156
+  let _159: Int = Int(2)
+  let _160: Int = Int(3)
+  let _161: Int = Int(2)
+  let _163: Unit = Apply(mul, [_159, _160, _161, a.80, b.83, c.86, ])
+  let _164: Int = Int(0)
+  let _165: Array(Double) = Get c.86[_164]
+  let _166: Int = Int(0)
+  let _167: Double = Get _165[_166]
+  let _168: Fun([Double], Int) = ExtApply(minimbt_truncate, [_167, ])
+  let _170: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_168, ])
+  let _172: Fun([], Unit) = ExtApply(minimbt_print_endline, [])
+  let _173: Int = Int(0)
+  let _174: Array(Double) = Get c.86[_173]
+  let _175: Int = Int(1)
+  let _176: Double = Get _174[_175]
+  let _177: Fun([Double], Int) = ExtApply(minimbt_truncate, [_176, ])
+  let _179: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_177, ])
+  let _181: Fun([], Unit) = ExtApply(minimbt_print_endline, [])
+  let _182: Int = Int(1)
+  let _183: Array(Double) = Get c.86[_182]
+  let _184: Int = Int(0)
+  let _185: Double = Get _183[_184]
+  let _186: Fun([Double], Int) = ExtApply(minimbt_truncate, [_185, ])
+  let _188: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_186, ])
+  let _190: Fun([], Unit) = ExtApply(minimbt_print_endline, [])
+  let _191: Int = Int(1)
+  let _192: Array(Double) = Get c.86[_191]
+  let _193: Int = Int(1)
+  let _194: Double = Get _192[_193]
+  let _195: Fun([Double], Int) = ExtApply(minimbt_truncate, [_194, ])
+  let _197: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_195, ])
+  Unit
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn loop2 #f1 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: int32 = sub($f1, 1)
+    let %2: unit = call f0($f0, $f2, %1, $f3, $f4, $f5)
+    let %3: int32 = sub($f2, 1)
+    let %4: unit = call f1($f0, $f1, %3, $f3, $f4, $f5)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn init_arr #f5 : closure(int32, int32, array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = alloc <m0: array[double] heap($f1)> <- [..] = 0
+    let _ = store array[double] offset($f2, $f0) <- f5.m0
+    let %3: int32 = sub($f0, 1)
+    let %4: unit = apply self(%3, $f1, $f2)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn thunk_start #f7 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f4()
+    return %0
+  }
+}
+.fn mul #f3 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = sub($f0, 1)
+    let %1: unit = call f2(%0, $f1, $f2, $f3, $f4, $f5)
+    return ()
+  }
+}
+.fn loop3 #f0 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: array[double] = load array[double] offset($f5, $f0)
+    let %2: array[double] = load array[double] offset($f5, $f0)
+    let %3: double = load double offset(%2, $f1)
+    let %4: array[double] = load array[double] offset($f3, $f0)
+    let %5: double = load double offset(%4, $f2)
+    let %6: array[double] = load array[double] offset($f4, $f2)
+    let %7: double = load double offset(%6, $f1)
+    let %8: double = mul(%5, %7)
+    let %9: double = add(%3, %8)
+    let _ = store double offset(%1, $f1) <- %9
+    let %11: int32 = sub($f2, 1)
+    let %12: unit = call f0($f0, $f1, %11, $f3, $f4, $f5)
+    jump b3(%12)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn loop1 #f2 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: int32 = sub($f2, 1)
+    let %2: unit = call f1($f0, $f1, %1, $f3, $f4, $f5)
+    let %3: int32 = sub($f0, 1)
+    let %4: unit = call f2(%3, $f1, $f2, $f3, $f4, $f5)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn make_arr #f6 : closure(int32, int32, array[double]) -> array[array[double]]
+.freevars (closure(int32, int32, array[array[double]]) -> unit)
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[array[double]] heap($f0)> <- [..] = $f2
+    let %1: int32 = sub($f0, 1)
+    let %2: unit = apply ^1(%1, $f1, f6.m0)
+    return f6.m0
+  }
+}
+.fn main #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[double] heap(0)> <- [..] = 0
+    let _ = alloc <m1: closure(int32, int32, array[array[double]]) -> unit heap(1)> <- [0] = f5
+    let _ = alloc <m2: closure(int32, int32, array[double]) -> array[array[double]] heap(2)> <- [0] = f6, [1] = f4.m1
+    let %3: array[array[double]] = apply f4.m2(2, 3, f4.m0)
+    let %4: array[array[double]] = apply f4.m2(3, 2, f4.m0)
+    let %5: array[array[double]] = apply f4.m2(2, 2, f4.m0)
+    let %6: array[double] = load array[double] offset(%3, 0)
+    let _ = store double offset(%6, 0) <- 1
+    let %8: array[double] = load array[double] offset(%3, 0)
+    let _ = store double offset(%8, 1) <- 2
+    let %10: array[double] = load array[double] offset(%3, 0)
+    let _ = store double offset(%10, 2) <- 3
+    let %12: array[double] = load array[double] offset(%3, 1)
+    let _ = store double offset(%12, 0) <- 4
+    let %14: array[double] = load array[double] offset(%3, 1)
+    let _ = store double offset(%14, 1) <- 5
+    let %16: array[double] = load array[double] offset(%3, 1)
+    let _ = store double offset(%16, 2) <- 6
+    let %18: array[double] = load array[double] offset(%4, 0)
+    let _ = store double offset(%18, 0) <- 7
+    let %20: array[double] = load array[double] offset(%4, 0)
+    let _ = store double offset(%20, 1) <- 8
+    let %22: array[double] = load array[double] offset(%4, 1)
+    let _ = store double offset(%22, 0) <- 9
+    let %24: array[double] = load array[double] offset(%4, 1)
+    let _ = store double offset(%24, 1) <- 10
+    let %26: array[double] = load array[double] offset(%4, 2)
+    let _ = store double offset(%26, 0) <- 11
+    let %28: array[double] = load array[double] offset(%4, 2)
+    let _ = store double offset(%28, 1) <- 12
+    let %30: unit = call f3(2, 3, 2, %3, %4, %5)
+    let %31: array[double] = load array[double] offset(%5, 0)
+    let %32: double = load double offset(%31, 0)
+    let %33: int32 = ext_call minimbt_truncate(%32)
+    let %34: unit = ext_call minimbt_print_int(%33)
+    let %35: unit = ext_call minimbt_print_endline()
+    let %36: array[double] = load array[double] offset(%5, 0)
+    let %37: double = load double offset(%36, 1)
+    let %38: int32 = ext_call minimbt_truncate(%37)
+    let %39: unit = ext_call minimbt_print_int(%38)
+    let %40: unit = ext_call minimbt_print_endline()
+    let %41: array[double] = load array[double] offset(%5, 1)
+    let %42: double = load double offset(%41, 0)
+    let %43: int32 = ext_call minimbt_truncate(%42)
+    let %44: unit = ext_call minimbt_print_int(%43)
+    let %45: unit = ext_call minimbt_print_endline()
+    let %46: array[double] = load array[double] offset(%5, 1)
+    let %47: double = load double offset(%46, 1)
+    let %48: int32 = ext_call minimbt_truncate(%47)
+    let %49: unit = ext_call minimbt_print_int(%48)
+    return ()
+  }
+}
+.thunk start = f7()
+
+58
+
+64
+
+139
+
+154
+
+
+Testing test/test_src/matmul.mbt
+FAILED: /Users/waterlens/Projects/mmm/src/typer/typer.mbt:217:17-217:48 unbound variable: make_arr
+Error: Typecheck error
+
+
+Testing test/test_src/non-tail-if.mbt
+let rec main: Var({val: Some(Unit)}) = () {
+  let _1: Double = Double(1.23)
+  let x.2: Fun([Double], Int) = ExtApply(minimbt_truncate, [_1, ])
+  let _3: Double = Double(4.56)
+  let y.4: Fun([Double], Int) = ExtApply(minimbt_truncate, [_3, ])
+  let _5: Double = Double(7.89)
+  let _6: Double = FNeg(_5)
+  let z.7: Fun([Double], Int) = ExtApply(minimbt_truncate, [_6, ])
+  let _8: Int = Int(0)
+  let _9: Var({val: Some(Int)}) = if (_8 <= z.7) then {
+    Var(x.2)
+  } else {
+    Var(y.4)
+  }
+  let _10: Int = Int(0)
+  let _11: Var({val: Some(Int)}) = if (x.2 <= _10) then {
+    Var(y.4)
+  } else {
+    Var(z.7)
+  }
+  let _12: Int = Add(_9, _11)
+  let _13: Int = Int(0)
+  let _14: Var({val: Some(Int)}) = if (_13 <= y.4) then {
+    Var(z.7)
+  } else {
+    Var(x.2)
+  }
+  let _15: Int = Add(_12, _14)
+  ExtApply(minimbt_print_int, [_15, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b6 (int32) {
+    let %6: int32 = add($b3.0, $b6.0)
+    let %7: bool = le(0, %1)
+    br %7 b7() b8()
+  }
+  .bb #b4 () {
+    jump b6(%1)
+  }
+  .bb #b8 () {
+    jump b9(%0)
+  }
+  .bb #b9 (int32) {
+    let %8: int32 = add(%6, $b9.0)
+    let %9: unit = ext_call minimbt_print_int(%8)
+    return %9
+  }
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_truncate(1.23)
+    let %1: int32 = ext_call minimbt_truncate(4.56)
+    let %2: double = neg(7.89)
+    let %3: int32 = ext_call minimbt_truncate(%2)
+    let %4: bool = le(0, %3)
+    br %4 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(%0)
+  }
+  .bb #b5 () {
+    jump b6(%3)
+  }
+  .bb #b2 () {
+    jump b3(%1)
+  }
+  .bb #b3 (int32) {
+    let %5: bool = le(%0, 0)
+    br %5 b4() b5()
+  }
+  .bb #b7 () {
+    jump b9(%3)
+  }
+}
+.thunk start = f1()
+
+-10
+
+
+Testing test/test_src/non-tail-if2.mbt
+let rec main: Var({val: Some(Unit)}) = () {
+  let rec f: Int = () {
+    Int(12345)
+  }
+  let _1: Int = Int(10)
+  let _2: Int = Int(3)
+  let y.3: Array(Int) = ExtApply(minimbt_create_array, [_1, _2, ])
+  let x.4: Int = Int(67890)
+  let _5: Int = Int(0)
+  let _6: Int = Get y.3[_5]
+  let _7: Int = Int(3)
+  let _12: Int = if (_6 == _7) then {
+    let _8: Int = Apply(f, [])
+    let _9: Int = Int(1)
+    let _10: Int = Get y.3[_9]
+    let _11: Int = Add(_8, _10)
+    Add(_11, x.4)
+  } else {
+    Int(7)
+  }
+  ExtApply(minimbt_print_int, [_12, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f1 : closure() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 12345
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure() -> int32 heap(1)> <- [0] = f1
+    let _ = alloc <m1: array[int32] heap(10)> <- [..] = 3
+    let %2: int32 = load int32 offset(f0.m1, 0)
+    let %3: bool = eq(%2, 3)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: int32 = apply f0.m0()
+    let %5: int32 = load int32 offset(f0.m1, 1)
+    let %6: int32 = add(%4, %5)
+    let %7: int32 = add(%6, 67890)
+    jump b3(%7)
+  }
+  .bb #b2 () {
+    jump b3(7)
+  }
+  .bb #b3 (int32) {
+    let %8: unit = ext_call minimbt_print_int($b3.0)
+    return %8
+  }
+}
+.thunk start = f2()
+
+80238
+
+
+Testing test/test_src/print.mbt
+let rec main: Var({val: Some(Unit)}) = () {
+  let _1: Int = Int(123)
+  let _3: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_1, ])
+  let _4: Int = Int(456)
+  let _5: Int = Neg(_4)
+  let _7: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_5, ])
+  let _8: Int = Int(789)
+  let _9: Int = Int(0)
+  let _10: Int = Add(_8, _9)
+  let _12: Fun([Int], Unit) = ExtApply(minimbt_print_int, [_10, ])
+  Unit
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = ext_call minimbt_print_int(123)
+    let %1: int32 = neg(456)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    let %3: int32 = add(789, 0)
+    let %4: unit = ext_call minimbt_print_int(%3)
+    return ()
+  }
+}
+.thunk start = f1()
+
+123
+-456
+789
+
+
+Testing test/test_src/shuffle.mbt
+let rec foo: Unit = (a.1: Int, b.2: Int, c.3: Int, d.4: Int, e.5: Int, f.6: Int) {
+  let _8: Fun([Int], Unit) = ExtApply(minimbt_print_int, [a.1, ])
+  let _10: Fun([Int], Unit) = ExtApply(minimbt_print_int, [b.2, ])
+  let _12: Fun([Int], Unit) = ExtApply(minimbt_print_int, [c.3, ])
+  let _14: Fun([Int], Unit) = ExtApply(minimbt_print_int, [d.4, ])
+  let _16: Fun([Int], Unit) = ExtApply(minimbt_print_int, [e.5, ])
+  let _18: Fun([Int], Unit) = ExtApply(minimbt_print_int, [f.6, ])
+  Unit
+}
+let rec bar: Unit = (a.19: Int, b.20: Int, c.21: Int, d.22: Int, e.23: Int, f.24: Int) {
+  Apply(foo, [b.20, a.19, d.22, e.23, f.24, c.21, ])
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _25: Int = Int(1)
+  let _26: Int = Int(2)
+  let _27: Int = Int(3)
+  let _28: Int = Int(4)
+  let _29: Int = Int(5)
+  let _30: Int = Int(6)
+  Apply(bar, [_25, _26, _27, _28, _29, _30, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn foo #f0 : fn(int32, int32, int32, int32, int32, int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = ext_call minimbt_print_int($f0)
+    let %1: unit = ext_call minimbt_print_int($f1)
+    let %2: unit = ext_call minimbt_print_int($f2)
+    let %3: unit = ext_call minimbt_print_int($f3)
+    let %4: unit = ext_call minimbt_print_int($f4)
+    let %5: unit = ext_call minimbt_print_int($f5)
+    return ()
+  }
+}
+.fn bar #f1 : fn(int32, int32, int32, int32, int32, int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0($f1, $f0, $f3, $f4, $f5, $f2)
+    return %0
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1(1, 2, 3, 4, 5, 6)
+    return %0
+  }
+}
+.thunk start = f3()
+
+2
+1
+4
+5
+6
+3
+
+
+Testing test/test_src/spill.mbt
+let rec f: Int = (a.1: Int, b.2: Int, c.3: Int, d.4: Int) {
+  let e.5: Int = Add(a.1, b.2)
+  let f.6: Int = Add(a.1, c.3)
+  let g.7: Int = Add(a.1, d.4)
+  let h.8: Int = Add(b.2, c.3)
+  let i.9: Int = Add(b.2, d.4)
+  let j.10: Int = Add(c.3, d.4)
+  let k.11: Int = Add(e.5, f.6)
+  let l.12: Int = Add(e.5, g.7)
+  let m.13: Int = Add(e.5, h.8)
+  let n.14: Int = Add(e.5, i.9)
+  let o.15: Int = Add(e.5, j.10)
+  let p.16: Int = Add(f.6, g.7)
+  let q.17: Int = Add(f.6, h.8)
+  let r.18: Int = Add(f.6, i.9)
+  let s.19: Int = Add(f.6, j.10)
+  let t.20: Int = Add(g.7, h.8)
+  let u.21: Int = Add(g.7, i.9)
+  let v.22: Int = Add(g.7, j.10)
+  let w.23: Int = Add(h.8, i.9)
+  let x.24: Int = Add(h.8, j.10)
+  let y.25: Int = Add(i.9, j.10)
+  let aa.26: Int = Add(k.11, l.12)
+  let ab.27: Int = Add(k.11, m.13)
+  let ac.28: Int = Add(k.11, n.14)
+  let ad.29: Int = Add(k.11, o.15)
+  let ae.30: Int = Add(k.11, p.16)
+  let af.31: Int = Add(k.11, q.17)
+  let ag.32: Int = Add(k.11, r.18)
+  let ah.33: Int = Add(k.11, s.19)
+  let ai.34: Int = Add(k.11, t.20)
+  let aj.35: Int = Add(k.11, u.21)
+  let ak.36: Int = Add(k.11, v.22)
+  let al.37: Int = Add(k.11, w.23)
+  let am.38: Int = Add(k.11, x.24)
+  let an.39: Int = Add(k.11, y.25)
+  let _40: Int = Add(a.1, b.2)
+  let _41: Int = Add(_40, c.3)
+  let _42: Int = Add(_41, d.4)
+  let _43: Int = Add(_42, e.5)
+  let _44: Int = Add(_43, f.6)
+  let _45: Int = Add(_44, g.7)
+  let _46: Int = Add(_45, h.8)
+  let _47: Int = Add(_46, i.9)
+  let _48: Int = Add(_47, j.10)
+  let _49: Int = Add(_48, k.11)
+  let _50: Int = Add(_49, l.12)
+  let _51: Int = Add(_50, m.13)
+  let _52: Int = Add(_51, n.14)
+  let _53: Int = Add(_52, o.15)
+  let _54: Int = Add(_53, p.16)
+  let _55: Int = Add(_54, q.17)
+  let _56: Int = Add(_55, r.18)
+  let _57: Int = Add(_56, s.19)
+  let _58: Int = Add(_57, t.20)
+  let _59: Int = Add(_58, u.21)
+  let _60: Int = Add(_59, v.22)
+  let _61: Int = Add(_60, w.23)
+  let _62: Int = Add(_61, x.24)
+  let _63: Int = Add(_62, y.25)
+  let _64: Int = Add(_63, aa.26)
+  let _65: Int = Add(_64, ab.27)
+  let _66: Int = Add(_65, ac.28)
+  let _67: Int = Add(_66, ad.29)
+  let _68: Int = Add(_67, ae.30)
+  let _69: Int = Add(_68, af.31)
+  let _70: Int = Add(_69, ag.32)
+  let _71: Int = Add(_70, ah.33)
+  let _72: Int = Add(_71, ai.34)
+  let _73: Int = Add(_72, aj.35)
+  let _74: Int = Add(_73, ak.36)
+  let _75: Int = Add(_74, al.37)
+  let _76: Int = Add(_75, am.38)
+  let z.77: Int = Add(_76, an.39)
+  Neg(z.77)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _78: Int = Int(1)
+  let _79: Int = Int(2)
+  let _80: Int = Int(3)
+  let _81: Int = Int(4)
+  let _82: Int = Apply(f, [_78, _79, _80, _81, ])
+  ExtApply(minimbt_print_int, [_82, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(int32, int32, int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, $f1)
+    let %1: int32 = add($f0, $f2)
+    let %2: int32 = add($f0, $f3)
+    let %3: int32 = add($f1, $f2)
+    let %4: int32 = add($f1, $f3)
+    let %5: int32 = add($f2, $f3)
+    let %6: int32 = add(%0, %1)
+    let %7: int32 = add(%0, %2)
+    let %8: int32 = add(%0, %3)
+    let %9: int32 = add(%0, %4)
+    let %10: int32 = add(%0, %5)
+    let %11: int32 = add(%1, %2)
+    let %12: int32 = add(%1, %3)
+    let %13: int32 = add(%1, %4)
+    let %14: int32 = add(%1, %5)
+    let %15: int32 = add(%2, %3)
+    let %16: int32 = add(%2, %4)
+    let %17: int32 = add(%2, %5)
+    let %18: int32 = add(%3, %4)
+    let %19: int32 = add(%3, %5)
+    let %20: int32 = add(%4, %5)
+    let %21: int32 = add(%6, %7)
+    let %22: int32 = add(%6, %8)
+    let %23: int32 = add(%6, %9)
+    let %24: int32 = add(%6, %10)
+    let %25: int32 = add(%6, %11)
+    let %26: int32 = add(%6, %12)
+    let %27: int32 = add(%6, %13)
+    let %28: int32 = add(%6, %14)
+    let %29: int32 = add(%6, %15)
+    let %30: int32 = add(%6, %16)
+    let %31: int32 = add(%6, %17)
+    let %32: int32 = add(%6, %18)
+    let %33: int32 = add(%6, %19)
+    let %34: int32 = add(%6, %20)
+    let %35: int32 = add($f0, $f1)
+    let %36: int32 = add(%35, $f2)
+    let %37: int32 = add(%36, $f3)
+    let %38: int32 = add(%37, %0)
+    let %39: int32 = add(%38, %1)
+    let %40: int32 = add(%39, %2)
+    let %41: int32 = add(%40, %3)
+    let %42: int32 = add(%41, %4)
+    let %43: int32 = add(%42, %5)
+    let %44: int32 = add(%43, %6)
+    let %45: int32 = add(%44, %7)
+    let %46: int32 = add(%45, %8)
+    let %47: int32 = add(%46, %9)
+    let %48: int32 = add(%47, %10)
+    let %49: int32 = add(%48, %11)
+    let %50: int32 = add(%49, %12)
+    let %51: int32 = add(%50, %13)
+    let %52: int32 = add(%51, %14)
+    let %53: int32 = add(%52, %15)
+    let %54: int32 = add(%53, %16)
+    let %55: int32 = add(%54, %17)
+    let %56: int32 = add(%55, %18)
+    let %57: int32 = add(%56, %19)
+    let %58: int32 = add(%57, %20)
+    let %59: int32 = add(%58, %21)
+    let %60: int32 = add(%59, %22)
+    let %61: int32 = add(%60, %23)
+    let %62: int32 = add(%61, %24)
+    let %63: int32 = add(%62, %25)
+    let %64: int32 = add(%63, %26)
+    let %65: int32 = add(%64, %27)
+    let %66: int32 = add(%65, %28)
+    let %67: int32 = add(%66, %29)
+    let %68: int32 = add(%67, %30)
+    let %69: int32 = add(%68, %31)
+    let %70: int32 = add(%69, %32)
+    let %71: int32 = add(%70, %33)
+    let %72: int32 = add(%71, %34)
+    let %73: int32 = neg(%72)
+    return %73
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(1, 2, 3, 4)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+-431
+
+
+Testing test/test_src/spill2.mbt
+let rec f: Int = () {
+  Int(12345)
+}
+let rec g: Int = (y.1: Int) {
+  let _2: Int = Int(1)
+  Add(y.1, _2)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _3: Int = Int(10)
+  let _4: Int = Int(1)
+  let z.5: Array(Int) = ExtApply(minimbt_create_array, [_3, _4, ])
+  let x.6: Int = Apply(f, [])
+  let y.7: Int = Int(67890)
+  let _8: Int = Int(0)
+  let z0.9: Int = Get z.5[_8]
+  let z1.10: Int = Add(z0.9, z0.9)
+  let z2.11: Int = Add(z1.10, z1.10)
+  let z3.12: Int = Add(z2.11, z2.11)
+  let z4.13: Int = Add(z3.12, z3.12)
+  let z5.14: Int = Add(z4.13, z4.13)
+  let z6.15: Int = Add(z5.14, z5.14)
+  let z7.16: Int = Add(z6.15, z6.15)
+  let z8.17: Int = Add(z7.16, z7.16)
+  let z9.18: Int = Add(z8.17, z8.17)
+  let z10.19: Int = Add(z9.18, z9.18)
+  let z11.20: Int = Add(z10.19, z10.19)
+  let z12.21: Int = Add(z11.20, z11.20)
+  let z13.22: Int = Add(z12.21, z12.21)
+  let z14.23: Int = Add(z13.22, z13.22)
+  let z15.24: Int = Add(z14.23, z14.23)
+  let _25: Int = Int(1)
+  let _26: Int = Get z.5[_25]
+  let _27: Int = Int(0)
+  let _43: Int = if (_26 == _27) then {
+    Apply(g, [y.7, ])
+  } else {
+    let _28: Int = Add(z0.9, z1.10)
+    let _29: Int = Add(_28, z2.11)
+    let _30: Int = Add(_29, z3.12)
+    let _31: Int = Add(_30, z4.13)
+    let _32: Int = Add(_31, z5.14)
+    let _33: Int = Add(_32, z6.15)
+    let _34: Int = Add(_33, z7.16)
+    let _35: Int = Add(_34, z8.17)
+    let _36: Int = Add(_35, z9.18)
+    let _37: Int = Add(_36, z10.19)
+    let _38: Int = Add(_37, z11.20)
+    let _39: Int = Add(_38, z12.21)
+    let _40: Int = Add(_39, z13.22)
+    let _41: Int = Add(_40, z14.23)
+    let _42: Int = Add(_41, z15.24)
+    Add(_42, x.6)
+  }
+  ExtApply(minimbt_print_int, [_43, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(10)> <- [..] = 1
+    let %1: int32 = call f0()
+    let %2: int32 = load int32 offset(f2.m0, 0)
+    let %3: int32 = add(%2, %2)
+    let %4: int32 = add(%3, %3)
+    let %5: int32 = add(%4, %4)
+    let %6: int32 = add(%5, %5)
+    let %7: int32 = add(%6, %6)
+    let %8: int32 = add(%7, %7)
+    let %9: int32 = add(%8, %8)
+    let %10: int32 = add(%9, %9)
+    let %11: int32 = add(%10, %10)
+    let %12: int32 = add(%11, %11)
+    let %13: int32 = add(%12, %12)
+    let %14: int32 = add(%13, %13)
+    let %15: int32 = add(%14, %14)
+    let %16: int32 = add(%15, %15)
+    let %17: int32 = add(%16, %16)
+    let %18: int32 = load int32 offset(f2.m0, 1)
+    let %19: bool = eq(%18, 0)
+    br %19 b1() b2()
+  }
+  .bb #b1 () {
+    let %20: int32 = call f1(67890)
+    jump b3(%20)
+  }
+  .bb #b2 () {
+    let %21: int32 = add(%2, %3)
+    let %22: int32 = add(%21, %4)
+    let %23: int32 = add(%22, %5)
+    let %24: int32 = add(%23, %6)
+    let %25: int32 = add(%24, %7)
+    let %26: int32 = add(%25, %8)
+    let %27: int32 = add(%26, %9)
+    let %28: int32 = add(%27, %10)
+    let %29: int32 = add(%28, %11)
+    let %30: int32 = add(%29, %12)
+    let %31: int32 = add(%30, %13)
+    let %32: int32 = add(%31, %14)
+    let %33: int32 = add(%32, %15)
+    let %34: int32 = add(%33, %16)
+    let %35: int32 = add(%34, %17)
+    let %36: int32 = add(%35, %1)
+    jump b3(%36)
+  }
+  .bb #b3 (int32) {
+    let %37: unit = ext_call minimbt_print_int($b3.0)
+    return %37
+  }
+}
+.fn f #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 12345
+  }
+}
+.fn thunk_start #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn g #f1 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, 1)
+    return %0
+  }
+}
+.thunk start = f3()
+
+77880
+
+
+Testing test/test_src/spill3.mbt
+let rec f: Int = (x0.1: Int) {
+  let _2: Int = Int(1)
+  let x1.3: Int = Add(x0.1, _2)
+  let _4: Int = Int(1)
+  let x2.5: Int = Add(x1.3, _4)
+  let _6: Int = Int(1)
+  let x3.7: Int = Add(x2.5, _6)
+  let _8: Int = Int(1)
+  let x4.9: Int = Add(x3.7, _8)
+  let _10: Int = Int(1)
+  let x5.11: Int = Add(x4.9, _10)
+  let _12: Int = Int(1)
+  let x6.13: Int = Add(x5.11, _12)
+  let _14: Int = Int(1)
+  let x7.15: Int = Add(x6.13, _14)
+  let _16: Int = Int(1)
+  let x8.17: Int = Add(x7.15, _16)
+  let _18: Int = Int(1)
+  let x9.19: Int = Add(x8.17, _18)
+  let _20: Int = Int(1)
+  let x10.21: Int = Add(x9.19, _20)
+  let _22: Int = Int(1)
+  let x11.23: Int = Add(x10.21, _22)
+  let _24: Int = Int(1)
+  let x12.25: Int = Add(x11.23, _24)
+  let _26: Int = Int(1)
+  let x13.27: Int = Add(x12.25, _26)
+  let _28: Int = Int(1)
+  let x14.29: Int = Add(x13.27, _28)
+  let _30: Int = Int(1)
+  let x15.31: Int = Add(x14.29, _30)
+  let _32: Int = Int(1)
+  let x16.33: Int = Add(x15.31, _32)
+  let _34: Int = Int(1)
+  let x17.35: Int = Add(x16.33, _34)
+  let _36: Int = Int(1)
+  let x18.37: Int = Add(x17.35, _36)
+  let x19.38: Int = Add(x18.37, x1.3)
+  let x20.39: Int = Add(x19.38, x2.5)
+  let x21.40: Int = Add(x20.39, x3.7)
+  let x22.41: Int = Add(x21.40, x4.9)
+  let x23.42: Int = Add(x22.41, x5.11)
+  let x24.43: Int = Add(x23.42, x6.13)
+  let x25.44: Int = Add(x24.43, x7.15)
+  let x26.45: Int = Add(x25.44, x8.17)
+  let x27.46: Int = Add(x26.45, x9.19)
+  let x28.47: Int = Add(x27.46, x10.21)
+  let x29.48: Int = Add(x28.47, x11.23)
+  let x30.49: Int = Add(x29.48, x12.25)
+  let x31.50: Int = Add(x30.49, x13.27)
+  let x32.51: Int = Add(x31.50, x14.29)
+  let x33.52: Int = Add(x32.51, x15.31)
+  let x34.53: Int = Add(x33.52, x16.33)
+  let x35.54: Int = Add(x34.53, x17.35)
+  let x36.55: Int = Add(x35.54, x0.1)
+  let _56: Int = Add(x1.3, x2.5)
+  let _57: Int = Add(_56, x3.7)
+  let _58: Int = Add(_57, x4.9)
+  let _59: Int = Add(_58, x5.11)
+  let _60: Int = Add(_59, x6.13)
+  let _61: Int = Add(_60, x7.15)
+  let _62: Int = Add(_61, x8.17)
+  let _63: Int = Add(_62, x9.19)
+  let _64: Int = Add(_63, x10.21)
+  let _65: Int = Add(_64, x11.23)
+  let _66: Int = Add(_65, x12.25)
+  let _67: Int = Add(_66, x13.27)
+  let _68: Int = Add(_67, x14.29)
+  let _69: Int = Add(_68, x15.31)
+  let _70: Int = Add(_69, x16.33)
+  let _71: Int = Add(_70, x17.35)
+  let _72: Int = Add(_71, x18.37)
+  let _73: Int = Add(_72, x19.38)
+  let _74: Int = Add(_73, x20.39)
+  let _75: Int = Add(_74, x21.40)
+  let _76: Int = Add(_75, x22.41)
+  let _77: Int = Add(_76, x23.42)
+  let _78: Int = Add(_77, x24.43)
+  let _79: Int = Add(_78, x25.44)
+  let _80: Int = Add(_79, x26.45)
+  let _81: Int = Add(_80, x27.46)
+  let _82: Int = Add(_81, x28.47)
+  let _83: Int = Add(_82, x29.48)
+  let _84: Int = Add(_83, x30.49)
+  let _85: Int = Add(_84, x31.50)
+  let _86: Int = Add(_85, x32.51)
+  let _87: Int = Add(_86, x33.52)
+  let _88: Int = Add(_87, x34.53)
+  let _89: Int = Add(_88, x35.54)
+  let _90: Int = Add(_89, x36.55)
+  Add(_90, x0.1)
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _91: Int = Int(0)
+  let _92: Int = Apply(f, [_91, ])
+  ExtApply(minimbt_print_int, [_92, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, 1)
+    let %1: int32 = add(%0, 1)
+    let %2: int32 = add(%1, 1)
+    let %3: int32 = add(%2, 1)
+    let %4: int32 = add(%3, 1)
+    let %5: int32 = add(%4, 1)
+    let %6: int32 = add(%5, 1)
+    let %7: int32 = add(%6, 1)
+    let %8: int32 = add(%7, 1)
+    let %9: int32 = add(%8, 1)
+    let %10: int32 = add(%9, 1)
+    let %11: int32 = add(%10, 1)
+    let %12: int32 = add(%11, 1)
+    let %13: int32 = add(%12, 1)
+    let %14: int32 = add(%13, 1)
+    let %15: int32 = add(%14, 1)
+    let %16: int32 = add(%15, 1)
+    let %17: int32 = add(%16, 1)
+    let %18: int32 = add(%17, %0)
+    let %19: int32 = add(%18, %1)
+    let %20: int32 = add(%19, %2)
+    let %21: int32 = add(%20, %3)
+    let %22: int32 = add(%21, %4)
+    let %23: int32 = add(%22, %5)
+    let %24: int32 = add(%23, %6)
+    let %25: int32 = add(%24, %7)
+    let %26: int32 = add(%25, %8)
+    let %27: int32 = add(%26, %9)
+    let %28: int32 = add(%27, %10)
+    let %29: int32 = add(%28, %11)
+    let %30: int32 = add(%29, %12)
+    let %31: int32 = add(%30, %13)
+    let %32: int32 = add(%31, %14)
+    let %33: int32 = add(%32, %15)
+    let %34: int32 = add(%33, %16)
+    let %35: int32 = add(%34, $f0)
+    let %36: int32 = add(%0, %1)
+    let %37: int32 = add(%36, %2)
+    let %38: int32 = add(%37, %3)
+    let %39: int32 = add(%38, %4)
+    let %40: int32 = add(%39, %5)
+    let %41: int32 = add(%40, %6)
+    let %42: int32 = add(%41, %7)
+    let %43: int32 = add(%42, %8)
+    let %44: int32 = add(%43, %9)
+    let %45: int32 = add(%44, %10)
+    let %46: int32 = add(%45, %11)
+    let %47: int32 = add(%46, %12)
+    let %48: int32 = add(%47, %13)
+    let %49: int32 = add(%48, %14)
+    let %50: int32 = add(%49, %15)
+    let %51: int32 = add(%50, %16)
+    let %52: int32 = add(%51, %17)
+    let %53: int32 = add(%52, %18)
+    let %54: int32 = add(%53, %19)
+    let %55: int32 = add(%54, %20)
+    let %56: int32 = add(%55, %21)
+    let %57: int32 = add(%56, %22)
+    let %58: int32 = add(%57, %23)
+    let %59: int32 = add(%58, %24)
+    let %60: int32 = add(%59, %25)
+    let %61: int32 = add(%60, %26)
+    let %62: int32 = add(%61, %27)
+    let %63: int32 = add(%62, %28)
+    let %64: int32 = add(%63, %29)
+    let %65: int32 = add(%64, %30)
+    let %66: int32 = add(%65, %31)
+    let %67: int32 = add(%66, %32)
+    let %68: int32 = add(%67, %33)
+    let %69: int32 = add(%68, %34)
+    let %70: int32 = add(%69, %35)
+    let %71: int32 = add(%70, $f0)
+    return %71
+  }
+}
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(0)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+1617
+
+
+Testing test/test_src/sum-tail.mbt
+let rec sum: Int = (acc.1: Int, x.2: Int) {
+  let _3: Int = Int(0)
+  if (x.2 <= _3) then {
+    Var(acc.1)
+  } else {
+    let _4: Int = Add(acc.1, x.2)
+    let _5: Int = Int(1)
+    let _6: Int = Sub(x.2, _5)
+    Apply(sum, [_4, _6, ])
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _7: Int = Int(0)
+  let _8: Int = Int(10000)
+  let _9: Int = Apply(sum, [_7, _8, ])
+  ExtApply(minimbt_print_int, [_9, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn sum #f0 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le($f1, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3($f0)
+  }
+  .bb #b2 () {
+    let %1: int32 = add($f0, $f1)
+    let %2: int32 = sub($f1, 1)
+    let %3: int32 = call f0(%1, %2)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(0, 10000)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+
+
+Testing test/test_src/sum.mbt
+let rec sum: Int = (x.1: Int) {
+  let _2: Int = Int(0)
+  if (x.1 <= _2) then {
+    Int(0)
+  } else {
+    let _3: Int = Int(1)
+    let _4: Int = Sub(x.1, _3)
+    let _5: Int = Apply(sum, [_4, ])
+    Add(_5, x.1)
+  }
+}
+let rec main: Var({val: Some(Unit)}) = () {
+  let _6: Int = Int(10000)
+  let _7: Int = Apply(sum, [_6, ])
+  ExtApply(minimbt_print_int, [_7, ])
+}
+Apply(main, [])
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn thunk_start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn sum #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le($f0, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($f0, 1)
+    let %2: int32 = call f0(%1)
+    let %3: int32 = add(%2, $f0)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn main #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(10000)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk start = f2()
+
+
+

@@ -1,0 +1,41 @@
+package moonbitlang/minimbt/core_eval
+
+alias @moonbitlang/minimbt/core as @core
+
+// Values
+
+// Types and methods
+pub type CoreInterpreter
+impl CoreInterpreter {
+  interpret(Self, @core.Core) -> Unit!Failure
+  new() -> Self
+}
+
+pub struct Ctx {
+  pub heap : @moonbitlang/core/hashmap.T[@core.MemRef, Object]
+  pub stack : @moonbitlang/core/immut/hashmap.T[@core.MemRef, Object]
+  pub global : @moonbitlang/core/immut/hashmap.T[@core.FnRef, Object]
+  pub funcs : @moonbitlang/core/hashmap.T[@core.FnRef, @core.Fn]
+  pub insns : @moonbitlang/core/immut/hashmap.T[@core.InsnRef, Object]
+  pub blkargs : Array[Object]
+  pub fnargs : Array[Object]
+  pub closure : Object
+}
+impl Ctx {
+  to_string(Self) -> String
+}
+
+type Object
+impl Object {
+  to_string(Self) -> String
+}
+
+// Type aliases
+
+// Traits
+
+// Extension Methods
+impl Show for Ctx
+
+impl Show for Object
+

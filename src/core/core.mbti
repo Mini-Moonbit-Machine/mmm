@@ -1,0 +1,295 @@
+package moonbitlang/minimbt/core
+
+alias @moonbitlang/minimbt as @minimbt
+alias @moonbitlang/minimbt/closure as @closure
+alias @moonbitlang/minimbt/knf as @knf
+
+// Values
+
+// Types and methods
+pub struct BasicBlock {
+  pub id : BlockRef
+  pub params : Array[@closure.LowType]
+  pub seq : Array[InsnRef]
+  pub control : Control
+}
+impl BasicBlock {
+  to_string(Self) -> String
+}
+
+pub enum Block {
+  BasicBlock(BasicBlock)
+  Loop(Loop)
+}
+impl Block {
+  to_string(Self) -> String
+}
+
+pub type BlockParamRef Id
+impl BlockParamRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub type BlockRef Id
+impl BlockRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub enum Control {
+  Jump(BlockRef, Array[Value])
+  Return(Array[Value])
+  Branch(Value, BlockRef, Array[Value], BlockRef, Array[Value])
+  Select(Value, Array[BlockRef], Array[Value])
+  Panic
+}
+impl Control {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct Core {
+  pub names : @moonbitlang/core/hashmap.T[String, FnRef]
+  pub funcs : @moonbitlang/core/hashmap.T[FnRef, Fn]
+  pub globals : Array[(String, Value)]
+}
+impl Core {
+  to_pretty_print(Self) -> PrettyCore
+  to_string(Self) -> String
+}
+
+pub struct CoreEnv {
+  pub func_counter : Ref[Int]
+  pub func_fvar_counter : Int
+  pub func_insn_counter : Int
+  pub func_block_counter : Int
+  pub func_mem_counter : Int
+  pub lifted_func_counter : Int
+}
+impl CoreEnv {
+  build(Self, @knf.Knf) -> Core!Failure
+  inherit(Self) -> Self
+  new() -> Self
+  to_string(Self) -> String
+}
+
+pub struct Ctx {
+  pub ty_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, @closure.LowType]
+  pub name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
+  pub top_name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
+}
+impl Ctx {
+  to_string(Self) -> String
+}
+
+pub enum Fill {
+  Zero
+  Init(Value)
+  Field(Int, Value)
+  Offset(Value, Value)
+}
+impl Fill {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct Fn {
+  pub id : FnRef
+  pub name : String
+  pub ty : @closure.LowType
+  pub fvars : Array[@closure.LowType]
+  pub entry : BlockRef
+  pub blocks : @moonbitlang/core/hashmap.T[BlockRef, Block]
+  pub insns : @moonbitlang/core/hashmap.T[InsnRef, Insn]
+  pub mems : @moonbitlang/core/hashmap.T[MemRef, Mem]
+}
+impl Fn {
+  to_string(Self) -> String
+}
+
+pub type FnFreeVarRef Id
+impl FnFreeVarRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub type FnParamRef Id
+impl FnParamRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub type FnRef Id
+impl FnRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+type FreeNames
+
+pub struct Id {
+  pub id : Int
+}
+impl Id {
+  hash_combine(Self, Hasher) -> Unit
+  new(Int) -> Self
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub enum Insn {
+  Op(@closure.LowType, Op, Array[Value])
+  Call(@closure.LowType, Value, Array[Value])
+  Apply(@closure.LowType, Value, Array[Value])
+  ExtCall(@closure.LowType, String, Array[Value])
+  Alloc(@closure.LowType, MemRef, Array[Fill])
+  Store(@closure.LowType, MemAccess, Value)
+  Load(@closure.LowType, MemAccess)
+}
+impl Insn {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub type InsnRef Id
+impl InsnRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct Loop {
+  pub parent : LoopRef
+  pub blocks : Array[BlockRef]
+}
+impl Loop {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub type LoopRef Id
+impl LoopRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub enum Mem {
+  Heap(@closure.LowType, Value)
+  Stack(@closure.LowType, Value)
+}
+impl Mem {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub enum MemAccess {
+  Field(@closure.LowType, Value, Int)
+  Offset(@closure.LowType, Value, Value)
+}
+impl MemAccess {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub type MemRef Id
+impl MemRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub enum Op {
+  Add
+  Sub
+  Mul
+  Div
+  Neg
+  Lnot
+  Eq
+  Le
+}
+impl Op {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct PrettyCore {
+  pub core : Core
+}
+impl PrettyCore {
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub enum Value {
+  Unit
+  Bool(Bool)
+  Int(Int)
+  Double(Double)
+  Insn(InsnRef)
+  Mem(MemRef)
+  Fn(FnRef)
+  GlobalThunk(FnRef)
+  FreeVar(@closure.LowType, FnFreeVarRef)
+  BlockParam(BlockRef, BlockParamRef)
+  FnParam(FnRef, FnParamRef)
+  Self(FnRef)
+}
+impl Value {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+// Type aliases
+pub typealias MutMap[K, V] = @moonbitlang/core/hashmap.T[K, V]
+
+pub typealias Type = @closure.LowType
+
+// Traits
+
+// Extension Methods
+impl Show for BasicBlock
+
+impl Show for Block
+
+impl Show for Control
+
+impl Show for Core
+
+impl Show for CoreEnv
+
+impl Show for Ctx
+
+impl Show for Fill
+
+impl Show for Fn
+
+impl Show for Id
+
+impl Show for Insn
+
+impl Show for Loop
+
+impl Show for Mem
+
+impl Show for MemAccess
+
+impl Show for Op
+
+impl Show for Value
+
