@@ -9,7 +9,7 @@ pub enum LowType {
   Tuple(Array[LowType])
   Array(LowType)
   Ptr
-} derive(Show)
+} derive(Show, Eq)
 
 pub fn LowType::is_ptr_like(self : LowType) -> Bool {
   match self {

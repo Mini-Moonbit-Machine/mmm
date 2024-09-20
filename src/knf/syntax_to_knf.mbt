@@ -31,14 +31,9 @@ fn KnfEnv::new_named_temp(self : KnfEnv, name : Name) -> Name {
 }
 
 pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
-  let const_1 = try {
-    Name::from_string!("<const_1>")
-  } catch {
-    _ => fail!("invalid constant name")
-  }
-  let let_list = [Binding::Let(const_1, @types.Type::Int, Int(1))]
-  let name_env = NameEnv::new().add("<const_1>", const_1)
-  let local_env = @typer.externals().add("<const_1>", @types.Type::Int)
+  let let_list = []
+  let name_env = NameEnv::new()
+  let local_env = @typer.externals()
   let r = self.build_knf!(s, let_list, name_env, local_env)
   bind_all(r)
 }
@@ -145,9 +140,11 @@ fn build_knf(
       (Tuple(ys), Tuple(tys), let_list)
     }
     Not(xs) => {
-      let r = self.build_knf!(xs, let_list, env, ty_env)
-      let tmp = self.materialize_knf(r, let_list)
-      (IfEq(tmp, env.find("<const_1>").unwrap(), Int(0), Int(1)), Int, let_list)
+      let r1 = self.build_knf!(xs, let_list, env, ty_env)
+      let tmp = self.materialize_knf(r1, let_list)
+      let r2 = self.build_knf!(Int(1), let_list, env, ty_env)
+      let const_1 = self.materialize_knf(r2, let_list)
+      (IfEq(tmp, const_1, Int(0), Int(1)), Int, let_list)
     }
     Array(len, elem) => {
       let r1 = self.build_knf!(len, let_list, env, ty_env)
@@ -277,11 +274,9 @@ fn build_knf(
       let r1 = self.build_knf!(y, ll1, env, ty_env)
       let ll2 = []
       let r2 = self.build_knf!(z, ll2, env, ty_env)
-      (
-        IfEq(x, env.find("<const_1>").unwrap(), bind_all(r1), bind_all(r2)),
-        r1.1,
-        let_list,
-      )
+      let r3 = self.build_knf!(Int(1), let_list, env, ty_env)
+      let const_1 = self.materialize_knf(r3, let_list)
+      (IfEq(x, const_1, bind_all(r1), bind_all(r2)), r1.1, let_list)
     }
     Prim(o1, o2, op, kind=Some(@types.Kind::Int)) => {
       let r1 = self.build_knf!(o1, let_list, env, ty_env)
