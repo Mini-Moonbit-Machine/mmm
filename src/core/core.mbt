@@ -138,7 +138,7 @@ pub enum Value {
   Int(Int)
   Double(Double)
   Insn(InsnRef)
-  Mem(MemRef)
+  Mem(FnRef, MemRef)
   Fn(FnRef)
   GlobalThunk(FnRef)
   FreeVar(Type, FnFreeVarRef)
