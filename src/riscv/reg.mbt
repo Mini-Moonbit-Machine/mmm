@@ -39,9 +39,10 @@ pub enum Reg {
   T4
   T5
   T6
+  V(Int)
 } derive(Eq, Compare, Hash)
 
-pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5] // T6 <- swap
+pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
 
 pub let reg_saved_list : Array[Reg] = [
   // S0, <- fp
@@ -55,8 +56,8 @@ pub let reg_saved_list : Array[Reg] = [
   S8,
   S9,
   S10,
+  S11,
 ]
-// S11, <- closure pointer
 
 pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7]
 
@@ -109,6 +110,7 @@ pub fn Reg::to_string(self : Reg) -> String {
     T4 => "t4"
     T5 => "t5"
     T6 => "t6"
+    V(i) => "v\{i}"
   }
 }
 
@@ -150,6 +152,7 @@ pub enum FReg {
   Ft9
   Ft10
   Ft11
+  Fv(Int)
 } derive(Eq, Compare, Hash)
 
 pub let freg_temp_list : Array[FReg] = [
@@ -228,6 +231,7 @@ pub fn FReg::to_string(self : FReg) -> String {
     Ft9 => "ft9"
     Ft10 => "ft10"
     Ft11 => "ft11"
+    Fv(i) => "fv\{i}"
   }
 }
 

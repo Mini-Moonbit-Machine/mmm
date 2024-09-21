@@ -4,6 +4,8 @@ pub fn CoreInterpreter::new() -> CoreInterpreter {
   CoreInterpreter::{  }
 }
 
+let trace = false
+
 typealias Fn = @core.Fn
 
 typealias FnRef = @core.FnRef
@@ -47,7 +49,7 @@ enum Object {
 } derive(Show)
 
 pub struct Ctx {
-  heap : MutMap[MemRef, Object]
+  heap : MutMap[(FnRef, MemRef), Object]
   stack : Map[MemRef, Object]
   global : Map[FnRef, Object]
   funcs : MutMap[FnRef, Fn]
@@ -126,8 +128,13 @@ fn Ctx::update_insn(self : Ctx, ir : InsnRef, obj : Object) -> Ctx {
   }
 }
 
-fn Ctx::update_heap(self : Ctx, mem : MemRef, obj : Object) -> Ctx {
-  self.heap.set(mem, obj)
+fn Ctx::update_heap(
+  self : Ctx,
+  func : FnRef,
+  mem : MemRef,
+  obj : Object
+) -> Ctx {
+  self.heap.set((func, mem), obj)
   self
 }
 
@@ -215,7 +222,13 @@ fn CoreInterpreter::eval_bb(
       Some(insn) => insn
       None => return fail!("insn not found: \{ir}")
     }
+    if trace {
+      println(":::: \{func.name} \{ir} = \{insn}")
+    }
     let (ctx2, obj) = self.eval_insn!(ctx, func, insn)
+    if trace {
+      println(":::: \{func.name} \{ir} |-> \{obj}")
+    }
     ctx = ctx2.update_insn(ir, obj)
   }
   self.eval_control!(ctx, func, bb.control)
@@ -237,13 +250,25 @@ fn CoreInterpreter::eval_fills(
           }
           Field(i, v) => {
             let v = CoreInterpreter::eval_value!(ctx, v)
+            if i < fields.length() {
+              fields[i] = v
+            } else {
+              fail!("field index out of bounds: \{i} out of \{fields.length()}")
+            }
             fields[i] = v
           }
           Offset(i, v) => {
             let i = CoreInterpreter::eval_value!(ctx, i)
             let v = CoreInterpreter::eval_value!(ctx, v)
             match (i, v) {
-              (Int(i), v) => fields[i] = v
+              (Int(i), v) =>
+                if i < fields.length() {
+                  fields[i] = v
+                } else {
+                  fail!(
+                    "field index out of bounds: \{i} out of \{fields.length()}",
+                  )
+                }
               _ => fail!("not an integer offset")
             }
           }
@@ -364,7 +389,7 @@ fn CoreInterpreter::eval_insn(
                 ),
               )
             }
-            _ => fail!("not a function")
+            _ as f0 => fail!("not a function: \{f0}")
           }
         _ => fail!("not a closure")
       }
@@ -464,7 +489,7 @@ fn CoreInterpreter::eval_insn(
             _ => fail!("not an integer")
           }
           CoreInterpreter::eval_fills!(ctx, fill, obj)
-          ctx = ctx.update_heap(mr, obj)
+          ctx = ctx.update_heap(func.id, mr, obj)
         }
         Stack(_, len) => {
           let len = CoreInterpreter::eval_value!(ctx, len)
@@ -487,7 +512,14 @@ fn CoreInterpreter::eval_insn(
         Field(_, m, n) => {
           let m = CoreInterpreter::eval_value!(ctx, m)
           match m {
-            Object::Mem(~fields) => fields[n] = val
+            Object::Mem(~fields) =>
+              if n < fields.length() {
+                fields[n] = val
+              } else {
+                fail!(
+                  "field index out of bounds: \{n} out of \{fields.length()}",
+                )
+              }
             _ => fail!("eval \{st}: not a mem object: \{m}, \{n}")
           }
         }
@@ -495,7 +527,14 @@ fn CoreInterpreter::eval_insn(
           let m = CoreInterpreter::eval_value!(ctx, m)
           let n = CoreInterpreter::eval_value!(ctx, n)
           match (m, n) {
-            (Object::Mem(~fields), Int(n)) => fields[n] = val
+            (Object::Mem(~fields), Int(n)) =>
+              if n < fields.length() {
+                fields[n] = val
+              } else {
+                fail!(
+                  "field index out of bounds: \{n} out of \{fields.length()}",
+                )
+              }
             _ => fail!("eval \{st}: not a mem object: \{m}, \{n}")
           }
         }
@@ -507,16 +546,33 @@ fn CoreInterpreter::eval_insn(
         Field(_, m, n) => {
           let m = CoreInterpreter::eval_value!(ctx, m)
           match m {
-            Object::Mem(~fields) => fields[n]
-            _ => return fail!("not a mem object")
+            Object::Mem(~fields) =>
+              if n < fields.length() {
+                fields[n]
+              } else {
+                fail!(
+                  "field index out of bounds: \{n} out of \{fields.length()}",
+                )
+              }
+            _ as m => fail!("not a mem object \{m}")
           }
         }
         Offset(_, m, n) => {
           let m = CoreInterpreter::eval_value!(ctx, m)
           let n = CoreInterpreter::eval_value!(ctx, n)
           match (m, n) {
-            (Object::Mem(~fields), Int(n)) => fields[n]
-            _ => return fail!("not a mem object")
+            (Object::Mem(~fields), Int(n)) =>
+              if n < fields.length() {
+                fields[n]
+              } else {
+                fail!(
+                  "field index out of bounds: \{n} out of \{fields.length()}",
+                )
+              }
+            _ =>
+              fail!(
+                "not a mem object, or the offset is not an integer: \{m}, \{n}",
+              )
           }
         }
       }
@@ -598,13 +654,17 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
       }
       obj
     }
-    Mem(m) => {
+    Mem(func, m) => {
+      if trace {
+        println(":::: stack \{ctx.stack}")
+        println(":::: heap \{ctx.heap}")
+      }
       let obj = match ctx.stack.find(m) {
         Some(obj) => obj
         None =>
-          match ctx.heap.get(m) {
+          match ctx.heap.get((func, m)) {
             Some(obj) => obj
-            None => return fail!("mem not in stack or heap")
+            None => fail!("mem not in stack or heap")
           }
       }
       obj
@@ -618,12 +678,15 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
       gbl
     }
     FreeVar(_, FnFreeVarRef({ id })) => {
+      if trace {
+        println(":::: closure \{ctx.closure}")
+      }
       let fld = match ctx.closure {
         Mem(~fields) =>
           if id < fields.length() {
             fields[id]
           } else {
-            fail!("free var not found")
+            fail!("free var not found: \{id} out of \{fields.length()}")
           }
         _ => fail!("unexpected closure: \{ctx.closure}")
       }

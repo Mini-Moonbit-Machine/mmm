@@ -192,7 +192,7 @@ fn build_func_def(
   core.names.set(fd.name.to_string(), func_ref)
   core.funcs.set(func_ref, func)
   let entry_block = self.add_basic_block(func, [])
-  let (exit_block, exit_val) = self.build_knf_expr!(
+  let (_, exit_block, exit_val) = self.build_knf_expr!(
     free_names, ctx, core, func, entry_block, body,
   )
   guard exit_block.control == Control::Panic else { fail!("expect panic") }
@@ -244,7 +244,7 @@ fn build_closure(
         fill.push(Fill::Field(i + 1, val))
       }
       let _ = self.add_insn(func, bb, Insn::Alloc(ty, mem, fill))
-      (ctx, Value::Mem(mem))
+      (ctx, Value::Mem(func.id, mem))
     }
     _ => (ctx, val)
   }
@@ -392,7 +392,11 @@ fn get_type(
         _ => fail!("not a function type")
       }
     }
-    Mem(mem) => {
+    Mem(funcref, mem) => {
+      let func = match core.funcs.get(funcref) {
+        Some(func) => func
+        None => fail!("func not found")
+      }
       let mem = match func.mems.get(mem) {
         Some(mem) => mem
         None => fail!("mem not found")
@@ -495,48 +499,50 @@ fn build_knf_expr(
   func : Fn,
   bb : BasicBlock,
   knf : Knf
-) -> (BasicBlock, Value)!Failure {
+) -> (Ctx, BasicBlock, Value)!Failure {
   match knf {
-    Unit => (bb, Value::Unit)
-    Int(i) => (bb, Value::Int(i))
-    Double(d) => (bb, Value::Double(d))
+    Unit => (ctx, bb, Value::Unit)
+    Int(i) => (ctx, bb, Value::Int(i))
+    Double(d) => (ctx, bb, Value::Double(d))
     Neg(n) | FNeg(n) => {
-      let (_, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)
+      let (ctx, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)
       let n_ty = self.get_type!(core, func, bb, n_val)
       let insn = Insn::Op(n_ty, Op::Neg, [n_val])
       let val = self.add_insn(func, bb, insn)
-      (bb, val)
+      (ctx, bb, val)
     }
     Add(n1, n2)
     | FAdd(n1, n2)
     | Sub(n1, n2)
     | FSub(n1, n2) | Mul(n1, n2) | FMul(n1, n2) | Div(n1, n2) | FDiv(n1, n2) => {
       let (ctx, n1_val) = self.build_name!(free_names, ctx, core, func, bb, n1)
-      let (_, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
+      let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
       let n1_ty = self.get_type!(core, func, bb, n1_val)
       let n2_ty = self.get_type!(core, func, bb, n2_val)
       guard n1_ty == n2_ty else { fail!("type mismatch \{n1_ty} != \{n2_ty}") }
       let insn = Insn::Op(n1_ty, Op::from_knf(knf).unwrap(), [n1_val, n2_val])
       let val = self.add_insn(func, bb, insn)
-      (bb, val)
+      (ctx, bb, val)
     }
     IfEq(n1, n2, e1, e2) | IfLe(n1, n2, e1, e2) => {
       let (ctx, n1_val) = self.build_name!(free_names, ctx, core, func, bb, n1)
-      let (_, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
+      let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
       let cond = Insn::Op(Bool, Op::from_knf(knf).unwrap(), [n1_val, n2_val])
       let cond_val = self.add_insn(func, bb, cond)
       let then_bb_s = self.add_basic_block(func, [])
       let else_bb_s = self.add_basic_block(func, [])
       let e1_free_names = FreeNames::new()
-      let (then_bb, then_val) = self.build_knf_expr!(
+      let (ctx1, then_bb, then_val) = self.build_knf_expr!(
         e1_free_names, ctx, core, func, then_bb_s, e1,
       )
-      let e2_free_names = FreeNames::new()
-      let (else_bb, else_val) = self.build_knf_expr!(
-        e2_free_names, ctx, core, func, else_bb_s, e2,
-      )
+      // NOTICE: merge ctx instead of ctx1
       self.merge(ctx, free_names, e1_free_names)
-      self.merge(ctx, free_names, e2_free_names)
+      let e2_free_names = FreeNames::new()
+      let (ctx, else_bb, else_val) = self.build_knf_expr!(
+        e2_free_names, ctx1, core, func, else_bb_s, e2,
+      )
+      // NOTICE: merge ctx1 instead of ctx
+      self.merge(ctx1, free_names, e2_free_names)
       let then_ty = self.get_type!(core, func, bb, then_val)
       let else_ty = self.get_type!(core, func, bb, else_val)
       guard then_ty == else_ty else { fail!("type mismatch") }
@@ -546,15 +552,16 @@ fn build_knf_expr(
       then_bb.control = then_cont
       else_bb.control = else_cont
       bb.control = Control::Branch(cond_val, then_bb_s.id, [], else_bb_s.id, [])
-      (res_bb, Value::BlockParam(res_bb.id, BlockParamRef(Id::new(0))))
+      (ctx, res_bb, Value::BlockParam(res_bb.id, BlockParamRef(Id::new(0))))
     }
     Let((name, ty), e1, e2) => {
       let e1_free_names = FreeNames::new()
-      let (cursor, e1_val) = self.build_knf_expr!(
+      let (ctx1, cursor, e1_val) = self.build_knf_expr!(
         e1_free_names, ctx, core, func, bb, e1,
       )
+      // NOTICE: merge ctx instead of ctx1
       self.merge(ctx, free_names, e1_free_names)
-      let ctx = ctx.add_local_name_value_ty(
+      let ctx = ctx1.add_local_name_value_ty(
         name,
         e1_val,
         self.lower_type!(ty, false),
@@ -563,7 +570,7 @@ fn build_knf_expr(
     }
     Var(name) => {
       let (_, val) = self.build_name!(free_names, ctx, core, func, bb, name)
-      (bb, val)
+      (ctx, bb, val)
     }
     LetRec(fd, other) => {
       let sub_free_names = FreeNames::new()
@@ -589,7 +596,7 @@ fn build_knf_expr(
       let (ctx, f_val) = self.build_name_without_top_level_closure!(
         free_names, ctx, core, func, bb, f,
       )
-      let (_, arg_vals) = self.build_names!(
+      let (ctx, arg_vals) = self.build_names!(
         free_names, ctx, core, func, bb, args,
       )
       let f_ty = self.get_type!(core, func, bb, f_val)
@@ -599,10 +606,10 @@ fn build_knf_expr(
         _ => fail!("not a function: \{f_val} is \{f_ty}")
       }
       let val = self.add_insn(func, bb, insn)
-      (bb, val)
+      (ctx, bb, val)
     }
     Tuple(xs) => {
-      let (_, xs_val) = self.build_names!(free_names, ctx, core, func, bb, xs)
+      let (ctx, xs_val) = self.build_names!(free_names, ctx, core, func, bb, xs)
       let tys = []
       for x in xs_val {
         tys.push(self.get_type!(core, func, bb, x))
@@ -618,7 +625,7 @@ fn build_knf_expr(
         fill.push(Fill::Field(i, x_val))
       }
       let _ = self.add_insn(func, bb, Insn::Alloc(ty, mem, fill))
-      (bb, Value::Mem(mem))
+      (ctx, bb, Value::Mem(func.id, mem))
     }
     LetTuple(fields, x, e) => {
       let (ctx, x_val) = self.build_name!(free_names, ctx, core, func, bb, x)
@@ -637,7 +644,9 @@ fn build_knf_expr(
     }
     Get(x, idx) => {
       let (ctx, x_val) = self.build_name!(free_names, ctx, core, func, bb, x)
-      let (_, idx_val) = self.build_name!(free_names, ctx, core, func, bb, idx)
+      let (ctx, idx_val) = self.build_name!(
+        free_names, ctx, core, func, bb, idx,
+      )
       let ty = self.get_type!(core, func, bb, x_val)
       let ty = match ty {
         Array(ty) => ty
@@ -648,14 +657,14 @@ fn build_knf_expr(
         bb,
         Insn::Load(ty, MemAccess::Offset(ty, x_val, idx_val)),
       )
-      (bb, val)
+      (ctx, bb, val)
     }
     Put(x, idx, y) => {
       let (ctx, x_val) = self.build_name!(free_names, ctx, core, func, bb, x)
       let (ctx, idx_val) = self.build_name!(
         free_names, ctx, core, func, bb, idx,
       )
-      let (_, y_val) = self.build_name!(free_names, ctx, core, func, bb, y)
+      let (ctx, y_val) = self.build_name!(free_names, ctx, core, func, bb, y)
       let ty = match self.get_type!(core, func, bb, x_val) {
         Array(ty) => ty
         _ => fail!("not an array")
@@ -665,7 +674,7 @@ fn build_knf_expr(
         bb,
         Insn::Store(ty, MemAccess::Offset(ty, x_val, idx_val), y_val),
       )
-      (bb, Value::Unit)
+      (ctx, bb, Value::Unit)
     }
     ExternalArray(_) => fail!("not supported")
     ExternalFunctionApplication(f, args) =>
@@ -673,7 +682,7 @@ fn build_knf_expr(
         "minimbt_create_array"
         | "minimbt_create_float_array" | "minimbt_create_ptr_array" => {
           // They are ACTUALLY alloc and store
-          let (_, arg_vals) = self.build_names!(
+          let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,
           )
           let ty = match f {
@@ -693,10 +702,10 @@ fn build_knf_expr(
             bb,
             Insn::Alloc(ty, mem, [Fill::Init(init)]),
           )
-          (bb, Value::Mem(mem))
+          (ctx, bb, Value::Mem(func.id, mem))
         }
         _ => {
-          let (_, arg_vals) = self.build_names!(
+          let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,
           )
           let f_ty = self.get_external_function_type!(f)
@@ -706,7 +715,7 @@ fn build_knf_expr(
           }
           let insn = Insn::ExtCall(res_ty, f, arg_vals)
           let val = self.add_insn(func, bb, insn)
-          (bb, val)
+          (ctx, bb, val)
         }
       }
   }

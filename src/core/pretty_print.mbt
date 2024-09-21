@@ -64,7 +64,8 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
       logger.write_string("$f\{id}.\{id2}")
     GlobalThunk(ref) => logger.write_string("\{ref}()")
     FreeVar(_, ref) => logger.write_string("\{ref}")
-    Mem(ref) => logger.write_string("\{ref}")
+    Mem(FnRef({ id }), MemRef({ id: id2 })) =>
+      logger.write_string("f\{id}.m\{id2}")
     Fn(ref) => logger.write_string("\{ref}")
     Self(_) => logger.write_string("self")
   }
