@@ -60,8 +60,7 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
     Insn(ref) => logger.write_string("\{ref}")
     BlockParam(BlockRef({ id }), BlockParamRef({ id: id2 })) =>
       logger.write_string("$b\{id}.\{id2}")
-    FnParam(FnRef({ id }), FnParamRef({ id: id2 })) =>
-      logger.write_string("$f\{id}.\{id2}")
+    FnParam(_, FnParamRef({ id })) => logger.write_string("$f\{id}")
     GlobalThunk(ref) => logger.write_string("\{ref}()")
     FreeVar(_, ref) => logger.write_string("\{ref}")
     Mem(FnRef({ id }), MemRef({ id: id2 })) =>
@@ -244,13 +243,11 @@ fn print_insn(
       print_fills(logger, init)
       logger.write_string("\n")
     }
-    Store(ty, mem, value) => {
+    Store(_, mem, value) => {
       logger.write_string("let _ = store ")
       print_mem_access(logger, func, mem)
       logger.write_string(" <- ")
       print_value(logger, value)
-      logger.write_string(" : ")
-      print_type(logger, ty)
       logger.write_string("\n")
     }
     Load(ty, mem) => {
@@ -300,6 +297,19 @@ fn print_func(logger : @util.IndentLogger, val : Fn) -> Unit {
 }
 
 fn print(logger : @util.IndentLogger, val : Core) -> Unit {
+  logger.write_string(
+    #|# name conventions used in the core ir:
+    #|# - functions: f<id>
+    #|# - blocks: b<id>
+    #|# - instructions: %<id>
+    #|# - memory: m<id>
+    #|# - free variables: ^<id>
+    #|# - function parameters: $f<pid>
+    #|# - block parameters: $b<bid>.<pid>
+    #|.core
+    #|
+    ,
+  )
   for func in val.names {
     let (_, fref) = func
     let func = val.funcs.get(fref).unwrap()

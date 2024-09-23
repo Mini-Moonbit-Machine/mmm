@@ -408,7 +408,7 @@ fn CoreInterpreter::eval_insn(
         "print_char" => {
           guard args.length() == 1 else { fail!("print_char expects 1 arg") }
           match args[0] {
-            Int(x) => println("\{x.reinterpret_as_uint()}")
+            Int(x) => println("\{Char::from_int(x)}")
             _ => fail!("print_char expects Int")
           }
           (ctx, Unit)
