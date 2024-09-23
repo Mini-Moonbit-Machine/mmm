@@ -405,10 +405,10 @@ pub fn Parser::parse_expr_with_level(
           ntokens += rhs.ntokens
           match op {
             "-" => Syntax::Neg(rhs.inner, kind=None)
-            _ => fail!("unexpected prefix operator in expression")
+            _ => fail!("unexpected prefix operator \{op} in expression")
           }
         }
-        None => fail!("unexpected prefix operator in expression")
+        None => fail!("unexpected prefix operator \{op} in expression")
       }
     _ => fail!("unexpected token when parsing expr: \{lhs_token.inner}")
   }
