@@ -78,6 +78,32 @@ fn materialize_knf(self : KnfEnv, knf : KnfResult, let_list : LetList) -> Name {
   }
 }
 
+fn materialize_knf_with_name(
+  self : KnfEnv,
+  knf : KnfResult,
+  let_list : LetList,
+  name : String
+) -> Name!Failure {
+  match knf {
+    (Knf::Var(x), _, _) => x
+    (k, ty, _) => {
+      let temp = self.new_named_temp(
+        try {
+          if name == "_" {
+            self.new_temp()
+          } else {
+            Name::from_string!(name)
+          }
+        } catch {
+          _ => fail!("invalid variable name: \{name}")
+        },
+      )
+      let_list.push(Binding::Let(temp, ty, k))
+      temp
+    }
+  }
+}
+
 fn make_name(self : KnfEnv, name : String) -> Name!Failure {
   try {
     if name == "_" {
@@ -306,7 +332,7 @@ fn build_knf(
     }
     Let((x, ty), e1, e2) => {
       let r1 = self.build_knf!(e1, let_list, env, ty_env)
-      let e1 = self.materialize_knf(r1, let_list)
+      let e1 = self.materialize_knf_with_name!(r1, let_list, x)
       let env = env.add(x, e1)
       let ty_env = ty_env.add(x, ty)
       let r2 = self.build_knf!(e2, let_list, env, ty_env)
