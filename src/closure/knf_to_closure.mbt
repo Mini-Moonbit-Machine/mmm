@@ -154,14 +154,18 @@ fn build_closure(
     FMul(x, y) => (FMul(x, y), func_def_list, let_list)
     FDiv(x, y) => (FDiv(x, y), func_def_list, let_list)
     IfEq(x, y, k1, k2) => {
-      let (e1, func_def_list, let_list) = self.build_closure!(k1, func_def_list, let_list, ty_env)
-      let (e2, func_def_list, let_list) = self.build_closure!(k2, func_def_list, let_list, ty_env)
-      (IfEq(x, y, e1, e2), func_def_list, let_list)
+      let let_k1 = []
+      let r1 = self.build_closure!(k1, func_def_list, let_k1, ty_env)
+      let let_k2 = []
+      let r2 = self.build_closure!(k2, func_def_list, let_k2, ty_env)
+      (IfEq(x, y, bind_all(r1), bind_all(r2)), func_def_list, let_list)
     }
     IfLe(x, y, k1, k2) => {
-      let (e1, func_def_list, let_list) = self.build_closure!(k1, func_def_list, let_list, ty_env)
-      let (e2, func_def_list, let_list) = self.build_closure!(k2, func_def_list, let_list, ty_env)
-      (IfLe(x, y, e1, e2), func_def_list, let_list)
+      let let_k1 = []
+      let r1 = self.build_closure!(k1, func_def_list, let_k1, ty_env)
+      let let_k2 = []
+      let r2 = self.build_closure!(k2, func_def_list, let_k2, ty_env)
+      (IfLe(x, y, bind_all(r1), bind_all(r2)), func_def_list, let_list)
     }
     Tuple(fields) => (MakeTuple(fields), func_def_list, let_list)
     Get(array, index) => (ArrayGet(array, index), func_def_list, let_list)
