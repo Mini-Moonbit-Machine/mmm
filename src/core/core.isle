@@ -1,0 +1,85 @@
+(type FnRef (primitive FnRef))
+(type BlockRef (primitive BlockRef))
+(type InsnRef (primitive InsnRef))
+(type BlockParamRef (primitive BlockParamRef))
+(type FnParamRef (primitive FnParamRef))
+(type FnFreeVarRef (primitive FnFreeVarRef))
+(type LoopRef (primitive LoopRef))
+(type MemRef (primitive MemRef))
+
+(type Types (primitive Types))
+(type Values (primitive Values))
+(type BlockRefs (primitive BlockRefs))
+(type Fills (primitive Fills))
+
+(type Type extern
+  (enum
+    Unit
+    Bool
+    Int
+    Double
+    (ClosureFn (params Types) (ty Type))
+    (DirectFn (params Types) (ty Type))
+    (Tuple (fields Types))
+    (Array (elem Type))
+    Ptr))
+
+(type Value extern
+  (enum
+    Unit
+    (Bool (val Bool))
+    (Double (val Double))
+    (Insn (iref InsnRef))
+    (Mem (iref MemRef))
+    (Fn (iref FnRef))
+    (GlobalThunk (iref FnRef))
+    (FreeVar (ty Unit) (fvref FnFreeVarRef))
+    (BlockParam (bref BlockRef) (bpref BlockParamRef))
+    (FnParam (fref FnRef) (fpref FnParamRef))
+    (Self (fref FnRef))))
+
+(type Op extern
+  (enum
+    Add
+    Sub
+    Mul
+    Div
+    Neg
+    Lnot
+    Eq
+    Le))
+
+(type Insn extern
+  (enum
+    (Op (ty Type) (op Op) (args Values))
+    (Call (ty Type) (f Value) (args Values))
+    (Apply (ty Type) (f Value) (args Values))
+    (ExtCall (ty Type) (ext_f Value) (args Values))
+    (Alloc (ty Type) (mref MemRef) (fills Fills))
+    (Store (ty Type) (ma MemAccess) (val Value))
+    (Load (ty Type) (ma MemAccess))))
+
+(type Fill extern
+  (enum
+    Zero
+    (Init (val Value))
+    (Field (index Int32) (val Value))
+    (Offset (offset Int32) (val Value))))
+
+(type Mem extern
+  (enum
+    (Heap (ty Type) (len Value))
+    (Stack (ty Type) (len Value))))
+
+(type MemAccess extern
+  (enum
+    (Field (ty Type) (val Value) (index Int32))
+    (Offset (ty Type) (val Value) (offset Int32))))
+
+(type Control extern
+  (enum
+    (Jump (target BlockRef) (args Values))
+    (Return (args Values))
+    (Branch (cond Value) (t BlockRef) (t_args Values) (f BlockRef) (f_args Values))
+    (Select (cond Value) (targets BlockRefs) (args Values))
+    Panic))
