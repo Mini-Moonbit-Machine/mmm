@@ -126,25 +126,35 @@ pub struct Loop {
 } derive(Show, Eq)
 
 pub enum Block {
-  BasicBlock(BasicBlock)
-  Loop(Loop)
+  BasicBlock(~bb : BasicBlock)
+  Loop(~l : Loop)
 } derive(Show)
 
-pub typealias Type = @closure.LowType
+pub enum Type {
+  Unit
+  Bool
+  Int
+  Double
+  ClosureFn(~params : Array[Type], ~ty : Type) // (fn_ptr, closure_args...)
+  DirectFn(~params : Array[Type], ~ty : Type) // fn_ptr itself
+  Tuple(~fields : Array[Type])
+  Array(~elem : Type)
+  Ptr
+} derive(Show, Eq)
 
 pub enum Value {
   Unit
-  Bool(Bool)
-  Int(Int)
-  Double(Double)
-  Insn(InsnRef)
-  Mem(FnRef, MemRef)
-  Fn(FnRef)
-  GlobalThunk(FnRef)
-  FreeVar(Type, FnFreeVarRef)
-  BlockParam(BlockRef, BlockParamRef)
-  FnParam(FnRef, FnParamRef)
-  Self(FnRef)
+  Bool(~val : Bool)
+  Int(~val : Int)
+  Double(~val : Double)
+  Insn(~iref : InsnRef)
+  Mem(~fref : FnRef, ~mref : MemRef)
+  Fn(~fref : FnRef)
+  GlobalThunk(~fref : FnRef)
+  FreeVar(~ty : Type, ~fvref : FnFreeVarRef)
+  BlockParam(~bref : BlockRef, ~bpref : BlockParamRef)
+  FnParam(~fref : FnRef, ~fpref : FnParamRef)
+  Self(~fref : FnRef)
 } derive(Show, Eq)
 
 pub enum Op {
@@ -159,38 +169,44 @@ pub enum Op {
 } derive(Show, Eq)
 
 pub enum Insn {
-  Op(Type, Op, Array[Value])
-  Call(Type, Value, Array[Value])
-  Apply(Type, Value, Array[Value])
-  ExtCall(Type, String, Array[Value])
-  Alloc(Type, MemRef, Array[Fill])
-  Store(Type, MemAccess, Value)
-  Load(Type, MemAccess)
+  Op(~ty : Type, ~op : Op, ~args : Array[Value])
+  Call(~ty : Type, ~f : Value, ~args : Array[Value])
+  Apply(~ty : Type, ~f : Value, ~args : Array[Value])
+  ExtCall(~ty : Type, ~ext_f : String, ~args : Array[Value])
+  Alloc(~ty : Type, ~mref : MemRef, ~fills : Array[Fill])
+  Store(~ty : Type, ~ma : MemAccess, ~val : Value)
+  Load(~ty : Type, ~ma : MemAccess)
 } derive(Show, Eq)
 
 pub enum Fill {
   Zero
-  Init(Value)
-  Field(Int, Value)
-  Offset(Value, Value)
+  Init(~val : Value)
+  Field(~index : Int, ~val : Value)
+  Offset(~offset : Value, ~val : Value)
 } derive(Show, Eq)
 
 // Mem is used to identify a memory region
 pub enum Mem {
-  Heap(Type, Value) // heap memory with given size. Value must be integer-compatible.
-  Stack(Type, Value) // stack memory with given size. Value must be integer-compatible.
+  Heap(~ty : Type, ~len : Value) // heap memory with given size. Value must be integer-compatible.
+  Stack(~ty : Type, ~len : Value) // stack memory with given size. Value must be integer-compatible.
 } derive(Show, Eq)
 
 pub enum MemAccess {
-  Field(Type, Value, Int) // field (constant offset) of memory. Value must be ptr-compatible.
-  Offset(Type, Value, Value) // offset (variable offset) of memory. Value must be ptr-compatible.
+  Field(~ty : Type, ~val : Value, ~index : Int) // field (constant offset) of memory. Value must be ptr-compatible.
+  Offset(~ty : Type, ~val : Value, ~offset : Value) // offset (variable offset) of memory. Value must be ptr-compatible.
 } derive(Show, Eq)
 
 pub enum Control {
-  Jump(BlockRef, Array[Value])
-  Return(Array[Value])
-  Branch(Value, BlockRef, Array[Value], BlockRef, Array[Value])
-  Select(Value, Array[BlockRef], Array[Value])
+  Jump(~target : BlockRef, ~args : Array[Value])
+  Return(~args : Array[Value])
+  Branch(
+    ~cond : Value,
+    ~t : BlockRef,
+    ~t_args : Array[Value],
+    ~f : BlockRef,
+    ~f_args : Array[Value]
+  )
+  Select(~cond : Value, ~targets : Array[BlockRef], ~args : Array[Value])
   Panic
 } derive(Show, Eq)
 

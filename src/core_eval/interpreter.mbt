@@ -173,13 +173,13 @@ pub fn CoreInterpreter::interpret(
   for thunk in globals {
     let (name, value) = thunk
     match value {
-      Value::GlobalThunk(f) => {
-        let func = match funcs.get(f) {
+      Value::GlobalThunk(~fref) => {
+        let func = match funcs.get(fref) {
           Some(func) => func
           None => return fail!("function not found: \{name}")
         }
         let obj = self.eval_fn!(ctx, func)
-        ctx = ctx.update_global(f, obj)
+        ctx = ctx.update_global(fref, obj)
       }
       _ => fail!("unexpected global value")
     }
@@ -205,7 +205,7 @@ fn CoreInterpreter::eval_block(
   block : Block
 ) -> Object!Failure {
   match block {
-    BasicBlock(bb) => self.eval_bb!(ctx, func, bb)
+    BasicBlock(~bb) => self.eval_bb!(ctx, func, bb)
     Loop(_) => fail!("Not implemented")
   }
 }
@@ -244,22 +244,24 @@ fn CoreInterpreter::eval_fills(
       for fill in fills {
         match fill {
           Zero => fields.map_inplace(fn(_i) { Int(0) })
-          Init(v) => {
-            let v = CoreInterpreter::eval_value!(ctx, v)
+          Init(~val) => {
+            let v = CoreInterpreter::eval_value!(ctx, val)
             fields.map_inplace(fn(_i) { v })
           }
-          Field(i, v) => {
-            let v = CoreInterpreter::eval_value!(ctx, v)
-            if i < fields.length() {
-              fields[i] = v
+          Field(~index, ~val) => {
+            let v = CoreInterpreter::eval_value!(ctx, val)
+            if index < fields.length() {
+              fields[index] = v
             } else {
-              fail!("field index out of bounds: \{i} out of \{fields.length()}")
+              fail!(
+                "field index out of bounds: \{index} out of \{fields.length()}",
+              )
             }
-            fields[i] = v
+            fields[index] = v
           }
-          Offset(i, v) => {
-            let i = CoreInterpreter::eval_value!(ctx, i)
-            let v = CoreInterpreter::eval_value!(ctx, v)
+          Offset(~offset, ~val) => {
+            let i = CoreInterpreter::eval_value!(ctx, offset)
+            let v = CoreInterpreter::eval_value!(ctx, val)
             match (i, v) {
               (Int(i), v) =>
                 if i < fields.length() {
@@ -285,8 +287,8 @@ fn CoreInterpreter::eval_insn(
   insn : Insn
 ) -> (Ctx, Object)!Failure {
   match insn {
-    Op(_, op, xs) => {
-      let args = CoreInterpreter::eval_values!(ctx, xs)
+    Op(~op, ~args, ..) => {
+      let args = CoreInterpreter::eval_values!(ctx, args)
       let r = match op {
         Add => {
           guard args.length() == 2 else { fail!("add expects 2 args") }
@@ -355,9 +357,9 @@ fn CoreInterpreter::eval_insn(
       }
       (ctx, r)
     }
-    Call(_, f, xs) => {
+    Call(~f, ~args, ..) => {
       let f = CoreInterpreter::eval_value!(ctx, f)
-      let args = CoreInterpreter::eval_values!(ctx, xs)
+      let args = CoreInterpreter::eval_values!(ctx, args)
       match f {
         FnPtr(f) => {
           let func = match ctx.funcs.get(f) {
@@ -369,10 +371,10 @@ fn CoreInterpreter::eval_insn(
         _ => fail!("not a function")
       }
     }
-    Apply(_, clos, xs) => {
+    Apply(~f, ~args, ..) => {
       // Closure is a mem object, the first field is the function
-      let clos = CoreInterpreter::eval_value!(ctx, clos)
-      let args = CoreInterpreter::eval_values!(ctx, xs)
+      let clos = CoreInterpreter::eval_value!(ctx, f)
+      let args = CoreInterpreter::eval_values!(ctx, args)
       match clos {
         Mem(~fields) =>
           match fields[0] {
@@ -394,9 +396,9 @@ fn CoreInterpreter::eval_insn(
         _ => fail!("not a closure")
       }
     }
-    ExtCall(_, f, xs) => {
-      let args = CoreInterpreter::eval_values!(ctx, xs)
-      match f.substring(start="minimbt_".length(), end=f.length()) {
+    ExtCall(~ext_f, ~args, ..) => {
+      let args = CoreInterpreter::eval_values!(ctx, args)
+      match ext_f.substring(start="minimbt_".length(), end=ext_f.length()) {
         "print_int" => {
           guard args.length() == 1 else { fail!("print_int expects 1 arg") }
           match args[0] {
@@ -472,14 +474,14 @@ fn CoreInterpreter::eval_insn(
         _ => fail!("external function not found")
       }
     }
-    Alloc(_, mr, fill) => {
+    Alloc(~mref, ~fills, ..) => {
       let mut ctx = ctx
-      let mem = match func.mems.get(mr) {
+      let mem = match func.mems.get(mref) {
         Some(mem) => mem
         None => return fail!("mem not found")
       }
       match mem {
-        Heap(_, len) => {
+        Heap(~len, ..) => {
           let len = CoreInterpreter::eval_value!(ctx, len)
           let obj = match len {
             Int(len) => {
@@ -488,10 +490,10 @@ fn CoreInterpreter::eval_insn(
             }
             _ => fail!("not an integer")
           }
-          CoreInterpreter::eval_fills!(ctx, fill, obj)
-          ctx = ctx.update_heap(func.id, mr, obj)
+          CoreInterpreter::eval_fills!(ctx, fills, obj)
+          ctx = ctx.update_heap(func.id, mref, obj)
         }
-        Stack(_, len) => {
+        Stack(~len, ..) => {
           let len = CoreInterpreter::eval_value!(ctx, len)
           let obj = match len {
             Int(len) => {
@@ -500,33 +502,33 @@ fn CoreInterpreter::eval_insn(
             }
             _ => fail!("not an integer")
           }
-          CoreInterpreter::eval_fills!(ctx, fill, obj)
-          ctx = ctx.update_stack(mr, obj)
+          CoreInterpreter::eval_fills!(ctx, fills, obj)
+          ctx = ctx.update_stack(mref, obj)
         }
       }
       (ctx, Object::Unit)
     }
-    Store(_, ma, val) as st => {
+    Store(~ma, ~val, ..) as st => {
       let val = CoreInterpreter::eval_value!(ctx, val)
       match ma {
-        Field(_, m, n) => {
-          let m = CoreInterpreter::eval_value!(ctx, m)
-          match m {
+        Field(val=dst, ~index, ..) => {
+          let dst = CoreInterpreter::eval_value!(ctx, dst)
+          match dst {
             Object::Mem(~fields) =>
-              if n < fields.length() {
-                fields[n] = val
+              if index < fields.length() {
+                fields[index] = val
               } else {
                 fail!(
-                  "field index out of bounds: \{n} out of \{fields.length()}",
+                  "field index out of bounds: \{index} out of \{fields.length()}",
                 )
               }
-            _ => fail!("eval \{st}: not a mem object: \{m}, \{n}")
+            _ => fail!("eval \{st}: not a mem object: \{dst}, \{index}")
           }
         }
-        Offset(_, m, n) => {
-          let m = CoreInterpreter::eval_value!(ctx, m)
-          let n = CoreInterpreter::eval_value!(ctx, n)
-          match (m, n) {
+        Offset(val=dst, ~offset, ..) => {
+          let dst = CoreInterpreter::eval_value!(ctx, dst)
+          let offset = CoreInterpreter::eval_value!(ctx, offset)
+          match (dst, offset) {
             (Object::Mem(~fields), Int(n)) =>
               if n < fields.length() {
                 fields[n] = val
@@ -535,31 +537,31 @@ fn CoreInterpreter::eval_insn(
                   "field index out of bounds: \{n} out of \{fields.length()}",
                 )
               }
-            _ => fail!("eval \{st}: not a mem object: \{m}, \{n}")
+            _ => fail!("eval \{st}: not a mem object: \{val}, \{offset}")
           }
         }
       }
       (ctx, Object::Unit)
     }
-    Load(_, ma) => {
+    Load(~ma, ..) => {
       let obj = match ma {
-        Field(_, m, n) => {
-          let m = CoreInterpreter::eval_value!(ctx, m)
-          match m {
+        Field(~val, ~index, ..) => {
+          let val = CoreInterpreter::eval_value!(ctx, val)
+          match val {
             Object::Mem(~fields) =>
-              if n < fields.length() {
-                fields[n]
+              if index < fields.length() {
+                fields[index]
               } else {
                 fail!(
-                  "field index out of bounds: \{n} out of \{fields.length()}",
+                  "field index out of bounds: \{index} out of \{fields.length()}",
                 )
               }
             _ as m => fail!("not a mem object \{m}")
           }
         }
-        Offset(_, m, n) => {
-          let m = CoreInterpreter::eval_value!(ctx, m)
-          let n = CoreInterpreter::eval_value!(ctx, n)
+        Offset(val=dst, ~offset, ..) => {
+          let m = CoreInterpreter::eval_value!(ctx, dst)
+          let n = CoreInterpreter::eval_value!(ctx, offset)
           match (m, n) {
             (Object::Mem(~fields), Int(n)) =>
               if n < fields.length() {
@@ -588,24 +590,24 @@ fn CoreInterpreter::eval_control(
   control : Control
 ) -> Object!Failure {
   match control {
-    Jump(blk, args) => {
-      let block = match func.blocks.get(blk) {
+    Jump(~target, ~args) => {
+      let block = match func.blocks.get(target) {
         Some(block) => block
-        None => return fail!("block not found: \{blk}")
+        None => return fail!("block not found: \{target}")
       }
       let args2 = CoreInterpreter::eval_values!(ctx, args)
-      let ctx = ctx.set_block_args(blk, args2)
+      let ctx = ctx.set_block_args(target, args2)
       self.eval_block!(ctx, func, block)
     }
-    Return(xs) => {
-      guard xs.length() == 1 else { fail!("multiple return values") }
-      CoreInterpreter::eval_value!(ctx, xs[0])
+    Return(~args) => {
+      guard args.length() == 1 else { fail!("multiple return values") }
+      CoreInterpreter::eval_value!(ctx, args[0])
     }
-    Branch(cond, t, targs, f, fargs) => {
+    Branch(~cond, ~t, ~t_args, ~f, ~f_args) => {
       let cond = CoreInterpreter::eval_value!(ctx, cond)
       match cond {
         Bool(true) => {
-          let args = CoreInterpreter::eval_values!(ctx, targs)
+          let args = CoreInterpreter::eval_values!(ctx, t_args)
           let block = match func.blocks.get(t) {
             Some(block) => block
             None => return fail!("block not found: \{t}")
@@ -614,7 +616,7 @@ fn CoreInterpreter::eval_control(
           self.eval_block!(ctx, func, block)
         }
         Bool(false) => {
-          let args = CoreInterpreter::eval_values!(ctx, fargs)
+          let args = CoreInterpreter::eval_values!(ctx, f_args)
           let block = match func.blocks.get(f) {
             Some(block) => block
             None => return fail!("block not found: \{f}")
@@ -625,7 +627,7 @@ fn CoreInterpreter::eval_control(
         _ => fail!("not a boolean condition")
       }
     }
-    Select(_, _, _) => fail!("Not implemented")
+    Select(..) => fail!("Not implemented")
     Panic => fail!("panic")
   }
 }
@@ -644,40 +646,40 @@ fn CoreInterpreter::eval_values(
 fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
   match value {
     Unit => Unit
-    Bool(b) => Bool(b)
-    Int(x) => Int(x)
-    Double(x) => Double(x)
-    Insn(ir) => {
-      let obj = match ctx.insns.find(ir) {
+    Bool(~val) => Bool(val)
+    Int(~val) => Int(val)
+    Double(~val) => Double(val)
+    Insn(~iref) => {
+      let obj = match ctx.insns.find(iref) {
         Some(obj) => obj
         None => return fail!("insn not evaluated")
       }
       obj
     }
-    Mem(func, m) => {
+    Mem(~fref, ~mref) => {
       if trace {
         println(":::: stack \{ctx.stack}")
         println(":::: heap \{ctx.heap}")
       }
-      let obj = match ctx.stack.find(m) {
+      let obj = match ctx.stack.find(mref) {
         Some(obj) => obj
         None =>
-          match ctx.heap.get((func, m)) {
+          match ctx.heap.get((fref, mref)) {
             Some(obj) => obj
             None => fail!("mem not in stack or heap")
           }
       }
       obj
     }
-    Fn(f) => FnPtr(f)
-    GlobalThunk(f) => {
-      let gbl = match ctx.global.find(f) {
+    Fn(~fref) => FnPtr(fref)
+    GlobalThunk(~fref) => {
+      let gbl = match ctx.global.find(fref) {
         Some(gbl) => gbl
         None => return fail!("thunk not evaluated")
       }
       gbl
     }
-    FreeVar(_, FnFreeVarRef({ id })) => {
+    FreeVar(fvref=FnFreeVarRef({ id }), ..) => {
       if trace {
         println(":::: closure \{ctx.closure}")
       }
@@ -692,8 +694,8 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
       }
       fld
     }
-    BlockParam(blk_ref, BlockParamRef({ id })) => {
-      let blkargs = match ctx.blkargs.find(blk_ref) {
+    BlockParam(~bref, bpref=BlockParamRef({ id })) => {
+      let blkargs = match ctx.blkargs.find(bref) {
         Some(args) => args
         None => fail!("block args not found")
       }
@@ -703,7 +705,7 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
         fail!("block param not found")
       }
     }
-    FnParam(_, FnParamRef({ id })) =>
+    FnParam(fpref=FnParamRef({ id }), ..) =>
       if id < ctx.fnargs.length() {
         ctx.fnargs[id]
       } else {

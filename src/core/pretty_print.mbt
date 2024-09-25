@@ -25,26 +25,26 @@ fn print_type(logger : @util.IndentLogger, ty : Type) -> Unit {
     Bool => logger.write_string("bool")
     Int => logger.write_string("int")
     Double => logger.write_string("double")
-    ClosureFn(params, ty) => {
+    ClosureFn(~params, ~ty) => {
       logger.write_string("closure(")
       print_types(logger, params)
       logger.write_string(") -> ")
       print_type(logger, ty)
     }
-    DirectFn(params, ty) => {
+    DirectFn(~params, ~ty) => {
       logger.write_string("fn(")
       print_types(logger, params)
       logger.write_string(") -> ")
       print_type(logger, ty)
     }
-    Tuple(types) => {
+    Tuple(~fields) => {
       logger.write_string("(")
-      print_types(logger, types)
+      print_types(logger, fields)
       logger.write_string(")")
     }
-    Array(ty) => {
+    Array(~elem) => {
       logger.write_string("array[")
-      print_type(logger, ty)
+      print_type(logger, elem)
       logger.write_string("]")
     }
     Ptr => logger.write_string("ptr")
@@ -54,18 +54,18 @@ fn print_type(logger : @util.IndentLogger, ty : Type) -> Unit {
 fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
   match val {
     Unit => logger.write_string("()")
-    Bool(b) => logger.write_string("\{b}")
-    Int(i) => logger.write_string("\{i}")
-    Double(d) => logger.write_string("\{d}")
-    Insn(ref) => logger.write_string("\{ref}")
-    BlockParam(BlockRef({ id }), BlockParamRef({ id: id2 })) =>
+    Bool(~val) => logger.write_string("\{val}")
+    Int(~val) => logger.write_string("\{val}")
+    Double(~val) => logger.write_string("\{val}")
+    Insn(~iref) => logger.write_string("\{iref}")
+    BlockParam(bref=BlockRef({ id }), bpref=BlockParamRef({ id: id2 })) =>
       logger.write_string("$b\{id}.\{id2}")
-    FnParam(_, FnParamRef({ id })) => logger.write_string("$f\{id}")
-    GlobalThunk(ref) => logger.write_string("\{ref}()")
-    FreeVar(_, ref) => logger.write_string("\{ref}")
-    Mem(FnRef({ id }), MemRef({ id: id2 })) =>
+    FnParam(fpref=FnParamRef({ id }), ..) => logger.write_string("$f\{id}")
+    GlobalThunk(~fref) => logger.write_string("\{fref}()")
+    FreeVar(~fvref, ..) => logger.write_string("\{fvref}")
+    Mem(fref=FnRef({ id }), mref=MemRef({ id: id2 })) =>
       logger.write_string("f\{id}.m\{id2}")
-    Fn(ref) => logger.write_string("\{ref}")
+    Fn(~fref) => logger.write_string("\{fref}")
     Self(_) => logger.write_string("self")
   }
 }
@@ -98,16 +98,16 @@ fn print_mem_ref(logger : @util.IndentLogger, func : Fn, mr : MemRef) -> Unit {
   let mem = func.mems.get(mr).unwrap()
   logger.write_string("<\{mr}: ")
   match mem {
-    Heap(ty, val) => {
+    Heap(~ty, ~len) => {
       print_type(logger, ty)
       logger.write_string(" heap(")
-      print_value(logger, val)
+      print_value(logger, len)
       logger.write_string(")")
     }
-    Stack(ty, val) => {
+    Stack(~ty, ~len) => {
       print_type(logger, ty)
       logger.write_string(" stack(")
-      print_value(logger, val)
+      print_value(logger, len)
       logger.write_string(")")
     }
   }
@@ -120,18 +120,18 @@ fn print_mem_access(
   ma : MemAccess
 ) -> Unit {
   match ma {
-    Field(ty, m, n) => {
+    Field(~ty, ~val, ~index) => {
       print_type(logger, ty)
       logger.write_string(" field(")
-      print_value(logger, m)
-      logger.write_string(", \{n})")
+      print_value(logger, val)
+      logger.write_string(", \{index})")
     }
-    Offset(ty, m, idx) => {
+    Offset(~ty, ~val, ~offset) => {
       print_type(logger, ty)
       logger.write_string(" offset(")
-      print_value(logger, m)
+      print_value(logger, val)
       logger.write_string(", ")
-      print_value(logger, idx)
+      print_value(logger, offset)
       logger.write_string(")")
     }
   }
@@ -140,17 +140,17 @@ fn print_mem_access(
 fn print_fill(logger : @util.IndentLogger, fill : Fill) -> Unit {
   match fill {
     Zero => logger.write_string("[..] = 0")
-    Init(val) => {
+    Init(~val) => {
       logger.write_string("[..] = ")
       print_value(logger, val)
     }
-    Field(idx, val) => {
-      logger.write_string("[\{idx}] = ")
+    Field(~index, ~val) => {
+      logger.write_string("[\{index}] = ")
       print_value(logger, val)
     }
-    Offset(idx, val) => {
+    Offset(~offset, ~val) => {
       logger.write_string("[")
-      print_value(logger, idx)
+      print_value(logger, offset)
       logger.write_string("] = ")
       print_value(logger, val)
     }
@@ -171,26 +171,26 @@ fn print_fills(logger : @util.IndentLogger, fills : Array[Fill]) -> Unit {
 
 fn print_control(logger : @util.IndentLogger, control : Control) -> Unit {
   match control {
-    Jump(b, args) => {
-      logger.write_string("jump \{b}(")
+    Jump(~target, ~args) => {
+      logger.write_string("jump \{target}(")
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    Return(xs) => {
+    Return(~args) => {
       logger.write_string("return ")
-      print_values(logger, xs)
+      print_values(logger, args)
       logger.write_string("\n")
     }
-    Branch(x, b1, args1, b2, args2) => {
+    Branch(~cond, ~t, ~t_args, ~f, ~f_args) => {
       logger.write_string("br ")
-      print_value(logger, x)
-      logger.write_string(" \{b1}(")
-      print_values(logger, args1)
-      logger.write_string(") \{b2}(")
-      print_values(logger, args2)
+      print_value(logger, cond)
+      logger.write_string(" \{t}(")
+      print_values(logger, t_args)
+      logger.write_string(") \{f}(")
+      print_values(logger, f_args)
       logger.write_string(")\n")
     }
-    Select(_, _, _) => abort("Not implemented")
+    Select(..) => abort("Not implemented")
     Panic => logger.write_string("panic\n")
   }
 }
@@ -202,7 +202,7 @@ fn print_insn(
   insn : Insn
 ) -> Unit {
   match insn {
-    Op(ty, op, args) => {
+    Op(~ty, ~op, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = ")
@@ -211,7 +211,7 @@ fn print_insn(
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    Call(ty, f, args) => {
+    Call(~ty, ~f, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = call ")
@@ -220,7 +220,7 @@ fn print_insn(
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    Apply(ty, f, args) => {
+    Apply(~ty, ~f, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = apply ")
@@ -229,32 +229,32 @@ fn print_insn(
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    ExtCall(ty, name, args) => {
+    ExtCall(~ty, ~ext_f, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
-      logger.write_string(" = ext_call \{name}(")
+      logger.write_string(" = ext_call \{ext_f}(")
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    Alloc(_, mem, init) => {
+    Alloc(~mref, ~fills, ..) => {
       logger.write_string("let _ = alloc ")
-      print_mem_ref(logger, func, mem)
+      print_mem_ref(logger, func, mref)
       logger.write_string(" <- ")
-      print_fills(logger, init)
+      print_fills(logger, fills)
       logger.write_string("\n")
     }
-    Store(_, mem, value) => {
+    Store(~ma, ~val, ..) => {
       logger.write_string("let _ = store ")
-      print_mem_access(logger, func, mem)
+      print_mem_access(logger, func, ma)
       logger.write_string(" <- ")
-      print_value(logger, value)
+      print_value(logger, val)
       logger.write_string("\n")
     }
-    Load(ty, mem) => {
+    Load(~ty, ~ma) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = load ")
-      print_mem_access(logger, func, mem)
+      print_mem_access(logger, func, ma)
       logger.write_string("\n")
     }
   }
@@ -276,7 +276,7 @@ fn print_bb(logger : @util.IndentLogger, func : Fn, bb : BasicBlock) -> Unit {
 
 fn print_block(logger : @util.IndentLogger, func : Fn, block : Block) -> Unit {
   match block {
-    BasicBlock(bb) => print_bb(logger, func, bb)
+    BasicBlock(~bb) => print_bb(logger, func, bb)
     Loop(_) => abort("Not implemented")
   }
 }
