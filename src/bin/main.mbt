@@ -28,7 +28,7 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Typecheck => Stages::Knf
     Stages::Knf => Stages::KnfOpt
     Stages::KnfOpt => Stages::Closure
-    Stages::Closure => @util.die("TODO")
+    Stages::Closure => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
@@ -136,10 +136,18 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.opt_knf = Some(knf)
     }
     Closure => {
-      let closure_ir = @closure.knf_program_to_closure(
-        self.opt_knf.unwrap(),
-        Map::from_iter(@typer.externals().iter()),
-      )
+      let closure_env = @closure.ClosureEnv::new_from_existing(self.opt_knf.unwrap())
+      let closure_ir = try {
+          closure_env.knf_to_closure!(
+            self.opt_knf.unwrap(),
+            Map::from_iter(@typer.externals().iter()),
+          )
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Closure error")
+        }
+      }
       self.closure_ir = Some(closure_ir)
     }
     Asm => {
@@ -160,7 +168,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Knf => @json.stringify(self.typechecked.unwrap().to_json())
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
-      Asm => @util.die("TODO")
+      Asm => @json.stringify(self.closure_ir.unwrap().to_json())
       Finished => @riscv.print_functions(self.asm.unwrap())
     }
   } else {
@@ -170,7 +178,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Knf => self.typechecked.unwrap().to_string()
       KnfOpt => self.knf.unwrap().to_string()
       Closure => self.opt_knf.unwrap().to_string()
-      Asm => @util.die("TODO")
+      Asm => self.closure_ir.unwrap().to_string()
       Finished => @riscv.print_functions(self.asm.unwrap())
     }
   }
