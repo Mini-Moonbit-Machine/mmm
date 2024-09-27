@@ -121,7 +121,9 @@ pub struct BasicBlock {
 } derive(Show)
 
 pub struct Loop {
+  id : LoopRef
   mut parent : LoopRef
+  mut header : BlockRef // must be a basic block
   blocks : Array[BlockRef]
 } derive(Show, Eq)
 
