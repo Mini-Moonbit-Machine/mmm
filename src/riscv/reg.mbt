@@ -39,7 +39,7 @@ pub enum Reg {
   T4
   T5
   T6
-  V(Int)
+  V(~id : Int)
 } derive(Eq, Compare, Hash)
 
 pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
@@ -110,7 +110,7 @@ pub fn Reg::to_string(self : Reg) -> String {
     T4 => "t4"
     T5 => "t5"
     T6 => "t6"
-    V(i) => "v\{i}"
+    V(~id) => "v\{id}"
   }
 }
 
@@ -152,7 +152,7 @@ pub enum FReg {
   Ft9
   Ft10
   Ft11
-  Fv(Int)
+  Fv(~id : Int)
 } derive(Eq, Compare, Hash)
 
 pub let freg_temp_list : Array[FReg] = [
@@ -231,7 +231,7 @@ pub fn FReg::to_string(self : FReg) -> String {
     Ft9 => "ft9"
     Ft10 => "ft10"
     Ft11 => "ft11"
-    Fv(i) => "fv\{i}"
+    Fv(~id) => "fv\{id}"
   }
 }
 
