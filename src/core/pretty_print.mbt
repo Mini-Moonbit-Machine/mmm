@@ -274,10 +274,26 @@ fn print_bb(logger : @util.IndentLogger, func : Fn, bb : BasicBlock) -> Unit {
   logger.write_string("}\n")
 }
 
+fn print_loop(logger : @util.IndentLogger, func : Fn, lp : Loop) -> Unit {
+  logger.write_string(".loop #\{lp.id} header #\{lp.header} {")
+  logger.indent()
+  let header = match func.blocks.get(lp.header).unwrap() {
+    BasicBlock(~bb) => bb
+    _ => abort("header is not a basic block")
+  }
+  print_bb(logger, func, header)
+  for block in lp.blocks {
+    let block = func.blocks.get(block).unwrap()
+    print_block(logger, func, block)
+  }
+  logger.outdent()
+  logger.write_string("}\n")
+}
+
 fn print_block(logger : @util.IndentLogger, func : Fn, block : Block) -> Unit {
   match block {
     BasicBlock(~bb) => print_bb(logger, func, bb)
-    Loop(_) => abort("Not implemented")
+    Loop(~l) => print_loop(logger, func, l)
   }
 }
 
