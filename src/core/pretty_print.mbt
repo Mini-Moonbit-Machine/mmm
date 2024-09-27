@@ -117,7 +117,7 @@ fn print_mem_ref(logger : @util.IndentLogger, func : Fn, mr : MemRef) -> Unit {
 fn print_mem_access(
   logger : @util.IndentLogger,
   _func : Fn,
-  ma : MemAccess
+  ma : Address
 ) -> Unit {
   match ma {
     Field(~ty, ~val, ~index) => {

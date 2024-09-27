@@ -176,8 +176,8 @@ pub enum Insn {
   Apply(~ty : Type, ~f : Value, ~args : Array[Value])
   ExtCall(~ty : Type, ~ext_f : String, ~args : Array[Value])
   Alloc(~ty : Type, ~mref : MemRef, ~fills : Array[Fill])
-  Store(~ty : Type, ~ma : MemAccess, ~val : Value)
-  Load(~ty : Type, ~ma : MemAccess)
+  Store(~ty : Type, ~ma : Address, ~val : Value)
+  Load(~ty : Type, ~ma : Address)
 } derive(Show, Eq)
 
 pub enum Fill {
@@ -193,7 +193,7 @@ pub enum Mem {
   Stack(~ty : Type, ~len : Value) // stack memory with given size. Value must be integer-compatible.
 } derive(Show, Eq)
 
-pub enum MemAccess {
+pub enum Address {
   Field(~ty : Type, ~val : Value, ~index : Int) // field (constant offset) of memory. Value must be ptr-compatible.
   Offset(~ty : Type, ~val : Value, ~offset : Value) // offset (variable offset) of memory. Value must be ptr-compatible.
 } derive(Show, Eq)

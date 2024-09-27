@@ -654,7 +654,7 @@ fn build_knf_expr(
         let field_val = self.add_insn(
           func,
           bb,
-          Insn::Load(~ty, ma=MemAccess::Field(~ty, val=x_val, index=i)),
+          Insn::Load(~ty, ma=Address::Field(~ty, val=x_val, index=i)),
         )
         ctx = ctx.add_local_name_value_ty(name, field_val, ty)
       }
@@ -673,7 +673,7 @@ fn build_knf_expr(
       let val = self.add_insn(
         func,
         bb,
-        Insn::Load(~ty, ma=MemAccess::Offset(~ty, val=x_val, offset=idx_val)),
+        Insn::Load(~ty, ma=Address::Offset(~ty, val=x_val, offset=idx_val)),
       )
       (ctx, bb, val)
     }
@@ -692,7 +692,7 @@ fn build_knf_expr(
         bb,
         Insn::Store(
           ~ty,
-          ma=MemAccess::Offset(~ty, val=x_val, offset=idx_val),
+          ma=Address::Offset(~ty, val=x_val, offset=idx_val),
           val=y_val,
         ),
       )
