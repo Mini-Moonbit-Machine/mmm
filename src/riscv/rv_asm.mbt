@@ -85,6 +85,8 @@ pub enum RvAsm {
   Comment(String)
 }
 
+typealias MemAccessRegInt = MemAccess[Reg, Int]
+
 fn write3[TReg : Show](
   logger : Logger,
   op : String,

@@ -11,6 +11,8 @@
 (type Values (primitive Values))
 (type BlockRefs (primitive BlockRefs))
 (type Fills (primitive Fills))
+(type BasicBlock (primitive BasicBlock))
+(type Loop (primitive Loop))
 
 (type Type extern
   (enum
@@ -56,8 +58,8 @@
     (Apply (ty Type) (f Value) (args Values))
     (ExtCall (ty Type) (ext_f Value) (args Values))
     (Alloc (ty Type) (mref MemRef) (fills Fills))
-    (Store (ty Type) (ma MemAccess) (val Value))
-    (Load (ty Type) (ma MemAccess))))
+    (Store (ty Type) (ma Address) (val Value))
+    (Load (ty Type) (ma Address))))
 
 (type Fill extern
   (enum
@@ -71,7 +73,7 @@
     (Heap (ty Type) (len Value))
     (Stack (ty Type) (len Value))))
 
-(type MemAccess extern
+(type Address extern
   (enum
     (Field (ty Type) (val Value) (index Int32))
     (Offset (ty Type) (val Value) (offset Int32))))
@@ -83,3 +85,8 @@
     (Branch (cond Value) (t BlockRef) (t_args Values) (f BlockRef) (f_args Values))
     (Select (cond Value) (targets BlockRefs) (args Values))
     Panic))
+
+(type Block extern
+  (enum
+    (BasicBlock (bb BasicBlock))
+    (Loop (l Loop))))
