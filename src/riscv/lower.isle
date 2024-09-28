@@ -1,3 +1,5 @@
+;;;; Rules for immediate values
+
 (decl imm (Type UInt64) AnyReg)
 
 (rule 1 (imm (ty_double) 0)
@@ -34,6 +36,15 @@
 
 (decl partial lower_val_fn_param (FnRef FnParamRef) AnyReg)
 (extern constructor lower_val_fn_param lower_val_fn_param)
+
+(decl partial lower_call (Type Fn Values) AnyReg)
+(extern constructor lower_call lower_call)
+
+(decl partial lower_ext_call (Type String Values) AnyReg)
+(extern constructor lower_ext_call lower_ext_call)
+
+(decl partial lower_apply (Type Value Values) AnyReg)
+(extern constructor lower_apply lower_apply)
 
 (decl partial lower (Insn) AnyReg)
 
@@ -77,12 +88,6 @@
 ;;;; Rules for i32 additions
 ;;;; Notice: the official template uses 64b instructions for 32b operations
 
-(rule 2 (lower (insn_op (ty_int32) (op_add) (arg2 (imm12_from_val a) b)))
-  (rv_addi b a))
-
-(rule 1 (lower (insn_op (ty_int32) (op_add) (arg2 a (imm12_from_val b))))
-  (rv_addi a b))
-
 (rule (lower (insn_op (ty_int32) (op_add) (arg2 a b)))
   (rv_add a b))
 
@@ -96,13 +101,13 @@
 ;;;; Rules for i32 multiplications
 
 (rule (lower (insn_op (ty_int32) (op_mul) (arg2 a b)))
-  (rv_mul a b))
+  (rv_mulw a b))
 
 
 ;;;; Rules for i32 divisions
 
 (rule (lower (insn_op (ty_int32) (op_div) (arg2 a b)))
-  (rv_div a b))
+  (rv_divw a b))
 
 
 ;;;; Rules for i32 negations
@@ -129,3 +134,44 @@
 (rule (lower (insn_op (ty_int32) (op_le) (arg2 a b)))
   (let ((r XReg (rv_sltu a b)))
     (rv_xor r 1)))
+
+
+;;;; Rules for f64 additions
+
+(rule (lower (insn_op (ty_double) (op_add) (arg2 a b)))
+  (rv_fadd_d a b))
+
+
+;;;; Rules for f64 subtractions
+
+(rule (lower (insn_op (ty_double) (op_sub) (arg2 a b)))
+  (rv_fsub_d a b))
+
+
+;;;; Rules for f64 multiplications
+
+(rule (lower (insn_op (ty_double) (op_mul) (arg2 a b)))
+  (rv_fmul_d a b))
+
+
+;;;; Rules for f64 divisions
+
+(rule (lower (insn_op (ty_double) (op_div) (arg2 a b)))
+  (rv_fdiv_d a b))
+
+
+;;;; Rules for f64 negations
+
+(rule (lower (insn_op (ty_double) (op_neg) (arg1 a)))
+  (rv_fneg_d a))
+
+;;;; Rules for external calls, calls and applications
+
+(rule (lower (insn_ext_call ty f args))
+  (lower_ext_call ty f args))
+
+(rule (lower (insn_call ty (val_fn (ref_fn f)) args))
+  (lower_call ty f args))
+
+(rule (lower (insn_apply ty f args))
+  (lower_apply ty f args))

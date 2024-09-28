@@ -41,7 +41,8 @@ typealias Fill = @core.Fill
 enum Object {
   Uninit
   Unit
-  Int(Int)
+  Int32(Int)
+  Int64(Int64)
   Bool(Bool)
   Double(Double)
   FnPtr(FnRef)
@@ -243,7 +244,7 @@ fn CoreInterpreter::eval_fills(
     Mem(~fields) =>
       for fill in fills {
         match fill {
-          Zero => fields.map_inplace(fn(_i) { Int(0) })
+          Zero => fields.map_inplace(fn(_i) { Int32(0) })
           Init(~val) => {
             let v = CoreInterpreter::eval_value!(ctx, val)
             fields.map_inplace(fn(_i) { v })
@@ -263,7 +264,7 @@ fn CoreInterpreter::eval_fills(
             let i = CoreInterpreter::eval_value!(ctx, offset)
             let v = CoreInterpreter::eval_value!(ctx, val)
             match (i, v) {
-              (Int(i), v) =>
+              (Int32(i), v) =>
                 if i < fields.length() {
                   fields[i] = v
                 } else {
@@ -293,7 +294,7 @@ fn CoreInterpreter::eval_insn(
         Add => {
           guard args.length() == 2 else { fail!("add expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Int(x + y)
+            (Int32(x), Int32(y)) => Int32(x + y)
             (Double(x), Double(y)) => Double(x + y)
             _ => fail!("type mismatch")
           }
@@ -301,7 +302,7 @@ fn CoreInterpreter::eval_insn(
         Sub => {
           guard args.length() == 2 else { fail!("sub expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Int(x - y)
+            (Int32(x), Int32(y)) => Int32(x - y)
             (Double(x), Double(y)) => Double(x - y)
             _ => fail!("type mismatch")
           }
@@ -309,7 +310,7 @@ fn CoreInterpreter::eval_insn(
         Mul => {
           guard args.length() == 2 else { fail!("mul expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Int(x * y)
+            (Int32(x), Int32(y)) => Int32(x * y)
             (Double(x), Double(y)) => Double(x * y)
             _ => fail!("type mismatch")
           }
@@ -317,7 +318,7 @@ fn CoreInterpreter::eval_insn(
         Div => {
           guard args.length() == 2 else { fail!("div expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Int(x / y)
+            (Int32(x), Int32(y)) => Int32(x / y)
             (Double(x), Double(y)) => Double(x / y)
             _ => fail!("type mismatch")
           }
@@ -325,7 +326,7 @@ fn CoreInterpreter::eval_insn(
         Neg => {
           guard args.length() == 1 else { fail!("neg expects 1 arg") }
           match args[0] {
-            Int(x) => Int(-x)
+            Int32(x) => Int32(-x)
             Double(x) => Double(-x)
             _ => fail!("type mismatch")
           }
@@ -340,7 +341,7 @@ fn CoreInterpreter::eval_insn(
         Eq => {
           guard args.length() == 2 else { fail!("eq expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Bool(x == y)
+            (Int32(x), Int32(y)) => Bool(x == y)
             (Double(x), Double(y)) => Bool(x == y)
             (Bool(x), Bool(y)) => Bool(x == y)
             _ => fail!("type mismatch")
@@ -349,7 +350,7 @@ fn CoreInterpreter::eval_insn(
         Le => {
           guard args.length() == 2 else { fail!("le expects 2 args") }
           match (args[0], args[1]) {
-            (Int(x), Int(y)) => Bool(x <= y)
+            (Int32(x), Int32(y)) => Bool(x <= y)
             (Double(x), Double(y)) => Bool(x <= y)
             _ => fail!("type mismatch")
           }
@@ -402,7 +403,7 @@ fn CoreInterpreter::eval_insn(
         "print_int" => {
           guard args.length() == 1 else { fail!("print_int expects 1 arg") }
           match args[0] {
-            Int(x) => println("\{x}")
+            Int32(x) => println("\{x}")
             _ => fail!("print_int expects Int")
           }
           (ctx, Unit)
@@ -410,7 +411,7 @@ fn CoreInterpreter::eval_insn(
         "print_char" => {
           guard args.length() == 1 else { fail!("print_char expects 1 arg") }
           match args[0] {
-            Int(x) => println("\{Char::from_int(x)}")
+            Int32(x) => println("\{Char::from_int(x)}")
             _ => fail!("print_char expects Int")
           }
           (ctx, Unit)
@@ -425,7 +426,7 @@ fn CoreInterpreter::eval_insn(
         "truncate" => {
           guard args.length() == 1 else { fail!("truncate expects 1 arg") }
           match args[0] {
-            Double(d) => (ctx, Int(d.to_int()))
+            Double(d) => (ctx, Int32(d.to_int()))
             _ => fail!("truncate expects Double")
           }
         }
@@ -460,14 +461,14 @@ fn CoreInterpreter::eval_insn(
         "int_of_float" => {
           guard args.length() == 1 else { fail!("int_of_float expects 1 arg") }
           match args[0] {
-            Double(d) => (ctx, Int(d.to_int()))
+            Double(d) => (ctx, Int32(d.to_int()))
             _ => fail!("int_of_float expects Double")
           }
         }
         "float_of_int" => {
           guard args.length() == 1 else { fail!("float_of_int expects 1 arg") }
           match args[0] {
-            Int(x) => (ctx, Double(x.to_double()))
+            Int32(x) => (ctx, Double(x.to_double()))
             _ => fail!("float_of_int expects Int")
           }
         }
@@ -484,7 +485,7 @@ fn CoreInterpreter::eval_insn(
         Heap(~len, ..) => {
           let len = CoreInterpreter::eval_value!(ctx, len)
           let obj = match len {
-            Int(len) => {
+            Int32(len) => {
               let fields = Array::makei(len, fn(_i) { Uninit })
               Object::Mem(~fields)
             }
@@ -496,7 +497,7 @@ fn CoreInterpreter::eval_insn(
         Stack(~len, ..) => {
           let len = CoreInterpreter::eval_value!(ctx, len)
           let obj = match len {
-            Int(len) => {
+            Int32(len) => {
               let fields = Array::makei(len, fn(_i) { Uninit })
               Object::Mem(~fields)
             }
@@ -529,7 +530,7 @@ fn CoreInterpreter::eval_insn(
           let dst = CoreInterpreter::eval_value!(ctx, dst)
           let offset = CoreInterpreter::eval_value!(ctx, offset)
           match (dst, offset) {
-            (Object::Mem(~fields), Int(n)) =>
+            (Object::Mem(~fields), Int32(n)) =>
               if n < fields.length() {
                 fields[n] = val
               } else {
@@ -563,7 +564,7 @@ fn CoreInterpreter::eval_insn(
           let m = CoreInterpreter::eval_value!(ctx, dst)
           let n = CoreInterpreter::eval_value!(ctx, offset)
           match (m, n) {
-            (Object::Mem(~fields), Int(n)) =>
+            (Object::Mem(~fields), Int32(n)) =>
               if n < fields.length() {
                 fields[n]
               } else {
@@ -647,7 +648,8 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
   match value {
     Unit => Unit
     Bool(~val) => Bool(val)
-    Int(~val) => Int(val)
+    Int32(~val) => Int32(val)
+    Int64(~val) => Int64(val)
     Double(~val) => Double(val)
     Insn(~iref) => {
       let obj = match ctx.insns.find(iref) {
