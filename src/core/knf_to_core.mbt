@@ -234,7 +234,7 @@ fn build_closure(
       let mem = self.add_mem(
         func,
         bb,
-        Mem::Heap(~ty, len=Value::Int(val=1 + free_names._.length())),
+        Mem::Heap(~ty, len=Value::Int32(val=1 + free_names._.length())),
       )
       let fills = [Fill::Field(index=0, ~val)]
       let mut ctx = ctx
@@ -342,7 +342,8 @@ fn get_type(
   match val {
     Unit => Type::Unit
     Bool(_) => Type::Bool
-    Int(_) => Type::Int
+    Int32(_) => Type::Int32
+    Int64(_) => Type::Int64
     Double(_) => Type::Double
     Insn(~iref) => {
       let insn = match func.insns.get(iref) {
@@ -447,7 +448,7 @@ fn lower_type(self : CoreEnv, ty : @knf.Type, native : Bool) -> Type!Failure {
   match ty.repr() {
     Unit => Type::Unit
     Bool => Type::Bool
-    Int => Type::Int
+    Int => Type::Int32
     Double => Type::Double
     Tuple(xs) => {
       let tys = []
@@ -502,7 +503,7 @@ fn build_knf_expr(
 ) -> (Ctx, BasicBlock, Value)!Failure {
   match knf {
     Unit => (ctx, bb, Value::Unit)
-    Int(i) => (ctx, bb, Value::Int(val=i))
+    Int(i) => (ctx, bb, Value::Int32(val=i))
     Double(d) => (ctx, bb, Value::Double(val=d))
     Neg(n) | FNeg(n) => {
       let (ctx, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)
@@ -636,7 +637,7 @@ fn build_knf_expr(
       let mem = self.add_mem(
         func,
         bb,
-        Mem::Heap(~ty, len=Value::Int(val=xs_val.length())),
+        Mem::Heap(~ty, len=Value::Int32(val=xs_val.length())),
       )
       let fills = []
       for i, x_val in xs_val {
@@ -708,7 +709,7 @@ fn build_knf_expr(
             free_names, ctx, core, func, bb, args,
           )
           let ty = match f {
-            "minimbt_create_array" => Type::Array(elem=Type::Int)
+            "minimbt_create_array" => Type::Array(elem=Type::Int32)
             "minimbt_create_float_array" => Type::Array(elem=Type::Double)
             "minimbt_create_ptr_array" => {
               let arg_ty = self.get_type!(core, func, bb, arg_vals[1])

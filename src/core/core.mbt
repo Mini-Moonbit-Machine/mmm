@@ -135,7 +135,8 @@ pub enum Block {
 pub enum Type {
   Unit
   Bool
-  Int
+  Int32
+  Int64
   Double
   ClosureFn(~params : Array[Type], ~ty : Type) // (fn_ptr, closure_args...)
   DirectFn(~params : Array[Type], ~ty : Type) // fn_ptr itself
@@ -147,7 +148,8 @@ pub enum Type {
 pub enum Value {
   Unit
   Bool(~val : Bool)
-  Int(~val : Int)
+  Int32(~val : Int)
+  Int64(~val : Int64)
   Double(~val : Double)
   Insn(~iref : InsnRef)
   Mem(~fref : FnRef, ~mref : MemRef)

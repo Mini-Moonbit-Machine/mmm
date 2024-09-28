@@ -7,10 +7,26 @@
 (type LoopRef (primitive LoopRef))
 (type MemRef (primitive MemRef))
 
+(decl ref_fn (Fn) FnRef)
+(extern extractor infallible ref_fn ref_fn)
+
+(decl ref_block (Block) BlockRef)
+(extern extractor infallible ref_block ref_block)
+
+(decl ref_insn (Insn) InsnRef)
+(extern extractor infallible ref_insn ref_insn)
+
+(decl ref_mem (Mem) MemRef)
+(extern extractor infallible ref_mem ref_mem)
+
+(decl ref_free_var (UInt32) FnFreeVarRef)
+(extern extractor infallible ref_free_var ref_free_var)
+
 (type Types (primitive Types))
 (type Values (primitive Values))
 (type BlockRefs (primitive BlockRefs))
 (type Fills (primitive Fills))
+(type Fn (primitive Fn))
 (type BasicBlock (primitive BasicBlock))
 (type Loop (primitive Loop))
 
@@ -18,7 +34,8 @@
   (enum
     Unit
     Bool
-    Int
+    Int32
+    Int64
     Double
     (ClosureFn (params Types) (ty Type))
     (DirectFn (params Types) (ty Type))
@@ -26,19 +43,96 @@
     (Array (elem Type))
     Ptr))
 
+(decl pure ty_unit () Type)
+(extractor (ty_unit) (Type.Unit))
+(rule (ty_unit) (Type.Unit))
+
+(decl pure ty_bool () Type)
+(extractor (ty_bool) (Type.Bool))
+(rule (ty_bool) (Type.Bool))
+
+(decl pure ty_int32 () Type)
+(extractor (ty_int32) (Type.Int32))
+(rule (ty_int32) (Type.Int32))
+
+(decl pure ty_int64 () Type)
+(extractor (ty_int64) (Type.Int64))
+(rule (ty_int64) (Type.Int64))
+
+(decl pure ty_double () Type)
+(extractor (ty_double) (Type.Double))
+(rule (ty_double) (Type.Double))
+
+(decl pure ty_closure_fn (Types Type) Type)
+(extractor (ty_closure_fn) Type.ClosureFn)
+(rule (ty_closure_fn params ty) (Type.ClosureFn params ty))
+
+(decl pure ty_direct_fn (Types Type) Type)
+(extractor (ty_direct_fn) Type.DirectFn)
+(rule (ty_direct_fn params ty) (Type.DirectFn params ty))
+
+(decl pure ty_tuple (Types) Type)
+(extractor (ty_tuple) Type.Tuple)
+(rule (ty_tuple fields) (Type.Tuple fields))
+
+(decl pure ty_array (Type) Type)
+(extractor (ty_array) Type.Array)
+(rule (ty_array elem) (Type.Array elem))
+
 (type Value extern
   (enum
     Unit
     (Bool (val Bool))
     (Double (val Double))
+    (Int32 (val Int32))
+    (Int64 (val Int64))
     (Insn (iref InsnRef))
-    (Mem (iref MemRef))
+    (Mem (fref FnRef) (mref MemRef))
     (Fn (iref FnRef))
     (GlobalThunk (iref FnRef))
-    (FreeVar (ty Unit) (fvref FnFreeVarRef))
+    (FreeVar (ty Type) (fvref FnFreeVarRef))
     (BlockParam (bref BlockRef) (bpref BlockParamRef))
     (FnParam (fref FnRef) (fpref FnParamRef))
     (Self (fref FnRef))))
+
+(decl pure val_unit () Value)
+(extractor (val_unit) (Value.Unit))
+
+(decl pure val_bool (Bool) Value)
+(extractor (val_bool x) (Value.Bool x))
+
+(decl pure val_double (Double) Value)
+(extractor (val_double x) (Value.Double x))
+
+(decl pure val_int32 (Int32) Value)
+(extractor (val_int32 x) (Value.Int32 x))
+
+(decl pure val_int64 (Int64) Value)
+(extractor (val_int64 x) (Value.Int64 x))
+
+(decl pure val_insn (InsnRef) Value)
+(extractor (val_insn iref) (Value.Insn iref))
+
+(decl pure val_mem (FnRef MemRef) Value)
+(extractor (val_mem fref mref) (Value.Mem fref mref))
+
+(decl pure val_fn (FnRef) Value)
+(extractor (val_fn fref) (Value.Fn fref ))
+
+(decl pure val_global_thunk (FnRef) Value)
+(extractor (val_global_thunk fref) (Value.GlobalThunk fref))
+
+(decl pure val_free_var (Type FnFreeVarRef) Value)
+(extractor (val_free_var ty fvref) (Value.FreeVar ty fvref))
+
+(decl pure val_block_param (BlockRef BlockParamRef) Value)
+(extractor (val_block_param bref bpref) (Value.BlockParam bref bpref))
+
+(decl pure val_fn_param (FnRef FnParamRef) Value)
+(extractor (val_fn_param fref fpref) (Value.FnParam fref fpref))
+
+(decl pure val_self (FnRef) Value)
+(extractor (val_self fref) (Value.Self fref))
 
 (type Op extern
   (enum
@@ -51,6 +145,30 @@
     Eq
     Le))
 
+(decl pure op_add () Op)
+(extractor (op_add) (Op.Add))
+
+(decl pure op_sub () Op)
+(extractor (op_sub) (Op.Sub))
+
+(decl pure op_mul () Op)
+(extractor (op_mul) (Op.Mul))
+
+(decl pure op_div () Op)
+(extractor (op_div) (Op.Div))
+
+(decl pure op_neg () Op)
+(extractor (op_neg) (Op.Neg))
+
+(decl pure op_lnot () Op)
+(extractor (op_lnot) (Op.Lnot))
+
+(decl pure op_eq () Op)
+(extractor (op_eq) (Op.Eq))
+
+(decl pure op_le () Op)
+(extractor (op_le) (Op.Le))
+
 (type Insn extern
   (enum
     (Op (ty Type) (op Op) (args Values))
@@ -61,22 +179,67 @@
     (Store (ty Type) (ma Address) (val Value))
     (Load (ty Type) (ma Address))))
 
+(decl pure insn_op (Type Op Values) Insn)
+(extractor (insn_op ty op vals) (Insn.Op ty op vals))
+
+(decl pure insn_call (Type Value Values) Insn)
+(extractor (insn_call ty f args) (Insn.Call ty f args))
+
+(decl pure insn_apply (Type Value Values) Insn)
+(extractor (insn_apply ty f args) (Insn.Apply ty f args))
+
+(decl pure insn_ext_call (Type Value Values) Insn)
+(extractor (insn_ext_call ty ext_f args) (Insn.ExtCall ty ext_f args))
+
+(decl pure insn_alloc (Type MemRef Fills) Insn)
+(extractor (insn_alloc ty mref fills) (Insn.Alloc ty mref fills))
+
+(decl pure insn_store (Type Address Value) Insn)
+(extractor (insn_store ty ma val) (Insn.Store ty ma val))
+
+(decl pure insn_load (Type Address) Insn)
+(extractor (insn_load ty ma) (Insn.Load ty ma))
+
 (type Fill extern
   (enum
     Zero
     (Init (val Value))
     (Field (index Int32) (val Value))
-    (Offset (offset Int32) (val Value))))
+    (Offset (offset Value) (val Value))))
+
+(decl pure fill_zero () Fill)
+(extractor (fill_zero) (Fill.Zero))
+
+(decl pure fill_init (Value) Fill)
+(extractor (fill_init val) (Fill.Init val))
+
+(decl pure fill_field (Int32 Value) Fill)
+(extractor (fill_field index val) (Fill.Field index val))
+
+(decl pure fill_offset (Value Value) Fill)
+(extractor (fill_offset offset val) (Fill.Offset offset val))
 
 (type Mem extern
   (enum
     (Heap (ty Type) (len Value))
     (Stack (ty Type) (len Value))))
 
+(decl pure mem_heap (Type Value) Mem)
+(extractor (mem_heap ty len) (Mem.Heap ty len))
+
+(decl pure mem_stack (Type Value) Mem)
+(extractor (mem_stack ty len) (Mem.Stack ty len))
+
 (type Address extern
   (enum
     (Field (ty Type) (val Value) (index Int32))
     (Offset (ty Type) (val Value) (offset Int32))))
+
+(decl pure addr_field (Type Value Int32) Address)
+(extractor (addr_field ty val index) (Address.Field ty val index))
+
+(decl pure addr_offset (Type Value Int32) Address)
+(extractor (addr_offset ty val offset) (Address.Offset ty val offset))
 
 (type Control extern
   (enum
@@ -86,7 +249,40 @@
     (Select (cond Value) (targets BlockRefs) (args Values))
     Panic))
 
+(decl pure control_jump (BlockRef Values) Control)
+(extractor (control_jump target args) (Control.Jump target args))
+
+(decl pure control_return (Values) Control)
+(extractor (control_return args) (Control.Return args))
+
+(decl pure control_branch (Value BlockRef Values BlockRef Values) Control)
+(extractor (control_branch cond t t_args f f_args) (Control.Branch cond t t_args f f_args))
+
+(decl pure control_select (Value BlockRefs Values) Control)
+(extractor (control_select cond targets args) (Control.Select cond targets args))
+
+(decl pure control_panic () Control)
+(extractor (control_panic) Control.Panic)
+
 (type Block extern
   (enum
     (BasicBlock (bb BasicBlock))
     (Loop (l Loop))))
+
+(decl pure i64_sext_u64 (Type UInt64) Int64)
+(extern constructor i64_sext_u64 i64_sext_u64)
+
+(decl pure i32_as_u64 (Int32) UInt64)
+(extern constructor i32_as_u64 i32_as_u64)
+
+(decl pure i64_as_u64 (Int64) UInt64)
+(extern constructor i64_as_u64 i64_as_u64)
+
+(decl pure f64_as_u64 (Double) UInt64)
+(extern constructor f64_as_u64 f64_as_u64)
+
+(decl pure arg2 (Value Value) Values)
+(extern extractor arg2 arg2)
+
+(decl pure arg1 (Value) Values)
+(extern extractor arg1 arg1)

@@ -23,7 +23,8 @@ fn print_type(logger : @util.IndentLogger, ty : Type) -> Unit {
   match ty {
     Unit => logger.write_string("unit")
     Bool => logger.write_string("bool")
-    Int => logger.write_string("int")
+    Int32 => logger.write_string("int32")
+    Int64 => logger.write_string("int64")
     Double => logger.write_string("double")
     ClosureFn(~params, ~ty) => {
       logger.write_string("closure(")
@@ -55,7 +56,8 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
   match val {
     Unit => logger.write_string("()")
     Bool(~val) => logger.write_string("\{val}")
-    Int(~val) => logger.write_string("\{val}")
+    Int32(~val) => logger.write_string("\{val}")
+    Int64(~val) => logger.write_string("\{val}")
     Double(~val) => logger.write_string("\{val}")
     Insn(~iref) => logger.write_string("\{iref}")
     BlockParam(bref=BlockRef({ id }), bpref=BlockParamRef({ id: id2 })) =>
