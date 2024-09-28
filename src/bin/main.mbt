@@ -136,12 +136,14 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.opt_knf = Some(knf)
     }
     Closure => {
-      let closure_env = @closure.ClosureEnv::new_from_existing(self.opt_knf.unwrap())
+      let closure_env = @closure.ClosureEnv::new_from_existing(
+        self.opt_knf.unwrap(),
+      )
       let closure_ir = try {
-          closure_env.knf_to_closure!(
-            self.opt_knf.unwrap(),
-            Map::from_iter(@typer.externals().iter()),
-          )
+        closure_env.knf_to_closure!(
+          self.opt_knf.unwrap(),
+          Map::from_iter(@typer.externals().iter()),
+        )
       } catch {
         Failure(msg) => {
           println(msg)
