@@ -4,8 +4,8 @@ enum Stages {
   Typecheck
   Knf
   KnfOpt
-  Core
   Closure
+  Core
   Asm
   Finished
 } derive(Show, Eq, Compare)
@@ -30,10 +30,8 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Typecheck => Stages::Knf
     Stages::Knf => Stages::KnfOpt
     Stages::KnfOpt => Stages::Closure
-    Stages::Closure => Stages::Asm
-    Stages::KnfOpt => Stages::Core
+    Stages::Closure => Stages::Core
     Stages::Core => Stages::Asm
-    Stages::Closure => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
@@ -189,9 +187,9 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => @json.stringify(self.ast.unwrap().to_json())
       Knf => @json.stringify(self.typechecked.unwrap().to_json())
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
-      Core => @util.die("TODO")
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
-      Asm => @json.stringify(self.closure_ir.unwrap().to_json())
+      Core => @json.stringify(self.closure_ir.unwrap().to_json())
+      Asm => @util.die("TODO")
       Finished => @riscv.print_functions(self.asm.unwrap())
     }
   } else {
@@ -200,9 +198,9 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => self.ast.unwrap().to_string()
       Knf => self.typechecked.unwrap().to_string()
       KnfOpt => self.knf.unwrap().to_string()
-      Core => @util.die("TODO")
       Closure => self.opt_knf.unwrap().to_string()
-      Asm => self.closure_ir.unwrap().to_string()
+      Core => self.closure_ir.unwrap().to_string()
+      Asm => self.opt.unwrap().to_string()
       Finished => @riscv.print_functions(self.asm.unwrap())
     }
   }
