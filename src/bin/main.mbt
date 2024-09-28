@@ -132,7 +132,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Knf error")
         }
       }
-      println("\{Show::to_string(knf.to_pretty_print())}")
       self.knf = Some(knf)
     }
     KnfOpt => {
