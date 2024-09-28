@@ -1,2 +1,131 @@
-(decl partial lower (Value) Output)
+(decl imm (Type UInt64) AnyReg)
 
+(rule 1 (imm (ty_double) 0)
+  (rv_f_mv_dx (zero_reg)))
+
+(rule (imm (ty_double) c)
+  (let ((c1 AnyReg (imm (ty_int64) c)))
+    (rv_f_mv_dx c1)))
+
+(rule (imm (ty_int32) c)
+  (let ((i32_imm Int64 (i64_sext_u64 (ty_int32) c)))
+    (rv_li i32_imm)))
+
+(rule (imm (ty_int64) c)
+  (let ((i64_imm Int64 (i64_sext_u64 (ty_int64) c)))
+    (rv_li i64_imm)))
+
+(decl partial lower_value (Value) AnyReg)
+
+(decl partial lower_val_mem (Fn Mem) AnyReg)
+(extern constructor lower_val_mem lower_val_mem)
+
+(decl partial lower_val_fn (Fn) AnyReg)
+(extern constructor lower_val_fn lower_val_fn)
+
+(decl partial lower_val_global_thunk (Fn) AnyReg)
+(extern constructor lower_val_global_thunk lower_val_global_thunk)
+
+(decl partial lower_val_free_var (Type FnFreeVarRef) AnyReg)
+(extern constructor lower_val_free_var lower_val_free_var)
+
+(decl partial lower_val_block_param (BlockRef BlockParamRef) AnyReg)
+(extern constructor lower_val_block_param lower_val_block_param)
+
+(decl partial lower_val_fn_param (FnRef FnParamRef) AnyReg)
+(extern constructor lower_val_fn_param lower_val_fn_param)
+
+(decl partial lower (Insn) AnyReg)
+
+(rule (lower_value (val_int32 c))
+  (imm (ty_int32) (i32_as_u64 c)))
+
+(rule (lower_value (val_int64 c))
+  (imm (ty_int64) (i64_as_u64 c)))
+
+(rule (lower_value (val_double c))
+  (imm (ty_double) (f64_as_u64 c)))
+
+(rule (lower_value (val_insn (ref_insn i)))
+  (lower i))
+
+(rule (lower_value (val_mem (ref_fn f) (ref_mem m)))
+  (lower_val_mem f m))
+
+(rule (lower_value (val_fn (ref_fn f)))
+  (lower_val_fn f))
+
+(rule (lower_value (val_global_thunk (ref_fn f)))
+  (lower_val_global_thunk f))
+
+(rule (lower_value (val_free_var ty fvref))
+  (lower_val_free_var ty fvref))
+
+(rule (lower_value (val_block_param bref bpref))
+  (lower_val_block_param bref bpref))
+
+(rule (lower_value (val_fn_param fref fpref))
+  (lower_val_fn_param fref fpref))
+
+(rule (lower_value (val_self _))
+  (closure_reg))
+
+(decl imm12_from_val (Imm12) Value)
+(extern extractor imm12_from_val imm12_from_val)
+
+
+;;;; Rules for i32 additions
+;;;; Notice: the official template uses 64b instructions for 32b operations
+
+(rule 2 (lower (insn_op (ty_int32) (op_add) (arg2 (imm12_from_val a) b)))
+  (rv_addi b a))
+
+(rule 1 (lower (insn_op (ty_int32) (op_add) (arg2 a (imm12_from_val b))))
+  (rv_addi a b))
+
+(rule (lower (insn_op (ty_int32) (op_add) (arg2 a b)))
+  (rv_add a b))
+
+
+;;;; Rules for i32 subtractions
+
+(rule (lower (insn_op (ty_int32) (op_sub) (arg2 a b)))
+  (rv_sub a a))
+
+
+;;;; Rules for i32 multiplications
+
+(rule (lower (insn_op (ty_int32) (op_mul) (arg2 a b)))
+  (rv_mul a b))
+
+
+;;;; Rules for i32 divisions
+
+(rule (lower (insn_op (ty_int32) (op_div) (arg2 a b)))
+  (rv_div a b))
+
+
+;;;; Rules for i32 negations
+
+(rule (lower (insn_op (ty_int32) (op_neg) (arg1 a)))
+  (rv_neg a))
+
+
+;;;; Rules for i32 logical not
+
+(rule (lower (insn_op (ty_int32) (op_lnot) (arg1 a)))
+  (rv_sltiu a 1))
+
+
+;;;; Rules for i32 equalities
+
+(rule (lower (insn_op (ty_int32) (op_eq) (arg2 a b)))
+  (let ((r XReg (rv_xor a b)))
+    (rv_sltiu r 1)))
+
+
+;;;; Rules for i32 less than or equal
+
+(rule (lower (insn_op (ty_int32) (op_le) (arg2 a b)))
+  (let ((r XReg (rv_sltu a b)))
+    (rv_xor r 1)))
