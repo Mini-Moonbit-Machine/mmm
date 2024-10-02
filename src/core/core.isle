@@ -1,11 +1,11 @@
-(type FnRef (primitive FnRef))
-(type BlockRef (primitive BlockRef))
-(type InsnRef (primitive InsnRef))
-(type BlockParamRef (primitive BlockParamRef))
-(type FnParamRef (primitive FnParamRef))
-(type FnFreeVarRef (primitive FnFreeVarRef))
-(type LoopRef (primitive LoopRef))
-(type MemRef (primitive MemRef))
+(type FnRef (primitive `@core.FnRef`))
+(type BlockRef (primitive `@core.BlockRef`))
+(type InsnRef (primitive `@core.InsnRef`))
+(type BlockParamRef (primitive `@core.BlockParamRef`))
+(type FnParamRef (primitive `@core.FnParamRef`))
+(type FnFreeVarRef (primitive `@core.FnFreeVarRef`))
+(type LoopRef (primitive `@core.LoopRef`))
+(type MemRef (primitive `@core.MemRef`))
 
 (decl ref_fn (Fn) FnRef)
 (extern extractor infallible ref_fn ref_fn)
@@ -20,18 +20,18 @@
 (extern extractor infallible ref_mem ref_mem)
 
 (decl ref_free_var (UInt32) FnFreeVarRef)
-(extern extractor infallible ref_free_var ref_free_var)
+(extern extractor infallible ref_free_var ref_free_v)
 
-(type Types (primitive Types))
-(type Values (primitive Values))
-(type BlockRefs (primitive BlockRefs))
-(type Fills (primitive Fills))
-(type Fn (primitive Fn))
-(type BasicBlock (primitive BasicBlock))
-(type Loop (primitive Loop))
+(type Types (primitive `@core.Types`))
+(type Values (primitive `@core.Values`))
+(type BlockRefs (primitive `@core.BlockRefs`))
+(type Fills (primitive `@core.Fills`))
+(type Fn (primitive `@core.Fn`))
+(type BasicBlock (primitive `@core.BasicBlock`))
+(type Loop (primitive `@core.Loop`))
 
 (type Type extern
-  (enum
+  (enum as `@core.Type`
     Unit
     Bool
     Int32
@@ -80,7 +80,7 @@
 (rule (ty_array elem) (Type.Array elem))
 
 (type Value extern
-  (enum
+  (enum as `@core.Value`
     Unit
     (Bool (val Bool))
     (Double (val Double))
@@ -88,8 +88,8 @@
     (Int64 (val Int64))
     (Insn (iref InsnRef))
     (Mem (fref FnRef) (mref MemRef))
-    (Fn (iref FnRef))
-    (GlobalThunk (iref FnRef))
+    (Fn (fref FnRef))
+    (GlobalThunk (fref FnRef))
     (FreeVar (ty Type) (fvref FnFreeVarRef))
     (BlockParam (bref BlockRef) (bpref BlockParamRef))
     (FnParam (fref FnRef) (fpref FnParamRef))
@@ -135,7 +135,7 @@
 (extractor (val_self fref) (Value.Self fref))
 
 (type Op extern
-  (enum
+  (enum as `@core.Op`
     Add
     Sub
     Mul
@@ -170,7 +170,7 @@
 (extractor (op_le) (Op.Le))
 
 (type Insn extern
-  (enum
+  (enum as `@core.Insn`
     (Op (ty Type) (op Op) (args Values))
     (Call (ty Type) (f Value) (args Values))
     (Apply (ty Type) (f Value) (args Values))
@@ -201,7 +201,7 @@
 (extractor (insn_load ty ma) (Insn.Load ty ma))
 
 (type Fill extern
-  (enum
+  (enum as `@core.Fill`
     Zero
     (Init (val Value))
     (Field (index Int32) (val Value))
@@ -220,7 +220,7 @@
 (extractor (fill_offset offset val) (Fill.Offset offset val))
 
 (type Mem extern
-  (enum
+  (enum as `@core.Mem`
     (Heap (ty Type) (len Value))
     (Stack (ty Type) (len Value))))
 
@@ -231,7 +231,7 @@
 (extractor (mem_stack ty len) (Mem.Stack ty len))
 
 (type Address extern
-  (enum
+  (enum as `@core.Address`
     (Field (ty Type) (val Value) (index Int32))
     (Offset (ty Type) (val Value) (offset Int32))))
 
@@ -242,7 +242,7 @@
 (extractor (addr_offset ty val offset) (Address.Offset ty val offset))
 
 (type Control extern
-  (enum
+  (enum as `@core.Control`
     (Jump (target BlockRef) (args Values))
     (Return (args Values))
     (Branch (cond Value) (t BlockRef) (t_args Values) (f BlockRef) (f_args Values))
@@ -265,7 +265,7 @@
 (extractor (control_panic) Control.Panic)
 
 (type Block extern
-  (enum
+  (enum as `@core.Block`
     (BasicBlock (bb BasicBlock))
     (Loop (l Loop))))
 

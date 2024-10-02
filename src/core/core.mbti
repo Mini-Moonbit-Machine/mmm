@@ -1,15 +1,23 @@
 package moonbitlang/minimbt/core
 
 alias @moonbitlang/minimbt as @minimbt
-alias @moonbitlang/minimbt/closure as @closure
 alias @moonbitlang/minimbt/knf as @knf
 
 // Values
 
 // Types and methods
+pub enum Address {
+  Field(Type, Value, Int)
+  Offset(Type, Value, Value)
+}
+impl Address {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 pub struct BasicBlock {
   pub id : BlockRef
-  pub params : Array[@closure.LowType]
+  pub params : Array[Type]
   pub seq : Array[InsnRef]
   pub control : Control
 }
@@ -79,7 +87,7 @@ impl CoreEnv {
 }
 
 pub struct Ctx {
-  pub ty_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, @closure.LowType]
+  pub ty_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Type]
   pub name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
   pub top_name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
 }
@@ -101,8 +109,8 @@ impl Fill {
 pub struct Fn {
   pub id : FnRef
   pub name : String
-  pub ty : @closure.LowType
-  pub fvars : Array[@closure.LowType]
+  pub ty : Type
+  pub fvars : Array[Type]
   pub entry : BlockRef
   pub blocks : @moonbitlang/core/hashmap.T[BlockRef, Block]
   pub insns : @moonbitlang/core/hashmap.T[InsnRef, Insn]
@@ -149,13 +157,13 @@ impl Id {
 }
 
 pub enum Insn {
-  Op(@closure.LowType, Op, Array[Value])
-  Call(@closure.LowType, Value, Array[Value])
-  Apply(@closure.LowType, Value, Array[Value])
-  ExtCall(@closure.LowType, String, Array[Value])
-  Alloc(@closure.LowType, MemRef, Array[Fill])
-  Store(@closure.LowType, MemAccess, Value)
-  Load(@closure.LowType, MemAccess)
+  Op(Type, Op, Array[Value])
+  Call(Type, Value, Array[Value])
+  Apply(Type, Value, Array[Value])
+  ExtCall(Type, String, Array[Value])
+  Alloc(Type, MemRef, Array[Fill])
+  Store(Type, Address, Value)
+  Load(Type, Address)
 }
 impl Insn {
   op_equal(Self, Self) -> Bool
@@ -171,7 +179,9 @@ impl InsnRef {
 }
 
 pub struct Loop {
+  pub id : LoopRef
   pub parent : LoopRef
+  pub header : BlockRef
   pub blocks : Array[BlockRef]
 }
 impl Loop {
@@ -188,19 +198,10 @@ impl LoopRef {
 }
 
 pub enum Mem {
-  Heap(@closure.LowType, Value)
-  Stack(@closure.LowType, Value)
+  Heap(Type, Value)
+  Stack(Type, Value)
 }
 impl Mem {
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
-
-pub enum MemAccess {
-  Field(@closure.LowType, Value, Int)
-  Offset(@closure.LowType, Value, Value)
-}
-impl MemAccess {
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
@@ -236,16 +237,34 @@ impl PrettyCore {
   to_string(Self) -> String
 }
 
+pub enum Type {
+  Unit
+  Bool
+  Int32
+  Int64
+  Double
+  ClosureFn(Array[Type], Type)
+  DirectFn(Array[Type], Type)
+  Tuple(Array[Type])
+  Array(Type)
+  Ptr
+}
+impl Type {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 pub enum Value {
   Unit
   Bool(Bool)
-  Int(Int)
+  Int32(Int)
+  Int64(Int64)
   Double(Double)
   Insn(InsnRef)
   Mem(FnRef, MemRef)
   Fn(FnRef)
   GlobalThunk(FnRef)
-  FreeVar(@closure.LowType, FnFreeVarRef)
+  FreeVar(Type, FnFreeVarRef)
   BlockParam(BlockRef, BlockParamRef)
   FnParam(FnRef, FnParamRef)
   Self(FnRef)
@@ -256,13 +275,19 @@ impl Value {
 }
 
 // Type aliases
+pub typealias Fills = Array[Fill]
+
 pub typealias MutMap[K, V] = @moonbitlang/core/hashmap.T[K, V]
 
-pub typealias Type = @closure.LowType
+pub typealias Types = Array[Type]
+
+pub typealias Values = Array[Value]
 
 // Traits
 
 // Extension Methods
+impl Show for Address
+
 impl Show for BasicBlock
 
 impl Show for Block
@@ -287,9 +312,9 @@ impl Show for Loop
 
 impl Show for Mem
 
-impl Show for MemAccess
-
 impl Show for Op
+
+impl Show for Type
 
 impl Show for Value
 

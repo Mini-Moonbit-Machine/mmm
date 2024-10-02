@@ -4,9 +4,10 @@ alias @moonbitlang/minimbt as @minimbt
 alias @moonbitlang/minimbt/knf as @knf
 
 // Values
-fn knf_program_to_closure(@knf.Knf, Map[String, @minimbt.Type]) -> Program
 
 // Types and methods
+type Binding
+
 pub struct Closure {
   pub name : Label
   pub actual_free_vars : Array[@minimbt.Name]
@@ -15,6 +16,12 @@ impl Closure {
   from_json(Json) -> Self!
   to_json(Self) -> Json
   to_string(Self) -> String
+}
+
+type ClosureEnv
+impl ClosureEnv {
+  knf_to_closure(Self, @knf.Knf, Map[String, @minimbt.Type]) -> Program!Failure
+  new_from_existing(@knf.Knf) -> Self
 }
 
 pub enum Expr {

@@ -30,7 +30,7 @@ pub struct Name {
 impl Name {
   compare(Self, Self) -> Int
   from_json(Json) -> Self!
-  from_string(String) -> Self!
+  from_string(String) -> Self!NameFromStringError
   hash_combine(Self, Hasher) -> Unit
   name_and_slot(String, Int) -> Self
   name_only(String) -> Self
@@ -38,6 +38,10 @@ impl Name {
   slot_only(Int) -> Self
   to_json(Self) -> Json
   to_string(Self) -> String
+}
+
+pub type! NameFromStringError {
+  InvalidSlotNumber(String, String)
 }
 
 pub enum Op {
@@ -111,6 +115,8 @@ impl Show for Fundef
 impl Show for Kind
 
 impl Show for Name
+
+impl Show for NameFromStringError
 
 impl Show for Op
 

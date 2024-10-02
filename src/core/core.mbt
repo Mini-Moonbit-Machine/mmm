@@ -24,6 +24,12 @@ pub type LoopRef Id derive(Eq, Hash)
 
 pub type MemRef Id derive(Eq, Hash)
 
+pub typealias Values = Array[Value]
+
+pub typealias Fills = Array[Fill]
+
+pub typealias Types = Array[Type]
+
 pub fn output(self : FnRef, logger : Logger) -> Unit {
   logger.write_char('f')
   logger.write_object(self.id)
@@ -173,11 +179,11 @@ pub enum Op {
 } derive(Show, Eq)
 
 pub enum Insn {
-  Op(~ty : Type, ~op : Op, ~args : Array[Value])
-  Call(~ty : Type, ~f : Value, ~args : Array[Value])
-  Apply(~ty : Type, ~f : Value, ~args : Array[Value])
-  ExtCall(~ty : Type, ~ext_f : String, ~args : Array[Value])
-  Alloc(~ty : Type, ~mref : MemRef, ~fills : Array[Fill])
+  Op(~ty : Type, ~op : Op, ~args : Values)
+  Call(~ty : Type, ~f : Value, ~args : Values)
+  Apply(~ty : Type, ~f : Value, ~args : Values)
+  ExtCall(~ty : Type, ~ext_f : String, ~args : Values)
+  Alloc(~ty : Type, ~mref : MemRef, ~fills : Fills)
   Store(~ty : Type, ~ma : Address, ~val : Value)
   Load(~ty : Type, ~ma : Address)
 } derive(Show, Eq)
@@ -201,16 +207,16 @@ pub enum Address {
 } derive(Show, Eq)
 
 pub enum Control {
-  Jump(~target : BlockRef, ~args : Array[Value])
-  Return(~args : Array[Value])
+  Jump(~target : BlockRef, ~args : Values)
+  Return(~args : Values)
   Branch(
     ~cond : Value,
     ~t : BlockRef,
-    ~t_args : Array[Value],
+    ~t_args : Values,
     ~f : BlockRef,
-    ~f_args : Array[Value]
+    ~f_args : Values
   )
-  Select(~cond : Value, ~targets : Array[BlockRef], ~args : Array[Value])
+  Select(~cond : Value, ~targets : Array[BlockRef], ~args : Values)
   Panic
 } derive(Show, Eq)
 

@@ -5,6 +5,12 @@ struct MemAccess[TBase, TOff] {
 
 type Label String derive(Show, Eq, Hash)
 
+pub type AnyReg Int
+
+pub type Imm20 Int
+
+pub type Imm12 Int
+
 /// RISC-V register
 pub enum Reg {
   Zero
