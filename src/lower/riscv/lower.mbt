@@ -4,7 +4,7 @@
 // - src/core/prelude.isle
 // - src/core/core.isle
 // - src/riscv/riscv.isle
-// - src/lower/lower_riscv.isle
+// - src/lower/riscv/lower.isle
 
 /// Context during lowering: an implementation of this trait
 /// must be provided with all external constructors and extractors.
@@ -717,7 +717,7 @@ pub fn constructor_imm[C : Context](
       let v12 = C::imm64_to_string(ctx, v11)
       let v13 = constructor_rv_li(ctx, v12)
       let v14 = C::xreg_to_reg(ctx, v13)
-      // Rule at src/lower/lower_riscv.isle line 11.
+      // Rule at src/lower/riscv/lower.isle line 11.
       return v14
     }
     @core.Type::Int64 => {
@@ -726,7 +726,7 @@ pub fn constructor_imm[C : Context](
       let v16 = C::imm64_to_string(ctx, v15)
       let v17 = constructor_rv_li(ctx, v16)
       let v18 = C::xreg_to_reg(ctx, v17)
-      // Rule at src/lower/lower_riscv.isle line 15.
+      // Rule at src/lower/riscv/lower.isle line 15.
       return v18
     }
     @core.Type::Double => {
@@ -735,7 +735,7 @@ pub fn constructor_imm[C : Context](
           let v2 = C::zero_reg(ctx)
           let v3 = constructor_rv_f_mv_dx(ctx, v2)
           let v4 = C::freg_to_reg(ctx, v3)
-          // Rule at src/lower/lower_riscv.isle line 4.
+          // Rule at src/lower/riscv/lower.isle line 4.
           return v4
         }
         _ => ()
@@ -745,13 +745,13 @@ pub fn constructor_imm[C : Context](
       let v7 = C::xreg_new(ctx, v6)
       let v8 = constructor_rv_f_mv_dx(ctx, v7)
       let v9 = C::freg_to_reg(ctx, v8)
-      // Rule at src/lower/lower_riscv.isle line 7.
+      // Rule at src/lower/riscv/lower.isle line 7.
       return v9
     }
     _ => ()
   }
   abort(
-    "no rule matched for term imm at src/lower/lower_riscv.isle line 2; should it be partial?",
+    "no rule matched for term imm at src/lower/riscv/lower.isle line 2; should it be partial?",
   )
 }
 
@@ -766,7 +766,7 @@ pub fn constructor_lower_value[C : Context](
       let v13 = C::f64_as_u64(ctx, v11)
       let v14 = constructor_imm(ctx, v12, v13)
       let v15 = Some(v14)
-      // Rule at src/lower/lower_riscv.isle line 56.
+      // Rule at src/lower/riscv/lower.isle line 56.
       return v15
     }
     @core.Value::Int32(val=v1) => {
@@ -774,7 +774,7 @@ pub fn constructor_lower_value[C : Context](
       let v3 = C::i32_as_u64(ctx, v1)
       let v4 = constructor_imm(ctx, v2, v3)
       let v5 = Some(v4)
-      // Rule at src/lower/lower_riscv.isle line 50.
+      // Rule at src/lower/riscv/lower.isle line 50.
       return v5
     }
     @core.Value::Int64(val=v6) => {
@@ -782,7 +782,7 @@ pub fn constructor_lower_value[C : Context](
       let v8 = C::i64_as_u64(ctx, v6)
       let v9 = constructor_imm(ctx, v7, v8)
       let v10 = Some(v9)
-      // Rule at src/lower/lower_riscv.isle line 53.
+      // Rule at src/lower/riscv/lower.isle line 53.
       return v10
     }
     @core.Value::Insn(iref=v16) => {
@@ -793,7 +793,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v20 = Some(v19)
-      // Rule at src/lower/lower_riscv.isle line 59.
+      // Rule at src/lower/riscv/lower.isle line 59.
       return v20
     }
     @core.Value::Mem(fref=v21, mref=v22) => {
@@ -805,7 +805,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v27 = Some(v26)
-      // Rule at src/lower/lower_riscv.isle line 62.
+      // Rule at src/lower/riscv/lower.isle line 62.
       return v27
     }
     @core.Value::Fn(fref=v28) => {
@@ -816,7 +816,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v32 = Some(v31)
-      // Rule at src/lower/lower_riscv.isle line 65.
+      // Rule at src/lower/riscv/lower.isle line 65.
       return v32
     }
     @core.Value::GlobalThunk(fref=v33) => {
@@ -827,7 +827,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v37 = Some(v36)
-      // Rule at src/lower/lower_riscv.isle line 68.
+      // Rule at src/lower/riscv/lower.isle line 68.
       return v37
     }
     @core.Value::FreeVar(ty=v38, fvref=v39) => {
@@ -837,7 +837,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v42 = Some(v41)
-      // Rule at src/lower/lower_riscv.isle line 71.
+      // Rule at src/lower/riscv/lower.isle line 71.
       return v42
     }
     @core.Value::BlockParam(bref=v43, bpref=v44) => {
@@ -847,7 +847,7 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v47 = Some(v46)
-      // Rule at src/lower/lower_riscv.isle line 74.
+      // Rule at src/lower/riscv/lower.isle line 74.
       return v47
     }
     @core.Value::FnParam(fref=v48, fpref=v49) => {
@@ -857,14 +857,14 @@ pub fn constructor_lower_value[C : Context](
         None => return None
       }
       let v52 = Some(v51)
-      // Rule at src/lower/lower_riscv.isle line 77.
+      // Rule at src/lower/riscv/lower.isle line 77.
       return v52
     }
     @core.Value::Self(fref=v53) => {
       let v54 = C::closure_reg(ctx)
       let v55 = C::xreg_to_reg(ctx, v54)
       let v56 = Some(v55)
-      // Rule at src/lower/lower_riscv.isle line 80.
+      // Rule at src/lower/riscv/lower.isle line 80.
       return v56
     }
     _ => ()
@@ -891,7 +891,7 @@ pub fn constructor_lower[C : Context](
                   let v10 = constructor_rv_add(ctx, v8, v9)
                   let v11 = C::xreg_to_reg(ctx, v10)
                   let v12 = Some(v11)
-                  // Rule at src/lower/lower_riscv.isle line 90.
+                  // Rule at src/lower/riscv/lower.isle line 90.
                   return v12
                 }
                 _ => ()
@@ -905,7 +905,7 @@ pub fn constructor_lower[C : Context](
                   let v13 = constructor_rv_sub(ctx, v8, v8)
                   let v14 = C::xreg_to_reg(ctx, v13)
                   let v15 = Some(v14)
-                  // Rule at src/lower/lower_riscv.isle line 96.
+                  // Rule at src/lower/riscv/lower.isle line 96.
                   return v15
                 }
                 _ => ()
@@ -920,7 +920,7 @@ pub fn constructor_lower[C : Context](
                   let v16 = constructor_rv_mulw(ctx, v8, v9)
                   let v17 = C::xreg_to_reg(ctx, v16)
                   let v18 = Some(v17)
-                  // Rule at src/lower/lower_riscv.isle line 102.
+                  // Rule at src/lower/riscv/lower.isle line 102.
                   return v18
                 }
                 _ => ()
@@ -935,7 +935,7 @@ pub fn constructor_lower[C : Context](
                   let v19 = constructor_rv_divw(ctx, v8, v9)
                   let v20 = C::xreg_to_reg(ctx, v19)
                   let v21 = Some(v20)
-                  // Rule at src/lower/lower_riscv.isle line 108.
+                  // Rule at src/lower/riscv/lower.isle line 108.
                   return v21
                 }
                 _ => ()
@@ -949,7 +949,7 @@ pub fn constructor_lower[C : Context](
                   let v25 = constructor_rv_neg(ctx, v24)
                   let v26 = C::xreg_to_reg(ctx, v25)
                   let v27 = Some(v26)
-                  // Rule at src/lower/lower_riscv.isle line 114.
+                  // Rule at src/lower/riscv/lower.isle line 114.
                   return v27
                 }
                 _ => ()
@@ -963,7 +963,7 @@ pub fn constructor_lower[C : Context](
                   let v29 = constructor_rv_sltiu(ctx, v24, 0x1)
                   let v30 = C::xreg_to_reg(ctx, v29)
                   let v31 = Some(v30)
-                  // Rule at src/lower/lower_riscv.isle line 120.
+                  // Rule at src/lower/riscv/lower.isle line 120.
                   return v31
                 }
                 _ => ()
@@ -979,7 +979,7 @@ pub fn constructor_lower[C : Context](
                   let v33 = constructor_rv_sltiu(ctx, v32, 0x1)
                   let v34 = C::xreg_to_reg(ctx, v33)
                   let v35 = Some(v34)
-                  // Rule at src/lower/lower_riscv.isle line 126.
+                  // Rule at src/lower/riscv/lower.isle line 126.
                   return v35
                 }
                 _ => ()
@@ -995,7 +995,7 @@ pub fn constructor_lower[C : Context](
                   let v37 = constructor_rv_xori(ctx, v36, 0x1)
                   let v38 = C::xreg_to_reg(ctx, v37)
                   let v39 = Some(v38)
-                  // Rule at src/lower/lower_riscv.isle line 133.
+                  // Rule at src/lower/riscv/lower.isle line 133.
                   return v39
                 }
                 _ => ()
@@ -1014,7 +1014,7 @@ pub fn constructor_lower[C : Context](
                   let v42 = constructor_rv_fadd_d(ctx, v40, v41)
                   let v43 = C::freg_to_reg(ctx, v42)
                   let v44 = Some(v43)
-                  // Rule at src/lower/lower_riscv.isle line 140.
+                  // Rule at src/lower/riscv/lower.isle line 140.
                   return v44
                 }
                 _ => ()
@@ -1029,7 +1029,7 @@ pub fn constructor_lower[C : Context](
                   let v45 = constructor_rv_fsub_d(ctx, v40, v41)
                   let v46 = C::freg_to_reg(ctx, v45)
                   let v47 = Some(v46)
-                  // Rule at src/lower/lower_riscv.isle line 146.
+                  // Rule at src/lower/riscv/lower.isle line 146.
                   return v47
                 }
                 _ => ()
@@ -1044,7 +1044,7 @@ pub fn constructor_lower[C : Context](
                   let v48 = constructor_rv_fmul_d(ctx, v40, v41)
                   let v49 = C::freg_to_reg(ctx, v48)
                   let v50 = Some(v49)
-                  // Rule at src/lower/lower_riscv.isle line 152.
+                  // Rule at src/lower/riscv/lower.isle line 152.
                   return v50
                 }
                 _ => ()
@@ -1059,7 +1059,7 @@ pub fn constructor_lower[C : Context](
                   let v51 = constructor_rv_fdiv_d(ctx, v40, v41)
                   let v52 = C::freg_to_reg(ctx, v51)
                   let v53 = Some(v52)
-                  // Rule at src/lower/lower_riscv.isle line 158.
+                  // Rule at src/lower/riscv/lower.isle line 158.
                   return v53
                 }
                 _ => ()
@@ -1073,7 +1073,7 @@ pub fn constructor_lower[C : Context](
                   let v55 = constructor_rv_fneg_d(ctx, v54)
                   let v56 = C::freg_to_reg(ctx, v55)
                   let v57 = Some(v56)
-                  // Rule at src/lower/lower_riscv.isle line 164.
+                  // Rule at src/lower/riscv/lower.isle line 164.
                   return v57
                 }
                 _ => ()
@@ -1093,7 +1093,7 @@ pub fn constructor_lower[C : Context](
             None => return None
           }
           let v71 = Some(v70)
-          // Rule at src/lower/lower_riscv.isle line 172.
+          // Rule at src/lower/riscv/lower.isle line 172.
           return v71
         }
         _ => ()
@@ -1105,7 +1105,7 @@ pub fn constructor_lower[C : Context](
         None => return None
       }
       let v77 = Some(v76)
-      // Rule at src/lower/lower_riscv.isle line 175.
+      // Rule at src/lower/riscv/lower.isle line 175.
       return v77
     }
     @core.Insn::ExtCall(ty=v58, ext_f=v59, args=v60) => {
@@ -1115,7 +1115,7 @@ pub fn constructor_lower[C : Context](
         None => return None
       }
       let v63 = Some(v62)
-      // Rule at src/lower/lower_riscv.isle line 169.
+      // Rule at src/lower/riscv/lower.isle line 169.
       return v63
     }
     _ => ()
