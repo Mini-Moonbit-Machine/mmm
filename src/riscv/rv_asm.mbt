@@ -63,8 +63,8 @@ pub enum RvAsm {
   FdivD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg)
   Fld(~rd : FReg, ~mem : MemAccess[Reg, Int])
   Fsd(~rs : FReg, ~mem : MemAccess[Reg, Int])
-  FbeqD(~rs1 : FReg, ~rs2 : FReg, ~target : Label)
-  FbleD(~rs1 : FReg, ~rs2 : FReg, ~target : Label)
+  FeqD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
+  FleD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
   FmvDX(~rd : FReg, ~rs : Reg)
   // pseudo instructions
   Nop
@@ -87,12 +87,12 @@ pub enum RvAsm {
 
 typealias MemAccessRegInt = MemAccess[Reg, Int]
 
-fn write3[TReg : Show](
+fn write3[TReg1 : Show, TReg2 : Show, TReg3 : Show](
   logger : Logger,
   op : String,
-  rd : TReg,
-  rs1 : TReg,
-  rs2 : TReg
+  rd : TReg1,
+  rs1 : TReg2,
+  rs2 : TReg3
 ) -> Unit {
   logger.write_string(op)
   logger.write_string(" ")
@@ -226,10 +226,8 @@ impl Show for RvAsm with output(self, logger) {
     FdivD(~rd, ~rs1, ~rs2) => write3(logger, "fdiv.d", rd, rs1, rs2)
     Fld(~rd, ~mem) => write2mem(logger, "fld", rd, mem)
     Fsd(~rs, ~mem) => write2mem(logger, "fsd", rs, mem)
-    FbeqD(~rs1, ~rs2, ~target) =>
-      write2label(logger, "fbeq.d", rs1, rs2, target)
-    FbleD(~rs1, ~rs2, ~target) =>
-      write2label(logger, "fble.d", rs1, rs2, target)
+    FeqD(~rd, ~rs1, ~rs2) => write3(logger, "fbeq.d", rd, rs1, rs2)
+    FleD(~rd, ~rs1, ~rs2) => write3(logger, "fble.d", rd, rs1, rs2)
     FmvDX(~rd, ~rs) => write2(logger, "fmv.d.x", rd, rs)
     Nop => logger.write_string("nop")
     La(~rd, ~l) => {
