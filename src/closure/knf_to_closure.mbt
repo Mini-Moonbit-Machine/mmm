@@ -15,6 +15,7 @@ fn ClosureEnv::new_temp(self : ClosureEnv) -> Name {
 }
 
 fn make_label(self : ClosureEnv, name : Name) -> String {
+  let _ = self
   match name.name {
     Some(n) => n
     None => "\{name.slot}"
@@ -92,7 +93,7 @@ fn knf_free_vars(k : @knf.Knf) -> FreeSet {
 pub fn knf_to_closure(
   self : ClosureEnv,
   knf : @knf.Knf,
-  extern_env : Map[String, Type]
+  _extern_env : Map[String, Type]
 ) -> Program!Failure {
   let fundefs = []
   let let_list = []
@@ -103,7 +104,7 @@ pub fn knf_to_closure(
 }
 
 fn bind_all(cr : ClosureResult) -> Expr {
-  let (e, fundefs, let_list) = cr
+  let (e, _fundefs, let_list) = cr
   let body = let_list.rev_fold(
     init=e,
     fn(e, bind) {

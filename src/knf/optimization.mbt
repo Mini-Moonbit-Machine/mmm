@@ -1,3 +1,4 @@
-pub fn KnfEnv::opt_pass(self : KnfEnv, knf : Knf) -> Knf {
+pub fn KnfEnv::opt_pass(self : KnfEnv, _knf : Knf) -> Knf {
+  let _ = self
   abort("todo")
 }

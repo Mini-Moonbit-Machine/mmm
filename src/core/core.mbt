@@ -220,6 +220,16 @@ pub enum Control {
   Panic
 } derive(Show, Eq)
 
+pub fn Control::successors(self : Control) -> Array[BlockRef] {
+  match self {
+    Jump(~target, ..) => [target]
+    Return(_) => []
+    Branch(~t, ~f, ..) => [t, f]
+    Select(~targets, ..) => targets
+    Panic => []
+  }
+}
+
 fn Op::from_knf(knf : @knf.Knf) -> Op? {
   match knf {
     Add(_, _) | FAdd(_, _) => Some(Op::Add)
