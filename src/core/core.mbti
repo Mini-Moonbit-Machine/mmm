@@ -67,7 +67,8 @@ impl Control {
 pub struct Core {
   pub names : @moonbitlang/core/hashmap.T[String, FnRef]
   pub funcs : @moonbitlang/core/hashmap.T[FnRef, Fn]
-  pub globals : Array[(String, Value)]
+  pub global_names : Array[(String, SymbolRef)]
+  pub global_thunks : @moonbitlang/core/hashmap.T[SymbolRef, (Type, FnRef)]
 }
 impl Core {
   to_pretty_print(Self) -> PrettyCore
@@ -81,6 +82,7 @@ pub struct CoreEnv {
   pub func_block_counter : Int
   pub func_mem_counter : Int
   pub lifted_func_counter : Int
+  pub sym_counter : Int
 }
 impl CoreEnv {
   build(Self, @knf.Knf) -> Core!Failure
@@ -92,7 +94,8 @@ impl CoreEnv {
 pub struct Ctx {
   pub ty_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Type]
   pub name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
-  pub top_name_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, Value]
+  pub top_fn_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, FnRef]
+  pub top_sym_ctx : @moonbitlang/core/immut/hashmap.T[@minimbt.Name, SymbolRef]
 }
 impl Ctx {
   to_string(Self) -> String
@@ -161,9 +164,10 @@ impl Id {
 
 pub enum Insn {
   Op(Type, Op, Array[Value])
-  Call(Type, Value, Array[Value])
+  Call(Type, FnRef, Array[Value])
   Apply(Type, Value, Array[Value])
   ExtCall(Type, String, Array[Value])
+  LoadSymbol(Type, SymbolRef)
   Alloc(Type, MemRef, Array[Fill])
   Store(Type, Address, Value)
   Load(Type, Address)
@@ -171,6 +175,7 @@ pub enum Insn {
 impl Insn {
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
+  ty(Self) -> Type
 }
 
 pub type InsnRef Id
@@ -240,6 +245,14 @@ impl PrettyCore {
   to_string(Self) -> String
 }
 
+pub type SymbolRef Id
+impl SymbolRef {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
 pub enum Type {
   Unit
   Bool
@@ -266,7 +279,6 @@ pub enum Value {
   Insn(InsnRef)
   Mem(FnRef, MemRef)
   Fn(FnRef)
-  GlobalThunk(FnRef)
   FreeVar(Type, FnFreeVarRef)
   BlockParam(BlockRef, BlockParamRef)
   FnParam(FnRef, FnParamRef)
@@ -289,6 +301,8 @@ pub typealias Values = Array[Value]
 // Traits
 
 // Extension Methods
+impl Hash for Value
+
 impl Show for Address
 
 impl Show for BasicBlock

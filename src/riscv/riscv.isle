@@ -107,12 +107,15 @@
 (extern constructor freg_to_reg freg_to_reg)
 (convert FReg AnyReg freg_to_reg)
 
-(decl pure put_in_xreg (Value) XReg)
-(extern constructor put_in_xreg put_in_xreg)
+(decl put_in_reg (Value) AnyReg)
+(extern constructor put_in_reg put_in_reg)
+
+(decl put_in_xreg (Value) XReg)
+(rule (put_in_xreg v) (xreg_new (put_in_reg v)))
 (convert Value XReg put_in_xreg)
 
-(decl pure put_in_freg (Value) FReg)
-(extern constructor put_in_freg put_in_freg)
+(decl put_in_freg (Value) FReg)
+(rule (put_in_freg v) (freg_new (put_in_reg v)))
 (convert Value FReg put_in_freg)
 
 (decl rv_add (XReg XReg) XReg)

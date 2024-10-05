@@ -14,14 +14,8 @@ pub struct MFn {
   blocks : MutMap[Label, MBasicBlock]
 }
 
-pub enum MParam {
-  Reg(Reg)
-  FReg(FReg)
-}
-
 pub struct MBasicBlock {
   id : Label
-  params : Array[MParam]
   insns : Array[RvAsm]
   control : Array[RvAsm]
 }

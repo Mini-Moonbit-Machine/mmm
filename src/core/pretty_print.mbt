@@ -63,7 +63,6 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
     BlockParam(bref=BlockRef({ id }), bpref=BlockParamRef({ id: id2 })) =>
       logger.write_string("$b\{id}.\{id2}")
     FnParam(fpref=FnParamRef({ id }), ..) => logger.write_string("$f\{id}")
-    GlobalThunk(~fref) => logger.write_string("\{fref}()")
     FreeVar(~fvref, ..) => logger.write_string("\{fvref}")
     Mem(fref=FnRef({ id }), mref=MemRef({ id: id2 })) =>
       logger.write_string("f\{id}.m\{id2}")
@@ -216,9 +215,7 @@ fn print_insn(
     Call(~ty, ~f, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
-      logger.write_string(" = call ")
-      print_value(logger, f)
-      logger.write_string("(")
+      logger.write_string(" = call \{f}(")
       print_values(logger, args)
       logger.write_string(")\n")
     }
@@ -237,6 +234,11 @@ fn print_insn(
       logger.write_string(" = ext_call \{ext_f}(")
       print_values(logger, args)
       logger.write_string(")\n")
+    }
+    LoadSymbol(~ty, ~sym) => {
+      logger.write_string("let \{ir}: ")
+      print_type(logger, ty)
+      logger.write_string(" = load_symbol \{sym}\n")
     }
     Alloc(~mref, ~fills, ..) => {
       logger.write_string("let _ = alloc ")
@@ -333,11 +335,9 @@ fn print(logger : @util.IndentLogger, val : Core) -> Unit {
     let func = val.funcs.get(fref).unwrap()
     print_func(logger, func)
   }
-  for thunk in val.globals {
-    let (name, value) = thunk
-    logger.write_string(".thunk \{name} = ")
-    print_value(logger, value)
-    logger.write_string("\n")
+  for thunk in val.global_names {
+    let (thunk_name, sym) = thunk
+    logger.write_string(".thunk \{sym} \{thunk_name}\n")
   }
 }
 

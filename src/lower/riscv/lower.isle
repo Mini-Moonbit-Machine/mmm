@@ -19,34 +19,14 @@
 
 (decl partial lower_value (Value) AnyReg)
 
-(decl partial lower_val_mem (Fn Mem) AnyReg)
-(extern constructor lower_val_mem lower_val_mem)
-
-(decl partial lower_val_fn (Fn) AnyReg)
-(extern constructor lower_val_fn lower_val_fn)
-
-(decl partial lower_val_global_thunk (Fn) AnyReg)
-(extern constructor lower_val_global_thunk lower_val_global_thunk)
-
-(decl partial lower_val_free_var (Type FnFreeVarRef) AnyReg)
-(extern constructor lower_val_free_var lower_val_free_var)
-
-(decl partial lower_val_block_param (BlockRef BlockParamRef) AnyReg)
-(extern constructor lower_val_block_param lower_val_block_param)
-
-(decl partial lower_val_fn_param (FnRef FnParamRef) AnyReg)
-(extern constructor lower_val_fn_param lower_val_fn_param)
-
-(decl partial lower_call (Type Fn Values) AnyReg)
+(decl lower_call (Type Fn Values) AnyReg)
 (extern constructor lower_call lower_call)
 
-(decl partial lower_ext_call (Type String Values) AnyReg)
+(decl lower_ext_call (Type String Values) AnyReg)
 (extern constructor lower_ext_call lower_ext_call)
 
-(decl partial lower_apply (Type Value Values) AnyReg)
+(decl lower_apply (Type Value Values) AnyReg)
 (extern constructor lower_apply lower_apply)
-
-(decl partial lower (Insn) AnyReg)
 
 (rule (lower_value (val_int32 c))
   (imm (ty_int32) (i32_as_u64 c)))
@@ -57,33 +37,16 @@
 (rule (lower_value (val_double c))
   (imm (ty_double) (f64_as_u64 c)))
 
-(rule (lower_value (val_insn (ref_insn i)))
-  (lower i))
-
-(rule (lower_value (val_mem (ref_fn f) (ref_mem m)))
-  (lower_val_mem f m))
-
-(rule (lower_value (val_fn (ref_fn f)))
-  (lower_val_fn f))
-
-(rule (lower_value (val_global_thunk (ref_fn f)))
-  (lower_val_global_thunk f))
-
-(rule (lower_value (val_free_var ty fvref))
-  (lower_val_free_var ty fvref))
-
-(rule (lower_value (val_block_param bref bpref))
-  (lower_val_block_param bref bpref))
-
-(rule (lower_value (val_fn_param fref fpref))
-  (lower_val_fn_param fref fpref))
-
 (rule (lower_value (val_self _))
   (closure_reg))
+
+(rule -1 (lower_value val)
+  (put_in_reg val))
 
 (decl imm12_from_val (Imm12) Value)
 (extern extractor imm12_from_val imm12_from_val)
 
+(decl partial lower (Insn) AnyReg)
 
 ;;;; Rules for i32 additions
 ;;;; Notice: the official template uses 64b instructions for 32b operations
@@ -170,7 +133,7 @@
 (rule (lower (insn_ext_call ty f args))
   (lower_ext_call ty f args))
 
-(rule (lower (insn_call ty (val_fn (ref_fn f)) args))
+(rule (lower (insn_call ty (ref_fn f) args))
   (lower_call ty f args))
 
 (rule (lower (insn_apply ty f args))

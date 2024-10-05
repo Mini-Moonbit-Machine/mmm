@@ -27,8 +27,7 @@ pub trait Context {
   freg_new(Self, @riscv.AnyReg) -> @riscv.FReg
   xreg_to_reg(Self, @riscv.Reg) -> @riscv.AnyReg
   freg_to_reg(Self, @riscv.FReg) -> @riscv.AnyReg
-  put_in_xreg(Self, @core.Value) -> @riscv.Reg
-  put_in_freg(Self, @core.Value) -> @riscv.FReg
+  put_in_reg(Self, @core.Value) -> @riscv.AnyReg
   is_zero_reg(Self, @riscv.Reg) -> Unit?
   zero_reg(Self) -> @riscv.Reg
   is_closure_reg(Self, @riscv.Reg) -> Unit?
@@ -41,16 +40,9 @@ pub trait Context {
   imm12_to_i32(Self, @riscv.Imm12) -> Int
   imm32_to_string(Self, Int) -> String
   imm64_to_string(Self, Int64) -> String
-  lower_val_mem(Self, @core.Fn, @core.Mem) -> @riscv.AnyReg?
-  lower_val_fn(Self, @core.Fn) -> @riscv.AnyReg?
-  lower_val_global_thunk(Self, @core.Fn) -> @riscv.AnyReg?
-  lower_val_free_var(Self, @core.Type, @core.FnFreeVarRef) -> @riscv.AnyReg?
-  lower_val_block_param(Self, @core.BlockRef, @core.BlockParamRef) ->
-       @riscv.AnyReg?
-  lower_val_fn_param(Self, @core.FnRef, @core.FnParamRef) -> @riscv.AnyReg?
-  lower_call(Self, @core.Type, @core.Fn, @core.Values) -> @riscv.AnyReg?
-  lower_ext_call(Self, @core.Type, String, @core.Values) -> @riscv.AnyReg?
-  lower_apply(Self, @core.Type, @core.Value, @core.Values) -> @riscv.AnyReg?
+  lower_call(Self, @core.Type, @core.Fn, @core.Values) -> @riscv.AnyReg
+  lower_ext_call(Self, @core.Type, String, @core.Values) -> @riscv.AnyReg
+  lower_apply(Self, @core.Type, @core.Value, @core.Values) -> @riscv.AnyReg
   imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
 }
 
@@ -79,31 +71,31 @@ let _MAX_ISLE_RETURNS = 64
 
 // Generated as internal constructor for term ty_unit.
 pub fn constructor_ty_unit[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 47.
+  // Rule at src/core/core.isle line 48.
   return @core.Type::Unit
 }
 
 // Generated as internal constructor for term ty_bool.
 pub fn constructor_ty_bool[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 51.
+  // Rule at src/core/core.isle line 52.
   return @core.Type::Bool
 }
 
 // Generated as internal constructor for term ty_int32.
 pub fn constructor_ty_int32[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 55.
+  // Rule at src/core/core.isle line 56.
   return @core.Type::Int32
 }
 
 // Generated as internal constructor for term ty_int64.
 pub fn constructor_ty_int64[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 59.
+  // Rule at src/core/core.isle line 60.
   return @core.Type::Int64
 }
 
 // Generated as internal constructor for term ty_double.
 pub fn constructor_ty_double[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 63.
+  // Rule at src/core/core.isle line 64.
   return @core.Type::Double
 }
 
@@ -114,7 +106,7 @@ pub fn constructor_ty_closure_fn[C : Context](
   arg1 : @core.Type
 ) -> @core.Type {
   let v2 = @core.Type::ClosureFn(params=arg0, ty=arg1)
-  // Rule at src/core/core.isle line 67.
+  // Rule at src/core/core.isle line 68.
   return v2
 }
 
@@ -125,7 +117,7 @@ pub fn constructor_ty_direct_fn[C : Context](
   arg1 : @core.Type
 ) -> @core.Type {
   let v2 = @core.Type::DirectFn(params=arg0, ty=arg1)
-  // Rule at src/core/core.isle line 71.
+  // Rule at src/core/core.isle line 72.
   return v2
 }
 
@@ -135,7 +127,7 @@ pub fn constructor_ty_tuple[C : Context](
   arg0 : @core.Types
 ) -> @core.Type {
   let v1 = @core.Type::Tuple(fields=arg0)
-  // Rule at src/core/core.isle line 75.
+  // Rule at src/core/core.isle line 76.
   return v1
 }
 
@@ -145,8 +137,30 @@ pub fn constructor_ty_array[C : Context](
   arg0 : @core.Type
 ) -> @core.Type {
   let v1 = @core.Type::Array(elem=arg0)
-  // Rule at src/core/core.isle line 79.
+  // Rule at src/core/core.isle line 80.
   return v1
+}
+
+// Generated as internal constructor for term put_in_xreg.
+pub fn constructor_put_in_xreg[C : Context](
+  ctx : C,
+  arg0 : @core.Value
+) -> @riscv.Reg {
+  let v1 = C::put_in_reg(ctx, arg0)
+  let v2 = C::xreg_new(ctx, v1)
+  // Rule at src/riscv/riscv.isle line 113.
+  return v2
+}
+
+// Generated as internal constructor for term put_in_freg.
+pub fn constructor_put_in_freg[C : Context](
+  ctx : C,
+  arg0 : @core.Value
+) -> @riscv.FReg {
+  let v1 = C::put_in_reg(ctx, arg0)
+  let v2 = C::freg_new(ctx, v1)
+  // Rule at src/riscv/riscv.isle line 117.
+  return v2
 }
 
 // Generated as internal constructor for term rv_add.
@@ -158,7 +172,7 @@ pub fn constructor_rv_add[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Add(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 118.
+  // Rule at src/riscv/riscv.isle line 121.
   return v2
 }
 
@@ -171,7 +185,7 @@ pub fn constructor_rv_sub[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Sub(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 124.
+  // Rule at src/riscv/riscv.isle line 127.
   return v2
 }
 
@@ -184,7 +198,7 @@ pub fn constructor_rv_xor[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Xor(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 130.
+  // Rule at src/riscv/riscv.isle line 133.
   return v2
 }
 
@@ -197,7 +211,7 @@ pub fn constructor_rv_or[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Or(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 136.
+  // Rule at src/riscv/riscv.isle line 139.
   return v2
 }
 
@@ -210,7 +224,7 @@ pub fn constructor_rv_and[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::And(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 142.
+  // Rule at src/riscv/riscv.isle line 145.
   return v2
 }
 
@@ -223,7 +237,7 @@ pub fn constructor_rv_sll[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Sll(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 148.
+  // Rule at src/riscv/riscv.isle line 151.
   return v2
 }
 
@@ -236,7 +250,7 @@ pub fn constructor_rv_srl[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Srl(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 154.
+  // Rule at src/riscv/riscv.isle line 157.
   return v2
 }
 
@@ -249,7 +263,7 @@ pub fn constructor_rv_sra[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Sra(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 160.
+  // Rule at src/riscv/riscv.isle line 163.
   return v2
 }
 
@@ -262,7 +276,7 @@ pub fn constructor_rv_slt[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Slt(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 166.
+  // Rule at src/riscv/riscv.isle line 169.
   return v2
 }
 
@@ -275,7 +289,7 @@ pub fn constructor_rv_sltu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Sltu(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 172.
+  // Rule at src/riscv/riscv.isle line 175.
   return v2
 }
 
@@ -288,7 +302,7 @@ pub fn constructor_rv_addi[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Addi(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 178.
+  // Rule at src/riscv/riscv.isle line 181.
   return v2
 }
 
@@ -301,7 +315,7 @@ pub fn constructor_rv_xori[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Xori(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 184.
+  // Rule at src/riscv/riscv.isle line 187.
   return v2
 }
 
@@ -314,7 +328,7 @@ pub fn constructor_rv_ori[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Ori(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 190.
+  // Rule at src/riscv/riscv.isle line 193.
   return v2
 }
 
@@ -327,7 +341,7 @@ pub fn constructor_rv_andi[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Andi(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 196.
+  // Rule at src/riscv/riscv.isle line 199.
   return v2
 }
 
@@ -340,7 +354,7 @@ pub fn constructor_rv_slli[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Slli(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 202.
+  // Rule at src/riscv/riscv.isle line 205.
   return v2
 }
 
@@ -353,7 +367,7 @@ pub fn constructor_rv_srli[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Srli(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 208.
+  // Rule at src/riscv/riscv.isle line 211.
   return v2
 }
 
@@ -366,7 +380,7 @@ pub fn constructor_rv_srai[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Srai(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 214.
+  // Rule at src/riscv/riscv.isle line 217.
   return v2
 }
 
@@ -379,7 +393,7 @@ pub fn constructor_rv_slti[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Slti(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 220.
+  // Rule at src/riscv/riscv.isle line 223.
   return v2
 }
 
@@ -392,7 +406,7 @@ pub fn constructor_rv_sltiu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Sltiu(rd=v2, rs1=arg0, imm=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 226.
+  // Rule at src/riscv/riscv.isle line 229.
   return v2
 }
 
@@ -404,7 +418,7 @@ pub fn constructor_rv_lb[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Lb(rd=v1, mem=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 232.
+  // Rule at src/riscv/riscv.isle line 235.
   return v1
 }
 
@@ -416,7 +430,7 @@ pub fn constructor_rv_lh[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Lh(rd=v1, mem=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 238.
+  // Rule at src/riscv/riscv.isle line 241.
   return v1
 }
 
@@ -428,7 +442,7 @@ pub fn constructor_rv_lw[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Lw(rd=v1, mem=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 244.
+  // Rule at src/riscv/riscv.isle line 247.
   return v1
 }
 
@@ -440,7 +454,7 @@ pub fn constructor_rv_ld[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Ld(rd=v1, mem=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 250.
+  // Rule at src/riscv/riscv.isle line 253.
   return v1
 }
 
@@ -453,7 +467,7 @@ pub fn constructor_rv_mul[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Mul(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 256.
+  // Rule at src/riscv/riscv.isle line 259.
   return v2
 }
 
@@ -466,7 +480,7 @@ pub fn constructor_rv_mulw[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Mulw(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 262.
+  // Rule at src/riscv/riscv.isle line 265.
   return v2
 }
 
@@ -479,7 +493,7 @@ pub fn constructor_rv_mulh[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Mulh(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 268.
+  // Rule at src/riscv/riscv.isle line 271.
   return v2
 }
 
@@ -492,7 +506,7 @@ pub fn constructor_rv_mulhsu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Mulhsu(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 274.
+  // Rule at src/riscv/riscv.isle line 277.
   return v2
 }
 
@@ -505,7 +519,7 @@ pub fn constructor_rv_mulhu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Mulhu(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 280.
+  // Rule at src/riscv/riscv.isle line 283.
   return v2
 }
 
@@ -518,7 +532,7 @@ pub fn constructor_rv_div[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Div(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 286.
+  // Rule at src/riscv/riscv.isle line 289.
   return v2
 }
 
@@ -531,7 +545,7 @@ pub fn constructor_rv_divw[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Divw(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 292.
+  // Rule at src/riscv/riscv.isle line 295.
   return v2
 }
 
@@ -544,7 +558,7 @@ pub fn constructor_rv_divu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Divu(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 298.
+  // Rule at src/riscv/riscv.isle line 301.
   return v2
 }
 
@@ -557,7 +571,7 @@ pub fn constructor_rv_rem[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Rem(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 304.
+  // Rule at src/riscv/riscv.isle line 307.
   return v2
 }
 
@@ -570,7 +584,7 @@ pub fn constructor_rv_remu[C : Context](
   let v2 = C::next_virtual_xreg(ctx)
   let v3 = @riscv.RvAsm::Remu(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 310.
+  // Rule at src/riscv/riscv.isle line 313.
   return v2
 }
 
@@ -583,7 +597,7 @@ pub fn constructor_rv_fadd_d[C : Context](
   let v2 = C::next_virtual_freg(ctx)
   let v3 = @riscv.RvAsm::FaddD(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 316.
+  // Rule at src/riscv/riscv.isle line 319.
   return v2
 }
 
@@ -596,7 +610,7 @@ pub fn constructor_rv_fsub_d[C : Context](
   let v2 = C::next_virtual_freg(ctx)
   let v3 = @riscv.RvAsm::FsubD(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 322.
+  // Rule at src/riscv/riscv.isle line 325.
   return v2
 }
 
@@ -609,7 +623,7 @@ pub fn constructor_rv_fmul_d[C : Context](
   let v2 = C::next_virtual_freg(ctx)
   let v3 = @riscv.RvAsm::FmulD(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 328.
+  // Rule at src/riscv/riscv.isle line 331.
   return v2
 }
 
@@ -622,7 +636,7 @@ pub fn constructor_rv_fdiv_d[C : Context](
   let v2 = C::next_virtual_freg(ctx)
   let v3 = @riscv.RvAsm::FdivD(rd=v2, rs1=arg0, rs2=arg1)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 334.
+  // Rule at src/riscv/riscv.isle line 337.
   return v2
 }
 
@@ -634,7 +648,7 @@ pub fn constructor_rv_fld[C : Context](
   let v1 = C::next_virtual_freg(ctx)
   let v2 = @riscv.RvAsm::Fld(rd=v1, mem=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 340.
+  // Rule at src/riscv/riscv.isle line 343.
   return v1
 }
 
@@ -646,7 +660,7 @@ pub fn constructor_rv_f_mv_dx[C : Context](
   let v1 = C::next_virtual_freg(ctx)
   let v2 = @riscv.RvAsm::FmvDX(rd=v1, rs=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 346.
+  // Rule at src/riscv/riscv.isle line 349.
   return v1
 }
 
@@ -658,7 +672,7 @@ pub fn constructor_rv_la[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::La(rd=v1, l=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 352.
+  // Rule at src/riscv/riscv.isle line 355.
   return v1
 }
 
@@ -667,7 +681,7 @@ pub fn constructor_rv_li[C : Context](ctx : C, arg0 : String) -> @riscv.Reg {
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Li(rd=v1, i=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 358.
+  // Rule at src/riscv/riscv.isle line 361.
   return v1
 }
 
@@ -679,7 +693,7 @@ pub fn constructor_rv_neg[C : Context](
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Neg(rd=v1, rs=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 364.
+  // Rule at src/riscv/riscv.isle line 367.
   return v1
 }
 
@@ -691,7 +705,7 @@ pub fn constructor_rv_fneg_d[C : Context](
   let v1 = C::next_virtual_freg(ctx)
   let v2 = @riscv.RvAsm::FnegD(rd=v1, rs=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 370.
+  // Rule at src/riscv/riscv.isle line 373.
   return v1
 }
 
@@ -700,7 +714,7 @@ pub fn constructor_rv_mv[C : Context](ctx : C, arg0 : @riscv.Reg) -> @riscv.Reg 
   let v1 = C::next_virtual_xreg(ctx)
   let v2 = @riscv.RvAsm::Mv(rd=v1, rs=arg0)
   let v3 = C::emit_risc_v(ctx, v2)
-  // Rule at src/riscv/riscv.isle line 376.
+  // Rule at src/riscv/riscv.isle line 379.
   return v1
 }
 
@@ -766,7 +780,7 @@ pub fn constructor_lower_value[C : Context](
       let v13 = C::f64_as_u64(ctx, v11)
       let v14 = constructor_imm(ctx, v12, v13)
       let v15 = Some(v14)
-      // Rule at src/lower/riscv/lower.isle line 56.
+      // Rule at src/lower/riscv/lower.isle line 36.
       return v15
     }
     @core.Value::Int32(val=v1) => {
@@ -774,7 +788,7 @@ pub fn constructor_lower_value[C : Context](
       let v3 = C::i32_as_u64(ctx, v1)
       let v4 = constructor_imm(ctx, v2, v3)
       let v5 = Some(v4)
-      // Rule at src/lower/riscv/lower.isle line 50.
+      // Rule at src/lower/riscv/lower.isle line 30.
       return v5
     }
     @core.Value::Int64(val=v6) => {
@@ -782,94 +796,22 @@ pub fn constructor_lower_value[C : Context](
       let v8 = C::i64_as_u64(ctx, v6)
       let v9 = constructor_imm(ctx, v7, v8)
       let v10 = Some(v9)
-      // Rule at src/lower/riscv/lower.isle line 53.
+      // Rule at src/lower/riscv/lower.isle line 33.
       return v10
     }
-    @core.Value::Insn(iref=v16) => {
-      let v17 = C::ref_insn(ctx, v16)
-      let v18 = constructor_lower(ctx, v17)
-      let v19 = match v18 {
-        Some(x) => x
-        None => return None
-      }
-      let v20 = Some(v19)
-      // Rule at src/lower/riscv/lower.isle line 59.
-      return v20
-    }
-    @core.Value::Mem(fref=v21, mref=v22) => {
-      let v23 = C::ref_fn(ctx, v21)
-      let v24 = C::ref_mem(ctx, v22)
-      let v25 = C::lower_val_mem(ctx, v23, v24)
-      let v26 = match v25 {
-        Some(x) => x
-        None => return None
-      }
-      let v27 = Some(v26)
-      // Rule at src/lower/riscv/lower.isle line 62.
-      return v27
-    }
-    @core.Value::Fn(fref=v28) => {
-      let v29 = C::ref_fn(ctx, v28)
-      let v30 = C::lower_val_fn(ctx, v29)
-      let v31 = match v30 {
-        Some(x) => x
-        None => return None
-      }
-      let v32 = Some(v31)
-      // Rule at src/lower/riscv/lower.isle line 65.
-      return v32
-    }
-    @core.Value::GlobalThunk(fref=v33) => {
-      let v34 = C::ref_fn(ctx, v33)
-      let v35 = C::lower_val_global_thunk(ctx, v34)
-      let v36 = match v35 {
-        Some(x) => x
-        None => return None
-      }
-      let v37 = Some(v36)
-      // Rule at src/lower/riscv/lower.isle line 68.
-      return v37
-    }
-    @core.Value::FreeVar(ty=v38, fvref=v39) => {
-      let v40 = C::lower_val_free_var(ctx, v38, v39)
-      let v41 = match v40 {
-        Some(x) => x
-        None => return None
-      }
-      let v42 = Some(v41)
-      // Rule at src/lower/riscv/lower.isle line 71.
-      return v42
-    }
-    @core.Value::BlockParam(bref=v43, bpref=v44) => {
-      let v45 = C::lower_val_block_param(ctx, v43, v44)
-      let v46 = match v45 {
-        Some(x) => x
-        None => return None
-      }
-      let v47 = Some(v46)
-      // Rule at src/lower/riscv/lower.isle line 74.
-      return v47
-    }
-    @core.Value::FnParam(fref=v48, fpref=v49) => {
-      let v50 = C::lower_val_fn_param(ctx, v48, v49)
-      let v51 = match v50 {
-        Some(x) => x
-        None => return None
-      }
-      let v52 = Some(v51)
-      // Rule at src/lower/riscv/lower.isle line 77.
-      return v52
-    }
-    @core.Value::Self(fref=v53) => {
-      let v54 = C::closure_reg(ctx)
-      let v55 = C::xreg_to_reg(ctx, v54)
-      let v56 = Some(v55)
-      // Rule at src/lower/riscv/lower.isle line 80.
-      return v56
+    @core.Value::Self(fref=v16) => {
+      let v17 = C::closure_reg(ctx)
+      let v18 = C::xreg_to_reg(ctx, v17)
+      let v19 = Some(v18)
+      // Rule at src/lower/riscv/lower.isle line 39.
+      return v19
     }
     _ => ()
   }
-  None
+  let v20 = C::put_in_reg(ctx, arg0)
+  let v21 = Some(v20)
+  // Rule at src/lower/riscv/lower.isle line 42.
+  return v21
 }
 
 // Generated as internal constructor for term lower.
@@ -886,12 +828,12 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v9 = C::put_in_xreg(ctx, v5.1)
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v9 = constructor_put_in_xreg(ctx, v5.1)
                   let v10 = constructor_rv_add(ctx, v8, v9)
                   let v11 = C::xreg_to_reg(ctx, v10)
                   let v12 = Some(v11)
-                  // Rule at src/lower/riscv/lower.isle line 90.
+                  // Rule at src/lower/riscv/lower.isle line 53.
                   return v12
                 }
                 _ => ()
@@ -901,12 +843,13 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v13 = constructor_rv_sub(ctx, v8, v8)
-                  let v14 = C::xreg_to_reg(ctx, v13)
-                  let v15 = Some(v14)
-                  // Rule at src/lower/riscv/lower.isle line 96.
-                  return v15
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v13 = constructor_put_in_xreg(ctx, v5.0)
+                  let v14 = constructor_rv_sub(ctx, v8, v13)
+                  let v15 = C::xreg_to_reg(ctx, v14)
+                  let v16 = Some(v15)
+                  // Rule at src/lower/riscv/lower.isle line 59.
+                  return v16
                 }
                 _ => ()
               }
@@ -915,13 +858,13 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v9 = C::put_in_xreg(ctx, v5.1)
-                  let v16 = constructor_rv_mulw(ctx, v8, v9)
-                  let v17 = C::xreg_to_reg(ctx, v16)
-                  let v18 = Some(v17)
-                  // Rule at src/lower/riscv/lower.isle line 102.
-                  return v18
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v9 = constructor_put_in_xreg(ctx, v5.1)
+                  let v17 = constructor_rv_mulw(ctx, v8, v9)
+                  let v18 = C::xreg_to_reg(ctx, v17)
+                  let v19 = Some(v18)
+                  // Rule at src/lower/riscv/lower.isle line 65.
+                  return v19
                 }
                 _ => ()
               }
@@ -930,41 +873,41 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v9 = C::put_in_xreg(ctx, v5.1)
-                  let v19 = constructor_rv_divw(ctx, v8, v9)
-                  let v20 = C::xreg_to_reg(ctx, v19)
-                  let v21 = Some(v20)
-                  // Rule at src/lower/riscv/lower.isle line 108.
-                  return v21
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v9 = constructor_put_in_xreg(ctx, v5.1)
+                  let v20 = constructor_rv_divw(ctx, v8, v9)
+                  let v21 = C::xreg_to_reg(ctx, v20)
+                  let v22 = Some(v21)
+                  // Rule at src/lower/riscv/lower.isle line 71.
+                  return v22
                 }
                 _ => ()
               }
             }
             @core.Op::Neg => {
-              let v22 = C::arg1(ctx, v3)
-              match v22 {
-                Some(v23) => {
-                  let v24 = C::put_in_xreg(ctx, v23)
-                  let v25 = constructor_rv_neg(ctx, v24)
-                  let v26 = C::xreg_to_reg(ctx, v25)
-                  let v27 = Some(v26)
-                  // Rule at src/lower/riscv/lower.isle line 114.
-                  return v27
+              let v23 = C::arg1(ctx, v3)
+              match v23 {
+                Some(v24) => {
+                  let v25 = constructor_put_in_xreg(ctx, v24)
+                  let v26 = constructor_rv_neg(ctx, v25)
+                  let v27 = C::xreg_to_reg(ctx, v26)
+                  let v28 = Some(v27)
+                  // Rule at src/lower/riscv/lower.isle line 77.
+                  return v28
                 }
                 _ => ()
               }
             }
             @core.Op::Lnot => {
-              let v22 = C::arg1(ctx, v3)
-              match v22 {
-                Some(v23) => {
-                  let v24 = C::put_in_xreg(ctx, v23)
-                  let v29 = constructor_rv_sltiu(ctx, v24, 0x1)
-                  let v30 = C::xreg_to_reg(ctx, v29)
-                  let v31 = Some(v30)
-                  // Rule at src/lower/riscv/lower.isle line 120.
-                  return v31
+              let v23 = C::arg1(ctx, v3)
+              match v23 {
+                Some(v24) => {
+                  let v25 = constructor_put_in_xreg(ctx, v24)
+                  let v30 = constructor_rv_sltiu(ctx, v25, 0x1)
+                  let v31 = C::xreg_to_reg(ctx, v30)
+                  let v32 = Some(v31)
+                  // Rule at src/lower/riscv/lower.isle line 83.
+                  return v32
                 }
                 _ => ()
               }
@@ -973,14 +916,14 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v9 = C::put_in_xreg(ctx, v5.1)
-                  let v32 = constructor_rv_xor(ctx, v8, v9)
-                  let v33 = constructor_rv_sltiu(ctx, v32, 0x1)
-                  let v34 = C::xreg_to_reg(ctx, v33)
-                  let v35 = Some(v34)
-                  // Rule at src/lower/riscv/lower.isle line 126.
-                  return v35
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v9 = constructor_put_in_xreg(ctx, v5.1)
+                  let v33 = constructor_rv_xor(ctx, v8, v9)
+                  let v34 = constructor_rv_sltiu(ctx, v33, 0x1)
+                  let v35 = C::xreg_to_reg(ctx, v34)
+                  let v36 = Some(v35)
+                  // Rule at src/lower/riscv/lower.isle line 89.
+                  return v36
                 }
                 _ => ()
               }
@@ -989,14 +932,14 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v8 = C::put_in_xreg(ctx, v5.0)
-                  let v9 = C::put_in_xreg(ctx, v5.1)
-                  let v36 = constructor_rv_sltu(ctx, v8, v9)
-                  let v37 = constructor_rv_xori(ctx, v36, 0x1)
-                  let v38 = C::xreg_to_reg(ctx, v37)
-                  let v39 = Some(v38)
-                  // Rule at src/lower/riscv/lower.isle line 133.
-                  return v39
+                  let v8 = constructor_put_in_xreg(ctx, v5.0)
+                  let v9 = constructor_put_in_xreg(ctx, v5.1)
+                  let v37 = constructor_rv_sltu(ctx, v8, v9)
+                  let v38 = constructor_rv_xori(ctx, v37, 0x1)
+                  let v39 = C::xreg_to_reg(ctx, v38)
+                  let v40 = Some(v39)
+                  // Rule at src/lower/riscv/lower.isle line 96.
+                  return v40
                 }
                 _ => ()
               }
@@ -1009,13 +952,13 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v40 = C::put_in_freg(ctx, v5.0)
-                  let v41 = C::put_in_freg(ctx, v5.1)
-                  let v42 = constructor_rv_fadd_d(ctx, v40, v41)
-                  let v43 = C::freg_to_reg(ctx, v42)
-                  let v44 = Some(v43)
-                  // Rule at src/lower/riscv/lower.isle line 140.
-                  return v44
+                  let v41 = constructor_put_in_freg(ctx, v5.0)
+                  let v42 = constructor_put_in_freg(ctx, v5.1)
+                  let v43 = constructor_rv_fadd_d(ctx, v41, v42)
+                  let v44 = C::freg_to_reg(ctx, v43)
+                  let v45 = Some(v44)
+                  // Rule at src/lower/riscv/lower.isle line 103.
+                  return v45
                 }
                 _ => ()
               }
@@ -1024,13 +967,13 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v40 = C::put_in_freg(ctx, v5.0)
-                  let v41 = C::put_in_freg(ctx, v5.1)
-                  let v45 = constructor_rv_fsub_d(ctx, v40, v41)
-                  let v46 = C::freg_to_reg(ctx, v45)
-                  let v47 = Some(v46)
-                  // Rule at src/lower/riscv/lower.isle line 146.
-                  return v47
+                  let v41 = constructor_put_in_freg(ctx, v5.0)
+                  let v42 = constructor_put_in_freg(ctx, v5.1)
+                  let v46 = constructor_rv_fsub_d(ctx, v41, v42)
+                  let v47 = C::freg_to_reg(ctx, v46)
+                  let v48 = Some(v47)
+                  // Rule at src/lower/riscv/lower.isle line 109.
+                  return v48
                 }
                 _ => ()
               }
@@ -1039,13 +982,13 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v40 = C::put_in_freg(ctx, v5.0)
-                  let v41 = C::put_in_freg(ctx, v5.1)
-                  let v48 = constructor_rv_fmul_d(ctx, v40, v41)
-                  let v49 = C::freg_to_reg(ctx, v48)
-                  let v50 = Some(v49)
-                  // Rule at src/lower/riscv/lower.isle line 152.
-                  return v50
+                  let v41 = constructor_put_in_freg(ctx, v5.0)
+                  let v42 = constructor_put_in_freg(ctx, v5.1)
+                  let v49 = constructor_rv_fmul_d(ctx, v41, v42)
+                  let v50 = C::freg_to_reg(ctx, v49)
+                  let v51 = Some(v50)
+                  // Rule at src/lower/riscv/lower.isle line 115.
+                  return v51
                 }
                 _ => ()
               }
@@ -1054,27 +997,27 @@ pub fn constructor_lower[C : Context](
               let v4 = C::arg2(ctx, v3)
               match v4 {
                 Some(v5) => {
-                  let v40 = C::put_in_freg(ctx, v5.0)
-                  let v41 = C::put_in_freg(ctx, v5.1)
-                  let v51 = constructor_rv_fdiv_d(ctx, v40, v41)
-                  let v52 = C::freg_to_reg(ctx, v51)
-                  let v53 = Some(v52)
-                  // Rule at src/lower/riscv/lower.isle line 158.
-                  return v53
+                  let v41 = constructor_put_in_freg(ctx, v5.0)
+                  let v42 = constructor_put_in_freg(ctx, v5.1)
+                  let v52 = constructor_rv_fdiv_d(ctx, v41, v42)
+                  let v53 = C::freg_to_reg(ctx, v52)
+                  let v54 = Some(v53)
+                  // Rule at src/lower/riscv/lower.isle line 121.
+                  return v54
                 }
                 _ => ()
               }
             }
             @core.Op::Neg => {
-              let v22 = C::arg1(ctx, v3)
-              match v22 {
-                Some(v23) => {
-                  let v54 = C::put_in_freg(ctx, v23)
-                  let v55 = constructor_rv_fneg_d(ctx, v54)
-                  let v56 = C::freg_to_reg(ctx, v55)
-                  let v57 = Some(v56)
-                  // Rule at src/lower/riscv/lower.isle line 164.
-                  return v57
+              let v23 = C::arg1(ctx, v3)
+              match v23 {
+                Some(v24) => {
+                  let v55 = constructor_put_in_freg(ctx, v24)
+                  let v56 = constructor_rv_fneg_d(ctx, v55)
+                  let v57 = C::freg_to_reg(ctx, v56)
+                  let v58 = Some(v57)
+                  // Rule at src/lower/riscv/lower.isle line 127.
+                  return v58
                 }
                 _ => ()
               }
@@ -1083,39 +1026,23 @@ pub fn constructor_lower[C : Context](
           }
         _ => ()
       }
-    @core.Insn::Call(ty=v64, f=v65, args=v66) =>
-      match v65 {
-        @core.Value::Fn(fref=v67) => {
-          let v68 = C::ref_fn(ctx, v67)
-          let v69 = C::lower_call(ctx, v64, v68, v66)
-          let v70 = match v69 {
-            Some(x) => x
-            None => return None
-          }
-          let v71 = Some(v70)
-          // Rule at src/lower/riscv/lower.isle line 172.
-          return v71
-        }
-        _ => ()
-      }
-    @core.Insn::Apply(ty=v72, f=v73, args=v74) => {
-      let v75 = C::lower_apply(ctx, v72, v73, v74)
-      let v76 = match v75 {
-        Some(x) => x
-        None => return None
-      }
-      let v77 = Some(v76)
-      // Rule at src/lower/riscv/lower.isle line 175.
-      return v77
+    @core.Insn::Call(ty=v64, f=v65, args=v66) => {
+      let v67 = C::ref_fn(ctx, v65)
+      let v68 = C::lower_call(ctx, v64, v67, v66)
+      let v69 = Some(v68)
+      // Rule at src/lower/riscv/lower.isle line 135.
+      return v69
     }
-    @core.Insn::ExtCall(ty=v58, ext_f=v59, args=v60) => {
-      let v61 = C::lower_ext_call(ctx, v58, v59, v60)
-      let v62 = match v61 {
-        Some(x) => x
-        None => return None
-      }
+    @core.Insn::Apply(ty=v70, f=v71, args=v72) => {
+      let v73 = C::lower_apply(ctx, v70, v71, v72)
+      let v74 = Some(v73)
+      // Rule at src/lower/riscv/lower.isle line 138.
+      return v74
+    }
+    @core.Insn::ExtCall(ty=v59, ext_f=v60, args=v61) => {
+      let v62 = C::lower_ext_call(ctx, v59, v60, v61)
       let v63 = Some(v62)
-      // Rule at src/lower/riscv/lower.isle line 169.
+      // Rule at src/lower/riscv/lower.isle line 132.
       return v63
     }
     _ => ()

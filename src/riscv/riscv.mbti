@@ -102,13 +102,6 @@ pub type Imm12 Int
 
 pub type Imm20 Int
 
-pub struct InsnSel {
-  pub local_virt_regs_counter : Int
-}
-impl InsnSel {
-  new() -> Self
-}
-
 type Label
 impl Label {
   hash_combine(Self, Hasher) -> Unit
@@ -118,7 +111,6 @@ impl Label {
 
 pub struct MBasicBlock {
   pub id : Label
-  pub params : Array[MParam]
   pub insns : Array[RvAsm]
   pub control : Array[RvAsm]
 }
@@ -139,11 +131,6 @@ pub type MFnRef @core.Id
 impl MFnRef {
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
-}
-
-pub enum MParam {
-  Reg(Reg)
-  FReg(FReg)
 }
 
 type MemAccess

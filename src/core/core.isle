@@ -6,6 +6,7 @@
 (type FnFreeVarRef (primitive `@core.FnFreeVarRef`))
 (type LoopRef (primitive `@core.LoopRef`))
 (type MemRef (primitive `@core.MemRef`))
+(type SymbolRef (primitive `@core.SymbolRef`))
 
 (decl ref_fn (Fn) FnRef)
 (extern extractor infallible ref_fn ref_fn)
@@ -89,7 +90,6 @@
     (Insn (iref InsnRef))
     (Mem (fref FnRef) (mref MemRef))
     (Fn (fref FnRef))
-    (GlobalThunk (fref FnRef))
     (FreeVar (ty Type) (fvref FnFreeVarRef))
     (BlockParam (bref BlockRef) (bpref BlockParamRef))
     (FnParam (fref FnRef) (fpref FnParamRef))
@@ -117,10 +117,7 @@
 (extractor (val_mem fref mref) (Value.Mem fref mref))
 
 (decl pure val_fn (FnRef) Value)
-(extractor (val_fn fref) (Value.Fn fref ))
-
-(decl pure val_global_thunk (FnRef) Value)
-(extractor (val_global_thunk fref) (Value.GlobalThunk fref))
+(extractor (val_fn fref) (Value.Fn fref))
 
 (decl pure val_free_var (Type FnFreeVarRef) Value)
 (extractor (val_free_var ty fvref) (Value.FreeVar ty fvref))
@@ -172,9 +169,10 @@
 (type Insn extern
   (enum as `@core.Insn`
     (Op (ty Type) (op Op) (args Values))
-    (Call (ty Type) (f Value) (args Values))
+    (Call (ty Type) (f FnRef) (args Values))
     (Apply (ty Type) (f Value) (args Values))
     (ExtCall (ty Type) (ext_f String) (args Values))
+    (LoadSymbol (ty Type) (sym SymbolRef))
     (Alloc (ty Type) (mref MemRef) (fills Fills))
     (Store (ty Type) (ma Address) (val Value))
     (Load (ty Type) (ma Address))))
@@ -182,7 +180,7 @@
 (decl pure insn_op (Type Op Values) Insn)
 (extractor (insn_op ty op vals) (Insn.Op ty op vals))
 
-(decl pure insn_call (Type Value Values) Insn)
+(decl pure insn_call (Type FnRef Values) Insn)
 (extractor (insn_call ty f args) (Insn.Call ty f args))
 
 (decl pure insn_apply (Type Value Values) Insn)
@@ -190,6 +188,9 @@
 
 (decl pure insn_ext_call (Type String Values) Insn)
 (extractor (insn_ext_call ty ext_f args) (Insn.ExtCall ty ext_f args))
+
+(decl pure insn_load_symbol (Type SymbolRef) Insn)
+(extractor (insn_load_symbol ty sym) (Insn.LoadSymbol ty sym))
 
 (decl pure insn_alloc (Type MemRef Fills) Insn)
 (extractor (insn_alloc ty mref fills) (Insn.Alloc ty mref fills))

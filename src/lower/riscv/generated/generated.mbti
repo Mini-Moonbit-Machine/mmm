@@ -10,6 +10,10 @@ fn constructor_lower[C : Context](C, @core.Insn) -> @riscv.AnyReg?
 
 fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg?
 
+fn constructor_put_in_freg[C : Context](C, @core.Value) -> @riscv.FReg
+
+fn constructor_put_in_xreg[C : Context](C, @core.Value) -> @riscv.Reg
+
 fn constructor_rv_add[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_addi[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
@@ -141,8 +145,7 @@ pub trait Context {
   freg_new(Self, @riscv.AnyReg) -> @riscv.FReg
   xreg_to_reg(Self, @riscv.Reg) -> @riscv.AnyReg
   freg_to_reg(Self, @riscv.FReg) -> @riscv.AnyReg
-  put_in_xreg(Self, @core.Value) -> @riscv.Reg
-  put_in_freg(Self, @core.Value) -> @riscv.FReg
+  put_in_reg(Self, @core.Value) -> @riscv.AnyReg
   is_zero_reg(Self, @riscv.Reg) -> Unit?
   zero_reg(Self) -> @riscv.Reg
   is_closure_reg(Self, @riscv.Reg) -> Unit?
@@ -155,15 +158,9 @@ pub trait Context {
   imm12_to_i32(Self, @riscv.Imm12) -> Int
   imm32_to_string(Self, Int) -> String
   imm64_to_string(Self, Int64) -> String
-  lower_val_mem(Self, @core.Fn, @core.Mem) -> @riscv.AnyReg?
-  lower_val_fn(Self, @core.Fn) -> @riscv.AnyReg?
-  lower_val_global_thunk(Self, @core.Fn) -> @riscv.AnyReg?
-  lower_val_free_var(Self, @core.Type, @core.FnFreeVarRef) -> @riscv.AnyReg?
-  lower_val_block_param(Self, @core.BlockRef, @core.BlockParamRef) -> @riscv.AnyReg?
-  lower_val_fn_param(Self, @core.FnRef, @core.FnParamRef) -> @riscv.AnyReg?
-  lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg?
-  lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg?
-  lower_apply(Self, @core.Type, @core.Value, Array[@core.Value]) -> @riscv.AnyReg?
+  lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
+  lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg
+  lower_apply(Self, @core.Type, @core.Value, Array[@core.Value]) -> @riscv.AnyReg
   imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
 }
 

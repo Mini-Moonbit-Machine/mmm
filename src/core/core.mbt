@@ -24,6 +24,8 @@ pub type LoopRef Id derive(Eq, Hash)
 
 pub type MemRef Id derive(Eq, Hash)
 
+pub type SymbolRef Id derive(Eq, Hash)
+
 pub typealias Values = Array[Value]
 
 pub typealias Fills = Array[Fill]
@@ -102,10 +104,20 @@ pub fn to_string(self : LoopRef) -> String {
   Show::to_string(self)
 }
 
+pub fn output(self : SymbolRef, logger : Logger) -> Unit {
+  logger.write_string("::")
+  logger.write_object(self.id)
+}
+
+pub fn to_string(self : SymbolRef) -> String {
+  Show::to_string(self)
+}
+
 pub struct Core {
   names : MutMap[String, FnRef]
   funcs : MutMap[FnRef, Fn]
-  globals : Array[(String, Value)]
+  global_names : Array[(String, SymbolRef)]
+  global_thunks : MutMap[SymbolRef, (Type, FnRef)]
 } derive(Show)
 
 pub struct Fn {
@@ -160,7 +172,6 @@ pub enum Value {
   Insn(~iref : InsnRef)
   Mem(~fref : FnRef, ~mref : MemRef)
   Fn(~fref : FnRef)
-  GlobalThunk(~fref : FnRef)
   FreeVar(~ty : Type, ~fvref : FnFreeVarRef)
   BlockParam(~bref : BlockRef, ~bpref : BlockParamRef)
   FnParam(~fref : FnRef, ~fpref : FnParamRef)
@@ -180,9 +191,10 @@ pub enum Op {
 
 pub enum Insn {
   Op(~ty : Type, ~op : Op, ~args : Values)
-  Call(~ty : Type, ~f : Value, ~args : Values)
+  Call(~ty : Type, ~f : FnRef, ~args : Values)
   Apply(~ty : Type, ~f : Value, ~args : Values)
   ExtCall(~ty : Type, ~ext_f : String, ~args : Values)
+  LoadSymbol(~ty : Type, ~sym : SymbolRef)
   Alloc(~ty : Type, ~mref : MemRef, ~fills : Fills)
   Store(~ty : Type, ~ma : Address, ~val : Value)
   Load(~ty : Type, ~ma : Address)
@@ -241,6 +253,17 @@ pub fn Block::basic_block(self : Block, func : Fn) -> BasicBlock {
   }
 }
 
+pub fn Insn::ty(self : Insn) -> Type {
+  match self {
+    Op(~ty, ..)
+    | Call(~ty, ..)
+    | Apply(~ty, ..)
+    | ExtCall(~ty, ..)
+    | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Store(~ty, ..) | Load(~ty, ..) =>
+      ty
+  }
+}
+
 pub fn Control::successors(self : Control) -> Array[BlockRef] {
   match self {
     Jump(~target, ..) => [target]
@@ -261,5 +284,58 @@ fn Op::from_knf(knf : @knf.Knf) -> Op? {
     IfEq(_, _, _, _) => Some(Op::Eq)
     IfLe(_, _, _, _) => Some(Op::Le)
     _ => None
+  }
+}
+
+pub impl Hash for Value with hash_combine(self, hasher) {
+  match self {
+    Unit => hasher.combine_byte(b'0')
+    Bool(~val) => {
+      hasher.combine_int(1)
+      hasher.combine(val)
+    }
+    Int32(~val) => {
+      hasher.combine_int(2)
+      hasher.combine(val)
+    }
+    Int64(~val) => {
+      hasher.combine_int(3)
+      hasher.combine(val)
+    }
+    Double(~val) => {
+      hasher.combine_int(4)
+      hasher.combine(val)
+    }
+    Insn(~iref) => {
+      hasher.combine_int(5)
+      hasher.combine(iref)
+    }
+    Mem(~fref, ~mref) => {
+      hasher.combine_int(6)
+      hasher.combine(fref)
+      hasher.combine(mref)
+    }
+    Fn(~fref) => {
+      hasher.combine_int(7)
+      hasher.combine(fref)
+    }
+    FreeVar(~fvref, ..) => {
+      hasher.combine_int(9)
+      hasher.combine(fvref)
+    }
+    BlockParam(~bref, ~bpref) => {
+      hasher.combine_int(10)
+      hasher.combine(bref)
+      hasher.combine(bpref)
+    }
+    FnParam(~fref, ~fpref) => {
+      hasher.combine_int(11)
+      hasher.combine(fref)
+      hasher.combine(fpref)
+    }
+    Self(~fref) => {
+      hasher.combine_int(12)
+      hasher.combine(fref)
+    }
   }
 }

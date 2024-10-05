@@ -1,8 +1,31 @@
 package moonbitlang/minimbt/lower/riscv
 
+alias @moonbitlang/core/hashmap as @hashmap
+alias @moonbitlang/minimbt/core as @core
+alias @moonbitlang/minimbt/lower as @lower
+
 // Values
 
 // Types and methods
+pub enum RegClass {
+  X
+  F
+}
+
+pub struct RiscvFnLoweringCtx {
+  pub core : @core.Core
+  pub func : @core.Fn
+  pub reg_classes : Array[RegClass]
+  pub value_ref_count : @hashmap.T[@core.Value, Int]
+  pub value_regs : @hashmap.T[@core.Value, @moonbitlang/minimbt/riscv.AnyReg]
+  pub closure_reg : @moonbitlang/minimbt/riscv.AnyReg
+  pub order : @lower.LoweringOrder
+  pub buffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
+  pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
+}
+impl RiscvFnLoweringCtx {
+  new(@core.Core, @core.Fn) -> Self
+}
 
 // Type aliases
 
