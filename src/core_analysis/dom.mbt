@@ -1,7 +1,7 @@
 pub struct DominatorTree {
   func : @core.Fn
   dom : @hashmap.T[@core.BlockRef, @core.BlockRef]
-  rpo : Array[@core.BlockRef]
+  rpo : OrderedBlockRefs
   preds : Predcessors
   mut id_dom : Array[Int]
   mut bref_id_map : @hashmap.T[@core.BlockRef, Int]
@@ -14,7 +14,7 @@ pub fn DominatorTree::new(func : @core.Fn) -> DominatorTree {
   let bref_id_map = @hashmap.T::new()
   let id_bref_map = @hashmap.T::new()
   let preds = Predcessors::new(func)
-  let rpo = dfs(func).rev_postorder()
+  let rpo = Ordering::dfs(func).rev_postorder()
   { func, rpo, preds, dom, bref_id_map, id_bref_map, ready: false, id_dom: [] }
 }
 
@@ -43,10 +43,10 @@ pub fn DominatorTree::compute_idom(self : DominatorTree) -> Unit!Failure {
   self.dom.clear()
   let rpo = self.rpo
   let preds = self.preds
-  let id_dom = Array::make(rpo.length() + 1, 0)
+  let id_dom = Array::make(rpo._.length() + 1, 0)
   let id_bref_map = @hashmap.T::new()
   let bref_id_map = @hashmap.T::new()
-  for i, bref in rpo {
+  for i, bref in rpo._ {
     id_bref_map[i + 1] = bref
     bref_id_map[bref] = i + 1
   }
@@ -57,7 +57,7 @@ pub fn DominatorTree::compute_idom(self : DominatorTree) -> Unit!Failure {
   let mut changed = true
   while changed {
     changed = false
-    for bref in rpo {
+    for bref in rpo._ {
       if bref == self.func.entry {
         continue
       }

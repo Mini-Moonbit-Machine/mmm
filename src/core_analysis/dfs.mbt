@@ -1,8 +1,12 @@
-type Occurence (Bool, @core.BlockRef) // true means entering, false means exiting
+pub type Occurence (Bool, @core.BlockRef) // true means entering, false means exiting
 
-type Ordering Array[Occurence]
+pub type Ordering Array[Occurence]
 
-pub fn dfs(func : @core.Fn) -> Ordering {
+pub type OrderedBlockRefs Array[@core.BlockRef]
+
+pub type OrderedBasicBlocks Array[@core.BasicBlock]
+
+pub fn Ordering::dfs(func : @core.Fn) -> Ordering {
   let visited = @hashset.T::new()
   let stack = [(true, func.entry)]
   let result = []
@@ -41,22 +45,36 @@ pub fn dfs(func : @core.Fn) -> Ordering {
   result
 }
 
-pub fn Ordering::preorder(self : Ordering) -> Array[@core.BlockRef] {
+pub fn Ordering::preorder(self : Ordering) -> OrderedBlockRefs {
   self._.filter(fn(x) { x._.0 }).map(fn(x) { x._.1 })
 }
 
-pub fn Ordering::postorder(self : Ordering) -> Array[@core.BlockRef] {
+pub fn Ordering::postorder(self : Ordering) -> OrderedBlockRefs {
   self._.filter(fn(x) { not(x._.0) }).map(fn(x) { x._.1 })
 }
 
-pub fn Ordering::rev_preorder(self : Ordering) -> Array[@core.BlockRef] {
+pub fn Ordering::rev_preorder(self : Ordering) -> OrderedBlockRefs {
   let po = self.preorder()
-  po.rev_inplace()
+  po._.rev_inplace()
   po
 }
 
-pub fn Ordering::rev_postorder(self : Ordering) -> Array[@core.BlockRef] {
+pub fn Ordering::rev_postorder(self : Ordering) -> OrderedBlockRefs {
   let po = self.postorder()
-  po.rev_inplace()
+  po._.rev_inplace()
   po
+}
+
+pub fn OrderedBlockRefs::to_basic_blocks(
+  self : OrderedBlockRefs,
+  func : @core.Fn
+) -> OrderedBasicBlocks {
+  self._.map(
+    fn(bref) {
+      match func.blocks[bref] {
+        Some(@core.Block::BasicBlock(~bb)) => bb
+        _ => abort("not a basic block")
+      }
+    },
+  )
 }

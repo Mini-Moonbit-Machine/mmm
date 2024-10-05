@@ -4,13 +4,12 @@ alias @moonbitlang/core/hashmap as @hashmap
 alias @moonbitlang/minimbt/core as @core
 
 // Values
-fn dfs(@core.Fn) -> Ordering
 
 // Types and methods
 pub struct DominatorTree {
   pub func : @core.Fn
   pub dom : @hashmap.T[@core.BlockRef, @core.BlockRef]
-  pub rpo : Array[@core.BlockRef]
+  pub rpo : OrderedBlockRefs
   pub preds : Predcessors
   pub id_dom : Array[Int]
   pub bref_id_map : @hashmap.T[@core.BlockRef, Int]
@@ -23,14 +22,22 @@ impl DominatorTree {
   new(@core.Fn) -> Self
 }
 
-type Occurence
+pub type Occurence (Bool, @core.BlockRef)
 
-type Ordering
+pub type OrderedBasicBlocks Array[@core.BasicBlock]
+
+pub type OrderedBlockRefs Array[@core.BlockRef]
+impl OrderedBlockRefs {
+  to_basic_blocks(Self, @core.Fn) -> OrderedBasicBlocks
+}
+
+pub type Ordering Array[Occurence]
 impl Ordering {
-  postorder(Self) -> Array[@core.BlockRef]
-  preorder(Self) -> Array[@core.BlockRef]
-  rev_postorder(Self) -> Array[@core.BlockRef]
-  rev_preorder(Self) -> Array[@core.BlockRef]
+  dfs(@core.Fn) -> Self
+  postorder(Self) -> OrderedBlockRefs
+  preorder(Self) -> OrderedBlockRefs
+  rev_postorder(Self) -> OrderedBlockRefs
+  rev_preorder(Self) -> OrderedBlockRefs
 }
 
 pub type Predcessors (@core.FnRef, @hashmap.T[@core.BlockRef, Array[@core.BlockRef]])

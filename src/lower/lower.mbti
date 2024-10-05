@@ -1,12 +1,33 @@
 package moonbitlang/minimbt/lower
 
+alias @moonbitlang/minimbt/core as @core
+
 // Values
 
 // Types and methods
+pub enum LoweredBlock {
+  BasicBlock(@core.BasicBlock)
+  CriticalEdge(@core.BasicBlock, @core.BasicBlock, Int)
+}
+impl LoweredBlock {
+  basic_block(Self) -> @core.BasicBlock?
+  critical_edge(Self) -> (@core.BasicBlock, @core.BasicBlock, Int)?
+  to_string(Self) -> String
+}
+
+pub struct LoweringOrder {
+  pub order : Array[LoweredBlock]
+  pub succs : Array[Array[LoweredBlock]]
+}
+impl LoweringOrder {
+  new(@core.Fn) -> Self
+  to_string(Self) -> String
+}
 
 // Type aliases
 
 // Traits
 
 // Extension Methods
+impl Show for LoweringOrder
 
