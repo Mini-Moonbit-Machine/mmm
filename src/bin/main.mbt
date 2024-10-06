@@ -48,7 +48,7 @@ struct CompileStatus {
   mut opt_knf : @knf.Knf?
   mut opt : @core.Core?
   mut closure_ir : @closure.Program?
-  mut asm : Array[@riscv.AssemblyFunction]?
+  mut asm : @lower_riscv.MCore?
 }
 
 fn CompileStatus::initialize(
@@ -170,8 +170,17 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.closure_ir = Some(closure_ir)
     }
     Asm => {
-      let real_asm = @riscv.emit(@util.die("TODO"))
-      self.asm = Some(real_asm)
+      let core = self.opt.unwrap()
+      let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(core)
+      let asm = try {
+        lower_ctx.lower!()
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Asm error")
+        }
+      }
+      self.asm = Some(asm)
     }
     Finished => ()
   }
@@ -188,8 +197,8 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
       Core => @json.stringify(self.closure_ir.unwrap().to_json())
-      Asm => @util.die("TODO")
-      Finished => @riscv.print_functions(self.asm.unwrap())
+      Asm => @util.die("No json output for core IR")
+      Finished => Show::to_string(self.asm.unwrap())
     }
   } else {
     match self.curr_stage {
@@ -200,7 +209,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Closure => self.opt_knf.unwrap().to_string()
       Core => self.closure_ir.unwrap().to_string()
       Asm => self.opt.unwrap().to_string()
-      Finished => @riscv.print_functions(self.asm.unwrap())
+      Finished => Show::to_string(self.asm.unwrap())
     }
   }
 }

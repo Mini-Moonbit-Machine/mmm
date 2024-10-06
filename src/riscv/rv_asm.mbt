@@ -22,17 +22,17 @@ pub enum RvAsm {
   Sltiu(~rd : Reg, ~rs1 : Reg, ~imm : Int)
   // mem
   // memory access
-  Lb(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Lh(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Lw(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Ld(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Lbu(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Lhu(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Lwu(~rd : Reg, ~mem : MemAccess[Reg, Int])
-  Sb(~rs : Reg, ~mem : MemAccess[Reg, Int])
-  Sh(~rs : Reg, ~mem : MemAccess[Reg, Int])
-  Sw(~rs : Reg, ~mem : MemAccess[Reg, Int])
-  Sd(~rs : Reg, ~mem : MemAccess[Reg, Int])
+  Lb(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Lh(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Lw(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Ld(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Lbu(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Lhu(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Lwu(~rd : Reg, ~mem : MemAccess[Reg, Imm12])
+  Sb(~rs : Reg, ~mem : MemAccess[Reg, Imm12])
+  Sh(~rs : Reg, ~mem : MemAccess[Reg, Imm12])
+  Sw(~rs : Reg, ~mem : MemAccess[Reg, Imm12])
+  Sd(~rs : Reg, ~mem : MemAccess[Reg, Imm12])
   // control flow
   Beq(~rs1 : Reg, ~rs2 : Reg, ~target : Label)
   Bne(~rs1 : Reg, ~rs2 : Reg, ~target : Label)
@@ -61,8 +61,8 @@ pub enum RvAsm {
   FsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg)
   FmulD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg)
   FdivD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg)
-  Fld(~rd : FReg, ~mem : MemAccess[Reg, Int])
-  Fsd(~rs : FReg, ~mem : MemAccess[Reg, Int])
+  Fld(~rd : FReg, ~mem : MemAccess[Reg, Imm12])
+  Fsd(~rs : FReg, ~mem : MemAccess[Reg, Imm12])
   FeqD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
   FleD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
   FmvDX(~rd : FReg, ~rs : Reg)
@@ -81,7 +81,7 @@ pub enum RvAsm {
   Tail(~target : Label)
   Ret
   // Comments
-  Label(String)
+  Label(Label)
   Comment(String)
 }
 
@@ -139,13 +139,13 @@ fn write2mem[TReg1 : Show, TReg2 : Show](
   logger : Logger,
   op : String,
   rd : TReg1,
-  mem : MemAccess[TReg2, Int]
+  mem : MemAccess[TReg2, Imm12]
 ) -> Unit {
   logger.write_string(op)
   logger.write_string(" ")
   rd.output(logger)
   logger.write_string(", ")
-  logger.write_string(mem.offset.to_string())
+  logger.write_string(mem.offset._.to_string())
   logger.write_string("(")
   mem.base.output(logger)
   logger.write_string(")")
@@ -164,7 +164,7 @@ fn write2[TReg1 : Show, TReg2 : Show](
   rs1.output(logger)
 }
 
-impl Show for RvAsm with output(self, logger) {
+pub impl Show for RvAsm with output(self, logger) {
   match self {
     Label(_) => ()
     _ => logger.write_string("  ")
@@ -268,7 +268,7 @@ impl Show for RvAsm with output(self, logger) {
     }
     Ret => logger.write_string("ret")
     Label(label) => {
-      logger.write_string(label)
+      logger.write_string(label._)
       logger.write_string(":")
     }
     Comment(comment) => {

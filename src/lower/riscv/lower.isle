@@ -1,41 +1,69 @@
 ;;;; Rules for immediate values
 
-(decl imm (Type UInt64) AnyReg)
+(decl lower_imm (Type UInt64) AnyReg)
 
-(rule 1 (imm (ty_double) 0)
+(rule 1 (lower_imm (ty_double) 0)
   (rv_f_mv_dx (zero_reg)))
 
-(rule (imm (ty_double) c)
-  (let ((c1 AnyReg (imm (ty_int64) c)))
+(rule (lower_imm (ty_double) c)
+  (let ((c1 AnyReg (lower_imm (ty_int64) c)))
     (rv_f_mv_dx c1)))
 
-(rule (imm (ty_int32) c)
+(rule 1 (lower_imm (ty_int32) 0)
+  (zero_reg))
+
+(rule 1 (lower_imm (ty_int64) 0)
+  (zero_reg))
+
+(rule (lower_imm (ty_int32) c)
   (let ((i32_imm Int64 (i64_sext_u64 (ty_int32) c)))
     (rv_li i32_imm)))
 
-(rule (imm (ty_int64) c)
+(rule (lower_imm (ty_int64) c)
   (let ((i64_imm Int64 (i64_sext_u64 (ty_int64) c)))
     (rv_li i64_imm)))
 
-(decl partial lower_value (Value) AnyReg)
+(decl lower_value (Value) AnyReg)
+(convert Value AnyReg lower_value)
 
-(decl lower_call (Type Fn Values) AnyReg)
-(extern constructor lower_call lower_call)
+(decl lower_x_value (Value) XReg)
+(rule (lower_x_value x) (xreg_new x))
+(convert Value XReg lower_value)
 
-(decl lower_ext_call (Type String Values) AnyReg)
-(extern constructor lower_ext_call lower_ext_call)
+(decl lower_f_value (Value) FReg)
+(rule (lower_f_value x) (freg_new x))
+(convert Value FReg lower_value)
 
-(decl lower_apply (Type Value Values) AnyReg)
-(extern constructor lower_apply lower_apply)
+(decl mr (AnyReg) AnyReg)
+(extern constructor mr mark_maybe_aliased)
+
+(decl put_in_reg (Value) AnyReg)
+(extern constructor put_in_reg put_in_reg)
+
+(decl block_label (BlockRef) Label)
+(extern constructor block_label block_label)
+(convert BlockRef Label block_label)
+
+(rule (lower_value (val_unit))
+  (lower_imm (ty_int32) 0))
+
+(rule (lower_value (val_bool $true))
+  (lower_imm (ty_int32) 1))
+
+(rule (lower_value (val_bool $false))
+  (lower_imm (ty_int32) 0))
 
 (rule (lower_value (val_int32 c))
-  (imm (ty_int32) (i32_as_u64 c)))
+  (lower_imm (ty_int32) (i32_as_u64 c)))
 
 (rule (lower_value (val_int64 c))
-  (imm (ty_int64) (i64_as_u64 c)))
+  (lower_imm (ty_int64) (i64_as_u64 c)))
 
 (rule (lower_value (val_double c))
-  (imm (ty_double) (f64_as_u64 c)))
+  (lower_imm (ty_double) (f64_as_u64 c)))
+
+(rule (lower_value (val_fn f))
+  (lower_load_fn f))
 
 (rule (lower_value (val_self _))
   (closure_reg))
@@ -46,95 +74,162 @@
 (decl imm12_from_val (Imm12) Value)
 (extern extractor imm12_from_val imm12_from_val)
 
+(decl has_type (Value Type) Value)
+(extern extractor infallible has_type has_type)
+
+;;;; Lower control instructions
+
+(decl emit_block_parameters (BlockRef Values) Unit)
+(extern constructor emit_block_parameters emit_block_parameters)
+
+(decl partial lower_control (Control) Unit)
+
+(rule (lower_control (control_jump target args))
+  (let ((_ Unit (emit_block_parameters target args)))
+    (rv_j (block_label target))))
+  
+(rule (lower_control (control_return (arg1 x)))
+  (let ((r XReg (lower_value x))
+        (_ Unit (rv_mv_to (return_reg) r)))
+    (rv_ret)))
+
+(rule (lower_control (control_return (arg0)))
+  (let ((_ Unit (rv_mv_to (return_reg) (zero_reg))))
+    (rv_ret)))
+
+(rule (lower_control (control_branch cond t t_args f f_args))
+  (let ((r XReg (lower_value cond))
+        (_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_bnez r (block_label t)))
+        (_ Unit (emit_block_parameters f f_args)))
+    (rv_j (block_label f))))
+
+;;;; Lower instructions
+
 (decl partial lower (Insn) AnyReg)
 
 ;;;; Rules for i32 additions
 ;;;; Notice: the official template uses 64b instructions for 32b operations
 
 (rule (lower (insn_op (ty_int32) (op_add) (arg2 a b)))
-  (rv_add a b))
-
+  (mr (rv_add a b)))
 
 ;;;; Rules for i32 subtractions
 
 (rule (lower (insn_op (ty_int32) (op_sub) (arg2 a b)))
-  (rv_sub a a))
+  (mr (rv_sub a b)))
 
 
 ;;;; Rules for i32 multiplications
 
 (rule (lower (insn_op (ty_int32) (op_mul) (arg2 a b)))
-  (rv_mulw a b))
+  (mr (rv_mulw a b)))
 
 
 ;;;; Rules for i32 divisions
 
 (rule (lower (insn_op (ty_int32) (op_div) (arg2 a b)))
-  (rv_divw a b))
+  (mr (rv_divw a b)))
 
 
 ;;;; Rules for i32 negations
 
 (rule (lower (insn_op (ty_int32) (op_neg) (arg1 a)))
-  (rv_neg a))
+  (mr (rv_neg a)))
 
 
 ;;;; Rules for i32 logical not
 
 (rule (lower (insn_op (ty_int32) (op_lnot) (arg1 a)))
-  (rv_sltiu a 1))
+  (mr (rv_sltiu a 1)))
 
 
 ;;;; Rules for i32 equalities
 
-(rule (lower (insn_op (ty_int32) (op_eq) (arg2 a b)))
+(rule (lower (insn_op (ty_bool) (op_eq) (arg2 (has_type a ty_int32) (has_type b ty_int32))))
   (let ((r XReg (rv_xor a b)))
-    (rv_sltiu r 1)))
+    (mr (rv_sltiu r 1))))
 
 
 ;;;; Rules for i32 less than or equal
 
-(rule (lower (insn_op (ty_int32) (op_le) (arg2 a b)))
+(rule (lower (insn_op (ty_bool) (op_le) (arg2 a b)))
   (let ((r XReg (rv_sltu a b)))
-    (rv_xori r 1)))
+    (mr (rv_xori r 1))))
 
 
 ;;;; Rules for f64 additions
 
 (rule (lower (insn_op (ty_double) (op_add) (arg2 a b)))
-  (rv_fadd_d a b))
+  (mr (rv_fadd_d a b)))
 
 
 ;;;; Rules for f64 subtractions
 
 (rule (lower (insn_op (ty_double) (op_sub) (arg2 a b)))
-  (rv_fsub_d a b))
+  (mr (rv_fsub_d a b)))
 
 
 ;;;; Rules for f64 multiplications
 
 (rule (lower (insn_op (ty_double) (op_mul) (arg2 a b)))
-  (rv_fmul_d a b))
+  (mr (rv_fmul_d a b)))
 
 
 ;;;; Rules for f64 divisions
 
 (rule (lower (insn_op (ty_double) (op_div) (arg2 a b)))
-  (rv_fdiv_d a b))
+  (mr (rv_fdiv_d a b)))
 
 
 ;;;; Rules for f64 negations
 
 (rule (lower (insn_op (ty_double) (op_neg) (arg1 a)))
-  (rv_fneg_d a))
+  (mr (rv_fneg_d a)))
 
-;;;; Rules for external calls, calls and applications
+;;;; Rules for other instructions
+
+(decl lower_load_fn (FnRef) AnyReg)
+(extern constructor lower_load_fn lower_load_fn)
+
+(decl lower_call (Type Fn Values) AnyReg)
+(extern constructor lower_call lower_call)
+
+(decl lower_ext_call (Type String Values) AnyReg)
+(extern constructor lower_ext_call lower_ext_call)
+
+(decl lower_apply (Type Value Values) AnyReg)
+(extern constructor lower_apply lower_apply)
+
+(decl lower_load_symbol (Type SymbolRef) AnyReg)
+(extern constructor lower_load_symbol lower_load_symbol)
+
+(decl lower_store (Type Address Value) AnyReg)
+(extern constructor lower_store lower_store)
+
+(decl lower_load (Type Address) AnyReg)
+(extern constructor lower_load lower_load)
+
+(decl lower_alloc (Type MemRef Fills) AnyReg)
+(extern constructor lower_alloc lower_alloc)
 
 (rule (lower (insn_ext_call ty f args))
-  (lower_ext_call ty f args))
+  (mr (lower_ext_call ty f args)))
 
 (rule (lower (insn_call ty (ref_fn f) args))
-  (lower_call ty f args))
+  (mr (lower_call ty f args)))
 
 (rule (lower (insn_apply ty f args))
-  (lower_apply ty f args))
+  (mr (lower_apply ty f args)))
+
+(rule (lower (insn_load_symbol ty sym))
+  (mr (lower_load_symbol ty sym)))
+
+(rule (lower (insn_store ty ma val))
+  (mr (lower_store ty ma val)))
+
+(rule (lower (insn_load ty ma))
+  (mr (lower_load ty ma)))
+
+(rule (lower (insn_alloc ty mref fills))
+  (mr (lower_alloc ty mref fills)))

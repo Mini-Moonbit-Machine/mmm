@@ -117,7 +117,7 @@ pub struct Core {
   names : MutMap[String, FnRef]
   funcs : MutMap[FnRef, Fn]
   global_names : Array[(String, SymbolRef)]
-  global_thunks : MutMap[SymbolRef, (Type, FnRef)]
+  global_symbols : MutMap[SymbolRef, Symbol]
 } derive(Show)
 
 pub struct Fn {
@@ -150,6 +150,13 @@ pub enum Block {
   Loop(~l : Loop)
 } derive(Show)
 
+pub struct Symbol {
+  id : SymbolRef
+  name : String
+  ty : Type
+  thunk : FnRef
+} derive(Show)
+
 pub enum Type {
   Unit
   Bool
@@ -172,7 +179,7 @@ pub enum Value {
   Insn(~iref : InsnRef)
   Mem(~fref : FnRef, ~mref : MemRef)
   Fn(~fref : FnRef)
-  FreeVar(~ty : Type, ~fvref : FnFreeVarRef)
+  FreeVar(~fvref : FnFreeVarRef)
   BlockParam(~bref : BlockRef, ~bpref : BlockParamRef)
   FnParam(~fref : FnRef, ~fpref : FnParamRef)
   Self(~fref : FnRef)
@@ -194,7 +201,7 @@ pub enum Insn {
   Call(~ty : Type, ~f : FnRef, ~args : Values)
   Apply(~ty : Type, ~f : Value, ~args : Values)
   ExtCall(~ty : Type, ~ext_f : String, ~args : Values)
-  LoadSymbol(~ty : Type, ~sym : SymbolRef)
+  LoadSymbol(~ty : Type, ~sref : SymbolRef)
   Alloc(~ty : Type, ~mref : MemRef, ~fills : Fills)
   Store(~ty : Type, ~ma : Address, ~val : Value)
   Load(~ty : Type, ~ma : Address)
@@ -204,7 +211,6 @@ pub enum Fill {
   Zero
   Init(~val : Value)
   Field(~index : Int, ~val : Value)
-  Offset(~offset : Value, ~val : Value)
 } derive(Show, Eq)
 
 // Mem is used to identify a memory region
@@ -261,6 +267,115 @@ pub fn Insn::ty(self : Insn) -> Type {
     | ExtCall(~ty, ..)
     | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Store(~ty, ..) | Load(~ty, ..) =>
       ty
+  }
+}
+
+pub fn Type::size(self : Type) -> Int {
+  match self {
+    Unit => 0
+    Bool => 4
+    Int32 => 4
+    Int64 => 8
+    Double => 8
+    ClosureFn(..) => 8
+    DirectFn(..) => 8
+    Tuple(..) => 8
+    Array(..) => 8
+    Ptr => 8
+  }
+}
+
+pub fn Type::elem_size(self : Type) -> Int {
+  match self {
+    Array(~elem) => elem.size()
+    ClosureFn(..) | Tuple(..) => 8
+    _ => {
+      println("Type::elem_size: not an array, tuple, or closure")
+      0
+    }
+  }
+}
+
+pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
+  match self {
+    Unit => Type::Unit
+    Bool(_) => Type::Bool
+    Int32(_) => Type::Int32
+    Int64(_) => Type::Int64
+    Double(_) => Type::Double
+    Insn(~iref) => {
+      let insn = match func.insns.get(iref) {
+        Some(insn) => insn
+        None =>
+          fail!("insn \{Show::to_string(iref)} not found in \{func.insns}")
+      }
+      match insn {
+        Op(~ty, ..) => ty
+        Apply(~ty, ..) => ty
+        Call(~ty, ..) => ty
+        ExtCall(~ty, ..) => ty
+        LoadSymbol(~ty, ..) => ty
+        Alloc(~ty, ..) => ty
+        Load(~ty, ..) => ty
+        Store(..) => Type::Unit
+      }
+    }
+    FreeVar(~fvref) => func.fvars[fvref.id - 1]
+    BlockParam(~bref, ~bpref) => {
+      let block = match func.blocks.get(bref) {
+        Some(block) => block
+        _ => fail!("bb not found")
+      }
+      match block {
+        BasicBlock(~bb) => bb.params[bpref.id]
+        Loop(_) => fail!("loop not supported")
+      }
+    }
+    FnParam(~fref, ~fpref) => {
+      let func = match core.funcs.get(fref) {
+        Some(func) => func
+        None => fail!("func not found")
+      }
+      match func.ty {
+        DirectFn(~params, ..) => params[fpref.id]
+        ClosureFn(~params, ..) => params[fpref.id]
+        _ => fail!("not a function type")
+      }
+    }
+    Mem(~fref, ~mref) => {
+      let func = match core.funcs.get(fref) {
+        Some(func) => func
+        None => fail!("func not found")
+      }
+      let mem = match func.mems.get(mref) {
+        Some(mem) => mem
+        None => fail!("mem not found")
+      }
+      match mem {
+        Heap(~ty, ..) => ty
+        Stack(~ty, ..) => ty
+      }
+    }
+    Fn(~fref) => {
+      let func = match core.funcs.get(fref) {
+        Some(func) => func
+        None => fail!("func not found")
+      }
+      func.ty
+    }
+    Self(~fref) => {
+      let func = match core.funcs.get(fref) {
+        Some(func) => func
+        None => fail!("func not found")
+      }
+      guard (match func.ty {
+        ClosureFn(..) => true
+        _ => false
+      }) else {
+        fail!("not a closure")
+      }
+      func.ty
+    }
   }
 }
 

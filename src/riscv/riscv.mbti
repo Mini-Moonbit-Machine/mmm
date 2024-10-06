@@ -1,9 +1,8 @@
 package moonbitlang/minimbt/riscv
 
-alias @moonbitlang/core/hashmap as @hashmap
-alias @moonbitlang/minimbt/core as @core
-
 // Values
+fn any_reg(Int) -> AnyReg
+
 fn emit(Unit) -> Array[AssemblyFunction]
 
 let freg_allocatable_list : Array[FReg]
@@ -45,7 +44,18 @@ let reg_swap : Reg
 let reg_temp_list : Array[Reg]
 
 // Types and methods
-pub type AnyReg Int
+pub struct AnyReg {
+  pub reg : Int
+}
+impl AnyReg {
+  compare(Self, Self) -> Int
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+  virt_f_to_phy(Self) -> FReg?
+  virt_to_phy(Self) -> Reg?
+}
 
 pub struct AssemblyFunction {
   pub name : String
@@ -89,12 +99,13 @@ pub enum FReg {
   Ft9
   Ft10
   Ft11
-  Fv(Int)
+  Fv(AnyReg)
 }
 impl FReg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
+  phy_to_virt_f(Self) -> AnyReg
   to_string(Self) -> String
 }
 
@@ -102,38 +113,17 @@ pub type Imm12 Int
 
 pub type Imm20 Int
 
-type Label
+pub type Label String
 impl Label {
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
 
-pub struct MBasicBlock {
-  pub id : Label
-  pub insns : Array[RvAsm]
-  pub control : Array[RvAsm]
+pub struct MemAccess {
+  pub base : TBase
+  pub offset : TOff
 }
-
-pub struct MCore {
-  pub funcs : @hashmap.T[Label, MFn]
-  pub globals : @hashmap.T[Label, Unit]
-}
-
-pub struct MFn {
-  pub id : MFnRef
-  pub name : String
-  pub entry : Label
-  pub blocks : @hashmap.T[Label, MBasicBlock]
-}
-
-pub type MFnRef @core.Id
-impl MFnRef {
-  hash_combine(Self, Hasher) -> Unit
-  op_equal(Self, Self) -> Bool
-}
-
-type MemAccess
 impl MemAccess {
   to_string[TBase : Show, TOff : Show](Self[TBase, TOff]) -> String
 }
@@ -171,12 +161,13 @@ pub enum Reg {
   T4
   T5
   T6
-  V(Int)
+  V(AnyReg)
 }
 impl Reg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
+  phy_to_virt(Self) -> AnyReg
   to_string(Self) -> String
 }
 
@@ -200,17 +191,17 @@ pub enum RvAsm {
   Srai(Reg, Reg, Int)
   Slti(Reg, Reg, Int)
   Sltiu(Reg, Reg, Int)
-  Lb(Reg, MemAccess[Reg, Int])
-  Lh(Reg, MemAccess[Reg, Int])
-  Lw(Reg, MemAccess[Reg, Int])
-  Ld(Reg, MemAccess[Reg, Int])
-  Lbu(Reg, MemAccess[Reg, Int])
-  Lhu(Reg, MemAccess[Reg, Int])
-  Lwu(Reg, MemAccess[Reg, Int])
-  Sb(Reg, MemAccess[Reg, Int])
-  Sh(Reg, MemAccess[Reg, Int])
-  Sw(Reg, MemAccess[Reg, Int])
-  Sd(Reg, MemAccess[Reg, Int])
+  Lb(Reg, MemAccess[Reg, Imm12])
+  Lh(Reg, MemAccess[Reg, Imm12])
+  Lw(Reg, MemAccess[Reg, Imm12])
+  Ld(Reg, MemAccess[Reg, Imm12])
+  Lbu(Reg, MemAccess[Reg, Imm12])
+  Lhu(Reg, MemAccess[Reg, Imm12])
+  Lwu(Reg, MemAccess[Reg, Imm12])
+  Sb(Reg, MemAccess[Reg, Imm12])
+  Sh(Reg, MemAccess[Reg, Imm12])
+  Sw(Reg, MemAccess[Reg, Imm12])
+  Sd(Reg, MemAccess[Reg, Imm12])
   Beq(Reg, Reg, Label)
   Bne(Reg, Reg, Label)
   Blt(Reg, Reg, Label)
@@ -235,8 +226,8 @@ pub enum RvAsm {
   FsubD(FReg, FReg, FReg)
   FmulD(FReg, FReg, FReg)
   FdivD(FReg, FReg, FReg)
-  Fld(FReg, MemAccess[Reg, Int])
-  Fsd(FReg, MemAccess[Reg, Int])
+  Fld(FReg, MemAccess[Reg, Imm12])
+  Fsd(FReg, MemAccess[Reg, Imm12])
   FeqD(Reg, FReg, FReg)
   FleD(Reg, FReg, FReg)
   FmvDX(FReg, Reg)
@@ -253,7 +244,7 @@ pub enum RvAsm {
   Call(Label)
   Tail(Label)
   Ret
-  Label(String)
+  Label(Label)
   Comment(String)
 }
 
@@ -265,4 +256,6 @@ pub enum RvAsm {
 impl Show for Label
 
 impl Show for MemAccess
+
+impl Show for RvAsm
 

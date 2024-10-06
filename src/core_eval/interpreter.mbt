@@ -173,8 +173,8 @@ pub fn CoreInterpreter::interpret(
   let mut ctx = Ctx::new(funcs)
   for thunk in globals {
     let (name, sref) = thunk
-    let (_ty, fref) = core.global_thunks[sref].unwrap()
-    let func = match funcs.get(fref) {
+    let symbol = core.global_symbols[sref].unwrap()
+    let func = match funcs.get(symbol.thunk) {
       Some(func) => func
       None => return fail!("function not found: \{name}")
     }
@@ -255,21 +255,6 @@ fn CoreInterpreter::eval_fills(
               )
             }
             fields[index] = v
-          }
-          Offset(~offset, ~val) => {
-            let i = CoreInterpreter::eval_value!(ctx, offset)
-            let v = CoreInterpreter::eval_value!(ctx, val)
-            match (i, v) {
-              (Int32(i), v) =>
-                if i < fields.length() {
-                  fields[i] = v
-                } else {
-                  fail!(
-                    "field index out of bounds: \{i} out of \{fields.length()}",
-                  )
-                }
-              _ => fail!("not an integer offset")
-            }
           }
         }
       }
@@ -465,7 +450,7 @@ fn CoreInterpreter::eval_insn(
         _ => fail!("external function not found")
       }
     }
-    LoadSymbol(~sym, ..) => {
+    LoadSymbol(sref=sym, ..) => {
       let obj = match ctx.global.find(sym) {
         Some(obj) => obj
         None => return fail!("symbol not found")

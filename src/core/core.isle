@@ -23,6 +23,9 @@
 (decl ref_free_var (UInt32) FnFreeVarRef)
 (extern extractor infallible ref_free_var ref_free_v)
 
+(decl ref_symbol (Symbol) SymbolRef)
+(extern extractor infallible ref_symbol ref_symbol)
+
 (type Types (primitive `@core.Types`))
 (type Values (primitive `@core.Values`))
 (type BlockRefs (primitive `@core.BlockRefs`))
@@ -30,6 +33,7 @@
 (type Fn (primitive `@core.Fn`))
 (type BasicBlock (primitive `@core.BasicBlock`))
 (type Loop (primitive `@core.Loop`))
+(type Symbol (primitive `@core.Symbol`))
 
 (type Type extern
   (enum as `@core.Type`
@@ -172,7 +176,7 @@
     (Call (ty Type) (f FnRef) (args Values))
     (Apply (ty Type) (f Value) (args Values))
     (ExtCall (ty Type) (ext_f String) (args Values))
-    (LoadSymbol (ty Type) (sym SymbolRef))
+    (LoadSymbol (ty Type) (sref SymbolRef))
     (Alloc (ty Type) (mref MemRef) (fills Fills))
     (Store (ty Type) (ma Address) (val Value))
     (Load (ty Type) (ma Address))))
@@ -282,8 +286,24 @@
 (decl pure f64_as_u64 (Double) UInt64)
 (extern constructor f64_as_u64 f64_as_u64)
 
-(decl pure arg2 (Value Value) Values)
-(extern extractor arg2 arg2)
+(type Args
+  (enum
+    (Args2 (arg1 Value) (arg2 Value))
+    (Args1 (arg1 Value))
+    (Args0)))
 
-(decl pure arg1 (Value) Values)
-(extern extractor arg1 arg1)
+(decl pure arg2 (Value Value) Args)
+(rule (arg2 arg1 arg2) (Args.Args2 arg1 arg2))
+(extractor (arg2 arg1 arg2) (Args.Args2 arg1 arg2))
+
+(decl pure arg1 (Value) Args)
+(rule (arg1 arg1) (Args.Args1 arg1))
+(extractor (arg1 arg1) (Args.Args1 arg1))
+
+(decl pure arg0 () Args)
+(rule (arg0) (Args.Args0))
+(extractor (arg0) (Args.Args0))
+
+(decl args (Args) Values)
+(extern extractor args values_to_args)
+(convert Args Values args)

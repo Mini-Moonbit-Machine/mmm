@@ -1,11 +1,25 @@
-struct MemAccess[TBase, TOff] {
+pub struct MemAccess[TBase, TOff] {
   base : TBase
   offset : TOff
 } derive(Show)
 
-type Label String derive(Show, Eq, Hash)
+pub type Label String derive(Show, Eq, Hash)
 
-pub type AnyReg Int
+pub struct AnyReg {
+  mut reg : Int
+} derive(Eq, Compare, Hash)
+
+pub fn AnyReg::output(self : AnyReg, logger : Logger) -> Unit {
+  logger.write_string("\{self.reg}")
+}
+
+pub fn AnyReg::to_string(self : AnyReg) -> String {
+  "\{self.reg}"
+}
+
+pub fn any_reg(reg : Int) -> AnyReg {
+  { reg, }
+}
 
 pub type Imm20 Int
 
@@ -45,8 +59,85 @@ pub enum Reg {
   T4
   T5
   T6
-  V(~id : Int)
+  V(AnyReg)
 } derive(Eq, Compare, Hash)
+
+pub fn phy_to_virt(self : Reg) -> AnyReg {
+  match self {
+    V(r) => r
+    Zero => any_reg(-1)
+    Ra => any_reg(-2)
+    Sp => any_reg(-3)
+    Gp => any_reg(-4)
+    Tp => any_reg(-5)
+    T0 => any_reg(-6)
+    T1 => any_reg(-7)
+    T2 => any_reg(-8)
+    Fp => any_reg(-9)
+    S1 => any_reg(-10)
+    A0 => any_reg(-11)
+    A1 => any_reg(-12)
+    A2 => any_reg(-13)
+    A3 => any_reg(-14)
+    A4 => any_reg(-15)
+    A5 => any_reg(-16)
+    A6 => any_reg(-17)
+    A7 => any_reg(-18)
+    S2 => any_reg(-19)
+    S3 => any_reg(-20)
+    S4 => any_reg(-21)
+    S5 => any_reg(-22)
+    S6 => any_reg(-23)
+    S7 => any_reg(-24)
+    S8 => any_reg(-25)
+    S9 => any_reg(-26)
+    S10 => any_reg(-27)
+    S11 => any_reg(-28)
+    T3 => any_reg(-29)
+    T4 => any_reg(-30)
+    T5 => any_reg(-31)
+    T6 => any_reg(-32)
+  }
+}
+
+pub fn virt_to_phy(self : AnyReg) -> Reg? {
+  let r = match self.reg {
+    -1 => Zero
+    -2 => Ra
+    -3 => Sp
+    -4 => Gp
+    -5 => Tp
+    -6 => T0
+    -7 => T1
+    -8 => T2
+    -9 => Fp
+    -10 => S1
+    -11 => A0
+    -12 => A1
+    -13 => A2
+    -14 => A3
+    -15 => A4
+    -16 => A5
+    -17 => A6
+    -18 => A7
+    -19 => S2
+    -20 => S3
+    -21 => S4
+    -22 => S5
+    -23 => S6
+    -24 => S7
+    -25 => S8
+    -26 => S9
+    -27 => S10
+    -28 => S11
+    -29 => T3
+    -30 => T4
+    -31 => T5
+    -32 => T6
+    _ => if self.reg >= 0 { V(self) } else { return None }
+  }
+  Some(r)
+}
 
 pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
 
@@ -76,7 +167,9 @@ pub let reg_allocatable_list : Array[Reg] = reg_callee_saved_list +
 
 pub let reg_fp : Reg = Fp
 
-pub let reg_closure : Reg = S11
+pub let reg_closure : Reg = S10
+
+pub let reg_alloc : Reg = S11
 
 pub let reg_ret : Reg = A0
 
@@ -116,7 +209,7 @@ pub fn Reg::to_string(self : Reg) -> String {
     T4 => "t4"
     T5 => "t5"
     T6 => "t6"
-    V(~id) => "v\{id}"
+    V(r) => "v\{r}"
   }
 }
 
@@ -158,8 +251,85 @@ pub enum FReg {
   Ft9
   Ft10
   Ft11
-  Fv(~id : Int)
+  Fv(AnyReg)
 } derive(Eq, Compare, Hash)
+
+pub fn phy_to_virt_f(self : FReg) -> AnyReg {
+  match self {
+    Fv(r) => r
+    Ft0 => any_reg(-33)
+    Ft1 => any_reg(-34)
+    Ft2 => any_reg(-35)
+    Ft3 => any_reg(-36)
+    Ft4 => any_reg(-37)
+    Ft5 => any_reg(-38)
+    Ft6 => any_reg(-39)
+    Ft7 => any_reg(-40)
+    Fs0 => any_reg(-41)
+    Fs1 => any_reg(-42)
+    Fa0 => any_reg(-43)
+    Fa1 => any_reg(-44)
+    Fa2 => any_reg(-45)
+    Fa3 => any_reg(-46)
+    Fa4 => any_reg(-47)
+    Fa5 => any_reg(-48)
+    Fa6 => any_reg(-49)
+    Fa7 => any_reg(-50)
+    Fs2 => any_reg(-51)
+    Fs3 => any_reg(-52)
+    Fs4 => any_reg(-53)
+    Fs5 => any_reg(-54)
+    Fs6 => any_reg(-55)
+    Fs7 => any_reg(-56)
+    Fs8 => any_reg(-57)
+    Fs9 => any_reg(-58)
+    Fs10 => any_reg(-59)
+    Fs11 => any_reg(-60)
+    Ft8 => any_reg(-61)
+    Ft9 => any_reg(-62)
+    Ft10 => any_reg(-63)
+    Ft11 => any_reg(-64)
+  }
+}
+
+pub fn virt_f_to_phy(self : AnyReg) -> FReg? {
+  let r = match self.reg {
+    -33 => Ft0
+    -34 => Ft1
+    -35 => Ft2
+    -36 => Ft3
+    -37 => Ft4
+    -38 => Ft5
+    -39 => Ft6
+    -40 => Ft7
+    -41 => Fs0
+    -42 => Fs1
+    -43 => Fa0
+    -44 => Fa1
+    -45 => Fa2
+    -46 => Fa3
+    -47 => Fa4
+    -48 => Fa5
+    -49 => Fa6
+    -50 => Fa7
+    -51 => Fs2
+    -52 => Fs3
+    -53 => Fs4
+    -54 => Fs5
+    -55 => Fs6
+    -56 => Fs7
+    -57 => Fs8
+    -58 => Fs9
+    -59 => Fs10
+    -60 => Fs11
+    -61 => Ft8
+    -62 => Ft9
+    -63 => Ft10
+    -64 => Ft11
+    _ => if self.reg >= 0 { Fv(self) } else { return None }
+  }
+  Some(r)
+}
 
 pub let freg_temp_list : Array[FReg] = [
   Ft0,
@@ -237,7 +407,7 @@ pub fn FReg::to_string(self : FReg) -> String {
     Ft9 => "ft9"
     Ft10 => "ft10"
     Ft11 => "ft11"
-    Fv(~id) => "fv\{id}"
+    Fv(reg) => "fv\{reg}"
   }
 }
 

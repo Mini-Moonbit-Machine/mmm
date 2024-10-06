@@ -7,6 +7,32 @@ alias @moonbitlang/minimbt/lower as @lower
 // Values
 
 // Types and methods
+pub struct MBasicBlock {
+  pub id : @moonbitlang/minimbt/riscv.Label
+  pub insns : Array[@moonbitlang/minimbt/riscv.RvAsm]
+  pub control : Array[@moonbitlang/minimbt/riscv.RvAsm]
+}
+impl MBasicBlock {
+  output(Self, Logger) -> Unit
+}
+
+pub struct MCore {
+  pub funcs : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MFn]
+  pub globals : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]
+}
+impl MCore {
+  output(Self, Logger) -> Unit
+}
+
+pub struct MFn {
+  pub name : @moonbitlang/minimbt/riscv.Label
+  pub entry : @moonbitlang/minimbt/riscv.Label
+  pub blocks : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MBasicBlock]
+}
+impl MFn {
+  output(Self, Logger) -> Unit
+}
+
 pub enum RegClass {
   X
   F
@@ -19,12 +45,24 @@ pub struct RiscvFnLoweringCtx {
   pub value_ref_count : @hashmap.T[@core.Value, Int]
   pub value_regs : @hashmap.T[@core.Value, @moonbitlang/minimbt/riscv.AnyReg]
   pub closure_reg : @moonbitlang/minimbt/riscv.AnyReg
+  pub alloc_reg : @moonbitlang/minimbt/riscv.AnyReg
   pub order : @lower.LoweringOrder
   pub buffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
+  pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
 }
 impl RiscvFnLoweringCtx {
+  lower(Self) -> MFn!Failure
   new(@core.Core, @core.Fn) -> Self
+}
+
+pub struct RiscvLoweringCtx {
+  pub core : @core.Core
+}
+impl RiscvLoweringCtx {
+  lower(Self) -> MCore!Failure
+  lower_thunk_initializer(Self) -> MFn
+  new(@core.Core) -> Self
 }
 
 // Type aliases

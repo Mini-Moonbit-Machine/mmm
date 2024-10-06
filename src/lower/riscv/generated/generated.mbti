@@ -4,15 +4,23 @@ alias @moonbitlang/minimbt/core as @core
 alias @moonbitlang/minimbt/riscv as @riscv
 
 // Values
-fn constructor_imm[C : Context](C, @core.Type, UInt64) -> @riscv.AnyReg
+fn constructor_arg0[C : Context](C) -> Args
+
+fn constructor_arg1[C : Context](C, @core.Value) -> Args
+
+fn constructor_arg2[C : Context](C, @core.Value, @core.Value) -> Args
 
 fn constructor_lower[C : Context](C, @core.Insn) -> @riscv.AnyReg?
 
-fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg?
+fn constructor_lower_control[C : Context](C, @core.Control) -> Unit?
 
-fn constructor_put_in_freg[C : Context](C, @core.Value) -> @riscv.FReg
+fn constructor_lower_f_value[C : Context](C, @core.Value) -> @riscv.FReg
 
-fn constructor_put_in_xreg[C : Context](C, @core.Value) -> @riscv.Reg
+fn constructor_lower_imm[C : Context](C, @core.Type, UInt64) -> @riscv.AnyReg
+
+fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg
+
+fn constructor_lower_x_value[C : Context](C, @core.Value) -> @riscv.Reg
 
 fn constructor_rv_add[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
@@ -22,37 +30,77 @@ fn constructor_rv_and[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_andi[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
 
+fn constructor_rv_beq[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_beqz[C : Context](C, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bge[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bgeu[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bgt[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_ble[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_blt[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bltu[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bne[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_bnez[C : Context](C, @riscv.Reg, @riscv.Label) -> Unit
+
+fn constructor_rv_call[C : Context](C, @riscv.Label) -> Unit
+
 fn constructor_rv_div[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_divu[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_divw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
+fn constructor_rv_f_mv_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
+
 fn constructor_rv_f_mv_dx[C : Context](C, @riscv.Reg) -> @riscv.FReg
+
+fn constructor_rv_f_mv_to[C : Context](C, @riscv.FReg, @riscv.FReg) -> Unit
 
 fn constructor_rv_fadd_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fdiv_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
-fn constructor_rv_fld[C : Context](C, @riscv.MemAccess[@riscv.Reg, Int]) -> @riscv.FReg
+fn constructor_rv_fld[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.FReg
 
 fn constructor_rv_fmul_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fneg_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
+fn constructor_rv_fsd[C : Context](C, @riscv.FReg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
+
 fn constructor_rv_fsub_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
+
+fn constructor_rv_j[C : Context](C, @riscv.Label) -> Unit
+
+fn constructor_rv_jalr[C : Context](C, @riscv.Reg) -> Unit
+
+fn constructor_rv_jr[C : Context](C, @riscv.Reg) -> Unit
 
 fn constructor_rv_la[C : Context](C, @riscv.Label) -> @riscv.Reg
 
-fn constructor_rv_lb[C : Context](C, @riscv.MemAccess[@riscv.Reg, Int]) -> @riscv.Reg
+fn constructor_rv_lb[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
 
-fn constructor_rv_ld[C : Context](C, @riscv.MemAccess[@riscv.Reg, Int]) -> @riscv.Reg
+fn constructor_rv_lbu[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
 
-fn constructor_rv_lh[C : Context](C, @riscv.MemAccess[@riscv.Reg, Int]) -> @riscv.Reg
+fn constructor_rv_ld[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
+
+fn constructor_rv_lh[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
+
+fn constructor_rv_lhu[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
 
 fn constructor_rv_li[C : Context](C, String) -> @riscv.Reg
 
-fn constructor_rv_lw[C : Context](C, @riscv.MemAccess[@riscv.Reg, Int]) -> @riscv.Reg
+fn constructor_rv_lw[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
+
+fn constructor_rv_lwu[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.Reg
 
 fn constructor_rv_mul[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
@@ -66,6 +114,8 @@ fn constructor_rv_mulw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_mv[C : Context](C, @riscv.Reg) -> @riscv.Reg
 
+fn constructor_rv_mv_to[C : Context](C, @riscv.Reg, @riscv.Reg) -> Unit
+
 fn constructor_rv_neg[C : Context](C, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_or[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
@@ -75,6 +125,16 @@ fn constructor_rv_ori[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
 fn constructor_rv_rem[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_remu[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
+
+fn constructor_rv_remw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
+
+fn constructor_rv_ret[C : Context](C) -> Unit
+
+fn constructor_rv_sb[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
+
+fn constructor_rv_sd[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
+
+fn constructor_rv_sh[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
 
 fn constructor_rv_sll[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
@@ -97,6 +157,8 @@ fn constructor_rv_srl[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 fn constructor_rv_srli[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
 
 fn constructor_rv_sub[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
+
+fn constructor_rv_sw[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
 
 fn constructor_rv_xor[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
@@ -121,6 +183,16 @@ fn constructor_ty_tuple[C : Context](C, Array[@core.Type]) -> @core.Type
 fn constructor_ty_unit[C : Context](C) -> @core.Type
 
 // Types and methods
+pub enum Args {
+  Args2(@core.Value, @core.Value)
+  Args1(@core.Value)
+  Args0
+}
+impl Args {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 type Returns
 
 // Type aliases
@@ -132,12 +204,12 @@ pub trait Context {
   ref_insn(Self, @core.InsnRef) -> @core.Insn
   ref_mem(Self, @core.MemRef) -> @core.Mem
   ref_free_v(Self, @core.FnFreeVarRef) -> UInt
+  ref_symbol(Self, @core.SymbolRef) -> @core.Symbol
   i64_sext_u64(Self, @core.Type, UInt64) -> Int64
   i32_as_u64(Self, Int) -> UInt64
   i64_as_u64(Self, Int64) -> UInt64
   f64_as_u64(Self, Double) -> UInt64
-  arg2(Self, Array[@core.Value]) -> (@core.Value, @core.Value)?
-  arg1(Self, Array[@core.Value]) -> @core.Value?
+  values_to_args(Self, Array[@core.Value]) -> Args?
   next_virtual_xreg(Self) -> @riscv.Reg
   next_virtual_freg(Self) -> @riscv.FReg
   emit_risc_v(Self, @riscv.RvAsm) -> Unit
@@ -145,11 +217,12 @@ pub trait Context {
   freg_new(Self, @riscv.AnyReg) -> @riscv.FReg
   xreg_to_reg(Self, @riscv.Reg) -> @riscv.AnyReg
   freg_to_reg(Self, @riscv.FReg) -> @riscv.AnyReg
-  put_in_reg(Self, @core.Value) -> @riscv.AnyReg
   is_zero_reg(Self, @riscv.Reg) -> Unit?
   zero_reg(Self) -> @riscv.Reg
   is_closure_reg(Self, @riscv.Reg) -> Unit?
   closure_reg(Self) -> @riscv.Reg
+  is_return_reg(Self, @riscv.Reg) -> Unit?
+  return_reg(Self) -> @riscv.Reg
   i64_generate_imm(Self, Int64) -> (@riscv.Imm20, @riscv.Imm12)?
   i32_generate_imm(Self, Int) -> (@riscv.Imm20, @riscv.Imm12)?
   imm20_is_zero(Self, @riscv.Imm20) -> Unit?
@@ -158,11 +231,22 @@ pub trait Context {
   imm12_to_i32(Self, @riscv.Imm12) -> Int
   imm32_to_string(Self, Int) -> String
   imm64_to_string(Self, Int64) -> String
+  mark_maybe_aliased(Self, @riscv.AnyReg) -> @riscv.AnyReg
+  put_in_reg(Self, @core.Value) -> @riscv.AnyReg
+  block_label(Self, @core.BlockRef) -> @riscv.Label
+  imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
+  has_type(Self, @core.Value) -> (@core.Value, @core.Type)
+  emit_block_parameters(Self, @core.BlockRef, Array[@core.Value]) -> Unit
+  lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
   lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg
   lower_apply(Self, @core.Type, @core.Value, Array[@core.Value]) -> @riscv.AnyReg
-  imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
+  lower_load_symbol(Self, @core.Type, @core.SymbolRef) -> @riscv.AnyReg
+  lower_store(Self, @core.Type, @core.Address, @core.Value) -> @riscv.AnyReg
+  lower_load(Self, @core.Type, @core.Address) -> @riscv.AnyReg
+  lower_alloc(Self, @core.Type, @core.MemRef, Array[@core.Fill]) -> @riscv.AnyReg
 }
 
 // Extension Methods
+impl Show for Args
 

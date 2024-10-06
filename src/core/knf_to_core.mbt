@@ -174,7 +174,10 @@ fn add_symbol(
 ) -> SymbolRef {
   let sym_ref = SymbolRef({ id: self.sym_counter })
   self.sym_counter += 1
-  core.global_thunks.set(sym_ref, (ty, thunk.id))
+  core.global_symbols.set(
+    sym_ref,
+    Symbol::{ id: sym_ref, name: symbol, ty, thunk: thunk.id },
+  )
   core.global_names.push((symbol, sym_ref))
   sym_ref
 }
@@ -299,7 +302,6 @@ fn build_local_or_free_var!(
         None => fail!("\{name} not found in \{ctx}")
       }
       let val = Value::FreeVar(
-        ~ty,
         fvref=FnFreeVarRef(
           Id::new(
             // NOTICE: the free variables start from 1 because 0 is reserved for the function ptr
@@ -324,9 +326,9 @@ fn build_symbol_or_var(
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
   match ctx.top_sym_ctx.find(name) {
-    Some(sym) => {
-      let (ty, _thunk) = core.global_thunks.get(sym).unwrap()
-      let insn = self.add_insn(func, bb, Insn::LoadSymbol(~ty, ~sym))
+    Some(sref) => {
+      let sym = core.global_symbols.get(sref).unwrap()
+      let insn = self.add_insn(func, bb, Insn::LoadSymbol(ty=sym.ty, ~sref))
       (ctx, insn)
     }
     None => self.build_local_or_free_var!(free_names, ctx, func, name)
@@ -390,92 +392,7 @@ fn get_type(
   val : Value
 ) -> Type!Failure {
   let _ = self
-  match val {
-    Unit => Type::Unit
-    Bool(_) => Type::Bool
-    Int32(_) => Type::Int32
-    Int64(_) => Type::Int64
-    Double(_) => Type::Double
-    Insn(~iref) => {
-      let insn = match func.insns.get(iref) {
-        Some(insn) => insn
-        None =>
-          fail!("insn \{Show::to_string(iref)} not found in \{func.insns}")
-      }
-      match insn {
-        Op(~ty, ..) => ty
-        Apply(~ty, ..) => ty
-        Call(~ty, ..) => ty
-        ExtCall(~ty, ..) => ty
-        LoadSymbol(~ty, ..) => ty
-        Alloc(~ty, ..) => ty
-        Load(~ty, ..) => ty
-        Store(..) => Type::Unit
-      }
-    }
-    FreeVar(~ty, ..) => ty
-    BlockParam(~bref, ~bpref) => {
-      let block = match func.blocks.get(bref) {
-        Some(block) => block
-        _ => fail!("bb not found")
-      }
-      match block {
-        BasicBlock(~bb) => bb.params[bpref.id]
-        Loop(_) => fail!("loop not supported")
-      }
-    }
-    FnParam(~fref, ~fpref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      match func.ty {
-        DirectFn(~params, ..) => params[fpref.id]
-        ClosureFn(~params, ..) => params[fpref.id]
-        _ => fail!("not a function type")
-      }
-    }
-    Mem(~fref, ~mref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      let mem = match func.mems.get(mref) {
-        Some(mem) => mem
-        None => fail!("mem not found")
-      }
-      match mem {
-        Heap(~ty, ..) => ty
-        Stack(~ty, ..) => ty
-      }
-    }
-    Fn(~fref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      guard (match func.ty {
-        DirectFn(..) => true
-        _ => false
-      }) else {
-        fail!("not a direct function")
-      }
-      func.ty
-    }
-    Self(~fref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      guard (match func.ty {
-        ClosureFn(..) => true
-        _ => false
-      }) else {
-        fail!("not a closure")
-      }
-      func.ty
-    }
-  }
+  val.ty!(core, func)
 }
 
 fn get_external_function_type(self : CoreEnv, name : String) -> Type!Failure {
@@ -793,9 +710,9 @@ fn build_top_level(
 ) -> Unit!Failure {
   match knf {
     Let((x, ty), e1, e2) => {
-      let symbol = "thunk_" + x.to_string()
+      let thunk_name = "thunk_" + x.to_string()
       let name = try {
-        @knf.Name::from_string!(symbol)
+        @knf.Name::from_string!(thunk_name)
       } catch {
         _ => fail!("invalid name")
       }
@@ -809,7 +726,7 @@ fn build_top_level(
       let ctx = ctx.add_top_fn_value(fd.name, f)
       let ty = self.lower_type!(ty, false)
       let ctx = ctx.add_name_ty(x, ty)
-      let sref = self.add_symbol(core, func, symbol, ty)
+      let sref = self.add_symbol(core, func, x.to_string(), ty)
       let ctx = ctx.add_top_sym_value(x, sref)
       self.build_top_level!(ctx, core, e2)
     }
@@ -847,7 +764,7 @@ pub fn build(self : CoreEnv, knf : Knf) -> Core!Failure {
     funcs: MutMap::new(),
     names: MutMap::new(),
     global_names: [],
-    global_thunks: MutMap::new(),
+    global_symbols: MutMap::new(),
   }
   let ctx = Ctx::new()
   let _ = self.build_top_level!(ctx, core, knf)

@@ -149,12 +149,6 @@ fn print_fill(logger : @util.IndentLogger, fill : Fill) -> Unit {
       logger.write_string("[\{index}] = ")
       print_value(logger, val)
     }
-    Offset(~offset, ~val) => {
-      logger.write_string("[")
-      print_value(logger, offset)
-      logger.write_string("] = ")
-      print_value(logger, val)
-    }
   }
 }
 
@@ -235,7 +229,7 @@ fn print_insn(
       print_values(logger, args)
       logger.write_string(")\n")
     }
-    LoadSymbol(~ty, ~sym) => {
+    LoadSymbol(~ty, sref=sym) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = load_symbol \{sym}\n")

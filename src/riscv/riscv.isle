@@ -2,7 +2,7 @@
 (type XReg (primitive `@riscv.Reg`))
 (type FReg (primitive `@riscv.FReg`))
 (type Label (primitive `@riscv.Label`))
-(type MemAccess (primitive `@riscv.MemAccess[@riscv.Reg,Int]`))
+(type MemAccess (primitive `@riscv.MemAccess[@riscv.Reg,@riscv.Imm12]`))
 (type String (primitive String))
 (type Imm20 (primitive `@riscv.Imm20`))
 (type Imm12 (primitive `@riscv.Imm12`))
@@ -65,8 +65,8 @@
     (FdivD (rd FReg) (rs1 FReg) (rs2 FReg))
     (Fld (rd FReg) (mem MemAccess))
     (Fsd (rs FReg) (mem MemAccess))
-    (FbeqD (rs1 FReg) (rs2 FReg) (target Label))
-    (FbleD (rs1 FReg) (rs2 FReg) (target Label))
+    (FeqD (rd XReg) (rs1 FReg) (rs2 FReg))
+    (FleD (rd XReg) (rs1 FReg) (rs2 FReg))
     (FmvDX (rd FReg) (rs XReg))
     (Nop)
     (La (rd XReg) (l Label))
@@ -106,17 +106,6 @@
 (decl pure freg_to_reg (FReg) AnyReg)
 (extern constructor freg_to_reg freg_to_reg)
 (convert FReg AnyReg freg_to_reg)
-
-(decl put_in_reg (Value) AnyReg)
-(extern constructor put_in_reg put_in_reg)
-
-(decl put_in_xreg (Value) XReg)
-(rule (put_in_xreg v) (xreg_new (put_in_reg v)))
-(convert Value XReg put_in_xreg)
-
-(decl put_in_freg (Value) FReg)
-(rule (put_in_freg v) (freg_new (put_in_reg v)))
-(convert Value FReg put_in_freg)
 
 (decl rv_add (XReg XReg) XReg)
 (rule (rv_add x y)
@@ -256,6 +245,66 @@
         (_ Unit (emit_risc_v (RvAsm.Ld dst x))))
     dst))
 
+(decl rv_lbu (MemAccess) XReg)
+(rule (rv_lbu x)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.Lbu dst x))))
+    dst))
+
+(decl rv_lhu (MemAccess) XReg)
+(rule (rv_lhu x)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.Lhu dst x))))
+    dst))
+
+(decl rv_lwu (MemAccess) XReg)
+(rule (rv_lwu x)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.Lwu dst x))))
+    dst))
+
+(decl rv_sb (XReg MemAccess) Unit)
+(rule (rv_sb x y) (emit_risc_v (RvAsm.Sb x y)))
+
+(decl rv_sh (XReg MemAccess) Unit)
+(rule (rv_sh x y) (emit_risc_v (RvAsm.Sh x y)))
+
+(decl rv_sw (XReg MemAccess) Unit)
+(rule (rv_sw x y) (emit_risc_v (RvAsm.Sw x y)))
+
+(decl rv_sd (XReg MemAccess) Unit)
+(rule (rv_sd x y) (emit_risc_v (RvAsm.Sd x y)))
+
+(decl rv_beq (XReg XReg Label) Unit)
+(rule (rv_beq x y z) (emit_risc_v (RvAsm.Beq x y z)))
+
+(decl rv_bne (XReg XReg Label) Unit)
+(rule (rv_bne x y z) (emit_risc_v (RvAsm.Bne x y z)))
+
+(decl rv_blt (XReg XReg Label) Unit)
+(rule (rv_blt x y z) (emit_risc_v (RvAsm.Blt x y z)))
+
+(decl rv_bge (XReg XReg Label) Unit)
+(rule (rv_bge x y z) (emit_risc_v (RvAsm.Bge x y z)))
+
+(decl rv_ble (XReg XReg Label) Unit)
+(rule (rv_ble x y z) (emit_risc_v (RvAsm.Ble x y z)))
+
+(decl rv_bgt (XReg XReg Label) Unit)
+(rule (rv_bgt x y z) (emit_risc_v (RvAsm.Bgt x y z)))
+
+(decl rv_bltu (XReg XReg Label) Unit)
+(rule (rv_bltu x y z) (emit_risc_v (RvAsm.Bltu x y z)))
+
+(decl rv_bgeu (XReg XReg Label) Unit)
+(rule (rv_bgeu x y z) (emit_risc_v (RvAsm.Bgeu x y z)))
+
+(decl rv_bnez (XReg Label) Unit)
+(rule (rv_bnez x y) (emit_risc_v (RvAsm.Bne x (zero_reg) y)))
+
+(decl rv_beqz (XReg Label) Unit)
+(rule (rv_beqz x y) (emit_risc_v (RvAsm.Beq x (zero_reg) y)))
+
 (decl rv_mul (XReg XReg) XReg)
 (rule (rv_mul x y)
   (let ((dst XReg (next_virtual_xreg))
@@ -310,6 +359,12 @@
         (_ Unit (emit_risc_v (RvAsm.Rem dst x y))))
     dst))
 
+(decl rv_remw (XReg XReg) XReg)
+(rule (rv_remw x y)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.Remw dst x y))))
+    dst))
+
 (decl rv_remu (XReg XReg) XReg)
 (rule (rv_remu x y)
   (let ((dst XReg (next_virtual_xreg))
@@ -345,6 +400,9 @@
   (let ((dst FReg (next_virtual_freg))
         (_ Unit (emit_risc_v (RvAsm.Fld dst x))))
     dst))
+
+(decl rv_fsd (FReg MemAccess) Unit)
+(rule (rv_fsd x y) (emit_risc_v (RvAsm.Fsd x y)))
 
 (decl rv_f_mv_dx (XReg) FReg)
 (rule (rv_f_mv_dx x)
@@ -382,6 +440,33 @@
         (_ Unit (emit_risc_v (RvAsm.Mv dst x))))
     dst))
 
+(decl rv_f_mv_d (FReg) FReg)
+(rule (rv_f_mv_d x)
+  (let ((dst FReg (next_virtual_freg))
+        (_ Unit (emit_risc_v (RvAsm.FmvD dst x))))
+    dst))
+
+(decl rv_mv_to (XReg XReg) Unit)
+(rule (rv_mv_to x y) (emit_risc_v (RvAsm.Mv x y)))
+
+(decl rv_f_mv_to (FReg FReg) Unit)
+(rule (rv_f_mv_to x y) (emit_risc_v (RvAsm.FmvD x y)))
+
+(decl rv_j (Label) Unit)
+(rule (rv_j x) (emit_risc_v (RvAsm.J x)))
+
+(decl rv_jalr (XReg) Unit)
+(rule (rv_jalr x) (emit_risc_v (RvAsm.Jalr x)))
+
+(decl rv_jr (XReg) Unit)
+(rule (rv_jr x) (emit_risc_v (RvAsm.Jr x)))
+
+(decl rv_call (Label) Unit)
+(rule (rv_call x) (emit_risc_v (RvAsm.Call x)))
+
+(decl rv_ret () Unit)
+(rule (rv_ret) (emit_risc_v (RvAsm.Ret)))
+
 (decl zero_reg () XReg)
 (extern constructor zero_reg zero_reg)
 (extern extractor zero_reg is_zero_reg)
@@ -389,6 +474,10 @@
 (decl closure_reg () XReg)
 (extern constructor closure_reg closure_reg)
 (extern extractor closure_reg is_closure_reg)
+
+(decl return_reg () XReg)
+(extern constructor return_reg return_reg)
+(extern extractor return_reg is_return_reg)
 
 (decl i64_generate_imm (Imm20 Imm12) Int64)
 (extern extractor i64_generate_imm i64_generate_imm)

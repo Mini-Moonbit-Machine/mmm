@@ -68,7 +68,7 @@ pub struct Core {
   pub names : @moonbitlang/core/hashmap.T[String, FnRef]
   pub funcs : @moonbitlang/core/hashmap.T[FnRef, Fn]
   pub global_names : Array[(String, SymbolRef)]
-  pub global_thunks : @moonbitlang/core/hashmap.T[SymbolRef, (Type, FnRef)]
+  pub global_symbols : @moonbitlang/core/hashmap.T[SymbolRef, Symbol]
 }
 impl Core {
   to_pretty_print(Self) -> PrettyCore
@@ -105,7 +105,6 @@ pub enum Fill {
   Zero
   Init(Value)
   Field(Int, Value)
-  Offset(Value, Value)
 }
 impl Fill {
   op_equal(Self, Self) -> Bool
@@ -245,6 +244,16 @@ impl PrettyCore {
   to_string(Self) -> String
 }
 
+pub struct Symbol {
+  pub id : SymbolRef
+  pub name : String
+  pub ty : Type
+  pub thunk : FnRef
+}
+impl Symbol {
+  to_string(Self) -> String
+}
+
 pub type SymbolRef Id
 impl SymbolRef {
   hash_combine(Self, Hasher) -> Unit
@@ -266,7 +275,9 @@ pub enum Type {
   Ptr
 }
 impl Type {
+  elem_size(Self) -> Int
   op_equal(Self, Self) -> Bool
+  size(Self) -> Int
   to_string(Self) -> String
 }
 
@@ -279,7 +290,7 @@ pub enum Value {
   Insn(InsnRef)
   Mem(FnRef, MemRef)
   Fn(FnRef)
-  FreeVar(Type, FnFreeVarRef)
+  FreeVar(FnFreeVarRef)
   BlockParam(BlockRef, BlockParamRef)
   FnParam(FnRef, FnParamRef)
   Self(FnRef)
@@ -287,6 +298,7 @@ pub enum Value {
 impl Value {
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
+  ty(Self, Core, Fn) -> Type!Failure
 }
 
 // Type aliases
@@ -330,6 +342,8 @@ impl Show for Loop
 impl Show for Mem
 
 impl Show for Op
+
+impl Show for Symbol
 
 impl Show for Type
 
