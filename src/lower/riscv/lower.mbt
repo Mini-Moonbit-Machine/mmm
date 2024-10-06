@@ -1133,6 +1133,7 @@ fn RiscvFnLoweringCtx::effectful(
   match insn {
     @core.Insn::Call(..) => true
     @core.Insn::ExtCall(..) => true
+    @core.Insn::Apply(..) => true
     @core.Insn::Store(..) => true
     @core.Insn::Alloc(..) => true
     _ => false
@@ -1259,6 +1260,8 @@ fn RiscvFnLoweringCtx::lower_block(
         self.ialias.clear()
         self.finalize_insn()
       }
+    } else {
+      trace("skipping \{insn}")
     }
   }
   if block.id == self.func.entry {

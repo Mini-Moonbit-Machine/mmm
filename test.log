@@ -701,8 +701,8 @@ aux_b0:
   lw v4, 16(v0)
   lw v5, 24(v0)
   lw v6, 32(v0)
-  sltu v164, v3, v2
-  xori v9, v164, 1
+  sltu v166, v3, v2
+  xori v9, v166, 1
   bne v9, zero, aux_b1
   j aux_b2
 
@@ -711,18 +711,22 @@ aux_b18:
   j aux_b19
 
 aux_b13:
-  addi v138, s11, -4
-  andi v7, v138, -8
+  addi v140, s11, -4
+  andi v7, v140, -8
   sd v2, 0(v7)
-  addi v135, s11, -48
-  andi v8, v135, -8
-  la v137, lp
-  sd v137, 0(v8)
+  addi v137, s11, -48
+  andi v8, v137, -8
+  la v139, lp
+  sd v139, 0(v8)
   sd v5, 8(v8)
   sd v6, 16(v8)
   sd v2, 24(v8)
   sd v0, 32(v8)
   sd v7, 40(v8)
+  mv s10, v8
+  ld v135, 0(v8)
+  jalr v135
+  mv v21, zero
   slli v132, zero, 2
   add v133, v7, v132
   lw v22, 0(v133)
@@ -753,9 +757,9 @@ aux_b22:
   j aux_b23
 
 aux_b6:
-  li v152, 3
-  xor v153, v10, v152
-  sltiu v13, v153, 1
+  li v154, 3
+  xor v155, v10, v154
+  sltiu v13, v155, 1
   bne v13, zero, aux_b7
   j aux_b8
 
@@ -768,9 +772,9 @@ aux_b16:
   j aux_b17
 
 aux_b14:
-  li v140, 8
-  xor v141, v10, v140
-  sltiu v17, v141, 1
+  li v142, 8
+  xor v143, v10, v142
+  sltiu v17, v143, 1
   bne v17, zero, aux_b15
   j aux_b16
 
@@ -779,9 +783,9 @@ aux_b1:
   j aux_b24
 
 aux_b10:
-  li v146, 5
-  xor v147, v10, v146
-  sltiu v15, v147, 1
+  li v148, 5
+  xor v149, v10, v148
+  sltiu v15, v149, 1
   bne v15, zero, aux_b11
   j aux_b12
 
@@ -828,19 +832,19 @@ aux_b5:
   j aux_b22
 
 aux_b2:
-  slli v161, v2, 2
-  add v162, v4, v161
-  lw v10, 0(v162)
-  li v158, 1
-  xor v159, v10, v158
-  sltiu v11, v159, 1
+  slli v163, v2, 2
+  add v164, v4, v163
+  lw v10, 0(v164)
+  li v160, 1
+  xor v161, v10, v160
+  sltiu v11, v161, 1
   bne v11, zero, aux_b3
   j aux_b4
 
 aux_b8:
-  li v149, 4
-  xor v150, v10, v149
-  sltiu v14, v150, 1
+  li v151, 4
+  xor v152, v10, v151
+  sltiu v14, v152, 1
   bne v14, zero, aux_b9
   j aux_b10
 
@@ -849,9 +853,9 @@ aux_b15:
   j aux_b17
 
 aux_b12:
-  li v143, 7
-  xor v144, v10, v143
-  sltiu v16, v144, 1
+  li v145, 7
+  xor v146, v10, v145
+  sltiu v16, v146, 1
   bne v16, zero, aux_b13
   j aux_b14
 
@@ -905,9 +909,9 @@ aux_b24:
   ret
 
 aux_b4:
-  li v155, 2
-  xor v156, v10, v155
-  sltiu v12, v156, 1
+  li v157, 2
+  xor v158, v10, v157
+  sltiu v12, v158, 1
   bne v12, zero, aux_b5
   j aux_b6
 
@@ -943,25 +947,30 @@ bf:
 bf_b0:
   mv v2, a0
   mv v3, a1
-  addi v18, s11, -4
-  andi v4, v18, -8
+  addi v20, s11, -4
+  andi v4, v20, -8
   sd zero, 0(v4)
-  li v14, 4096
-  sub v15, s11, v14
-  andi v5, v15, -8
-  li v17, 1024
-  mv a1, v17
+  li v16, 4096
+  sub v17, s11, v16
+  andi v5, v17, -8
+  li v19, 1024
+  mv a1, v19
   mv a0, v5
   mv a2, zero
   call _memseti32
-  addi v11, s11, -40
-  andi v6, v11, -8
-  la v13, aux
-  sd v13, 0(v6)
+  addi v13, s11, -40
+  andi v6, v13, -8
+  la v15, aux
+  sd v15, 0(v6)
   sd v2, 8(v6)
   sd v3, 16(v6)
   sd v4, 24(v6)
   sd v5, 32(v6)
+  mv s10, v6
+  ld v11, 0(v6)
+  mv a0, zero
+  jalr v11
+  mv v10, a0
   mv a0, zero
   ret
 
@@ -4776,13 +4785,22 @@ make_arr_b0:
   mv v3, a1
   mv v4, a2
   lw v5, 8(v0)
-  slli v10, v2, 3
-  sub v11, s11, v10
-  andi v6, v11, -8
+  slli v14, v2, 3
+  sub v15, s11, v14
+  andi v6, v15, -8
   mv a1, v2
   mv a0, v6
   mv a2, v4
   call _memseti32
+  li v12, 1
+  sub v8, v2, v12
+  mv s10, v5
+  ld v10, 0(v5)
+  mv a0, v8
+  mv a1, v3
+  mv a2, v6
+  jalr v10
+  mv v9, zero
   mv a0, v6
   ret
 
@@ -5415,8 +5433,8 @@ loop2_b0:
   lw v5, 24(v0)
   lw v6, 32(v0)
   lw v7, 40(v0)
-  sltu v23, zero, v2
-  xori v9, v23, 1
+  sltu v27, zero, v2
+  xori v9, v27, 1
   bne v9, zero, loop2_b1
   j loop2_b2
 
@@ -5425,15 +5443,22 @@ loop2_b3:
   ret
 
 loop2_b1:
-  addi v20, s11, -48
-  andi v8, v20, -8
-  la v22, loop3
-  sd v22, 0(v8)
+  addi v24, s11, -48
+  andi v8, v24, -8
+  la v26, loop3
+  sd v26, 0(v8)
   sd v3, 8(v8)
   sd v4, 16(v8)
   sd v2, 24(v8)
   sd v5, 32(v8)
   sd v6, 40(v8)
+  li v22, 1
+  sub v11, v7, v22
+  mv s10, v8
+  ld v20, 0(v8)
+  mv a0, v11
+  jalr v20
+  mv v12, zero
   li v18, 1
   sub v13, v2, v18
   mv s10, v0
@@ -5495,19 +5520,26 @@ gen_arr_b0:
   mv v2, a0
   mv v3, a1
   lw v4, 8(v0)
-  slli v14, v2, 3
-  sub v15, s11, v14
-  andi v5, v15, -8
+  slli v18, v2, 3
+  sub v19, s11, v18
+  andi v5, v19, -8
   mv a1, v2
   mv a0, v5
   mv a2, v4
   call _memseti32
-  addi v11, s11, -24
-  andi v6, v11, -8
-  la v13, init_arr
-  sd v13, 0(v6)
+  addi v15, s11, -24
+  andi v6, v15, -8
+  la v17, init_arr
+  sd v17, 0(v6)
   sd v3, 8(v6)
   sd v5, 16(v6)
+  li v13, 1
+  sub v9, v2, v13
+  mv s10, v6
+  ld v11, 0(v6)
+  mv a0, v9
+  jalr v11
+  mv v10, zero
   mv a0, v5
   ret
 
@@ -5858,21 +5890,28 @@ loop1_b0:
   lw v5, 24(v0)
   lw v6, 32(v0)
   lw v7, 40(v0)
-  sltu v23, zero, v2
-  xori v9, v23, 1
+  sltu v27, zero, v2
+  xori v9, v27, 1
   bne v9, zero, loop1_b1
   j loop1_b2
 
 loop1_b1:
-  addi v20, s11, -48
-  andi v8, v20, -8
-  la v22, loop2
-  sd v22, 0(v8)
+  addi v24, s11, -48
+  andi v8, v24, -8
+  la v26, loop2
+  sd v26, 0(v8)
   sd v3, 8(v8)
   sd v2, 16(v8)
   sd v4, 24(v8)
   sd v5, 32(v8)
   sd v6, 40(v8)
+  li v22, 1
+  sub v11, v7, v22
+  mv s10, v8
+  ld v20, 0(v8)
+  mv a0, v11
+  jalr v20
+  mv v12, zero
   li v18, 1
   sub v13, v2, v18
   mv s10, v0
