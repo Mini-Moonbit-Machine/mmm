@@ -73,26 +73,35 @@ _start_b0:
   .globl ack
   .type ack, @function
 ack:
-ack_b0:
+.ack_b0:
   mv v2, a0
   mv v3, a1
   sltu v29, v2, zero
   xori v4, v29, 1
-  bne v4, zero, ack_b1
-  j ack_b2
+  bne v4, zero, .ack_b1
+  j .ack_b2
 
-ack_b3:
-  li v19, 1
-  sub v10, v2, v19
-  mv a0, v10
-  li v17, 1
-  mv a1, v17
-  call ack
-  mv v11, a0
-  mv v12, v11
-  j ack_b5
+.ack_b1:
+  li v15, 1
+  add v13, v3, v15
+  mv v14, v13
+  j .ack_b6
 
-ack_b4:
+.ack_b5:
+  mv v14, v12
+  j .ack_b6
+
+.ack_b2:
+  sltu v27, v3, zero
+  xori v5, v27, 1
+  bne v5, zero, .ack_b3
+  j .ack_b4
+
+.ack_b6:
+  mv a0, v14
+  ret
+
+.ack_b4:
   li v25, 1
   sub v6, v2, v25
   li v23, 1
@@ -106,33 +115,24 @@ ack_b4:
   call ack
   mv v9, a0
   mv v12, v9
-  j ack_b5
+  j .ack_b5
 
-ack_b6:
-  mv a0, v14
-  ret
-
-ack_b1:
-  li v15, 1
-  add v13, v3, v15
-  mv v14, v13
-  j ack_b6
-
-ack_b2:
-  sltu v27, v3, zero
-  xori v5, v27, 1
-  bne v5, zero, ack_b3
-  j ack_b4
-
-ack_b5:
-  mv v14, v12
-  j ack_b6
+.ack_b3:
+  li v19, 1
+  sub v10, v2, v19
+  mv a0, v10
+  li v17, 1
+  mv a1, v17
+  call ack
+  mv v11, a0
+  mv v12, v11
+  j .ack_b5
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -142,7 +142,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 3
   mv a0, v5
   li v6, 8
@@ -159,7 +159,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -213,7 +213,7 @@ Testing test/test_src/adder.mbt
   .globl adder
   .type adder, @function
 adder:
-adder_b0:
+.adder_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -233,7 +233,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -243,7 +243,7 @@ thunk_start_b0:
   .globl make_adder
   .type make_adder, @function
 make_adder:
-make_adder_b0:
+.make_adder_b0:
   mv v2, a0
   addi v5, s11, -16
   andi v3, v5, -8
@@ -257,7 +257,7 @@ make_adder_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v9, 3
   mv a0, v9
   call make_adder
@@ -278,7 +278,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -335,7 +335,7 @@ Testing test/test_src/adder2.mbt
   .globl adder
   .type adder, @function
 adder:
-adder_b0:
+.adder_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -355,7 +355,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -365,7 +365,7 @@ thunk_start_b0:
   .globl make_adder
   .type make_adder, @function
 make_adder:
-make_adder_b0:
+.make_adder_b0:
   mv v2, a0
   addi v5, s11, -16
   andi v3, v5, -8
@@ -379,7 +379,7 @@ make_adder_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v18, 2
   mv a0, v18
   call make_adder
@@ -411,7 +411,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -636,7 +636,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -646,7 +646,7 @@ thunk_start_b0:
   .globl lp
   .type lp, @function
 lp:
-lp_b0:
+.lp_b0:
   mv v0, s10
   lw v2, 8(v0)
   lw v3, 16(v0)
@@ -661,14 +661,14 @@ lp_b0:
   lw v8, 0(v26)
   xor v23, v8, zero
   sltiu v9, v23, 1
-  bne v9, zero, lp_b1
-  j lp_b2
+  bne v9, zero, .lp_b1
+  j .lp_b2
 
-lp_b3:
-  mv a0, v14
-  ret
+.lp_b1:
+  mv v14, zero
+  j .lp_b3
 
-lp_b2:
+.lp_b2:
   li v21, 1
   add v10, v4, v21
   mv s10, v5
@@ -684,17 +684,17 @@ lp_b2:
   jalr v15
   mv v13, zero
   mv v14, v13
-  j lp_b3
+  j .lp_b3
 
-lp_b1:
-  mv v14, zero
-  j lp_b3
+.lp_b3:
+  mv a0, v14
+  ret
 
   .align 2
   .globl aux
   .type aux, @function
 aux:
-aux_b0:
+.aux_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -703,14 +703,43 @@ aux_b0:
   lw v6, 32(v0)
   sltu v166, v3, v2
   xori v9, v166, 1
-  bne v9, zero, aux_b1
-  j aux_b2
+  bne v9, zero, .aux_b1
+  j .aux_b2
 
-aux_b18:
-  mv v31, v25
-  j aux_b19
+.aux_b19:
+  mv v39, v31
+  j .aux_b20
 
-aux_b13:
+.aux_b1:
+  mv v60, v2
+  j .aux_b24
+
+.aux_b7:
+  slli v97, zero, 2
+  add v98, v5, v97
+  lw v40, 0(v98)
+  slli v94, zero, 2
+  add v95, v5, v94
+  lw v41, 0(v95)
+  slli v91, v41, 2
+  add v92, v6, v91
+  lw v42, 0(v92)
+  li v89, 1
+  add v43, v42, v89
+  slli v87, v40, 2
+  add v88, v6, v87
+  sw v43, 0(v88)
+  li v85, 1
+  add v45, v2, v85
+  mv s10, v0
+  ld v83, 0(v0)
+  mv a0, v45
+  jalr v83
+  mv v46, a0
+  mv v47, v46
+  j .aux_b21
+
+.aux_b13:
   addi v140, s11, -4
   andi v7, v140, -8
   sd v2, 0(v7)
@@ -738,81 +767,13 @@ aux_b13:
   jalr v128
   mv v24, a0
   mv v25, v24
-  j aux_b18
+  j .aux_b18
 
-aux_b19:
-  mv v39, v31
-  j aux_b20
-
-aux_b21:
-  mv v53, v47
-  j aux_b22
-
-aux_b20:
-  mv v47, v39
-  j aux_b21
-
-aux_b22:
+.aux_b22:
   mv v59, v53
-  j aux_b23
+  j .aux_b23
 
-aux_b6:
-  li v154, 3
-  xor v155, v10, v154
-  sltiu v13, v155, 1
-  bne v13, zero, aux_b7
-  j aux_b8
-
-aux_b17:
-  mv v25, v18
-  j aux_b18
-
-aux_b16:
-  mv v18, v2
-  j aux_b17
-
-aux_b14:
-  li v142, 8
-  xor v143, v10, v142
-  sltiu v17, v143, 1
-  bne v17, zero, aux_b15
-  j aux_b16
-
-aux_b1:
-  mv v60, v2
-  j aux_b24
-
-aux_b10:
-  li v148, 5
-  xor v149, v10, v148
-  sltiu v15, v149, 1
-  bne v15, zero, aux_b11
-  j aux_b12
-
-aux_b3:
-  slli v69, zero, 2
-  add v70, v5, v69
-  lw v54, 0(v70)
-  li v67, 1
-  add v55, v54, v67
-  slli v65, zero, 2
-  add v66, v5, v65
-  sw v55, 0(v66)
-  li v63, 1
-  add v57, v2, v63
-  mv s10, v0
-  ld v61, 0(v0)
-  mv a0, v57
-  jalr v61
-  mv v58, a0
-  mv v59, v58
-  j aux_b23
-
-aux_b23:
-  mv v60, v59
-  j aux_b24
-
-aux_b5:
+.aux_b5:
   slli v80, zero, 2
   add v81, v5, v80
   lw v48, 0(v81)
@@ -829,37 +790,82 @@ aux_b5:
   jalr v72
   mv v52, a0
   mv v53, v52
-  j aux_b22
+  j .aux_b22
 
-aux_b2:
+.aux_b4:
+  li v157, 2
+  xor v158, v10, v157
+  sltiu v12, v158, 1
+  bne v12, zero, .aux_b5
+  j .aux_b6
+
+.aux_b8:
+  li v151, 4
+  xor v152, v10, v151
+  sltiu v14, v152, 1
+  bne v14, zero, .aux_b9
+  j .aux_b10
+
+.aux_b17:
+  mv v25, v18
+  j .aux_b18
+
+.aux_b2:
   slli v163, v2, 2
   add v164, v4, v163
   lw v10, 0(v164)
   li v160, 1
   xor v161, v10, v160
   sltiu v11, v161, 1
-  bne v11, zero, aux_b3
-  j aux_b4
+  bne v11, zero, .aux_b3
+  j .aux_b4
 
-aux_b8:
-  li v151, 4
-  xor v152, v10, v151
-  sltiu v14, v152, 1
-  bne v14, zero, aux_b9
-  j aux_b10
+.aux_b24:
+  mv a0, v60
+  ret
 
-aux_b15:
-  mv v18, v2
-  j aux_b17
+.aux_b6:
+  li v154, 3
+  xor v155, v10, v154
+  sltiu v13, v155, 1
+  bne v13, zero, .aux_b7
+  j .aux_b8
 
-aux_b12:
+.aux_b20:
+  mv v47, v39
+  j .aux_b21
+
+.aux_b12:
   li v145, 7
   xor v146, v10, v145
   sltiu v16, v146, 1
-  bne v16, zero, aux_b13
-  j aux_b14
+  bne v16, zero, .aux_b13
+  j .aux_b14
 
-aux_b9:
+.aux_b23:
+  mv v60, v59
+  j .aux_b24
+
+.aux_b3:
+  slli v69, zero, 2
+  add v70, v5, v69
+  lw v54, 0(v70)
+  li v67, 1
+  add v55, v54, v67
+  slli v65, zero, 2
+  add v66, v5, v65
+  sw v55, 0(v66)
+  li v63, 1
+  add v57, v2, v63
+  mv s10, v0
+  ld v61, 0(v0)
+  mv a0, v57
+  jalr v61
+  mv v58, a0
+  mv v59, v58
+  j .aux_b23
+
+.aux_b9:
   slli v114, zero, 2
   add v115, v5, v114
   lw v32, 0(v115)
@@ -882,9 +888,20 @@ aux_b9:
   jalr v100
   mv v38, a0
   mv v39, v38
-  j aux_b20
+  j .aux_b20
 
-aux_b11:
+.aux_b16:
+  mv v18, v2
+  j .aux_b17
+
+.aux_b10:
+  li v148, 5
+  xor v149, v10, v148
+  sltiu v15, v149, 1
+  bne v15, zero, .aux_b11
+  j .aux_b12
+
+.aux_b11:
   slli v125, zero, 2
   add v126, v5, v125
   lw v26, 0(v126)
@@ -902,49 +919,32 @@ aux_b11:
   jalr v117
   mv v30, a0
   mv v31, v30
-  j aux_b19
+  j .aux_b19
 
-aux_b24:
-  mv a0, v60
-  ret
+.aux_b21:
+  mv v53, v47
+  j .aux_b22
 
-aux_b4:
-  li v157, 2
-  xor v158, v10, v157
-  sltiu v12, v158, 1
-  bne v12, zero, aux_b5
-  j aux_b6
+.aux_b18:
+  mv v31, v25
+  j .aux_b19
 
-aux_b7:
-  slli v97, zero, 2
-  add v98, v5, v97
-  lw v40, 0(v98)
-  slli v94, zero, 2
-  add v95, v5, v94
-  lw v41, 0(v95)
-  slli v91, v41, 2
-  add v92, v6, v91
-  lw v42, 0(v92)
-  li v89, 1
-  add v43, v42, v89
-  slli v87, v40, 2
-  add v88, v6, v87
-  sw v43, 0(v88)
-  li v85, 1
-  add v45, v2, v85
-  mv s10, v0
-  ld v83, 0(v0)
-  mv a0, v45
-  jalr v83
-  mv v46, a0
-  mv v47, v46
-  j aux_b21
+.aux_b14:
+  li v142, 8
+  xor v143, v10, v142
+  sltiu v17, v143, 1
+  bne v17, zero, .aux_b15
+  j .aux_b16
+
+.aux_b15:
+  mv v18, v2
+  j .aux_b17
 
   .align 2
   .globl bf
   .type bf, @function
 bf:
-bf_b0:
+.bf_b0:
   mv v2, a0
   mv v3, a1
   addi v20, s11, -4
@@ -978,7 +978,7 @@ bf_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v121, s11, -92
   andi v2, v121, -8
   sd zero, 0(v2)
@@ -1130,7 +1130,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -1192,7 +1192,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v4, 123
   add v3, v2, v4
@@ -1203,7 +1203,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -1213,7 +1213,7 @@ thunk_start_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   addi v5, s11, -8
   andi v3, v5, -8
@@ -1226,7 +1226,7 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v9, 456
   mv a0, v9
   call g
@@ -1247,7 +1247,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -1314,18 +1314,18 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   sltu v26, zero, v2
   xori v5, v26, 1
-  bne v5, zero, f_b1
-  j f_b2
+  bne v5, zero, .f_b1
+  j .f_b2
 
-f_b2:
-  mv v12, zero
-  j f_b3
+.f_b3:
+  mv a0, v12
+  ret
 
-f_b1:
+.f_b1:
   mv a0, v2
   call minimbt_print_int
   mv v6, zero
@@ -1347,17 +1347,17 @@ f_b1:
   jalr v13
   mv v11, zero
   mv v12, v11
-  j f_b3
+  j .f_b3
 
-f_b3:
-  mv a0, v12
-  ret
+.f_b2:
+  mv v12, zero
+  j .f_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -1367,7 +1367,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v3, 9
   mv a0, v3
   call f
@@ -1379,7 +1379,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -1456,14 +1456,22 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   xor v15, v2, zero
   sltiu v3, v15, 1
-  bne v3, zero, f_b1
-  j f_b2
+  bne v3, zero, .f_b1
+  j .f_b2
 
-f_b2:
+.f_b3:
+  mv a0, v8
+  ret
+
+.f_b1:
+  mv v8, zero
+  j .f_b3
+
+.f_b2:
   li v13, 1
   sub v4, v2, v13
   mv a0, v4
@@ -1473,21 +1481,13 @@ f_b2:
   lw v6, 0(v10)
   add v7, v6, v5
   mv v8, v7
-  j f_b3
-
-f_b1:
-  mv v8, zero
-  j f_b3
-
-f_b3:
-  mv a0, v8
-  ret
+  j .f_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -1497,7 +1497,7 @@ thunk_start_b0:
   .globl thunk_x.1
   .type thunk_x.1, @function
 thunk_x.1:
-thunk_x.1_b0:
+.thunk_x.1_b0:
   li v2, 10
   mv a0, v2
   ret
@@ -1506,7 +1506,7 @@ thunk_x.1_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 12
   mv a0, v5
   call f
@@ -1526,7 +1526,7 @@ x.1:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -1619,7 +1619,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -1629,7 +1629,7 @@ thunk_start_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -1653,10 +1653,14 @@ g_b0:
   add v21, v20, v12
   sltu v29, v2, zero
   xori v22, v29, 1
-  bne v22, zero, g_b1
-  j g_b2
+  bne v22, zero, .g_b1
+  j .g_b2
 
-g_b1:
+.g_b3:
+  mv a0, v25
+  ret
+
+.g_b1:
   neg v23, v2
   mv s10, v0
   ld v26, 0(v0)
@@ -1664,21 +1668,17 @@ g_b1:
   jalr v26
   mv v24, a0
   mv v25, v24
-  j g_b3
+  j .g_b3
 
-g_b2:
+.g_b2:
   mv v25, v21
-  j g_b3
-
-g_b3:
-  mv a0, v25
-  ret
+  j .g_b3
 
   .align 2
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v2, a0
   lw v4, 0(v2)
   lw v5, 4(v2)
@@ -1717,7 +1717,7 @@ h_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v8, s11, -80
   andi v2, v8, -8
   li v10, 1
@@ -1753,7 +1753,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -1830,7 +1830,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   addi v18, s11, -16
   andi v3, v18, -8
@@ -1841,10 +1841,22 @@ f_b0:
   li v15, 1
   xor v16, v14, v15
   sltiu v5, v16, 1
-  bne v5, zero, f_b1
-  j f_b2
+  bne v5, zero, .f_b1
+  j .f_b2
 
-f_b2:
+.f_b3:
+  mv a0, v8
+  ret
+
+.f_b1:
+  li v9, 1
+  mv a0, v9
+  call f
+  mv v7, a0
+  mv v8, v7
+  j .f_b3
+
+.f_b2:
   mv s10, v3
   ld v11, 0(v3)
   li v12, 2
@@ -1852,25 +1864,13 @@ f_b2:
   jalr v11
   mv v6, a0
   mv v8, v6
-  j f_b3
-
-f_b1:
-  li v9, 1
-  mv a0, v9
-  call f
-  mv v7, a0
-  mv v8, v7
-  j f_b3
-
-f_b3:
-  mv a0, v8
-  ret
+  j .f_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -1880,7 +1880,7 @@ thunk_start_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -1891,7 +1891,7 @@ g_b0:
   .globl dummy
   .type dummy, @function
 dummy:
-dummy_b0:
+.dummy_b0:
   mv v2, a0
   mv a0, v2
   ret
@@ -1900,7 +1900,7 @@ dummy_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   ret
 
@@ -1908,7 +1908,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2026,7 +2026,7 @@ Testing test/test_src/even-odd.mbt
   .globl even
   .type even, @function
 even:
-even_b0:
+.even_b0:
   mv v2, a0
   addi v28, s11, -8
   andi v3, v28, -8
@@ -2034,16 +2034,30 @@ even_b0:
   sd v30, 0(v3)
   sltu v26, zero, v2
   xori v5, v26, 1
-  bne v5, zero, even_b1
-  j even_b2
+  bne v5, zero, .even_b1
+  j .even_b2
 
-even_b1:
+.even_b3:
+  la v14, t.1
+  lw v11, 0(v14)
+  mv v12, v11
+  j .even_b5
+
+.even_b5:
+  mv v13, v12
+  j .even_b6
+
+.even_b1:
   xor v20, v2, zero
   sltiu v8, v20, 1
-  bne v8, zero, even_b3
-  j even_b4
+  bne v8, zero, .even_b3
+  j .even_b4
 
-even_b4:
+.even_b6:
+  mv a0, v13
+  ret
+
+.even_b4:
   li v18, 1
   sub v9, v2, v18
   mv s10, v3
@@ -2052,19 +2066,9 @@ even_b4:
   jalr v16
   mv v10, a0
   mv v12, v10
-  j even_b5
+  j .even_b5
 
-even_b6:
-  mv a0, v13
-  ret
-
-even_b3:
-  la v14, t.1
-  lw v11, 0(v14)
-  mv v12, v11
-  j even_b5
-
-even_b2:
+.even_b2:
   li v24, 1
   add v6, v2, v24
   mv s10, v3
@@ -2073,17 +2077,13 @@ even_b2:
   jalr v22
   mv v7, a0
   mv v13, v7
-  j even_b6
-
-even_b5:
-  mv v13, v12
-  j even_b6
+  j .even_b6
 
   .align 2
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 789
   mv a0, v5
   call even
@@ -2098,51 +2098,50 @@ main_b0:
   .globl odd
   .type odd, @function
 odd:
-odd_b0:
-  mv v0, s10
+.odd_b0:
   mv v2, a0
   sltu v22, zero, v2
   xori v3, v22, 1
-  bne v3, zero, odd_b1
-  j odd_b2
+  bne v3, zero, .odd_b1
+  j .odd_b2
 
-odd_b3:
-  la v12, f.2
-  lw v9, 0(v12)
-  mv v10, v9
-  j odd_b5
-
-odd_b6:
-  mv a0, v11
-  ret
-
-odd_b1:
-  xor v17, v2, zero
-  sltiu v6, v17, 1
-  bne v6, zero, odd_b3
-  j odd_b4
-
-odd_b4:
-  li v15, 1
-  sub v7, v2, v15
-  mv a0, v7
-  call even
-  mv v8, a0
-  mv v10, v8
-  j odd_b5
-
-odd_b5:
-  mv v11, v10
-  j odd_b6
-
-odd_b2:
+.odd_b2:
   li v20, 1
   add v4, v2, v20
   mv a0, v4
   call even
   mv v5, a0
   mv v11, v5
-  j odd_b6
+  j .odd_b6
+
+.odd_b1:
+  xor v17, v2, zero
+  sltiu v6, v17, 1
+  bne v6, zero, .odd_b3
+  j .odd_b4
+
+.odd_b4:
+  li v15, 1
+  sub v7, v2, v15
+  mv a0, v7
+  call even
+  mv v8, a0
+  mv v10, v8
+  j .odd_b5
+
+.odd_b6:
+  mv a0, v11
+  ret
+
+.odd_b5:
+  mv v11, v10
+  j .odd_b6
+
+.odd_b3:
+  la v12, f.2
+  lw v9, 0(v12)
+  mv v10, v9
+  j .odd_b5
 
   .align 2
   .globl _start
@@ -2162,7 +2161,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2172,7 +2171,7 @@ thunk_start_b0:
   .globl thunk_t.1
   .type thunk_t.1, @function
 thunk_t.1:
-thunk_t.1_b0:
+.thunk_t.1_b0:
   li v2, 123
   mv a0, v2
   ret
@@ -2181,7 +2180,7 @@ thunk_t.1_b0:
   .globl thunk_f.2
   .type thunk_f.2, @function
 thunk_f.2:
-thunk_f.2_b0:
+.thunk_f.2_b0:
   li v2, 456
   mv a0, v2
   ret
@@ -2200,7 +2199,7 @@ f.2:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2267,15 +2266,19 @@ _start_b0:
   .globl fib
   .type fib, @function
 fib:
-fib_b0:
+.fib_b0:
   mv v2, a0
   li v17, 1
   sltu v18, v2, v17
   xori v3, v18, 1
-  bne v3, zero, fib_b1
-  j fib_b2
+  bne v3, zero, .fib_b1
+  j .fib_b2
 
-fib_b2:
+.fib_b3:
+  mv a0, v9
+  ret
+
+.fib_b2:
   li v15, 1
   sub v4, v2, v15
   mv a0, v4
@@ -2288,21 +2291,17 @@ fib_b2:
   mv v7, a0
   add v8, v5, v7
   mv v9, v8
-  j fib_b3
+  j .fib_b3
 
-fib_b1:
+.fib_b1:
   mv v9, v2
-  j fib_b3
-
-fib_b3:
-  mv a0, v9
-  ret
+  j .fib_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2312,7 +2311,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 30
   mv a0, v5
   call fib
@@ -2327,7 +2326,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2383,7 +2382,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2393,7 +2392,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v36, 4623113902481840538
   fmv.d.x fv37, v36
   fneg.d fv2, fv37
@@ -2439,7 +2438,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2530,7 +2529,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2540,7 +2539,7 @@ thunk_start_b0:
   .globl dec
   .type dec, @function
 dec:
-dec_b0:
+.dec_b0:
   mv v2, a0
   li v4, 1
   sub v3, v2, v4
@@ -2551,7 +2550,7 @@ dec_b0:
   .globl compose
   .type compose, @function
 compose:
-compose_b0:
+.compose_b0:
   mv v2, a0
   mv v3, a1
   addi v6, s11, -24
@@ -2567,7 +2566,7 @@ compose_b0:
   .globl dbl
   .type dbl, @function
 dbl:
-dbl_b0:
+.dbl_b0:
   mv v2, a0
   add v3, v2, v2
   mv a0, v3
@@ -2577,7 +2576,7 @@ dbl_b0:
   .globl composed
   .type composed, @function
 composed:
-composed_b0:
+.composed_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -2599,7 +2598,7 @@ composed_b0:
   .globl inc
   .type inc, @function
 inc:
-inc_b0:
+.inc_b0:
   mv v2, a0
   li v4, 1
   add v3, v2, v4
@@ -2610,7 +2609,7 @@ inc_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v24, s11, -8
   andi v2, v24, -8
   la v26, dbl
@@ -2647,7 +2646,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2723,55 +2722,55 @@ _start_b0:
   .globl gcd
   .type gcd, @function
 gcd:
-gcd_b0:
+.gcd_b0:
   mv v2, a0
   mv v3, a1
   xor v18, v2, zero
   sltiu v4, v18, 1
-  bne v4, zero, gcd_b1
-  j gcd_b2
+  bne v4, zero, .gcd_b1
+  j .gcd_b2
 
-gcd_b4:
+.gcd_b6:
+  mv a0, v11
+  ret
+
+.gcd_b1:
+  mv v11, v3
+  j .gcd_b6
+
+.gcd_b4:
   sub v6, v2, v3
   mv a0, v3
   mv a1, v6
   call gcd
   mv v7, a0
   mv v10, v7
-  j gcd_b5
+  j .gcd_b5
 
-gcd_b3:
+.gcd_b3:
   sub v8, v3, v2
   mv a0, v2
   mv a1, v8
   call gcd
   mv v9, a0
   mv v10, v9
-  j gcd_b5
+  j .gcd_b5
 
-gcd_b2:
+.gcd_b2:
   sltu v16, v2, v3
   xori v5, v16, 1
-  bne v5, zero, gcd_b3
-  j gcd_b4
+  bne v5, zero, .gcd_b3
+  j .gcd_b4
 
-gcd_b5:
+.gcd_b5:
   mv v11, v10
-  j gcd_b6
-
-gcd_b1:
-  mv v11, v3
-  j gcd_b6
-
-gcd_b6:
-  mv a0, v11
-  ret
+  j .gcd_b6
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2781,7 +2780,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 21600
   mv a0, v5
   li v6, 337500
@@ -2798,7 +2797,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2851,7 +2850,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v4, 1
   add v3, v2, v4
@@ -2862,7 +2861,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -2872,7 +2871,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 1000
   mv a0, v5
   call f
@@ -2887,7 +2886,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -2959,25 +2958,21 @@ _start_b0:
   .globl inprod
   .type inprod, @function
 inprod:
-inprod_b0:
+.inprod_b0:
   mv v2, a0
   mv v3, a1
   fmv.d fv4, fa0
   mv v5, a2
   sltu v25, zero, v5
   xori v6, v25, 1
-  bne v6, zero, inprod_b1
-  j inprod_b2
+  bne v6, zero, .inprod_b1
+  j .inprod_b2
 
-inprod_b2:
+.inprod_b2:
   fmv.d fv13, fv4
-  j inprod_b3
+  j .inprod_b3
 
-inprod_b3:
-  mv a0, v13
-  ret
-
-inprod_b1:
+.inprod_b1:
   slli v22, v5, 3
   add v23, v2, v22
   fld fv7, 0(v23)
@@ -2995,13 +2990,17 @@ inprod_b1:
   call inprod
   fmv.d fv12, fa0
   fmv.d fv13, fv12
-  j inprod_b3
+  j .inprod_b3
+
+.inprod_b3:
+  mv a0, v13
+  ret
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3011,7 +3010,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v22, s11, -24
   andi v2, v22, -8
   li v24, 4608218246714312622
@@ -3050,7 +3049,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3122,25 +3121,21 @@ _start_b0:
   .globl inprod
   .type inprod, @function
 inprod:
-inprod_b0:
+.inprod_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
   sltu v25, zero, v4
   xori v5, v25, 1
-  bne v5, zero, inprod_b1
-  j inprod_b2
+  bne v5, zero, .inprod_b1
+  j .inprod_b2
 
-inprod_b2:
+.inprod_b2:
   fmv.d.x fv24, zero
   fmv.d fv12, fv24
-  j inprod_b3
+  j .inprod_b3
 
-inprod_b3:
-  mv a0, v12
-  ret
-
-inprod_b1:
+.inprod_b1:
   slli v21, v4, 3
   add v22, v2, v21
   fld fv6, 0(v22)
@@ -3157,13 +3152,17 @@ inprod_b1:
   fmv.d fv10, fa0
   fadd.d fv11, fv8, fv10
   fmv.d fv12, fv11
-  j inprod_b3
+  j .inprod_b3
+
+.inprod_b3:
+  mv a0, v12
+  ret
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3173,7 +3172,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v21, s11, -24
   andi v2, v21, -8
   li v23, 4608218246714312622
@@ -3210,7 +3209,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3307,7 +3306,7 @@ _start_b0:
   .globl gety
   .type gety, @function
 gety:
-gety_b0:
+.gety_b0:
   mv v2, a0
   fld fv4, 8(v2)
   mv a0, v4
@@ -3317,7 +3316,7 @@ gety_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3327,7 +3326,7 @@ thunk_start_b0:
   .globl getx
   .type getx, @function
 getx:
-getx_b0:
+.getx_b0:
   mv v2, a0
   fld fv3, 0(v2)
   mv a0, v3
@@ -3337,7 +3336,7 @@ getx_b0:
   .globl inprod
   .type inprod, @function
 inprod:
-inprod_b0:
+.inprod_b0:
   mv v2, a0
   mv v3, a1
   mv a0, v2
@@ -3370,7 +3369,7 @@ inprod_b0:
   .globl getz
   .type getz, @function
 getz:
-getz_b0:
+.getz_b0:
   mv v2, a0
   fld fv5, 16(v2)
   mv a0, v5
@@ -3380,7 +3379,7 @@ getz_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v24, s11, -24
   andi v2, v24, -8
   li v26, 4607182418800017408
@@ -3423,7 +3422,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3505,7 +3504,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v3, 123
   mv a0, v3
@@ -3515,7 +3514,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3525,7 +3524,7 @@ thunk_start_b0:
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v2, a0
   li v3, 789
   mv a0, v3
@@ -3535,7 +3534,7 @@ h_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v3, 456
   mv a0, v3
@@ -3545,7 +3544,7 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
@@ -3557,33 +3556,33 @@ main_b0:
   mv v4, a0
   xor v17, v4, zero
   sltiu v5, v17, 1
-  bne v5, zero, main_b1
-  j main_b2
+  bne v5, zero, .main_b1
+  j .main_b2
 
-main_b1:
-  sub v9, v2, v3
-  mv v10, v9
-  j main_b3
-
-main_b2:
-  sub v6, v3, v2
-  add v7, v6, v2
-  add v8, v7, v3
-  mv v10, v8
-  j main_b3
-
-main_b3:
+.main_b3:
   mv a0, v10
   call minimbt_print_int
   mv v11, zero
   mv a0, v11
   ret
 
+.main_b1:
+  sub v9, v2, v3
+  mv v10, v9
+  j .main_b3
+
+.main_b2:
+  sub v6, v3, v2
+  add v7, v6, v2
+  add v8, v7, v3
+  mv v10, v8
+  j .main_b3
+
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3664,7 +3663,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v3, 123
   mv a0, v3
@@ -3674,7 +3673,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3684,7 +3683,7 @@ thunk_start_b0:
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v2, a0
   li v3, 789
   mv a0, v3
@@ -3694,7 +3693,7 @@ h_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v3, 456
   mv a0, v3
@@ -3704,44 +3703,44 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
   sltu v17, v2, zero
   xori v3, v17, 1
-  bne v3, zero, main_b1
-  j main_b2
+  bne v3, zero, .main_b1
+  j .main_b2
 
-main_b1:
-  mv a0, zero
-  call g
-  mv v7, a0
-  add v8, v7, v2
-  mv v9, v8
-  j main_b3
-
-main_b2:
-  mv a0, zero
-  call h
-  mv v4, a0
-  sub v5, v4, v2
-  add v6, v5, v2
-  mv v9, v6
-  j main_b3
-
-main_b3:
+.main_b3:
   mv a0, v9
   call minimbt_print_int
   mv v10, zero
   mv a0, v10
   ret
 
+.main_b1:
+  mv a0, zero
+  call g
+  mv v7, a0
+  add v8, v7, v2
+  mv v9, v8
+  j .main_b3
+
+.main_b2:
+  mv a0, zero
+  call h
+  mv v4, a0
+  sub v5, v4, v2
+  add v6, v5, v2
+  mv v9, v6
+  j .main_b3
+
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3823,7 +3822,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v3, 123
   mv a0, v3
@@ -3833,7 +3832,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3843,7 +3842,7 @@ thunk_start_b0:
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v2, a0
   li v3, 789
   mv a0, v3
@@ -3853,7 +3852,7 @@ h_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v3, 456
   mv a0, v3
@@ -3863,7 +3862,7 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
@@ -3875,35 +3874,35 @@ main_b0:
   mv v4, a0
   xor v19, v4, zero
   sltiu v5, v19, 1
-  bne v5, zero, main_b1
-  j main_b2
+  bne v5, zero, .main_b1
+  j .main_b2
 
-main_b1:
-  li v13, 1
-  add v9, v2, v13
-  mv v10, v9
-  j main_b3
-
-main_b2:
-  li v17, 2
-  add v6, v3, v17
-  add v7, v6, v2
-  add v8, v7, v3
-  mv v10, v8
-  j main_b3
-
-main_b3:
+.main_b3:
   mv a0, v10
   call minimbt_print_int
   mv v11, zero
   mv a0, v11
   ret
 
+.main_b1:
+  li v13, 1
+  add v9, v2, v13
+  mv v10, v9
+  j .main_b3
+
+.main_b2:
+  li v17, 2
+  add v6, v3, v17
+  add v7, v6, v2
+  add v8, v7, v3
+  mv v10, v8
+  j .main_b3
+
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -3975,7 +3974,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v3, 123
   mv a0, v3
@@ -3985,7 +3984,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -3995,7 +3994,7 @@ thunk_start_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v3, 456
   mv a0, v3
@@ -4005,40 +4004,40 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
   sltu v13, v2, zero
   xori v3, v13, 1
-  bne v3, zero, main_b1
-  j main_b2
+  bne v3, zero, .main_b1
+  j .main_b2
 
-main_b1:
-  mv a0, zero
-  call g
-  mv v5, a0
-  add v6, v5, v2
-  mv v7, v6
-  j main_b3
-
-main_b2:
-  add v4, v2, v2
-  mv v7, v4
-  j main_b3
-
-main_b3:
+.main_b3:
   mv a0, v7
   call minimbt_print_int
   mv v8, zero
   mv a0, v8
   ret
 
+.main_b1:
+  mv a0, zero
+  call g
+  mv v5, a0
+  add v6, v5, v2
+  mv v7, v6
+  j .main_b3
+
+.main_b2:
+  add v4, v2, v2
+  mv v7, v4
+  j .main_b3
+
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -4117,7 +4116,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v3, 123
   mv a0, v3
@@ -4127,7 +4126,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -4137,7 +4136,7 @@ thunk_start_b0:
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v2, a0
   li v3, 789
   mv a0, v3
@@ -4147,7 +4146,7 @@ h_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v3, 456
   mv a0, v3
@@ -4157,30 +4156,16 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
   sltu v13, v2, zero
   xori v3, v13, 1
-  bne v3, zero, main_b1
-  j main_b2
+  bne v3, zero, .main_b1
+  j .main_b2
 
-main_b1:
-  mv a0, zero
-  call g
-  mv v5, a0
-  mv v6, v5
-  j main_b3
-
-main_b2:
-  mv a0, zero
-  call h
-  mv v4, a0
-  mv v6, v4
-  j main_b3
-
-main_b3:
+.main_b3:
   add v7, v6, v2
   mv a0, v7
   call minimbt_print_int
@@ -4188,11 +4173,25 @@ main_b3:
   mv a0, v8
   ret
 
+.main_b1:
+  mv a0, zero
+  call g
+  mv v5, a0
+  mv v6, v5
+  j .main_b3
+
+.main_b2:
+  mv a0, zero
+  call h
+  mv v4, a0
+  mv v6, v4
+  j .main_b3
+
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -4334,7 +4333,7 @@ _start_b0:
   .globl init
   .type init, @function
 init:
-init_b0:
+.init_b0:
   li v10, 10
   mv a0, v10
   call g
@@ -4356,7 +4355,7 @@ init_b0:
   .globl thunk__21
   .type thunk__21, @function
 thunk__21:
-thunk__21_b0:
+.thunk__21_b0:
   li v2, 5
   mv a0, v2
   ret
@@ -4365,7 +4364,7 @@ thunk__21_b0:
   .globl thunk_factorial.18
   .type thunk_factorial.18, @function
 thunk_factorial.18:
-thunk_factorial.18_b0:
+.thunk_factorial.18_b0:
   addi v6, s11, -8
   andi v2, v6, -8
   la v8, g
@@ -4380,7 +4379,7 @@ thunk_factorial.18_b0:
   .globl dummy
   .type dummy, @function
 dummy:
-dummy_b0:
+.dummy_b0:
   mv v2, a0
   mv a0, v2
   ret
@@ -4389,7 +4388,7 @@ dummy_b0:
   .globl landins_kont
   .type landins_kont, @function
 landins_kont:
-landins_kont_b0:
+.landins_kont_b0:
   mv v2, a0
   addi v20, s11, -8
   andi v3, v20, -8
@@ -4418,7 +4417,7 @@ landins_kont_b0:
   .globl thunk_a.22
   .type thunk_a.22, @function
 thunk_a.22:
-thunk_a.22_b0:
+.thunk_a.22_b0:
   la v9, factorial.18
   ld v2, 0(v9)
   la v7, _21
@@ -4435,7 +4434,7 @@ thunk_a.22_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call init
   mv v2, zero
   mv a0, v2
@@ -4445,7 +4444,7 @@ thunk_start_b0:
   .globl aux
   .type aux, @function
 aux:
-aux_b0:
+.aux_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -4464,7 +4463,7 @@ aux_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   addi v5, s11, -16
   andi v3, v5, -8
@@ -4478,25 +4477,25 @@ g_b0:
   .globl h
   .type h, @function
 h:
-h_b0:
+.h_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
   xor v15, v2, zero
   sltiu v4, v15, 1
-  bne v4, zero, h_b1
-  j h_b2
+  bne v4, zero, .h_b1
+  j .h_b2
 
-h_b3:
+.h_b1:
+  li v9, 1
+  mv v8, v9
+  j .h_b3
+
+.h_b3:
   mv a0, v8
   ret
 
-h_b1:
-  li v9, 1
-  mv v8, v9
-  j h_b3
-
-h_b2:
+.h_b2:
   li v13, 1
   sub v5, v2, v13
   mv s10, v3
@@ -4506,7 +4505,7 @@ h_b2:
   mv v6, a0
   mulw v7, v2, v6
   mv v8, v7
-  j h_b3
+  j .h_b3
 
   .align 2
   .globl _21
@@ -4522,7 +4521,7 @@ a.22:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
   .align 2
   .globl factorial.18
   .type factorial.18, @object
@@ -4723,7 +4722,7 @@ Testing test/test_src/matmul-flat.mbt
   .globl loop2
   .type loop2, @function
 loop2:
-loop2_b0:
+.loop2_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -4732,14 +4731,18 @@ loop2_b0:
   mv v7, a5
   sltu v20, zero, v4
   xori v8, v20, 1
-  bne v8, zero, loop2_b1
-  j loop2_b2
+  bne v8, zero, .loop2_b1
+  j .loop2_b2
 
-loop2_b3:
+.loop2_b2:
+  mv v13, zero
+  j .loop2_b3
+
+.loop2_b3:
   mv a0, v13
   ret
 
-loop2_b1:
+.loop2_b1:
   li v18, 1
   sub v9, v3, v18
   mv a0, v2
@@ -4761,11 +4764,7 @@ loop2_b1:
   call loop2
   mv v12, zero
   mv v13, v12
-  j loop2_b3
-
-loop2_b2:
-  mv v13, zero
-  j loop2_b3
+  j .loop2_b3
 
   .align 2
   .globl _start
@@ -4779,7 +4778,7 @@ _start_b0:
   .globl make_arr
   .type make_arr, @function
 make_arr:
-make_arr_b0:
+.make_arr_b0:
   mv v0, s10
   mv v2, a0
   mv v3, a1
@@ -4808,7 +4807,7 @@ make_arr_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v214, s11, 0
   andi v2, v214, -8
   fmv.d.x fv216, zero
@@ -5034,17 +5033,24 @@ main_b0:
   .globl init_arr
   .type init_arr, @function
 init_arr:
-init_arr_b0:
-  mv v0, s10
+.init_arr_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
   sltu v22, zero, v2
   xori v6, v22, 1
-  bne v6, zero, init_arr_b1
-  j init_arr_b2
+  bne v6, zero, .init_arr_b1
+  j .init_arr_b2
 
-init_arr_b1:
+.init_arr_b3:
+  mv a0, v11
+  ret
+
+.init_arr_b2:
+  mv v11, zero
+  j .init_arr_b3
+
+.init_arr_b1:
   slli v18, v3, 3
   sub v19, s11, v18
   andi v5, v19, -8
@@ -5066,21 +5072,13 @@ init_arr_b1:
   jalr v12
   mv v10, zero
   mv v11, v10
-  j init_arr_b3
-
-init_arr_b2:
-  mv v11, zero
-  j init_arr_b3
-
-init_arr_b3:
-  mv a0, v11
-  ret
+  j .init_arr_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -5090,7 +5088,7 @@ thunk_start_b0:
   .globl mul
   .type mul, @function
 mul:
-mul_b0:
+.mul_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -5114,7 +5112,7 @@ mul_b0:
   .globl loop3
   .type loop3, @function
 loop3:
-loop3_b0:
+.loop3_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -5123,18 +5121,10 @@ loop3_b0:
   mv v7, a5
   sltu v50, zero, v4
   xori v8, v50, 1
-  bne v8, zero, loop3_b1
-  j loop3_b2
+  bne v8, zero, .loop3_b1
+  j .loop3_b2
 
-loop3_b3:
-  mv a0, v21
-  ret
-
-loop3_b2:
-  mv v21, zero
-  j loop3_b3
-
-loop3_b1:
+.loop3_b1:
   slli v47, v2, 3
   add v48, v7, v47
   ld v9, 0(v48)
@@ -5172,13 +5162,21 @@ loop3_b1:
   call loop3
   mv v20, zero
   mv v21, v20
-  j loop3_b3
+  j .loop3_b3
+
+.loop3_b2:
+  mv v21, zero
+  j .loop3_b3
+
+.loop3_b3:
+  mv a0, v21
+  ret
 
   .align 2
   .globl loop1
   .type loop1, @function
 loop1:
-loop1_b0:
+.loop1_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -5187,10 +5185,10 @@ loop1_b0:
   mv v7, a5
   sltu v20, zero, v2
   xori v8, v20, 1
-  bne v8, zero, loop1_b1
-  j loop1_b2
+  bne v8, zero, .loop1_b1
+  j .loop1_b2
 
-loop1_b1:
+.loop1_b1:
   li v18, 1
   sub v9, v4, v18
   mv a0, v2
@@ -5212,21 +5210,21 @@ loop1_b1:
   call loop1
   mv v12, zero
   mv v13, v12
-  j loop1_b3
+  j .loop1_b3
 
-loop1_b3:
+.loop1_b2:
+  mv v13, zero
+  j .loop1_b3
+
+.loop1_b3:
   mv a0, v13
   ret
-
-loop1_b2:
-  mv v13, zero
-  j loop1_b3
 
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -5425,7 +5423,7 @@ Testing test/test_src/matmul.mbt
   .globl loop2
   .type loop2, @function
 loop2:
-loop2_b0:
+.loop2_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -5435,14 +5433,18 @@ loop2_b0:
   lw v7, 40(v0)
   sltu v27, zero, v2
   xori v9, v27, 1
-  bne v9, zero, loop2_b1
-  j loop2_b2
+  bne v9, zero, .loop2_b1
+  j .loop2_b2
 
-loop2_b3:
+.loop2_b2:
+  mv v15, zero
+  j .loop2_b3
+
+.loop2_b3:
   mv a0, v15
   ret
 
-loop2_b1:
+.loop2_b1:
   addi v24, s11, -48
   andi v8, v24, -8
   la v26, loop3
@@ -5467,11 +5469,7 @@ loop2_b1:
   jalr v16
   mv v14, zero
   mv v15, v14
-  j loop2_b3
-
-loop2_b2:
-  mv v15, zero
-  j loop2_b3
+  j .loop2_b3
 
   .align 2
   .globl _start
@@ -5485,7 +5483,7 @@ _start_b0:
   .globl matmul
   .type matmul, @function
 matmul:
-matmul_b0:
+.matmul_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -5515,7 +5513,7 @@ matmul_b0:
   .globl gen_arr
   .type gen_arr, @function
 gen_arr:
-gen_arr_b0:
+.gen_arr_b0:
   mv v0, s10
   mv v2, a0
   mv v3, a1
@@ -5547,7 +5545,7 @@ gen_arr_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v209, s11, 0
   andi v2, v209, -8
   fmv.d.x fv211, zero
@@ -5766,17 +5764,25 @@ main_b0:
   .globl init_arr
   .type init_arr, @function
 init_arr:
-init_arr_b0:
+.init_arr_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
   lw v4, 16(v0)
   sltu v22, zero, v2
   xori v6, v22, 1
-  bne v6, zero, init_arr_b1
-  j init_arr_b2
+  bne v6, zero, .init_arr_b1
+  j .init_arr_b2
 
-init_arr_b1:
+.init_arr_b3:
+  mv a0, v11
+  ret
+
+.init_arr_b2:
+  mv v11, zero
+  j .init_arr_b3
+
+.init_arr_b1:
   slli v18, v3, 3
   sub v19, s11, v18
   andi v5, v19, -8
@@ -5796,21 +5802,13 @@ init_arr_b1:
   jalr v12
   mv v10, zero
   mv v11, v10
-  j init_arr_b3
-
-init_arr_b2:
-  mv v11, zero
-  j init_arr_b3
-
-init_arr_b3:
-  mv a0, v11
-  ret
+  j .init_arr_b3
 
   .align 2
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -5820,7 +5818,7 @@ thunk_start_b0:
   .globl loop3
   .type loop3, @function
 loop3:
-loop3_b0:
+.loop3_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -5830,18 +5828,10 @@ loop3_b0:
   lw v7, 40(v0)
   sltu v51, zero, v2
   xori v8, v51, 1
-  bne v8, zero, loop3_b1
-  j loop3_b2
+  bne v8, zero, .loop3_b1
+  j .loop3_b2
 
-loop3_b3:
-  mv a0, v21
-  ret
-
-loop3_b2:
-  mv v21, zero
-  j loop3_b3
-
-loop3_b1:
+.loop3_b1:
   slli v48, v4, 3
   add v49, v3, v48
   ld v9, 0(v49)
@@ -5876,13 +5866,21 @@ loop3_b1:
   jalr v22
   mv v20, zero
   mv v21, v20
-  j loop3_b3
+  j .loop3_b3
+
+.loop3_b2:
+  mv v21, zero
+  j .loop3_b3
+
+.loop3_b3:
+  mv a0, v21
+  ret
 
   .align 2
   .globl loop1
   .type loop1, @function
 loop1:
-loop1_b0:
+.loop1_b0:
   mv v0, s10
   mv v2, a0
   lw v3, 8(v0)
@@ -5892,10 +5890,10 @@ loop1_b0:
   lw v7, 40(v0)
   sltu v27, zero, v2
   xori v9, v27, 1
-  bne v9, zero, loop1_b1
-  j loop1_b2
+  bne v9, zero, .loop1_b1
+  j .loop1_b2
 
-loop1_b1:
+.loop1_b1:
   addi v24, s11, -48
   andi v8, v24, -8
   la v26, loop2
@@ -5920,21 +5918,21 @@ loop1_b1:
   jalr v16
   mv v14, zero
   mv v15, v14
-  j loop1_b3
+  j .loop1_b3
 
-loop1_b3:
+.loop1_b2:
+  mv v15, zero
+  j .loop1_b3
+
+.loop1_b3:
   mv a0, v15
   ret
-
-loop1_b2:
-  mv v15, zero
-  j loop1_b3
 
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6014,7 +6012,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6024,7 +6022,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v31, 4608218246714312622
   fmv.d.x fv32, v31
   fmv.d fa0, fv32
@@ -6043,18 +6041,33 @@ main_b0:
   mv v5, a0
   sltu v22, zero, v5
   xori v6, v22, 1
-  bne v6, zero, main_b1
-  j main_b2
+  bne v6, zero, .main_b1
+  j .main_b2
 
-main_b8:
+.main_b1:
+  mv v7, v2
+  j .main_b3
+
+.main_b8:
   mv v12, v2
-  j main_b9
+  j .main_b9
 
-main_b4:
+.main_b5:
+  mv v9, v5
+  j .main_b6
+
+.main_b4:
   mv v9, v3
-  j main_b6
+  j .main_b6
 
-main_b9:
+.main_b6:
+  add v10, v7, v9
+  sltu v17, zero, v3
+  xori v11, v17, 1
+  bne v11, zero, .main_b7
+  j .main_b8
+
+.main_b9:
   add v13, v10, v12
   mv a0, v13
   call minimbt_print_int
@@ -6062,40 +6075,25 @@ main_b9:
   mv a0, v14
   ret
 
-main_b2:
+.main_b2:
   mv v7, v3
-  j main_b3
+  j .main_b3
 
-main_b3:
+.main_b7:
+  mv v12, v5
+  j .main_b9
+
+.main_b3:
   sltu v20, v2, zero
   xori v8, v20, 1
-  bne v8, zero, main_b4
-  j main_b5
-
-main_b1:
-  mv v7, v2
-  j main_b3
-
-main_b6:
-  add v10, v7, v9
-  sltu v17, zero, v3
-  xori v11, v17, 1
-  bne v11, zero, main_b7
-  j main_b8
-
-main_b5:
-  mv v9, v5
-  j main_b6
-
-main_b7:
-  mv v12, v5
-  j main_b9
+  bne v8, zero, .main_b4
+  j .main_b5
 
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6163,8 +6161,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
-  mv v0, s10
+.f_b0:
   li v2, 12345
   mv a0, v2
   ret
@@ -6173,7 +6170,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6183,7 +6180,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v34, s11, -8
   andi v2, v34, -8
   la v36, f
@@ -6207,10 +6204,17 @@ main_b0:
   li v25, 3
   xor v26, v6, v25
   sltiu v7, v26, 1
-  bne v7, zero, main_b1
-  j main_b2
+  bne v7, zero, .main_b1
+  j .main_b2
 
-main_b1:
+.main_b3:
+  mv a0, v12
+  call minimbt_print_int
+  mv v13, zero
+  mv a0, v13
+  ret
+
+.main_b1:
   mv s10, v2
   ld v22, 0(v2)
   jalr v22
@@ -6223,25 +6227,18 @@ main_b1:
   li v15, 67890
   add v11, v10, v15
   mv v12, v11
-  j main_b3
+  j .main_b3
 
-main_b2:
+.main_b2:
   li v24, 7
   mv v12, v24
-  j main_b3
-
-main_b3:
-  mv a0, v12
-  call minimbt_print_int
-  mv v13, zero
-  mv a0, v13
-  ret
+  j .main_b3
 
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6289,7 +6286,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6299,7 +6296,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v13, 123
   mv a0, v13
   call minimbt_print_int
@@ -6321,7 +6318,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6386,7 +6383,7 @@ _start_b0:
   .globl foo
   .type foo, @function
 foo:
-foo_b0:
+.foo_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -6418,7 +6415,7 @@ foo_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6428,7 +6425,7 @@ thunk_start_b0:
   .globl bar
   .type bar, @function
 bar:
-bar_b0:
+.bar_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -6450,7 +6447,7 @@ bar_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v3, 1
   mv a0, v3
   li v4, 2
@@ -6472,7 +6469,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6598,7 +6595,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   mv v3, a1
   mv v4, a2
@@ -6684,7 +6681,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6694,7 +6691,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 1
   mv a0, v5
   li v6, 2
@@ -6715,7 +6712,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -6820,7 +6817,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   li v2, 12345
   mv a0, v2
   ret
@@ -6829,7 +6826,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -6839,7 +6836,7 @@ thunk_start_b0:
   .globl g
   .type g, @function
 g:
-g_b0:
+.g_b0:
   mv v2, a0
   li v4, 1
   add v3, v2, v4
@@ -6850,7 +6847,7 @@ g_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   addi v86, s11, -40
   andi v2, v86, -8
   li v88, 1
@@ -6890,18 +6887,25 @@ main_b0:
   lw v21, 0(v65)
   xor v61, v21, zero
   sltiu v22, v61, 1
-  bne v22, zero, main_b1
-  j main_b2
+  bne v22, zero, .main_b1
+  j .main_b2
 
-main_b1:
+.main_b3:
+  mv a0, v40
+  call minimbt_print_int
+  mv v41, zero
+  mv a0, v41
+  ret
+
+.main_b1:
   li v43, 67890
   mv a0, v43
   call g
   mv v39, a0
   mv v40, v39
-  j main_b3
+  j .main_b3
 
-main_b2:
+.main_b2:
   add v23, v5, v6
   add v24, v23, v7
   add v25, v24, v8
@@ -6919,20 +6923,13 @@ main_b2:
   add v37, v36, v20
   add v38, v37, v4
   mv v40, v38
-  j main_b3
-
-main_b3:
-  mv a0, v40
-  call minimbt_print_int
-  mv v41, zero
-  mv a0, v41
-  ret
+  j .main_b3
 
   .align 2
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -7056,7 +7053,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
-f_b0:
+.f_b0:
   mv v2, a0
   li v163, 1
   add v3, v2, v163
@@ -7155,7 +7152,7 @@ f_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -7165,7 +7162,7 @@ thunk_start_b0:
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   call f
   mv v2, a0
@@ -7179,7 +7176,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -7244,7 +7241,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -7254,15 +7251,23 @@ thunk_start_b0:
   .globl sum
   .type sum, @function
 sum:
-sum_b0:
+.sum_b0:
   mv v2, a0
   mv v3, a1
   sltu v13, v3, zero
   xori v4, v13, 1
-  bne v4, zero, sum_b1
-  j sum_b2
+  bne v4, zero, .sum_b1
+  j .sum_b2
 
-sum_b2:
+.sum_b1:
+  mv v8, v2
+  j .sum_b3
+
+.sum_b3:
+  mv a0, v8
+  ret
+
+.sum_b2:
   add v5, v2, v3
   li v10, 1
   sub v6, v3, v10
@@ -7271,21 +7276,13 @@ sum_b2:
   call sum
   mv v7, a0
   mv v8, v7
-  j sum_b3
-
-sum_b3:
-  mv a0, v8
-  ret
-
-sum_b1:
-  mv v8, v2
-  j sum_b3
+  j .sum_b3
 
   .align 2
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   mv a0, zero
   li v5, 10000
   mv a1, v5
@@ -7301,7 +7298,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 
@@ -7366,7 +7363,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
-thunk_start_b0:
+.thunk_start_b0:
   call main
   mv v2, zero
   mv a0, v2
@@ -7376,14 +7373,22 @@ thunk_start_b0:
   .globl sum
   .type sum, @function
 sum:
-sum_b0:
+.sum_b0:
   mv v2, a0
   sltu v12, v2, zero
   xori v3, v12, 1
-  bne v3, zero, sum_b1
-  j sum_b2
+  bne v3, zero, .sum_b1
+  j .sum_b2
 
-sum_b2:
+.sum_b1:
+  mv v7, zero
+  j .sum_b3
+
+.sum_b3:
+  mv a0, v7
+  ret
+
+.sum_b2:
   li v10, 1
   sub v4, v2, v10
   mv a0, v4
@@ -7391,21 +7396,13 @@ sum_b2:
   mv v5, a0
   add v6, v5, v2
   mv v7, v6
-  j sum_b3
-
-sum_b3:
-  mv a0, v7
-  ret
-
-sum_b1:
-  mv v7, zero
-  j sum_b3
+  j .sum_b3
 
   .align 2
   .globl main
   .type main, @function
 main:
-main_b0:
+.main_b0:
   li v5, 10000
   mv a0, v5
   call sum
@@ -7420,7 +7417,7 @@ main_b0:
   .globl start
   .type start, @object
 start:
-  .zero 0
+  .zero 4
 
 
 

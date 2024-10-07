@@ -688,20 +688,20 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
     Init(..) =>
       match init_rc {
         X => {
-          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("_memseti32"))
         }
         F => {
-          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_f_mv_to(self, @riscv.Fa0, freg(init_reg))
           @generated.constructor_rv_call(self, Label("_memsetf64"))
         }
       }
     Zero => {
-      @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+      @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
       @generated.constructor_rv_call(self, Label("_memset0e\{elem_sz}"))
     }
     _ => abort("Invalid fill")
@@ -1070,7 +1070,7 @@ fn RiscvFnLoweringCtx::block_label(
   bb : @core.BlockRef
 ) -> @riscv.Label {
   let _ = self
-  @riscv.Label::Label("\{self.func.name}_b\{bb.id}")
+  @riscv.Label::Label(".\{self.func.name}_b\{bb.id}")
 }
 
 fn RiscvFnLoweringCtx::emit_block_parameters(
@@ -1195,14 +1195,15 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
 
 fn RiscvFnLoweringCtx::load_closure_pointer(self : RiscvFnLoweringCtx) -> Unit {
   match self.func.ty {
-    @core.Type::ClosureFn(..) => {
-      @generated.constructor_rv_mv_to(
-        self,
-        self.closure_reg |> xreg,
-        @riscv.reg_closure,
-      )
-      self.finalize_insn()
-    }
+    @core.Type::ClosureFn(..) =>
+      if self.func.fvars.length() > 0 {
+        @generated.constructor_rv_mv_to(
+          self,
+          self.closure_reg |> xreg,
+          @riscv.reg_closure,
+        )
+        self.finalize_insn()
+      }
     _ => ()
   }
 }
@@ -1343,17 +1344,24 @@ pub fn RiscvLoweringCtx::lower_globals(
     let ty_size = symbol.ty.size()
     let rc = ty_to_reg_class(symbol.ty)
     let thunk = core.funcs.get(symbol.thunk).unwrap()
-    globals.set(@riscv.Label::Label(symbol.name.to_string()), ty_size)
+    globals.set(
+      @riscv.Label::Label(symbol.name.to_string()),
+      if ty_size == 0 {
+        4
+      } else {
+        ty_size
+      },
+    )
     insns.push(MInsn::Call(target=Label(thunk.name.to_string())))
     insns.push(MInsn::La(rd=@riscv.reg_swap, l=Label(symbol.name.to_string())))
     match (rc, ty_size) {
       (X, 4) =>
         insns.push(
-          MInsn::Sw(rs=@riscv.A0, mem={ base: @riscv.reg_swap, offset: 0 }),
+          MInsn::Sw(rs=@riscv.reg_ret, mem={ base: @riscv.reg_swap, offset: 0 }),
         )
       (X, 8) =>
         insns.push(
-          MInsn::Sd(rs=@riscv.A0, mem={ base: @riscv.reg_swap, offset: 0 }),
+          MInsn::Sd(rs=@riscv.reg_ret, mem={ base: @riscv.reg_swap, offset: 0 }),
         )
       (F, 8) =>
         insns.push(

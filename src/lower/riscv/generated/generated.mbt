@@ -1318,7 +1318,7 @@ pub fn constructor_lower[C : Context](
                       let v9 = C::xreg_new(ctx, v8)
                       let v10 = constructor_lower_value(ctx, v7)
                       let v11 = C::xreg_new(ctx, v10)
-                      let v55 = constructor_rv_sltu(ctx, v9, v11)
+                      let v55 = constructor_rv_slt(ctx, v9, v11)
                       let v56 = constructor_rv_xori(ctx, v55, 0x1)
                       let v57 = C::xreg_to_reg(ctx, v56)
                       let v58 = C::mark_maybe_aliased(ctx, v57)
