@@ -16,6 +16,10 @@ fn print_op(logger : @util.IndentLogger, op : Op) -> Unit {
     Le => logger.write_string("le")
     Lnot => logger.write_string("lnot")
     Neg => logger.write_string("neg")
+    D2I(~rm) => logger.write_string("conv.d2i.\{Show::to_string(rm)}")
+    I2D => logger.write_string("conv.i2d")
+    Abs => logger.write_string("abs")
+    Sqrt => logger.write_string("sqrt")
   }
 }
 
@@ -63,7 +67,6 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
     BlockParam(bref=BlockRef({ id }), bpref=BlockParamRef({ id: id2 })) =>
       logger.write_string("$b\{id}.\{id2}")
     FnParam(fpref=FnParamRef({ id }), ..) => logger.write_string("$f\{id}")
-    GlobalThunk(~fref) => logger.write_string("\{fref}()")
     FreeVar(~fvref, ..) => logger.write_string("\{fvref}")
     Mem(fref=FnRef({ id }), mref=MemRef({ id: id2 })) =>
       logger.write_string("f\{id}.m\{id2}")
@@ -150,12 +153,6 @@ fn print_fill(logger : @util.IndentLogger, fill : Fill) -> Unit {
       logger.write_string("[\{index}] = ")
       print_value(logger, val)
     }
-    Offset(~offset, ~val) => {
-      logger.write_string("[")
-      print_value(logger, offset)
-      logger.write_string("] = ")
-      print_value(logger, val)
-    }
   }
 }
 
@@ -216,9 +213,7 @@ fn print_insn(
     Call(~ty, ~f, ~args) => {
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
-      logger.write_string(" = call ")
-      print_value(logger, f)
-      logger.write_string("(")
+      logger.write_string(" = call \{f}(")
       print_values(logger, args)
       logger.write_string(")\n")
     }
@@ -237,6 +232,11 @@ fn print_insn(
       logger.write_string(" = ext_call \{ext_f}(")
       print_values(logger, args)
       logger.write_string(")\n")
+    }
+    LoadSymbol(~ty, sref=sym) => {
+      logger.write_string("let \{ir}: ")
+      print_type(logger, ty)
+      logger.write_string(" = load_symbol \{sym}\n")
     }
     Alloc(~mref, ~fills, ..) => {
       logger.write_string("let _ = alloc ")
@@ -333,11 +333,9 @@ fn print(logger : @util.IndentLogger, val : Core) -> Unit {
     let func = val.funcs.get(fref).unwrap()
     print_func(logger, func)
   }
-  for thunk in val.globals {
-    let (name, value) = thunk
-    logger.write_string(".thunk \{name} = ")
-    print_value(logger, value)
-    logger.write_string("\n")
+  for thunk in val.global_names {
+    let (thunk_name, sym) = thunk
+    logger.write_string(".thunk \{sym} \{thunk_name}\n")
   }
 }
 

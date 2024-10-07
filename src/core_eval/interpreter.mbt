@@ -52,7 +52,7 @@ enum Object {
 pub struct Ctx {
   heap : MutMap[(FnRef, MemRef), Object]
   stack : Map[MemRef, Object]
-  global : Map[FnRef, Object]
+  global : Map[@core.SymbolRef, Object]
   funcs : MutMap[FnRef, Fn]
   insns : Map[InsnRef, Object]
   blkargs : Map[BlockRef, Array[Object]]
@@ -152,9 +152,9 @@ fn Ctx::update_stack(self : Ctx, mem : MemRef, obj : Object) -> Ctx {
   }
 }
 
-fn Ctx::update_global(self : Ctx, f : FnRef, obj : Object) -> Ctx {
+fn Ctx::update_global(self : Ctx, sym : @core.SymbolRef, obj : Object) -> Ctx {
   {
-    global: self.global.add(f, obj),
+    global: self.global.add(sym, obj),
     heap: self.heap,
     stack: self.stack,
     funcs: self.funcs,
@@ -169,21 +169,17 @@ pub fn CoreInterpreter::interpret(
   self : CoreInterpreter,
   core : @core.Core
 ) -> Unit!Failure {
-  let { funcs, globals, .. } = core
+  let { funcs, global_names: globals, .. } = core
   let mut ctx = Ctx::new(funcs)
   for thunk in globals {
-    let (name, value) = thunk
-    match value {
-      Value::GlobalThunk(~fref) => {
-        let func = match funcs.get(fref) {
-          Some(func) => func
-          None => return fail!("function not found: \{name}")
-        }
-        let obj = self.eval_fn!(ctx, func)
-        ctx = ctx.update_global(fref, obj)
-      }
-      _ => fail!("unexpected global value")
+    let (name, sref) = thunk
+    let symbol = core.global_symbols[sref].unwrap()
+    let func = match funcs.get(symbol.thunk) {
+      Some(func) => func
+      None => return fail!("function not found: \{name}")
     }
+    let obj = self.eval_fn!(ctx, func)
+    ctx = ctx.update_global(sref, obj)
   }
 }
 
@@ -259,21 +255,6 @@ fn CoreInterpreter::eval_fills(
               )
             }
             fields[index] = v
-          }
-          Offset(~offset, ~val) => {
-            let i = CoreInterpreter::eval_value!(ctx, offset)
-            let v = CoreInterpreter::eval_value!(ctx, val)
-            match (i, v) {
-              (Int32(i), v) =>
-                if i < fields.length() {
-                  fields[i] = v
-                } else {
-                  fail!(
-                    "field index out of bounds: \{i} out of \{fields.length()}",
-                  )
-                }
-              _ => fail!("not an integer offset")
-            }
           }
         }
       }
@@ -355,22 +336,48 @@ fn CoreInterpreter::eval_insn(
             _ => fail!("type mismatch")
           }
         }
+        I2D => {
+          guard args.length() == 1 else { fail!("i2d expects 1 arg") }
+          match args[0] {
+            Int32(x) => Double(x.to_double())
+            _ => fail!("type mismatch")
+          }
+        }
+        D2I(~rm) => {
+          guard args.length() == 1 else { fail!("d2i expects 1 arg") }
+          match args[0] {
+            Double(x) =>
+              match rm {
+                Rtz => Int32(x.to_int())
+                _ => fail!("rounding mode not implemented")
+              }
+            _ => fail!("type mismatch")
+          }
+        }
+        Sqrt => {
+          guard args.length() == 1 else { fail!("sqrt expects 1 arg") }
+          match args[0] {
+            Double(x) => Double(x.sqrt())
+            _ => fail!("type mismatch")
+          }
+        }
+        Abs => {
+          guard args.length() == 1 else { fail!("abs expects 1 arg") }
+          match args[0] {
+            Double(x) => Double(x.abs())
+            _ => fail!("type mismatch")
+          }
+        }
       }
       (ctx, r)
     }
     Call(~f, ~args, ..) => {
-      let f = CoreInterpreter::eval_value!(ctx, f)
       let args = CoreInterpreter::eval_values!(ctx, args)
-      match f {
-        FnPtr(f) => {
-          let func = match ctx.funcs.get(f) {
-            Some(func) => func
-            None => return fail!("function not found \{f}")
-          }
-          (ctx, self.eval_fn!(ctx.set_function_args(args), func))
-        }
-        _ => fail!("not a function")
+      let func = match ctx.funcs.get(f) {
+        Some(func) => func
+        None => return fail!("function not found \{f}")
       }
+      (ctx, self.eval_fn!(ctx.set_function_args(args), func))
     }
     Apply(~f, ~args, ..) => {
       // Closure is a mem object, the first field is the function
@@ -474,6 +481,13 @@ fn CoreInterpreter::eval_insn(
         }
         _ => fail!("external function not found")
       }
+    }
+    LoadSymbol(sref=sym, ..) => {
+      let obj = match ctx.global.find(sym) {
+        Some(obj) => obj
+        None => return fail!("symbol not found")
+      }
+      (ctx, obj)
     }
     Alloc(~mref, ~fills, ..) => {
       let mut ctx = ctx
@@ -674,13 +688,6 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
       obj
     }
     Fn(~fref) => FnPtr(fref)
-    GlobalThunk(~fref) => {
-      let gbl = match ctx.global.find(fref) {
-        Some(gbl) => gbl
-        None => return fail!("thunk not evaluated")
-      }
-      gbl
-    }
     FreeVar(fvref=FnFreeVarRef({ id }), ..) => {
       if trace {
         println(":::: closure \{ctx.closure}")

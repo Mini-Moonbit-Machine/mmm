@@ -1,5 +1,9 @@
 typealias Knf = @knf.Knf
 
+typealias SymbolCtx = @immut/hashmap.T[@knf.Name, SymbolRef]
+
+typealias FnCtx = @immut/hashmap.T[@knf.Name, FnRef]
+
 typealias NameCtx = @immut/hashmap.T[@knf.Name, Value]
 
 typealias TypeCtx = @immut/hashmap.T[@knf.Name, Type]
@@ -11,6 +15,7 @@ pub struct CoreEnv {
   mut func_block_counter : Int
   mut func_mem_counter : Int
   mut lifted_func_counter : Int
+  mut sym_counter : Int
 } derive(Show)
 
 pub struct Ctx {
@@ -21,14 +26,16 @@ pub struct Ctx {
   // Thus, we can re-use its value later
   ty_ctx : TypeCtx // types of names
   name_ctx : NameCtx // local names
-  top_name_ctx : NameCtx // top-level names
+  top_fn_ctx : FnCtx // top-level function names
+  top_sym_ctx : SymbolCtx // top-level thunks names
 } derive(Show)
 
 fn Ctx::new() -> Ctx {
   {
     ty_ctx: TypeCtx::new(),
     name_ctx: NameCtx::new(),
-    top_name_ctx: NameCtx::new(),
+    top_fn_ctx: FnCtx::new(),
+    top_sym_ctx: SymbolCtx::new(),
   }
 }
 
@@ -41,7 +48,8 @@ fn Ctx::add_local_name_value_ty(
   {
     ty_ctx: self.ty_ctx.add(name, ty),
     name_ctx: self.name_ctx.add(name, val),
-    top_name_ctx: self.top_name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx,
   }
 }
 
@@ -49,7 +57,8 @@ fn Ctx::add_name_ty(self : Ctx, name : @knf.Name, ty : Type) -> Ctx {
   {
     ty_ctx: self.ty_ctx.add(name, ty),
     name_ctx: self.name_ctx,
-    top_name_ctx: self.top_name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx,
   }
 }
 
@@ -57,15 +66,26 @@ fn Ctx::add_local_name_value(self : Ctx, name : @knf.Name, val : Value) -> Ctx {
   {
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx.add(name, val),
-    top_name_ctx: self.top_name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx,
   }
 }
 
-fn Ctx::add_top_name_value(self : Ctx, name : @knf.Name, val : Value) -> Ctx {
+fn Ctx::add_top_fn_value(self : Ctx, name : @knf.Name, fref : FnRef) -> Ctx {
   {
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx,
-    top_name_ctx: self.top_name_ctx.add(name, val),
+    top_fn_ctx: self.top_fn_ctx.add(name, fref),
+    top_sym_ctx: self.top_sym_ctx,
+  }
+}
+
+fn Ctx::add_top_sym_value(self : Ctx, name : @knf.Name, sym : SymbolRef) -> Ctx {
+  {
+    ty_ctx: self.ty_ctx,
+    name_ctx: self.name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx.add(name, sym),
   }
 }
 
@@ -74,7 +94,8 @@ fn Ctx::enter_func_def(self : Ctx) -> Ctx {
   {
     ty_ctx: self.ty_ctx,
     name_ctx: NameCtx::new(),
-    top_name_ctx: self.top_name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx,
   }
 }
 
@@ -86,6 +107,7 @@ pub fn CoreEnv::new() -> CoreEnv {
     func_block_counter: 0,
     func_mem_counter: 0,
     lifted_func_counter: 0,
+    sym_counter: 0,
   }
 }
 
@@ -97,6 +119,7 @@ pub fn inherit(self : CoreEnv) -> CoreEnv {
     func_block_counter: 0,
     func_mem_counter: 0,
     lifted_func_counter: 0,
+    sym_counter: 0,
   }
 }
 
@@ -142,6 +165,23 @@ fn add_mem(self : CoreEnv, func : Fn, _bb : BasicBlock, mem : Mem) -> MemRef {
   mem_ref
 }
 
+fn add_symbol(
+  self : CoreEnv,
+  core : Core,
+  thunk : Fn,
+  symbol : String,
+  ty : Type
+) -> SymbolRef {
+  let sym_ref = SymbolRef({ id: self.sym_counter })
+  self.sym_counter += 1
+  core.global_symbols.set(
+    sym_ref,
+    Symbol::{ id: sym_ref, name: symbol, ty, thunk: thunk.id },
+  )
+  core.global_names.push((symbol, sym_ref))
+  sym_ref
+}
+
 fn build_func_def(
   self : CoreEnv,
   ctx : Ctx,
@@ -168,7 +208,7 @@ fn build_func_def(
   }
   let res_ty = self.lower_type!(ty, false)
   let ty = if top {
-    ctx = ctx.add_top_name_value(name, Value::Fn(fref=func_ref))
+    ctx = ctx.add_top_fn_value(name, func_ref)
     ctx = ctx.add_name_ty(name, DirectFn(params=tys, ty=res_ty))
     Type::DirectFn(params=tys, ty=res_ty)
   } else {
@@ -210,9 +250,9 @@ fn build_top_level_closure(
   core : Core,
   func : Fn,
   bb : BasicBlock,
-  val : Value
+  fr : FnRef
 ) -> (Ctx, Value)!Failure {
-  self.build_closure!(ctx, FreeNames::new(), core, func, bb, val)
+  self.build_closure!(ctx, FreeNames::new(), core, func, bb, fr)
 }
 
 fn build_closure(
@@ -222,35 +262,30 @@ fn build_closure(
   core : Core,
   func : Fn,
   bb : BasicBlock,
-  val : Value
+  fr : FnRef
 ) -> (Ctx, Value)!Failure {
-  match val {
-    Value::Fn(fref=fr) => {
-      let ty = match core.funcs.get(fr).unwrap().ty {
-        DirectFn(~params, ~ty) => Type::ClosureFn(~params, ~ty)
-        ClosureFn(..) as t => t
-        _ => fail!("not a function")
-      }
-      let mem = self.add_mem(
-        func,
-        bb,
-        Mem::Heap(~ty, len=Value::Int32(val=1 + free_names._.length())),
-      )
-      let fills = [Fill::Field(index=0, ~val)]
-      let mut ctx = ctx
-      for i, name in free_names._ {
-        let (ctx2, val) = self.build_freevar!(free_names, ctx, func, name)
-        ctx = ctx2
-        fills.push(Fill::Field(index=i + 1, ~val))
-      }
-      let _ = self.add_insn(func, bb, Insn::Alloc(~ty, mref=mem, ~fills))
-      (ctx, Value::Mem(fref=func.id, mref=mem))
-    }
-    _ => (ctx, val)
+  let ty = match core.funcs.get(fr).unwrap().ty {
+    DirectFn(~params, ~ty) => Type::ClosureFn(~params, ~ty)
+    ClosureFn(..) as t => t
+    _ => fail!("not a function")
   }
+  let mem = self.add_mem(
+    func,
+    bb,
+    Mem::Heap(~ty, len=Value::Int32(val=1 + free_names._.length())),
+  )
+  let fills = [Fill::Field(index=0, val=Value::Fn(fref=fr))]
+  let mut ctx = ctx
+  for i, name in free_names._ {
+    let (ctx2, val) = self.build_local_or_free_var!(free_names, ctx, func, name)
+    ctx = ctx2
+    fills.push(Fill::Field(index=i + 1, ~val))
+  }
+  let _ = self.add_insn(func, bb, Insn::Alloc(~ty, mref=mem, ~fills))
+  (ctx, Value::Mem(fref=func.id, mref=mem))
 }
 
-fn build_freevar!(
+fn build_local_or_free_var!(
   self : CoreEnv,
   free_names : FreeNames,
   ctx : Ctx,
@@ -267,7 +302,6 @@ fn build_freevar!(
         None => fail!("\{name} not found in \{ctx}")
       }
       let val = Value::FreeVar(
-        ~ty,
         fvref=FnFreeVarRef(
           Id::new(
             // NOTICE: the free variables start from 1 because 0 is reserved for the function ptr
@@ -282,6 +316,25 @@ fn build_freevar!(
   }
 }
 
+fn build_symbol_or_var(
+  self : CoreEnv,
+  free_names : FreeNames,
+  ctx : Ctx,
+  core : Core,
+  func : Fn,
+  bb : BasicBlock,
+  name : @knf.Name
+) -> (Ctx, Value)!Failure {
+  match ctx.top_sym_ctx.find(name) {
+    Some(sref) => {
+      let sym = core.global_symbols.get(sref).unwrap()
+      let insn = self.add_insn(func, bb, Insn::LoadSymbol(ty=sym.ty, ~sref))
+      (ctx, insn)
+    }
+    None => self.build_local_or_free_var!(free_names, ctx, func, name)
+  }
+}
+
 fn build_name!(
   self : CoreEnv,
   free_names : FreeNames,
@@ -291,9 +344,9 @@ fn build_name!(
   bb : BasicBlock,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
-  match ctx.top_name_ctx.find(name) {
+  match ctx.top_fn_ctx.find(name) {
     Some(val) => self.build_top_level_closure!(ctx, core, func, bb, val)
-    None => self.build_freevar!(free_names, ctx, func, name)
+    None => self.build_symbol_or_var!(free_names, ctx, core, func, bb, name)
   }
 }
 
@@ -301,14 +354,14 @@ fn build_name_without_top_level_closure!(
   self : CoreEnv,
   free_names : FreeNames,
   ctx : Ctx,
-  _core : Core,
+  core : Core,
   func : Fn,
-  _bb : BasicBlock,
+  bb : BasicBlock,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
-  match ctx.top_name_ctx.find(name) {
-    Some(val) => (ctx, val)
-    None => self.build_freevar!(free_names, ctx, func, name)
+  match ctx.top_fn_ctx.find(name) {
+    Some(val) => (ctx, Value::Fn(fref=val))
+    None => self.build_symbol_or_var!(free_names, ctx, core, func, bb, name)
   }
 }
 
@@ -339,101 +392,7 @@ fn get_type(
   val : Value
 ) -> Type!Failure {
   let _ = self
-  match val {
-    Unit => Type::Unit
-    Bool(_) => Type::Bool
-    Int32(_) => Type::Int32
-    Int64(_) => Type::Int64
-    Double(_) => Type::Double
-    Insn(~iref) => {
-      let insn = match func.insns.get(iref) {
-        Some(insn) => insn
-        None =>
-          fail!("insn \{Show::to_string(iref)} not found in \{func.insns}")
-      }
-      match insn {
-        Op(~ty, ..) => ty
-        Apply(~ty, ..) => ty
-        Call(~ty, ..) => ty
-        ExtCall(~ty, ..) => ty
-        Alloc(~ty, ..) => ty
-        Load(~ty, ..) => ty
-        Store(..) => Type::Unit
-      }
-    }
-    GlobalThunk(~fref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      match func.ty {
-        DirectFn(~ty, ..) => ty
-        _ => fail!("not a thunk type")
-      }
-    }
-    FreeVar(~ty, ..) => ty
-    BlockParam(~bref, ~bpref) => {
-      let block = match func.blocks.get(bref) {
-        Some(block) => block
-        _ => fail!("bb not found")
-      }
-      match block {
-        BasicBlock(~bb) => bb.params[bpref.id]
-        Loop(_) => fail!("loop not supported")
-      }
-    }
-    FnParam(~fref, ~fpref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      match func.ty {
-        DirectFn(~params, ..) => params[fpref.id]
-        ClosureFn(~params, ..) => params[fpref.id]
-        _ => fail!("not a function type")
-      }
-    }
-    Mem(~fref, ~mref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      let mem = match func.mems.get(mref) {
-        Some(mem) => mem
-        None => fail!("mem not found")
-      }
-      match mem {
-        Heap(~ty, ..) => ty
-        Stack(~ty, ..) => ty
-      }
-    }
-    Fn(~fref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      guard (match func.ty {
-        DirectFn(..) => true
-        _ => false
-      }) else {
-        fail!("not a direct function")
-      }
-      func.ty
-    }
-    Self(~fref) => {
-      let func = match core.funcs.get(fref) {
-        Some(func) => func
-        None => fail!("func not found")
-      }
-      guard (match func.ty {
-        ClosureFn(..) => true
-        _ => false
-      }) else {
-        fail!("not a closure")
-      }
-      func.ty
-    }
-  }
+  val.ty!(core, func)
 }
 
 fn get_external_function_type(self : CoreEnv, name : String) -> Type!Failure {
@@ -597,12 +556,7 @@ fn build_knf_expr(
       self.merge(ctx, free_names, sub_free_names)
       // always generate a closure for inner let rec
       let (ctx, clos) = self.build_closure!(
-        ctx,
-        sub_free_names,
-        core,
-        func,
-        bb,
-        Value::Fn(fref=fdv),
+        ctx, sub_free_names, core, func, bb, fdv,
       )
       let ctx = ctx.add_local_name_value_ty(
         fd.name,
@@ -621,7 +575,11 @@ fn build_knf_expr(
       let f_ty = self.get_type!(core, func, bb, f_val)
       let insn = match f_ty {
         ClosureFn(~ty, ..) => Insn::Apply(~ty, f=f_val, args=arg_vals)
-        DirectFn(~ty, ..) => Insn::Call(~ty, f=f_val, args=arg_vals)
+        DirectFn(~ty, ..) =>
+          match f_val {
+            Value::Fn(~fref) => Insn::Call(~ty, f=fref, args=arg_vals)
+            _ => fail!("not a function: \{f_val}")
+          }
         _ => fail!("not a function: \{f_val} is \{f_ty}")
       }
       let val = self.add_insn(func, bb, insn)
@@ -727,6 +685,42 @@ fn build_knf_expr(
           )
           (ctx, bb, Value::Mem(fref=func.id, mref=mem))
         }
+        "minimbt_int_of_float" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(
+            ty=Type::Int32,
+            op=Op::D2I(rm=Rtz),
+            args=[arg_vals[0]],
+          )
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_float_of_int" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::I2D, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_abs_float" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::Abs, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_sqrt" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::Sqrt, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
         _ => {
           let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,
@@ -752,8 +746,9 @@ fn build_top_level(
 ) -> Unit!Failure {
   match knf {
     Let((x, ty), e1, e2) => {
+      let thunk_name = "thunk_" + x.to_string()
       let name = try {
-        @knf.Name::from_string!("thunk_" + x.to_string())
+        @knf.Name::from_string!(thunk_name)
       } catch {
         _ => fail!("invalid name")
       }
@@ -764,11 +759,11 @@ fn build_top_level(
         None => fail!("func not found")
       }
       let ctx = ctx.add_name_ty(fd.name, func.ty)
-      let ctx = ctx.add_top_name_value(fd.name, Value::Fn(fref=f))
+      let ctx = ctx.add_top_fn_value(fd.name, f)
       let ty = self.lower_type!(ty, false)
       let ctx = ctx.add_name_ty(x, ty)
-      let ctx = ctx.add_top_name_value(x, Value::GlobalThunk(fref=f))
-      core.globals.push((x.to_string(), Value::GlobalThunk(fref=f)))
+      let sref = self.add_symbol(core, func, x.to_string(), ty)
+      let ctx = ctx.add_top_sym_value(x, sref)
       self.build_top_level!(ctx, core, e2)
     }
     LetRec(fd, other) => {
@@ -778,7 +773,7 @@ fn build_top_level(
         None => fail!("func not found")
       }
       let ctx = ctx.add_name_ty(fd.name, func.ty)
-      let ctx = ctx.add_top_name_value(fd.name, Value::Fn(fref=f))
+      let ctx = ctx.add_top_fn_value(fd.name, f)
       self.build_top_level!(ctx, core, other)
     }
     Unit => ()
@@ -804,7 +799,8 @@ pub fn build(self : CoreEnv, knf : Knf) -> Core!Failure {
   let core = {
     funcs: MutMap::new(),
     names: MutMap::new(),
-    globals: Array::new(),
+    global_names: [],
+    global_symbols: MutMap::new(),
   }
   let ctx = Ctx::new()
   let _ = self.build_top_level!(ctx, core, knf)
