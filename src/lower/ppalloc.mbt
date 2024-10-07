@@ -25,7 +25,7 @@ pub struct PPAllocator[Info] {
   order : Array[Int]
 }
 
-pub fn PPAllocator::go[Info](self : PPAllocator[Info]) -> Unit {
+pub fn PPAllocator::go[Info : Show](self : PPAllocator[Info]) -> Unit {
   self.mcs()
   self.assign_color()
 }
@@ -159,7 +159,10 @@ pub fn PPAllocator::add_single_vertex[R : RegToId, Info](
   r : R
 ) -> Unit {
   let r = self.record(r)
-  self.neighbors.set(r, Set::new())
+  match self.neighbors.get(r) {
+    Some(_) => ()
+    None => self.neighbors.set(r, Set::new())
+  }
 }
 
 // Maximum cardinality search
@@ -218,7 +221,7 @@ fn need_spill[Info](self : PPAllocator[Info], color : Int) -> Bool {
   color >= self.avail
 }
 
-fn assign_color[Info](self : PPAllocator[Info]) -> Unit {
+fn assign_color[Info : Show](self : PPAllocator[Info]) -> Unit {
   let order = self.order
   for r in order {
     if self.phy.contains(r) {
