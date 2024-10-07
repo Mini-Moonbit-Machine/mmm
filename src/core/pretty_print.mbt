@@ -16,6 +16,10 @@ fn print_op(logger : @util.IndentLogger, op : Op) -> Unit {
     Le => logger.write_string("le")
     Lnot => logger.write_string("lnot")
     Neg => logger.write_string("neg")
+    D2I(~rm) => logger.write_string("conv.d2i.\{Show::to_string(rm)}")
+    I2D => logger.write_string("conv.i2d")
+    Abs => logger.write_string("abs")
+    Sqrt => logger.write_string("sqrt")
   }
 }
 

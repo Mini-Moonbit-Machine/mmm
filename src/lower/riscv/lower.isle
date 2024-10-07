@@ -3,11 +3,11 @@
 (decl lower_imm (Type UInt64) AnyReg)
 
 (rule 1 (lower_imm (ty_double) 0)
-  (rv_f_mv_dx (zero_reg)))
+  (rv_fmv_dx (zero_reg)))
 
 (rule (lower_imm (ty_double) c)
   (let ((c1 AnyReg (lower_imm (ty_int64) c)))
-    (rv_f_mv_dx c1)))
+    (rv_fmv_dx c1)))
 
 (rule 1 (lower_imm (ty_int32) 0)
   (zero_reg))
@@ -186,6 +186,24 @@
 
 (rule (lower (insn_op (ty_double) (op_neg) (arg1 a)))
   (mr (rv_fneg_d a)))
+
+;;;; Rules for f64 absolute values
+
+(rule (lower (insn_op (ty_double) (op_abs) (arg1 a)))
+  (mr (rv_fabs_d a)))
+
+;;;; Rules for f64 square roots
+
+(rule (lower (insn_op (ty_double) (op_sqrt) (arg1 a)))
+  (mr (rv_fsqrt_d a)))
+
+;;;; Rules for f64 conversions
+
+(rule (lower (insn_op (ty_double) (op_i2d) (arg1 a)))
+  (mr (rv_fcvt_d_w a)))
+
+(rule (lower (insn_op (ty_int32) (op_d2i rm) (arg1 a)))
+  (mr (rv_fcvt_w_d a rm)))
 
 ;;;; Rules for other instructions
 

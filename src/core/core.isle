@@ -135,6 +135,30 @@
 (decl pure val_self (FnRef) Value)
 (extractor (val_self fref) (Value.Self fref))
 
+(type RoundMode extern
+  (enum as `@core.RoundMode`
+    Rne
+    Rtz
+    Rdn
+    Rup
+    Rmm))
+
+(decl pure round_rne () RoundMode)
+(extractor (round_rne) (RoundMode.Rne))
+(rule (round_rne) (RoundMode.Rne))
+
+(decl pure round_rtz () RoundMode)
+(extractor (round_rtz) (RoundMode.Rtz))
+(rule (round_rtz) (RoundMode.Rtz))
+
+(decl pure round_rdn () RoundMode)
+(extractor (round_rdn) (RoundMode.Rdn))
+(rule (round_rdn) (RoundMode.Rdn))
+
+(decl pure round_rup () RoundMode)
+(extractor (round_rup) (RoundMode.Rup))
+(rule (round_rup) (RoundMode.Rup))
+
 (type Op extern
   (enum as `@core.Op`
     Add
@@ -144,7 +168,11 @@
     Neg
     Lnot
     Eq
-    Le))
+    Le
+    I2D
+    (D2I (rm RoundMode))
+    Abs
+    Sqrt))
 
 (decl pure op_add () Op)
 (extractor (op_add) (Op.Add))
@@ -169,6 +197,18 @@
 
 (decl pure op_le () Op)
 (extractor (op_le) (Op.Le))
+
+(decl pure op_i2d () Op)
+(extractor (op_i2d) (Op.I2D))
+
+(decl pure op_d2i (RoundMode) Op)
+(extractor (op_d2i rm) (Op.D2I rm))
+
+(decl pure op_abs () Op)
+(extractor (op_abs) (Op.Abs))
+
+(decl pure op_sqrt () Op)
+(extractor (op_sqrt) (Op.Sqrt))
 
 (type Insn extern
   (enum as `@core.Insn`

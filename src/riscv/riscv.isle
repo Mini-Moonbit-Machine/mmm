@@ -68,6 +68,10 @@
     (FeqD (rd XReg) (rs1 FReg) (rs2 FReg))
     (FleD (rd XReg) (rs1 FReg) (rs2 FReg))
     (FmvDX (rd FReg) (rs XReg))
+    (FcvtWD (rd XReg) (rs FReg) (rm RoundMode))
+    (FcvtDW (rd FReg) (rs XReg))
+    (FabsD (rd FReg) (rs FReg))
+    (FsqrtD (rd FReg) (rs FReg))
     (Nop)
     (La (rd XReg) (l Label))
     (Li (rd XReg) (i String))
@@ -404,10 +408,34 @@
 (decl rv_fsd (FReg MemAccess) Unit)
 (rule (rv_fsd x y) (emit_risc_v (RvAsm.Fsd x y)))
 
-(decl rv_f_mv_dx (XReg) FReg)
-(rule (rv_f_mv_dx x)
+(decl rv_fmv_dx (XReg) FReg)
+(rule (rv_fmv_dx x)
   (let ((dst FReg (next_virtual_freg))
         (_ Unit (emit_risc_v (RvAsm.FmvDX dst x))))
+    dst))
+
+(decl rv_fcvt_w_d (FReg RoundMode) XReg)
+(rule (rv_fcvt_w_d x rm)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.FcvtWD dst x rm))))
+    dst))
+
+(decl rv_fcvt_d_w (XReg) FReg)
+(rule (rv_fcvt_d_w x)
+  (let ((dst FReg (next_virtual_freg))
+        (_ Unit (emit_risc_v (RvAsm.FcvtDW dst x))))
+    dst))
+
+(decl rv_fabs_d (FReg) FReg)
+(rule (rv_fabs_d x)
+  (let ((dst FReg (next_virtual_freg))
+        (_ Unit (emit_risc_v (RvAsm.FabsD dst x))))
+    dst))
+
+(decl rv_fsqrt_d (FReg) FReg)
+(rule (rv_fsqrt_d x)
+  (let ((dst FReg (next_virtual_freg))
+        (_ Unit (emit_risc_v (RvAsm.FsqrtD dst x))))
     dst))
 
 (decl rv_la (Label) XReg)
@@ -449,8 +477,8 @@
 (decl rv_mv_to (XReg XReg) Unit)
 (rule (rv_mv_to x y) (emit_risc_v (RvAsm.Mv x y)))
 
-(decl rv_f_mv_to (FReg FReg) Unit)
-(rule (rv_f_mv_to x y) (emit_risc_v (RvAsm.FmvD x y)))
+(decl rv_fmv_to (FReg FReg) Unit)
+(rule (rv_fmv_to x y) (emit_risc_v (RvAsm.FmvD x y)))
 
 (decl rv_j (Label) Unit)
 (rule (rv_j x) (emit_risc_v (RvAsm.J x)))

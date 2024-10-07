@@ -468,7 +468,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
         }
       }
       F => {
-        @generated.constructor_rv_f_mv_to(
+        @generated.constructor_rv_fmv_to(
           self,
           @riscv.freg_arg_list[used_farg],
           freg(r),
@@ -696,7 +696,7 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
         F => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
-          @generated.constructor_rv_f_mv_to(self, @riscv.Fa0, freg(init_reg))
+          @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
           @generated.constructor_rv_call(self, Label("_memsetf64"))
         }
       }
@@ -1085,7 +1085,7 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
         let reg = @generated.constructor_lower_f_value(self, arg)
         let param = @core.Value::BlockParam(bref=target.id, bpref={ id, })
         let param_reg = self.value_regs[param].unwrap()
-        @generated.constructor_rv_f_mv_to(self, freg(param_reg), reg)
+        @generated.constructor_rv_fmv_to(self, freg(param_reg), reg)
       }
     }
   }
@@ -1174,7 +1174,7 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
         used_xarg += 1
       }
       F => {
-        @generated.constructor_rv_f_mv_to(
+        @generated.constructor_rv_fmv_to(
           self,
           freg(pre_assigned_reg),
           @riscv.freg_arg_list[used_farg],

@@ -336,6 +336,38 @@ fn CoreInterpreter::eval_insn(
             _ => fail!("type mismatch")
           }
         }
+        I2D => {
+          guard args.length() == 1 else { fail!("i2d expects 1 arg") }
+          match args[0] {
+            Int32(x) => Double(x.to_double())
+            _ => fail!("type mismatch")
+          }
+        }
+        D2I(~rm) => {
+          guard args.length() == 1 else { fail!("d2i expects 1 arg") }
+          match args[0] {
+            Double(x) =>
+              match rm {
+                Rtz => Int32(x.to_int())
+                _ => fail!("rounding mode not implemented")
+              }
+            _ => fail!("type mismatch")
+          }
+        }
+        Sqrt => {
+          guard args.length() == 1 else { fail!("sqrt expects 1 arg") }
+          match args[0] {
+            Double(x) => Double(x.sqrt())
+            _ => fail!("type mismatch")
+          }
+        }
+        Abs => {
+          guard args.length() == 1 else { fail!("abs expects 1 arg") }
+          match args[0] {
+            Double(x) => Double(x.abs())
+            _ => fail!("type mismatch")
+          }
+        }
       }
       (ctx, r)
     }

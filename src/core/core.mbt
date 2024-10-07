@@ -185,6 +185,14 @@ pub enum Value {
   Self(~fref : FnRef)
 } derive(Show, Eq)
 
+pub enum RoundMode {
+  Rne
+  Rtz
+  Rdn
+  Rup
+  Rmm
+} derive(Eq)
+
 pub enum Op {
   Add
   Sub
@@ -194,6 +202,10 @@ pub enum Op {
   Lnot
   Eq
   Le
+  I2D
+  D2I(~rm : RoundMode)
+  Abs
+  Sqrt
 } derive(Show, Eq)
 
 pub enum Insn {
@@ -452,5 +464,15 @@ pub impl Hash for Value with hash_combine(self, hasher) {
       hasher.combine_int(12)
       hasher.combine(fref)
     }
+  }
+}
+
+pub impl Show for RoundMode with output(self, logger) {
+  match self {
+    Rne => logger.write_string("rne")
+    Rtz => logger.write_string("rtz")
+    Rdn => logger.write_string("rdn")
+    Rup => logger.write_string("rup")
+    Rmm => logger.write_string("rmm")
   }
 }

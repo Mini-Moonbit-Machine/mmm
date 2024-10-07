@@ -685,6 +685,42 @@ fn build_knf_expr(
           )
           (ctx, bb, Value::Mem(fref=func.id, mref=mem))
         }
+        "minimbt_int_of_float" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(
+            ty=Type::Int32,
+            op=Op::D2I(rm=Rtz),
+            args=[arg_vals[0]],
+          )
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_float_of_int" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::I2D, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_abs_float" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::Abs, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
+        "minimbt_sqrt" => {
+          let (ctx, arg_vals) = self.build_names!(
+            free_names, ctx, core, func, bb, args,
+          )
+          let insn = Insn::Op(ty=Type::Double, op=Op::Sqrt, args=[arg_vals[0]])
+          let val = self.add_insn(func, bb, insn)
+          (ctx, bb, val)
+        }
         _ => {
           let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,

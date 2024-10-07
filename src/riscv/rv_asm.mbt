@@ -66,6 +66,10 @@ pub enum RvAsm {
   FeqD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
   FleD(~rd : Reg, ~rs1 : FReg, ~rs2 : FReg)
   FmvDX(~rd : FReg, ~rs : Reg)
+  FcvtWD(~rd : Reg, ~rs : FReg, ~rm : @core.RoundMode)
+  FcvtDW(~rd : FReg, ~rs : Reg)
+  FabsD(~rd : FReg, ~rs : FReg)
+  FsqrtD(~rd : FReg, ~rs : FReg)
   // pseudo instructions
   Nop
   La(~rd : Reg, ~l : Label)
@@ -84,8 +88,6 @@ pub enum RvAsm {
   Label(Label)
   Comment(String)
 }
-
-typealias MemAccessRegInt = MemAccess[Reg, Int]
 
 fn write3[TReg1 : Show, TReg2 : Show, TReg3 : Show](
   logger : Logger,
@@ -229,6 +231,10 @@ pub impl Show for RvAsm with output(self, logger) {
     FeqD(~rd, ~rs1, ~rs2) => write3(logger, "fbeq.d", rd, rs1, rs2)
     FleD(~rd, ~rs1, ~rs2) => write3(logger, "fble.d", rd, rs1, rs2)
     FmvDX(~rd, ~rs) => write2(logger, "fmv.d.x", rd, rs)
+    FcvtWD(~rd, ~rs, ~rm) => write3(logger, "fcvt.w.d", rd, rs, rm)
+    FcvtDW(~rd, ~rs) => write2(logger, "fcvt.d.w", rd, rs)
+    FabsD(~rd, ~rs) => write2(logger, "fabs.d", rd, rs)
+    FsqrtD(~rd, ~rs) => write2(logger, "fsqrt.d", rd, rs)
     Nop => logger.write_string("nop")
     La(~rd, ~l) => {
       logger.write_string("la ")
