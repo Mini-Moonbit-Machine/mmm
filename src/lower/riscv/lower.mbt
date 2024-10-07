@@ -716,22 +716,15 @@ fn RiscvFnLoweringCtx::do_fill_at_small_offset(
   init_rc : RegClass,
   init_reg : @riscv.AnyReg
 ) -> Unit {
-  match elem_sz {
-    4 | 8 =>
-      match init_rc {
-        X =>
-          @generated.constructor_rv_sd(
-            self,
-            init_reg |> xreg,
-            { base: ptr |> xreg, offset: index },
-          )
-        F =>
-          @generated.constructor_rv_fsd(
-            self,
-            init_reg |> freg,
-            { base: ptr |> xreg, offset: index },
-          )
-      }
+  let base = xreg(ptr)
+  let offset = index
+  match (elem_sz, init_rc) {
+    (4, X) =>
+      @generated.constructor_rv_sw(self, xreg(init_reg), { base, offset })
+    (8, X) =>
+      @generated.constructor_rv_sd(self, xreg(init_reg), { base, offset })
+    (8, F) =>
+      @generated.constructor_rv_fsd(self, freg(init_reg), { base, offset })
     _ => abort("Invalid type size")
   }
 }

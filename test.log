@@ -76,7 +76,7 @@ ack:
 .ack_b0:
   mv v2, a0
   mv v3, a1
-  sltu v29, v2, zero
+  slt v29, v2, zero
   xori v4, v29, 1
   bne v4, zero, .ack_b1
   j .ack_b2
@@ -92,7 +92,7 @@ ack:
   j .ack_b6
 
 .ack_b2:
-  sltu v27, v3, zero
+  slt v27, v3, zero
   xori v5, v27, 1
   bne v5, zero, .ack_b3
   j .ack_b4
@@ -701,7 +701,7 @@ aux:
   lw v4, 16(v0)
   lw v5, 24(v0)
   lw v6, 32(v0)
-  sltu v166, v3, v2
+  slt v166, v3, v2
   xori v9, v166, 1
   bne v9, zero, .aux_b1
   j .aux_b2
@@ -742,7 +742,7 @@ aux:
 .aux_b13:
   addi v140, s11, -4
   andi v7, v140, -8
-  sd v2, 0(v7)
+  sw v2, 0(v7)
   addi v137, s11, -48
   andi v8, v137, -8
   la v139, lp
@@ -949,7 +949,7 @@ bf:
   mv v3, a1
   addi v20, s11, -4
   andi v4, v20, -8
-  sd zero, 0(v4)
+  sw zero, 0(v4)
   li v16, 4096
   sub v17, s11, v16
   andi v5, v17, -8
@@ -981,29 +981,29 @@ main:
 .main_b0:
   addi v121, s11, -92
   andi v2, v121, -8
-  sd zero, 0(v2)
-  sd zero, 4(v2)
-  sd zero, 8(v2)
-  sd zero, 12(v2)
-  sd zero, 16(v2)
-  sd zero, 20(v2)
-  sd zero, 24(v2)
-  sd zero, 28(v2)
-  sd zero, 32(v2)
-  sd zero, 36(v2)
-  sd zero, 40(v2)
-  sd zero, 44(v2)
-  sd zero, 48(v2)
-  sd zero, 52(v2)
-  sd zero, 56(v2)
-  sd zero, 60(v2)
-  sd zero, 64(v2)
-  sd zero, 68(v2)
-  sd zero, 72(v2)
-  sd zero, 76(v2)
-  sd zero, 80(v2)
-  sd zero, 84(v2)
-  sd zero, 88(v2)
+  sw zero, 0(v2)
+  sw zero, 4(v2)
+  sw zero, 8(v2)
+  sw zero, 12(v2)
+  sw zero, 16(v2)
+  sw zero, 20(v2)
+  sw zero, 24(v2)
+  sw zero, 28(v2)
+  sw zero, 32(v2)
+  sw zero, 36(v2)
+  sw zero, 40(v2)
+  sw zero, 44(v2)
+  sw zero, 48(v2)
+  sw zero, 52(v2)
+  sw zero, 56(v2)
+  sw zero, 60(v2)
+  sw zero, 64(v2)
+  sw zero, 68(v2)
+  sw zero, 72(v2)
+  sw zero, 76(v2)
+  sw zero, 80(v2)
+  sw zero, 84(v2)
+  sw zero, 88(v2)
   li v118, 3
   slli v119, zero, 2
   add v120, v2, v119
@@ -1316,7 +1316,7 @@ _start_b0:
 f:
 .f_b0:
   mv v2, a0
-  sltu v26, zero, v2
+  slt v26, zero, v2
   xori v5, v26, 1
   bne v5, zero, .f_b1
   j .f_b2
@@ -1651,7 +1651,7 @@ g:
   add v19, v18, v10
   add v20, v19, v11
   add v21, v20, v12
-  sltu v29, v2, zero
+  slt v29, v2, zero
   xori v22, v29, 1
   bne v22, zero, .g_b1
   j .g_b2
@@ -2032,7 +2032,7 @@ even:
   andi v3, v28, -8
   la v30, odd
   sd v30, 0(v3)
-  sltu v26, zero, v2
+  slt v26, zero, v2
   xori v5, v26, 1
   bne v5, zero, .even_b1
   j .even_b2
@@ -2100,7 +2100,7 @@ main:
 odd:
 .odd_b0:
   mv v2, a0
-  sltu v22, zero, v2
+  slt v22, zero, v2
   xori v3, v22, 1
   bne v3, zero, .odd_b1
   j .odd_b2
@@ -2269,7 +2269,7 @@ fib:
 .fib_b0:
   mv v2, a0
   li v17, 1
-  sltu v18, v2, v17
+  slt v18, v2, v17
   xori v3, v18, 1
   bne v3, zero, .fib_b1
   j .fib_b2
@@ -2757,7 +2757,7 @@ gcd:
   j .gcd_b5
 
 .gcd_b2:
-  sltu v16, v2, v3
+  slt v16, v2, v3
   xori v5, v16, 1
   bne v5, zero, .gcd_b3
   j .gcd_b4
@@ -2963,7 +2963,7 @@ inprod:
   mv v3, a1
   fmv.d fv4, fa0
   mv v5, a2
-  sltu v25, zero, v5
+  slt v25, zero, v5
   xori v6, v25, 1
   bne v6, zero, .inprod_b1
   j .inprod_b2
@@ -3125,7 +3125,7 @@ inprod:
   mv v2, a0
   mv v3, a1
   mv v4, a2
-  sltu v25, zero, v4
+  slt v25, zero, v4
   xori v5, v25, 1
   bne v5, zero, .inprod_b1
   j .inprod_b2
@@ -3707,7 +3707,7 @@ main:
   mv a0, zero
   call f
   mv v2, a0
-  sltu v17, v2, zero
+  slt v17, v2, zero
   xori v3, v17, 1
   bne v3, zero, .main_b1
   j .main_b2
@@ -4008,7 +4008,7 @@ main:
   mv a0, zero
   call f
   mv v2, a0
-  sltu v13, v2, zero
+  slt v13, v2, zero
   xori v3, v13, 1
   bne v3, zero, .main_b1
   j .main_b2
@@ -4160,7 +4160,7 @@ main:
   mv a0, zero
   call f
   mv v2, a0
-  sltu v13, v2, zero
+  slt v13, v2, zero
   xori v3, v13, 1
   bne v3, zero, .main_b1
   j .main_b2
@@ -4729,7 +4729,7 @@ loop2:
   mv v5, a3
   mv v6, a4
   mv v7, a5
-  sltu v20, zero, v4
+  slt v20, zero, v4
   xori v8, v20, 1
   bne v8, zero, .loop2_b1
   j .loop2_b2
@@ -5037,7 +5037,7 @@ init_arr:
   mv v2, a0
   mv v3, a1
   mv v4, a2
-  sltu v22, zero, v2
+  slt v22, zero, v2
   xori v6, v22, 1
   bne v6, zero, .init_arr_b1
   j .init_arr_b2
@@ -5119,7 +5119,7 @@ loop3:
   mv v5, a3
   mv v6, a4
   mv v7, a5
-  sltu v50, zero, v4
+  slt v50, zero, v4
   xori v8, v50, 1
   bne v8, zero, .loop3_b1
   j .loop3_b2
@@ -5183,7 +5183,7 @@ loop1:
   mv v5, a3
   mv v6, a4
   mv v7, a5
-  sltu v20, zero, v2
+  slt v20, zero, v2
   xori v8, v20, 1
   bne v8, zero, .loop1_b1
   j .loop1_b2
@@ -5431,7 +5431,7 @@ loop2:
   lw v5, 24(v0)
   lw v6, 32(v0)
   lw v7, 40(v0)
-  sltu v27, zero, v2
+  slt v27, zero, v2
   xori v9, v27, 1
   bne v9, zero, .loop2_b1
   j .loop2_b2
@@ -5769,7 +5769,7 @@ init_arr:
   mv v2, a0
   lw v3, 8(v0)
   lw v4, 16(v0)
-  sltu v22, zero, v2
+  slt v22, zero, v2
   xori v6, v22, 1
   bne v6, zero, .init_arr_b1
   j .init_arr_b2
@@ -5826,7 +5826,7 @@ loop3:
   lw v5, 24(v0)
   lw v6, 32(v0)
   lw v7, 40(v0)
-  sltu v51, zero, v2
+  slt v51, zero, v2
   xori v8, v51, 1
   bne v8, zero, .loop3_b1
   j .loop3_b2
@@ -5888,7 +5888,7 @@ loop1:
   lw v5, 24(v0)
   lw v6, 32(v0)
   lw v7, 40(v0)
-  sltu v27, zero, v2
+  slt v27, zero, v2
   xori v9, v27, 1
   bne v9, zero, .loop1_b1
   j .loop1_b2
@@ -6039,7 +6039,7 @@ main:
   fmv.d fa0, fv4
   call minimbt_truncate
   mv v5, a0
-  sltu v22, zero, v5
+  slt v22, zero, v5
   xori v6, v22, 1
   bne v6, zero, .main_b1
   j .main_b2
@@ -6062,7 +6062,7 @@ main:
 
 .main_b6:
   add v10, v7, v9
-  sltu v17, zero, v3
+  slt v17, zero, v3
   xori v11, v17, 1
   bne v11, zero, .main_b7
   j .main_b8
@@ -6084,7 +6084,7 @@ main:
   j .main_b9
 
 .main_b3:
-  sltu v20, v2, zero
+  slt v20, v2, zero
   xori v8, v20, 1
   bne v8, zero, .main_b4
   j .main_b5
@@ -6188,16 +6188,16 @@ main:
   addi v31, s11, -40
   andi v3, v31, -8
   li v33, 3
-  sd v33, 0(v3)
-  sd v33, 4(v3)
-  sd v33, 8(v3)
-  sd v33, 12(v3)
-  sd v33, 16(v3)
-  sd v33, 20(v3)
-  sd v33, 24(v3)
-  sd v33, 28(v3)
-  sd v33, 32(v3)
-  sd v33, 36(v3)
+  sw v33, 0(v3)
+  sw v33, 4(v3)
+  sw v33, 8(v3)
+  sw v33, 12(v3)
+  sw v33, 16(v3)
+  sw v33, 20(v3)
+  sw v33, 24(v3)
+  sw v33, 28(v3)
+  sw v33, 32(v3)
+  sw v33, 36(v3)
   slli v28, zero, 2
   add v29, v3, v28
   lw v6, 0(v29)
@@ -6851,16 +6851,16 @@ main:
   addi v86, s11, -40
   andi v2, v86, -8
   li v88, 1
-  sd v88, 0(v2)
-  sd v88, 4(v2)
-  sd v88, 8(v2)
-  sd v88, 12(v2)
-  sd v88, 16(v2)
-  sd v88, 20(v2)
-  sd v88, 24(v2)
-  sd v88, 28(v2)
-  sd v88, 32(v2)
-  sd v88, 36(v2)
+  sw v88, 0(v2)
+  sw v88, 4(v2)
+  sw v88, 8(v2)
+  sw v88, 12(v2)
+  sw v88, 16(v2)
+  sw v88, 20(v2)
+  sw v88, 24(v2)
+  sw v88, 28(v2)
+  sw v88, 32(v2)
+  sw v88, 36(v2)
   call f
   mv v4, a0
   slli v82, zero, 2
@@ -7254,7 +7254,7 @@ sum:
 .sum_b0:
   mv v2, a0
   mv v3, a1
-  sltu v13, v3, zero
+  slt v13, v3, zero
   xori v4, v13, 1
   bne v4, zero, .sum_b1
   j .sum_b2
@@ -7375,7 +7375,7 @@ thunk_start:
 sum:
 .sum_b0:
   mv v2, a0
-  sltu v12, v2, zero
+  slt v12, v2, zero
   xori v3, v12, 1
   bne v3, zero, .sum_b1
   j .sum_b2
