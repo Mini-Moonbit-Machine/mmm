@@ -43,10 +43,10 @@ pub fn DominatorTree::compute_idom(self : DominatorTree) -> Unit!Failure {
   self.dom.clear()
   let rpo = self.rpo
   let preds = self.preds
-  let id_dom = Array::make(rpo._.length() + 1, 0)
+  let id_dom = Array::make(rpo._.1.length() + 1, 0)
   let id_bref_map = @hashmap.T::new()
   let bref_id_map = @hashmap.T::new()
-  for i, bref in rpo._ {
+  for i, bref in rpo._.1 {
     id_bref_map[i + 1] = bref
     bref_id_map[bref] = i + 1
   }
@@ -57,7 +57,7 @@ pub fn DominatorTree::compute_idom(self : DominatorTree) -> Unit!Failure {
   let mut changed = true
   while changed {
     changed = false
-    for bref in rpo._ {
+    for bref in rpo._.1 {
       if bref == self.func.entry {
         continue
       }

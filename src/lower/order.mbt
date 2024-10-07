@@ -45,13 +45,13 @@ pub struct LoweringOrder {
 
 pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   let ordered_refs = @core_analysis.Ordering::dfs(func).rev_postorder()
-  let ordered_blocks = ordered_refs.to_basic_blocks(func)
+  let ordered_blocks = ordered_refs.to_basic_blocks()
   let order = []
   let block_in_count = MutMap::from_iter(
-    ordered_refs._.iter().map(fn(bref) { (bref, 0) }),
+    ordered_refs._.1.iter().map(fn(bref) { (bref, 0) }),
   )
   let block_out_count = MutMap::from_iter(
-    ordered_refs._.iter().map(fn(bref) { (bref, 0) }),
+    ordered_refs._.1.iter().map(fn(bref) { (bref, 0) }),
   )
   let block_succs = MutMap::new()
   fn f_bb(bb : @core.BasicBlock) -> Unit {

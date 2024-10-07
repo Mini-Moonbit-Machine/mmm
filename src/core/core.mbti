@@ -230,6 +230,10 @@ pub enum Op {
   Lnot
   Eq
   Le
+  I2D
+  D2I(RoundMode)
+  Abs
+  Sqrt
 }
 impl Op {
   op_equal(Self, Self) -> Bool
@@ -242,6 +246,17 @@ pub struct PrettyCore {
 impl PrettyCore {
   output(Self, Logger) -> Unit
   to_string(Self) -> String
+}
+
+pub enum RoundMode {
+  Rne
+  Rtz
+  Rdn
+  Rup
+  Rmm
+}
+impl RoundMode {
+  op_equal(Self, Self) -> Bool
 }
 
 pub struct Symbol {
@@ -342,6 +357,8 @@ impl Show for Loop
 impl Show for Mem
 
 impl Show for Op
+
+impl Show for RoundMode
 
 impl Show for Symbol
 

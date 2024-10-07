@@ -1,24 +1,65 @@
 package moonbitlang/minimbt/lower/riscv
 
 alias @moonbitlang/core/hashmap as @hashmap
+alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/minimbt/core as @core
 alias @moonbitlang/minimbt/lower as @lower
 
 // Values
+fn def_use(@moonbitlang/minimbt/riscv.RvAsm) -> (Array[@moonbitlang/minimbt/riscv.AnyReg], Array[@moonbitlang/minimbt/riscv.AnyReg])
+
+fn fn_block_name(@core.Fn, @core.BlockRef) -> String
 
 // Types and methods
+pub struct BlockInfo {
+  pub defs : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+  pub uses : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+  pub upward_exposed : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+  pub params_defs : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+}
+impl BlockInfo {
+  compute(MBasicBlock) -> Self
+  to_string(Self) -> String
+}
+
+pub struct IteratedBlockInfo {
+  pub live_in : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+  pub live_out : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
+  pub block_info : BlockInfo
+  pub live_set : Array[Array[@moonbitlang/minimbt/riscv.AnyReg]]
+}
+impl IteratedBlockInfo {
+  compute_live_in_out(Self, Array[Self]) -> Bool
+  compute_live_set(Self, MBasicBlock) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct Liveness {
+  pub func : @core.Fn?
+  pub mfunc : MFn
+  pub block_info : @hashmap.T[String, BlockInfo]
+  pub iter_block_info : @hashmap.T[String, IteratedBlockInfo]
+}
+impl Liveness {
+  compute_block_liveness(Self) -> Unit
+  new(@core.Fn?, MFn) -> Self
+}
+
 pub struct MBasicBlock {
   pub id : @moonbitlang/minimbt/riscv.Label
+  pub params : Array[@moonbitlang/minimbt/riscv.AnyReg]
   pub insns : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub control : Array[@moonbitlang/minimbt/riscv.RvAsm]
 }
 impl MBasicBlock {
   output(Self, Logger) -> Unit
+  print_with_info(Self, Logger, IteratedBlockInfo) -> Unit
 }
 
 pub struct MCore {
   pub funcs : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MFn]
   pub globals : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]
+  pub liveness : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Liveness]
 }
 impl MCore {
   output(Self, Logger) -> Unit
@@ -31,17 +72,13 @@ pub struct MFn {
 }
 impl MFn {
   output(Self, Logger) -> Unit
-}
-
-pub enum RegClass {
-  X
-  F
+  print_with_info(Self, Logger, Liveness) -> Unit
 }
 
 pub struct RiscvFnLoweringCtx {
   pub core : @core.Core
   pub func : @core.Fn
-  pub reg_classes : Array[RegClass]
+  pub reg_classes : Array[@moonbitlang/minimbt/riscv.RegClass]
   pub value_ref_count : @hashmap.T[@core.Value, Int]
   pub value_regs : @hashmap.T[@core.Value, @moonbitlang/minimbt/riscv.AnyReg]
   pub closure_reg : @moonbitlang/minimbt/riscv.AnyReg
@@ -50,6 +87,7 @@ pub struct RiscvFnLoweringCtx {
   pub buffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
+  pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.AnyReg]]
 }
 impl RiscvFnLoweringCtx {
   lower(Self) -> MFn!Failure
@@ -61,7 +99,7 @@ pub struct RiscvLoweringCtx {
 }
 impl RiscvLoweringCtx {
   lower(Self) -> MCore!Failure
-  lower_thunk_initializer(Self) -> MFn
+  lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]) -> MFn
   new(@core.Core) -> Self
 }
 

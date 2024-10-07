@@ -1,8 +1,8 @@
 pub type Occurence (Bool, @core.BlockRef) // true means entering, false means exiting
 
-pub type Ordering Array[Occurence]
+pub type Ordering (@core.Fn, Array[Occurence])
 
-pub type OrderedBlockRefs Array[@core.BlockRef]
+pub type OrderedBlockRefs (@core.Fn, Array[@core.BlockRef])
 
 pub type OrderedBasicBlocks Array[@core.BasicBlock]
 
@@ -42,36 +42,36 @@ pub fn Ordering::dfs(func : @core.Fn) -> Ordering {
     }
     result.push(Occurence(item))
   }
-  result
+  (func, result)
 }
 
 pub fn Ordering::preorder(self : Ordering) -> OrderedBlockRefs {
-  self._.filter(fn(x) { x._.0 }).map(fn(x) { x._.1 })
+  (self._.0, self._.1.filter(fn(x) { x._.0 }).map(fn(x) { x._.1 }))
 }
 
 pub fn Ordering::postorder(self : Ordering) -> OrderedBlockRefs {
-  self._.filter(fn(x) { not(x._.0) }).map(fn(x) { x._.1 })
+  (self._.0, self._.1.filter(fn(x) { not(x._.0) }).map(fn(x) { x._.1 }))
 }
 
 pub fn Ordering::rev_preorder(self : Ordering) -> OrderedBlockRefs {
   let po = self.preorder()
-  po._.rev_inplace()
+  po._.1.rev_inplace()
   po
 }
 
 pub fn Ordering::rev_postorder(self : Ordering) -> OrderedBlockRefs {
   let po = self.postorder()
-  po._.rev_inplace()
+  po._.1.rev_inplace()
   po
 }
 
 pub fn OrderedBlockRefs::to_basic_blocks(
-  self : OrderedBlockRefs,
-  func : @core.Fn
+  self : OrderedBlockRefs
 ) -> OrderedBasicBlocks {
-  self._.map(
+  let f = self._.0
+  self._.1.map(
     fn(bref) {
-      match func.blocks[bref] {
+      match f.blocks[bref] {
         Some(@core.Block::BasicBlock(~bb)) => bb
         _ => abort("not a basic block")
       }

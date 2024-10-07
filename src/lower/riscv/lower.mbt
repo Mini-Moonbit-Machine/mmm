@@ -194,11 +194,11 @@ fn RiscvFnLoweringCtx::emit_risc_v(
 }
 
 fn xreg(r : AnyReg) -> @riscv.Reg {
-  r.virt_to_phy()
+  r.to_xreg()
 }
 
 fn freg(r : AnyReg) -> @riscv.FReg {
-  r.virt_f_to_phy()
+  r.to_freg()
 }
 
 fn RiscvFnLoweringCtx::xreg_new(
@@ -218,11 +218,11 @@ fn RiscvFnLoweringCtx::freg_new(
 }
 
 fn xreg_to(r : @riscv.Reg) -> AnyReg {
-  r.phy_to_virt()
+  r.to_any()
 }
 
 fn freg_to(r : @riscv.FReg) -> AnyReg {
-  r.phy_to_virt_f()
+  r.to_any()
 }
 
 fn RiscvFnLoweringCtx::xreg_to_reg(
@@ -459,7 +459,7 @@ fn RiscvFnLoweringCtx::imm64_to_string(
 fn RiscvFnLoweringCtx::copy_call_arguments(
   self : RiscvFnLoweringCtx,
   args : Array[@core.Value]
-) -> Unit {
+) -> (Int, Int) {
   let mut used_xarg = 0
   let mut used_farg = 0
   for arg in args {
@@ -491,6 +491,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
       }
     }
   }
+  (used_xarg, used_farg)
 }
 
 fn RiscvFnLoweringCtx::copy_return_value(
@@ -510,8 +511,8 @@ fn RiscvFnLoweringCtx::lower_call(
   f : @core.Fn,
   args : Array[@core.Value]
 ) -> AnyReg {
-  self.copy_call_arguments(args)
-  @generated.constructor_rv_call(self, Label(f.name.to_string()))
+  let (nx, nf) = self.copy_call_arguments(args)
+  @generated.constructor_rv_call(self, Label(f.name.to_string()), nx, nf)
   self.copy_return_value(ty)
 }
 
@@ -521,8 +522,8 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   f : String,
   args : Array[@core.Value]
 ) -> AnyReg {
-  self.copy_call_arguments(args)
-  @generated.constructor_rv_call(self, Label(f))
+  let (nx, nf) = self.copy_call_arguments(args)
+  @generated.constructor_rv_call(self, Label(f), nx, nf)
   self.copy_return_value(ty)
 }
 
@@ -539,8 +540,8 @@ fn RiscvFnLoweringCtx::lower_apply(
     offset: 0,
   }
   let fp = @generated.constructor_rv_ld(self, func_ma)
-  self.copy_call_arguments(args)
-  @generated.constructor_rv_jalr(self, fp)
+  let (nx, nf) = self.copy_call_arguments(args)
+  @generated.constructor_rv_jalr(self, fp, nx, nf)
   self.copy_return_value(ty)
 }
 
@@ -702,18 +703,18 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
-          @generated.constructor_rv_call(self, Label("_memseti32"))
+          @generated.constructor_rv_call(self, Label("_memseti32"), 3, 0)
         }
         F => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
-          @generated.constructor_rv_call(self, Label("_memsetf64"))
+          @generated.constructor_rv_call(self, Label("_memsetf64"), 2, 1)
         }
       }
     Zero => {
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
-      @generated.constructor_rv_call(self, Label("_memset0e\{elem_sz}"))
+      @generated.constructor_rv_call(self, Label("_memset0e\{elem_sz}"), 2, 0)
     }
     _ => abort("Invalid fill")
   }
@@ -1072,12 +1073,16 @@ fn RiscvFnLoweringCtx::assign_regs_for_function_parameters(
   }
 }
 
+pub fn fn_block_name(func : @core.Fn, bb : @core.BlockRef) -> String {
+  ".\{func.name}_b\{bb.id}"
+}
+
 fn RiscvFnLoweringCtx::block_label(
   self : RiscvFnLoweringCtx,
   bb : @core.BlockRef
 ) -> @riscv.Label {
   let _ = self
-  @riscv.Label::Label(".\{self.func.name}_b\{bb.id}")
+  Label(fn_block_name(self.func, bb))
 }
 
 fn RiscvFnLoweringCtx::emit_block_parameters(
@@ -1306,7 +1311,7 @@ pub fn RiscvFnLoweringCtx::new(
   // NOTE: fv0 is considered to be the closure pointer
   let reg_classes = [RegClass::X, X]
   let closure_reg = @riscv.any_xreg(0)
-  let alloc_reg = @riscv.reg_alloc.phy_to_virt() // s11 is reserved for the allocator
+  let alloc_reg = @riscv.reg_alloc.to_any() // s11 is reserved for the allocator
   let order = @lower.LoweringOrder::new(func)
   let lower_ctx = RiscvFnLoweringCtx::{
     core,
@@ -1361,7 +1366,12 @@ pub fn RiscvLoweringCtx::lower_globals(
         ty_size
       },
     )
-    insns.push(MInsn::Call(target=Label(thunk.name.to_string())))
+    let call = MInsn::Call(
+      target=Label(thunk.name.to_string()),
+      num_xregs=0,
+      num_fregs=0,
+    )
+    insns.push(call)
     insns.push(MInsn::La(rd=@riscv.reg_swap, l=Label(symbol.name.to_string())))
     match (rc, ty_size) {
       (X, 4) =>
@@ -1383,7 +1393,7 @@ pub fn RiscvLoweringCtx::lower_globals(
       _ => abort("Invalid thunk type size")
     }
   }
-  let control = [MInsn::Ret]
+  let control = [MInsn::XRet]
   let params = []
   blocks.set(entry, { id: entry, insns, control, params })
   { name, entry, blocks }
@@ -1391,14 +1401,21 @@ pub fn RiscvLoweringCtx::lower_globals(
 
 pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
   let funcs = MutMap::new()
+  let liveness_info = MutMap::new()
   for func in self.core.funcs {
     let (_, func) = func
     let lower_ctx = RiscvFnLoweringCtx::new(self.core, func)
     let mfn = lower_ctx.lower!()
     funcs.set(@riscv.Label::Label(func.name), mfn)
+    let liveness = Liveness::new(Some(func), mfn)
+    liveness.compute_block_liveness()
+    liveness_info.set(@riscv.Label::Label(func.name), liveness)
   }
   let globals = MutMap::new()
   let init = self.lower_globals(globals)
   funcs.set(init.name, init)
-  { funcs, globals }
+  let liveness = Liveness::new(None, init)
+  liveness.compute_block_liveness()
+  liveness_info.set(init.name, liveness)
+  { funcs, globals, liveness: liveness_info }
 }

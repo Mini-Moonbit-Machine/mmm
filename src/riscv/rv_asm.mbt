@@ -79,11 +79,12 @@ pub enum RvAsm {
   Mv(~rd : Reg, ~rs : Reg)
   FmvD(~rd : FReg, ~rs : FReg)
   J(~target : Label)
-  Jalr(~target : Reg)
+  Jalr(~target : Reg, ~num_fregs : Int, ~num_xregs : Int)
   Jr(~target : Reg)
-  Call(~target : Label)
+  Call(~target : Label, ~num_xregs : Int, ~num_fregs : Int)
   Tail(~target : Label)
-  Ret
+  XRet
+  FRet
   // Comments
   Label(Label)
   Comment(String)
@@ -256,7 +257,7 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string("j ")
       logger.write_string(target._)
     }
-    Jalr(~target) => {
+    Jalr(~target, ..) => {
       logger.write_string("jalr ")
       Show::output(target, logger)
     }
@@ -264,7 +265,7 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string("jr ")
       Show::output(target, logger)
     }
-    Call(~target) => {
+    Call(~target, ..) => {
       logger.write_string("call ")
       logger.write_string(target._)
     }
@@ -272,7 +273,7 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string("tail ")
       logger.write_string(target._)
     }
-    Ret => logger.write_string("ret")
+    XRet | FRet => logger.write_string("ret")
     Label(label) => {
       logger.write_string(label._)
       logger.write_string(":")

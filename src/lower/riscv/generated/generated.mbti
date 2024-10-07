@@ -22,6 +22,14 @@ fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg
 
 fn constructor_lower_x_value[C : Context](C, @core.Value) -> @riscv.Reg
 
+fn constructor_round_rdn[C : Context](C) -> @core.RoundMode
+
+fn constructor_round_rne[C : Context](C) -> @core.RoundMode
+
+fn constructor_round_rtz[C : Context](C) -> @core.RoundMode
+
+fn constructor_round_rup[C : Context](C) -> @core.RoundMode
+
 fn constructor_rv_add[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_addi[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
@@ -50,7 +58,7 @@ fn constructor_rv_bne[C : Context](C, @riscv.Reg, @riscv.Reg, @riscv.Label) -> U
 
 fn constructor_rv_bnez[C : Context](C, @riscv.Reg, @riscv.Label) -> Unit
 
-fn constructor_rv_call[C : Context](C, @riscv.Label) -> Unit
+fn constructor_rv_call[C : Context](C, @riscv.Label, Int, Int) -> Unit
 
 fn constructor_rv_div[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
@@ -60,11 +68,13 @@ fn constructor_rv_divw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_f_mv_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
-fn constructor_rv_fmv_dx[C : Context](C, @riscv.Reg) -> @riscv.FReg
-
-fn constructor_rv_fmv_to[C : Context](C, @riscv.FReg, @riscv.FReg) -> Unit
+fn constructor_rv_fabs_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fadd_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
+
+fn constructor_rv_fcvt_d_w[C : Context](C, @riscv.Reg) -> @riscv.FReg
+
+fn constructor_rv_fcvt_w_d[C : Context](C, @riscv.FReg, @core.RoundMode) -> @riscv.Reg
 
 fn constructor_rv_fdiv_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
@@ -72,15 +82,23 @@ fn constructor_rv_fld[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]
 
 fn constructor_rv_fmul_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
+fn constructor_rv_fmv_dx[C : Context](C, @riscv.Reg) -> @riscv.FReg
+
+fn constructor_rv_fmv_to[C : Context](C, @riscv.FReg, @riscv.FReg) -> Unit
+
 fn constructor_rv_fneg_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
+fn constructor_rv_fret[C : Context](C) -> Unit
+
 fn constructor_rv_fsd[C : Context](C, @riscv.FReg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
+
+fn constructor_rv_fsqrt_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fsub_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_j[C : Context](C, @riscv.Label) -> Unit
 
-fn constructor_rv_jalr[C : Context](C, @riscv.Reg) -> Unit
+fn constructor_rv_jalr[C : Context](C, @riscv.Reg, Int, Int) -> Unit
 
 fn constructor_rv_jr[C : Context](C, @riscv.Reg) -> Unit
 
@@ -128,8 +146,6 @@ fn constructor_rv_remu[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_remw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
-fn constructor_rv_ret[C : Context](C) -> Unit
-
 fn constructor_rv_sb[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
 
 fn constructor_rv_sd[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
@@ -163,6 +179,8 @@ fn constructor_rv_sw[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @r
 fn constructor_rv_xor[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_xori[C : Context](C, @riscv.Reg, Int) -> @riscv.Reg
+
+fn constructor_rv_xret[C : Context](C) -> Unit
 
 fn constructor_ty_array[C : Context](C, @core.Type) -> @core.Type
 
@@ -223,6 +241,8 @@ pub trait Context {
   closure_reg(Self) -> @riscv.Reg
   is_return_reg(Self, @riscv.Reg) -> Unit?
   return_reg(Self) -> @riscv.Reg
+  is_float_return_reg(Self, @riscv.FReg) -> Unit?
+  float_return_reg(Self) -> @riscv.FReg
   i64_generate_imm(Self, Int64) -> (@riscv.Imm20, @riscv.Imm12)?
   i32_generate_imm(Self, Int) -> (@riscv.Imm20, @riscv.Imm12)?
   imm20_is_zero(Self, @riscv.Imm20) -> Unit?

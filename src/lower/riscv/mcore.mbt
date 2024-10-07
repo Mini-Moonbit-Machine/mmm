@@ -5,6 +5,7 @@ typealias MInsn = @riscv.RvAsm
 pub struct MCore {
   funcs : MutMap[Label, MFn]
   globals : MutMap[Label, Int]
+  liveness : MutMap[Label, Liveness]
 }
 
 pub struct MFn {
@@ -28,9 +29,37 @@ pub fn MBasicBlock::output(self : MBasicBlock, logger : Logger) -> Unit {
     logger.write_object(insn)
     logger.write_string("\n")
   }
+  logger.write_string("; control\n")
   for insn in self.control {
     logger.write_object(insn)
     logger.write_string("\n")
+  }
+  logger.write_string("\n")
+}
+
+pub fn MBasicBlock::print_with_info(
+  self : MBasicBlock,
+  logger : Logger,
+  info : IteratedBlockInfo
+) -> Unit {
+  let live_in = info.live_in.iter().to_string()
+  let live_out = info.live_out.iter().to_string()
+  logger.write_string("; block info: \{info.block_info}\n")
+  logger.write_string("; live_in: \{live_in}, live_out: \{live_out}\n")
+  let params = self.params.iter().to_string()
+  logger.write_string("; block parameters: \{params}\n")
+  logger.write_string("\{self.id._}:\n")
+  let mut i = 0
+  for insn in self.insns {
+    logger.write_object(insn)
+    logger.write_string("  ; live: \{info.live_set[i].iter().to_string()}\n")
+    i += 1
+  }
+  logger.write_string("; control\n")
+  for insn in self.control {
+    logger.write_object(insn)
+    logger.write_string("  ; live: \{info.live_set[i].iter().to_string()}\n")
+    i += 1
   }
   logger.write_string("\n")
 }
@@ -49,13 +78,36 @@ pub fn MFn::output(self : MFn, logger : Logger) -> Unit {
   }
 }
 
+pub fn MFn::print_with_info(
+  self : MFn,
+  logger : Logger,
+  info : Liveness
+) -> Unit {
+  logger.write_string("\{self.name._}:\n")
+  let entry = self.entry
+  let block = self.blocks[entry].unwrap()
+  block.print_with_info(logger, info.iter_block_info[entry._].unwrap())
+  for block in self.blocks {
+    let (_, block) = block
+    if block.id == entry {
+      continue
+    }
+    block.print_with_info(logger, info.iter_block_info[block.id._].unwrap())
+  }
+}
+
 pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
   for fpair in self.funcs {
     let (_, func) = fpair
     logger.write_string("  .p2align 3\n")
     logger.write_string("  .globl \{func.name._}\n")
     logger.write_string("  .type \{func.name._}, @function\n")
-    logger.write_object(func)
+    func.print_with_info(
+      logger,
+      self.liveness[func.name].or_else(
+        fn() { abort("liveness not found: \{func.name}") },
+      ),
+    )
   }
   for global in self.globals {
     let (global, sz) = global

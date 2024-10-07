@@ -30,8 +30,18 @@ pub fn AnyReg::to_string(self : AnyReg) -> String {
 
 pub fn AnyReg::pretty(self : AnyReg) -> String {
   match self.class {
-    X => "v\{self.reg}"
-    F => "fv\{self.reg}"
+    X =>
+      if -32 <= self.reg && self.reg < 0 {
+        self.to_xreg().to_string()
+      } else {
+        "v\{self.reg}"
+      }
+    F =>
+      if -64 <= self.reg && self.reg < -32 {
+        self.to_freg().to_string()
+      } else {
+        "fv\{self.reg}"
+      }
   }
 }
 
@@ -88,7 +98,7 @@ pub enum Reg {
   V(AnyReg)
 } derive(Eq, Compare, Hash)
 
-pub fn phy_to_virt(self : Reg) -> AnyReg {
+pub fn to_any(self : Reg) -> AnyReg {
   match self {
     V(r) => r
     Zero => any_xreg(-1)
@@ -126,7 +136,7 @@ pub fn phy_to_virt(self : Reg) -> AnyReg {
   }
 }
 
-pub fn virt_to_phy(self : AnyReg) -> Reg {
+pub fn to_xreg(self : AnyReg) -> Reg {
   let r = match self.reg {
     -1 => Zero
     -2 => Ra
@@ -285,7 +295,7 @@ pub enum FReg {
   Fv(AnyReg)
 } derive(Eq, Compare, Hash)
 
-pub fn phy_to_virt_f(self : FReg) -> AnyReg {
+pub fn to_any(self : FReg) -> AnyReg {
   match self {
     Fv(r) => r
     Ft0 => any_freg(-33)
@@ -323,7 +333,7 @@ pub fn phy_to_virt_f(self : FReg) -> AnyReg {
   }
 }
 
-pub fn virt_f_to_phy(self : AnyReg) -> FReg {
+pub fn to_freg(self : AnyReg) -> FReg {
   let r = match self.reg {
     -33 => Ft0
     -34 => Ft1

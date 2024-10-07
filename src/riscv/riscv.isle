@@ -80,11 +80,12 @@
     (Mv (rd XReg) (rs XReg))
     (FmvD (rd FReg) (rs FReg))
     (J (target Label))
-    (Jalr (target XReg))
+    (Jalr (target XReg) (num_xregs Int32) (num_fregs Int32))
     (Jr (target XReg))
-    (Call (target Label))
+    (Call (target Label) (num_xregs Int32) (num_fregs Int32))
     (Tail (target Label))
-    Ret))
+    XRet
+    FRet))
 
 (decl next_virtual_xreg () XReg)
 (extern constructor next_virtual_xreg next_virtual_xreg)
@@ -483,17 +484,20 @@
 (decl rv_j (Label) Unit)
 (rule (rv_j x) (emit_risc_v (RvAsm.J x)))
 
-(decl rv_jalr (XReg) Unit)
-(rule (rv_jalr x) (emit_risc_v (RvAsm.Jalr x)))
+(decl rv_jalr (XReg Int32 Int32) Unit)
+(rule (rv_jalr x n1 n2) (emit_risc_v (RvAsm.Jalr x n1 n2)))
 
 (decl rv_jr (XReg) Unit)
 (rule (rv_jr x) (emit_risc_v (RvAsm.Jr x)))
 
-(decl rv_call (Label) Unit)
-(rule (rv_call x) (emit_risc_v (RvAsm.Call x)))
+(decl rv_call (Label Int32 Int32) Unit)
+(rule (rv_call x n1 n2) (emit_risc_v (RvAsm.Call x n1 n2)))
 
-(decl rv_ret () Unit)
-(rule (rv_ret) (emit_risc_v (RvAsm.Ret)))
+(decl rv_xret () Unit)
+(rule (rv_xret) (emit_risc_v (RvAsm.XRet)))
+
+(decl rv_fret () Unit)
+(rule (rv_fret) (emit_risc_v (RvAsm.FRet)))
 
 (decl zero_reg () XReg)
 (extern constructor zero_reg zero_reg)

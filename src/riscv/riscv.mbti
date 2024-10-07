@@ -1,7 +1,15 @@
 package moonbitlang/minimbt/riscv
 
+alias @moonbitlang/minimbt/core as @core
+
 // Values
-fn any_reg(Int) -> AnyReg
+fn abort[T](String) -> T
+
+fn any_freg(Int) -> AnyReg
+
+fn any_reg(Int, RegClass) -> AnyReg
+
+fn any_xreg(Int) -> AnyReg
 
 fn emit(Unit) -> Array[AssemblyFunction]
 
@@ -22,6 +30,8 @@ let freg_swap : FReg
 let freg_temp_list : Array[FReg]
 
 fn print_functions(Array[AssemblyFunction]) -> String
+
+let reg_alloc : Reg
 
 let reg_allocatable_list : Array[Reg]
 
@@ -46,15 +56,17 @@ let reg_temp_list : Array[Reg]
 // Types and methods
 pub struct AnyReg {
   pub reg : Int
+  pub class : RegClass
 }
 impl AnyReg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   output(Self, Logger) -> Unit
+  pretty(Self) -> String
+  to_freg(Self) -> FReg
   to_string(Self) -> String
-  virt_f_to_phy(Self) -> FReg?
-  virt_to_phy(Self) -> Reg?
+  to_xreg(Self) -> Reg
 }
 
 pub struct AssemblyFunction {
@@ -105,7 +117,7 @@ impl FReg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
-  phy_to_virt_f(Self) -> AnyReg
+  to_any(Self) -> AnyReg
   to_string(Self) -> String
 }
 
@@ -167,8 +179,18 @@ impl Reg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
-  phy_to_virt(Self) -> AnyReg
+  to_any(Self) -> AnyReg
   to_string(Self) -> String
+}
+
+pub enum RegClass {
+  X
+  F
+}
+impl RegClass {
+  compare(Self, Self) -> Int
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
 }
 
 pub enum RvAsm {
@@ -231,6 +253,10 @@ pub enum RvAsm {
   FeqD(Reg, FReg, FReg)
   FleD(Reg, FReg, FReg)
   FmvDX(FReg, Reg)
+  FcvtWD(Reg, FReg, @core.RoundMode)
+  FcvtDW(FReg, Reg)
+  FabsD(FReg, FReg)
+  FsqrtD(FReg, FReg)
   Nop
   La(Reg, Label)
   Li(Reg, String)
@@ -239,11 +265,12 @@ pub enum RvAsm {
   Mv(Reg, Reg)
   FmvD(FReg, FReg)
   J(Label)
-  Jalr(Reg)
+  Jalr(Reg, Int, Int)
   Jr(Reg)
-  Call(Label)
+  Call(Label, Int, Int)
   Tail(Label)
-  Ret
+  XRet
+  FRet
   Label(Label)
   Comment(String)
 }
