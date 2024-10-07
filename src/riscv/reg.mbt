@@ -5,20 +5,46 @@ pub struct MemAccess[TBase, TOff] {
 
 pub type Label String derive(Show, Eq, Hash)
 
+pub fn abort[T](msg : String) -> T {
+  println(msg)
+  panic()
+}
+
+pub enum RegClass {
+  X
+  F
+} derive(Eq, Compare, Hash)
+
 pub struct AnyReg {
   mut reg : Int
+  class : RegClass
 } derive(Eq, Compare, Hash)
 
 pub fn AnyReg::output(self : AnyReg, logger : Logger) -> Unit {
-  logger.write_string("\{self.reg}")
+  logger.write_string(self.pretty())
 }
 
 pub fn AnyReg::to_string(self : AnyReg) -> String {
-  "\{self.reg}"
+  self.pretty()
 }
 
-pub fn any_reg(reg : Int) -> AnyReg {
-  { reg, }
+pub fn AnyReg::pretty(self : AnyReg) -> String {
+  match self.class {
+    X => "v\{self.reg}"
+    F => "fv\{self.reg}"
+  }
+}
+
+pub fn any_reg(reg : Int, class : RegClass) -> AnyReg {
+  { reg, class }
+}
+
+pub fn any_xreg(reg : Int) -> AnyReg {
+  { reg, class: X }
+}
+
+pub fn any_freg(reg : Int) -> AnyReg {
+  { reg, class: F }
 }
 
 pub type Imm20 Int
@@ -65,42 +91,42 @@ pub enum Reg {
 pub fn phy_to_virt(self : Reg) -> AnyReg {
   match self {
     V(r) => r
-    Zero => any_reg(-1)
-    Ra => any_reg(-2)
-    Sp => any_reg(-3)
-    Gp => any_reg(-4)
-    Tp => any_reg(-5)
-    T0 => any_reg(-6)
-    T1 => any_reg(-7)
-    T2 => any_reg(-8)
-    Fp => any_reg(-9)
-    S1 => any_reg(-10)
-    A0 => any_reg(-11)
-    A1 => any_reg(-12)
-    A2 => any_reg(-13)
-    A3 => any_reg(-14)
-    A4 => any_reg(-15)
-    A5 => any_reg(-16)
-    A6 => any_reg(-17)
-    A7 => any_reg(-18)
-    S2 => any_reg(-19)
-    S3 => any_reg(-20)
-    S4 => any_reg(-21)
-    S5 => any_reg(-22)
-    S6 => any_reg(-23)
-    S7 => any_reg(-24)
-    S8 => any_reg(-25)
-    S9 => any_reg(-26)
-    S10 => any_reg(-27)
-    S11 => any_reg(-28)
-    T3 => any_reg(-29)
-    T4 => any_reg(-30)
-    T5 => any_reg(-31)
-    T6 => any_reg(-32)
+    Zero => any_xreg(-1)
+    Ra => any_xreg(-2)
+    Sp => any_xreg(-3)
+    Gp => any_xreg(-4)
+    Tp => any_xreg(-5)
+    T0 => any_xreg(-6)
+    T1 => any_xreg(-7)
+    T2 => any_xreg(-8)
+    Fp => any_xreg(-9)
+    S1 => any_xreg(-10)
+    A0 => any_xreg(-11)
+    A1 => any_xreg(-12)
+    A2 => any_xreg(-13)
+    A3 => any_xreg(-14)
+    A4 => any_xreg(-15)
+    A5 => any_xreg(-16)
+    A6 => any_xreg(-17)
+    A7 => any_xreg(-18)
+    S2 => any_xreg(-19)
+    S3 => any_xreg(-20)
+    S4 => any_xreg(-21)
+    S5 => any_xreg(-22)
+    S6 => any_xreg(-23)
+    S7 => any_xreg(-24)
+    S8 => any_xreg(-25)
+    S9 => any_xreg(-26)
+    S10 => any_xreg(-27)
+    S11 => any_xreg(-28)
+    T3 => any_xreg(-29)
+    T4 => any_xreg(-30)
+    T5 => any_xreg(-31)
+    T6 => any_xreg(-32)
   }
 }
 
-pub fn virt_to_phy(self : AnyReg) -> Reg? {
+pub fn virt_to_phy(self : AnyReg) -> Reg {
   let r = match self.reg {
     -1 => Zero
     -2 => Ra
@@ -134,9 +160,14 @@ pub fn virt_to_phy(self : AnyReg) -> Reg? {
     -30 => T4
     -31 => T5
     -32 => T6
-    _ => if self.reg >= 0 { V(self) } else { return None }
+    _ =>
+      if self.reg >= 0 && self.class == X {
+        V(self)
+      } else {
+        abort("invalid register \{self} to integer register")
+      }
   }
-  Some(r)
+  r
 }
 
 pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
@@ -209,7 +240,7 @@ pub fn Reg::to_string(self : Reg) -> String {
     T4 => "t4"
     T5 => "t5"
     T6 => "t6"
-    V(r) => "v\{r}"
+    V(r) => "v\{r.reg}"
   }
 }
 
@@ -257,42 +288,42 @@ pub enum FReg {
 pub fn phy_to_virt_f(self : FReg) -> AnyReg {
   match self {
     Fv(r) => r
-    Ft0 => any_reg(-33)
-    Ft1 => any_reg(-34)
-    Ft2 => any_reg(-35)
-    Ft3 => any_reg(-36)
-    Ft4 => any_reg(-37)
-    Ft5 => any_reg(-38)
-    Ft6 => any_reg(-39)
-    Ft7 => any_reg(-40)
-    Fs0 => any_reg(-41)
-    Fs1 => any_reg(-42)
-    Fa0 => any_reg(-43)
-    Fa1 => any_reg(-44)
-    Fa2 => any_reg(-45)
-    Fa3 => any_reg(-46)
-    Fa4 => any_reg(-47)
-    Fa5 => any_reg(-48)
-    Fa6 => any_reg(-49)
-    Fa7 => any_reg(-50)
-    Fs2 => any_reg(-51)
-    Fs3 => any_reg(-52)
-    Fs4 => any_reg(-53)
-    Fs5 => any_reg(-54)
-    Fs6 => any_reg(-55)
-    Fs7 => any_reg(-56)
-    Fs8 => any_reg(-57)
-    Fs9 => any_reg(-58)
-    Fs10 => any_reg(-59)
-    Fs11 => any_reg(-60)
-    Ft8 => any_reg(-61)
-    Ft9 => any_reg(-62)
-    Ft10 => any_reg(-63)
-    Ft11 => any_reg(-64)
+    Ft0 => any_freg(-33)
+    Ft1 => any_freg(-34)
+    Ft2 => any_freg(-35)
+    Ft3 => any_freg(-36)
+    Ft4 => any_freg(-37)
+    Ft5 => any_freg(-38)
+    Ft6 => any_freg(-39)
+    Ft7 => any_freg(-40)
+    Fs0 => any_freg(-41)
+    Fs1 => any_freg(-42)
+    Fa0 => any_freg(-43)
+    Fa1 => any_freg(-44)
+    Fa2 => any_freg(-45)
+    Fa3 => any_freg(-46)
+    Fa4 => any_freg(-47)
+    Fa5 => any_freg(-48)
+    Fa6 => any_freg(-49)
+    Fa7 => any_freg(-50)
+    Fs2 => any_freg(-51)
+    Fs3 => any_freg(-52)
+    Fs4 => any_freg(-53)
+    Fs5 => any_freg(-54)
+    Fs6 => any_freg(-55)
+    Fs7 => any_freg(-56)
+    Fs8 => any_freg(-57)
+    Fs9 => any_freg(-58)
+    Fs10 => any_freg(-59)
+    Fs11 => any_freg(-60)
+    Ft8 => any_freg(-61)
+    Ft9 => any_freg(-62)
+    Ft10 => any_freg(-63)
+    Ft11 => any_freg(-64)
   }
 }
 
-pub fn virt_f_to_phy(self : AnyReg) -> FReg? {
+pub fn virt_f_to_phy(self : AnyReg) -> FReg {
   let r = match self.reg {
     -33 => Ft0
     -34 => Ft1
@@ -326,9 +357,14 @@ pub fn virt_f_to_phy(self : AnyReg) -> FReg? {
     -62 => Ft9
     -63 => Ft10
     -64 => Ft11
-    _ => if self.reg >= 0 { Fv(self) } else { return None }
+    _ =>
+      if self.reg >= 0 && self.class == F {
+        Fv(self)
+      } else {
+        abort("invalid register \{self} to float register")
+      }
   }
-  Some(r)
+  r
 }
 
 pub let freg_temp_list : Array[FReg] = [
@@ -407,7 +443,7 @@ pub fn FReg::to_string(self : FReg) -> String {
     Ft9 => "ft9"
     Ft10 => "ft10"
     Ft11 => "ft11"
-    Fv(reg) => "fv\{reg}"
+    Fv(r) => "fv\{r.reg}"
   }
 }
 

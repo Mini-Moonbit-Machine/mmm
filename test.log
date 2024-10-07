@@ -65,6 +65,7 @@ Testing test/test_src/ack.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -73,6 +74,7 @@ _start_b0:
   .globl ack
   .type ack, @function
 ack:
+; block parameters: []
 .ack_b0:
   mv v2, a0
   mv v3, a1
@@ -81,26 +83,31 @@ ack:
   bne v4, zero, .ack_b1
   j .ack_b2
 
+; block parameters: []
 .ack_b1:
   li v15, 1
   add v13, v3, v15
   mv v14, v13
   j .ack_b6
 
+; block parameters: [v12]
 .ack_b5:
   mv v14, v12
   j .ack_b6
 
+; block parameters: []
 .ack_b2:
   slt v27, v3, zero
   xori v5, v27, 1
   bne v5, zero, .ack_b3
   j .ack_b4
 
+; block parameters: [v14]
 .ack_b6:
   mv a0, v14
   ret
 
+; block parameters: []
 .ack_b4:
   li v25, 1
   sub v6, v2, v25
@@ -117,6 +124,7 @@ ack:
   mv v12, v9
   j .ack_b5
 
+; block parameters: []
 .ack_b3:
   li v19, 1
   sub v10, v2, v19
@@ -132,6 +140,7 @@ ack:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -142,6 +151,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 3
   mv a0, v5
@@ -213,6 +223,7 @@ Testing test/test_src/adder.mbt
   .globl adder
   .type adder, @function
 adder:
+; block parameters: []
 .adder_b0:
   mv v0, s10
   mv v2, a0
@@ -225,6 +236,7 @@ adder:
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -233,6 +245,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -243,6 +256,7 @@ thunk_start:
   .globl make_adder
   .type make_adder, @function
 make_adder:
+; block parameters: []
 .make_adder_b0:
   mv v2, a0
   addi v5, s11, -16
@@ -257,6 +271,7 @@ make_adder:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v9, 3
   mv a0, v9
@@ -335,6 +350,7 @@ Testing test/test_src/adder2.mbt
   .globl adder
   .type adder, @function
 adder:
+; block parameters: []
 .adder_b0:
   mv v0, s10
   mv v2, a0
@@ -347,6 +363,7 @@ adder:
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -355,6 +372,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -365,6 +383,7 @@ thunk_start:
   .globl make_adder
   .type make_adder, @function
 make_adder:
+; block parameters: []
 .make_adder_b0:
   mv v2, a0
   addi v5, s11, -16
@@ -379,6 +398,7 @@ make_adder:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v18, 2
   mv a0, v18
@@ -628,6 +648,7 @@ Testing test/test_src/bf.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -636,6 +657,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -646,6 +668,7 @@ thunk_start:
   .globl lp
   .type lp, @function
 lp:
+; block parameters: []
 .lp_b0:
   mv v0, s10
   lw v2, 8(v0)
@@ -664,10 +687,12 @@ lp:
   bne v9, zero, .lp_b1
   j .lp_b2
 
+; block parameters: []
 .lp_b1:
   mv v14, zero
   j .lp_b3
 
+; block parameters: []
 .lp_b2:
   li v21, 1
   add v10, v4, v21
@@ -686,6 +711,7 @@ lp:
   mv v14, v13
   j .lp_b3
 
+; block parameters: [v14]
 .lp_b3:
   mv a0, v14
   ret
@@ -694,6 +720,7 @@ lp:
   .globl aux
   .type aux, @function
 aux:
+; block parameters: []
 .aux_b0:
   mv v0, s10
   mv v2, a0
@@ -706,14 +733,17 @@ aux:
   bne v9, zero, .aux_b1
   j .aux_b2
 
+; block parameters: [v31]
 .aux_b19:
   mv v39, v31
   j .aux_b20
 
+; block parameters: []
 .aux_b1:
   mv v60, v2
   j .aux_b24
 
+; block parameters: []
 .aux_b7:
   slli v97, zero, 2
   add v98, v5, v97
@@ -739,6 +769,7 @@ aux:
   mv v47, v46
   j .aux_b21
 
+; block parameters: []
 .aux_b13:
   addi v140, s11, -4
   andi v7, v140, -8
@@ -769,10 +800,12 @@ aux:
   mv v25, v24
   j .aux_b18
 
+; block parameters: [v53]
 .aux_b22:
   mv v59, v53
   j .aux_b23
 
+; block parameters: []
 .aux_b5:
   slli v80, zero, 2
   add v81, v5, v80
@@ -792,6 +825,7 @@ aux:
   mv v53, v52
   j .aux_b22
 
+; block parameters: []
 .aux_b4:
   li v157, 2
   xor v158, v10, v157
@@ -799,6 +833,7 @@ aux:
   bne v12, zero, .aux_b5
   j .aux_b6
 
+; block parameters: []
 .aux_b8:
   li v151, 4
   xor v152, v10, v151
@@ -806,10 +841,12 @@ aux:
   bne v14, zero, .aux_b9
   j .aux_b10
 
+; block parameters: [v18]
 .aux_b17:
   mv v25, v18
   j .aux_b18
 
+; block parameters: []
 .aux_b2:
   slli v163, v2, 2
   add v164, v4, v163
@@ -820,10 +857,12 @@ aux:
   bne v11, zero, .aux_b3
   j .aux_b4
 
+; block parameters: [v60]
 .aux_b24:
   mv a0, v60
   ret
 
+; block parameters: []
 .aux_b6:
   li v154, 3
   xor v155, v10, v154
@@ -831,10 +870,12 @@ aux:
   bne v13, zero, .aux_b7
   j .aux_b8
 
+; block parameters: [v39]
 .aux_b20:
   mv v47, v39
   j .aux_b21
 
+; block parameters: []
 .aux_b12:
   li v145, 7
   xor v146, v10, v145
@@ -842,10 +883,12 @@ aux:
   bne v16, zero, .aux_b13
   j .aux_b14
 
+; block parameters: [v59]
 .aux_b23:
   mv v60, v59
   j .aux_b24
 
+; block parameters: []
 .aux_b3:
   slli v69, zero, 2
   add v70, v5, v69
@@ -865,6 +908,7 @@ aux:
   mv v59, v58
   j .aux_b23
 
+; block parameters: []
 .aux_b9:
   slli v114, zero, 2
   add v115, v5, v114
@@ -890,10 +934,12 @@ aux:
   mv v39, v38
   j .aux_b20
 
+; block parameters: []
 .aux_b16:
   mv v18, v2
   j .aux_b17
 
+; block parameters: []
 .aux_b10:
   li v148, 5
   xor v149, v10, v148
@@ -901,6 +947,7 @@ aux:
   bne v15, zero, .aux_b11
   j .aux_b12
 
+; block parameters: []
 .aux_b11:
   slli v125, zero, 2
   add v126, v5, v125
@@ -921,14 +968,17 @@ aux:
   mv v31, v30
   j .aux_b19
 
+; block parameters: [v47]
 .aux_b21:
   mv v53, v47
   j .aux_b22
 
+; block parameters: [v25]
 .aux_b18:
   mv v31, v25
   j .aux_b19
 
+; block parameters: []
 .aux_b14:
   li v142, 8
   xor v143, v10, v142
@@ -936,6 +986,7 @@ aux:
   bne v17, zero, .aux_b15
   j .aux_b16
 
+; block parameters: []
 .aux_b15:
   mv v18, v2
   j .aux_b17
@@ -944,6 +995,7 @@ aux:
   .globl bf
   .type bf, @function
 bf:
+; block parameters: []
 .bf_b0:
   mv v2, a0
   mv v3, a1
@@ -978,6 +1030,7 @@ bf:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v121, s11, -92
   andi v2, v121, -8
@@ -1184,6 +1237,7 @@ Testing test/test_src/cls-bug.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -1192,6 +1246,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v4, 123
@@ -1203,6 +1258,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -1213,6 +1269,7 @@ thunk_start:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   addi v5, s11, -8
@@ -1226,6 +1283,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v9, 456
   mv a0, v9
@@ -1306,6 +1364,7 @@ Testing test/test_src/cls-bug2.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -1314,6 +1373,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   slt v26, zero, v2
@@ -1321,10 +1381,12 @@ f:
   bne v5, zero, .f_b1
   j .f_b2
 
+; block parameters: [v12]
 .f_b3:
   mv a0, v12
   ret
 
+; block parameters: []
 .f_b1:
   mv a0, v2
   call minimbt_print_int
@@ -1349,6 +1411,7 @@ f:
   mv v12, v11
   j .f_b3
 
+; block parameters: []
 .f_b2:
   mv v12, zero
   j .f_b3
@@ -1357,6 +1420,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -1367,6 +1431,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v3, 9
   mv a0, v3
@@ -1445,6 +1510,7 @@ Testing test/test_src/cls-rec.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_x.1
   la t6, x.1
@@ -1456,6 +1522,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   xor v15, v2, zero
@@ -1463,14 +1530,17 @@ f:
   bne v3, zero, .f_b1
   j .f_b2
 
+; block parameters: [v8]
 .f_b3:
   mv a0, v8
   ret
 
+; block parameters: []
 .f_b1:
   mv v8, zero
   j .f_b3
 
+; block parameters: []
 .f_b2:
   li v13, 1
   sub v4, v2, v13
@@ -1487,6 +1557,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -1497,6 +1568,7 @@ thunk_start:
   .globl thunk_x.1
   .type thunk_x.1, @function
 thunk_x.1:
+; block parameters: []
 .thunk_x.1_b0:
   li v2, 10
   mv a0, v2
@@ -1506,6 +1578,7 @@ thunk_x.1:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 12
   mv a0, v5
@@ -1611,6 +1684,7 @@ Testing test/test_src/cls-reg-bug.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -1619,6 +1693,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -1629,6 +1704,7 @@ thunk_start:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v0, s10
   mv v2, a0
@@ -1656,10 +1732,12 @@ g:
   bne v22, zero, .g_b1
   j .g_b2
 
+; block parameters: [v25]
 .g_b3:
   mv a0, v25
   ret
 
+; block parameters: []
 .g_b1:
   neg v23, v2
   mv s10, v0
@@ -1670,6 +1748,7 @@ g:
   mv v25, v24
   j .g_b3
 
+; block parameters: []
 .g_b2:
   mv v25, v21
   j .g_b3
@@ -1678,6 +1757,7 @@ g:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v2, a0
   lw v4, 0(v2)
@@ -1717,6 +1797,7 @@ h:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v8, s11, -80
   andi v2, v8, -8
@@ -1822,6 +1903,7 @@ Testing test/test_src/debug.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -1830,6 +1912,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   addi v18, s11, -16
@@ -1844,10 +1927,12 @@ f:
   bne v5, zero, .f_b1
   j .f_b2
 
+; block parameters: [v8]
 .f_b3:
   mv a0, v8
   ret
 
+; block parameters: []
 .f_b1:
   li v9, 1
   mv a0, v9
@@ -1856,6 +1941,7 @@ f:
   mv v8, v7
   j .f_b3
 
+; block parameters: []
 .f_b2:
   mv s10, v3
   ld v11, 0(v3)
@@ -1870,6 +1956,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -1880,6 +1967,7 @@ thunk_start:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v0, s10
   mv v2, a0
@@ -1891,6 +1979,7 @@ g:
   .globl dummy
   .type dummy, @function
 dummy:
+; block parameters: []
 .dummy_b0:
   mv v2, a0
   mv a0, v2
@@ -1900,6 +1989,7 @@ dummy:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   ret
@@ -2026,6 +2116,7 @@ Testing test/test_src/even-odd.mbt
   .globl even
   .type even, @function
 even:
+; block parameters: []
 .even_b0:
   mv v2, a0
   addi v28, s11, -8
@@ -2037,26 +2128,31 @@ even:
   bne v5, zero, .even_b1
   j .even_b2
 
+; block parameters: []
 .even_b3:
   la v14, t.1
   lw v11, 0(v14)
   mv v12, v11
   j .even_b5
 
+; block parameters: [v12]
 .even_b5:
   mv v13, v12
   j .even_b6
 
+; block parameters: []
 .even_b1:
   xor v20, v2, zero
   sltiu v8, v20, 1
   bne v8, zero, .even_b3
   j .even_b4
 
+; block parameters: [v13]
 .even_b6:
   mv a0, v13
   ret
 
+; block parameters: []
 .even_b4:
   li v18, 1
   sub v9, v2, v18
@@ -2068,6 +2164,7 @@ even:
   mv v12, v10
   j .even_b5
 
+; block parameters: []
 .even_b2:
   li v24, 1
   add v6, v2, v24
@@ -2083,6 +2180,7 @@ even:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 789
   mv a0, v5
@@ -2098,6 +2196,7 @@ main:
   .globl odd
   .type odd, @function
 odd:
+; block parameters: []
 .odd_b0:
   mv v2, a0
   slt v22, zero, v2
@@ -2105,6 +2204,7 @@ odd:
   bne v3, zero, .odd_b1
   j .odd_b2
 
+; block parameters: []
 .odd_b2:
   li v20, 1
   add v4, v2, v20
@@ -2114,12 +2214,14 @@ odd:
   mv v11, v5
   j .odd_b6
 
+; block parameters: []
 .odd_b1:
   xor v17, v2, zero
   sltiu v6, v17, 1
   bne v6, zero, .odd_b3
   j .odd_b4
 
+; block parameters: []
 .odd_b4:
   li v15, 1
   sub v7, v2, v15
@@ -2129,14 +2231,17 @@ odd:
   mv v10, v8
   j .odd_b5
 
+; block parameters: [v11]
 .odd_b6:
   mv a0, v11
   ret
 
+; block parameters: [v10]
 .odd_b5:
   mv v11, v10
   j .odd_b6
 
+; block parameters: []
 .odd_b3:
   la v12, f.2
   lw v9, 0(v12)
@@ -2147,6 +2252,7 @@ odd:
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_t.1
   la t6, t.1
@@ -2161,6 +2267,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2171,6 +2278,7 @@ thunk_start:
   .globl thunk_t.1
   .type thunk_t.1, @function
 thunk_t.1:
+; block parameters: []
 .thunk_t.1_b0:
   li v2, 123
   mv a0, v2
@@ -2180,6 +2288,7 @@ thunk_t.1:
   .globl thunk_f.2
   .type thunk_f.2, @function
 thunk_f.2:
+; block parameters: []
 .thunk_f.2_b0:
   li v2, 456
   mv a0, v2
@@ -2258,6 +2367,7 @@ Testing test/test_src/fib.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2266,6 +2376,7 @@ _start_b0:
   .globl fib
   .type fib, @function
 fib:
+; block parameters: []
 .fib_b0:
   mv v2, a0
   li v17, 1
@@ -2274,10 +2385,12 @@ fib:
   bne v3, zero, .fib_b1
   j .fib_b2
 
+; block parameters: [v9]
 .fib_b3:
   mv a0, v9
   ret
 
+; block parameters: []
 .fib_b2:
   li v15, 1
   sub v4, v2, v15
@@ -2293,6 +2406,7 @@ fib:
   mv v9, v8
   j .fib_b3
 
+; block parameters: []
 .fib_b1:
   mv v9, v2
   j .fib_b3
@@ -2301,6 +2415,7 @@ fib:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2311,6 +2426,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 30
   mv a0, v5
@@ -2374,6 +2490,7 @@ Testing test/test_src/float.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2382,6 +2499,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2392,6 +2510,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v36, 4623113902481840538
   fmv.d.x fv37, v36
@@ -2513,6 +2632,7 @@ Testing test/test_src/funcomp.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2521,6 +2641,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2531,6 +2652,7 @@ thunk_start:
   .globl dec
   .type dec, @function
 dec:
+; block parameters: []
 .dec_b0:
   mv v2, a0
   li v4, 1
@@ -2542,6 +2664,7 @@ dec:
   .globl compose
   .type compose, @function
 compose:
+; block parameters: []
 .compose_b0:
   mv v2, a0
   mv v3, a1
@@ -2558,6 +2681,7 @@ compose:
   .globl dbl
   .type dbl, @function
 dbl:
+; block parameters: []
 .dbl_b0:
   mv v2, a0
   add v3, v2, v2
@@ -2568,6 +2692,7 @@ dbl:
   .globl composed
   .type composed, @function
 composed:
+; block parameters: []
 .composed_b0:
   mv v0, s10
   mv v2, a0
@@ -2590,6 +2715,7 @@ composed:
   .globl inc
   .type inc, @function
 inc:
+; block parameters: []
 .inc_b0:
   mv v2, a0
   li v4, 1
@@ -2601,6 +2727,7 @@ inc:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v24, s11, -8
   andi v2, v24, -8
@@ -2706,6 +2833,7 @@ Testing test/test_src/gcd.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2714,6 +2842,7 @@ _start_b0:
   .globl gcd
   .type gcd, @function
 gcd:
+; block parameters: []
 .gcd_b0:
   mv v2, a0
   mv v3, a1
@@ -2722,14 +2851,17 @@ gcd:
   bne v4, zero, .gcd_b1
   j .gcd_b2
 
+; block parameters: [v11]
 .gcd_b6:
   mv a0, v11
   ret
 
+; block parameters: []
 .gcd_b1:
   mv v11, v3
   j .gcd_b6
 
+; block parameters: []
 .gcd_b4:
   sub v6, v2, v3
   mv a0, v3
@@ -2739,6 +2871,7 @@ gcd:
   mv v10, v7
   j .gcd_b5
 
+; block parameters: []
 .gcd_b3:
   sub v8, v3, v2
   mv a0, v2
@@ -2748,12 +2881,14 @@ gcd:
   mv v10, v9
   j .gcd_b5
 
+; block parameters: []
 .gcd_b2:
   slt v16, v2, v3
   xori v5, v16, 1
   bne v5, zero, .gcd_b3
   j .gcd_b4
 
+; block parameters: [v10]
 .gcd_b5:
   mv v11, v10
   j .gcd_b6
@@ -2762,6 +2897,7 @@ gcd:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2772,6 +2908,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 21600
   mv a0, v5
@@ -2834,6 +2971,7 @@ Testing test/test_src/id.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2842,6 +2980,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v4, 1
@@ -2853,6 +2992,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -2863,6 +3003,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 1000
   mv a0, v5
@@ -2942,6 +3083,7 @@ Testing test/test_src/inprod-loop.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -2950,6 +3092,7 @@ _start_b0:
   .globl inprod
   .type inprod, @function
 inprod:
+; block parameters: []
 .inprod_b0:
   mv v2, a0
   mv v3, a1
@@ -2960,10 +3103,12 @@ inprod:
   bne v6, zero, .inprod_b1
   j .inprod_b2
 
+; block parameters: []
 .inprod_b2:
   fmv.d fv13, fv4
   j .inprod_b3
 
+; block parameters: []
 .inprod_b1:
   slli v22, v5, 3
   add v23, v2, v22
@@ -2984,14 +3129,16 @@ inprod:
   fmv.d fv13, fv12
   j .inprod_b3
 
+; block parameters: [fv13]
 .inprod_b3:
-  mv a0, v13
+  fmv.d fa0, fv13
   ret
 
   .p2align 3
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3002,6 +3149,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v22, s11, -24
   andi v2, v22, -8
@@ -3105,6 +3253,7 @@ Testing test/test_src/inprod-rec.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3113,6 +3262,7 @@ _start_b0:
   .globl inprod
   .type inprod, @function
 inprod:
+; block parameters: []
 .inprod_b0:
   mv v2, a0
   mv v3, a1
@@ -3122,11 +3272,13 @@ inprod:
   bne v5, zero, .inprod_b1
   j .inprod_b2
 
+; block parameters: []
 .inprod_b2:
   fmv.d.x fv24, zero
   fmv.d fv12, fv24
   j .inprod_b3
 
+; block parameters: []
 .inprod_b1:
   slli v21, v4, 3
   add v22, v2, v21
@@ -3146,14 +3298,16 @@ inprod:
   fmv.d fv12, fv11
   j .inprod_b3
 
+; block parameters: [fv12]
 .inprod_b3:
-  mv a0, v12
+  fmv.d fa0, fv12
   ret
 
   .p2align 3
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3164,6 +3318,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v21, s11, -24
   andi v2, v21, -8
@@ -3290,6 +3445,7 @@ Testing test/test_src/inprod.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3298,16 +3454,18 @@ _start_b0:
   .globl gety
   .type gety, @function
 gety:
+; block parameters: []
 .gety_b0:
   mv v2, a0
   fld fv4, 8(v2)
-  mv a0, v4
+  fmv.d fa0, fv4
   ret
 
   .p2align 3
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3318,16 +3476,18 @@ thunk_start:
   .globl getx
   .type getx, @function
 getx:
+; block parameters: []
 .getx_b0:
   mv v2, a0
   fld fv3, 0(v2)
-  mv a0, v3
+  fmv.d fa0, fv3
   ret
 
   .p2align 3
   .globl inprod
   .type inprod, @function
 inprod:
+; block parameters: []
 .inprod_b0:
   mv v2, a0
   mv v3, a1
@@ -3354,23 +3514,25 @@ inprod:
   fmv.d fv12, fa0
   fmul.d fv13, fv11, fv12
   fadd.d fv14, fv10, fv13
-  mv a0, v14
+  fmv.d fa0, fv14
   ret
 
   .p2align 3
   .globl getz
   .type getz, @function
 getz:
+; block parameters: []
 .getz_b0:
   mv v2, a0
   fld fv5, 16(v2)
-  mv a0, v5
+  fmv.d fa0, fv5
   ret
 
   .p2align 3
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v24, s11, -24
   andi v2, v24, -8
@@ -3488,6 +3650,7 @@ Testing test/test_src/join-reg.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3496,6 +3659,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v3, 123
@@ -3506,6 +3670,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3516,6 +3681,7 @@ thunk_start:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v2, a0
   li v3, 789
@@ -3526,6 +3692,7 @@ h:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v3, 456
@@ -3536,6 +3703,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -3551,6 +3719,7 @@ main:
   bne v5, zero, .main_b1
   j .main_b2
 
+; block parameters: [v10]
 .main_b3:
   mv a0, v10
   call minimbt_print_int
@@ -3558,11 +3727,13 @@ main:
   mv a0, v11
   ret
 
+; block parameters: []
 .main_b1:
   sub v9, v2, v3
   mv v10, v9
   j .main_b3
 
+; block parameters: []
 .main_b2:
   sub v6, v3, v2
   add v7, v6, v2
@@ -3647,6 +3818,7 @@ Testing test/test_src/join-reg2.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3655,6 +3827,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v3, 123
@@ -3665,6 +3838,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3675,6 +3849,7 @@ thunk_start:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v2, a0
   li v3, 789
@@ -3685,6 +3860,7 @@ h:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v3, 456
@@ -3695,6 +3871,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -3704,6 +3881,7 @@ main:
   bne v3, zero, .main_b1
   j .main_b2
 
+; block parameters: [v9]
 .main_b3:
   mv a0, v9
   call minimbt_print_int
@@ -3711,6 +3889,7 @@ main:
   mv a0, v10
   ret
 
+; block parameters: []
 .main_b1:
   mv a0, zero
   call g
@@ -3719,6 +3898,7 @@ main:
   mv v9, v8
   j .main_b3
 
+; block parameters: []
 .main_b2:
   mv a0, zero
   call h
@@ -3806,6 +3986,7 @@ Testing test/test_src/join-stack.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3814,6 +3995,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v3, 123
@@ -3824,6 +4006,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3834,6 +4017,7 @@ thunk_start:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v2, a0
   li v3, 789
@@ -3844,6 +4028,7 @@ h:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v3, 456
@@ -3854,6 +4039,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -3869,6 +4055,7 @@ main:
   bne v5, zero, .main_b1
   j .main_b2
 
+; block parameters: [v10]
 .main_b3:
   mv a0, v10
   call minimbt_print_int
@@ -3876,12 +4063,14 @@ main:
   mv a0, v11
   ret
 
+; block parameters: []
 .main_b1:
   li v13, 1
   add v9, v2, v13
   mv v10, v9
   j .main_b3
 
+; block parameters: []
 .main_b2:
   li v17, 2
   add v6, v3, v17
@@ -3958,6 +4147,7 @@ Testing test/test_src/join-stack2.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -3966,6 +4156,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v3, 123
@@ -3976,6 +4167,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -3986,6 +4178,7 @@ thunk_start:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v3, 456
@@ -3996,6 +4189,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -4005,6 +4199,7 @@ main:
   bne v3, zero, .main_b1
   j .main_b2
 
+; block parameters: [v7]
 .main_b3:
   mv a0, v7
   call minimbt_print_int
@@ -4012,6 +4207,7 @@ main:
   mv a0, v8
   ret
 
+; block parameters: []
 .main_b1:
   mv a0, zero
   call g
@@ -4020,6 +4216,7 @@ main:
   mv v7, v6
   j .main_b3
 
+; block parameters: []
 .main_b2:
   add v4, v2, v2
   mv v7, v4
@@ -4100,6 +4297,7 @@ Testing test/test_src/join-stack3.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -4108,6 +4306,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v3, 123
@@ -4118,6 +4317,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -4128,6 +4328,7 @@ thunk_start:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v2, a0
   li v3, 789
@@ -4138,6 +4339,7 @@ h:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v3, 456
@@ -4148,6 +4350,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -4157,6 +4360,7 @@ main:
   bne v3, zero, .main_b1
   j .main_b2
 
+; block parameters: [v6]
 .main_b3:
   add v7, v6, v2
   mv a0, v7
@@ -4165,6 +4369,7 @@ main:
   mv a0, v8
   ret
 
+; block parameters: []
 .main_b1:
   mv a0, zero
   call g
@@ -4172,6 +4377,7 @@ main:
   mv v6, v5
   j .main_b3
 
+; block parameters: []
 .main_b2:
   mv a0, zero
   call h
@@ -4308,6 +4514,7 @@ Testing test/test_src/landins_knot.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_factorial.18
   la t6, factorial.18
@@ -4325,6 +4532,7 @@ _start_b0:
   .globl init
   .type init, @function
 init:
+; block parameters: []
 .init_b0:
   li v10, 10
   mv a0, v10
@@ -4347,6 +4555,7 @@ init:
   .globl thunk__21
   .type thunk__21, @function
 thunk__21:
+; block parameters: []
 .thunk__21_b0:
   li v2, 5
   mv a0, v2
@@ -4356,6 +4565,7 @@ thunk__21:
   .globl thunk_factorial.18
   .type thunk_factorial.18, @function
 thunk_factorial.18:
+; block parameters: []
 .thunk_factorial.18_b0:
   addi v6, s11, -8
   andi v2, v6, -8
@@ -4371,6 +4581,7 @@ thunk_factorial.18:
   .globl dummy
   .type dummy, @function
 dummy:
+; block parameters: []
 .dummy_b0:
   mv v2, a0
   mv a0, v2
@@ -4380,6 +4591,7 @@ dummy:
   .globl landins_kont
   .type landins_kont, @function
 landins_kont:
+; block parameters: []
 .landins_kont_b0:
   mv v2, a0
   addi v20, s11, -8
@@ -4409,6 +4621,7 @@ landins_kont:
   .globl thunk_a.22
   .type thunk_a.22, @function
 thunk_a.22:
+; block parameters: []
 .thunk_a.22_b0:
   la v9, factorial.18
   ld v2, 0(v9)
@@ -4426,6 +4639,7 @@ thunk_a.22:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call init
   mv v2, zero
@@ -4436,6 +4650,7 @@ thunk_start:
   .globl aux
   .type aux, @function
 aux:
+; block parameters: []
 .aux_b0:
   mv v0, s10
   mv v2, a0
@@ -4455,6 +4670,7 @@ aux:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   addi v5, s11, -16
@@ -4469,6 +4685,7 @@ g:
   .globl h
   .type h, @function
 h:
+; block parameters: []
 .h_b0:
   mv v0, s10
   mv v2, a0
@@ -4478,15 +4695,18 @@ h:
   bne v4, zero, .h_b1
   j .h_b2
 
+; block parameters: []
 .h_b1:
   li v9, 1
   mv v8, v9
   j .h_b3
 
+; block parameters: [v8]
 .h_b3:
   mv a0, v8
   ret
 
+; block parameters: []
 .h_b2:
   li v13, 1
   sub v5, v2, v13
@@ -4714,6 +4934,7 @@ Testing test/test_src/matmul-flat.mbt
   .globl loop2
   .type loop2, @function
 loop2:
+; block parameters: []
 .loop2_b0:
   mv v2, a0
   mv v3, a1
@@ -4726,14 +4947,17 @@ loop2:
   bne v8, zero, .loop2_b1
   j .loop2_b2
 
+; block parameters: []
 .loop2_b2:
   mv v13, zero
   j .loop2_b3
 
+; block parameters: [v13]
 .loop2_b3:
   mv a0, v13
   ret
 
+; block parameters: []
 .loop2_b1:
   li v18, 1
   sub v9, v3, v18
@@ -4762,6 +4986,7 @@ loop2:
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -4770,6 +4995,7 @@ _start_b0:
   .globl make_arr
   .type make_arr, @function
 make_arr:
+; block parameters: []
 .make_arr_b0:
   mv v0, s10
   mv v2, a0
@@ -4799,6 +5025,7 @@ make_arr:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v214, s11, 0
   andi v2, v214, -8
@@ -5025,6 +5252,7 @@ main:
   .globl init_arr
   .type init_arr, @function
 init_arr:
+; block parameters: []
 .init_arr_b0:
   mv v2, a0
   mv v3, a1
@@ -5034,14 +5262,17 @@ init_arr:
   bne v6, zero, .init_arr_b1
   j .init_arr_b2
 
+; block parameters: [v11]
 .init_arr_b3:
   mv a0, v11
   ret
 
+; block parameters: []
 .init_arr_b2:
   mv v11, zero
   j .init_arr_b3
 
+; block parameters: []
 .init_arr_b1:
   slli v18, v3, 3
   sub v19, s11, v18
@@ -5070,6 +5301,7 @@ init_arr:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -5080,6 +5312,7 @@ thunk_start:
   .globl mul
   .type mul, @function
 mul:
+; block parameters: []
 .mul_b0:
   mv v2, a0
   mv v3, a1
@@ -5104,6 +5337,7 @@ mul:
   .globl loop3
   .type loop3, @function
 loop3:
+; block parameters: []
 .loop3_b0:
   mv v2, a0
   mv v3, a1
@@ -5116,6 +5350,7 @@ loop3:
   bne v8, zero, .loop3_b1
   j .loop3_b2
 
+; block parameters: []
 .loop3_b1:
   slli v47, v2, 3
   add v48, v7, v47
@@ -5156,10 +5391,12 @@ loop3:
   mv v21, v20
   j .loop3_b3
 
+; block parameters: []
 .loop3_b2:
   mv v21, zero
   j .loop3_b3
 
+; block parameters: [v21]
 .loop3_b3:
   mv a0, v21
   ret
@@ -5168,6 +5405,7 @@ loop3:
   .globl loop1
   .type loop1, @function
 loop1:
+; block parameters: []
 .loop1_b0:
   mv v2, a0
   mv v3, a1
@@ -5180,6 +5418,7 @@ loop1:
   bne v8, zero, .loop1_b1
   j .loop1_b2
 
+; block parameters: []
 .loop1_b1:
   li v18, 1
   sub v9, v4, v18
@@ -5204,10 +5443,12 @@ loop1:
   mv v13, v12
   j .loop1_b3
 
+; block parameters: []
 .loop1_b2:
   mv v13, zero
   j .loop1_b3
 
+; block parameters: [v13]
 .loop1_b3:
   mv a0, v13
   ret
@@ -5415,6 +5656,7 @@ Testing test/test_src/matmul.mbt
   .globl loop2
   .type loop2, @function
 loop2:
+; block parameters: []
 .loop2_b0:
   mv v0, s10
   mv v2, a0
@@ -5428,14 +5670,17 @@ loop2:
   bne v9, zero, .loop2_b1
   j .loop2_b2
 
+; block parameters: []
 .loop2_b2:
   mv v15, zero
   j .loop2_b3
 
+; block parameters: [v15]
 .loop2_b3:
   mv a0, v15
   ret
 
+; block parameters: []
 .loop2_b1:
   addi v24, s11, -48
   andi v8, v24, -8
@@ -5467,6 +5712,7 @@ loop2:
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -5475,6 +5721,7 @@ _start_b0:
   .globl matmul
   .type matmul, @function
 matmul:
+; block parameters: []
 .matmul_b0:
   mv v2, a0
   mv v3, a1
@@ -5505,6 +5752,7 @@ matmul:
   .globl gen_arr
   .type gen_arr, @function
 gen_arr:
+; block parameters: []
 .gen_arr_b0:
   mv v0, s10
   mv v2, a0
@@ -5537,6 +5785,7 @@ gen_arr:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v209, s11, 0
   andi v2, v209, -8
@@ -5756,6 +6005,7 @@ main:
   .globl init_arr
   .type init_arr, @function
 init_arr:
+; block parameters: []
 .init_arr_b0:
   mv v0, s10
   mv v2, a0
@@ -5766,14 +6016,17 @@ init_arr:
   bne v6, zero, .init_arr_b1
   j .init_arr_b2
 
+; block parameters: [v11]
 .init_arr_b3:
   mv a0, v11
   ret
 
+; block parameters: []
 .init_arr_b2:
   mv v11, zero
   j .init_arr_b3
 
+; block parameters: []
 .init_arr_b1:
   slli v18, v3, 3
   sub v19, s11, v18
@@ -5800,6 +6053,7 @@ init_arr:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -5810,6 +6064,7 @@ thunk_start:
   .globl loop3
   .type loop3, @function
 loop3:
+; block parameters: []
 .loop3_b0:
   mv v0, s10
   mv v2, a0
@@ -5823,6 +6078,7 @@ loop3:
   bne v8, zero, .loop3_b1
   j .loop3_b2
 
+; block parameters: []
 .loop3_b1:
   slli v48, v4, 3
   add v49, v3, v48
@@ -5860,10 +6116,12 @@ loop3:
   mv v21, v20
   j .loop3_b3
 
+; block parameters: []
 .loop3_b2:
   mv v21, zero
   j .loop3_b3
 
+; block parameters: [v21]
 .loop3_b3:
   mv a0, v21
   ret
@@ -5872,6 +6130,7 @@ loop3:
   .globl loop1
   .type loop1, @function
 loop1:
+; block parameters: []
 .loop1_b0:
   mv v0, s10
   mv v2, a0
@@ -5885,6 +6144,7 @@ loop1:
   bne v9, zero, .loop1_b1
   j .loop1_b2
 
+; block parameters: []
 .loop1_b1:
   addi v24, s11, -48
   andi v8, v24, -8
@@ -5912,10 +6172,12 @@ loop1:
   mv v15, v14
   j .loop1_b3
 
+; block parameters: []
 .loop1_b2:
   mv v15, zero
   j .loop1_b3
 
+; block parameters: [v15]
 .loop1_b3:
   mv a0, v15
   ret
@@ -5996,6 +6258,7 @@ Testing test/test_src/non-tail-if.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6004,6 +6267,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6014,6 +6278,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v31, 4608218246714312622
   fmv.d.x fv32, v31
@@ -6036,22 +6301,27 @@ main:
   bne v6, zero, .main_b1
   j .main_b2
 
+; block parameters: []
 .main_b1:
   mv v7, v2
   j .main_b3
 
+; block parameters: []
 .main_b8:
   mv v12, v2
   j .main_b9
 
+; block parameters: []
 .main_b5:
   mv v9, v5
   j .main_b6
 
+; block parameters: []
 .main_b4:
   mv v9, v3
   j .main_b6
 
+; block parameters: [v9]
 .main_b6:
   add v10, v7, v9
   slt v17, zero, v3
@@ -6059,6 +6329,7 @@ main:
   bne v11, zero, .main_b7
   j .main_b8
 
+; block parameters: [v12]
 .main_b9:
   add v13, v10, v12
   mv a0, v13
@@ -6067,14 +6338,17 @@ main:
   mv a0, v14
   ret
 
+; block parameters: []
 .main_b2:
   mv v7, v3
   j .main_b3
 
+; block parameters: []
 .main_b7:
   mv v12, v5
   j .main_b9
 
+; block parameters: [v7]
 .main_b3:
   slt v20, v2, zero
   xori v8, v20, 1
@@ -6145,6 +6419,7 @@ Testing test/test_src/non-tail-if2.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6153,6 +6428,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   li v2, 12345
   mv a0, v2
@@ -6162,6 +6438,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6172,6 +6449,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v34, s11, -8
   andi v2, v34, -8
@@ -6199,6 +6477,7 @@ main:
   bne v7, zero, .main_b1
   j .main_b2
 
+; block parameters: [v12]
 .main_b3:
   mv a0, v12
   call minimbt_print_int
@@ -6206,6 +6485,7 @@ main:
   mv a0, v13
   ret
 
+; block parameters: []
 .main_b1:
   mv s10, v2
   ld v22, 0(v2)
@@ -6221,6 +6501,7 @@ main:
   mv v12, v11
   j .main_b3
 
+; block parameters: []
 .main_b2:
   li v24, 7
   mv v12, v24
@@ -6270,6 +6551,7 @@ Testing test/test_src/print.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6278,6 +6560,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6288,6 +6571,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v13, 123
   mv a0, v13
@@ -6367,6 +6651,7 @@ Testing test/test_src/shuffle.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6375,6 +6660,7 @@ _start_b0:
   .globl foo
   .type foo, @function
 foo:
+; block parameters: []
 .foo_b0:
   mv v2, a0
   mv v3, a1
@@ -6407,6 +6693,7 @@ foo:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6417,6 +6704,7 @@ thunk_start:
   .globl bar
   .type bar, @function
 bar:
+; block parameters: []
 .bar_b0:
   mv v2, a0
   mv v3, a1
@@ -6439,6 +6727,7 @@ bar:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v3, 1
   mv a0, v3
@@ -6579,6 +6868,7 @@ Testing test/test_src/spill.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6587,6 +6877,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   mv v3, a1
@@ -6673,6 +6964,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6683,6 +6975,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 1
   mv a0, v5
@@ -6801,6 +7094,7 @@ Testing test/test_src/spill2.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -6809,6 +7103,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   li v2, 12345
   mv a0, v2
@@ -6818,6 +7113,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -6828,6 +7124,7 @@ thunk_start:
   .globl g
   .type g, @function
 g:
+; block parameters: []
 .g_b0:
   mv v2, a0
   li v4, 1
@@ -6839,6 +7136,7 @@ g:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   addi v86, s11, -40
   andi v2, v86, -8
@@ -6882,6 +7180,7 @@ main:
   bne v22, zero, .main_b1
   j .main_b2
 
+; block parameters: [v40]
 .main_b3:
   mv a0, v40
   call minimbt_print_int
@@ -6889,6 +7188,7 @@ main:
   mv a0, v41
   ret
 
+; block parameters: []
 .main_b1:
   li v43, 67890
   mv a0, v43
@@ -6897,6 +7197,7 @@ main:
   mv v40, v39
   j .main_b3
 
+; block parameters: []
 .main_b2:
   add v23, v5, v6
   add v24, v23, v7
@@ -7037,6 +7338,7 @@ Testing test/test_src/spill3.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -7045,6 +7347,7 @@ _start_b0:
   .globl f
   .type f, @function
 f:
+; block parameters: []
 .f_b0:
   mv v2, a0
   li v163, 1
@@ -7144,6 +7447,7 @@ f:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -7154,6 +7458,7 @@ thunk_start:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   call f
@@ -7225,6 +7530,7 @@ Testing test/test_src/sum-tail.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -7233,6 +7539,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -7243,6 +7550,7 @@ thunk_start:
   .globl sum
   .type sum, @function
 sum:
+; block parameters: []
 .sum_b0:
   mv v2, a0
   mv v3, a1
@@ -7251,14 +7559,17 @@ sum:
   bne v4, zero, .sum_b1
   j .sum_b2
 
+; block parameters: []
 .sum_b1:
   mv v8, v2
   j .sum_b3
 
+; block parameters: [v8]
 .sum_b3:
   mv a0, v8
   ret
 
+; block parameters: []
 .sum_b2:
   add v5, v2, v3
   li v10, 1
@@ -7274,6 +7585,7 @@ sum:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   mv a0, zero
   li v5, 10000
@@ -7347,6 +7659,7 @@ Testing test/test_src/sum.mbt
   .globl _start
   .type _start, @function
 _start:
+; block parameters: []
 _start_b0:
   call thunk_start
   ret
@@ -7355,6 +7668,7 @@ _start_b0:
   .globl thunk_start
   .type thunk_start, @function
 thunk_start:
+; block parameters: []
 .thunk_start_b0:
   call main
   mv v2, zero
@@ -7365,6 +7679,7 @@ thunk_start:
   .globl sum
   .type sum, @function
 sum:
+; block parameters: []
 .sum_b0:
   mv v2, a0
   slt v12, v2, zero
@@ -7372,14 +7687,17 @@ sum:
   bne v3, zero, .sum_b1
   j .sum_b2
 
+; block parameters: []
 .sum_b1:
   mv v7, zero
   j .sum_b3
 
+; block parameters: [v7]
 .sum_b3:
   mv a0, v7
   ret
 
+; block parameters: []
 .sum_b2:
   li v10, 1
   sub v4, v2, v10
@@ -7394,6 +7712,7 @@ sum:
   .globl main
   .type main, @function
 main:
+; block parameters: []
 .main_b0:
   li v5, 10000
   mv a0, v5

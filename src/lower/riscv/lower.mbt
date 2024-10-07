@@ -1,11 +1,8 @@
-pub enum RegClass {
-  X
-  F
-}
-
 typealias MutMap[K, V] = @hashmap.T[K, V]
 
 typealias MutSet[K] = @hashset.T[K]
+
+typealias RegClass = @riscv.RegClass
 
 fn abort[T](msg : String) -> T {
   println(msg)
@@ -25,26 +22,21 @@ pub struct RiscvFnLoweringCtx {
   func : @core.Fn
   reg_classes : Array[RegClass]
   value_ref_count : MutMap[@core.Value, Int]
-  value_regs : MutMap[@core.Value, @riscv.AnyReg]
-  closure_reg : @riscv.AnyReg
-  alloc_reg : @riscv.AnyReg
+  value_regs : MutMap[@core.Value, AnyReg]
+  closure_reg : AnyReg
+  alloc_reg : AnyReg
   order : @lower.LoweringOrder
   mut buffer : Array[MInsn]
   ibuffer : Array[MInsn]
-  ialias : Array[@riscv.AnyReg]
+  ialias : Array[AnyReg]
+  block_params_assignment : MutMap[@core.BlockRef, Array[AnyReg]]
 }
 
 fn RiscvFnLoweringCtx::value_regs_to_string(
   self : RiscvFnLoweringCtx
 ) -> String {
-  fn pretty_reg(kv : (@core.Value, @riscv.AnyReg)) -> String {
-    let xreg = kv.1.virt_to_phy()
-    let freg = kv.1.virt_f_to_phy()
-    match (xreg, freg) {
-      (Some(x), None) => "\{kv.0} -> \{x}"
-      (None, Some(f)) => "\{kv.0} -> \{f}"
-      _ => "\{kv.0} -> \{kv.1}"
-    }
+  fn pretty_reg(kv : (@core.Value, AnyReg)) -> String {
+    "\{kv.0} -> \{kv.1}"
   }
 
   let mut first = true
@@ -169,16 +161,16 @@ fn RiscvFnLoweringCtx::arg1(
 fn RiscvFnLoweringCtx::next_any_reg(
   reg_classes : Array[RegClass],
   reg_class : RegClass
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let id = reg_classes.length()
   reg_classes.push(reg_class)
-  @riscv.AnyReg::{ reg: id }
+  AnyReg::{ reg: id, class: reg_class }
 }
 
 fn RiscvFnLoweringCtx::next_reg(
   self : RiscvFnLoweringCtx,
   reg_class : RegClass
-) -> @riscv.AnyReg {
+) -> AnyReg {
   RiscvFnLoweringCtx::next_any_reg(self.reg_classes, reg_class)
 }
 
@@ -201,17 +193,17 @@ fn RiscvFnLoweringCtx::emit_risc_v(
   self.ibuffer.push(insn)
 }
 
-fn xreg(r : @riscv.AnyReg) -> @riscv.Reg {
-  r.virt_to_phy().or_else(fn() { abort("Invalid register") })
+fn xreg(r : AnyReg) -> @riscv.Reg {
+  r.virt_to_phy()
 }
 
-fn freg(r : @riscv.AnyReg) -> @riscv.FReg {
-  r.virt_f_to_phy().or_else(fn() { abort("Invalid register") })
+fn freg(r : AnyReg) -> @riscv.FReg {
+  r.virt_f_to_phy()
 }
 
 fn RiscvFnLoweringCtx::xreg_new(
   self : RiscvFnLoweringCtx,
-  r : @riscv.AnyReg
+  r : AnyReg
 ) -> @riscv.Reg {
   let _ = self
   r |> xreg
@@ -219,24 +211,24 @@ fn RiscvFnLoweringCtx::xreg_new(
 
 fn RiscvFnLoweringCtx::freg_new(
   self : RiscvFnLoweringCtx,
-  r : @riscv.AnyReg
+  r : AnyReg
 ) -> @riscv.FReg {
   let _ = self
   r |> freg
 }
 
-fn xreg_to(r : @riscv.Reg) -> @riscv.AnyReg {
+fn xreg_to(r : @riscv.Reg) -> AnyReg {
   r.phy_to_virt()
 }
 
-fn freg_to(r : @riscv.FReg) -> @riscv.AnyReg {
+fn freg_to(r : @riscv.FReg) -> AnyReg {
   r.phy_to_virt_f()
 }
 
 fn RiscvFnLoweringCtx::xreg_to_reg(
   self : RiscvFnLoweringCtx,
   r : @riscv.Reg
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let _ = self
   r |> xreg_to
 }
@@ -244,7 +236,7 @@ fn RiscvFnLoweringCtx::xreg_to_reg(
 fn RiscvFnLoweringCtx::freg_to_reg(
   self : RiscvFnLoweringCtx,
   r : @riscv.FReg
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let _ = self
   r |> freg_to
 }
@@ -252,7 +244,7 @@ fn RiscvFnLoweringCtx::freg_to_reg(
 fn RiscvFnLoweringCtx::put_in_reg(
   self : RiscvFnLoweringCtx,
   v : @core.Value
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let r = self.value_regs[v].or_else(
     fn() { abort("No reg assigned for value \{v}") },
   )
@@ -295,6 +287,25 @@ fn RiscvFnLoweringCtx::is_return_reg(
 fn RiscvFnLoweringCtx::return_reg(self : RiscvFnLoweringCtx) -> @riscv.Reg {
   let _ = self
   @riscv.reg_ret
+}
+
+fn RiscvFnLoweringCtx::is_float_return_reg(
+  self : RiscvFnLoweringCtx,
+  r : @riscv.FReg
+) -> Unit? {
+  let _ = self
+  if r == @riscv.freg_ret {
+    Some(())
+  } else {
+    None
+  }
+}
+
+fn RiscvFnLoweringCtx::float_return_reg(
+  self : RiscvFnLoweringCtx
+) -> @riscv.FReg {
+  let _ = self
+  @riscv.freg_ret
 }
 
 fn RiscvFnLoweringCtx::values_to_args(
@@ -485,7 +496,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
 fn RiscvFnLoweringCtx::copy_return_value(
   self : RiscvFnLoweringCtx,
   ty : @core.Type
-) -> @riscv.AnyReg {
+) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(X) => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
     Some(F) => freg_to(@generated.constructor_rv_f_mv_d(self, @riscv.freg_ret))
@@ -498,7 +509,7 @@ fn RiscvFnLoweringCtx::lower_call(
   ty : @core.Type,
   f : @core.Fn,
   args : Array[@core.Value]
-) -> @riscv.AnyReg {
+) -> AnyReg {
   self.copy_call_arguments(args)
   @generated.constructor_rv_call(self, Label(f.name.to_string()))
   self.copy_return_value(ty)
@@ -509,7 +520,7 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   ty : @core.Type,
   f : String,
   args : Array[@core.Value]
-) -> @riscv.AnyReg {
+) -> AnyReg {
   self.copy_call_arguments(args)
   @generated.constructor_rv_call(self, Label(f))
   self.copy_return_value(ty)
@@ -520,7 +531,7 @@ fn RiscvFnLoweringCtx::lower_apply(
   ty : @core.Type,
   f : @core.Value,
   args : Array[@core.Value]
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let closure_addr = @generated.constructor_lower_value(self, f)
   @generated.constructor_rv_mv_to(self, @riscv.reg_closure, xreg(closure_addr))
   let func_ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
@@ -536,7 +547,7 @@ fn RiscvFnLoweringCtx::lower_apply(
 fn RiscvFnLoweringCtx::lower_load_fn(
   self : RiscvFnLoweringCtx,
   func : @core.FnRef
-) -> @riscv.AnyReg {
+) -> AnyReg {
   @generated.constructor_rv_la(self, self.ref_fn(func).name) |> xreg_to
 }
 
@@ -544,7 +555,7 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
   self : RiscvFnLoweringCtx,
   ty : @core.Type,
   sym : @core.SymbolRef
-) -> @riscv.AnyReg {
+) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
       let addr = @generated.constructor_rv_la(self, self.ref_symbol(sym).name)
@@ -623,7 +634,7 @@ fn RiscvFnLoweringCtx::lower_store(
   ty : @core.Type,
   addr : @core.Address,
   val : @core.Value
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let r = @generated.constructor_lower_value(self, val)
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
@@ -644,7 +655,7 @@ fn RiscvFnLoweringCtx::lower_load(
   self : RiscvFnLoweringCtx,
   ty : @core.Type,
   addr : @core.Address
-) -> @riscv.AnyReg {
+) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
       let ma = self.lower_address(addr)
@@ -679,10 +690,10 @@ fn RiscvFnLoweringCtx::do_fill_with_memset_set_imm_length(
 fn RiscvFnLoweringCtx::do_fill_with_memset(
   self : RiscvFnLoweringCtx,
   fill : @core.Fill,
-  ptr : @riscv.AnyReg,
+  ptr : AnyReg,
   elem_sz : Int,
   init_rc : RegClass,
-  init_reg : @riscv.AnyReg
+  init_reg : AnyReg
 ) -> Unit {
   match fill {
     Init(..) =>
@@ -710,11 +721,11 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
 
 fn RiscvFnLoweringCtx::do_fill_at_small_offset(
   self : RiscvFnLoweringCtx,
-  ptr : @riscv.AnyReg,
+  ptr : AnyReg,
   elem_sz : Int,
   index : @riscv.Imm12,
   init_rc : RegClass,
-  init_reg : @riscv.AnyReg
+  init_reg : AnyReg
 ) -> Unit {
   let base = xreg(ptr)
   let offset = index
@@ -732,7 +743,7 @@ fn RiscvFnLoweringCtx::do_fill_at_small_offset(
 fn RiscvFnLoweringCtx::get_init_reg_with_class(
   self : RiscvFnLoweringCtx,
   fill : @core.Fill
-) -> (RegClass, @riscv.AnyReg) {
+) -> (RegClass, AnyReg) {
   match fill {
     Zero => (X, self.zero_reg() |> xreg_to)
     Init(~val) | Field(~val, ..) => {
@@ -746,7 +757,7 @@ fn RiscvFnLoweringCtx::get_init_reg_with_class(
 fn RiscvFnLoweringCtx::do_fill_field(
   self : RiscvFnLoweringCtx,
   fill : @core.Fill,
-  ptr : @riscv.AnyReg,
+  ptr : AnyReg,
   elem_sz : Int,
   index : Int
 ) -> Unit {
@@ -762,10 +773,10 @@ fn RiscvFnLoweringCtx::do_fill_field(
 fn RiscvFnLoweringCtx::do_fill(
   self : RiscvFnLoweringCtx,
   fill : @core.Fill,
-  ptr : @riscv.AnyReg,
+  ptr : AnyReg,
   elem_sz : Int,
   imm_len : Int?,
-  reg_len : @riscv.AnyReg?
+  reg_len : AnyReg?
 ) -> Unit {
   match imm_len {
     Some(len) =>
@@ -810,7 +821,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
   self : RiscvFnLoweringCtx,
   mref : @core.MemRef,
   fills : @core.Fills
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let mem = self.ref_mem(mref)
   match mem {
     Stack(..) => abort("Stack allocation not supported")
@@ -877,7 +888,7 @@ fn RiscvFnLoweringCtx::lower_alloc(
   _ty : @core.Type,
   mref : @core.MemRef,
   fills : @core.Fills
-) -> @riscv.AnyReg {
+) -> AnyReg {
   let ptr = self.do_alloc_and_fill(mref, fills)
   let pre_assigned = self.value_regs[@core.Value::Mem(fref=self.func.id, ~mref)].unwrap()
   let _ = self.mark_maybe_aliased(ptr)
@@ -941,7 +952,7 @@ fn ty_to_reg_class_opt(ty : @core.Type) -> RegClass? {
 fn RiscvFnLoweringCtx::assign_reg(
   self : RiscvFnLoweringCtx,
   val : @core.Value,
-  reg : @riscv.AnyReg
+  reg : AnyReg
 ) -> Unit {
   self.value_regs.set(val, reg)
   self.value_ref_count.set(val, 0)
@@ -976,8 +987,8 @@ fn RiscvFnLoweringCtx::assign_regs_for_free_variables(
 
 fn RiscvFnLoweringCtx::alias_reg(
   self : RiscvFnLoweringCtx,
-  pre_assigned_reg : @riscv.AnyReg,
-  actual_reg : @riscv.AnyReg
+  pre_assigned_reg : AnyReg,
+  actual_reg : AnyReg
 ) -> Unit {
   for reg in self.ialias {
     if reg == actual_reg {
@@ -989,8 +1000,8 @@ fn RiscvFnLoweringCtx::alias_reg(
 
 fn RiscvFnLoweringCtx::finalize_insn_with_reg_aliasing(
   self : RiscvFnLoweringCtx,
-  pre_assigned_reg : @riscv.AnyReg,
-  actual_reg : @riscv.AnyReg
+  pre_assigned_reg : AnyReg,
+  actual_reg : AnyReg
 ) -> Unit {
   self.alias_reg(pre_assigned_reg, actual_reg)
   self.finalize_insn()
@@ -1019,11 +1030,14 @@ fn RiscvFnLoweringCtx::assign_regs_for_block_params_and_instrs(
 ) -> Unit {
   let order = self.order.order
   fn assign(bb : @core.BasicBlock) {
+    let assignment = []
     for id, param in bb.params {
       let reg = self.next_reg(ty_to_reg_class(param))
       let val = @core.Value::BlockParam(bref=bb.id, bpref={ id, })
       self.assign_reg(val, reg)
+      assignment.push(reg)
     }
+    self.block_params_assignment.set(bb.id, assignment)
     for iref in bb.seq {
       let ty = self.ref_insn(iref).ty()
       let reg = self.next_reg(ty_to_reg_class(ty))
@@ -1147,8 +1161,8 @@ fn RiscvFnLoweringCtx::has_result(
 
 fn RiscvFnLoweringCtx::mark_maybe_aliased(
   self : RiscvFnLoweringCtx,
-  reg : @riscv.AnyReg
-) -> @riscv.AnyReg {
+  reg : AnyReg
+) -> AnyReg {
   self.ialias.push(reg)
   reg
 }
@@ -1264,7 +1278,8 @@ fn RiscvFnLoweringCtx::lower_block(
     self.load_closure_pointer()
   }
   let insns = self.finalize_basic_block()
-  { id, insns, control }
+  let params = self.block_params_assignment[block.id].unwrap()
+  { id, insns, control, params }
 }
 
 pub fn RiscvFnLoweringCtx::lower(self : RiscvFnLoweringCtx) -> MFn!Failure {
@@ -1289,8 +1304,8 @@ pub fn RiscvFnLoweringCtx::new(
   // v0 is reserved for the closure pointer
   // we will set it up in assign_regs_for_free_variables
   // NOTE: fv0 is considered to be the closure pointer
-  let reg_classes = [X, X]
-  let closure_reg = @riscv.AnyReg::{ reg: 0 }
+  let reg_classes = [RegClass::X, X]
+  let closure_reg = @riscv.any_xreg(0)
   let alloc_reg = @riscv.reg_alloc.phy_to_virt() // s11 is reserved for the allocator
   let order = @lower.LoweringOrder::new(func)
   let lower_ctx = RiscvFnLoweringCtx::{
@@ -1305,6 +1320,7 @@ pub fn RiscvFnLoweringCtx::new(
     buffer: [],
     ibuffer: [],
     ialias: [],
+    block_params_assignment: MutMap::new(),
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
@@ -1368,7 +1384,8 @@ pub fn RiscvLoweringCtx::lower_globals(
     }
   }
   let control = [MInsn::Ret]
-  blocks.set(entry, { id: entry, insns, control })
+  let params = []
+  blocks.set(entry, { id: entry, insns, control, params })
   { name, entry, blocks }
 }
 
