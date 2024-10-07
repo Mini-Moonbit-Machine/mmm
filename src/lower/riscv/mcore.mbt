@@ -83,6 +83,8 @@ pub fn MFn::print_with_info(
   logger : Logger,
   info : Liveness
 ) -> Unit {
+  let ra = RegAllocator::new(self, info)
+  ra.assign()
   logger.write_string("\{self.name._}:\n")
   let entry = self.entry
   let block = self.blocks[entry].unwrap()

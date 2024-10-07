@@ -136,6 +136,14 @@ pub fn to_any(self : Reg) -> AnyReg {
   }
 }
 
+pub fn is_phy_xreg(self : AnyReg) -> Bool {
+  -32 <= self.reg && self.reg < 0
+}
+
+pub fn is_phy_freg(self : AnyReg) -> Bool {
+  -64 <= self.reg && self.reg < -32
+}
+
 pub fn to_xreg(self : AnyReg) -> Reg {
   let r = match self.reg {
     -1 => Zero
@@ -183,7 +191,7 @@ pub fn to_xreg(self : AnyReg) -> Reg {
 pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
 
 pub let reg_saved_list : Array[Reg] = [
-  // S0, <- fp
+  Fp,
   S1,
   S2,
   S3,
@@ -194,7 +202,7 @@ pub let reg_saved_list : Array[Reg] = [
   S8,
   S9,
   S10,
-  S11,
+  // S11, // S11 is used for allocation
 ]
 
 pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7]
@@ -460,3 +468,66 @@ pub fn FReg::to_string(self : FReg) -> String {
 impl Show for FReg with output(self, logger : Logger) {
   logger.write_string(self.to_string())
 }
+
+pub let preferred_reg_list : Array[Reg] = [
+  A0,
+  A1,
+  A2,
+  A3,
+  A4,
+  A5,
+  A6,
+  A7, // 8
+  T0,
+  T1,
+  T2,
+  T3,
+  T4,
+  T5, // 6
+  Fp,
+  S1,
+  S2,
+  S3,
+  S4,
+  S5,
+  S6,
+  S7,
+  S8,
+  S9,
+  S10, // 11
+]
+
+pub let preferred_freg_list : Array[FReg] = [
+  Fa0,
+  Fa1,
+  Fa2,
+  Fa3,
+  Fa4,
+  Fa5,
+  Fa6,
+  Fa7, // 8
+  Ft0,
+  Ft1,
+  Ft2,
+  Ft3,
+  Ft4,
+  Ft5,
+  Ft6,
+  Ft7,
+  Ft8,
+  Ft9,
+  Ft10,
+  Ft11, // 12
+  Fs0,
+  Fs1,
+  Fs2,
+  Fs3,
+  Fs4,
+  Fs5,
+  Fs6,
+  Fs7,
+  Fs8,
+  Fs9,
+  Fs10,
+  Fs11, // 12
+]

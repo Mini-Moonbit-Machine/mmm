@@ -154,16 +154,16 @@ pub fn IteratedBlockInfo::compute_live_set(
   let live_set = self.live_set
   let live = MutSet::from_iter(self.live_in.iter())
   for insn in block.control.rev() {
-    live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
+    live_set.push(live.iter().to_array())
   }
   for insn in block.insns.rev() {
-    live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
+    live_set.push(live.iter().to_array())
   }
   if live.size() != self.live_in.size() {
     abort("\{block.id._} live set mismatch: \{live} and \{self.live_in}")
