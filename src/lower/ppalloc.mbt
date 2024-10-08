@@ -2,6 +2,8 @@ pub type Edge (Int, Int) derive(Show, Eq, Hash)
 
 typealias Set[T] = @hashset.T[T]
 
+typealias PriotyQueue[T] = @priority_queue.T[T]
+
 typealias Map[K, V] = @hashmap.T[K, V]
 
 pub trait RegToId {
@@ -13,21 +15,39 @@ pub trait RegToId {
   // because from the perspective of the allocator, their colors are unusable
 }
 
+type ColorFreq (Int, Int) derive(Eq)
+
+impl Compare for ColorFreq with compare(self, other) {
+  // first compare by frequency, we prefer the one with lower frequency
+  let cmp = -self._.1.compare(other._.1)
+  if cmp == 0 {
+    // then compare by color, we prefer the one with higher color
+    self._.0.compare(other._.0)
+  } else {
+    cmp
+  }
+}
+
 pub struct PPAllocator[Info] {
   mut vertex_count : Int
-  graph : Set[Edge]
-  neighbors : Map[Int, Set[Int]]
-  phy : Set[Int]
-  avail : Int
-  info : Map[Int, Info]
-  color_info : Map[Int, Info]
-  assignment : Map[Int, Int]
-  order : Array[Int]
+  graph : Set[Edge] // vertex -> vertex
+  neighbors : Map[Int, Set[Int]] // vertex -> [vertex]
+  phy : Set[Int] // physical registers
+  info : Map[Int, Info] // reg -> info
+  color_info : Map[Int, Info] // color -> info
+  color_used : Map[Int, Int] // color -> freq
+  assignment : Map[Int, Int] // reg -> color
+  order : Array[Int] // probably the simplicial elimination order
+  avail : Int // available colors
+  spilled : Map[Int, Int] // spilled registers -> spilled slots
+  spilled_colors : Set[Int] // spilled colors
+  mut highest_color : Int
 }
 
 pub fn PPAllocator::go[Info : Show](self : PPAllocator[Info]) -> Unit {
   self.mcs()
   self.assign_color()
+  self.post_spill()
 }
 
 pub fn PPAllocator::query_assigned_color[R : RegToId, Info : Show](
@@ -41,23 +61,27 @@ pub fn PPAllocator::query_spill[R : RegToId, Info](
   self : PPAllocator[Info],
   reg : R
 ) -> Int? {
-  let r = self.assignment.get(reg.to_reg_id()).unwrap()
-  if self.need_spill(r) {
-    Some(r - self.avail)
-  } else {
-    None
-  }
+  self.spilled.get(reg.to_reg_id())
 }
 
-pub fn PPAllocator::query_all_spilled[Info](self : PPAllocator[Info]) -> Int {
-  let spilled = Set::new()
-  for asgn in self.assignment {
-    let (_, color) = asgn
-    if self.need_spill(color) {
-      spilled.insert(color - self.avail)
-    }
-  }
-  spilled.size()
+pub fn PPAllocator::query_all_spilled[Info](
+  self : PPAllocator[Info]
+) -> Array[Info] {
+  self.spilled.iter().map(fn(r) { self.info.get(r.1).unwrap() }).collect()
+}
+
+pub fn PPAllocator::query_all_spilled_with_slots[Info](
+  self : PPAllocator[Info]
+) -> Array[(Info, Int)] {
+  self.spilled
+  .iter()
+  .map(
+    fn(r) {
+      let (reg, slot) = r
+      (self.info.get(reg).unwrap(), slot)
+    },
+  )
+  .collect()
 }
 
 pub fn PPAllocator::query_all_clobbered[Info](
@@ -68,7 +92,7 @@ pub fn PPAllocator::query_all_clobbered[Info](
     let (reg, color) = asgn
     // an assignment for hardware register is just a constraint
     // so it doesn't necessarily mean that the register is clobbered
-    if self.need_spill(color) == false && self.phy.contains(reg) == false {
+    if self.spilled.contains(color) == false && self.phy.contains(reg) == false {
       clobbered.insert(color)
     }
   }
@@ -91,15 +115,15 @@ pub fn PPAllocator::to_dot[Info : Show](
     } else {
       match assigned_color {
         Some(c) =>
-          if self.need_spill(c) {
-            s += "  r\{reg} [label=\"\{info} ! spill\", color=red];\n"
-            asgn += "\{info}<-spilled_\{info};"
+          if c >= self.avail {
+            s += "  r\{reg} [label=\"\{info} ! spill\", color=orange];\n"
+            asgn += "\{info}<-!\{info};"
           } else {
             let color_info = self.color_info.get(c).unwrap()
             s += "  r\{reg} [label=\"\{info} ← \{color_info}\", color=green];\n"
             asgn += "\{info}<-\{color_info};"
           }
-        None => s += "  r\{reg} [label=\"\{info}\", color=black];\n"
+        None => s += "  r\{reg} [label=\"\{info} ! spilled\", color=red];\n"
       }
     }
   }
@@ -130,8 +154,12 @@ pub fn PPAllocator::new[Info](avail : Int) -> PPAllocator[Info] {
     avail,
     info: Map::new(),
     color_info: Map::new(),
+    color_used: Map::new(),
+    highest_color: -1,
     assignment: Map::new(),
     order: [],
+    spilled: Map::new(),
+    spilled_colors: Set::new(),
   }
 }
 
@@ -262,10 +290,6 @@ fn get_used_color[Info](
   used_colors
 }
 
-fn need_spill[Info](self : PPAllocator[Info], color : Int) -> Bool {
-  color >= self.avail
-}
-
 fn assign_color[Info : Show](self : PPAllocator[Info]) -> Unit {
   let order = self.order
   for r in order {
@@ -281,6 +305,43 @@ fn assign_color[Info : Show](self : PPAllocator[Info]) -> Unit {
       }
       candidate += 1
     }
+    self.highest_color = @math.maximum(self.highest_color, candidate)
     self.assignment.set(r, candidate)
+    self.color_used.set(candidate, self.color_used.get(candidate).or(0) + 1)
+  }
+}
+
+fn post_spill[Info : Show](self : PPAllocator[Info]) -> Unit {
+  let queue : PriotyQueue[ColorFreq] = PriotyQueue::new()
+  for c in self.color_used {
+    queue.push((c.0, c.1))
+  }
+  let extra_color = self.highest_color + 1 - self.avail
+  let spilled_color = self.spilled_colors
+  let spilled_order = []
+  for _ in 0..<extra_color {
+    let (color, _) = queue.pop().unwrap()._
+    self.color_used.remove(color)
+    spilled_color.insert(color)
+    spilled_order.push(color)
+  }
+  spilled_order.rev_inplace()
+  let color_shift_map = Map::new()
+  let mut used_color = 0
+  for c in 0..=self.highest_color {
+    if spilled_color.contains(c) == false {
+      color_shift_map.set(c, used_color)
+      used_color += 1
+    }
+  }
+  for asgn in self.assignment {
+    let (reg, color) = asgn
+    if spilled_color.contains(color) {
+      self.spilled.set(reg, spilled_order.search(color).unwrap())
+      self.assignment.remove(reg)
+    } else {
+      let new_color = color_shift_map.get(color).or(color)
+      self.assignment.set(reg, new_color)
+    }
   }
 }

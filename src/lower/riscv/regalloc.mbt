@@ -114,6 +114,10 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           X => reg_ctx_x
           F => reg_ctx_f
         }
+        if live_set.is_empty() {
+          let rw1 = reg_ctx.record_reg(defined)
+          reg_ctx.allocator.add_single_vertex(rw1)
+        }
         for live in live_set {
           if defined.class == live.class {
             if defined == live {
@@ -187,12 +191,12 @@ fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
   }
 }
 
-fn RegAllocator::query_all_x_spilled(self : RegAllocator) -> Int {
-  self.xctx.allocator.query_all_spilled()
+fn RegAllocator::query_all_x_spilled(self : RegAllocator) -> Array[AnyReg] {
+  self.xctx.allocator.query_all_spilled().map(fn(x) { x._ })
 }
 
-fn RegAllocator::query_all_f_spilled(self : RegAllocator) -> Int {
-  self.fctx.allocator.query_all_spilled()
+fn RegAllocator::query_all_f_spilled(self : RegAllocator) -> Array[AnyReg] {
+  self.fctx.allocator.query_all_spilled().map(fn(x) { x._ })
 }
 
 fn RegAllocator::get_clobbered_regs(

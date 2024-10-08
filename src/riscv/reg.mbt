@@ -230,7 +230,7 @@ pub let reg_alloc : Reg = S11
 
 pub let reg_ret : Reg = A0
 
-pub let reg_swap : Reg = T6
+pub let reg_swap : Array[Reg] = [T5, T6]
 
 pub fn Reg::to_string(self : Reg) -> String {
   match self {
@@ -433,7 +433,7 @@ pub let freg_allocatable_list : Array[FReg] = freg_callee_saved_list +
 
 pub let freg_ret : FReg = Fa0
 
-pub let freg_swap : FReg = Ft11
+pub let freg_swap : Array[FReg] = [Ft10, Ft11]
 
 pub fn FReg::to_string(self : FReg) -> String {
   match self {
@@ -490,8 +490,7 @@ pub let preferred_reg_list : Array[Reg] = [
   T1,
   T2,
   T3,
-  T4,
-  T5, // 6
+  T4, // 5
   Fp,
   S1,
   S2,
@@ -523,9 +522,7 @@ pub let preferred_freg_list : Array[FReg] = [
   Ft6,
   Ft7,
   Ft8,
-  Ft9,
-  Ft10,
-  Ft11, // 12
+  Ft9, // 10
   Fs0,
   Fs1,
   Fs2,

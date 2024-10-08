@@ -1337,56 +1337,112 @@ fn RiscvFnLoweringCtx::lower(
 
 fn subst_vreg_with_preg_or_spill(
   alloc : RegAllocator,
+  frame : FrameLayout,
   insn : MInsn,
   buf : Array[MInsn]
 ) -> Unit {
-  fn f(reg : AnyReg) -> AnyReg {
-    let r = alloc.query_assigned_color(reg).or(reg)
-    r
+  fn f(reg : AnyReg) -> AnyReg? {
+    alloc.query_assigned_color(reg)
   }
 
+  let input_xreg_spilled = []
   fn fx(reg : @riscv.Reg) -> @riscv.Reg {
-    f(reg.to_any()).to_xreg()
+    match f(reg.to_any()) {
+      Some(r) => r.to_xreg()
+      None =>
+        if reg.to_any().is_phy_xreg() {
+          reg
+        } else if input_xreg_spilled.length() < 2 {
+          input_xreg_spilled.push(reg)
+          @riscv.reg_swap[input_xreg_spilled.length() - 1]
+        } else {
+          abort("Two input xregs are spilled \{Show::to_string(insn)}")
+        }
+    }
+  }
+
+  let input_freg_spilled = []
+  fn ff(reg : @riscv.FReg) -> @riscv.FReg {
+    match f(reg.to_any()) {
+      Some(r) => r.to_freg()
+      None =>
+        if reg.to_any().is_phy_freg() {
+          reg
+        } else if input_freg_spilled.length() < 2 {
+          input_freg_spilled.push(reg)
+          @riscv.freg_swap[input_freg_spilled.length() - 1]
+        } else {
+          abort("Two input fregs are spilled \{Show::to_string(insn)}")
+        }
+    }
   }
 
   fn fmem(
     mem : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]
   ) -> @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] {
-    let base = f(mem.base.to_any()).to_xreg()
+    let base = fx(mem.base)
     { base, offset: mem.offset }
   }
 
-  fn ff(reg : @riscv.FReg) -> @riscv.FReg {
-    f(reg.to_any()).to_freg()
+  let output_xreg_spilled = []
+  fn frx(reg : @riscv.Reg) -> @riscv.Reg {
+    match f(reg.to_any()) {
+      Some(r) => r.to_xreg()
+      None =>
+        if reg.to_any().is_phy_xreg() {
+          reg
+        } else if output_xreg_spilled.length() < 2 {
+          output_xreg_spilled.push(reg)
+          @riscv.reg_swap[output_xreg_spilled.length() - 1]
+        } else {
+          abort("Two output xregs are spilled \{Show::to_string(insn)}")
+        }
+    }
+  }
+
+  let output_freg_spilled = []
+  fn frf(reg : @riscv.FReg) -> @riscv.FReg {
+    match f(reg.to_any()) {
+      Some(r) => r.to_freg()
+      None =>
+        if reg.to_any().is_phy_freg() {
+          reg
+        } else if output_freg_spilled.length() < 2 {
+          output_freg_spilled.push(reg)
+          @riscv.freg_swap[output_freg_spilled.length() - 1]
+        } else {
+          abort("Two output fregs are spilled \{Show::to_string(insn)}")
+        }
+    }
   }
 
   let insn = match insn {
-    Add(~rd, ~rs1, ~rs2) => MInsn::Add(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Sub(~rd, ~rs1, ~rs2) => Sub(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Xor(~rd, ~rs1, ~rs2) => Xor(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Or(~rd, ~rs1, ~rs2) => Or(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    And(~rd, ~rs1, ~rs2) => And(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Sll(~rd, ~rs1, ~rs2) => Sll(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Srl(~rd, ~rs1, ~rs2) => Srl(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Sra(~rd, ~rs1, ~rs2) => Sra(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Slt(~rd, ~rs1, ~rs2) => Slt(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Sltu(~rd, ~rs1, ~rs2) => Sltu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Addi(~rd, ~rs1, ~imm) => Addi(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Xori(~rd, ~rs1, ~imm) => Xori(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Ori(~rd, ~rs1, ~imm) => Ori(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Andi(~rd, ~rs1, ~imm) => Andi(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Slli(~rd, ~rs1, ~imm) => Slli(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Srli(~rd, ~rs1, ~imm) => Srli(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Srai(~rd, ~rs1, ~imm) => Srai(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Slti(~rd, ~rs1, ~imm) => Slti(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Sltiu(~rd, ~rs1, ~imm) => Sltiu(rd=fx(rd), rs1=fx(rs1), ~imm)
-    Lbu(~rd, ~mem) => Lbu(rd=fx(rd), mem=fmem(mem))
-    Lhu(~rd, ~mem) => Lhu(rd=fx(rd), mem=fmem(mem))
-    Lwu(~rd, ~mem) => Lwu(rd=fx(rd), mem=fmem(mem))
-    Lb(~rd, ~mem) => Lb(rd=fx(rd), mem=fmem(mem))
-    Lh(~rd, ~mem) => Lh(rd=fx(rd), mem=fmem(mem))
-    Lw(~rd, ~mem) => Lw(rd=fx(rd), mem=fmem(mem))
-    Ld(~rd, ~mem) => Ld(rd=fx(rd), mem=fmem(mem))
+    Add(~rd, ~rs1, ~rs2) => MInsn::Add(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sub(~rd, ~rs1, ~rs2) => Sub(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Xor(~rd, ~rs1, ~rs2) => Xor(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Or(~rd, ~rs1, ~rs2) => Or(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    And(~rd, ~rs1, ~rs2) => And(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sll(~rd, ~rs1, ~rs2) => Sll(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Srl(~rd, ~rs1, ~rs2) => Srl(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sra(~rd, ~rs1, ~rs2) => Sra(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Slt(~rd, ~rs1, ~rs2) => Slt(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sltu(~rd, ~rs1, ~rs2) => Sltu(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Addi(~rd, ~rs1, ~imm) => Addi(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Xori(~rd, ~rs1, ~imm) => Xori(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Ori(~rd, ~rs1, ~imm) => Ori(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Andi(~rd, ~rs1, ~imm) => Andi(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Slli(~rd, ~rs1, ~imm) => Slli(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Srli(~rd, ~rs1, ~imm) => Srli(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Srai(~rd, ~rs1, ~imm) => Srai(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Slti(~rd, ~rs1, ~imm) => Slti(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Sltiu(~rd, ~rs1, ~imm) => Sltiu(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Lbu(~rd, ~mem) => Lbu(rd=frx(rd), mem=fmem(mem))
+    Lhu(~rd, ~mem) => Lhu(rd=frx(rd), mem=fmem(mem))
+    Lwu(~rd, ~mem) => Lwu(rd=frx(rd), mem=fmem(mem))
+    Lb(~rd, ~mem) => Lb(rd=frx(rd), mem=fmem(mem))
+    Lh(~rd, ~mem) => Lh(rd=frx(rd), mem=fmem(mem))
+    Lw(~rd, ~mem) => Lw(rd=frx(rd), mem=fmem(mem))
+    Ld(~rd, ~mem) => Ld(rd=frx(rd), mem=fmem(mem))
     Sb(~rs, ~mem) => Sb(rs=fx(rs), mem=fmem(mem))
     Sh(~rs, ~mem) => Sh(rs=fx(rs), mem=fmem(mem))
     Sw(~rs, ~mem) => Sw(rs=fx(rs), mem=fmem(mem))
@@ -1400,44 +1456,44 @@ fn subst_vreg_with_preg_or_spill(
     Bltu(~rs1, ~rs2, ~target) => Bltu(rs1=fx(rs1), rs2=fx(rs2), ~target)
     Bgeu(~rs1, ~rs2, ~target) => Bgeu(rs1=fx(rs1), rs2=fx(rs2), ~target)
     Ecall => Ecall
-    Mul(~rd, ~rs1, ~rs2) => Mul(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Mulw(~rd, ~rs1, ~rs2) => Mulw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Mulh(~rd, ~rs1, ~rs2) => Mulh(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Mulhsu(~rd, ~rs1, ~rs2) => Mulhsu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Mulhu(~rd, ~rs1, ~rs2) => Mulhu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Div(~rd, ~rs1, ~rs2) => Div(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Divw(~rd, ~rs1, ~rs2) => Divw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Divu(~rd, ~rs1, ~rs2) => Divu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Rem(~rd, ~rs1, ~rs2) => Rem(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Remw(~rd, ~rs1, ~rs2) => Remw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    Remu(~rd, ~rs1, ~rs2) => Remu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
-    FaddD(~rd, ~rs1, ~rs2) => FaddD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
-    FsubD(~rd, ~rs1, ~rs2) => FsubD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
-    FmulD(~rd, ~rs1, ~rs2) => FmulD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
-    FdivD(~rd, ~rs1, ~rs2) => FdivD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
-    Fld(~rd, ~mem) => Fld(rd=ff(rd), mem=fmem(mem))
+    Mul(~rd, ~rs1, ~rs2) => Mul(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulw(~rd, ~rs1, ~rs2) => Mulw(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulh(~rd, ~rs1, ~rs2) => Mulh(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulhsu(~rd, ~rs1, ~rs2) => Mulhsu(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulhu(~rd, ~rs1, ~rs2) => Mulhu(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Div(~rd, ~rs1, ~rs2) => Div(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Divw(~rd, ~rs1, ~rs2) => Divw(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Divu(~rd, ~rs1, ~rs2) => Divu(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Rem(~rd, ~rs1, ~rs2) => Rem(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Remw(~rd, ~rs1, ~rs2) => Remw(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Remu(~rd, ~rs1, ~rs2) => Remu(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    FaddD(~rd, ~rs1, ~rs2) => FaddD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FsubD(~rd, ~rs1, ~rs2) => FsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FmulD(~rd, ~rs1, ~rs2) => FmulD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FdivD(~rd, ~rs1, ~rs2) => FdivD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2))
+    Fld(~rd, ~mem) => Fld(rd=frf(rd), mem=fmem(mem))
     Fsd(~rs, ~mem) => Fsd(rs=ff(rs), mem=fmem(mem))
-    FeqD(~rd, ~rs1, ~rs2) => FeqD(rd=fx(rd), rs1=ff(rs1), rs2=ff(rs2))
-    FleD(~rd, ~rs1, ~rs2) => FleD(rd=fx(rd), rs1=ff(rs1), rs2=ff(rs2))
-    FmvDX(~rd, ~rs) => FmvDX(rd=ff(rd), rs=fx(rs))
-    FcvtWD(~rd, ~rs, ~rm) => FcvtWD(rd=fx(rd), rs=ff(rs), ~rm)
-    FcvtDW(~rd, ~rs) => FcvtDW(rd=ff(rd), rs=fx(rs))
-    FabsD(~rd, ~rs) => FabsD(rd=ff(rd), rs=ff(rs))
-    FsqrtD(~rd, ~rs) => FsqrtD(rd=ff(rd), rs=ff(rs))
-    La(~rd, ~l) => La(rd=fx(rd), ~l)
-    Li(~rd, ~i) => Li(rd=fx(rd), ~i)
-    Neg(~rd, ~rs) => Neg(rd=fx(rd), rs=fx(rs))
+    FeqD(~rd, ~rs1, ~rs2) => FeqD(rd=frx(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FleD(~rd, ~rs1, ~rs2) => FleD(rd=frx(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FmvDX(~rd, ~rs) => FmvDX(rd=frf(rd), rs=fx(rs))
+    FcvtWD(~rd, ~rs, ~rm) => FcvtWD(rd=frx(rd), rs=ff(rs), ~rm)
+    FcvtDW(~rd, ~rs) => FcvtDW(rd=frf(rd), rs=fx(rs))
+    FabsD(~rd, ~rs) => FabsD(rd=frf(rd), rs=ff(rs))
+    FsqrtD(~rd, ~rs) => FsqrtD(rd=frf(rd), rs=ff(rs))
+    La(~rd, ~l) => La(rd=frx(rd), ~l)
+    Li(~rd, ~i) => Li(rd=frx(rd), ~i)
+    Neg(~rd, ~rs) => Neg(rd=frx(rd), rs=fx(rs))
     Mv(~rd, ~rs) => {
-      let rd = fx(rd)
+      let rd = frx(rd)
       let rs = fx(rs)
       if rd == rs {
         return
       }
       Mv(~rd, ~rs)
     }
-    FnegD(~rd, ~rs) => FnegD(rd=ff(rd), rs=ff(rs))
+    FnegD(~rd, ~rs) => FnegD(rd=frf(rd), rs=ff(rs))
     FmvD(~rd, ~rs) => {
-      let rd = ff(rd)
+      let rd = frf(rd)
       let rs = ff(rs)
       if rd == rs {
         return
@@ -1461,7 +1517,31 @@ fn subst_vreg_with_preg_or_spill(
     Label(x) => Label(x)
     Comment(x) => Comment(x)
   }
+  for i, x in input_xreg_spilled {
+    let slot = alloc.query_spill(x.to_any()).unwrap()
+    let offset = frame.spill[slot].unwrap()
+    buf.push(MInsn::Lw(rd=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
+  }
+  for i, f in input_freg_spilled {
+    let slot = alloc.query_spill(f.to_any()).unwrap()
+    let offset = frame.spill[slot].unwrap()
+    buf.push(
+      MInsn::Fld(rd=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
+    )
+  }
   buf.push(insn)
+  for i, x in output_xreg_spilled {
+    let slot = alloc.query_spill(x.to_any()).unwrap()
+    let offset = frame.spill[slot].unwrap()
+    buf.push(MInsn::Sw(rs=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
+  }
+  for i, f in output_freg_spilled {
+    let slot = alloc.query_spill(f.to_any()).unwrap()
+    let offset = frame.spill[slot].unwrap()
+    buf.push(
+      MInsn::Fsd(rs=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
+    )
+  }
 }
 
 fn load_to_sp_offset(
@@ -1535,15 +1615,19 @@ fn RiscvFnLoweringCtx::post_lower_block(
         for r in live_at_call {
           let r = alloc.query_assigned_color(r).or(r)
           // don't save a0 or fa0 because their weird liveness
-          match r.class {
-            X =>
-              if x_call_save.contains(r) && r != @riscv.reg_ret.to_any() {
-                last_save_x.push(r)
-              }
-            F =>
-              if f_call_save.contains(r) && r != @riscv.freg_ret.to_any() {
-                last_save_f.push(r)
-              }
+          if r.is_phy_freg() || r.is_phy_xreg() {
+            match r.class {
+              X =>
+                if x_call_save.contains(r) && r != @riscv.reg_ret.to_any() {
+                  last_save_x.push(r)
+                }
+              F =>
+                if f_call_save.contains(r) && r != @riscv.freg_ret.to_any() {
+                  last_save_f.push(r)
+                }
+            }
+          } else {
+            // they are spilled. don't need to save them
           }
         }
         for r in last_save_x {
@@ -1567,7 +1651,7 @@ fn RiscvFnLoweringCtx::post_lower_block(
         last_save_x.clear()
         last_save_f.clear()
       }
-      _ => subst_vreg_with_preg_or_spill(alloc, insn, insns)
+      _ => subst_vreg_with_preg_or_spill(alloc, frame, insn, insns)
     }
   }
   for insn in mbb.control {
@@ -1579,7 +1663,7 @@ fn RiscvFnLoweringCtx::post_lower_block(
         }
         adjust_sp(frame.adjust_sp, insns)
       }
-      _ => subst_vreg_with_preg_or_spill(alloc, insn, new_mbb.control)
+      _ => subst_vreg_with_preg_or_spill(alloc, frame, insn, new_mbb.control)
     }
   }
   new_mbb
@@ -1628,8 +1712,8 @@ fn FrameLayout::save_at_prologue(self : FrameLayout, reg : AnyReg) -> Unit {
   self.function_saves.push(reg)
 }
 
-fn FrameLayout::spill(self : FrameLayout, n : Int) -> Unit {
-  self.spills += n
+fn FrameLayout::spill(self : FrameLayout, spilled : Array[AnyReg]) -> Unit {
+  self.spills += spilled.length()
 }
 
 fn FrameLayout::calculate(self : FrameLayout) -> Unit {
@@ -1791,19 +1875,27 @@ pub fn RiscvLoweringCtx::lower_globals(
       num_fregs=0,
     )
     insns.push(call)
-    insns.push(MInsn::La(rd=@riscv.reg_swap, l=Label(symbol.name.to_string())))
+    insns.push(
+      MInsn::La(rd=@riscv.reg_swap[0], l=Label(symbol.name.to_string())),
+    )
     match (rc, ty_size) {
       (X, 4) =>
         insns.push(
-          MInsn::Sw(rs=@riscv.reg_ret, mem={ base: @riscv.reg_swap, offset: 0 }),
+          MInsn::Sw(
+            rs=@riscv.reg_ret,
+            mem={ base: @riscv.reg_swap[0], offset: 0 },
+          ),
         )
       (X, 8) =>
         insns.push(
-          MInsn::Sd(rs=@riscv.reg_ret, mem={ base: @riscv.reg_swap, offset: 0 }),
+          MInsn::Sd(
+            rs=@riscv.reg_ret,
+            mem={ base: @riscv.reg_swap[0], offset: 0 },
+          ),
         )
       (F, 8) =>
         insns.push(
-          MInsn::Fsd(rs=@riscv.Fa0, mem={ base: @riscv.reg_swap, offset: 0 }),
+          MInsn::Fsd(rs=@riscv.Fa0, mem={ base: @riscv.reg_swap[0], offset: 0 }),
         )
       (_, 0) => {
         let _ = insns.unsafe_pop()
@@ -1851,6 +1943,6 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
   }
-  //println("before colored: \{Show::to_string(before_colored.to_rich_info())}")
+  trace("before colored: \{Show::to_string(before_colored.to_rich_info())}")
   after_colored
 }
