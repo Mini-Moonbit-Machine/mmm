@@ -29,14 +29,11 @@ pub struct MBasicBlock {
 }
 
 pub fn MBasicBlock::output(self : MBasicBlock, logger : Logger) -> Unit {
-  let params = self.params.iter().to_string()
-  logger.write_string("# block parameters: \{params}\n")
   logger.write_string("\{self.id._}:\n")
   for insn in self.insns {
     logger.write_object(insn)
     logger.write_string("\n")
   }
-  logger.write_string("# control\n")
   for insn in self.control {
     logger.write_object(insn)
     logger.write_string("\n")

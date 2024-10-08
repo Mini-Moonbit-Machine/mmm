@@ -4,47 +4,36 @@ Testing test/test_src/ack.mbt
   .type ack, @function
 # leaf false
 ack:
-# block parameters: []
 .ack_b0:
   addi sp, sp, -40
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv a2, a1
-  slt a1, a0, zero
+  slt a1, zero, a0
   xori a1, a1, 1
-# control
   bne a1, zero, .ack_b1
   j .ack_b2
 
-# block parameters: []
 .ack_b1:
   li a0, 1
   add a0, a2, a0
-# control
   j .ack_b6
 
-# block parameters: [v12]
 .ack_b5:
-# control
   j .ack_b6
 
-# block parameters: []
 .ack_b2:
-  slt a1, a2, zero
+  slt a1, zero, a2
   xori a1, a1, 1
-# control
   bne a1, zero, .ack_b3
   j .ack_b4
 
-# block parameters: [v14]
 .ack_b6:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 40
-# control
   ret
 
-# block parameters: []
 .ack_b4:
   li a1, 1
   sub s0, a0, a1
@@ -54,16 +43,13 @@ ack:
   mv a1, a0
   mv a0, s0
   call ack
-# control
   j .ack_b5
 
-# block parameters: []
 .ack_b3:
   li a1, 1
   sub a0, a0, a1
   li a1, 1
   call ack
-# control
   j .ack_b5
 
   .p2align 3
@@ -71,7 +57,6 @@ ack:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -79,7 +64,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -87,7 +71,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -118,7 +101,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -126,7 +108,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -24
   sd ra, 0(sp)
@@ -137,7 +118,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 24
-# control
   ret
 
   .p2align 3
@@ -151,48 +131,48 @@ start:
 Testing test/test_src/adder.mbt
 reg s10 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x5338e
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532cb
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/adder2.mbt
 reg s10 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x5338e
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532cb
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/bf.mbt
 .aux_b8 live set mismatch: @hashset.of([v5, v10, zero, v0, v6, s11, v2]) and @hashset.of([v5, v10, zero, v0, v6, v2])
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2244]:0x4f6b6
-    at wasm://wasm/00190366:wasm-function[2245]:0x4f84e
-    at wasm://wasm/00190366:wasm-function[2260]:0x4fcfd
-    at wasm://wasm/00190366:wasm-function[1590]:0x20a80
-    at wasm://wasm/00190366:wasm-function[2257]:0x4fc04
-    at wasm://wasm/00190366:wasm-function[2352]:0x51f56
-    at wasm://wasm/00190366:wasm-function[2380]:0x54543
-    at wasm://wasm/00190366:wasm-function[1600]:0x20e10
-    at wasm://wasm/00190366:wasm-function[2379]:0x5444d
-    at wasm://wasm/00190366:wasm-function[2410]:0x55856
+    at wasm://wasm/0018ff56:wasm-function[2237]:0x4f64e
+    at wasm://wasm/0018ff56:wasm-function[2238]:0x4f7e6
+    at wasm://wasm/0018ff56:wasm-function[2253]:0x4fc95
+    at wasm://wasm/0018ff56:wasm-function[1583]:0x209ee
+    at wasm://wasm/0018ff56:wasm-function[2250]:0x4fb9c
+    at wasm://wasm/0018ff56:wasm-function[2345]:0x51e93
+    at wasm://wasm/0018ff56:wasm-function[2373]:0x54481
+    at wasm://wasm/0018ff56:wasm-function[1593]:0x20d7e
+    at wasm://wasm/0018ff56:wasm-function[2372]:0x5438b
+    at wasm://wasm/0018ff56:wasm-function[2403]:0x55794
 error: failed to run
 
 
@@ -202,14 +182,12 @@ Testing test/test_src/cls-bug.mbt
   .type f, @function
 # leaf true
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -16
   mv a1, a0
   li a0, 123
   add a0, a1, a0
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -217,7 +195,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -225,7 +202,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -233,7 +209,6 @@ thunk_start:
   .type g, @function
 # leaf true
 g:
-# block parameters: []
 .g_b0:
   addi sp, sp, -16
   addi a0, s11, -8
@@ -241,7 +216,6 @@ g:
   la a0, f
   sd a0, 0(a1)
   addi sp, sp, 16
-# control
   mv a0, a1
   ret
 
@@ -250,7 +224,6 @@ g:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -281,7 +254,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -289,7 +261,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -303,7 +274,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -320,27 +290,22 @@ Testing test/test_src/cls-bug2.mbt
   .type f, @function
 # leaf false
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -32
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
-  slt a0, zero, s0
+  slt a0, s0, zero
   xori a0, a0, 1
-# control
   bne a0, zero, .f_b1
   j .f_b2
 
-# block parameters: [v12]
 .f_b3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
-# control
   ret
 
-# block parameters: []
 .f_b1:
   mv a0, s0
   call minimbt_print_int
@@ -361,12 +326,9 @@ f:
   ld a1, 0(a1)
   jalr a1
   mv a0, zero
-# control
   j .f_b3
 
-# block parameters: []
 .f_b2:
-# control
   mv a0, zero
   j .f_b3
 
@@ -375,7 +337,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -383,7 +344,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -391,7 +351,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -422,7 +381,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -430,7 +388,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -439,7 +396,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -456,31 +412,24 @@ Testing test/test_src/cls-rec.mbt
   .type f, @function
 # leaf false
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -24
   sd ra, 0(sp)
   mv a1, a0
   xor a0, a1, zero
   sltiu a0, a0, 1
-# control
   bne a0, zero, .f_b1
   j .f_b2
 
-# block parameters: [v8]
 .f_b3:
   ld ra, 0(sp)
   addi sp, sp, 24
-# control
   ret
 
-# block parameters: []
 .f_b1:
-# control
   mv a0, zero
   j .f_b3
 
-# block parameters: []
 .f_b2:
   li a0, 1
   sub a0, a1, a0
@@ -489,7 +438,6 @@ f:
   la a0, x.1
   lw a0, 0(a0)
   add a0, a0, a1
-# control
   j .f_b3
 
   .p2align 3
@@ -497,7 +445,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -505,7 +452,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -513,11 +459,9 @@ thunk_start:
   .type thunk_x.1, @function
 # leaf true
 thunk_x.1:
-# block parameters: []
 .thunk_x.1_b0:
   addi sp, sp, -8
   addi sp, sp, 8
-# control
   li a0, 10
   ret
 
@@ -526,7 +470,6 @@ thunk_x.1:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -560,7 +503,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -568,7 +510,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -578,7 +519,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -597,32 +537,32 @@ start:
 Testing test/test_src/cls-reg-bug.mbt
 reg v16 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x52982
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x528bf
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/debug.mbt
 reg v11 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x52982
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x528bf
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
@@ -632,7 +572,6 @@ Testing test/test_src/even-odd.mbt
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -642,7 +581,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -650,7 +588,6 @@ main:
   .type even, @function
 # leaf false
 even:
-# block parameters: []
 .even_b0:
   addi sp, sp, -32
   sd ra, 0(sp)
@@ -659,40 +596,30 @@ even:
   andi a0, a0, -8
   la a1, odd
   sd a1, 0(a0)
-  slt a1, zero, a2
+  slt a1, a2, zero
   xori a1, a1, 1
-# control
   bne a1, zero, .even_b1
   j .even_b2
 
-# block parameters: []
 .even_b3:
   la a0, t.1
   lw a0, 0(a0)
-# control
   j .even_b5
 
-# block parameters: [v12]
 .even_b5:
-# control
   j .even_b6
 
-# block parameters: []
 .even_b1:
   xor a1, a2, zero
   sltiu a1, a1, 1
-# control
   bne a1, zero, .even_b3
   j .even_b4
 
-# block parameters: [v13]
 .even_b6:
   ld ra, 0(sp)
   addi sp, sp, 32
-# control
   ret
 
-# block parameters: []
 .even_b4:
   li a1, 1
   sub a1, a2, a1
@@ -700,10 +627,8 @@ even:
   ld a0, 0(a0)
   mv a0, a1
   jalr a0
-# control
   j .even_b5
 
-# block parameters: []
 .even_b2:
   li a1, 1
   add a1, a2, a1
@@ -711,7 +636,6 @@ even:
   ld a0, 0(a0)
   mv a0, a1
   jalr a0
-# control
   j .even_b6
 
   .p2align 3
@@ -719,58 +643,44 @@ even:
   .type odd, @function
 # leaf false
 odd:
-# block parameters: []
 .odd_b0:
   addi sp, sp, -24
   sd ra, 0(sp)
   mv a1, a0
-  slt a0, zero, a1
+  slt a0, a1, zero
   xori a0, a0, 1
-# control
   bne a0, zero, .odd_b1
   j .odd_b2
 
-# block parameters: []
 .odd_b3:
   la a0, f.2
   lw a0, 0(a0)
-# control
   j .odd_b5
 
-# block parameters: []
 .odd_b1:
   xor a0, a1, zero
   sltiu a0, a0, 1
-# control
   bne a0, zero, .odd_b3
   j .odd_b4
 
-# block parameters: []
 .odd_b4:
   li a0, 1
   sub a0, a1, a0
   call even
-# control
   j .odd_b5
 
-# block parameters: [v11]
 .odd_b6:
   ld ra, 0(sp)
   addi sp, sp, 24
-# control
   ret
 
-# block parameters: [v10]
 .odd_b5:
-# control
   j .odd_b6
 
-# block parameters: []
 .odd_b2:
   li a0, 1
   add a0, a1, a0
   call even
-# control
   j .odd_b6
 
   .p2align 3
@@ -778,7 +688,6 @@ odd:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -786,7 +695,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -794,11 +702,9 @@ thunk_start:
   .type thunk_t.1, @function
 # leaf true
 thunk_t.1:
-# block parameters: []
 .thunk_t.1_b0:
   addi sp, sp, -8
   addi sp, sp, 8
-# control
   li a0, 123
   ret
 
@@ -807,7 +713,6 @@ thunk_t.1:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -844,7 +749,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -852,11 +756,9 @@ minimbt_main:
   .type thunk_f.2, @function
 # leaf true
 thunk_f.2:
-# block parameters: []
 .thunk_f.2_b0:
   addi sp, sp, -8
   addi sp, sp, 8
-# control
   li a0, 456
   ret
 
@@ -884,7 +786,6 @@ Testing test/test_src/fib.mbt
   .type fib, @function
 # leaf false
 fib:
-# block parameters: []
 .fib_b0:
   addi sp, sp, -32
   sd s1, 0(sp)
@@ -892,22 +793,18 @@ fib:
   sd ra, 16(sp)
   mv s0, a0
   li a0, 1
-  slt a0, s0, a0
+  slt a0, a0, s0
   xori a0, a0, 1
-# control
   bne a0, zero, .fib_b1
   j .fib_b2
 
-# block parameters: [v9]
 .fib_b3:
   ld s1, 0(sp)
   ld s0, 8(sp)
   ld ra, 16(sp)
   addi sp, sp, 32
-# control
   ret
 
-# block parameters: []
 .fib_b2:
   li a0, 1
   sub a0, s0, a0
@@ -917,12 +814,9 @@ fib:
   sub a0, s0, a0
   call fib
   add a0, s1, a0
-# control
   j .fib_b3
 
-# block parameters: []
 .fib_b1:
-# control
   mv a0, s0
   j .fib_b3
 
@@ -931,7 +825,6 @@ fib:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -939,7 +832,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -947,7 +839,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -978,7 +869,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -986,7 +876,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -996,7 +885,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1010,16 +898,16 @@ start:
 Testing test/test_src/float.mbt
 reg fv37 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
@@ -1029,7 +917,6 @@ Testing test/test_src/funcomp.mbt
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1037,7 +924,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1045,14 +931,12 @@ thunk_start:
   .type dec, @function
 # leaf true
 dec:
-# block parameters: []
 .dec_b0:
   addi sp, sp, -16
   mv a1, a0
   li a0, 1
   sub a0, a1, a0
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1060,7 +944,6 @@ dec:
   .type compose, @function
 # leaf true
 compose:
-# block parameters: []
 .compose_b0:
   addi sp, sp, -32
   mv a3, a0
@@ -1072,7 +955,6 @@ compose:
   sd a3, 8(a1)
   sd a2, 16(a1)
   addi sp, sp, 32
-# control
   mv a0, a1
   ret
 
@@ -1081,12 +963,10 @@ compose:
   .type dbl, @function
 # leaf true
 dbl:
-# block parameters: []
 .dbl_b0:
   addi sp, sp, -8
   add a0, a0, a0
   addi sp, sp, 8
-# control
   ret
 
   .p2align 3
@@ -1094,7 +974,6 @@ dbl:
   .type composed, @function
 # leaf false
 composed:
-# block parameters: []
 .composed_b0:
   addi sp, sp, -40
   sd s0, 0(sp)
@@ -1113,7 +992,6 @@ composed:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 40
-# control
   ret
 
   .p2align 3
@@ -1121,7 +999,6 @@ composed:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -1152,7 +1029,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -1160,14 +1036,12 @@ minimbt_main:
   .type inc, @function
 # leaf true
 inc:
-# block parameters: []
 .inc_b0:
   addi sp, sp, -16
   mv a1, a0
   li a0, 1
   add a0, a1, a0
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1175,7 +1049,6 @@ inc:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -32
   sd ra, 0(sp)
@@ -1205,7 +1078,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 32
-# control
   ret
 
   .p2align 3
@@ -1222,58 +1094,44 @@ Testing test/test_src/gcd.mbt
   .type gcd, @function
 # leaf false
 gcd:
-# block parameters: []
 .gcd_b0:
   addi sp, sp, -32
   sd ra, 0(sp)
   mv a2, a0
   xor a0, a2, zero
   sltiu a0, a0, 1
-# control
   bne a0, zero, .gcd_b1
   j .gcd_b2
 
-# block parameters: [v11]
 .gcd_b6:
   ld ra, 0(sp)
   addi sp, sp, 32
-# control
   ret
 
-# block parameters: []
 .gcd_b1:
-# control
   mv a0, a1
   j .gcd_b6
 
-# block parameters: []
 .gcd_b4:
   sub a2, a2, a1
   mv a0, a1
   mv a1, a2
   call gcd
-# control
   j .gcd_b5
 
-# block parameters: []
 .gcd_b3:
   sub a1, a1, a2
   mv a0, a2
   call gcd
-# control
   j .gcd_b5
 
-# block parameters: []
 .gcd_b2:
-  slt a0, a2, a1
+  slt a0, a1, a2
   xori a0, a0, 1
-# control
   bne a0, zero, .gcd_b3
   j .gcd_b4
 
-# block parameters: [v10]
 .gcd_b5:
-# control
   j .gcd_b6
 
   .p2align 3
@@ -1281,7 +1139,6 @@ gcd:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1289,7 +1146,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1297,7 +1153,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -1328,7 +1183,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -1336,7 +1190,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -24
   sd ra, 0(sp)
@@ -1347,7 +1200,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 24
-# control
   ret
 
   .p2align 3
@@ -1364,14 +1216,12 @@ Testing test/test_src/id.mbt
   .type f, @function
 # leaf true
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -16
   mv a1, a0
   li a0, 1
   add a0, a1, a0
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1379,7 +1229,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1387,7 +1236,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1395,7 +1243,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -1426,7 +1273,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -1434,7 +1280,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1444,7 +1289,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1458,192 +1302,192 @@ start:
 Testing test/test_src/inprod-loop.mbt
 reg fv13 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x5340d
-    at wasm://wasm/00190366:wasm-function[2361]:0x53a0e
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x5334a
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x5394b
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/inprod-rec.mbt
 reg fv24 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x53a0e
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x5394b
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/inprod.mbt
 reg fv27 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/join-reg.mbt
 reg v2 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x53383
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532c0
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/join-reg2.mbt
 reg v2 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x53383
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532c0
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/join-stack.mbt
 reg v2 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x53383
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532c0
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/join-stack2.mbt
 reg v2 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x53383
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532c0
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/join-stack3.mbt
 reg v2 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x53383
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x532c0
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/landins_knot.mbt
 reg s11 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x52618
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x52555
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/matmul-flat.mbt
 reg fv216 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/matmul.mbt
 reg fv21 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
 Testing test/test_src/non-tail-if.mbt
 reg fv32 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4df27
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2356]:0x51fc6
-    at wasm://wasm/00190366:wasm-function[2357]:0x531d6
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4debf
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2349]:0x51f03
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x53113
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
@@ -1653,11 +1497,9 @@ Testing test/test_src/non-tail-if2.mbt
   .type f, @function
 # leaf true
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -8
   addi sp, sp, 8
-# control
   li a0, 12345
   ret
 
@@ -1666,7 +1508,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1674,7 +1515,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1682,7 +1522,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -1713,7 +1552,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -1721,7 +1559,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -40
   sd s0, 0(sp)
@@ -1749,21 +1586,17 @@ main:
   li a2, 3
   xor a0, a0, a2
   sltiu a0, a0, 1
-# control
   bne a0, zero, .main_b1
   j .main_b2
 
-# block parameters: [v12]
 .main_b3:
   call minimbt_print_int
   mv a0, zero
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 40
-# control
   ret
 
-# block parameters: []
 .main_b1:
   mv s10, a1
   ld a0, 0(a1)
@@ -1776,12 +1609,9 @@ main:
   add a1, a1, a0
   li a0, 67890
   add a0, a1, a0
-# control
   j .main_b3
 
-# block parameters: []
 .main_b2:
-# control
   li a0, 7
   j .main_b3
 
@@ -1799,7 +1629,6 @@ Testing test/test_src/print.mbt
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1807,7 +1636,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1815,7 +1643,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -1846,7 +1673,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -1854,7 +1680,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1871,7 +1696,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   mv a0, zero
   ret
 
@@ -1889,7 +1713,6 @@ Testing test/test_src/shuffle.mbt
   .type foo, @function
 # leaf false
 foo:
-# block parameters: []
 .foo_b0:
   addi sp, sp, -56
   sd s4, 0(sp)
@@ -1927,7 +1750,6 @@ foo:
   ld s0, 32(sp)
   ld ra, 40(sp)
   addi sp, sp, 56
-# control
   mv a0, zero
   ret
 
@@ -1936,7 +1758,6 @@ foo:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -1944,7 +1765,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -1952,7 +1772,6 @@ thunk_start:
   .type bar, @function
 # leaf false
 bar:
-# block parameters: []
 .bar_b0:
   addi sp, sp, -56
   sd ra, 0(sp)
@@ -1968,7 +1787,6 @@ bar:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 56
-# control
   ret
 
   .p2align 3
@@ -1976,7 +1794,6 @@ bar:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -2007,7 +1824,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -2015,7 +1831,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -56
   sd ra, 0(sp)
@@ -2029,7 +1844,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 56
-# control
   ret
 
   .p2align 3
@@ -2046,7 +1860,6 @@ Testing test/test_src/spill.mbt
   .type f, @function
 # leaf true
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -312
   sd s10, 0(sp)
@@ -2149,7 +1962,6 @@ f:
   ld s1, 72(sp)
   ld s0, 80(sp)
   addi sp, sp, 312
-# control
   ret
 
   .p2align 3
@@ -2157,7 +1969,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2165,7 +1976,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -2173,7 +1983,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -2204,7 +2013,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -2212,7 +2020,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -40
   sd ra, 0(sp)
@@ -2225,7 +2032,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 40
-# control
   ret
 
   .p2align 3
@@ -2239,16 +2045,16 @@ start:
 Testing test/test_src/spill2.mbt
 reg s11 not found in reg_memo
 RuntimeError: unreachable
-    at wasm://wasm/00190366:wasm-function[2214]:0x4dc34
-    at wasm://wasm/00190366:wasm-function[1429]:0x1c9b3
-    at wasm://wasm/00190366:wasm-function[2213]:0x4dbf4
-    at wasm://wasm/00190366:wasm-function[2220]:0x4defb
-    at wasm://wasm/00190366:wasm-function[2353]:0x51f7b
-    at wasm://wasm/00190366:wasm-function[2354]:0x51f8f
-    at wasm://wasm/00190366:wasm-function[2357]:0x52618
-    at wasm://wasm/00190366:wasm-function[2361]:0x5396d
-    at wasm://wasm/00190366:wasm-function[2374]:0x53fb6
-    at wasm://wasm/00190366:wasm-function[1598]:0x20d5a
+    at wasm://wasm/0018ff56:wasm-function[2207]:0x4dbd2
+    at wasm://wasm/0018ff56:wasm-function[1422]:0x1c8ca
+    at wasm://wasm/0018ff56:wasm-function[2206]:0x4db95
+    at wasm://wasm/0018ff56:wasm-function[2213]:0x4de93
+    at wasm://wasm/0018ff56:wasm-function[2346]:0x51eb8
+    at wasm://wasm/0018ff56:wasm-function[2347]:0x51ecc
+    at wasm://wasm/0018ff56:wasm-function[2350]:0x52555
+    at wasm://wasm/0018ff56:wasm-function[2354]:0x538aa
+    at wasm://wasm/0018ff56:wasm-function[2367]:0x53ef3
+    at wasm://wasm/0018ff56:wasm-function[1591]:0x20cc8
 error: failed to run
 
 
@@ -2258,7 +2064,6 @@ Testing test/test_src/spill3.mbt
   .type f, @function
 # leaf true
 f:
-# block parameters: []
 .f_b0:
   addi sp, sp, -296
   sd s10, 0(sp)
@@ -2375,7 +2180,6 @@ f:
   ld s1, 72(sp)
   ld s0, 80(sp)
   addi sp, sp, 296
-# control
   ret
 
   .p2align 3
@@ -2383,7 +2187,6 @@ f:
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2391,7 +2194,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -2399,7 +2201,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -2430,7 +2231,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -2438,7 +2238,6 @@ minimbt_main:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2448,7 +2247,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -2465,7 +2263,6 @@ Testing test/test_src/sum-tail.mbt
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2473,7 +2270,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -2481,7 +2277,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -2512,7 +2307,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -2520,38 +2314,30 @@ minimbt_main:
   .type sum, @function
 # leaf false
 sum:
-# block parameters: []
 .sum_b0:
   addi sp, sp, -32
   sd ra, 0(sp)
   mv a2, a0
-  slt a0, a1, zero
+  slt a0, zero, a1
   xori a0, a0, 1
-# control
   bne a0, zero, .sum_b1
   j .sum_b2
 
-# block parameters: []
 .sum_b1:
-# control
   mv a0, a2
   j .sum_b3
 
-# block parameters: [v8]
 .sum_b3:
   ld ra, 0(sp)
   addi sp, sp, 32
-# control
   ret
 
-# block parameters: []
 .sum_b2:
   add a2, a2, a1
   li a0, 1
   sub a1, a1, a0
   mv a0, a2
   call sum
-# control
   j .sum_b3
 
   .p2align 3
@@ -2559,7 +2345,6 @@ sum:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -24
   sd ra, 0(sp)
@@ -2570,7 +2355,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 24
-# control
   ret
 
   .p2align 3
@@ -2587,7 +2371,6 @@ Testing test/test_src/sum.mbt
   .type thunk_start, @function
 # leaf false
 thunk_start:
-# block parameters: []
 .thunk_start_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2595,7 +2378,6 @@ thunk_start:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
@@ -2603,7 +2385,6 @@ thunk_start:
   .type minimbt_main, @function
 # leaf false
 minimbt_main:
-# block parameters: []
 .minimbt_main_b0:
   addi sp, sp, -128
   sd ra, 0(sp)
@@ -2634,7 +2415,6 @@ minimbt_main:
   ld s11, 96(sp)
   ld ra, 0(sp)
   addi sp, sp, 128
-# control
   ret
 
   .p2align 3
@@ -2642,39 +2422,31 @@ minimbt_main:
   .type sum, @function
 # leaf false
 sum:
-# block parameters: []
 .sum_b0:
   addi sp, sp, -24
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
-  slt a0, s0, zero
+  slt a0, zero, s0
   xori a0, a0, 1
-# control
   bne a0, zero, .sum_b1
   j .sum_b2
 
-# block parameters: []
 .sum_b1:
-# control
   mv a0, zero
   j .sum_b3
 
-# block parameters: [v7]
 .sum_b3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 24
-# control
   ret
 
-# block parameters: []
 .sum_b2:
   li a0, 1
   sub a0, s0, a0
   call sum
   add a0, a0, s0
-# control
   j .sum_b3
 
   .p2align 3
@@ -2682,7 +2454,6 @@ sum:
   .type main, @function
 # leaf false
 main:
-# block parameters: []
 .main_b0:
   addi sp, sp, -16
   sd ra, 0(sp)
@@ -2692,7 +2463,6 @@ main:
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-# control
   ret
 
   .p2align 3
