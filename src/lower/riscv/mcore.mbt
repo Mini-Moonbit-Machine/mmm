@@ -119,6 +119,7 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
     logger.write_string("  .p2align 3\n")
     logger.write_string("  .globl \{global._}\n")
     logger.write_string("  .type \{global._}, @object\n")
+    logger.write_string("  .bss\n")
     logger.write_string("\{global._}:\n")
     logger.write_string("  .zero \{sz}\n")
   }

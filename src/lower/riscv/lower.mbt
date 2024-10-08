@@ -1436,7 +1436,14 @@ fn subst_vreg_with_preg_or_spill(
       Mv(~rd, ~rs)
     }
     FnegD(~rd, ~rs) => FnegD(rd=ff(rd), rs=ff(rs))
-    FmvD(~rd, ~rs) => FmvD(rd=ff(rd), rs=ff(rs))
+    FmvD(~rd, ~rs) => {
+      let rd = ff(rd)
+      let rs = ff(rs)
+      if rd == rs {
+        return
+      }
+      FmvD(~rd, ~rs)
+    }
     XRet => XRet
     FRet => FRet
     Call(~num_xregs, ~num_fregs, ~target) =>
@@ -1640,6 +1647,9 @@ fn FrameLayout::calculate(self : FrameLayout) -> Unit {
     self.spill.set(i, 8 * (i + x + y))
   }
   self.adjust_sp = 8 * (x + y + self.spills)
+  if self.adjust_sp % 16 != 0 {
+    self.adjust_sp += 8
+  }
 }
 
 fn RiscvFnLoweringCtx::post_lower(
@@ -1739,9 +1749,11 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
 
 fn pre_allocate(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Li(rd=@riscv.A0, i="131072"))
+  insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
   insns.push(
     MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),
   )
+  insns.push(MInsn::Add(rd=@riscv.A0, rs1=@riscv.Fp, rs2=@riscv.A0))
   insns.push(MInsn::Mv(rd=@riscv.reg_alloc, rs=@riscv.A0))
 }
 
