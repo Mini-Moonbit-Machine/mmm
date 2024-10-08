@@ -25,9 +25,13 @@ let freg_ret : FReg
 
 let freg_saved_list : Array[FReg]
 
-let freg_swap : FReg
+let freg_swap : Array[FReg]
 
 let freg_temp_list : Array[FReg]
+
+let preferred_freg_list : Array[FReg]
+
+let preferred_reg_list : Array[Reg]
 
 fn print_functions(Array[AssemblyFunction]) -> String
 
@@ -49,7 +53,7 @@ let reg_ret : Reg
 
 let reg_saved_list : Array[Reg]
 
-let reg_swap : Reg
+let reg_swap : Array[Reg]
 
 let reg_temp_list : Array[Reg]
 
@@ -61,9 +65,12 @@ pub struct AnyReg {
 impl AnyReg {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
+  is_phy_freg(Self) -> Bool
+  is_phy_xreg(Self) -> Bool
   op_equal(Self, Self) -> Bool
   output(Self, Logger) -> Unit
   pretty(Self) -> String
+  to_any(Self) -> Self
   to_freg(Self) -> FReg
   to_string(Self) -> String
   to_xreg(Self) -> Reg
@@ -271,6 +278,10 @@ pub enum RvAsm {
   Tail(Label)
   XRet
   FRet
+  SaveCtx1
+  RestoreCtx1
+  SaveCtx2
+  RestoreCtx2
   Label(Label)
   Comment(String)
 }
@@ -278,6 +289,9 @@ pub enum RvAsm {
 // Type aliases
 
 // Traits
+pub trait ToAnyReg {
+  to_any(Self) -> AnyReg
+}
 
 // Extension Methods
 impl Show for Label

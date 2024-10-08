@@ -66,8 +66,6 @@ fn constructor_rv_divu[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_divw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
-fn constructor_rv_f_mv_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
-
 fn constructor_rv_fabs_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fadd_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
@@ -81,6 +79,8 @@ fn constructor_rv_fdiv_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FRe
 fn constructor_rv_fld[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.FReg
 
 fn constructor_rv_fmul_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
+
+fn constructor_rv_fmv_d[C : Context](C, @riscv.FReg) -> @riscv.FReg
 
 fn constructor_rv_fmv_dx[C : Context](C, @riscv.Reg) -> @riscv.FReg
 
@@ -145,6 +145,14 @@ fn constructor_rv_rem[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 fn constructor_rv_remu[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
 
 fn constructor_rv_remw[C : Context](C, @riscv.Reg, @riscv.Reg) -> @riscv.Reg
+
+fn constructor_rv_restore_ctx1[C : Context](C) -> Unit
+
+fn constructor_rv_restore_ctx2[C : Context](C) -> Unit
+
+fn constructor_rv_save_ctx1[C : Context](C) -> Unit
+
+fn constructor_rv_save_ctx2[C : Context](C) -> Unit
 
 fn constructor_rv_sb[C : Context](C, @riscv.Reg, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> Unit
 
@@ -257,6 +265,7 @@ pub trait Context {
   imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
   has_type(Self, @core.Value) -> (@core.Value, @core.Type)
   emit_block_parameters(Self, @core.BlockRef, Array[@core.Value]) -> Unit
+  emit_fake_epilogue(Self) -> Unit
   lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
   lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg

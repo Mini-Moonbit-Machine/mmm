@@ -11,6 +11,8 @@ fn def_use(@moonbitlang/minimbt/riscv.RvAsm) -> (Array[@moonbitlang/minimbt/risc
 fn fn_block_name(@core.Fn, @core.BlockRef) -> String
 
 // Types and methods
+type AnyRegInfo
+
 pub struct BlockInfo {
   pub defs : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
   pub uses : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
@@ -22,10 +24,13 @@ impl BlockInfo {
   to_string(Self) -> String
 }
 
+type FrameLayout
+
 pub struct IteratedBlockInfo {
   pub live_in : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
   pub live_out : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
   pub block_info : BlockInfo
+  pub defs : Array[Array[@moonbitlang/minimbt/riscv.AnyReg]]
   pub live_set : Array[Array[@moonbitlang/minimbt/riscv.AnyReg]]
 }
 impl IteratedBlockInfo {
@@ -63,10 +68,17 @@ pub struct MCore {
 }
 impl MCore {
   output(Self, Logger) -> Unit
+  to_rich_info(Self) -> MCoreWithRichInfo
+}
+
+pub type MCoreWithRichInfo MCore
+impl MCoreWithRichInfo {
+  output(Self, Logger) -> Unit
 }
 
 pub struct MFn {
   pub name : @moonbitlang/minimbt/riscv.Label
+  pub leaf : Bool
   pub entry : @moonbitlang/minimbt/riscv.Label
   pub blocks : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MBasicBlock]
 }
@@ -74,6 +86,12 @@ impl MFn {
   output(Self, Logger) -> Unit
   print_with_info(Self, Logger, Liveness) -> Unit
 }
+
+type RegAllocCtx
+
+type RegAllocator
+
+type RegWrapper
 
 pub struct RiscvFnLoweringCtx {
   pub core : @core.Core
@@ -88,9 +106,10 @@ pub struct RiscvFnLoweringCtx {
   pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
   pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.AnyReg]]
+  pub is_leaf : Bool
+  pub mfn : MFn?
 }
 impl RiscvFnLoweringCtx {
-  lower(Self) -> MFn!Failure
   new(@core.Core, @core.Fn) -> Self
 }
 

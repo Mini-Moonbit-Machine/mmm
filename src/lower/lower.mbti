@@ -1,10 +1,24 @@
 package moonbitlang/minimbt/lower
 
+alias @moonbitlang/core/hashmap as @hashmap
+alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/minimbt/core as @core
 
 // Values
 
 // Types and methods
+type ColorFreq
+impl ColorFreq {
+  op_equal(Self, Self) -> Bool
+}
+
+pub type Edge (Int, Int)
+impl Edge {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 pub enum LoweredBlock {
   BasicBlock(@core.BasicBlock)
   CriticalEdge(@core.BasicBlock, @core.BasicBlock, Int)
@@ -24,10 +38,55 @@ impl LoweringOrder {
   to_string(Self) -> String
 }
 
+pub struct PPAllocator {
+  pub vertex_count : Int
+  pub graph : @hashset.T[Edge]
+  pub neighbors : @hashmap.T[Int, @hashset.T[Int]]
+  pub phy : @hashset.T[Int]
+  pub info : @hashmap.T[Int, Info]
+  pub color_info : @hashmap.T[Int, Info]
+  pub color_used : @hashmap.T[Int, Int]
+  pub assignment : @hashmap.T[Int, Int]
+  pub order : Array[Int]
+  pub avail : Int
+  pub spilled : @hashmap.T[Int, Int]
+  pub spilled_colors : @hashset.T[Int]
+  pub highest_color : Int
+}
+impl PPAllocator {
+  add_edge[R : RegToId, Info](Self[Info], R, R) -> Unit
+  add_single_vertex[R : RegToId, Info](Self[Info], R) -> Unit
+  go[Info : Show](Self[Info]) -> Unit
+  new[Info](Int) -> Self[Info]
+  query_all_clobbered[Info](Self[Info]) -> Array[Info]
+  query_all_spilled[Info](Self[Info]) -> Array[Info]
+  query_all_spilled_with_slots[Info](Self[Info]) -> Array[(Info, Int)]
+  query_assigned_color[R : RegToId, Info : Show](Self[Info], R) -> Info?
+  query_spill[R : RegToId, Info](Self[Info], R) -> Int?
+  set_color_info[Info](Self[Info], Int, Info) -> Unit
+  set_info[R : RegToId, Info](Self[Info], R, Info) -> Unit
+  to_dot[Info : Show](Self[Info], String) -> String
+}
+
+type V
+impl V {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 // Type aliases
 
 // Traits
+pub trait RegToId {
+  to_reg_id(Self) -> Int
+  is_physical(Self) -> Bool
+  pre_colored(Self) -> Int?
+}
 
 // Extension Methods
+impl Show for Edge
+
 impl Show for LoweringOrder
+
+impl Show for V
 
