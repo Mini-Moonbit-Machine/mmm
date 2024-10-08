@@ -15,10 +15,18 @@ pub enum RegClass {
   F
 } derive(Eq, Compare, Hash)
 
+pub trait ToAnyReg {
+  to_any(Self) -> AnyReg
+}
+
 pub struct AnyReg {
   mut reg : Int
   class : RegClass
 } derive(Eq, Compare, Hash)
+
+pub fn AnyReg::to_any(self : AnyReg) -> AnyReg {
+  self
+}
 
 pub fn AnyReg::output(self : AnyReg, logger : Logger) -> Unit {
   logger.write_string(self.pretty())
@@ -202,7 +210,7 @@ pub let reg_saved_list : Array[Reg] = [
   S8,
   S9,
   S10,
-  // S11, // S11 is used for allocation
+  S11, // S11 is used for allocation
 ]
 
 pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7]

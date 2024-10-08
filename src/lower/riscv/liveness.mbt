@@ -94,6 +94,8 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     FRet => ([], fret_use)
     Call(~num_xregs, ~num_fregs, ..) | Jalr(~num_xregs, ~num_fregs, ..) =>
       (call_def, call_use_precise(num_xregs, num_fregs))
+    SaveCtx1 | RestoreCtx1 => ([], [])
+    SaveCtx2 | RestoreCtx2 => ([], [])
     Nop | J(..) | Jr(..) | Tail(..) | Label(_) | Comment(_) => ([], [])
   }
 }
@@ -138,6 +140,7 @@ pub struct IteratedBlockInfo {
   live_in : Set[AnyReg]
   live_out : Set[AnyReg]
   block_info : BlockInfo
+  defs : Array[Array[AnyReg]]
   live_set : Array[Array[AnyReg]]
 }
 
@@ -152,16 +155,19 @@ pub fn IteratedBlockInfo::compute_live_set(
   block : MBasicBlock
 ) -> Unit {
   let live_set = self.live_set
+  let defs = self.defs
   let live = MutSet::from_iter(self.live_out.iter())
   for insn in block.control.rev() {
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
+    defs.push(d)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
   }
   for insn in block.insns.rev() {
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
+    defs.push(d)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
   }
@@ -169,6 +175,7 @@ pub fn IteratedBlockInfo::compute_live_set(
   if live.size() != self.live_in.size() {
     abort("\{block.id._} live set mismatch: \{live} and \{self.live_in}")
   }
+  defs.rev_inplace()
   live_set.rev_inplace()
 }
 
@@ -218,12 +225,14 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
     let (lbl, mbb) = mbb
     let info = BlockInfo::compute(mbb)
     let live_set = []
+    let defs = []
     self.block_info[lbl._] = info
     self.iter_block_info[lbl._] = {
       live_in: Set::new(),
       live_out: Set::new(),
       block_info: info,
       live_set,
+      defs,
     }
   }
   match self.func {

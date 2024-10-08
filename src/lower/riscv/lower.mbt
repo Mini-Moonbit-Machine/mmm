@@ -30,6 +30,8 @@ pub struct RiscvFnLoweringCtx {
   ibuffer : Array[MInsn]
   ialias : Array[AnyReg]
   block_params_assignment : MutMap[@core.BlockRef, Array[AnyReg]]
+  mut is_leaf : Bool
+  mut mfn : MFn?
 }
 
 fn RiscvFnLoweringCtx::value_regs_to_string(
@@ -500,7 +502,7 @@ fn RiscvFnLoweringCtx::copy_return_value(
 ) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(X) => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
-    Some(F) => freg_to(@generated.constructor_rv_f_mv_d(self, @riscv.freg_ret))
+    Some(F) => freg_to(@generated.constructor_rv_fmv_d(self, @riscv.freg_ret))
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
   }
 }
@@ -511,9 +513,13 @@ fn RiscvFnLoweringCtx::lower_call(
   f : @core.Fn,
   args : Array[@core.Value]
 ) -> AnyReg {
+  self.is_leaf = false
+  @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
   @generated.constructor_rv_call(self, Label(f.name.to_string()), nx, nf)
-  self.copy_return_value(ty)
+  let r = self.copy_return_value(ty)
+  @generated.constructor_rv_restore_ctx2(self)
+  r
 }
 
 fn RiscvFnLoweringCtx::lower_ext_call(
@@ -522,9 +528,13 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   f : String,
   args : Array[@core.Value]
 ) -> AnyReg {
+  self.is_leaf = false
+  @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
   @generated.constructor_rv_call(self, Label(f), nx, nf)
-  self.copy_return_value(ty)
+  let r = self.copy_return_value(ty)
+  @generated.constructor_rv_restore_ctx2(self)
+  r
 }
 
 fn RiscvFnLoweringCtx::lower_apply(
@@ -533,6 +543,7 @@ fn RiscvFnLoweringCtx::lower_apply(
   f : @core.Value,
   args : Array[@core.Value]
 ) -> AnyReg {
+  self.is_leaf = false
   let closure_addr = @generated.constructor_lower_value(self, f)
   @generated.constructor_rv_mv_to(self, @riscv.reg_closure, xreg(closure_addr))
   let func_ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
@@ -540,9 +551,12 @@ fn RiscvFnLoweringCtx::lower_apply(
     offset: 0,
   }
   let fp = @generated.constructor_rv_ld(self, func_ma)
+  @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
   @generated.constructor_rv_jalr(self, fp, nx, nf)
-  self.copy_return_value(ty)
+  let r = self.copy_return_value(ty)
+  @generated.constructor_rv_restore_ctx2(self)
+  r
 }
 
 fn RiscvFnLoweringCtx::lower_load_fn(
@@ -1220,6 +1234,15 @@ fn RiscvFnLoweringCtx::load_closure_pointer(self : RiscvFnLoweringCtx) -> Unit {
   }
 }
 
+fn RiscvFnLoweringCtx::emit_fake_prologue(self : RiscvFnLoweringCtx) -> Unit {
+  @generated.constructor_rv_save_ctx1(self)
+  self.finalize_insn()
+}
+
+fn RiscvFnLoweringCtx::emit_fake_epilogue(self : RiscvFnLoweringCtx) -> Unit {
+  @generated.constructor_rv_restore_ctx1(self)
+}
+
 fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
   for i, ty in self.func.fvars {
     let index = i + 1
@@ -1281,13 +1304,16 @@ fn RiscvFnLoweringCtx::lower_block(
     self.load_freevar_regs()
     self.load_params()
     self.load_closure_pointer()
+    self.emit_fake_prologue()
   }
   let insns = self.finalize_basic_block()
   let params = self.block_params_assignment[block.id].unwrap()
   { id, insns, control, params }
 }
 
-pub fn RiscvFnLoweringCtx::lower(self : RiscvFnLoweringCtx) -> MFn!Failure {
+fn RiscvFnLoweringCtx::lower(
+  self : RiscvFnLoweringCtx
+) -> (MFn, Liveness)!Failure {
   let blocks = MutMap::new()
   for block in self.order.order.rev() {
     match block {
@@ -1297,7 +1323,367 @@ pub fn RiscvFnLoweringCtx::lower(self : RiscvFnLoweringCtx) -> MFn!Failure {
     }
   }
   let entry = self.block_label(self.func.entry)
-  { name: self.func.name, entry, blocks }
+  let mfn = { name: self.func.name, entry, blocks, leaf: self.is_leaf }
+  let liveness = Liveness::new(Some(self.func), mfn)
+  liveness.compute_block_liveness()
+  self.mfn = Some(mfn)
+  (mfn, liveness)
+}
+
+fn subst_vreg_with_preg_or_spill(
+  alloc : RegAllocator,
+  insn : MInsn,
+  buf : Array[MInsn]
+) -> Unit {
+  fn f(reg : AnyReg) -> AnyReg {
+    let r = alloc.query_assigned_color(reg).or(reg)
+    r
+  }
+
+  fn fx(reg : @riscv.Reg) -> @riscv.Reg {
+    f(reg.to_any()).to_xreg()
+  }
+
+  fn fmem(
+    mem : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]
+  ) -> @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] {
+    let base = f(mem.base.to_any()).to_xreg()
+    { base, offset: mem.offset }
+  }
+
+  fn ff(reg : @riscv.FReg) -> @riscv.FReg {
+    f(reg.to_any()).to_freg()
+  }
+
+  let insn = match insn {
+    Add(~rd, ~rs1, ~rs2) => MInsn::Add(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sub(~rd, ~rs1, ~rs2) => Sub(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Xor(~rd, ~rs1, ~rs2) => Xor(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Or(~rd, ~rs1, ~rs2) => Or(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    And(~rd, ~rs1, ~rs2) => And(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sll(~rd, ~rs1, ~rs2) => Sll(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Srl(~rd, ~rs1, ~rs2) => Srl(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sra(~rd, ~rs1, ~rs2) => Sra(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Slt(~rd, ~rs1, ~rs2) => Slt(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Sltu(~rd, ~rs1, ~rs2) => Sltu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Addi(~rd, ~rs1, ~imm) => Addi(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Xori(~rd, ~rs1, ~imm) => Xori(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Ori(~rd, ~rs1, ~imm) => Ori(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Andi(~rd, ~rs1, ~imm) => Andi(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Slli(~rd, ~rs1, ~imm) => Slli(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Srli(~rd, ~rs1, ~imm) => Srli(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Srai(~rd, ~rs1, ~imm) => Srai(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Slti(~rd, ~rs1, ~imm) => Slti(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Sltiu(~rd, ~rs1, ~imm) => Sltiu(rd=fx(rd), rs1=fx(rs1), ~imm)
+    Lbu(~rd, ~mem) => Lbu(rd=fx(rd), mem=fmem(mem))
+    Lhu(~rd, ~mem) => Lhu(rd=fx(rd), mem=fmem(mem))
+    Lwu(~rd, ~mem) => Lwu(rd=fx(rd), mem=fmem(mem))
+    Lb(~rd, ~mem) => Lb(rd=fx(rd), mem=fmem(mem))
+    Lh(~rd, ~mem) => Lh(rd=fx(rd), mem=fmem(mem))
+    Lw(~rd, ~mem) => Lw(rd=fx(rd), mem=fmem(mem))
+    Ld(~rd, ~mem) => Ld(rd=fx(rd), mem=fmem(mem))
+    Sb(~rs, ~mem) => Sb(rs=fx(rs), mem=fmem(mem))
+    Sh(~rs, ~mem) => Sh(rs=fx(rs), mem=fmem(mem))
+    Sw(~rs, ~mem) => Sw(rs=fx(rs), mem=fmem(mem))
+    Sd(~rs, ~mem) => Sd(rs=fx(rs), mem=fmem(mem))
+    Beq(~rs1, ~rs2, ~target) => Beq(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Bne(~rs1, ~rs2, ~target) => Bne(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Blt(~rs1, ~rs2, ~target) => Blt(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Bge(~rs1, ~rs2, ~target) => Bge(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Ble(~rs1, ~rs2, ~target) => Ble(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Bgt(~rs1, ~rs2, ~target) => Bgt(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Bltu(~rs1, ~rs2, ~target) => Bltu(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Bgeu(~rs1, ~rs2, ~target) => Bgeu(rs1=fx(rs1), rs2=fx(rs2), ~target)
+    Ecall => Ecall
+    Mul(~rd, ~rs1, ~rs2) => Mul(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulw(~rd, ~rs1, ~rs2) => Mulw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulh(~rd, ~rs1, ~rs2) => Mulh(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulhsu(~rd, ~rs1, ~rs2) => Mulhsu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Mulhu(~rd, ~rs1, ~rs2) => Mulhu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Div(~rd, ~rs1, ~rs2) => Div(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Divw(~rd, ~rs1, ~rs2) => Divw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Divu(~rd, ~rs1, ~rs2) => Divu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Rem(~rd, ~rs1, ~rs2) => Rem(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Remw(~rd, ~rs1, ~rs2) => Remw(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    Remu(~rd, ~rs1, ~rs2) => Remu(rd=fx(rd), rs1=fx(rs1), rs2=fx(rs2))
+    FaddD(~rd, ~rs1, ~rs2) => FaddD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FsubD(~rd, ~rs1, ~rs2) => FsubD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FmulD(~rd, ~rs1, ~rs2) => FmulD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FdivD(~rd, ~rs1, ~rs2) => FdivD(rd=ff(rd), rs1=ff(rs1), rs2=ff(rs2))
+    Fld(~rd, ~mem) => Fld(rd=ff(rd), mem=fmem(mem))
+    Fsd(~rs, ~mem) => Fsd(rs=ff(rs), mem=fmem(mem))
+    FeqD(~rd, ~rs1, ~rs2) => FeqD(rd=fx(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FleD(~rd, ~rs1, ~rs2) => FleD(rd=fx(rd), rs1=ff(rs1), rs2=ff(rs2))
+    FmvDX(~rd, ~rs) => FmvDX(rd=ff(rd), rs=fx(rs))
+    FcvtWD(~rd, ~rs, ~rm) => FcvtWD(rd=fx(rd), rs=ff(rs), ~rm)
+    FcvtDW(~rd, ~rs) => FcvtDW(rd=ff(rd), rs=fx(rs))
+    FabsD(~rd, ~rs) => FabsD(rd=ff(rd), rs=ff(rs))
+    FsqrtD(~rd, ~rs) => FsqrtD(rd=ff(rd), rs=ff(rs))
+    La(~rd, ~l) => La(rd=fx(rd), ~l)
+    Li(~rd, ~i) => Li(rd=fx(rd), ~i)
+    Neg(~rd, ~rs) => Neg(rd=fx(rd), rs=fx(rs))
+    Mv(~rd, ~rs) => {
+      let rd = fx(rd)
+      let rs = fx(rs)
+      if rd == rs {
+        return
+      }
+      Mv(~rd, ~rs)
+    }
+    FnegD(~rd, ~rs) => FnegD(rd=ff(rd), rs=ff(rs))
+    FmvD(~rd, ~rs) => FmvD(rd=ff(rd), rs=ff(rs))
+    XRet => XRet
+    FRet => FRet
+    Call(~num_xregs, ~num_fregs, ~target) =>
+      Call(~num_xregs, ~num_fregs, ~target)
+    Jalr(~num_xregs, ~num_fregs, ~target) =>
+      Jalr(~num_xregs, ~num_fregs, target=fx(target))
+    SaveCtx1 => SaveCtx1
+    RestoreCtx1 => RestoreCtx1
+    SaveCtx2 => SaveCtx2
+    RestoreCtx2 => RestoreCtx2
+    Jr(~target) => Jr(target=fx(target))
+    J(~target) => J(~target)
+    Nop => Nop
+    Tail(~target) => Tail(~target)
+    Label(x) => Label(x)
+    Comment(x) => Comment(x)
+  }
+  buf.push(insn)
+}
+
+fn load_to_sp_offset(
+  rd : AnyReg,
+  offset : @riscv.Imm12,
+  insns : Array[MInsn]
+) -> Unit {
+  match rd.class {
+    X => insns.push(MInsn::Ld(rd=rd.to_xreg(), mem={ base: @riscv.Sp, offset }))
+    F =>
+      insns.push(MInsn::Fld(rd=rd.to_freg(), mem={ base: @riscv.Sp, offset }))
+  }
+}
+
+fn store_to_sp_offset(
+  rs : AnyReg,
+  offset : @riscv.Imm12,
+  insns : Array[MInsn]
+) -> Unit {
+  match rs.class {
+    X => insns.push(MInsn::Sd(rs=rs.to_xreg(), mem={ base: @riscv.Sp, offset }))
+    F =>
+      insns.push(MInsn::Fsd(rs=rs.to_freg(), mem={ base: @riscv.Sp, offset }))
+  }
+}
+
+fn adjust_sp(offset : @riscv.Imm12, insns : Array[MInsn]) -> Unit {
+  insns.push(MInsn::Addi(rd=@riscv.Sp, rs1=@riscv.Sp, imm=offset._))
+}
+
+fn RiscvFnLoweringCtx::post_lower_block(
+  self : RiscvFnLoweringCtx,
+  alloc : RegAllocator,
+  mbb : MBasicBlock,
+  ibi : IteratedBlockInfo,
+  x_call_save : MutSet[AnyReg],
+  f_call_save : MutSet[AnyReg],
+  frame : FrameLayout
+) -> MBasicBlock {
+  let _ = self
+  let new_mbb = { id: mbb.id, insns: [], control: [], params: mbb.params }
+  let last_save_x = []
+  let last_save_f = []
+  let insns = new_mbb.insns
+  for i, insn in mbb.insns {
+    match insn {
+      SaveCtx1 => {
+        adjust_sp(-frame.adjust_sp, insns)
+        for r in frame.function_saves {
+          let offset = frame.function_save[r].unwrap()
+          store_to_sp_offset(r, offset, insns)
+        }
+      }
+      SaveCtx2 => {
+        last_save_f.clear()
+        last_save_x.clear()
+        // find the call instruction, and get its live set
+        // otherwise, we will save more than we need
+        let x = {
+          let mut x = i + 1
+          while true {
+            match mbb.insns[x] {
+              Call(..) | Jalr(..) => break
+              _ => ()
+            }
+            x += 1
+          }
+          x
+        }
+        let live_at_call = ibi.live_set[x + 1]
+        for r in live_at_call {
+          let r = alloc.query_assigned_color(r).or(r)
+          // don't save a0 or fa0 because their weird liveness
+          match r.class {
+            X =>
+              if x_call_save.contains(r) && r != @riscv.reg_ret.to_any() {
+                last_save_x.push(r)
+              }
+            F =>
+              if f_call_save.contains(r) && r != @riscv.freg_ret.to_any() {
+                last_save_f.push(r)
+              }
+          }
+        }
+        for r in last_save_x {
+          let offset = frame.save[r].unwrap()
+          store_to_sp_offset(r, offset, insns)
+        }
+        for r in last_save_f {
+          let offset = frame.save[r].unwrap()
+          store_to_sp_offset(r, offset, insns)
+        }
+      }
+      RestoreCtx2 => {
+        for r in last_save_f.rev() {
+          let offset = frame.save[r].unwrap()
+          load_to_sp_offset(r, offset, insns)
+        }
+        for r in last_save_x.rev() {
+          let offset = frame.save[r].unwrap()
+          load_to_sp_offset(r, offset, insns)
+        }
+        last_save_x.clear()
+        last_save_f.clear()
+      }
+      _ => subst_vreg_with_preg_or_spill(alloc, insn, insns)
+    }
+  }
+  for insn in mbb.control {
+    match insn {
+      RestoreCtx1 => {
+        for r in frame.function_saves {
+          let offset = frame.function_save[r].unwrap()
+          load_to_sp_offset(r, offset, insns)
+        }
+        adjust_sp(frame.adjust_sp, insns)
+      }
+      _ => subst_vreg_with_preg_or_spill(alloc, insn, new_mbb.control)
+    }
+  }
+  new_mbb
+}
+
+fn union_array[R : @riscv.ToAnyReg](
+  s : MutSet[AnyReg],
+  a : Array[R]
+) -> MutSet[AnyReg] {
+  let result = MutSet::new()
+  for r in a {
+    if s.contains(r.to_any()) {
+      result.insert(r.to_any())
+    }
+  }
+  result
+}
+
+struct FrameLayout {
+  mut spills : Int
+  spill : MutMap[Int, Int] // spill n -> sp - n * 8 - saves.len() * 8 - function_saves.len() * 8
+  saves : Array[AnyReg] // saved regs for a call
+  save : MutMap[AnyReg, Int] // save reg -> sp - n * 8 - function_saves.len() * 8
+  function_saves : Array[AnyReg] // saved regs for the function
+  function_save : MutMap[AnyReg, Int] // save reg -> sp - n * 8
+  mut adjust_sp : Int
+}
+
+fn FrameLayout::new() -> FrameLayout {
+  {
+    spills: 0,
+    spill: MutMap::new(),
+    saves: [],
+    save: MutMap::new(),
+    function_saves: [],
+    function_save: MutMap::new(),
+    adjust_sp: 0,
+  }
+}
+
+fn FrameLayout::save(self : FrameLayout, reg : AnyReg) -> Unit {
+  self.saves.push(reg)
+}
+
+fn FrameLayout::save_at_prologue(self : FrameLayout, reg : AnyReg) -> Unit {
+  self.function_saves.push(reg)
+}
+
+fn FrameLayout::spill(self : FrameLayout, n : Int) -> Unit {
+  self.spills += n
+}
+
+fn FrameLayout::calculate(self : FrameLayout) -> Unit {
+  self.function_saves.sort()
+  for i, reg in self.function_saves {
+    self.function_save.set(reg, 8 * i)
+  }
+  let x = self.function_saves.length()
+  self.saves.sort()
+  for i, reg in self.saves {
+    self.save.set(reg, 8 * (i + x))
+  }
+  let y = self.saves.length()
+  for i in 0..<self.spills {
+    self.spill.set(i, 8 * (i + x + y))
+  }
+  self.adjust_sp = 8 * (x + y + self.spills)
+}
+
+fn RiscvFnLoweringCtx::post_lower(
+  self : RiscvFnLoweringCtx,
+  alloc : RegAllocator,
+  liveness : Liveness
+) -> MFn!Failure {
+  let mfn = self.mfn.or_error!(Failure("No mfn"))
+  let (clobbered_x, clobbered_f) = alloc.get_clobbered_regs()
+  let new_mfn = {
+    name: mfn.name,
+    entry: mfn.entry,
+    blocks: MutMap::new(),
+    leaf: self.is_leaf,
+  }
+  // this is accurate
+  let x_save = union_array(clobbered_x, @riscv.reg_callee_saved_list)
+  let f_save = union_array(clobbered_f, @riscv.freg_callee_saved_list)
+  if self.is_leaf == false {
+    x_save.insert(@riscv.Ra.to_any())
+  }
+  // this is a overapproximation w.r.t all calls in the function
+  let x_call_save = union_array(clobbered_x, @riscv.reg_caller_saved_list)
+  let f_call_save = union_array(clobbered_f, @riscv.freg_caller_saved_list)
+  let x_spilled = alloc.query_all_x_spilled()
+  let f_spilled = alloc.query_all_f_spilled()
+  let frame = FrameLayout::new()
+  x_save.each(fn(r) { frame.save_at_prologue(r) })
+  f_save.each(fn(r) { frame.save_at_prologue(r) })
+  x_call_save.each(fn(r) { frame.save(r) })
+  f_call_save.each(fn(r) { frame.save(r) })
+  frame.spill(x_spilled)
+  frame.spill(f_spilled)
+  frame.calculate()
+  for block in mfn.blocks {
+    let ibi = liveness.iter_block_info
+      .get(block.0._)
+      .or_error!(Failure("No block info for \{block.0}"))
+    let mbb = self.post_lower_block(
+      alloc,
+      block.1,
+      ibi,
+      x_call_save,
+      f_call_save,
+      frame,
+    )
+    new_mfn.blocks.set(block.0, mbb)
+  }
+  new_mfn
 }
 
 pub fn RiscvFnLoweringCtx::new(
@@ -1326,6 +1712,8 @@ pub fn RiscvFnLoweringCtx::new(
     ibuffer: [],
     ialias: [],
     block_params_assignment: MutMap::new(),
+    is_leaf: true,
+    mfn: None,
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
@@ -1349,10 +1737,15 @@ pub fn RiscvLoweringCtx::lower_globals(
   globals : MutMap[@riscv.Label, Int]
 ) -> MFn {
   let core = self.core
-  let name = @riscv.Label::Label("_start")
-  let entry = @riscv.Label::Label("_start_b0")
+  let name = @riscv.Label::Label("minimbt_main")
+  let entry = @riscv.Label::Label(".minimbt_main_b0")
   let blocks = MutMap::new()
   let insns = []
+  adjust_sp(-128, insns)
+  store_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
+  for i, reg in @riscv.reg_callee_saved_list {
+    store_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
+  }
   for symbols in core.global_symbols {
     let (_, symbol) = symbols
     let ty_size = symbol.ty.size()
@@ -1393,29 +1786,43 @@ pub fn RiscvLoweringCtx::lower_globals(
       _ => abort("Invalid thunk type size")
     }
   }
+  for i, reg in @riscv.reg_callee_saved_list {
+    load_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
+  }
+  load_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
+  adjust_sp(128, insns)
   let control = [MInsn::XRet]
   let params = []
   blocks.set(entry, { id: entry, insns, control, params })
-  { name, entry, blocks }
+  { name, entry, blocks, leaf: false }
 }
 
 pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
-  let funcs = MutMap::new()
-  let liveness_info = MutMap::new()
+  let globals = MutMap::new()
+  let before_colored = {
+    funcs: MutMap::new(),
+    globals,
+    liveness: MutMap::new(),
+  }
+  let after_colored = { funcs: MutMap::new(), globals, liveness: MutMap::new() }
+  {
+    let init = self.lower_globals(globals)
+    before_colored.funcs.set(init.name, init)
+    after_colored.funcs.set(init.name, init)
+    let l = Liveness::new(None, init)
+    before_colored.liveness.set(init.name, l)
+  }
   for func in self.core.funcs {
     let (_, func) = func
     let lower_ctx = RiscvFnLoweringCtx::new(self.core, func)
-    let mfn = lower_ctx.lower!()
-    funcs.set(@riscv.Label::Label(func.name), mfn)
-    let liveness = Liveness::new(Some(func), mfn)
-    liveness.compute_block_liveness()
-    liveness_info.set(@riscv.Label::Label(func.name), liveness)
+    let (mfn, liveness) = lower_ctx.lower!()
+    let lbl = @riscv.Label::Label(func.name)
+    before_colored.funcs.set(lbl, mfn)
+    before_colored.liveness.set(lbl, liveness)
+    let regalloc = RegAllocator::new(mfn, liveness)
+    regalloc.assign()
+    let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
+    after_colored.funcs.set(lbl, final_mfn)
   }
-  let globals = MutMap::new()
-  let init = self.lower_globals(globals)
-  funcs.set(init.name, init)
-  let liveness = Liveness::new(None, init)
-  liveness.compute_block_liveness()
-  liveness_info.set(init.name, liveness)
-  { funcs, globals, liveness: liveness_info }
+  after_colored
 }

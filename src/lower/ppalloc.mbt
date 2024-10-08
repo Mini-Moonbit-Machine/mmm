@@ -30,6 +30,51 @@ pub fn PPAllocator::go[Info : Show](self : PPAllocator[Info]) -> Unit {
   self.assign_color()
 }
 
+pub fn PPAllocator::query_assigned_color[R : RegToId, Info : Show](
+  self : PPAllocator[Info],
+  reg : R
+) -> Info? {
+  self.assignment.get(reg.to_reg_id()).bind(fn(c) { self.color_info.get(c) })
+}
+
+pub fn PPAllocator::query_spill[R : RegToId, Info](
+  self : PPAllocator[Info],
+  reg : R
+) -> Int? {
+  let r = self.assignment.get(reg.to_reg_id()).unwrap()
+  if self.need_spill(r) {
+    Some(r - self.avail)
+  } else {
+    None
+  }
+}
+
+pub fn PPAllocator::query_all_spilled[Info](self : PPAllocator[Info]) -> Int {
+  let spilled = Set::new()
+  for asgn in self.assignment {
+    let (_, color) = asgn
+    if self.need_spill(color) {
+      spilled.insert(color - self.avail)
+    }
+  }
+  spilled.size()
+}
+
+pub fn PPAllocator::query_all_clobbered[Info](
+  self : PPAllocator[Info]
+) -> Array[Info] {
+  let clobbered = Set::new()
+  for asgn in self.assignment {
+    let (reg, color) = asgn
+    // an assignment for hardware register is just a constraint
+    // so it doesn't necessarily mean that the register is clobbered
+    if self.need_spill(color) == false && self.phy.contains(reg) == false {
+      clobbered.insert(color)
+    }
+  }
+  clobbered.iter().map(fn(c) { self.color_info.get(c).unwrap() }).to_array()
+}
+
 pub fn PPAllocator::to_dot[Info : Show](
   self : PPAllocator[Info],
   title : String
@@ -76,7 +121,7 @@ pub fn PPAllocator::to_dot[Info : Show](
   s
 }
 
-pub fn PPAllocator::new[OrigReg](avail : Int) -> PPAllocator[OrigReg] {
+pub fn PPAllocator::new[Info](avail : Int) -> PPAllocator[Info] {
   PPAllocator::{
     vertex_count: 0,
     graph: Set::new(),

@@ -92,14 +92,19 @@
   (let ((_ Unit (rv_mv_to (return_reg) (zero_reg))))
     (rv_xret)))
 
+(decl emit_fake_epilogue () Unit)
+(extern constructor emit_fake_epilogue emit_fake_epilogue)
+
 (rule (lower_control (control_return (arg1 (has_type x (ty_double)))))
   (let ((r FReg (lower_value x))
-        (_ Unit (rv_fmv_to (float_return_reg) r)))
+        (_ Unit (rv_fmv_to (float_return_reg) r))
+        (_ Unit (emit_fake_epilogue)))
     (rv_fret)))
 
 (rule -1 (lower_control (control_return (arg1 x)))
   (let ((r XReg (lower_value x))
-        (_ Unit (rv_mv_to (return_reg) r)))
+        (_ Unit (rv_mv_to (return_reg) r))
+        (_ Unit (emit_fake_epilogue)))
     (rv_xret)))
 
 (rule (lower_control (control_branch cond t t_args f f_args))

@@ -149,7 +149,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Core error")
         }
       }
-      println("\{core.to_pretty_print()}")
       self.opt = Some(core)
     }
     Closure => {

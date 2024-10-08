@@ -85,6 +85,10 @@ pub enum RvAsm {
   Tail(~target : Label)
   XRet
   FRet
+  SaveCtx1 // function prologue
+  RestoreCtx1 // function epilogue
+  SaveCtx2 // call prologue
+  RestoreCtx2 // call epilogue
   // Comments
   Label(Label)
   Comment(String)
@@ -274,6 +278,10 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string(target._)
     }
     XRet | FRet => logger.write_string("ret")
+    SaveCtx1 => logger.write_string("# save_ctx1")
+    RestoreCtx1 => logger.write_string("# restore_ctx1")
+    SaveCtx2 => logger.write_string("# save_ctx2")
+    RestoreCtx2 => logger.write_string("# restore_ctx2")
     Label(label) => {
       logger.write_string(label._)
       logger.write_string(":")

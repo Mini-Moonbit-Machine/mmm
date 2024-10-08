@@ -85,7 +85,11 @@
     (Call (target Label) (num_xregs Int32) (num_fregs Int32))
     (Tail (target Label))
     XRet
-    FRet))
+    FRet
+    SaveCtx1
+    RestoreCtx1
+    SaveCtx2
+    RestoreCtx2))
 
 (decl next_virtual_xreg () XReg)
 (extern constructor next_virtual_xreg next_virtual_xreg)
@@ -469,8 +473,8 @@
         (_ Unit (emit_risc_v (RvAsm.Mv dst x))))
     dst))
 
-(decl rv_f_mv_d (FReg) FReg)
-(rule (rv_f_mv_d x)
+(decl rv_fmv_d (FReg) FReg)
+(rule (rv_fmv_d x)
   (let ((dst FReg (next_virtual_freg))
         (_ Unit (emit_risc_v (RvAsm.FmvD dst x))))
     dst))
@@ -498,6 +502,18 @@
 
 (decl rv_fret () Unit)
 (rule (rv_fret) (emit_risc_v (RvAsm.FRet)))
+
+(decl rv_save_ctx1 () Unit)
+(rule (rv_save_ctx1) (emit_risc_v (RvAsm.SaveCtx1)))
+
+(decl rv_restore_ctx1 () Unit)
+(rule (rv_restore_ctx1) (emit_risc_v (RvAsm.RestoreCtx1)))
+
+(decl rv_save_ctx2 () Unit)
+(rule (rv_save_ctx2) (emit_risc_v (RvAsm.SaveCtx2)))
+
+(decl rv_restore_ctx2 () Unit)
+(rule (rv_restore_ctx2) (emit_risc_v (RvAsm.RestoreCtx2)))
 
 (decl zero_reg () XReg)
 (extern constructor zero_reg zero_reg)

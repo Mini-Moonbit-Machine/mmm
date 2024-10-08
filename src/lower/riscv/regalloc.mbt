@@ -1,10 +1,17 @@
-typealias UnderlyingAllocator = @lower.PPAllocator[String]
+type AnyRegInfo AnyReg
 
-pub struct RegAllocator {
+fn AnyRegInfo::output(self : AnyRegInfo, logger : Logger) -> Unit {
+  logger.write_string(self._.pretty())
+}
+
+typealias UnderlyingAllocator = @lower.PPAllocator[AnyRegInfo]
+
+struct RegAllocator {
   mfn : MFn
   liveness : Liveness
   xctx : RegAllocCtx
   fctx : RegAllocCtx
+  color_cache : MutMap[AnyReg, AnyReg]
 }
 
 struct RegWrapper {
@@ -33,15 +40,15 @@ fn RegWrapper::new(r : AnyReg, counter : Ref[Int]) -> RegWrapper {
   RegWrapper::{ id, r, color }
 }
 
-pub fn RegWrapper::to_reg_id(self : RegWrapper) -> Int {
+fn RegWrapper::to_reg_id(self : RegWrapper) -> Int {
   self.id
 }
 
-pub fn RegWrapper::is_physical(self : RegWrapper) -> Bool {
+fn RegWrapper::is_physical(self : RegWrapper) -> Bool {
   self.r.reg < 0
 }
 
-pub fn RegWrapper::pre_colored(self : RegWrapper) -> Int? {
+fn RegWrapper::pre_colored(self : RegWrapper) -> Int? {
   self.color
 }
 
@@ -49,12 +56,13 @@ fn RegAllocator::new(mfn : MFn, liveness : Liveness) -> RegAllocator {
   let xctx = RegAllocCtx::new(@riscv.preferred_reg_list.length())
   let fctx = RegAllocCtx::new(@riscv.preferred_freg_list.length())
   for i, r in @riscv.preferred_reg_list {
-    xctx.allocator.set_color_info(i, r.to_any().pretty())
+    xctx.allocator.set_color_info(i, r.to_any())
   }
   for i, r in @riscv.preferred_freg_list {
-    fctx.allocator.set_color_info(i, r.to_any().pretty())
+    fctx.allocator.set_color_info(i, r.to_any())
   }
-  RegAllocator::{ mfn, liveness, xctx, fctx }
+  let color_cache = MutMap::new()
+  RegAllocator::{ mfn, liveness, xctx, fctx, color_cache }
 }
 
 struct RegAllocCtx {
@@ -74,6 +82,17 @@ fn record_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper {
   }
 }
 
+fn retrive_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper {
+  self.reg_memo
+  .get(reg)
+  .or_else(
+    fn() {
+      println("reg \{reg} not found in reg_memo")
+      panic()
+    },
+  )
+}
+
 fn RegAllocCtx::new(avail : Int) -> RegAllocCtx {
   let graph = UnderlyingAllocator::new(avail)
   RegAllocCtx::{
@@ -86,30 +105,30 @@ fn RegAllocCtx::new(avail : Int) -> RegAllocCtx {
 fn RegAllocCtx::set_info(self : RegAllocCtx) -> Unit {
   for rw in self.reg_memo {
     let (_, rw) = rw
-    self.allocator.set_info(rw, rw.r.pretty())
+    self.allocator.set_info(rw, rw.r)
   }
 }
 
-pub fn RegAllocator::assign(self : RegAllocator) -> Unit {
+fn RegAllocator::assign(self : RegAllocator) -> Unit {
   let reg_ctx_x = self.xctx
   let reg_ctx_f = self.fctx
-  let alloc_reg = @riscv.reg_alloc.to_any() // avoid s11 to be found in the interference graph
   for info in self.liveness.iter_block_info {
     let (_, info) = info
-    for live_set in info.live_set {
-      for reg1 in live_set {
-        for reg2 in live_set {
-          if reg1.class == reg2.class && reg1 != alloc_reg && reg2 != alloc_reg {
-            if reg1 == reg2 {
-              let rw1 = reg_ctx_x.record_reg(reg1)
+    for i, defs in info.defs {
+      let live_set = info.live_set[i + 1]
+      for defined in defs {
+        for live in live_set {
+          if defined.class == live.class {
+            if defined == live {
+              let rw1 = reg_ctx_x.record_reg(defined)
               reg_ctx_x.allocator.add_single_vertex(rw1)
             } else {
-              let reg_ctx = match reg1.class {
+              let reg_ctx = match defined.class {
                 X => reg_ctx_x
                 F => reg_ctx_f
               }
-              let rw1 = reg_ctx.record_reg(reg1)
-              let rw2 = reg_ctx.record_reg(reg2)
+              let rw1 = reg_ctx.record_reg(defined)
+              let rw2 = reg_ctx.record_reg(live)
               reg_ctx.allocator.add_edge(rw1, rw2)
             }
           }
@@ -121,12 +140,65 @@ pub fn RegAllocator::assign(self : RegAllocator) -> Unit {
   reg_ctx_f.set_info()
   self.xctx.allocator.go()
   self.fctx.allocator.go()
-  println(
+  trace(
     self.xctx.allocator.to_dot(
       "integer interference graph of \{self.mfn.name._}",
     ),
   )
-  println(
+  trace(
     self.fctx.allocator.to_dot("float interference graph of \{self.mfn.name._}"),
+  )
+}
+
+fn RegAllocator::query_assigned_color(
+  self : RegAllocator,
+  r : AnyReg
+) -> AnyReg? {
+  if self.color_cache.contains(r) {
+    self.color_cache.get(r)
+  } else {
+    let c = if r.class == X {
+      let rw = self.xctx.retrive_reg(r)
+      let color = self.xctx.allocator.query_assigned_color(rw)
+      color.map(fn(x) { x._ })
+    } else {
+      let rw = self.fctx.retrive_reg(r)
+      let color = self.fctx.allocator.query_assigned_color(rw)
+      color.map(fn(x) { x._ })
+    }
+    match c {
+      Some(c) => self.color_cache.set(r, c)
+      None => ()
+    }
+    c
+  }
+}
+
+fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
+  if r.class == X {
+    let rw = self.xctx.retrive_reg(r)
+    self.xctx.allocator.query_spill(rw)
+  } else {
+    let rw = self.fctx.retrive_reg(r)
+    self.fctx.allocator.query_spill(rw)
+  }
+}
+
+fn RegAllocator::query_all_x_spilled(self : RegAllocator) -> Int {
+  self.xctx.allocator.query_all_spilled()
+}
+
+fn RegAllocator::query_all_f_spilled(self : RegAllocator) -> Int {
+  self.fctx.allocator.query_all_spilled()
+}
+
+fn RegAllocator::get_clobbered_regs(
+  self : RegAllocator
+) -> (Set[AnyReg], Set[AnyReg]) {
+  let a = self.xctx.allocator.query_all_clobbered()
+  let b = self.fctx.allocator.query_all_clobbered()
+  (
+    Set::from_iter(a.iter().map(fn(x) { x._ })),
+    Set::from_iter(b.iter().map(fn(x) { x._ })),
   )
 }
