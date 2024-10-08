@@ -92,8 +92,13 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     FnegD(~rd, ~rs) | FmvD(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
     XRet => ([], xret_use)
     FRet => ([], fret_use)
-    Call(~num_xregs, ~num_fregs, ..) | Jalr(~num_xregs, ~num_fregs, ..) =>
+    Call(~num_xregs, ~num_fregs, ..) =>
       (call_def, call_use_precise(num_xregs, num_fregs))
+    Jalr(~num_xregs, ~num_fregs, ~target) => {
+      let uses = call_use_precise(num_xregs, num_fregs)
+      uses.push(target.to_any())
+      (call_def, uses)
+    }
     SaveCtx1 | RestoreCtx1 => ([], [])
     SaveCtx2 | RestoreCtx2 => ([], [])
     Nop | J(..) | Jr(..) | Tail(..) | Label(_) | Comment(_) => ([], [])
@@ -163,6 +168,7 @@ pub fn IteratedBlockInfo::compute_live_set(
     defs.push(d)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
+    live.remove(@riscv.Sp.to_any())
   }
   for insn in block.insns.rev() {
     live_set.push(live.iter().to_array())
@@ -170,6 +176,7 @@ pub fn IteratedBlockInfo::compute_live_set(
     defs.push(d)
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
+    live.remove(@riscv.Sp.to_any())
   }
   live_set.push(live.iter().to_array())
   if live.size() != self.live_in.size() {

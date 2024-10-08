@@ -82,15 +82,8 @@ fn record_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper {
   }
 }
 
-fn retrive_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper {
-  self.reg_memo
-  .get(reg)
-  .or_else(
-    fn() {
-      println("reg \{reg} not found in reg_memo")
-      panic()
-    },
-  )
+fn retrive_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper? {
+  self.reg_memo.get(reg)
 }
 
 fn RegAllocCtx::new(avail : Int) -> RegAllocCtx {
@@ -158,13 +151,23 @@ fn RegAllocator::query_assigned_color(
     self.color_cache.get(r)
   } else {
     let c = if r.class == X {
-      let rw = self.xctx.retrive_reg(r)
-      let color = self.xctx.allocator.query_assigned_color(rw)
-      color.map(fn(x) { x._ })
+      self.xctx
+      .retrive_reg(r)
+      .bind(
+        fn(rw) {
+          let color = self.xctx.allocator.query_assigned_color(rw)
+          color.map(fn(x) { x._ })
+        },
+      )
     } else {
-      let rw = self.fctx.retrive_reg(r)
-      let color = self.fctx.allocator.query_assigned_color(rw)
-      color.map(fn(x) { x._ })
+      self.fctx
+      .retrive_reg(r)
+      .bind(
+        fn(rw) {
+          let color = self.fctx.allocator.query_assigned_color(rw)
+          color.map(fn(x) { x._ })
+        },
+      )
     }
     match c {
       Some(c) => self.color_cache.set(r, c)
@@ -176,10 +179,10 @@ fn RegAllocator::query_assigned_color(
 
 fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
   if r.class == X {
-    let rw = self.xctx.retrive_reg(r)
+    let rw = self.xctx.retrive_reg(r).unwrap()
     self.xctx.allocator.query_spill(rw)
   } else {
-    let rw = self.fctx.retrive_reg(r)
+    let rw = self.fctx.retrive_reg(r).unwrap()
     self.fctx.allocator.query_spill(rw)
   }
 }

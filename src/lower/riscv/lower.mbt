@@ -1810,6 +1810,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     before_colored.funcs.set(init.name, init)
     after_colored.funcs.set(init.name, init)
     let l = Liveness::new(None, init)
+    l.compute_block_liveness()
     before_colored.liveness.set(init.name, l)
   }
   for func in self.core.funcs {
@@ -1824,5 +1825,6 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
   }
+  //println("before colored: \{Show::to_string(before_colored.to_rich_info())}")
   after_colored
 }
