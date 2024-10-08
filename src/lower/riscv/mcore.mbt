@@ -6,6 +6,7 @@ pub struct MCore {
   funcs : MutMap[Label, MFn]
   globals : MutMap[Label, Int]
   liveness : MutMap[Label, Liveness]
+  primitives : MutSet[String]
 }
 
 pub type MCoreWithRichInfo MCore
@@ -107,6 +108,9 @@ pub fn MFn::print_with_info(
 }
 
 pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
+  for primitive in self.primitives {
+    logger.write_string("\{primitive_map[primitive].unwrap()}\n")
+  }
   for fpair in self.funcs {
     let (_, func) = fpair
     logger.write_string("  .p2align 3\n")
@@ -150,4 +154,72 @@ pub fn MCoreWithRichInfo::output(
     logger.write_string("\{global._}:\n")
     logger.write_string("  .zero \{sz}\n")
   }
+}
+
+let raw_memseti32 =
+  #|  .p2align 3
+  #|  .globl memseti32
+  #|  .type memseti32, @function
+  #|memseti32:
+  #|  blez a1, .memseti32_b1
+  #|  slli a1, a1, 2
+  #|  add a1, a1, a0
+  #|.memseti32_b0:
+  #|  sw a2, 0(a0)
+  #|  addi a0, a0, 4
+  #|  bne a0, a1, .memseti32_b0
+  #|.memseti32_b1:
+  #|  ret
+  #|
+
+let raw_memsetf64 =
+  #|memsetf64:
+  #|  blez a1, .memsetf64_b1
+  #|  slli a1, a1, 3
+  #|  add a1, a1, a0
+  #|.memsetf64_b0:
+  #|  fsd fa0, 0(a0)
+  #|  addi a0, a0, 8
+  #|  bne a0, a1, .memsetf64_b0
+  #|.memsetf64_b1:
+  #|  ret
+  #|
+
+let raw_memset0e4 =
+  #|  .p2align 3
+  #|  .globl memset0e4
+  #|  .type memset0e4, @function
+  #|memset0e4:
+  #|  blez a1, .memset0e4_b1
+  #|  slli a1, a1, 2
+  #|  add a1, a1, a0
+  #|.memset0e4_b0:
+  #|  sw zero, 0(a0)
+  #|  addi a0, a0, 4
+  #|  bne a0, a1, .memset0e4_b0
+  #|.memset0e4_b1:
+  #|  ret
+  #|
+
+let raw_memset0e8 =
+  #|  .p2align 3
+  #|  .globl memset0e8
+  #|  .type memset0e8, @function
+  #|memset0e8:
+  #|  blez a1, .memset0e8_b1
+  #|  slli a1, a1, 3
+  #|  add a1, a1, a0
+  #|.memset0e8_b0:
+  #|  fsd zero, 0(a0)
+  #|  addi a0, a0, 8
+  #|  bne a0, a1, .memset0e8_b0
+  #|.memset0e8_b1:
+  #|  ret
+  #|
+
+let primitive_map : Map[String, String] = {
+  "memseti32": raw_memseti32,
+  "memsetf64": raw_memsetf64,
+  "memset0e4": raw_memset0e4,
+  "memset0e8": raw_memset0e8,
 }

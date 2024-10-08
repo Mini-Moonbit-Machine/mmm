@@ -82,18 +82,19 @@
 (decl emit_block_parameters (BlockRef Values) Unit)
 (extern constructor emit_block_parameters emit_block_parameters)
 
+(decl emit_fake_epilogue () Unit)
+(extern constructor emit_fake_epilogue emit_fake_epilogue)
+
 (decl partial lower_control (Control) Unit)
 
 (rule (lower_control (control_jump target args))
   (let ((_ Unit (emit_block_parameters target args)))
     (rv_j (block_label target))))
-  
-(rule (lower_control (control_return (arg0)))
-  (let ((_ Unit (rv_mv_to (return_reg) (zero_reg))))
-    (rv_xret)))
 
-(decl emit_fake_epilogue () Unit)
-(extern constructor emit_fake_epilogue emit_fake_epilogue)
+(rule (lower_control (control_return (arg0)))
+  (let ((_ Unit (rv_mv_to (return_reg) (zero_reg)))
+        (_ Unit (emit_fake_epilogue)))
+    (rv_xret)))
 
 (rule (lower_control (control_return (arg1 (has_type x (ty_double)))))
   (let ((r FReg (lower_value x))

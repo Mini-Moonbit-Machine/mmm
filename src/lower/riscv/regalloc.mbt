@@ -18,7 +18,7 @@ struct RegWrapper {
   id : Int
   color : Int?
   r : AnyReg
-}
+} derive(Show)
 
 fn RegWrapper::new(r : AnyReg, counter : Ref[Int]) -> RegWrapper {
   let id = counter.val
@@ -114,20 +114,13 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           X => reg_ctx_x
           F => reg_ctx_f
         }
-        if live_set.is_empty() {
-          let rw1 = reg_ctx.record_reg(defined)
-          reg_ctx.allocator.add_single_vertex(rw1)
-        }
+        let rw1 = reg_ctx.record_reg(defined)
+        reg_ctx.allocator.add_single_vertex(rw1)
         for live in live_set {
           if defined.class == live.class {
-            if defined == live {
-              let rw1 = reg_ctx.record_reg(defined)
-              reg_ctx.allocator.add_single_vertex(rw1)
-            } else {
-              let rw1 = reg_ctx.record_reg(defined)
-              let rw2 = reg_ctx.record_reg(live)
-              reg_ctx.allocator.add_edge(rw1, rw2)
-            }
+            let rw1 = reg_ctx.record_reg(defined)
+            let rw2 = reg_ctx.record_reg(live)
+            reg_ctx.allocator.add_edge(rw1, rw2)
           }
         }
       }
@@ -183,10 +176,22 @@ fn RegAllocator::query_assigned_color(
 
 fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
   if r.class == X {
-    let rw = self.xctx.retrive_reg(r).unwrap()
+    let rw = self.xctx
+      .retrive_reg(r)
+      .or_else(
+        fn() {
+          abort("query_spill: register \{r} not found in \{self.xctx.reg_memo}")
+        },
+      )
     self.xctx.allocator.query_spill(rw)
   } else {
-    let rw = self.fctx.retrive_reg(r).unwrap()
+    let rw = self.fctx
+      .retrive_reg(r)
+      .or_else(
+        fn() {
+          abort("query_spill: register \{r} not found in \{self.fctx.reg_memo}")
+        },
+      )
     self.fctx.allocator.query_spill(rw)
   }
 }

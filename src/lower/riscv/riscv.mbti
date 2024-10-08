@@ -65,6 +65,7 @@ pub struct MCore {
   pub funcs : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MFn]
   pub globals : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]
   pub liveness : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Liveness]
+  pub primitives : @hashset.T[String]
 }
 impl MCore {
   output(Self, Logger) -> Unit
@@ -92,6 +93,9 @@ type RegAllocCtx
 type RegAllocator
 
 type RegWrapper
+impl RegWrapper {
+  to_string(Self) -> String
+}
 
 pub struct RiscvFnLoweringCtx {
   pub core : @core.Core
@@ -106,6 +110,7 @@ pub struct RiscvFnLoweringCtx {
   pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
   pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.AnyReg]]
+  pub used_primitive : @hashset.T[String]
   pub is_leaf : Bool
   pub mfn : MFn?
 }
@@ -127,4 +132,5 @@ impl RiscvLoweringCtx {
 // Traits
 
 // Extension Methods
+impl Show for RegWrapper
 

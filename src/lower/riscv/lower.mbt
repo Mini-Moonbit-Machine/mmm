@@ -30,6 +30,7 @@ pub struct RiscvFnLoweringCtx {
   ibuffer : Array[MInsn]
   ialias : Array[AnyReg]
   block_params_assignment : MutMap[@core.BlockRef, Array[AnyReg]]
+  used_primitive : MutSet[String]
   mut is_leaf : Bool
   mut mfn : MFn?
 }
@@ -717,18 +718,21 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
-          @generated.constructor_rv_call(self, Label("_memseti32"), 3, 0)
+          @generated.constructor_rv_call(self, Label("memseti32"), 3, 0)
+          self.used_primitive.insert("memseti32")
         }
         F => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
-          @generated.constructor_rv_call(self, Label("_memsetf64"), 2, 1)
+          @generated.constructor_rv_call(self, Label("memsetf64"), 2, 1)
+          self.used_primitive.insert("memsetf64")
         }
       }
     Zero => {
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
-      @generated.constructor_rv_call(self, Label("_memset0e\{elem_sz}"), 2, 0)
+      @generated.constructor_rv_call(self, Label("memset0e\{elem_sz}"), 2, 0)
+      self.used_primitive.insert("memset0e\{elem_sz}")
     }
     _ => abort("Invalid fill")
   }
@@ -889,6 +893,11 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
             self,
             xreg(self.alloc_reg),
             size,
+          )
+          @generated.constructor_rv_mv_to(
+            self,
+            self.alloc_reg |> xreg,
+            unaligned_ptr,
           )
           let aligned_ptr = @generated.constructor_rv_andi(
             self, unaligned_ptr, -8,
@@ -1226,15 +1235,14 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
 
 fn RiscvFnLoweringCtx::load_closure_pointer(self : RiscvFnLoweringCtx) -> Unit {
   match self.func.ty {
-    @core.Type::ClosureFn(..) =>
-      if self.func.fvars.length() > 0 {
-        @generated.constructor_rv_mv_to(
-          self,
-          self.closure_reg |> xreg,
-          @riscv.reg_closure,
-        )
-        self.finalize_insn()
-      }
+    @core.Type::ClosureFn(..) => {
+      @generated.constructor_rv_mv_to(
+        self,
+        self.closure_reg |> xreg,
+        @riscv.reg_closure,
+      )
+      self.finalize_insn()
+    }
     _ => ()
   }
 }
@@ -1416,7 +1424,7 @@ fn subst_vreg_with_preg_or_spill(
     }
   }
 
-  let insn = match insn {
+  let insn2 = match insn {
     Add(~rd, ~rs1, ~rs2) => MInsn::Add(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
     Sub(~rd, ~rs1, ~rs2) => Sub(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
     Xor(~rd, ~rs1, ~rs2) => Xor(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2))
@@ -1529,7 +1537,8 @@ fn subst_vreg_with_preg_or_spill(
       MInsn::Fld(rd=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
     )
   }
-  buf.push(insn)
+  trace("subst \{Show::to_string(insn)} -> \{Show::to_string(insn2)}")
+  buf.push(insn2)
   for i, x in output_xreg_spilled {
     let slot = alloc.query_spill(x.to_any()).unwrap()
     let offset = frame.spill[slot].unwrap()
@@ -1659,9 +1668,9 @@ fn RiscvFnLoweringCtx::post_lower_block(
       RestoreCtx1 => {
         for r in frame.function_saves {
           let offset = frame.function_save[r].unwrap()
-          load_to_sp_offset(r, offset, insns)
+          load_to_sp_offset(r, offset, new_mbb.control)
         }
-        adjust_sp(frame.adjust_sp, insns)
+        adjust_sp(frame.adjust_sp, new_mbb.control)
       }
       _ => subst_vreg_with_preg_or_spill(alloc, frame, insn, new_mbb.control)
     }
@@ -1813,6 +1822,7 @@ pub fn RiscvFnLoweringCtx::new(
     block_params_assignment: MutMap::new(),
     is_leaf: true,
     mfn: None,
+    used_primitive: MutSet::new(),
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
@@ -1921,8 +1931,14 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     funcs: MutMap::new(),
     globals,
     liveness: MutMap::new(),
+    primitives: MutSet::new(),
   }
-  let after_colored = { funcs: MutMap::new(), globals, liveness: MutMap::new() }
+  let after_colored = {
+    funcs: MutMap::new(),
+    globals,
+    liveness: MutMap::new(),
+    primitives: MutSet::new(),
+  }
   {
     let init = self.lower_globals(globals)
     before_colored.funcs.set(init.name, init)
@@ -1938,6 +1954,12 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let lbl = @riscv.Label::Label(func.name)
     before_colored.funcs.set(lbl, mfn)
     before_colored.liveness.set(lbl, liveness)
+    lower_ctx.used_primitive.each(
+      fn(p) {
+        before_colored.primitives.insert(p)
+        after_colored.primitives.insert(p)
+      },
+    )
     let regalloc = RegAllocator::new(mfn, liveness)
     regalloc.assign()
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
