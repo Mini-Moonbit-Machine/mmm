@@ -1418,6 +1418,26 @@ pub fn constructor_lower[C : Context](
       match v1 {
         @core.Type::Bool =>
           match v2 {
+            @core.Op::Lnot => {
+              let v4 = C::values_to_args(ctx, v3)
+              match v4 {
+                Some(v5) =>
+                  match v5 {
+                    Args::Args1(arg1=v28) => {
+                      let v29 = constructor_lower_value(ctx, v28)
+                      let v30 = C::xreg_new(ctx, v29)
+                      let v36 = constructor_rv_sltiu(ctx, v30, 0x1)
+                      let v37 = C::xreg_to_reg(ctx, v36)
+                      let v38 = C::mark_maybe_aliased(ctx, v37)
+                      let v39 = Some(v38)
+                      // Rule at src/lower/riscv/lower.isle line 152.
+                      return v39
+                    }
+                    _ => ()
+                  }
+                _ => ()
+              }
+            }
             @core.Op::Eq => {
               let v4 = C::values_to_args(ctx, v3)
               match v4 {
@@ -1451,17 +1471,21 @@ pub fn constructor_lower[C : Context](
                 Some(v5) =>
                   match v5 {
                     Args::Args2(arg1=v6, arg2=v7) => {
-                      let v55 = constructor_lower_value(ctx, v7)
-                      let v56 = C::xreg_new(ctx, v55)
-                      let v57 = constructor_lower_value(ctx, v6)
-                      let v58 = C::xreg_new(ctx, v57)
-                      let v59 = constructor_rv_slt(ctx, v56, v58)
-                      let v60 = constructor_rv_xori(ctx, v59, 0x1)
-                      let v61 = C::xreg_to_reg(ctx, v60)
-                      let v62 = C::mark_maybe_aliased(ctx, v61)
-                      let v63 = Some(v62)
-                      // Rule at src/lower/riscv/lower.isle line 165.
-                      return v63
+                      let v40 = C::has_type(ctx, v6)
+                      let v43 = C::has_type(ctx, v7)
+                      if v40.1 == v43.1 {
+                        let v55 = constructor_lower_value(ctx, v43.0)
+                        let v56 = C::xreg_new(ctx, v55)
+                        let v57 = constructor_lower_value(ctx, v40.0)
+                        let v58 = C::xreg_new(ctx, v57)
+                        let v59 = constructor_rv_slt(ctx, v56, v58)
+                        let v60 = constructor_rv_xori(ctx, v59, 0x1)
+                        let v61 = C::xreg_to_reg(ctx, v60)
+                        let v62 = C::mark_maybe_aliased(ctx, v61)
+                        let v63 = Some(v62)
+                        // Rule at src/lower/riscv/lower.isle line 165.
+                        return v63
+                      }
                     }
                     _ => ()
                   }
@@ -1574,26 +1598,6 @@ pub fn constructor_lower[C : Context](
                       let v34 = Some(v33)
                       // Rule at src/lower/riscv/lower.isle line 146.
                       return v34
-                    }
-                    _ => ()
-                  }
-                _ => ()
-              }
-            }
-            @core.Op::Lnot => {
-              let v4 = C::values_to_args(ctx, v3)
-              match v4 {
-                Some(v5) =>
-                  match v5 {
-                    Args::Args1(arg1=v28) => {
-                      let v29 = constructor_lower_value(ctx, v28)
-                      let v30 = C::xreg_new(ctx, v29)
-                      let v36 = constructor_rv_sltiu(ctx, v30, 0x1)
-                      let v37 = C::xreg_to_reg(ctx, v36)
-                      let v38 = C::mark_maybe_aliased(ctx, v37)
-                      let v39 = Some(v38)
-                      // Rule at src/lower/riscv/lower.isle line 152.
-                      return v39
                     }
                     _ => ()
                   }

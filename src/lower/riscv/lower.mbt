@@ -861,6 +861,11 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
               @generated.constructor_rv_sub(self, self.alloc_reg |> xreg, imm)
             }
           }
+          @generated.constructor_rv_mv_to(
+            self,
+            self.alloc_reg |> xreg,
+            unaligned_ptr,
+          )
           let aligned_ptr = @generated.constructor_rv_andi(
             self, unaligned_ptr, -8,
           )
@@ -1732,6 +1737,14 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
   { core, }
 }
 
+fn pre_allocate(insns : Array[MInsn]) -> Unit {
+  insns.push(MInsn::Li(rd=@riscv.A0, i="131072"))
+  insns.push(
+    MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),
+  )
+  insns.push(MInsn::Mv(rd=@riscv.reg_alloc, rs=@riscv.A0))
+}
+
 pub fn RiscvLoweringCtx::lower_globals(
   self : RiscvLoweringCtx,
   globals : MutMap[@riscv.Label, Int]
@@ -1746,6 +1759,7 @@ pub fn RiscvLoweringCtx::lower_globals(
   for i, reg in @riscv.reg_callee_saved_list {
     store_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
   }
+  pre_allocate(insns)
   for symbols in core.global_symbols {
     let (_, symbol) = symbols
     let ty_size = symbol.ty.size()
@@ -1786,10 +1800,10 @@ pub fn RiscvLoweringCtx::lower_globals(
       _ => abort("Invalid thunk type size")
     }
   }
+  load_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
   for i, reg in @riscv.reg_callee_saved_list {
     load_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
   }
-  load_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
   adjust_sp(128, insns)
   let control = [MInsn::XRet]
   let params = []

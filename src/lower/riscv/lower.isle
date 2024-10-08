@@ -148,9 +148,9 @@
   (mr (rv_neg a)))
 
 
-;;;; Rules for i32 logical not
+;;;; Rules for bool logical not
 
-(rule (lower (insn_op (ty_int32) (op_lnot) (arg1 a)))
+(rule (lower (insn_op (ty_bool) (op_lnot) (arg1 a)))
   (mr (rv_sltiu a 1)))
 
 
@@ -163,7 +163,7 @@
 
 ;;;; Rules for i32 less than or equal
 
-(rule (lower (insn_op (ty_bool) (op_le) (arg2 a b)))
+(rule (lower (insn_op (ty_bool) (op_le) (arg2 (has_type a ty_int32) (has_type b ty_int32))))
   (let ((r XReg (rv_slt b a)))
     (mr (rv_xori r 1))))
 

@@ -110,16 +110,16 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
       for defined in defs {
+        let reg_ctx = match defined.class {
+          X => reg_ctx_x
+          F => reg_ctx_f
+        }
         for live in live_set {
           if defined.class == live.class {
             if defined == live {
-              let rw1 = reg_ctx_x.record_reg(defined)
-              reg_ctx_x.allocator.add_single_vertex(rw1)
+              let rw1 = reg_ctx.record_reg(defined)
+              reg_ctx.allocator.add_single_vertex(rw1)
             } else {
-              let reg_ctx = match defined.class {
-                X => reg_ctx_x
-                F => reg_ctx_f
-              }
               let rw1 = reg_ctx.record_reg(defined)
               let rw2 = reg_ctx.record_reg(live)
               reg_ctx.allocator.add_edge(rw1, rw2)
