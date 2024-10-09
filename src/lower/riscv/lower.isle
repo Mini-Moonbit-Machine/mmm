@@ -74,6 +74,9 @@
 (decl imm12_from_val (Imm12) Value)
 (extern extractor imm12_from_val imm12_from_val)
 
+(decl imm12_from_neg_val (Imm12) Value)
+(extern extractor imm12_from_neg_val imm12_from_neg_val)
+
 (decl has_type (Value Type) Value)
 (extern extractor infallible has_type has_type)
 
@@ -122,98 +125,107 @@
 ;;;; Rules for i32 additions
 ;;;; Notice: the official template uses 64b instructions for 32b operations
 
-(rule (lower (insn_op (ty_int32) (op_add) (arg2 a b)))
+(rule (lower (insn_op (ty_int32) (op_add) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_add a b)))
+
+(rule 1 (lower (insn_op (ty_int32) (op_add) (arg2 (has_type a (ty_int32)) (imm12_from_val b))))
+  (mr (rv_addi a b)))
+
+(rule 2 (lower (insn_op (ty_int32) (op_add) (arg2 (imm12_from_val a) (has_type b (ty_int32)))))
+  (mr (rv_addi b a)))
+
 
 ;;;; Rules for i32 subtractions
 
-(rule (lower (insn_op (ty_int32) (op_sub) (arg2 a b)))
+(rule (lower (insn_op (ty_int32) (op_sub) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_sub a b)))
+
+(rule 1 (lower (insn_op (ty_int32) (op_sub) (arg2 (has_type a (ty_int32)) (imm12_from_neg_val b))))
+  (mr (rv_addi a b)))
 
 
 ;;;; Rules for i32 multiplications
 
-(rule (lower (insn_op (ty_int32) (op_mul) (arg2 a b)))
+(rule (lower (insn_op (ty_int32) (op_mul) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_mulw a b)))
 
 
 ;;;; Rules for i32 divisions
 
-(rule (lower (insn_op (ty_int32) (op_div) (arg2 a b)))
+(rule (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_divw a b)))
 
 
 ;;;; Rules for i32 negations
 
-(rule (lower (insn_op (ty_int32) (op_neg) (arg1 a)))
+(rule (lower (insn_op (ty_int32) (op_neg) (arg1 (has_type a (ty_int32)))))
   (mr (rv_neg a)))
 
 
 ;;;; Rules for bool logical not
 
-(rule (lower (insn_op (ty_bool) (op_lnot) (arg1 a)))
+(rule (lower (insn_op (ty_bool) (op_lnot) (arg1 (has_type a (ty_bool)))))
   (mr (rv_sltiu a 1)))
 
 
 ;;;; Rules for i32 equalities
 
-(rule (lower (insn_op (ty_bool) (op_eq) (arg2 (has_type a ty_int32) (has_type b ty_int32))))
+(rule (lower (insn_op (ty_bool) (op_eq) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (let ((r XReg (rv_xor a b)))
     (mr (rv_sltiu r 1))))
 
-
 ;;;; Rules for i32 less than or equal
 
-(rule (lower (insn_op (ty_bool) (op_le) (arg2 (has_type a ty_int32) (has_type b ty_int32))))
+(rule (lower (insn_op (ty_bool) (op_le) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (let ((r XReg (rv_slt b a)))
     (mr (rv_xori r 1))))
 
 
 ;;;; Rules for f64 additions
 
-(rule (lower (insn_op (ty_double) (op_add) (arg2 a b)))
+(rule (lower (insn_op (ty_double) (op_add) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
   (mr (rv_fadd_d a b)))
 
 
 ;;;; Rules for f64 subtractions
 
-(rule (lower (insn_op (ty_double) (op_sub) (arg2 a b)))
+(rule (lower (insn_op (ty_double) (op_sub) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
   (mr (rv_fsub_d a b)))
 
 
 ;;;; Rules for f64 multiplications
 
-(rule (lower (insn_op (ty_double) (op_mul) (arg2 a b)))
+(rule (lower (insn_op (ty_double) (op_mul) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
   (mr (rv_fmul_d a b)))
 
 
 ;;;; Rules for f64 divisions
 
-(rule (lower (insn_op (ty_double) (op_div) (arg2 a b)))
+(rule (lower (insn_op (ty_double) (op_div) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
   (mr (rv_fdiv_d a b)))
 
 
 ;;;; Rules for f64 negations
 
-(rule (lower (insn_op (ty_double) (op_neg) (arg1 a)))
+(rule (lower (insn_op (ty_double) (op_neg) (arg1 (has_type a (ty_double)))))
   (mr (rv_fneg_d a)))
 
 ;;;; Rules for f64 absolute values
 
-(rule (lower (insn_op (ty_double) (op_abs) (arg1 a)))
+(rule (lower (insn_op (ty_double) (op_abs) (arg1 (has_type a (ty_double)))))
   (mr (rv_fabs_d a)))
 
 ;;;; Rules for f64 square roots
 
-(rule (lower (insn_op (ty_double) (op_sqrt) (arg1 a)))
+(rule (lower (insn_op (ty_double) (op_sqrt) (arg1 (has_type a (ty_double)))))
   (mr (rv_fsqrt_d a)))
 
 ;;;; Rules for f64 conversions
 
-(rule (lower (insn_op (ty_double) (op_i2d) (arg1 a)))
+(rule (lower (insn_op (ty_double) (op_i2d) (arg1 (has_type a (ty_int32)))))
   (mr (rv_fcvt_d_w a)))
 
-(rule (lower (insn_op (ty_int32) (op_d2i rm) (arg1 a)))
+(rule (lower (insn_op (ty_int32) (op_d2i rm) (arg1 (has_type a (ty_double)))))
   (mr (rv_fcvt_w_d a rm)))
 
 ;;;; Rules for other instructions

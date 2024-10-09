@@ -960,6 +960,29 @@ fn RiscvFnLoweringCtx::imm12_from_val(
   }
 }
 
+fn RiscvFnLoweringCtx::imm12_from_neg_val(
+  self : RiscvFnLoweringCtx,
+  v : @core.Value
+) -> @riscv.Imm12? {
+  let imm = match v {
+    Unit => Some((@riscv.Imm20(0), @riscv.Imm12(0)))
+    Bool(val=true) => Some((@riscv.Imm20(0), @riscv.Imm12(1)))
+    Bool(val=false) => Some((@riscv.Imm20(0), @riscv.Imm12(0)))
+    Int32(~val) => self.i32_generate_imm(val)
+    Int64(~val) => self.i64_generate_imm(val)
+    _ => None
+  }
+  match imm {
+    Some((imm20, imm12)) =>
+      if imm20._ == 0 && imm12._ != -2048 {
+        Some(-imm12._)
+      } else {
+        None
+      }
+    None => None
+  }
+}
+
 fn ty_to_reg_class(ty : @core.Type) -> RegClass {
   match ty {
     @core.Type::Double => F
