@@ -426,11 +426,9 @@ lp:
   mv s0, s10
   ld a2, 8(s0)
   ld a1, 16(s0)
-  lw a4, 24(s0)
+  lw a3, 24(s0)
   ld a0, 32(s0)
   ld s1, 40(s0)
-  slli a3, zero, 2
-  add a2, a2, a3
   lw a2, 0(a2)
   slli a2, a2, 2
   add a1, a1, a2
@@ -446,15 +444,12 @@ lp:
 
 .lp_b2:
   li a1, 1
-  add a1, a4, a1
+  add a1, a3, a1
   mv s10, a0
   ld a2, 0(a0)
   mv a0, a1
   jalr a2
-  mv a1, a0
-  slli a0, zero, 2
-  add a0, s1, a0
-  sw a1, 0(a0)
+  sw a0, 0(s1)
   mv s10, s0
   ld a0, 0(s0)
   jalr a0
@@ -479,13 +474,13 @@ aux:
   sd s1, 8(sp)
   sd s0, 16(sp)
   sd ra, 24(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a3, 16(s0)
-  ld a2, 24(s0)
-  ld a1, 32(s0)
-  slt a0, s1, a0
+  mv s1, s10
+  mv s0, a0
+  lw a0, 8(s1)
+  ld a2, 16(s1)
+  ld a1, 24(s1)
+  ld a3, 32(s1)
+  slt a0, s0, a0
   xori a0, a0, 1
   bne a0, zero, .aux_b1
   j .aux_b2
@@ -494,28 +489,24 @@ aux:
   j .aux_b20
 
 .aux_b1:
-  mv a0, s1
+  mv a0, s0
   j .aux_b24
 
 .aux_b7:
-  slli a0, zero, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  slli a3, zero, 2
-  add a2, a2, a3
-  lw a2, 0(a2)
-  slli a2, a2, 2
-  add a2, a1, a2
-  lw a3, 0(a2)
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, a3, a1
+  lw a1, 0(a1)
   li a2, 1
-  add a2, a3, a2
+  add a1, a1, a2
   slli a0, a0, 2
-  add a0, a1, a0
-  sw a2, 0(a0)
+  add a0, a3, a0
+  sw a1, 0(a0)
   li a0, 1
-  add a0, s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  add a0, s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b21
 
@@ -523,28 +514,26 @@ aux:
   addi a0, s11, -4
   andi s2, a0, -8
   mv s11, s2
-  sw s1, 0(s2)
+  sw s0, 0(s2)
   addi a0, s11, -48
   andi a0, a0, -8
   mv s11, a0
-  la a3, lp
-  sd a3, 0(a0)
-  sd a2, 8(a0)
-  sd a1, 16(a0)
-  sd s1, 24(a0)
-  sd s0, 32(a0)
+  la a2, lp
+  sd a2, 0(a0)
+  sd a1, 8(a0)
+  sd a3, 16(a0)
+  sd s0, 24(a0)
+  sd s1, 32(a0)
   sd s2, 40(a0)
   mv s10, a0
   ld a0, 0(a0)
   jalr a0
   mv a0, zero
-  slli a0, zero, 2
-  add a0, s2, a0
-  lw a1, 0(a0)
-  li a0, 1
-  add a0, a1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  lw a0, 0(s2)
+  li a1, 1
+  add a0, a0, a1
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b18
 
@@ -552,31 +541,27 @@ aux:
   j .aux_b23
 
 .aux_b5:
-  slli a0, zero, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  li a1, 1
-  sub a0, a0, a1
-  slli a1, zero, 2
-  add a1, a2, a1
+  lw a2, 0(a1)
+  li a0, 1
+  sub a0, a2, a0
   sw a0, 0(a1)
   li a0, 1
-  add a0, s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  add a0, s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b22
 
 .aux_b4:
   li a0, 2
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b5
   j .aux_b6
 
 .aux_b8:
   li a0, 4
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b9
   j .aux_b10
@@ -585,11 +570,11 @@ aux:
   j .aux_b18
 
 .aux_b2:
-  slli a0, s1, 2
-  add a0, a3, a0
-  lw a3, 0(a0)
+  slli a0, s0, 2
+  add a0, a2, a0
+  lw a2, 0(a0)
   li a0, 1
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b3
   j .aux_b4
@@ -604,7 +589,7 @@ aux:
 
 .aux_b6:
   li a0, 3
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b7
   j .aux_b8
@@ -614,7 +599,7 @@ aux:
 
 .aux_b12:
   li a0, 7
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b13
   j .aux_b14
@@ -623,67 +608,57 @@ aux:
   j .aux_b24
 
 .aux_b3:
-  slli a0, zero, 2
+  lw a2, 0(a1)
+  li a0, 1
   add a0, a2, a0
-  lw a0, 0(a0)
-  li a1, 1
-  add a0, a0, a1
-  slli a1, zero, 2
-  add a1, a2, a1
   sw a0, 0(a1)
   li a0, 1
-  add a0, s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  add a0, s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b23
 
 .aux_b9:
-  slli a0, zero, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  slli a3, zero, 2
-  add a2, a2, a3
-  lw a2, 0(a2)
-  slli a2, a2, 2
-  add a2, a1, a2
-  lw a3, 0(a2)
-  li a2, 1
-  sub a2, a3, a2
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, a3, a1
+  lw a2, 0(a1)
+  li a1, 1
+  sub a1, a2, a1
   slli a0, a0, 2
-  add a0, a1, a0
-  sw a2, 0(a0)
+  add a0, a3, a0
+  sw a1, 0(a0)
   li a0, 1
-  add a0, s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  add a0, s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b20
 
 .aux_b16:
-  mv a0, s1
+  mv a0, s0
   j .aux_b17
 
 .aux_b10:
   li a0, 5
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b11
   j .aux_b12
 
 .aux_b11:
-  slli a0, zero, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
+  lw a0, 0(a1)
   slli a0, a0, 2
-  add a0, a1, a0
+  add a0, a3, a0
   lw a0, 0(a0)
   call minimbt_print_char
   mv a0, zero
   li a0, 1
-  add a0, s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
+  add a0, s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
   jalr a1
   j .aux_b19
 
@@ -695,13 +670,13 @@ aux:
 
 .aux_b14:
   li a0, 8
-  xor a0, a3, a0
+  xor a0, a2, a0
   sltiu a0, a0, 1
   bne a0, zero, .aux_b15
   j .aux_b16
 
 .aux_b15:
-  mv a0, s1
+  mv a0, s0
   j .aux_b17
 
   .p2align 3
@@ -804,147 +779,78 @@ main:
   addi sp, sp, -32
   sd ra, 0(sp)
   addi a0, s11, -92
-  andi a2, a0, -8
-  mv s11, a2
-  sw zero, 0(a2)
-  sw zero, 4(a2)
-  sw zero, 8(a2)
-  sw zero, 12(a2)
-  sw zero, 16(a2)
-  sw zero, 20(a2)
-  sw zero, 24(a2)
-  sw zero, 28(a2)
-  sw zero, 32(a2)
-  sw zero, 36(a2)
-  sw zero, 40(a2)
-  sw zero, 44(a2)
-  sw zero, 48(a2)
-  sw zero, 52(a2)
-  sw zero, 56(a2)
-  sw zero, 60(a2)
-  sw zero, 64(a2)
-  sw zero, 68(a2)
-  sw zero, 72(a2)
-  sw zero, 76(a2)
-  sw zero, 80(a2)
-  sw zero, 84(a2)
-  sw zero, 88(a2)
-  li a1, 3
-  slli a0, zero, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
+  andi a1, a0, -8
+  mv s11, a1
+  sw zero, 0(a1)
+  sw zero, 4(a1)
+  sw zero, 8(a1)
+  sw zero, 12(a1)
+  sw zero, 16(a1)
+  sw zero, 20(a1)
+  sw zero, 24(a1)
+  sw zero, 28(a1)
+  sw zero, 32(a1)
+  sw zero, 36(a1)
+  sw zero, 40(a1)
+  sw zero, 44(a1)
+  sw zero, 48(a1)
+  sw zero, 52(a1)
+  sw zero, 56(a1)
+  sw zero, 60(a1)
+  sw zero, 64(a1)
+  sw zero, 68(a1)
+  sw zero, 72(a1)
+  sw zero, 76(a1)
+  sw zero, 80(a1)
+  sw zero, 84(a1)
+  sw zero, 88(a1)
   li a0, 3
-  li a1, 1
-  slli a1, a1, 2
-  add a1, a2, a1
   sw a0, 0(a1)
-  li a1, 3
-  li a0, 2
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
   li a0, 3
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 4
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 5
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 6
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
+  sw a0, 4(a1)
+  li a0, 3
+  sw a0, 8(a1)
+  li a0, 3
+  sw a0, 12(a1)
+  li a0, 3
+  sw a0, 16(a1)
+  li a0, 3
+  sw a0, 20(a1)
+  li a0, 3
+  sw a0, 24(a1)
+  li a0, 3
+  sw a0, 28(a1)
   li a0, 7
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 7
+  sw a0, 32(a1)
+  li a0, 1
+  sw a0, 36(a1)
+  li a0, 3
+  sw a0, 40(a1)
+  li a0, 3
+  sw a0, 44(a1)
+  li a0, 3
+  sw a0, 48(a1)
+  li a0, 3
+  sw a0, 52(a1)
+  li a0, 3
+  sw a0, 56(a1)
+  li a0, 3
+  sw a0, 60(a1)
+  li a0, 3
+  sw a0, 64(a1)
+  li a0, 3
+  sw a0, 68(a1)
+  li a0, 2
+  sw a0, 72(a1)
+  li a0, 4
+  sw a0, 76(a1)
   li a0, 8
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 1
-  li a0, 9
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 10
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 11
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 12
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 13
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 14
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 15
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 16
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 3
-  li a0, 17
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 2
-  li a0, 18
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 4
-  li a0, 19
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 8
-  li a0, 20
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 1
-  li a0, 21
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  li a1, 5
-  li a0, 22
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
+  sw a0, 80(a1)
+  li a0, 1
+  sw a0, 84(a1)
+  li a0, 5
+  sw a0, 88(a1)
   li a0, 23
-  mv a1, a2
   call bf
   mv a0, zero
   ld ra, 0(sp)
@@ -1082,7 +988,7 @@ Testing test/test_src/cls-bug2.mbt
 # leaf false
 f:
 .f_b0:
-  addi sp, sp, -32
+  addi sp, sp, -48
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
@@ -1094,7 +1000,7 @@ f:
 .f_b3:
   ld s0, 0(sp)
   ld ra, 8(sp)
-  addi sp, sp, 32
+  addi sp, sp, 48
   ret
 
 .f_b1:
@@ -1102,21 +1008,20 @@ f:
   call minimbt_print_int
   mv a0, zero
   addi a0, s11, -8
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, f
+  sd a0, 0(a1)
+  addi a0, s11, -8
   andi a0, a0, -8
   mv s11, a0
-  la a1, f
   sd a1, 0(a0)
-  addi a1, s11, -8
-  andi a1, a1, -8
-  mv s11, a1
-  sd a0, 0(a1)
-  slli a0, zero, 3
-  add a0, a1, a0
+  ld a0, 0(a0)
+  li a1, 1
+  sub a2, s0, a1
+  mv s10, a0
   ld a1, 0(a0)
-  li a0, 1
-  sub a0, s0, a0
-  mv s10, a1
-  ld a1, 0(a1)
+  mv a0, a2
   jalr a1
   mv a0, zero
   j .f_b3
@@ -3792,11 +3697,7 @@ landins_kont:
   mv s10, a2
   ld a1, 0(a2)
   jalr a1
-  mv a1, a0
-  slli a0, zero, 3
-  add a0, s0, a0
-  sd a1, 0(a0)
-  mv a0, a1
+  sd a0, 0(s0)
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 48
@@ -3845,8 +3746,6 @@ aux:
   sd ra, 0(sp)
   mv a1, s10
   ld a1, 8(a1)
-  slli a2, zero, 3
-  add a1, a1, a2
   ld a1, 0(a1)
   mv s10, a1
   ld a1, 0(a1)
@@ -4127,202 +4026,120 @@ main:
   sd s0, 24(sp)
   sd ra, 32(sp)
   addi a0, s11, 0
-  andi s3, a0, -8
-  mv s11, s3
+  andi s0, a0, -8
+  mv s11, s0
   fmv.d.x fa0, zero
   addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, init_arr
-  sd a1, 0(a0)
-  addi a1, s11, -16
-  andi s0, a1, -8
-  mv s11, s0
-  la a1, make_arr
-  sd a1, 0(s0)
-  sd a0, 8(s0)
-  mv s10, s0
-  ld a3, 0(s0)
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, init_arr
+  sd a0, 0(a1)
+  addi a0, s11, -16
+  andi s1, a0, -8
+  mv s11, s1
+  la a0, make_arr
+  sd a0, 0(s1)
+  sd a1, 8(s1)
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 2
   li a1, 3
-  mv a2, s3
+  mv a2, s0
   jalr a3
-  mv s1, a0
-  mv s10, s0
-  ld a3, 0(s0)
+  mv s3, a0
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 3
   li a1, 2
-  mv a2, s3
+  mv a2, s0
   jalr a3
   mv s2, a0
-  mv s10, s0
-  ld a3, 0(s0)
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 2
   li a1, 2
-  mv a2, s3
+  mv a2, s0
   jalr a3
   mv s0, a0
-  slli a0, zero, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
-  li a0, 4607182418800017408
-  fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
+  ld a0, 0(s3)
+  li a1, 4607182418800017408
+  fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
-  li a0, 4611686018427387904
-  fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
+  ld a0, 0(s3)
+  li a1, 4611686018427387904
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a0, 0(s3)
+  li a1, 4613937818241073152
+  fmv.d.x fa0, a1
+  fsd fa0, 16(a0)
+  ld a0, 8(s3)
+  li a1, 4616189618054758400
+  fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
-  li a0, 4613937818241073152
-  fmv.d.x fa0, a0
-  li a0, 2
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
-  li a0, 4616189618054758400
-  fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
+  ld a0, 8(s3)
   li a1, 4617315517961601024
   fmv.d.x fa0, a1
-  li a1, 1
-  slli a1, a1, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
+  fsd fa0, 8(a0)
+  ld a0, 8(s3)
   li a1, 4618441417868443648
   fmv.d.x fa0, a1
-  li a1, 2
-  slli a1, a1, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s2, a0
-  ld a0, 0(a0)
-  li a1, 4619567317775286272
-  fmv.d.x fa0, a1
-  slli a1, zero, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s2, a0
-  ld a0, 0(a0)
+  fsd fa0, 16(a0)
+  ld a1, 0(s2)
+  li a0, 4619567317775286272
+  fmv.d.x fa0, a0
+  fsd fa0, 0(a1)
+  ld a0, 0(s2)
   li a1, 4620693217682128896
   fmv.d.x fa0, a1
-  li a1, 1
-  slli a1, a1, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a0, 0(a0)
+  fsd fa0, 8(a0)
+  ld a0, 8(s2)
   li a1, 4621256167635550208
   fmv.d.x fa0, a1
-  slli a1, zero, 3
-  add a0, a0, a1
   fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
-  li a0, 4621819117588971520
-  fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 2
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
+  ld a0, 8(s2)
+  li a1, 4621819117588971520
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a1, 16(s2)
   li a0, 4622382067542392832
   fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 2
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
-  li a0, 4622945017495814144
-  fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
+  fsd fa0, 0(a1)
+  ld a0, 16(s2)
+  li a1, 4622945017495814144
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
   li a0, 2
   li a1, 3
   li a2, 2
-  mv a3, s1
+  mv a3, s3
   mv a4, s2
   mv a5, s0
   call mul
   mv a0, zero
-  slli a0, zero, 3
-  add a0, s0, a0
-  ld a1, 0(a0)
-  slli a0, zero, 3
-  add a0, a1, a0
+  ld a0, 0(s0)
   fld fa0, 0(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
-  slli a0, zero, 3
-  add a0, s0, a0
-  ld a1, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
+  ld a0, 0(s0)
+  fld fa0, 8(a0)
+  call minimbt_truncate
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  ld a0, 8(s0)
   fld fa0, 0(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s0, a0
-  ld a1, 0(a0)
-  slli a0, zero, 3
-  add a0, a1, a0
-  fld fa0, 0(a0)
-  call minimbt_truncate
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s0, a0
-  ld a0, 0(a0)
-  li a1, 1
-  slli a1, a1, 3
-  add a0, a0, a1
-  fld fa0, 0(a0)
+  ld a0, 8(s0)
+  fld fa0, 8(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
@@ -4793,116 +4610,54 @@ main:
   li a1, 2
   jalr a2
   mv s0, a0
-  slli a0, zero, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
+  ld a1, 0(s2)
   li a0, 4607182418800017408
   fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
+  fsd fa0, 0(a1)
+  ld a1, 0(s2)
   li a0, 4611686018427387904
   fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
+  fsd fa0, 8(a1)
+  ld a1, 0(s2)
   li a0, 4613937818241073152
   fmv.d.x fa0, a0
-  li a0, 2
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a0, 0(a0)
+  fsd fa0, 16(a1)
+  ld a0, 8(s2)
   li a1, 4616189618054758400
   fmv.d.x fa0, a1
-  slli a1, zero, 3
-  add a0, a0, a1
   fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
+  ld a1, 8(s2)
   li a0, 4617315517961601024
   fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s2, a0
-  ld a1, 0(a0)
-  li a0, 4618441417868443648
-  fmv.d.x fa0, a0
-  li a0, 2
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
+  fsd fa0, 8(a1)
+  ld a0, 8(s2)
+  li a1, 4618441417868443648
+  fmv.d.x fa0, a1
+  fsd fa0, 16(a0)
+  ld a1, 0(s1)
   li a0, 4619567317775286272
   fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  slli a0, zero, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
+  fsd fa0, 0(a1)
+  ld a1, 0(s1)
   li a0, 4620693217682128896
   fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
-  li a1, 4621256167635550208
-  fmv.d.x fa0, a1
-  slli a1, zero, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
+  fsd fa0, 8(a1)
+  ld a1, 8(s1)
+  li a0, 4621256167635550208
+  fmv.d.x fa0, a0
+  fsd fa0, 0(a1)
+  ld a0, 8(s1)
   li a1, 4621819117588971520
   fmv.d.x fa0, a1
-  li a1, 1
-  slli a1, a1, 3
-  add a0, a0, a1
+  fsd fa0, 8(a0)
+  ld a0, 16(s1)
+  li a1, 4622382067542392832
+  fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  li a0, 2
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
-  li a0, 4622382067542392832
-  fmv.d.x fa0, a0
-  slli a0, zero, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  li a0, 2
-  slli a0, a0, 3
-  add a0, s1, a0
-  ld a1, 0(a0)
+  ld a1, 16(s1)
   li a0, 4622945017495814144
   fmv.d.x fa0, a0
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
+  fsd fa0, 8(a1)
   li a0, 2
   li a1, 3
   li a2, 2
@@ -4911,49 +4666,29 @@ main:
   mv a5, s0
   call matmul
   mv a0, zero
-  slli a0, zero, 3
-  add a0, s0, a0
-  ld a1, 0(a0)
-  slli a0, zero, 3
-  add a0, a1, a0
+  ld a0, 0(s0)
   fld fa0, 0(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
-  slli a0, zero, 3
-  add a0, s0, a0
-  ld a0, 0(a0)
-  li a1, 1
-  slli a1, a1, 3
-  add a0, a0, a1
+  ld a0, 0(s0)
+  fld fa0, 8(a0)
+  call minimbt_truncate
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  ld a0, 8(s0)
   fld fa0, 0(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s0, a0
-  ld a0, 0(a0)
-  slli a1, zero, 3
-  add a0, a0, a1
-  fld fa0, 0(a0)
-  call minimbt_truncate
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  li a0, 1
-  slli a0, a0, 3
-  add a0, s0, a0
-  ld a1, 0(a0)
-  li a0, 1
-  slli a0, a0, 3
-  add a0, a1, a0
-  fld fa0, 0(a0)
+  ld a0, 8(s0)
+  fld fa0, 8(a0)
   call minimbt_truncate
   call minimbt_print_int
   mv a0, zero
@@ -5444,9 +5179,7 @@ main:
   sw a0, 28(s0)
   sw a0, 32(s0)
   sw a0, 36(s0)
-  slli a0, zero, 2
-  add a0, s0, a0
-  lw a0, 0(a0)
+  lw a0, 0(s0)
   li a2, 3
   xor a0, a0, a2
   sltiu a0, a0, 1
@@ -5465,12 +5198,8 @@ main:
   mv s10, a1
   ld a0, 0(a1)
   jalr a0
-  mv a1, a0
-  li a0, 1
-  slli a0, a0, 2
-  add a0, s0, a0
-  lw a0, 0(a0)
-  add a1, a1, a0
+  lw a1, 4(s0)
+  add a1, a0, a1
   li a0, 67890
   add a0, a1, a0
   j .main_b3
@@ -6067,13 +5796,12 @@ minimbt_main:
 main:
 .main_b0:
   addi sp, sp, -160
-  sd s5, 0(sp)
-  sd s4, 8(sp)
-  sd s3, 16(sp)
-  sd s2, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
+  sd s4, 0(sp)
+  sd s3, 8(sp)
+  sd s2, 16(sp)
+  sd s1, 24(sp)
+  sd s0, 32(sp)
+  sd ra, 40(sp)
   addi a0, s11, -40
   andi s0, a0, -8
   mv s11, s0
@@ -6089,44 +5817,38 @@ main:
   sw a0, 32(s0)
   sw a0, 36(s0)
   call f
-  mv a1, a0
-  slli a0, zero, 2
-  add a0, s0, a0
-  lw t0, 0(a0)
-  add s4, t0, t0
-  add a3, s4, s4
-  add a7, a3, a3
-  add a6, a7, a7
-  add s3, a6, a6
-  add s2, s3, s3
-  add s1, s2, s2
-  add a2, s1, s1
-  add s5, a2, a2
-  add t4, s5, s5
-  add a4, t4, t4
-  add a5, a4, a4
-  add a0, a5, a5
-  add t3, a0, a0
-  add t2, t3, t3
-  li t1, 1
-  slli t1, t1, 2
-  add t1, s0, t1
-  lw t1, 0(t1)
-  xor t1, t1, zero
-  sltiu t1, t1, 1
-  bne t1, zero, .main_b1
+  mv a2, a0
+  lw t4, 0(s0)
+  add t1, t4, t4
+  add a6, t1, t1
+  add a7, a6, a6
+  add t0, a7, a7
+  add a0, t0, t0
+  add s3, a0, a0
+  add a5, s3, s3
+  add s1, a5, a5
+  add s2, s1, s1
+  add t2, s2, s2
+  add s4, t2, t2
+  add t3, s4, s4
+  add a4, t3, t3
+  add a3, a4, a4
+  add a1, a3, a3
+  lw s0, 4(s0)
+  xor s0, s0, zero
+  sltiu s0, s0, 1
+  bne s0, zero, .main_b1
   j .main_b2
 
 .main_b3:
   call minimbt_print_int
   mv a0, zero
-  ld s5, 0(sp)
-  ld s4, 8(sp)
-  ld s3, 16(sp)
-  ld s2, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
+  ld s4, 0(sp)
+  ld s3, 8(sp)
+  ld s2, 16(sp)
+  ld s1, 24(sp)
+  ld s0, 32(sp)
+  ld ra, 40(sp)
   addi sp, sp, 160
   ret
 
@@ -6136,22 +5858,22 @@ main:
   j .main_b3
 
 .main_b2:
-  add t0, t0, s4
-  add a3, t0, a3
-  add a3, a3, a7
-  add a3, a3, a6
-  add a3, a3, s3
-  add a3, a3, s2
-  add a3, a3, s1
-  add a2, a3, a2
-  add a2, a2, s5
-  add a2, a2, t4
-  add a2, a2, a4
-  add a2, a2, a5
-  add a0, a2, a0
-  add a0, a0, t3
+  add t1, t4, t1
+  add a6, t1, a6
+  add a6, a6, a7
+  add a6, a6, t0
+  add a0, a6, a0
+  add a0, a0, s3
+  add a0, a0, a5
+  add a0, a0, s1
+  add a0, a0, s2
   add a0, a0, t2
+  add a0, a0, s4
+  add a0, a0, t3
+  add a0, a0, a4
+  add a0, a0, a3
   add a0, a0, a1
+  add a0, a0, a2
   j .main_b3
 
   .p2align 3

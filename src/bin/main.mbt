@@ -149,6 +149,8 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Core error")
         }
       }
+      let opt = @core_opt.CoreOpt::new(core)
+      opt.go()
       self.opt = Some(core)
     }
     Closure => {

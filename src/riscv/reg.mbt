@@ -69,6 +69,22 @@ pub type Imm20 Int
 
 pub type Imm12 Int
 
+pub fn Imm12::from_int64(i : Int64) -> Imm12? {
+  if i >= -2048 && i <= 2047 {
+    Some(i.land(0xfff).to_int())
+  } else {
+    None
+  }
+}
+
+pub fn Imm12::from_int32(i : Int) -> Imm12? {
+  if i >= -2048 && i <= 2047 {
+    Some(i & 0xfff)
+  } else {
+    None
+  }
+}
+
 /// RISC-V register
 pub enum Reg {
   Zero

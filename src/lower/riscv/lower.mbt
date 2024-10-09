@@ -349,11 +349,7 @@ fn RiscvFnLoweringCtx::i64_generate_imm12(
   i64 : Int64
 ) -> @riscv.Imm12? {
   let _ = self
-  if i64 >= -2048 && i64 <= 2047 {
-    Some(i64.land(0xfff).to_int())
-  } else {
-    None
-  }
+  @riscv.Imm12::from_int64(i64)
 }
 
 fn RiscvFnLoweringCtx::i64_generate_imm(
@@ -400,7 +396,8 @@ fn RiscvFnLoweringCtx::i32_generate_imm12(
   self : RiscvFnLoweringCtx,
   i32 : Int
 ) -> @riscv.Imm12? {
-  self.i64_generate_imm12(i32.to_int64())
+  let _ = self
+  @riscv.Imm12::from_int32(i32)
 }
 
 fn RiscvFnLoweringCtx::imm20_is_zero(
