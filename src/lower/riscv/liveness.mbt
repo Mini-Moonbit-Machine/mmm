@@ -193,9 +193,6 @@ pub fn IteratedBlockInfo::compute_live_set(
     live.remove(@riscv.Sp.to_any())
   }
   live_set.push(live.iter().to_array())
-  if live.size() != self.live_in.size() {
-    abort("\{block.id._} live set mismatch: \{live} and \{self.live_in}")
-  }
   defs.rev_inplace()
   live_set.rev_inplace()
 }

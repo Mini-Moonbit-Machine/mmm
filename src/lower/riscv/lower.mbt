@@ -1895,6 +1895,16 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
 
 let init_mem_size = "134217728"
 
+let init_stack_size = "134217728"
+
+fn save_sp(insns : Array[MInsn]) -> Unit {
+  insns.push(MInsn::Mv(rd=@riscv.S9, rs=@riscv.Sp))
+}
+
+fn restore_sp(insns : Array[MInsn]) -> Unit {
+  insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.S9))
+}
+
 fn pre_allocate(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Li(rd=@riscv.A0, i=init_mem_size))
   insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
@@ -1903,6 +1913,16 @@ fn pre_allocate(insns : Array[MInsn]) -> Unit {
   )
   insns.push(MInsn::Add(rd=@riscv.A0, rs1=@riscv.Fp, rs2=@riscv.A0))
   insns.push(MInsn::Mv(rd=@riscv.reg_alloc, rs=@riscv.A0))
+}
+
+fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
+  insns.push(MInsn::Li(rd=@riscv.A0, i=init_mem_size))
+  insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
+  insns.push(
+    MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),
+  )
+  insns.push(MInsn::Add(rd=@riscv.A0, rs1=@riscv.Fp, rs2=@riscv.A0))
+  insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.A0))
 }
 
 pub fn RiscvLoweringCtx::lower_globals(
@@ -1920,6 +1940,8 @@ pub fn RiscvLoweringCtx::lower_globals(
     store_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
   }
   pre_allocate(insns)
+  save_sp(insns)
+  pre_allocate_for_stack(insns)
   for symbols in core.global_symbols {
     let (_, symbol) = symbols
     let ty_size = symbol.ty.size()
@@ -1968,6 +1990,7 @@ pub fn RiscvLoweringCtx::lower_globals(
       _ => abort("Invalid thunk type size")
     }
   }
+  restore_sp(insns)
   load_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
   for i, reg in @riscv.reg_callee_saved_list {
     load_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
@@ -2019,6 +2042,6 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
   }
-  trace("before colored: \{Show::to_string(before_colored.to_rich_info())}")
+  //println("before colored: \{Show::to_string(before_colored.to_rich_info())}")
   after_colored
 }
