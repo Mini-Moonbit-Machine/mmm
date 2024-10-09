@@ -172,6 +172,22 @@ let raw_memseti32 =
   #|  ret
   #|
 
+let raw_memseti64 =
+  #|  .p2align 3
+  #|  .globl memseti64
+  #|  .type memseti64, @function
+  #|memseti64:
+  #|  blez a1, .memseti64_b1
+  #|  slli a1, a1, 2
+  #|  add a1, a1, a0
+  #|.memseti64_b0:
+  #|  sd a2, 0(a0)
+  #|  addi a0, a0, 4
+  #|  bne a0, a1, .memseti64_b0
+  #|.memseti64_b1:
+  #|  ret
+  #|
+
 let raw_memsetf64 =
   #|memsetf64:
   #|  blez a1, .memsetf64_b1
@@ -219,6 +235,7 @@ let raw_memset0e8 =
 
 let primitive_map : Map[String, String] = {
   "memseti32": raw_memseti32,
+  "memseti64": raw_memseti64,
   "memsetf64": raw_memsetf64,
   "memset0e4": raw_memset0e4,
   "memset0e8": raw_memset0e8,

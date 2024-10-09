@@ -1350,29 +1350,29 @@ main:
 .main_b0:
   addi sp, sp, -32
   sd ra, 0(sp)
-  addi a0, s11, -80
+  addi a0, s11, -40
   andi a1, a0, -8
   mv s11, a1
   li a0, 1
-  sd a0, 0(a1)
+  sw a0, 0(a1)
   li a0, 2
-  sd a0, 8(a1)
+  sw a0, 4(a1)
   li a0, 3
-  sd a0, 16(a1)
+  sw a0, 8(a1)
   li a0, 4
-  sd a0, 24(a1)
+  sw a0, 12(a1)
   li a0, 5
-  sd a0, 32(a1)
+  sw a0, 16(a1)
   li a0, 6
-  sd a0, 40(a1)
+  sw a0, 20(a1)
   li a0, 7
-  sd a0, 48(a1)
+  sw a0, 24(a1)
   li a0, 8
-  sd a0, 56(a1)
+  sw a0, 28(a1)
   li a0, 9
-  sd a0, 64(a1)
+  sw a0, 32(a1)
   li a0, 10
-  sd a0, 72(a1)
+  sw a0, 36(a1)
   mv a0, a1
   call h
   call minimbt_print_int
@@ -3781,17 +3781,17 @@ factorial.18:
 
 Testing test/test_src/matmul-flat.mbt
   .p2align 3
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
+  .globl memseti64
+  .type memseti64, @function
+memseti64:
+  blez a1, .memseti64_b1
   slli a1, a1, 2
   add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
+.memseti64_b0:
+  sd a2, 0(a0)
   addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
+  bne a0, a1, .memseti64_b0
+.memseti64_b1:
   ret
 
 memsetf64:
@@ -3884,7 +3884,7 @@ make_arr:
   mv s11, s0
   mv a1, s1
   mv a0, s0
-  call memseti32
+  call memseti64
   addi a0, s1, -1
   mv s10, s2
   ld a3, 0(s2)
@@ -4290,17 +4290,17 @@ start:
 
 Testing test/test_src/matmul.mbt
   .p2align 3
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
+  .globl memseti64
+  .type memseti64, @function
+memseti64:
+  blez a1, .memseti64_b1
   slli a1, a1, 2
   add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
+.memseti64_b0:
+  sd a2, 0(a0)
   addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
+  bne a0, a1, .memseti64_b0
+.memseti64_b1:
   ret
 
 memsetf64:
@@ -4421,7 +4421,7 @@ gen_arr:
   mv s11, s0
   mv a1, s2
   mv a0, s0
-  call memseti32
+  call memseti64
   addi a0, s11, -24
   andi a0, a0, -8
   mv s11, a0

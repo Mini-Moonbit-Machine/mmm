@@ -710,21 +710,29 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
 ) -> Unit {
   match fill {
     Init(..) =>
-      match init_rc {
-        X => {
+      match (init_rc, elem_sz) {
+        (X, 4) => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("memseti32"), 3, 0)
           self.used_primitive.insert("memseti32")
         }
-        F => {
+        (X, 8) => {
+          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
+          // A1 is assumed to be the length of the buffer
+          @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
+          @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
+          self.used_primitive.insert("memseti64")
+        }
+        (F, 8) => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
           @generated.constructor_rv_call(self, Label("memsetf64"), 2, 1)
           self.used_primitive.insert("memsetf64")
         }
+        _ => abort("Invalid fill")
       }
     Zero => {
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))

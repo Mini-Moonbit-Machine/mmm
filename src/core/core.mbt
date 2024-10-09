@@ -300,11 +300,16 @@ pub fn Type::size(self : Type) -> Int {
 pub fn Type::elem_size(self : Type) -> Int {
   match self {
     Array(~elem) => elem.size()
-    ClosureFn(..) | Tuple(..) => 8
-    _ => {
-      println("Type::elem_size: not an array, tuple, or closure")
-      0
+    Tuple(~fields) => {
+      let mut size = 0
+      for field in fields {
+        size = @math.maximum(size, field.elem_size())
+      }
+      size
     }
+    ClosureFn(..) => 8
+    DirectFn(..) => 8
+    _ => self.size()
   }
 }
 

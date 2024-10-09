@@ -209,7 +209,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       KnfOpt => self.knf.unwrap().to_string()
       Closure => self.opt_knf.unwrap().to_string()
       Core => self.closure_ir.unwrap().to_string()
-      Asm => self.opt.unwrap().to_string()
+      Asm => Show::to_string(self.opt.unwrap().to_pretty_print())
       Finished => Show::to_string(self.asm.unwrap())
     }
   }
