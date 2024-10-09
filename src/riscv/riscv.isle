@@ -413,6 +413,18 @@
 (decl rv_fsd (FReg MemAccess) Unit)
 (rule (rv_fsd x y) (emit_risc_v (RvAsm.Fsd x y)))
 
+(decl rv_feq_d (FReg FReg) XReg)
+(rule (rv_feq_d x y)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.FeqD dst x y))))
+    dst))
+
+(decl rv_fle_d (FReg FReg) XReg)
+(rule (rv_fle_d x y)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.FleD dst x y))))
+    dst))
+
 (decl rv_fmv_dx (XReg) FReg)
 (rule (rv_fmv_dx x)
   (let ((dst FReg (next_virtual_freg))

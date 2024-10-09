@@ -425,7 +425,8 @@ pub fn Parser::parse_expr_with_level(
       PairedClose(_) => break
       Eof | Newline => break
       Kw(_) => break
-      _ => fail!("unexpected trailing token when parsing expr")
+      _ =>
+        fail!("unexpected trailing token when parsing expr \{op_token.inner}")
     }
     match Parser::postfix(op_str) {
       Some((laff, _)) => {

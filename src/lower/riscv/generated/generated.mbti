@@ -76,7 +76,11 @@ fn constructor_rv_fcvt_w_d[C : Context](C, @riscv.FReg, @core.RoundMode) -> @ris
 
 fn constructor_rv_fdiv_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
+fn constructor_rv_feq_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.Reg
+
 fn constructor_rv_fld[C : Context](C, @riscv.MemAccess[@riscv.Reg, @riscv.Imm12]) -> @riscv.FReg
+
+fn constructor_rv_fle_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.Reg
 
 fn constructor_rv_fmul_d[C : Context](C, @riscv.FReg, @riscv.FReg) -> @riscv.FReg
 
@@ -236,6 +240,7 @@ pub trait Context {
   i64_as_u64(Self, Int64) -> UInt64
   f64_as_u64(Self, Double) -> UInt64
   values_to_args(Self, Array[@core.Value]) -> Args?
+  has_type(Self, @core.Value) -> (@core.Value, @core.Type)
   next_virtual_xreg(Self) -> @riscv.Reg
   next_virtual_freg(Self) -> @riscv.FReg
   emit_risc_v(Self, @riscv.RvAsm) -> Unit
@@ -263,9 +268,10 @@ pub trait Context {
   put_in_reg(Self, @core.Value) -> @riscv.AnyReg
   block_label(Self, @core.BlockRef) -> @riscv.Label
   imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
-  has_type(Self, @core.Value) -> (@core.Value, @core.Type)
+  imm12_from_neg_val(Self, @core.Value) -> @riscv.Imm12?
   emit_block_parameters(Self, @core.BlockRef, Array[@core.Value]) -> Unit
   emit_fake_epilogue(Self) -> Unit
+  not_double(Self, @core.Value) -> @core.Value?
   lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
   lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg

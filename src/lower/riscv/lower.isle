@@ -260,6 +260,15 @@
 (rule (lower (insn_op (ty_int32) (op_d2i rm) (arg1 (has_type a (ty_double)))))
   (mr (rv_fcvt_w_d a rm)))
 
+;;;; Rules for f64 comparisons
+
+(rule (lower (insn_op (ty_bool) (op_eq) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
+  (mr (rv_feq_d a b)))
+
+(rule (lower (insn_op (ty_bool) (op_le) (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))
+  (mr (rv_fle_d a b)))
+
+
 ;;;; Rules for other instructions
 
 (decl lower_load_fn (FnRef) AnyReg)
