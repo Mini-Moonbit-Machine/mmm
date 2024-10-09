@@ -865,13 +865,13 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
               @generated.constructor_rv_sub(self, self.alloc_reg |> xreg, imm)
             }
           }
+          let aligned_ptr = @generated.constructor_rv_andi(
+            self, unaligned_ptr, -8,
+          )
           @generated.constructor_rv_mv_to(
             self,
             self.alloc_reg |> xreg,
-            unaligned_ptr,
-          )
-          let aligned_ptr = @generated.constructor_rv_andi(
-            self, unaligned_ptr, -8,
+            aligned_ptr,
           )
           for fill in fills {
             self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, Some(len), None)
@@ -894,13 +894,13 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
             xreg(self.alloc_reg),
             size,
           )
+          let aligned_ptr = @generated.constructor_rv_andi(
+            self, unaligned_ptr, -8,
+          )
           @generated.constructor_rv_mv_to(
             self,
             self.alloc_reg |> xreg,
-            unaligned_ptr,
-          )
-          let aligned_ptr = @generated.constructor_rv_andi(
-            self, unaligned_ptr, -8,
+            aligned_ptr,
           )
           for fill in fills {
             self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, None, Some(len))
@@ -1266,17 +1266,30 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
       base: xreg(base),
       offset: index * 8, // hard encoded as closure field is always 8 bytes even if there's an i32
     }
-    match ty_to_reg_class(ty) {
-      X => {
+    let size = ty.size()
+    match (ty_to_reg_class(ty), size) {
+      (X, 0) =>
+        @generated.constructor_rv_mv_to(
+          self,
+          pre_assigned_reg.to_xreg(),
+          self.zero_reg(),
+        )
+      (X, 4) => {
         let reg = @generated.constructor_rv_lw(self, ma)
         let reg = self.mark_maybe_aliased(reg |> xreg_to)
         self.alias_reg(pre_assigned_reg, reg)
       }
-      F => {
+      (X, 8) => {
+        let reg = @generated.constructor_rv_ld(self, ma)
+        let reg = self.mark_maybe_aliased(reg |> xreg_to)
+        self.alias_reg(pre_assigned_reg, reg)
+      }
+      (F, 8) => {
         let reg = @generated.constructor_rv_fld(self, ma)
         let reg = self.mark_maybe_aliased(reg |> freg_to)
         self.alias_reg(pre_assigned_reg, reg)
       }
+      _ => abort("invalid freevar type or size")
     }
   }
   self.finalize_insn()

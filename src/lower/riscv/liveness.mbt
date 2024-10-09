@@ -246,8 +246,10 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
     None =>
       for ibi in self.iter_block_info {
         let (_, ibi) = ibi
-        let _ = ibi.compute_live_in_out([])
-
+        let mut changed = true
+        while changed {
+          changed = ibi.compute_live_in_out([])
+        }
       }
     Some(func) => {
       // PO doesn't work perfect when encountering loops
@@ -264,7 +266,7 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
             let succ_info = self.iter_block_info[fn_block_name(func, succ)].unwrap()
             succs.push(succ_info)
           }
-          changed = cur_info.compute_live_in_out(succs)
+          changed = cur_info.compute_live_in_out(succs) || changed
         }
       }
     }
