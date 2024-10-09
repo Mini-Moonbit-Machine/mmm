@@ -1,61 +1,64 @@
 Testing test/test_src/ack.mbt
   .p2align 3
-  .globl ack
-  .type ack, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-ack:
-.ack_b0:
+main_1:
+.main_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  li a0, 3
+  li a1, 8
+  call ack_0
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl ack_0
+  .type ack_0, @function
+# leaf false
+ack_0:
+.ack_0_0:
   addi sp, sp, -32
   sd s0, 0(sp)
   sd ra, 8(sp)
-  bge zero, a0, .ack_b1
-  j .ack_b2
+  bge zero, a0, .ack_0_1
+  j .ack_0_2
 
-.ack_b1:
-  addi a0, a1, 1
-  j .ack_b6
-
-.ack_b5:
-  j .ack_b6
-
-.ack_b2:
-  bge zero, a1, .ack_b3
-  j .ack_b4
-
-.ack_b6:
+.ack_0_6:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
   ret
 
-.ack_b4:
-  addi s0, a0, -1
-  addi a1, a1, -1
-  call ack
-  mv a1, a0
-  mv a0, s0
-  call ack
-  j .ack_b5
-
-.ack_b3:
+.ack_0_3:
   addi a0, a0, -1
   li a1, 1
-  call ack
-  j .ack_b5
+  call ack_0
+  j .ack_0_5
 
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+.ack_0_5:
+  j .ack_0_6
+
+.ack_0_1:
+  addi a0, a1, 1
+  j .ack_0_6
+
+.ack_0_2:
+  bge zero, a1, .ack_0_3
+  j .ack_0_4
+
+.ack_0_4:
+  addi s0, a0, -1
+  addi a1, a1, -1
+  call ack_0
+  mv a1, a0
+  mv a0, s0
+  call ack_0
+  j .ack_0_5
 
   .p2align 3
   .globl minimbt_main
@@ -77,12 +80,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -100,20 +103,17 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
+T$start_2:
+.T$start_2_0:
+  addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 3
-  li a1, 8
-  call ack
-  call minimbt_print_int
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -127,11 +127,43 @@ start:
 
 Testing test/test_src/adder.mbt
   .p2align 3
-  .globl adder
-  .type adder, @function
+  .globl make_adder_0
+  .type make_adder_0, @function
 # leaf true
-adder:
-.adder_b0:
+make_adder_0:
+.make_adder_0_0:
+  addi sp, sp, -32
+  mv a2, a0
+  addi a0, s11, -16
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, adder_1
+  sd a0, 0(a1)
+  sd a2, 8(a1)
+  mv a0, a1
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl T$start_3
+  .type T$start_3, @function
+# leaf false
+T$start_3:
+.T$start_3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_2
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl adder_1
+  .type adder_1, @function
+# leaf true
+adder_1:
+.adder_1_0:
   addi sp, sp, -32
   mv a2, s10
   mv a1, a0
@@ -141,34 +173,22 @@ adder:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_2
+  .type main_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
+main_2:
+.main_2_0:
+  addi sp, sp, -32
   sd ra, 0(sp)
-  call main
+  li a0, 3
+  call make_adder_0
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 7
+  jalr a1
+  call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl make_adder
-  .type make_adder, @function
-# leaf true
-make_adder:
-.make_adder_b0:
-  addi sp, sp, -32
-  mv a2, a0
-  addi a0, s11, -16
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, adder
-  sd a0, 0(a1)
-  sd a2, 8(a1)
-  mv a0, a1
   addi sp, sp, 32
   ret
 
@@ -192,12 +212,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_3
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -212,26 +232,6 @@ minimbt_main:
   ld s10, 88(sp)
   ld s11, 96(sp)
   addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  li a0, 3
-  call make_adder
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 7
-  jalr a1
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 3
@@ -245,11 +245,43 @@ start:
 
 Testing test/test_src/adder2.mbt
   .p2align 3
-  .globl adder
-  .type adder, @function
+  .globl make_adder_0
+  .type make_adder_0, @function
 # leaf true
-adder:
-.adder_b0:
+make_adder_0:
+.make_adder_0_0:
+  addi sp, sp, -32
+  mv a2, a0
+  addi a0, s11, -16
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, adder_1
+  sd a0, 0(a1)
+  sd a2, 8(a1)
+  mv a0, a1
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl T$start_3
+  .type T$start_3, @function
+# leaf false
+T$start_3:
+.T$start_3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_2
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl adder_1
+  .type adder_1, @function
+# leaf true
+adder_1:
+.adder_1_0:
   addi sp, sp, -32
   mv a2, s10
   mv a1, a0
@@ -259,94 +291,20 @@ adder:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_2
+  .type main_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl make_adder
-  .type make_adder, @function
-# leaf true
-make_adder:
-.make_adder_b0:
-  addi sp, sp, -32
-  mv a2, a0
-  addi a0, s11, -16
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, adder
-  sd a0, 0(a1)
-  sd a2, 8(a1)
-  mv a0, a1
-  addi sp, sp, 32
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_2:
+.main_2_0:
   addi sp, sp, -48
   sd s1, 0(sp)
   sd s0, 8(sp)
   sd ra, 16(sp)
   li a0, 2
-  call make_adder
+  call make_adder_0
   mv s0, a0
   li a0, 3
-  call make_adder
+  call make_adder_0
   mv s1, a0
   mv s10, s0
   ld a1, 0(s0)
@@ -364,6 +322,48 @@ main:
   ld s0, 8(sp)
   ld ra, 16(sp)
   addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_3
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
   ret
 
   .p2align 3
@@ -391,352 +391,57 @@ memseti32:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl lp_2
+  .type lp_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl lp
-  .type lp, @function
-# leaf false
-lp:
-.lp_b0:
+lp_2:
+.lp_2_0:
   addi sp, sp, -64
   sd s1, 0(sp)
   sd s0, 8(sp)
   sd ra, 16(sp)
-  mv s1, s10
-  ld a2, 8(s1)
-  ld a3, 16(s1)
-  lw a0, 24(s1)
-  ld a1, 32(s1)
-  ld s0, 40(s1)
-  lw a2, 0(a2)
-  slli a2, a2, 2
-  add a2, a3, a2
-  lw a2, 0(a2)
-  beq a2, zero, .lp_b1
-  j .lp_b2
+  mv s0, s10
+  ld a0, 8(s0)
+  ld a3, 16(s0)
+  lw a2, 24(s0)
+  ld a1, 32(s0)
+  ld s1, 40(s0)
+  lw a0, 0(a0)
+  slli a0, a0, 2
+  add a0, a3, a0
+  lw a0, 0(a0)
+  beq a0, zero, .lp_2_1
+  j .lp_2_2
 
-.lp_b1:
-  mv a0, zero
-  j .lp_b3
-
-.lp_b2:
-  addi a0, a0, 1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  sw a0, 0(s0)
-  mv s10, s1
-  ld a0, 0(s1)
-  jalr a0
-  mv a0, zero
-  j .lp_b3
-
-.lp_b3:
+.lp_2_3:
   ld s1, 0(sp)
   ld s0, 8(sp)
   ld ra, 16(sp)
   addi sp, sp, 64
   ret
 
-  .p2align 3
-  .globl aux
-  .type aux, @function
-# leaf false
-aux:
-.aux_b0:
-  addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv s1, s10
-  mv s0, a0
-  lw a0, 8(s1)
-  ld a3, 16(s1)
-  ld a1, 24(s1)
-  ld a2, 32(s1)
-  bge s0, a0, .aux_b1
-  j .aux_b2
-
-.aux_b19:
-  j .aux_b20
-
-.aux_b1:
-  mv a0, s0
-  j .aux_b24
-
-.aux_b7:
-  lw a0, 0(a1)
-  lw a1, 0(a1)
-  slli a1, a1, 2
-  add a1, a2, a1
-  lw a1, 0(a1)
-  addi a1, a1, 1
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  addi a0, s0, 1
-  mv s10, s1
-  ld a1, 0(s1)
+.lp_2_2:
+  addi a0, a2, 1
+  mv s10, a1
+  ld a1, 0(a1)
   jalr a1
-  j .aux_b21
-
-.aux_b13:
-  addi a0, s11, -4
-  andi s2, a0, -8
-  mv s11, s2
-  sw s0, 0(s2)
-  addi a0, s11, -48
-  andi a0, a0, -8
-  mv s11, a0
-  la a3, lp
-  sd a3, 0(a0)
-  sd a1, 8(a0)
-  sd a2, 16(a0)
-  sd s0, 24(a0)
-  sd s1, 32(a0)
-  sd s2, 40(a0)
-  mv s10, a0
-  ld a0, 0(a0)
+  sw a0, 0(s1)
+  mv s10, s0
+  ld a0, 0(s0)
   jalr a0
   mv a0, zero
-  lw a0, 0(s2)
-  addi a0, a0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux_b18
+  j .lp_2_3
 
-.aux_b22:
-  j .aux_b23
-
-.aux_b5:
-  lw a0, 0(a1)
-  addi a0, a0, -1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux_b22
-
-.aux_b4:
-  li a0, 2
-  beq a3, a0, .aux_b5
-  j .aux_b6
-
-.aux_b8:
-  li a0, 4
-  beq a3, a0, .aux_b9
-  j .aux_b10
-
-.aux_b17:
-  j .aux_b18
-
-.aux_b2:
-  slli a0, s0, 2
-  add a0, a3, a0
-  lw a3, 0(a0)
-  li a0, 1
-  beq a3, a0, .aux_b3
-  j .aux_b4
-
-.aux_b24:
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
-
-.aux_b6:
-  li a0, 3
-  beq a3, a0, .aux_b7
-  j .aux_b8
-
-.aux_b20:
-  j .aux_b21
-
-.aux_b12:
-  li a0, 7
-  beq a3, a0, .aux_b13
-  j .aux_b14
-
-.aux_b23:
-  j .aux_b24
-
-.aux_b3:
-  lw a0, 0(a1)
-  addi a0, a0, 1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux_b23
-
-.aux_b9:
-  lw a0, 0(a1)
-  lw a1, 0(a1)
-  slli a1, a1, 2
-  add a1, a2, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slli a0, a0, 2
-  add a0, a2, a0
-  sw a1, 0(a0)
-  addi a0, s0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux_b20
-
-.aux_b16:
-  mv a0, s0
-  j .aux_b17
-
-.aux_b10:
-  li a0, 5
-  beq a3, a0, .aux_b11
-  j .aux_b12
-
-.aux_b11:
-  lw a0, 0(a1)
-  slli a0, a0, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  call minimbt_print_char
+.lp_2_1:
   mv a0, zero
-  addi a0, s0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux_b19
-
-.aux_b21:
-  j .aux_b22
-
-.aux_b18:
-  j .aux_b19
-
-.aux_b14:
-  li a0, 8
-  beq a3, a0, .aux_b15
-  j .aux_b16
-
-.aux_b15:
-  mv a0, s0
-  j .aux_b17
+  j .lp_2_3
 
   .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
+  .globl main_3
+  .type main_3, @function
 # leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl bf
-  .type bf, @function
-# leaf false
-bf:
-.bf_b0:
-  addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s1, a0
-  mv s0, a1
-  addi a0, s11, -4
-  andi s3, a0, -8
-  mv s11, s3
-  sw zero, 0(s3)
-  li a0, 4096
-  sub a0, s11, a0
-  andi s2, a0, -8
-  mv s11, s2
-  li a0, 1024
-  mv a1, a0
-  mv a0, s2
-  mv a2, zero
-  call memseti32
-  addi a0, s11, -40
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, aux
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s0, 16(a0)
-  sd s3, 24(a0)
-  sd s2, 32(a0)
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_3:
+.main_3_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   addi a0, s11, -92
@@ -812,10 +517,305 @@ main:
   li a0, 5
   sw a0, 88(a1)
   li a0, 23
-  call bf
+  call bf_0
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl T$start_4
+  .type T$start_4, @function
+# leaf false
+T$start_4:
+.T$start_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_3
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl bf_0
+  .type bf_0, @function
+# leaf false
+bf_0:
+.bf_0_0:
+  addi sp, sp, -64
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s1, a0
+  mv s0, a1
+  addi a0, s11, -4
+  andi s3, a0, -8
+  mv s11, s3
+  sw zero, 0(s3)
+  li a0, 4096
+  sub a0, s11, a0
+  andi s2, a0, -8
+  mv s11, s2
+  li a0, 1024
+  mv a1, a0
+  mv a0, s2
+  mv a2, zero
+  call memseti32
+  addi a0, s11, -40
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, aux_1
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s0, 16(a0)
+  sd s3, 24(a0)
+  sd s2, 32(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  mv a0, zero
+  jalr a1
+  mv a0, zero
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 64
+  ret
+
+  .p2align 3
+  .globl aux_1
+  .type aux_1, @function
+# leaf false
+aux_1:
+.aux_1_0:
+  addi sp, sp, -64
+  sd s2, 0(sp)
+  sd s1, 8(sp)
+  sd s0, 16(sp)
+  sd ra, 24(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  ld a3, 16(s0)
+  ld a1, 24(s0)
+  ld a2, 32(s0)
+  bge s1, a0, .aux_1_1
+  j .aux_1_2
+
+.aux_1_24:
+  ld s2, 0(sp)
+  ld s1, 8(sp)
+  ld s0, 16(sp)
+  ld ra, 24(sp)
+  addi sp, sp, 64
+  ret
+
+.aux_1_7:
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, a2, a1
+  lw a1, 0(a1)
+  addi a1, a1, 1
+  slli a0, a0, 2
+  add a0, a2, a0
+  sw a1, 0(a0)
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_21
+
+.aux_1_2:
+  slli a0, s1, 2
+  add a0, a3, a0
+  lw a3, 0(a0)
+  li a0, 1
+  beq a3, a0, .aux_1_3
+  j .aux_1_4
+
+.aux_1_12:
+  li a0, 7
+  beq a3, a0, .aux_1_13
+  j .aux_1_14
+
+.aux_1_6:
+  li a0, 3
+  beq a3, a0, .aux_1_7
+  j .aux_1_8
+
+.aux_1_14:
+  li a0, 8
+  beq a3, a0, .aux_1_15
+  j .aux_1_16
+
+.aux_1_5:
+  lw a0, 0(a1)
+  addi a0, a0, -1
+  sw a0, 0(a1)
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_22
+
+.aux_1_17:
+  j .aux_1_18
+
+.aux_1_8:
+  li a0, 4
+  beq a3, a0, .aux_1_9
+  j .aux_1_10
+
+.aux_1_21:
+  j .aux_1_22
+
+.aux_1_11:
+  lw a0, 0(a1)
+  slli a0, a0, 2
+  add a0, a2, a0
+  lw a0, 0(a0)
+  call minimbt_print_char
+  mv a0, zero
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_19
+
+.aux_1_16:
+  mv a0, s1
+  j .aux_1_17
+
+.aux_1_15:
+  mv a0, s1
+  j .aux_1_17
+
+.aux_1_22:
+  j .aux_1_23
+
+.aux_1_1:
+  mv a0, s1
+  j .aux_1_24
+
+.aux_1_23:
+  j .aux_1_24
+
+.aux_1_20:
+  j .aux_1_21
+
+.aux_1_13:
+  addi a0, s11, -4
+  andi s2, a0, -8
+  mv s11, s2
+  sw s1, 0(s2)
+  addi a0, s11, -48
+  andi a0, a0, -8
+  mv s11, a0
+  la a3, lp_2
+  sd a3, 0(a0)
+  sd a1, 8(a0)
+  sd a2, 16(a0)
+  sd s1, 24(a0)
+  sd s0, 32(a0)
+  sd s2, 40(a0)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  mv a0, zero
+  lw a0, 0(s2)
+  addi a0, a0, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_18
+
+.aux_1_19:
+  j .aux_1_20
+
+.aux_1_4:
+  li a0, 2
+  beq a3, a0, .aux_1_5
+  j .aux_1_6
+
+.aux_1_3:
+  lw a0, 0(a1)
+  addi a0, a0, 1
+  sw a0, 0(a1)
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_23
+
+.aux_1_9:
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, a2, a1
+  lw a1, 0(a1)
+  addi a1, a1, -1
+  slli a0, a0, 2
+  add a0, a2, a0
+  sw a1, 0(a0)
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  j .aux_1_20
+
+.aux_1_10:
+  li a0, 5
+  beq a3, a0, .aux_1_11
+  j .aux_1_12
+
+.aux_1_18:
+  j .aux_1_19
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_4
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
   ret
 
   .p2align 3
@@ -829,44 +829,37 @@ start:
 
 Testing test/test_src/cls-bug.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  addi a0, a0, 123
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  addi a0, s11, -8
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, f
-  sd a0, 0(a1)
-  mv a0, a1
-  addi sp, sp, 16
+  .globl main_2
+  .type main_2, @function
+# leaf false
+main_2:
+.main_2_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  li a0, 456
+  call g_1
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 789
+  jalr a1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 3
@@ -889,12 +882,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_3
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -912,23 +905,30 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  li a0, 456
-  call g
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 789
-  jalr a1
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  addi a0, a0, 123
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  addi a0, s11, -8
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, f_0
+  sd a0, 0(a1)
+  mv a0, a1
+  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -942,58 +942,15 @@ start:
 
 Testing test/test_src/cls-bug2.mbt
   .p2align 3
-  .globl f
-  .type f, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-f:
-.f_b0:
-  addi sp, sp, -32
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  mv s0, a0
-  bge s0, zero, .f_b1
-  j .f_b2
-
-.f_b3:
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 32
-  ret
-
-.f_b1:
-  mv a0, s0
-  call minimbt_print_int
-  mv a0, zero
-  addi a0, s11, -8
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, f
-  sd a0, 0(a1)
-  addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  sd a1, 0(a0)
-  ld a1, 0(a0)
-  addi a0, s0, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  mv a0, zero
-  j .f_b3
-
-.f_b2:
-  mv a0, zero
-  j .f_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  li a0, 9
+  call f_0
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -1019,12 +976,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1042,15 +999,58 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl f_0
+  .type f_0, @function
 # leaf false
-main:
-.main_b0:
+f_0:
+.f_0_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  mv s0, a0
+  bge s0, zero, .f_0_1
+  j .f_0_2
+
+.f_0_3:
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
+  ret
+
+.f_0_2:
+  mv a0, zero
+  j .f_0_3
+
+.f_0_1:
+  mv a0, s0
+  call minimbt_print_int
+  mv a0, zero
+  addi a0, s11, -8
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, f_0
+  sd a0, 0(a1)
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  sd a1, 0(a0)
+  ld a1, 0(a0)
+  addi a0, s0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  j .f_0_3
+
+  .p2align 3
+  .globl T$start_2
+  .type T$start_2, @function
+# leaf false
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 9
-  call f
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -1067,56 +1067,72 @@ start:
 
 Testing test/test_src/cls-rec.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf false
-f:
-.f_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  beq a0, zero, .f_b1
-  j .f_b2
-
-.f_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 32
+  .globl T$x.10
+  .type T$x.10, @function
+# leaf true
+T$x.10:
+.T$x.10_0:
+  addi sp, sp, -16
+  li a0, 10
+  addi sp, sp, 16
   ret
 
-.f_b1:
-  mv a0, zero
-  j .f_b3
-
-.f_b2:
-  addi a0, a0, -1
-  call f
-  mv a1, a0
-  la a0, x.1
-  lw a0, 0(a0)
-  add a0, a0, a1
-  j .f_b3
-
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl thunk_x.1
-  .type thunk_x.1, @function
-# leaf true
-thunk_x.1:
-.thunk_x.1_b0:
+  .globl f_1
+  .type f_1, @function
+# leaf false
+f_1:
+.f_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  beq a0, zero, .f_1_1
+  j .f_1_2
+
+.f_1_3:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+.f_1_1:
+  mv a0, zero
+  j .f_1_3
+
+.f_1_2:
+  addi a0, a0, -1
+  call f_1
+  mv a1, a0
+  la a0, x.1
+  lw a0, 0(a0)
+  add a0, a0, a1
+  j .f_1_3
+
+  .p2align 3
+  .globl main_2
+  .type main_2, @function
+# leaf false
+main_2:
+.main_2_0:
   addi sp, sp, -16
-  li a0, 10
+  sd ra, 0(sp)
+  li a0, 12
+  call f_1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
@@ -1140,15 +1156,15 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_x.1
+  call T$x.10
   la t5, x.1
   sw a0, 0(t5)
-  call thunk_start
+  call T$start_3
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1163,22 +1179,6 @@ minimbt_main:
   ld s10, 88(sp)
   ld s11, 96(sp)
   addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 12
-  call f
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -1198,72 +1198,25 @@ start:
 
 Testing test/test_src/cls-reg-bug.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl g
-  .type g, @function
+  .globl h_0
+  .type h_0, @function
 # leaf false
-g:
-.g_b0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  mv a1, s10
-  mv a2, a0
-  lw t1, 8(a1)
-  lw a0, 16(a1)
-  lw t2, 24(a1)
-  lw t3, 32(a1)
-  lw t0, 40(a1)
-  lw a7, 48(a1)
-  lw a5, 56(a1)
-  lw a6, 64(a1)
-  lw a3, 72(a1)
-  lw a4, 80(a1)
-  add a0, t1, a0
-  add a0, a0, t2
-  add a0, a0, t3
-  add a0, a0, t0
-  add a0, a0, a7
-  add a0, a0, a5
-  add a0, a0, a6
-  add a0, a0, a3
-  add a0, a0, a4
-  bge zero, a2, .g_b1
-  j .g_b2
-
-.g_b2:
-  j .g_b3
-
-.g_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-.g_b1:
-  neg a0, a2
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  j .g_b3
-
-  .p2align 3
-  .globl h
-  .type h, @function
-# leaf false
-h:
-.h_b0:
+h_0:
+.h_0_0:
   addi sp, sp, -112
   sd ra, 0(sp)
   mv a2, a0
@@ -1280,7 +1233,7 @@ h:
   addi a2, s11, -88
   andi a2, a2, -8
   mv s11, a2
-  la t3, g
+  la t3, g_1
   sd t3, 0(a2)
   sd a0, 8(a2)
   sd a4, 16(a2)
@@ -1301,53 +1254,11 @@ h:
   ret
 
   .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
+  .globl main_2
+  .type main_2, @function
 # leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_2:
+.main_2_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   addi a0, s11, -40
@@ -1374,13 +1285,102 @@ main:
   li a0, 10
   sw a0, 36(a1)
   mv a0, a1
-  call h
+  call h_0
   call minimbt_print_int
   mv a0, zero
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_3
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl g_1
+  .type g_1, @function
+# leaf false
+g_1:
+.g_1_0:
+  addi sp, sp, -112
+  sd ra, 0(sp)
+  mv a1, s10
+  mv t3, a0
+  lw t1, 8(a1)
+  lw a0, 16(a1)
+  lw a5, 24(a1)
+  lw t2, 32(a1)
+  lw t0, 40(a1)
+  lw a7, 48(a1)
+  lw a6, 56(a1)
+  lw a3, 64(a1)
+  lw a4, 72(a1)
+  lw a2, 80(a1)
+  add a0, t1, a0
+  add a0, a0, a5
+  add a0, a0, t2
+  add a0, a0, t0
+  add a0, a0, a7
+  add a0, a0, a6
+  add a0, a0, a3
+  add a0, a0, a4
+  add a0, a0, a2
+  bge zero, t3, .g_1_1
+  j .g_1_2
+
+.g_1_3:
+  ld ra, 0(sp)
+  addi sp, sp, 112
+  ret
+
+.g_1_1:
+  neg a0, t3
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  j .g_1_3
+
+.g_1_2:
+  j .g_1_3
 
   .p2align 3
   .globl start
@@ -1393,76 +1393,97 @@ start:
 
 Testing test/test_src/debug.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf false
-f:
-.f_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  mv a1, a0
-  addi a0, s11, -16
-  andi a2, a0, -8
-  mv s11, a2
-  la a0, g
-  sd a0, 0(a2)
-  sd a1, 8(a2)
-  li a1, 1
-  li a0, 1
-  beq a1, a0, .f_b1
-  j .f_b2
-
-.f_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-.f_b1:
-  li a0, 1
-  call f
-  j .f_b3
-
-.f_b2:
-  mv s10, a2
-  ld a1, 0(a2)
-  li a0, 2
-  jalr a1
-  j .f_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
+  .globl g_3
+  .type g_3, @function
+# leaf true
+g_3:
+.g_3_0:
   addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
+  mv a1, s10
+  lw a0, 8(a1)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl useless
-  .type useless, @function
+  .globl useless_0
+  .type useless_0, @function
 # leaf true
-useless:
-.useless_b0:
+useless_0:
+.useless_0_0:
   addi sp, sp, -16
   li a0, 10
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
+  .globl T$start_5
+  .type T$start_5, @function
+# leaf false
+T$start_5:
+.T$start_5_0:
   addi sp, sp, -16
-  mv a1, s10
-  lw a0, 8(a1)
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl f_2
+  .type f_2, @function
+# leaf false
+f_2:
+.f_2_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  mv a1, a0
+  addi a0, s11, -16
+  andi a2, a0, -8
+  mv s11, a2
+  la a0, g_3
+  sd a0, 0(a2)
+  sd a1, 8(a2)
+  li a1, 1
+  li a0, 1
+  beq a1, a0, .f_2_1
+  j .f_2_2
+
+.f_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+.f_2_1:
+  li a0, 1
+  call f_2
+  j .f_2_3
+
+.f_2_2:
+  mv s10, a2
+  ld a1, 0(a2)
+  li a0, 2
+  jalr a1
+  j .f_2_3
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf true
+main_4:
+.main_4_0:
+  addi sp, sp, 0
+  mv a0, zero
+  addi sp, sp, 0
+  ret
+
+  .p2align 3
+  .globl dummy_1
+  .type dummy_1, @function
+# leaf true
+dummy_1:
+.dummy_1_0:
+  addi sp, sp, -16
   addi sp, sp, 16
   ret
 
@@ -1486,12 +1507,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_5
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1506,27 +1527,6 @@ minimbt_main:
   ld s10, 88(sp)
   ld s11, 96(sp)
   addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl dummy
-  .type dummy, @function
-# leaf true
-dummy:
-.dummy_b0:
-  addi sp, sp, -16
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf true
-main:
-.main_b0:
-  addi sp, sp, 0
-  mv a0, zero
-  addi sp, sp, 0
   ret
 
   .p2align 3
@@ -1540,15 +1540,40 @@ start:
 
 Testing test/test_src/even-odd.mbt
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl T$t.10
+  .type T$t.10, @function
+# leaf true
+T$t.10:
+.T$t.10_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl T$start_5
+  .type T$start_5, @function
 # leaf false
-main:
-.main_b0:
+T$start_5:
+.T$start_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf false
+main_4:
+.main_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 789
-  call even
+  call even_2
   call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
@@ -1556,116 +1581,52 @@ main:
   ret
 
   .p2align 3
-  .globl even
-  .type even, @function
+  .globl even_2
+  .type even_2, @function
 # leaf false
-even:
-.even_b0:
+even_2:
+.even_2_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   mv a2, a0
   addi a0, s11, -8
   andi a1, a0, -8
   mv s11, a1
-  la a0, odd
+  la a0, odd_3
   sd a0, 0(a1)
-  bge a2, zero, .even_b1
-  j .even_b2
+  bge a2, zero, .even_2_1
+  j .even_2_2
 
-.even_b3:
+.even_2_5:
+  j .even_2_6
+
+.even_2_1:
+  beq a2, zero, .even_2_3
+  j .even_2_4
+
+.even_2_3:
   la a0, t.1
   lw a0, 0(a0)
-  j .even_b5
+  j .even_2_5
 
-.even_b5:
-  j .even_b6
-
-.even_b1:
-  beq a2, zero, .even_b3
-  j .even_b4
-
-.even_b6:
+.even_2_6:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
 
-.even_b4:
-  addi a0, a2, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  j .even_b5
-
-.even_b2:
+.even_2_2:
   addi a0, a2, 1
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
-  j .even_b6
+  j .even_2_6
 
-  .p2align 3
-  .globl odd
-  .type odd, @function
-# leaf false
-odd:
-.odd_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  mv a1, s10
-  bge a0, zero, .odd_b1
-  j .odd_b2
-
-.odd_b3:
-  la a0, f.2
-  lw a0, 0(a0)
-  j .odd_b5
-
-.odd_b1:
-  beq a0, zero, .odd_b3
-  j .odd_b4
-
-.odd_b4:
-  addi a0, a0, -1
-  call even
-  j .odd_b5
-
-.odd_b6:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-.odd_b5:
-  j .odd_b6
-
-.odd_b2:
-  addi a0, a0, 1
-  call even
-  j .odd_b6
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_t.1
-  .type thunk_t.1, @function
-# leaf true
-thunk_t.1:
-.thunk_t.1_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
-  ret
+.even_2_4:
+  addi a0, a2, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  j .even_2_5
 
   .p2align 3
   .globl minimbt_main
@@ -1687,18 +1648,18 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_t.1
+  call T$t.10
   la t5, t.1
   sw a0, 0(t5)
-  call thunk_f.2
+  call T$f.21
   la t5, f.2
   sw a0, 0(t5)
-  call thunk_start
+  call T$start_5
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1716,15 +1677,54 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl thunk_f.2
-  .type thunk_f.2, @function
+  .globl T$f.21
+  .type T$f.21, @function
 # leaf true
-thunk_f.2:
-.thunk_f.2_b0:
+T$f.21:
+.T$f.21_0:
   addi sp, sp, -16
   li a0, 456
   addi sp, sp, 16
   ret
+
+  .p2align 3
+  .globl odd_3
+  .type odd_3, @function
+# leaf false
+odd_3:
+.odd_3_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  mv a1, s10
+  bge a0, zero, .odd_3_1
+  j .odd_3_2
+
+.odd_3_6:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+.odd_3_4:
+  addi a0, a0, -1
+  call even_2
+  j .odd_3_5
+
+.odd_3_1:
+  beq a0, zero, .odd_3_3
+  j .odd_3_4
+
+.odd_3_3:
+  la a0, f.2
+  lw a0, 0(a0)
+  j .odd_3_5
+
+.odd_3_5:
+  j .odd_3_6
+
+.odd_3_2:
+  addi a0, a0, 1
+  call even_2
+  j .odd_3_6
 
   .p2align 3
   .globl t.1
@@ -1749,49 +1749,51 @@ start:
 
 Testing test/test_src/fib.mbt
   .p2align 3
-  .globl fib
-  .type fib, @function
+  .globl fib_0
+  .type fib_0, @function
 # leaf false
-fib:
-.fib_b0:
+fib_0:
+.fib_0_0:
   addi sp, sp, -32
   sd s1, 0(sp)
   sd s0, 8(sp)
   sd ra, 16(sp)
-  mv s0, a0
+  mv s1, a0
   li a0, 1
-  bge a0, s0, .fib_b1
-  j .fib_b2
+  bge a0, s1, .fib_0_1
+  j .fib_0_2
 
-.fib_b3:
+.fib_0_3:
   ld s1, 0(sp)
   ld s0, 8(sp)
   ld ra, 16(sp)
   addi sp, sp, 32
   ret
 
-.fib_b2:
-  addi a0, s0, -1
-  call fib
-  mv s1, a0
-  addi a0, s0, -2
-  call fib
-  add a0, s1, a0
-  j .fib_b3
+.fib_0_1:
+  mv a0, s1
+  j .fib_0_3
 
-.fib_b1:
-  mv a0, s0
-  j .fib_b3
+.fib_0_2:
+  addi a0, s1, -1
+  call fib_0
+  mv s0, a0
+  addi a0, s1, -2
+  call fib_0
+  add a0, s0, a0
+  j .fib_0_3
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  li a0, 30
+  call fib_0
+  call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -1817,12 +1819,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1840,16 +1842,14 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-main:
-.main_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 30
-  call fib
-  call minimbt_print_int
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -1866,67 +1866,11 @@ start:
 
 Testing test/test_src/float.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_0
+  .type main_0, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_0:
+.main_0_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   li a0, 4623113902481840538
@@ -1960,6 +1904,62 @@ main:
   ret
 
   .p2align 3
+  .globl T$start_1
+  .type T$start_1, @function
+# leaf false
+T$start_1:
+.T$start_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_0
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_1
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
   .globl start
   .type start, @object
   .bss
@@ -1970,43 +1970,40 @@ start:
 
 Testing test/test_src/funcomp.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl dec
-  .type dec, @function
+  .globl dec_4
+  .type dec_4, @function
 # leaf true
-dec:
-.dec_b0:
+dec_4:
+.dec_4_0:
   addi sp, sp, -16
   addi a0, a0, -1
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl compose
-  .type compose, @function
+  .globl dbl_2
+  .type dbl_2, @function
 # leaf true
-compose:
-.compose_b0:
+dbl_2:
+.dbl_2_0:
+  addi sp, sp, -16
+  add a0, a0, a0
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl compose_0
+  .type compose_0, @function
+# leaf true
+compose_0:
+.compose_0_0:
   addi sp, sp, -32
   mv a3, a0
   mv a2, a1
   addi a0, s11, -24
   andi a1, a0, -8
   mv s11, a1
-  la a0, composed
+  la a0, composed_1
   sd a0, 0(a1)
   sd a3, 8(a1)
   sd a2, 16(a1)
@@ -2015,22 +2012,63 @@ compose:
   ret
 
   .p2align 3
-  .globl dbl
-  .type dbl, @function
-# leaf true
-dbl:
-.dbl_b0:
+  .globl main_5
+  .type main_5, @function
+# leaf false
+main_5:
+.main_5_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  addi a0, s11, -8
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, dbl_2
+  sd a0, 0(a1)
+  addi a0, s11, -8
+  andi a2, a0, -8
+  mv s11, a2
+  la a0, dec_4
+  sd a0, 0(a2)
+  mv a0, a1
+  mv a1, a2
+  call compose_0
+  mv a1, a0
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a2, inc_3
+  sd a2, 0(a0)
+  call compose_0
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 123
+  jalr a1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
   addi sp, sp, -16
-  add a0, a0, a0
+  sd ra, 0(sp)
+  call main_5
+  mv a0, zero
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl composed
-  .type composed, @function
+  .globl composed_1
+  .type composed_1, @function
 # leaf false
-composed:
-.composed_b0:
+composed_1:
+.composed_1_0:
   addi sp, sp, -48
   sd s0, 0(sp)
   sd ra, 8(sp)
@@ -2049,6 +2087,17 @@ composed:
   ret
 
   .p2align 3
+  .globl inc_3
+  .type inc_3, @function
+# leaf true
+inc_3:
+.inc_3_0:
+  addi sp, sp, -16
+  addi a0, a0, 1
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -2068,12 +2117,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_6
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2088,55 +2137,6 @@ minimbt_main:
   ld s10, 88(sp)
   ld s11, 96(sp)
   addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl inc
-  .type inc, @function
-# leaf true
-inc:
-.inc_b0:
-  addi sp, sp, -16
-  addi a0, a0, 1
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  addi a0, s11, -8
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, dbl
-  sd a0, 0(a1)
-  addi a0, s11, -8
-  andi a2, a0, -8
-  mv s11, a2
-  la a0, dec
-  sd a0, 0(a2)
-  mv a0, a1
-  mv a1, a2
-  call compose
-  mv a1, a0
-  addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  la a2, inc
-  sd a2, 0(a0)
-  call compose
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 123
-  jalr a1
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 3
@@ -2150,56 +2150,20 @@ start:
 
 Testing test/test_src/gcd.mbt
   .p2align 3
-  .globl gcd
-  .type gcd, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-gcd:
-.gcd_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -32
   sd ra, 0(sp)
-  beq a0, zero, .gcd_b1
-  j .gcd_b2
-
-.gcd_b6:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-.gcd_b1:
-  mv a0, a1
-  j .gcd_b6
-
-.gcd_b4:
-  sub a2, a0, a1
-  mv a0, a1
-  mv a1, a2
-  call gcd
-  j .gcd_b5
-
-.gcd_b3:
-  sub a1, a1, a0
-  call gcd
-  j .gcd_b5
-
-.gcd_b2:
-  bge a1, a0, .gcd_b3
-  j .gcd_b4
-
-.gcd_b5:
-  j .gcd_b6
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
+  li a0, 21600
+  li a1, 337500
+  call gcd_0
+  call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 16
+  addi sp, sp, 32
   ret
 
   .p2align 3
@@ -2222,12 +2186,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2245,20 +2209,56 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl gcd_0
+  .type gcd_0, @function
 # leaf false
-main:
-.main_b0:
+gcd_0:
+.gcd_0_0:
   addi sp, sp, -32
   sd ra, 0(sp)
-  li a0, 21600
-  li a1, 337500
-  call gcd
-  call minimbt_print_int
-  mv a0, zero
+  mv a2, a0
+  mv a0, a1
+  beq a2, zero, .gcd_0_1
+  j .gcd_0_2
+
+.gcd_0_2:
+  bge a0, a2, .gcd_0_3
+  j .gcd_0_4
+
+.gcd_0_3:
+  sub a1, a0, a2
+  mv a0, a2
+  call gcd_0
+  j .gcd_0_5
+
+.gcd_0_4:
+  sub a1, a2, a0
+  call gcd_0
+  j .gcd_0_5
+
+.gcd_0_6:
   ld ra, 0(sp)
   addi sp, sp, 32
+  ret
+
+.gcd_0_5:
+  j .gcd_0_6
+
+.gcd_0_1:
+  j .gcd_0_6
+
+  .p2align 3
+  .globl T$start_2
+  .type T$start_2, @function
+# leaf false
+T$start_2:
+.T$start_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -2272,25 +2272,16 @@ start:
 
 Testing test/test_src/id.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  addi a0, a0, 1
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  li a0, 1000
+  call f_0
+  call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -2316,12 +2307,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2339,16 +2330,25 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  addi a0, a0, 1
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-main:
-.main_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 1000
-  call f
-  call minimbt_print_int
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -2365,104 +2365,11 @@ start:
 
 Testing test/test_src/inprod-loop.mbt
   .p2align 3
-  .globl inprod
-  .type inprod, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-inprod:
-.inprod_b0:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  mv a3, a0
-  fmv.d fa2, fa0
-  mv a0, a2
-  bge a0, zero, .inprod_b1
-  j .inprod_b2
-
-.inprod_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 64
-  ret
-
-.inprod_b1:
-  slli a2, a0, 3
-  add a2, a3, a2
-  fld fa1, 0(a2)
-  slli a2, a0, 3
-  add a2, a1, a2
-  fld fa0, 0(a2)
-  fmul.d fa0, fa1, fa0
-  fadd.d fa0, fa2, fa0
-  addi a2, a0, -1
-  mv a0, a3
-  call inprod
-  j .inprod_b3
-
-.inprod_b2:
-  fmv.d fa0, fa2
-  j .inprod_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -2485,16 +2392,109 @@ main:
   mv a1, a2
   fmv.d.x fa0, zero
   li a2, 2
-  call inprod
+  call inprod_0
   fmv.d fa1, fa0
   li a0, 4696837146684686336
   fmv.d.x fa0, a0
   fmul.d fa0, fa0, fa1
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl inprod_0
+  .type inprod_0, @function
+# leaf false
+inprod_0:
+.inprod_0_0:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  mv a3, a0
+  fmv.d fa2, fa0
+  mv a0, a2
+  bge a0, zero, .inprod_0_1
+  j .inprod_0_2
+
+.inprod_0_1:
+  slli a2, a0, 3
+  add a2, a3, a2
+  fld fa1, 0(a2)
+  slli a2, a0, 3
+  add a2, a1, a2
+  fld fa0, 0(a2)
+  fmul.d fa0, fa1, fa0
+  fadd.d fa0, fa2, fa0
+  addi a2, a0, -1
+  mv a0, a3
+  call inprod_0
+  j .inprod_0_3
+
+.inprod_0_2:
+  fmv.d fa0, fa2
+  j .inprod_0_3
+
+.inprod_0_3:
+  ld ra, 0(sp)
+  addi sp, sp, 64
+  ret
+
+  .p2align 3
+  .globl T$start_2
+  .type T$start_2, @function
+# leaf false
+T$start_2:
+.T$start_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -2508,105 +2508,11 @@ start:
 
 Testing test/test_src/inprod-rec.mbt
   .p2align 3
-  .globl inprod
-  .type inprod, @function
+  .globl main_1
+  .type main_1, @function
 # leaf false
-inprod:
-.inprod_b0:
-  addi sp, sp, -64
-  fsd fs0, 0(sp)
-  sd ra, 8(sp)
-  mv a3, a0
-  mv a0, a2
-  bge a0, zero, .inprod_b1
-  j .inprod_b2
-
-.inprod_b3:
-  fld fs0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 64
-  ret
-
-.inprod_b1:
-  slli a2, a0, 3
-  add a2, a3, a2
-  fld fa1, 0(a2)
-  slli a2, a0, 3
-  add a2, a1, a2
-  fld fa0, 0(a2)
-  fmul.d fs0, fa1, fa0
-  addi a2, a0, -1
-  mv a0, a3
-  call inprod
-  fadd.d fa0, fs0, fa0
-  j .inprod_b3
-
-.inprod_b2:
-  fmv.d.x fa0, zero
-  j .inprod_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_1:
+.main_1_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -2628,103 +2534,15 @@ main:
   mv a0, a1
   mv a1, a2
   li a2, 2
-  call inprod
+  call inprod_0
   fmv.d fa1, fa0
   li a0, 4696837146684686336
   fmv.d.x fa0, a0
   fmul.d fa0, fa0, fa1
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 48
-  ret
-
-  .p2align 3
-  .globl start
-  .type start, @object
-  .bss
-start:
-  .zero 4
-
-
-
-Testing test/test_src/inprod.mbt
-  .p2align 3
-  .globl gety
-  .type gety, @function
-# leaf true
-gety:
-.gety_b0:
-  addi sp, sp, -16
-  fld fa0, 8(a0)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl getx
-  .type getx, @function
-# leaf true
-getx:
-.getx_b0:
-  addi sp, sp, -16
-  fld fa0, 0(a0)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl inprod
-  .type inprod, @function
-# leaf false
-inprod:
-.inprod_b0:
-  addi sp, sp, -48
-  fsd fs1, 0(sp)
-  fsd fs0, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s1, a0
-  mv s0, a1
-  mv a0, s1
-  call getx
-  fmv.d fs0, fa0
-  mv a0, s0
-  call getx
-  fmul.d fs1, fs0, fa0
-  mv a0, s1
-  call gety
-  fmv.d fs0, fa0
-  mv a0, s0
-  call gety
-  fmul.d fa0, fs0, fa0
-  fadd.d fs0, fs1, fa0
-  mv a0, s1
-  call getz
-  fmv.d fs1, fa0
-  mv a0, s0
-  call getz
-  fmul.d fa0, fs1, fa0
-  fadd.d fa0, fs0, fa0
-  fld fs1, 0(sp)
-  fld fs0, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
   addi sp, sp, 48
   ret
 
@@ -2748,12 +2566,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2771,22 +2589,151 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl getz
-  .type getz, @function
-# leaf true
-getz:
-.getz_b0:
+  .globl inprod_0
+  .type inprod_0, @function
+# leaf false
+inprod_0:
+.inprod_0_0:
+  addi sp, sp, -64
+  fsd fs0, 0(sp)
+  sd ra, 8(sp)
+  mv a3, a0
+  mv a0, a2
+  bge a0, zero, .inprod_0_1
+  j .inprod_0_2
+
+.inprod_0_1:
+  slli a2, a0, 3
+  add a2, a3, a2
+  fld fa1, 0(a2)
+  slli a2, a0, 3
+  add a2, a1, a2
+  fld fa0, 0(a2)
+  fmul.d fs0, fa1, fa0
+  addi a2, a0, -1
+  mv a0, a3
+  call inprod_0
+  fadd.d fa0, fs0, fa0
+  j .inprod_0_3
+
+.inprod_0_2:
+  fmv.d.x fa0, zero
+  j .inprod_0_3
+
+.inprod_0_3:
+  fld fs0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 64
+  ret
+
+  .p2align 3
+  .globl T$start_2
+  .type T$start_2, @function
+# leaf false
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
-  fld fa0, 16(a0)
+  sd ra, 0(sp)
+  call main_1
+  mv a0, zero
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl start
+  .type start, @object
+  .bss
+start:
+  .zero 4
+
+
+
+Testing test/test_src/inprod.mbt
+  .p2align 3
+  .globl inprod_3
+  .type inprod_3, @function
 # leaf false
-main:
-.main_b0:
+inprod_3:
+.inprod_3_0:
+  addi sp, sp, -48
+  fsd fs1, 0(sp)
+  fsd fs0, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s1, a0
+  mv s0, a1
+  mv a0, s1
+  call getx_0
+  fmv.d fs0, fa0
+  mv a0, s0
+  call getx_0
+  fmul.d fs1, fs0, fa0
+  mv a0, s1
+  call gety_1
+  fmv.d fs0, fa0
+  mv a0, s0
+  call gety_1
+  fmul.d fa0, fs0, fa0
+  fadd.d fs0, fs1, fa0
+  mv a0, s1
+  call getz_2
+  fmv.d fs1, fa0
+  mv a0, s0
+  call getz_2
+  fmul.d fa0, fs1, fa0
+  fadd.d fa0, fs0, fa0
+  fld fs1, 0(sp)
+  fld fs0, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl getx_0
+  .type getx_0, @function
+# leaf true
+getx_0:
+.getx_0_0:
+  addi sp, sp, -16
+  fld fa0, 0(a0)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl T$start_5
+  .type T$start_5, @function
+# leaf false
+T$start_5:
+.T$start_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl gety_1
+  .type gety_1, @function
+# leaf true
+gety_1:
+.gety_1_0:
+  addi sp, sp, -16
+  fld fa0, 8(a0)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf false
+main_4:
+.main_4_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -2815,16 +2762,69 @@ main:
   fsd fa0, 16(a2)
   mv a0, a1
   mv a1, a2
-  call inprod
+  call inprod_3
   fmv.d fa1, fa0
   li a0, 4696837146684686336
   fmv.d.x fa0, a0
   fmul.d fa0, fa0, fa1
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl getz_2
+  .type getz_2, @function
+# leaf true
+getz_2:
+.getz_2_0:
+  addi sp, sp, -16
+  fld fa0, 16(a0)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_5
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
   ret
 
   .p2align 3
@@ -2838,49 +2838,67 @@ start:
 
 Testing test/test_src/join-reg.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
+  .globl main_3
+  .type main_3, @function
+# leaf false
+main_3:
+.main_3_0:
+  addi sp, sp, -32
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv a0, zero
+  call f_0
+  mv s1, a0
+  mv a0, zero
+  call g_1
+  mv s0, a0
+  mv a0, zero
+  call h_2
+  beq a0, zero, .main_3_1
+  j .main_3_2
+
+.main_3_1:
+  sub a0, s1, s0
+  j .main_3_3
+
+.main_3_3:
+  call minimbt_print_int
+  mv a0, zero
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 32
   ret
 
+.main_3_2:
+  sub a0, s0, s1
+  add a0, a0, s1
+  add a0, a0, s0
+  j .main_3_3
+
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_3
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl h
-  .type h, @function
+  .globl h_2
+  .type h_2, @function
 # leaf true
-h:
-.h_b0:
+h_2:
+.h_2_0:
   addi sp, sp, -16
   li a0, 789
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  li a0, 456
   addi sp, sp, 16
   ret
 
@@ -2904,12 +2922,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_4
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2927,44 +2945,26 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv a0, zero
-  call f
-  mv s1, a0
-  mv a0, zero
-  call g
-  mv s0, a0
-  mv a0, zero
-  call h
-  beq a0, zero, .main_b1
-  j .main_b2
-
-.main_b3:
-  call minimbt_print_int
-  mv a0, zero
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 32
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  li a0, 456
+  addi sp, sp, 16
   ret
 
-.main_b1:
-  sub a0, s1, s0
-  j .main_b3
-
-.main_b2:
-  sub a0, s0, s1
-  add a0, a0, s1
-  add a0, a0, s0
-  j .main_b3
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -2977,49 +2977,63 @@ start:
 
 Testing test/test_src/join-reg2.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
+  .globl main_3
+  .type main_3, @function
+# leaf false
+main_3:
+.main_3_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  mv a0, zero
+  call f_0
+  mv s0, a0
+  bge zero, s0, .main_3_1
+  j .main_3_2
+
+.main_3_1:
+  mv a0, zero
+  call g_1
+  add a0, a0, s0
+  j .main_3_3
+
+.main_3_3:
+  call minimbt_print_int
+  mv a0, zero
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
   ret
 
+.main_3_2:
+  mv a0, zero
+  call h_2
+  sub a0, a0, s0
+  add a0, a0, s0
+  j .main_3_3
+
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_3
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl h
-  .type h, @function
+  .globl h_2
+  .type h_2, @function
 # leaf true
-h:
-.h_b0:
+h_2:
+.h_2_0:
   addi sp, sp, -16
   li a0, 789
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  li a0, 456
   addi sp, sp, 16
   ret
 
@@ -3043,12 +3057,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_4
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3066,40 +3080,26 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  mv a0, zero
-  call f
-  mv s0, a0
-  bge zero, s0, .main_b1
-  j .main_b2
-
-.main_b3:
-  call minimbt_print_int
-  mv a0, zero
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 32
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  li a0, 456
+  addi sp, sp, 16
   ret
 
-.main_b1:
-  mv a0, zero
-  call g
-  add a0, a0, s0
-  j .main_b3
-
-.main_b2:
-  mv a0, zero
-  call h
-  sub a0, a0, s0
-  add a0, a0, s0
-  j .main_b3
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -3112,49 +3112,67 @@ start:
 
 Testing test/test_src/join-stack.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
+  .globl main_3
+  .type main_3, @function
+# leaf false
+main_3:
+.main_3_0:
+  addi sp, sp, -32
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv a0, zero
+  call f_0
+  mv s1, a0
+  mv a0, zero
+  call g_1
+  mv s0, a0
+  mv a0, zero
+  call h_2
+  beq a0, zero, .main_3_1
+  j .main_3_2
+
+.main_3_1:
+  addi a0, s1, 1
+  j .main_3_3
+
+.main_3_3:
+  call minimbt_print_int
+  mv a0, zero
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 32
   ret
 
+.main_3_2:
+  addi a0, s0, 2
+  add a0, a0, s1
+  add a0, a0, s0
+  j .main_3_3
+
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_3
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl h
-  .type h, @function
+  .globl h_2
+  .type h_2, @function
 # leaf true
-h:
-.h_b0:
+h_2:
+.h_2_0:
   addi sp, sp, -16
   li a0, 789
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  li a0, 456
   addi sp, sp, 16
   ret
 
@@ -3178,12 +3196,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_4
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3201,44 +3219,26 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv a0, zero
-  call f
-  mv s1, a0
-  mv a0, zero
-  call g
-  mv s0, a0
-  mv a0, zero
-  call h
-  beq a0, zero, .main_b1
-  j .main_b2
-
-.main_b3:
-  call minimbt_print_int
-  mv a0, zero
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 32
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  li a0, 456
+  addi sp, sp, 16
   ret
 
-.main_b1:
-  addi a0, s1, 1
-  j .main_b3
-
-.main_b2:
-  addi a0, s0, 2
-  add a0, a0, s1
-  add a0, a0, s0
-  j .main_b3
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -3251,40 +3251,51 @@ start:
 
 Testing test/test_src/join-stack2.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  li a0, 456
-  addi sp, sp, 16
+  .globl main_2
+  .type main_2, @function
+# leaf false
+main_2:
+.main_2_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  mv a0, zero
+  call f_0
+  mv s0, a0
+  bge zero, s0, .main_2_1
+  j .main_2_2
+
+.main_2_2:
+  add a0, s0, s0
+  j .main_2_3
+
+.main_2_3:
+  call minimbt_print_int
+  mv a0, zero
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
   ret
+
+.main_2_1:
+  mv a0, zero
+  call g_1
+  add a0, a0, s0
+  j .main_2_3
 
   .p2align 3
   .globl minimbt_main
@@ -3306,12 +3317,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_3
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3329,37 +3340,26 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  mv a0, zero
-  call f
-  mv s0, a0
-  bge zero, s0, .main_b1
-  j .main_b2
-
-.main_b3:
-  call minimbt_print_int
-  mv a0, zero
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 32
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
   ret
 
-.main_b1:
-  mv a0, zero
-  call g
-  add a0, a0, s0
-  j .main_b3
-
-.main_b2:
-  add a0, s0, s0
-  j .main_b3
+  .p2align 3
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  li a0, 456
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -3372,49 +3372,61 @@ start:
 
 Testing test/test_src/join-stack3.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 123
-  addi sp, sp, 16
+  .globl main_3
+  .type main_3, @function
+# leaf false
+main_3:
+.main_3_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  mv a0, zero
+  call f_0
+  mv s0, a0
+  bge zero, s0, .main_3_1
+  j .main_3_2
+
+.main_3_1:
+  mv a0, zero
+  call g_1
+  j .main_3_3
+
+.main_3_3:
+  add a0, a0, s0
+  call minimbt_print_int
+  mv a0, zero
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
   ret
 
+.main_3_2:
+  mv a0, zero
+  call h_2
+  j .main_3_3
+
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_3
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl h
-  .type h, @function
+  .globl h_2
+  .type h_2, @function
 # leaf true
-h:
-.h_b0:
+h_2:
+.h_2_0:
   addi sp, sp, -16
   li a0, 789
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  li a0, 456
   addi sp, sp, 16
   ret
 
@@ -3438,12 +3450,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_4
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3461,38 +3473,26 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  mv a0, zero
-  call f
-  mv s0, a0
-  bge zero, s0, .main_b1
-  j .main_b2
-
-.main_b3:
-  add a0, a0, s0
-  call minimbt_print_int
-  mv a0, zero
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 32
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  li a0, 456
+  addi sp, sp, 16
   ret
 
-.main_b1:
-  mv a0, zero
-  call g
-  j .main_b3
-
-.main_b2:
-  mv a0, zero
-  call h
-  j .main_b3
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 123
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -3505,105 +3505,11 @@ start:
 
 Testing test/test_src/landins_knot.mbt
   .p2align 3
-  .globl init
-  .type init, @function
+  .globl T$a.228
+  .type T$a.228, @function
 # leaf false
-init:
-.init_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 10
-  call g
-  call minimbt_print_int
-  mv a0, zero
-  li a0, 31
-  call g
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk__21
-  .type thunk__21, @function
-# leaf true
-thunk__21:
-.thunk__21_b0:
-  addi sp, sp, -16
-  li a0, 5
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_factorial.18
-  .type thunk_factorial.18, @function
-# leaf false
-thunk_factorial.18:
-.thunk_factorial.18_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  addi a0, s11, -8
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, g
-  sd a0, 0(a1)
-  mv a0, a1
-  call landins_kont
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 3
-  .globl dummy
-  .type dummy, @function
-# leaf true
-dummy:
-.dummy_b0:
-  addi sp, sp, -16
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl landins_kont
-  .type landins_kont, @function
-# leaf false
-landins_kont:
-.landins_kont_b0:
-  addi sp, sp, -48
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  mv a2, a0
-  addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, dummy
-  sd a1, 0(a0)
-  addi a1, s11, -8
-  andi s0, a1, -8
-  mv s11, s0
-  sd a0, 0(s0)
-  addi a0, s11, -16
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, aux
-  sd a1, 0(a0)
-  sd s0, 8(a0)
-  mv s10, a2
-  ld a1, 0(a2)
-  jalr a1
-  sd a0, 0(s0)
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 48
-  ret
-
-  .p2align 3
-  .globl thunk_a.22
-  .type thunk_a.22, @function
-# leaf false
-thunk_a.22:
-.thunk_a.22_b0:
+T$a.228:
+.T$a.228_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   la a0, factorial.18
@@ -3618,25 +3524,40 @@ thunk_a.22:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
+  .globl dummy_0
+  .type dummy_0, @function
+# leaf true
+dummy_0:
+.dummy_0_0:
   addi sp, sp, -16
-  sd ra, 0(sp)
-  call init
-  mv a0, zero
-  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl aux
-  .type aux, @function
+  .globl T$factorial.185
+  .type T$factorial.185, @function
 # leaf false
-aux:
-.aux_b0:
+T$factorial.185:
+.T$factorial.185_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  addi a0, s11, -8
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, g_3
+  sd a0, 0(a1)
+  mv a0, a1
+  call landins_knot_1
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl aux_2
+  .type aux_2, @function
+# leaf false
+aux_2:
+.aux_2_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   mv a1, s10
@@ -3650,55 +3571,170 @@ aux:
   ret
 
   .p2align 3
-  .globl h
-  .type h, @function
+  .globl main_10
+  .type main_10, @function
 # leaf false
-h:
-.h_b0:
+main_10:
+.main_10_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call f1_6
+  mv a0, zero
+  li a0, 10
+  call g_9
+  call minimbt_print_int
+  mv a0, zero
+  li a0, 31
+  call g_9
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl g_3
+  .type g_3, @function
+# leaf true
+g_3:
+.g_3_0:
+  addi sp, sp, -32
+  mv a2, a0
+  addi a0, s11, -16
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, h_4
+  sd a0, 0(a1)
+  sd a2, 8(a1)
+  mv a0, a1
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl T$start_11
+  .type T$start_11, @function
+# leaf false
+T$start_11:
+.T$start_11_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_10
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl f1_6
+  .type f1_6, @function
+# leaf false
+f1_6:
+.f1_6_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  la a0, factorial.18
+  ld a0, 0(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 5
+  jalr a1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl h_4
+  .type h_4, @function
+# leaf false
+h_4:
+.h_4_0:
   addi sp, sp, -48
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv a1, s10
   mv s0, a0
   ld a0, 8(a1)
-  beq s0, zero, .h_b1
-  j .h_b2
+  beq s0, zero, .h_4_1
+  j .h_4_2
 
-.h_b1:
+.h_4_1:
   li a0, 1
-  j .h_b3
+  j .h_4_3
 
-.h_b3:
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 48
-  ret
-
-.h_b2:
+.h_4_2:
   addi a1, s0, -1
   mv s10, a0
   ld a2, 0(a0)
   mv a0, a1
   jalr a2
   mulw a0, s0, a0
-  j .h_b3
+  j .h_4_3
+
+.h_4_3:
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 48
+  ret
 
   .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -32
+  .globl landins_knot_1
+  .type landins_knot_1, @function
+# leaf false
+landins_knot_1:
+.landins_knot_1_0:
+  addi sp, sp, -48
+  sd s0, 0(sp)
+  sd ra, 8(sp)
   mv a2, a0
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, dummy_0
+  sd a1, 0(a0)
+  addi a1, s11, -8
+  andi s0, a1, -8
+  mv s11, s0
+  sd a0, 0(s0)
   addi a0, s11, -16
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, h
-  sd a0, 0(a1)
-  sd a2, 8(a1)
-  mv a0, a1
-  addi sp, sp, 32
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, aux_2
+  sd a1, 0(a0)
+  sd s0, 8(a0)
+  mv s10, a2
+  ld a1, 0(a2)
+  jalr a1
+  sd a0, 0(s0)
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl T$_21_7
+  .type T$_21_7, @function
+# leaf true
+T$_21_7:
+.T$_21_7_0:
+  addi sp, sp, -16
+  li a0, 5
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl g_9
+  .type g_9, @function
+# leaf true
+g_9:
+.g_9_0:
+  addi sp, sp, -16
+  mv a1, a0
+  la a0, a.22
+  lw a0, 0(a0)
+  add a0, a1, a0
+  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -3721,21 +3757,21 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_factorial.18
+  call T$factorial.185
   la t5, factorial.18
   sd a0, 0(t5)
-  call thunk__21
+  call T$_21_7
   la t5, _21
   sw a0, 0(t5)
-  call thunk_a.22
+  call T$a.228
   la t5, a.22
   sw a0, 0(t5)
-  call thunk_start
+  call T$start_11
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3779,6 +3815,416 @@ factorial.18:
 
 
 
+Testing test/test_src/mandelbrot.mbt
+  .p2align 3
+  .globl loop1_3
+  .type loop1_3, @function
+# leaf false
+loop1_3:
+.loop1_3_0:
+  addi sp, sp, -80
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv s1, s10
+  mv s0, a0
+  lw a0, 8(s1)
+  fld fa0, 16(s1)
+  lw a2, 24(s1)
+  fld fa1, 32(s1)
+  ld a1, 40(s1)
+  bge a0, s0, .loop1_3_1
+  j .loop1_3_2
+
+.loop1_3_1:
+  fcvt.d.w fa2, s0
+  fdiv.d fa2, fa2, fa0
+  li a0, 4607182418800017408
+  fmv.d.x fa0, a0
+  fsub.d fa0, fa2, fa0
+  addi a0, s11, -40
+  andi a0, a0, -8
+  mv s11, a0
+  la a3, loop2_4
+  sd a3, 0(a0)
+  sd a2, 8(a0)
+  fsd fa1, 16(a0)
+  fsd fa0, 24(a0)
+  sd a1, 32(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  mv a0, zero
+  jalr a1
+  mv a0, zero
+  addi a0, s0, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  mv a0, zero
+  j .loop1_3_3
+
+.loop1_3_3:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 80
+  ret
+
+.loop1_3_2:
+  mv a0, zero
+  j .loop1_3_3
+
+  .p2align 3
+  .globl loop3_5
+  .type loop3_5, @function
+# leaf false
+loop3_5:
+.loop3_5_0:
+  addi sp, sp, -96
+  sd ra, 0(sp)
+  mv a3, s10
+  ld a2, 8(a3)
+  ld a5, 16(a3)
+  fld fa2, 24(a3)
+  ld a4, 32(a3)
+  fld fa1, 40(a3)
+  ld a1, 48(a3)
+  ld a0, 56(a3)
+  fld fa3, 0(a2)
+  li a6, 4611686018427387904
+  fmv.d.x fa0, a6
+  fmul.d fa3, fa0, fa3
+  fld fa0, 0(a5)
+  fmul.d fa0, fa3, fa0
+  fadd.d fa0, fa0, fa2
+  fsd fa0, 0(a5)
+  fld fa0, 0(a4)
+  fadd.d fa0, fa0, fa1
+  fsd fa0, 0(a2)
+  fld fa1, 0(a2)
+  fld fa0, 0(a2)
+  fmul.d fa3, fa1, fa0
+  fld fa1, 0(a5)
+  fld fa0, 0(a5)
+  fmul.d fa2, fa1, fa0
+  fadd.d fa1, fa3, fa2
+  la a2, limit.1
+  fld fa0, 0(a2)
+  fle.d a2, fa0, fa1
+  bne a2, zero, .loop3_5_1
+  j .loop3_5_2
+
+.loop3_5_6:
+  ld ra, 0(sp)
+  addi sp, sp, 96
+  ret
+
+.loop3_5_5:
+  j .loop3_5_6
+
+.loop3_5_4:
+  fsub.d fa0, fa3, fa2
+  fsd fa0, 0(a4)
+  mv s10, a3
+  ld a0, 0(a3)
+  jalr a0
+  mv a0, zero
+  j .loop3_5_5
+
+.loop3_5_2:
+  lw a2, 0(a0)
+  addi a2, a2, 1
+  sw a2, 0(a0)
+  lw a2, 0(a0)
+  la a0, niter.2
+  lw a0, 0(a0)
+  beq a2, a0, .loop3_5_3
+  j .loop3_5_4
+
+.loop3_5_3:
+  lw a2, 0(a1)
+  li a0, 2
+  mulw a0, a2, a0
+  addi a0, a0, 1
+  sw a0, 0(a1)
+  mv a0, zero
+  j .loop3_5_5
+
+.loop3_5_1:
+  lw a2, 0(a1)
+  li a0, 2
+  mulw a0, a2, a0
+  sw a0, 0(a1)
+  mv a0, zero
+  j .loop3_5_6
+
+  .p2align 3
+  .globl T$limit.10
+  .type T$limit.10, @function
+# leaf true
+T$limit.10:
+.T$limit.10_0:
+  addi sp, sp, -16
+  li a0, 4616189618054758400
+  fmv.d.x fa0, a0
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl T$start_7
+  .type T$start_7, @function
+# leaf false
+T$start_7:
+.T$start_7_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_6
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl loop2_4
+  .type loop2_4, @function
+# leaf false
+loop2_4:
+.loop2_4_0:
+  addi sp, sp, -112
+  sd s2, 0(sp)
+  sd s1, 8(sp)
+  sd s0, 16(sp)
+  sd ra, 24(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  fld fa1, 16(s0)
+  fld fa2, 24(s0)
+  ld s2, 32(s0)
+  bge a0, s1, .loop2_4_1
+  j .loop2_4_2
+
+.loop2_4_3:
+  lw a0, 0(s2)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  mv a0, zero
+  j .loop2_4_5
+
+.loop2_4_1:
+  fcvt.d.w fa0, s1
+  fdiv.d fa1, fa0, fa1
+  li a0, 4609434218613702656
+  fmv.d.x fa0, a0
+  fsub.d fa1, fa1, fa0
+  addi a0, s11, -8
+  andi a4, a0, -8
+  mv s11, a4
+  fmv.d.x fa0, zero
+  fsd fa0, 0(a4)
+  addi a0, s11, -8
+  andi a5, a0, -8
+  mv s11, a5
+  fmv.d.x fa0, zero
+  fsd fa0, 0(a5)
+  addi a0, s11, -8
+  andi a3, a0, -8
+  mv s11, a3
+  fmv.d.x fa0, zero
+  fsd fa0, 0(a3)
+  addi a0, s11, -4
+  andi a2, a0, -8
+  mv s11, a2
+  sw zero, 0(a2)
+  addi a0, s11, -64
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, loop3_5
+  sd a1, 0(a0)
+  sd a4, 8(a0)
+  sd a5, 16(a0)
+  fsd fa2, 24(a0)
+  sd a3, 32(a0)
+  fsd fa1, 40(a0)
+  sd s2, 48(a0)
+  sd a2, 56(a0)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  mv a0, zero
+  addi a1, s1, 1
+  li a0, 8
+  divw a0, a1, a0
+  li a1, 8
+  mulw a0, a0, a1
+  addi a1, s1, 1
+  beq a0, a1, .loop2_4_3
+  j .loop2_4_4
+
+.loop2_4_2:
+  mv a0, zero
+  j .loop2_4_6
+
+.loop2_4_5:
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv a0, zero
+  j .loop2_4_6
+
+.loop2_4_4:
+  mv a0, zero
+  j .loop2_4_5
+
+.loop2_4_6:
+  ld s2, 0(sp)
+  ld s1, 8(sp)
+  ld s0, 16(sp)
+  ld ra, 24(sp)
+  addi sp, sp, 112
+  ret
+
+  .p2align 3
+  .globl T$niter.21
+  .type T$niter.21, @function
+# leaf true
+T$niter.21:
+.T$niter.21_0:
+  addi sp, sp, -16
+  li a0, 50
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl mandelbrot_2
+  .type mandelbrot_2, @function
+# leaf false
+mandelbrot_2:
+.mandelbrot_2_0:
+  addi sp, sp, -80
+  sd ra, 0(sp)
+  mv a1, a0
+  fcvt.d.w fa1, a1
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
+  fdiv.d fa1, fa1, fa0
+  fcvt.d.w fa2, a1
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
+  fdiv.d fa0, fa2, fa0
+  addi a0, a1, -1
+  addi a2, a1, -1
+  addi a1, s11, -4
+  andi a3, a1, -8
+  mv s11, a3
+  sw zero, 0(a3)
+  addi a1, s11, -48
+  andi a4, a1, -8
+  mv s11, a4
+  la a1, loop1_3
+  sd a1, 0(a4)
+  sd a0, 8(a4)
+  fsd fa0, 16(a4)
+  sd a2, 24(a4)
+  fsd fa1, 32(a4)
+  sd a3, 40(a4)
+  mv s10, a4
+  ld a1, 0(a4)
+  mv a0, zero
+  jalr a1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 80
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$limit.10
+  la t5, limit.1
+  fsd fa0, 0(t5)
+  call T$niter.21
+  la t5, niter.2
+  sw a0, 0(t5)
+  call T$start_7
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl main_6
+  .type main_6, @function
+# leaf false
+main_6:
+.main_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 16
+  call mandelbrot_2
+  mv a0, zero
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl limit.1
+  .type limit.1, @object
+  .bss
+limit.1:
+  .zero 8
+  .p2align 3
+  .globl niter.2
+  .type niter.2, @object
+  .bss
+niter.2:
+  .zero 4
+  .p2align 3
+  .globl start
+  .type start, @object
+  .bss
+start:
+  .zero 4
+
+
+
 Testing test/test_src/matmul-flat.mbt
   .p2align 3
   .globl memseti64
@@ -3806,11 +4252,80 @@ memsetf64:
   ret
 
   .p2align 3
-  .globl loop2
-  .type loop2, @function
+  .globl loop3_0
+  .type loop3_0, @function
 # leaf false
-loop2:
-.loop2_b0:
+loop3_0:
+.loop3_0_0:
+  addi sp, sp, -112
+  sd ra, 0(sp)
+  mv a6, a0
+  mv a0, a2
+  bge a0, zero, .loop3_0_1
+  j .loop3_0_2
+
+.loop3_0_3:
+  ld ra, 0(sp)
+  addi sp, sp, 112
+  ret
+
+.loop3_0_1:
+  slli a2, a6, 3
+  add a2, a5, a2
+  ld a7, 0(a2)
+  slli a2, a6, 3
+  add a2, a5, a2
+  ld a2, 0(a2)
+  slli t0, a1, 3
+  add a2, a2, t0
+  fld fa1, 0(a2)
+  slli a2, a6, 3
+  add a2, a3, a2
+  ld t0, 0(a2)
+  slli a2, a0, 3
+  add a2, t0, a2
+  fld fa2, 0(a2)
+  slli a2, a0, 3
+  add a2, a4, a2
+  ld t0, 0(a2)
+  slli a2, a1, 3
+  add a2, t0, a2
+  fld fa0, 0(a2)
+  fmul.d fa0, fa2, fa0
+  fadd.d fa0, fa1, fa0
+  slli a2, a1, 3
+  add a2, a7, a2
+  fsd fa0, 0(a2)
+  addi a2, a0, -1
+  mv a0, a6
+  call loop3_0
+  mv a0, zero
+  j .loop3_0_3
+
+.loop3_0_2:
+  mv a0, zero
+  j .loop3_0_3
+
+  .p2align 3
+  .globl T$start_7
+  .type T$start_7, @function
+# leaf false
+T$start_7:
+.T$start_7_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl loop1_2
+  .type loop1_2, @function
+# leaf false
+loop1_2:
+.loop1_2_0:
   addi sp, sp, -80
   sd s5, 0(sp)
   sd s4, 8(sp)
@@ -3819,20 +4334,16 @@ loop2:
   sd s1, 32(sp)
   sd s0, 40(sp)
   sd ra, 48(sp)
-  mv s3, a0
+  mv s5, a0
   mv s4, a1
-  mv s5, a2
-  mv s2, a3
-  mv s1, a4
-  mv s0, a5
-  bge s5, zero, .loop2_b1
-  j .loop2_b2
+  mv s0, a2
+  mv s1, a3
+  mv s2, a4
+  mv s3, a5
+  bge s5, zero, .loop1_2_1
+  j .loop1_2_2
 
-.loop2_b2:
-  mv a0, zero
-  j .loop2_b3
-
-.loop2_b3:
+.loop1_2_3:
   ld s5, 0(sp)
   ld s4, 8(sp)
   ld s3, 16(sp)
@@ -3843,70 +4354,106 @@ loop2:
   addi sp, sp, 80
   ret
 
-.loop2_b1:
-  addi a2, s4, -1
-  mv a0, s3
-  mv a1, s5
-  mv a3, s2
-  mv a4, s1
-  mv a5, s0
-  call loop3
-  mv a0, zero
-  addi a2, s5, -1
-  mv a0, s3
+.loop1_2_1:
+  addi a2, s0, -1
+  mv a0, s5
   mv a1, s4
-  mv a3, s2
-  mv a4, s1
-  mv a5, s0
-  call loop2
+  mv a3, s1
+  mv a4, s2
+  mv a5, s3
+  call loop2_1
   mv a0, zero
-  j .loop2_b3
+  addi a0, s5, -1
+  mv a1, s4
+  mv a2, s0
+  mv a3, s1
+  mv a4, s2
+  mv a5, s3
+  call loop1_2
+  mv a0, zero
+  j .loop1_2_3
+
+.loop1_2_2:
+  mv a0, zero
+  j .loop1_2_3
 
   .p2align 3
-  .globl make_arr
-  .type make_arr, @function
+  .globl mul_3
+  .type mul_3, @function
 # leaf false
-make_arr:
-.make_arr_b0:
+mul_3:
+.mul_3_0:
   addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv a3, s10
-  mv s1, a0
-  mv s3, a1
-  ld s2, 8(a3)
-  slli a0, s1, 3
-  sub a0, s11, a0
-  andi s0, a0, -8
-  mv s11, s0
-  mv a1, s1
-  mv a0, s0
-  call memseti64
-  addi a0, s1, -1
-  mv s10, s2
-  ld a3, 0(s2)
-  mv a1, s3
-  mv a2, s0
-  jalr a3
+  sd ra, 0(sp)
+  addi a0, a0, -1
+  call loop1_2
   mv a0, zero
-  mv a0, s0
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
+  mv a0, zero
+  ld ra, 0(sp)
   addi sp, sp, 64
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl init_arr_5
+  .type init_arr_5, @function
 # leaf false
-main:
-.main_b0:
+init_arr_5:
+.init_arr_5_0:
+  addi sp, sp, -80
+  sd s4, 0(sp)
+  sd s3, 8(sp)
+  sd s2, 16(sp)
+  sd s1, 24(sp)
+  sd s0, 32(sp)
+  sd ra, 40(sp)
+  mv s2, s10
+  mv s3, a0
+  mv s1, a1
+  mv s0, a2
+  bge s3, zero, .init_arr_5_1
+  j .init_arr_5_2
+
+.init_arr_5_1:
+  slli a0, s1, 3
+  sub a0, s11, a0
+  andi s4, a0, -8
+  mv s11, s4
+  fmv.d.x fa0, zero
+  mv a1, s1
+  mv a0, s4
+  call memsetf64
+  slli a0, s3, 3
+  add a0, s0, a0
+  sd s4, 0(a0)
+  addi a0, s3, -1
+  mv s10, s2
+  ld a3, 0(s2)
+  mv a1, s1
+  mv a2, s0
+  jalr a3
+  mv a0, zero
+  j .init_arr_5_3
+
+.init_arr_5_3:
+  ld s4, 0(sp)
+  ld s3, 8(sp)
+  ld s2, 16(sp)
+  ld s1, 24(sp)
+  ld s0, 32(sp)
+  ld ra, 40(sp)
+  addi sp, sp, 80
+  ret
+
+.init_arr_5_2:
+  mv a0, zero
+  j .init_arr_5_3
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf false
+main_4:
+.main_4_0:
   addi sp, sp, -80
   sd s3, 0(sp)
   sd s2, 8(sp)
@@ -3920,12 +4467,12 @@ main:
   addi a0, s11, -8
   andi a1, a0, -8
   mv s11, a1
-  la a0, init_arr
+  la a0, init_arr_5
   sd a0, 0(a1)
   addi a0, s11, -16
   andi s1, a0, -8
   mv s11, s1
-  la a0, make_arr
+  la a0, make_arr_6
   sd a0, 0(s1)
   sd a1, 8(s1)
   mv s10, s1
@@ -4003,32 +4550,32 @@ main:
   mv a3, s3
   mv a4, s2
   mv a5, s0
-  call mul
+  call mul_3
   mv a0, zero
   ld a0, 0(s0)
   fld fa0, 0(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 0(s0)
   fld fa0, 8(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 8(s0)
   fld fa0, 0(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 8(s0)
   fld fa0, 8(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   mv a0, zero
@@ -4041,151 +4588,11 @@ main:
   ret
 
   .p2align 3
-  .globl init_arr
-  .type init_arr, @function
+  .globl loop2_1
+  .type loop2_1, @function
 # leaf false
-init_arr:
-.init_arr_b0:
-  addi sp, sp, -80
-  sd s4, 0(sp)
-  sd s3, 8(sp)
-  sd s2, 16(sp)
-  sd s1, 24(sp)
-  sd s0, 32(sp)
-  sd ra, 40(sp)
-  mv s3, s10
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
-  bge s2, zero, .init_arr_b1
-  j .init_arr_b2
-
-.init_arr_b3:
-  ld s4, 0(sp)
-  ld s3, 8(sp)
-  ld s2, 16(sp)
-  ld s1, 24(sp)
-  ld s0, 32(sp)
-  ld ra, 40(sp)
-  addi sp, sp, 80
-  ret
-
-.init_arr_b2:
-  mv a0, zero
-  j .init_arr_b3
-
-.init_arr_b1:
-  slli a0, s0, 3
-  sub a0, s11, a0
-  andi s4, a0, -8
-  mv s11, s4
-  fmv.d.x fa0, zero
-  mv a1, s0
-  mv a0, s4
-  call memsetf64
-  slli a0, s2, 3
-  add a0, s1, a0
-  sd s4, 0(a0)
-  addi a0, s2, -1
-  mv s10, s3
-  ld a3, 0(s3)
-  mv a1, s0
-  mv a2, s1
-  jalr a3
-  mv a0, zero
-  j .init_arr_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl mul
-  .type mul, @function
-# leaf false
-mul:
-.mul_b0:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  addi a0, a0, -1
-  call loop1
-  mv a0, zero
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 3
-  .globl loop3
-  .type loop3, @function
-# leaf false
-loop3:
-.loop3_b0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  mv a6, a0
-  mv a0, a2
-  bge a0, zero, .loop3_b1
-  j .loop3_b2
-
-.loop3_b1:
-  slli a2, a6, 3
-  add a2, a5, a2
-  ld a7, 0(a2)
-  slli a2, a6, 3
-  add a2, a5, a2
-  ld t0, 0(a2)
-  slli a2, a1, 3
-  add a2, t0, a2
-  fld fa1, 0(a2)
-  slli a2, a6, 3
-  add a2, a3, a2
-  ld t0, 0(a2)
-  slli a2, a0, 3
-  add a2, t0, a2
-  fld fa2, 0(a2)
-  slli a2, a0, 3
-  add a2, a4, a2
-  ld t0, 0(a2)
-  slli a2, a1, 3
-  add a2, t0, a2
-  fld fa0, 0(a2)
-  fmul.d fa0, fa2, fa0
-  fadd.d fa0, fa1, fa0
-  slli a2, a1, 3
-  add a2, a7, a2
-  fsd fa0, 0(a2)
-  addi a2, a0, -1
-  mv a0, a6
-  call loop3
-  mv a0, zero
-  j .loop3_b3
-
-.loop3_b2:
-  mv a0, zero
-  j .loop3_b3
-
-.loop3_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-  .p2align 3
-  .globl loop1
-  .type loop1, @function
-# leaf false
-loop1:
-.loop1_b0:
+loop2_1:
+.loop2_1_0:
   addi sp, sp, -80
   sd s5, 0(sp)
   sd s4, 8(sp)
@@ -4194,39 +4601,16 @@ loop1:
   sd s1, 32(sp)
   sd s0, 40(sp)
   sd ra, 48(sp)
-  mv s5, a0
-  mv s3, a1
-  mv s4, a2
+  mv s1, a0
+  mv s2, a1
+  mv s5, a2
   mv s0, a3
-  mv s1, a4
-  mv s2, a5
-  bge s5, zero, .loop1_b1
-  j .loop1_b2
+  mv s3, a4
+  mv s4, a5
+  bge s5, zero, .loop2_1_1
+  j .loop2_1_2
 
-.loop1_b1:
-  addi a2, s4, -1
-  mv a0, s5
-  mv a1, s3
-  mv a3, s0
-  mv a4, s1
-  mv a5, s2
-  call loop2
-  mv a0, zero
-  addi a0, s5, -1
-  mv a1, s3
-  mv a2, s4
-  mv a3, s0
-  mv a4, s1
-  mv a5, s2
-  call loop1
-  mv a0, zero
-  j .loop1_b3
-
-.loop1_b2:
-  mv a0, zero
-  j .loop1_b3
-
-.loop1_b3:
+.loop2_1_3:
   ld s5, 0(sp)
   ld s4, 8(sp)
   ld s3, 16(sp)
@@ -4236,6 +4620,29 @@ loop1:
   ld ra, 48(sp)
   addi sp, sp, 80
   ret
+
+.loop2_1_1:
+  addi a2, s2, -1
+  mv a0, s1
+  mv a1, s5
+  mv a3, s0
+  mv a4, s3
+  mv a5, s4
+  call loop3_0
+  mv a0, zero
+  addi a2, s5, -1
+  mv a0, s1
+  mv a1, s2
+  mv a3, s0
+  mv a4, s3
+  mv a5, s4
+  call loop2_1
+  mv a0, zero
+  j .loop2_1_3
+
+.loop2_1_2:
+  mv a0, zero
+  j .loop2_1_3
 
   .p2align 3
   .globl minimbt_main
@@ -4257,12 +4664,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_7
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -4277,6 +4684,45 @@ minimbt_main:
   ld s10, 88(sp)
   ld s11, 96(sp)
   addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl make_arr_6
+  .type make_arr_6, @function
+# leaf false
+make_arr_6:
+.make_arr_6_0:
+  addi sp, sp, -64
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv a3, s10
+  mv s1, a0
+  mv s3, a1
+  ld s2, 8(a3)
+  slli a0, s1, 3
+  sub a0, s11, a0
+  andi s0, a0, -8
+  mv s11, s0
+  mv a1, s1
+  mv a0, s0
+  call memseti64
+  addi a0, s1, -1
+  mv s10, s2
+  ld a3, 0(s2)
+  mv a1, s3
+  mv a2, s0
+  jalr a3
+  mv a0, zero
+  mv a0, s0
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 64
   ret
 
   .p2align 3
@@ -4315,97 +4761,25 @@ memsetf64:
   ret
 
   .p2align 3
-  .globl loop2
-  .type loop2, @function
+  .globl T$start_7
+  .type T$start_7, @function
 # leaf false
-loop2:
-.loop2_b0:
-  addi sp, sp, -80
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a5, 8(s0)
-  lw a2, 16(s0)
-  ld a3, 24(s0)
-  ld a1, 32(s0)
-  lw a4, 40(s0)
-  bge s1, zero, .loop2_b1
-  j .loop2_b2
-
-.loop2_b2:
-  mv a0, zero
-  j .loop2_b3
-
-.loop2_b3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 80
-  ret
-
-.loop2_b1:
-  addi a0, s11, -48
-  andi a0, a0, -8
-  mv s11, a0
-  la a6, loop3
-  sd a6, 0(a0)
-  sd a5, 8(a0)
-  sd a2, 16(a0)
-  sd s1, 24(a0)
-  sd a3, 32(a0)
-  sd a1, 40(a0)
-  addi a1, a4, -1
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  jalr a2
-  mv a0, zero
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-  j .loop2_b3
-
-  .p2align 3
-  .globl matmul
-  .type matmul, @function
-# leaf false
-matmul:
-.matmul_b0:
-  addi sp, sp, -80
+T$start_7:
+.T$start_7_0:
+  addi sp, sp, -16
   sd ra, 0(sp)
-  mv a6, a1
-  mv a7, a3
-  mv a3, a4
-  mv a4, a5
-  addi a1, s11, -48
-  andi a1, a1, -8
-  mv s11, a1
-  la a5, loop1
-  sd a5, 0(a1)
-  sd a4, 8(a1)
-  sd a7, 16(a1)
-  sd a3, 24(a1)
-  sd a6, 32(a1)
-  sd a2, 40(a1)
-  addi a0, a0, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
+  call main_4
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 80
+  addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl gen_arr
-  .type gen_arr, @function
+  .globl gen_arr_5
+  .type gen_arr_5, @function
 # leaf false
-gen_arr:
-.gen_arr_b0:
+gen_arr_5:
+.gen_arr_5_0:
   addi sp, sp, -64
   sd s2, 0(sp)
   sd s1, 8(sp)
@@ -4425,7 +4799,7 @@ gen_arr:
   addi a0, s11, -24
   andi a0, a0, -8
   mv s11, a0
-  la a1, init_arr
+  la a1, init_arr_6
   sd a1, 0(a0)
   sd s1, 8(a0)
   sd s0, 16(a0)
@@ -4444,11 +4818,262 @@ gen_arr:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl init_arr_6
+  .type init_arr_6, @function
 # leaf false
-main:
-.main_b0:
+init_arr_6:
+.init_arr_6_0:
+  addi sp, sp, -64
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s2, s10
+  mv s1, a0
+  lw a0, 8(s2)
+  ld s0, 16(s2)
+  bge s1, zero, .init_arr_6_1
+  j .init_arr_6_2
+
+.init_arr_6_3:
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 64
+  ret
+
+.init_arr_6_1:
+  slli a1, a0, 3
+  sub a1, s11, a1
+  andi s3, a1, -8
+  mv s11, s3
+  fmv.d.x fa0, zero
+  mv a1, a0
+  mv a0, s3
+  call memsetf64
+  slli a0, s1, 3
+  add a0, s0, a0
+  sd s3, 0(a0)
+  addi a0, s1, -1
+  mv s10, s2
+  ld a1, 0(s2)
+  jalr a1
+  mv a0, zero
+  j .init_arr_6_3
+
+.init_arr_6_2:
+  mv a0, zero
+  j .init_arr_6_3
+
+  .p2align 3
+  .globl loop3_3
+  .type loop3_3, @function
+# leaf false
+loop3_3:
+.loop3_3_0:
+  addi sp, sp, -112
+  sd ra, 0(sp)
+  mv a1, s10
+  mv a2, a0
+  ld t0, 8(a1)
+  lw a6, 16(a1)
+  lw a4, 24(a1)
+  ld a7, 32(a1)
+  ld a5, 40(a1)
+  bge a2, zero, .loop3_3_1
+  j .loop3_3_2
+
+.loop3_3_3:
+  ld ra, 0(sp)
+  addi sp, sp, 112
+  ret
+
+.loop3_3_1:
+  slli a0, a6, 3
+  add a0, t0, a0
+  ld a3, 0(a0)
+  slli a0, a6, 3
+  add a0, t0, a0
+  ld t0, 0(a0)
+  slli a0, a4, 3
+  add a0, t0, a0
+  fld fa1, 0(a0)
+  slli a0, a6, 3
+  add a0, a7, a0
+  ld a0, 0(a0)
+  slli a6, a2, 3
+  add a0, a0, a6
+  fld fa2, 0(a0)
+  slli a0, a2, 3
+  add a0, a5, a0
+  ld a0, 0(a0)
+  slli a5, a4, 3
+  add a0, a0, a5
+  fld fa0, 0(a0)
+  fmul.d fa0, fa2, fa0
+  fadd.d fa0, fa1, fa0
+  slli a0, a4, 3
+  add a0, a3, a0
+  fsd fa0, 0(a0)
+  addi a0, a2, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  j .loop3_3_3
+
+.loop3_3_2:
+  mv a0, zero
+  j .loop3_3_3
+
+  .p2align 3
+  .globl loop2_2
+  .type loop2_2, @function
+# leaf false
+loop2_2:
+.loop2_2_0:
+  addi sp, sp, -80
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  ld a5, 8(s0)
+  lw a0, 16(s0)
+  ld a4, 24(s0)
+  ld a6, 32(s0)
+  lw a3, 40(s0)
+  bge s1, zero, .loop2_2_1
+  j .loop2_2_2
+
+.loop2_2_3:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 80
+  ret
+
+.loop2_2_1:
+  addi a1, s11, -48
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, loop3_3
+  sd a2, 0(a1)
+  sd a5, 8(a1)
+  sd a0, 16(a1)
+  sd s1, 24(a1)
+  sd a4, 32(a1)
+  sd a6, 40(a1)
+  addi a0, a3, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv a0, zero
+  j .loop2_2_3
+
+.loop2_2_2:
+  mv a0, zero
+  j .loop2_2_3
+
+  .p2align 3
+  .globl loop1_1
+  .type loop1_1, @function
+# leaf false
+loop1_1:
+.loop1_1_0:
+  addi sp, sp, -80
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  ld a5, 8(s0)
+  ld a3, 16(s0)
+  ld a2, 24(s0)
+  lw a4, 32(s0)
+  lw a0, 40(s0)
+  bge s1, zero, .loop1_1_1
+  j .loop1_1_2
+
+.loop1_1_1:
+  addi a1, s11, -48
+  andi a1, a1, -8
+  mv s11, a1
+  la a6, loop2_2
+  sd a6, 0(a1)
+  sd a5, 8(a1)
+  sd s1, 16(a1)
+  sd a3, 24(a1)
+  sd a2, 32(a1)
+  sd a4, 40(a1)
+  addi a0, a0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv a0, zero
+  j .loop1_1_3
+
+.loop1_1_2:
+  mv a0, zero
+  j .loop1_1_3
+
+.loop1_1_3:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 80
+  ret
+
+  .p2align 3
+  .globl matmul_0
+  .type matmul_0, @function
+# leaf false
+matmul_0:
+.matmul_0_0:
+  addi sp, sp, -80
+  sd ra, 0(sp)
+  mv a6, a1
+  mv a7, a3
+  mv a3, a4
+  mv a4, a5
+  addi a1, s11, -48
+  andi a1, a1, -8
+  mv s11, a1
+  la a5, loop1_1
+  sd a5, 0(a1)
+  sd a4, 8(a1)
+  sd a7, 16(a1)
+  sd a3, 24(a1)
+  sd a6, 32(a1)
+  sd a2, 40(a1)
+  addi a0, a0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 80
+  ret
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf false
+main_4:
+.main_4_0:
   addi sp, sp, -64
   sd s2, 0(sp)
   sd s1, 8(sp)
@@ -4461,7 +5086,7 @@ main:
   addi a1, s11, -16
   andi s0, a1, -8
   mv s11, s0
-  la a1, gen_arr
+  la a1, gen_arr_5
   sd a1, 0(s0)
   sd a0, 8(s0)
   mv s10, s0
@@ -4536,32 +5161,32 @@ main:
   mv a3, s2
   mv a4, s1
   mv a5, s0
-  call matmul
+  call matmul_0
   mv a0, zero
   ld a0, 0(s0)
   fld fa0, 0(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 0(s0)
   fld fa0, 8(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 8(s0)
   fld fa0, 0(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   ld a0, 8(s0)
   fld fa0, 8(a0)
-  call minimbt_truncate
+  fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   mv a0, zero
   mv a0, zero
@@ -4570,186 +5195,6 @@ main:
   ld s0, 16(sp)
   ld ra, 24(sp)
   addi sp, sp, 64
-  ret
-
-  .p2align 3
-  .globl init_arr
-  .type init_arr, @function
-# leaf false
-init_arr:
-.init_arr_b0:
-  addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s3, s10
-  mv s0, a0
-  lw a0, 8(s3)
-  ld s1, 16(s3)
-  bge s0, zero, .init_arr_b1
-  j .init_arr_b2
-
-.init_arr_b3:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 64
-  ret
-
-.init_arr_b2:
-  mv a0, zero
-  j .init_arr_b3
-
-.init_arr_b1:
-  slli a1, a0, 3
-  sub a1, s11, a1
-  andi s2, a1, -8
-  mv s11, s2
-  fmv.d.x fa0, zero
-  mv a1, a0
-  mv a0, s2
-  call memsetf64
-  slli a0, s0, 3
-  add a0, s1, a0
-  sd s2, 0(a0)
-  addi a0, s0, -1
-  mv s10, s3
-  ld a1, 0(s3)
-  jalr a1
-  mv a0, zero
-  j .init_arr_b3
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl loop3
-  .type loop3, @function
-# leaf false
-loop3:
-.loop3_b0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  mv a6, s10
-  mv a7, a0
-  ld a3, 8(a6)
-  lw a0, 16(a6)
-  lw t0, 24(a6)
-  ld a2, 32(a6)
-  ld a5, 40(a6)
-  bge a7, zero, .loop3_b1
-  j .loop3_b2
-
-.loop3_b1:
-  slli a1, a0, 3
-  add a1, a3, a1
-  ld a1, 0(a1)
-  slli a4, a0, 3
-  add a3, a3, a4
-  ld a4, 0(a3)
-  slli a3, t0, 3
-  add a3, a4, a3
-  fld fa1, 0(a3)
-  slli a0, a0, 3
-  add a0, a2, a0
-  ld a0, 0(a0)
-  slli a2, a7, 3
-  add a0, a0, a2
-  fld fa2, 0(a0)
-  slli a0, a7, 3
-  add a0, a5, a0
-  ld a0, 0(a0)
-  slli a2, t0, 3
-  add a0, a0, a2
-  fld fa0, 0(a0)
-  fmul.d fa0, fa2, fa0
-  fadd.d fa0, fa1, fa0
-  slli a0, t0, 3
-  add a0, a1, a0
-  fsd fa0, 0(a0)
-  addi a0, a7, -1
-  mv s10, a6
-  ld a1, 0(a6)
-  jalr a1
-  mv a0, zero
-  j .loop3_b3
-
-.loop3_b2:
-  mv a0, zero
-  j .loop3_b3
-
-.loop3_b3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-  .p2align 3
-  .globl loop1
-  .type loop1, @function
-# leaf false
-loop1:
-.loop1_b0:
-  addi sp, sp, -80
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a4, 8(s0)
-  ld a3, 16(s0)
-  ld a2, 24(s0)
-  lw a0, 32(s0)
-  lw a5, 40(s0)
-  bge s1, zero, .loop1_b1
-  j .loop1_b2
-
-.loop1_b1:
-  addi a1, s11, -48
-  andi a1, a1, -8
-  mv s11, a1
-  la a6, loop2
-  sd a6, 0(a1)
-  sd a4, 8(a1)
-  sd s1, 16(a1)
-  sd a3, 24(a1)
-  sd a2, 32(a1)
-  sd a0, 40(a1)
-  addi a0, a5, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  mv a0, zero
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-  j .loop1_b3
-
-.loop1_b2:
-  mv a0, zero
-  j .loop1_b3
-
-.loop1_b3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 80
   ret
 
   .p2align 3
@@ -4772,12 +5217,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_7
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -4805,14 +5250,76 @@ start:
 
 Testing test/test_src/non-tail-if.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl main_0
+  .type main_0, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+main_0:
+.main_0_0:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  li a0, 4608218246714312622
+  fmv.d.x fa0, a0
+  fcvt.w.d a2, fa0, rtz
+  li a0, 4616820122002590269
+  fmv.d.x fa0, a0
+  fcvt.w.d a4, fa0, rtz
+  li a0, 4620569368692376207
+  fmv.d.x fa0, a0
+  fneg.d fa0, fa0
+  fcvt.w.d a3, fa0, rtz
+  bge a3, zero, .main_0_1
+  j .main_0_2
+
+.main_0_1:
+  mv a1, a2
+  j .main_0_3
+
+.main_0_2:
+  mv a1, a4
+  j .main_0_3
+
+.main_0_6:
+  add a0, a1, a0
+  bge a4, zero, .main_0_7
+  j .main_0_8
+
+.main_0_3:
+  bge zero, a2, .main_0_4
+  j .main_0_5
+
+.main_0_7:
+  mv a1, a3
+  j .main_0_9
+
+.main_0_9:
+  add a0, a0, a1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 64
+  ret
+
+.main_0_5:
+  mv a0, a3
+  j .main_0_6
+
+.main_0_8:
+  mv a1, a2
+  j .main_0_9
+
+.main_0_4:
+  mv a0, a4
+  j .main_0_6
+
+  .p2align 3
+  .globl T$start_1
+  .type T$start_1, @function
+# leaf false
+T$start_1:
+.T$start_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_0
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -4838,12 +5345,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -4859,75 +5366,6 @@ minimbt_main:
   ld s11, 96(sp)
   addi sp, sp, 128
   ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -64
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  li a0, 4608218246714312622
-  fmv.d.x fa0, a0
-  call minimbt_truncate
-  mv s0, a0
-  li a0, 4616820122002590269
-  fmv.d.x fa0, a0
-  call minimbt_truncate
-  mv s1, a0
-  li a0, 4620569368692376207
-  fmv.d.x fa0, a0
-  fneg.d fa0, fa0
-  call minimbt_truncate
-  mv a2, a0
-  bge a2, zero, .main_b1
-  j .main_b2
-
-.main_b1:
-  mv a1, s0
-  j .main_b3
-
-.main_b8:
-  mv a1, s0
-  j .main_b9
-
-.main_b5:
-  mv a0, a2
-  j .main_b6
-
-.main_b4:
-  mv a0, s1
-  j .main_b6
-
-.main_b6:
-  add a0, a1, a0
-  bge s1, zero, .main_b7
-  j .main_b8
-
-.main_b9:
-  add a0, a0, a1
-  call minimbt_print_int
-  mv a0, zero
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 64
-  ret
-
-.main_b2:
-  mv a1, s1
-  j .main_b3
-
-.main_b7:
-  mv a1, a2
-  j .main_b9
-
-.main_b3:
-  bge zero, s0, .main_b4
-  j .main_b5
 
   .p2align 3
   .globl start
@@ -4940,86 +5378,32 @@ start:
 
 Testing test/test_src/non-tail-if2.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  mv a0, s10
-  li a0, 12345
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_0
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
+  .globl main_0
+  .type main_0, @function
 # leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_0:
+.main_0_0:
   addi sp, sp, -48
   sd s0, 0(sp)
   sd ra, 8(sp)
   addi a0, s11, -8
   andi a2, a0, -8
   mv s11, a2
-  la a0, f
+  la a0, f_1
   sd a0, 0(a2)
   addi a0, s11, -40
   andi s0, a0, -8
@@ -5035,55 +5419,31 @@ main:
   sw a0, 28(s0)
   sw a0, 32(s0)
   sw a0, 36(s0)
-  lw a0, 0(s0)
-  li a1, 3
-  beq a0, a1, .main_b1
-  j .main_b2
+  lw a1, 0(s0)
+  li a0, 3
+  beq a1, a0, .main_0_1
+  j .main_0_2
 
-.main_b3:
+.main_0_1:
+  mv s10, a2
+  ld a0, 0(a2)
+  jalr a0
+  lw a1, 4(s0)
+  add a0, a0, a1
+  li a1, 67890
+  add a0, a0, a1
+  j .main_0_3
+
+.main_0_2:
+  li a0, 7
+  j .main_0_3
+
+.main_0_3:
   call minimbt_print_int
   mv a0, zero
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 48
-  ret
-
-.main_b1:
-  mv s10, a2
-  ld a0, 0(a2)
-  jalr a0
-  lw a1, 4(s0)
-  add a1, a0, a1
-  li a0, 67890
-  add a0, a1, a0
-  j .main_b3
-
-.main_b2:
-  li a0, 7
-  j .main_b3
-
-  .p2align 3
-  .globl start
-  .type start, @object
-  .bss
-start:
-  .zero 4
-
-
-
-Testing test/test_src/print.mbt
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
-# leaf false
-thunk_start:
-.thunk_start_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 3
@@ -5106,12 +5466,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5129,11 +5489,33 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
+  .globl f_1
+  .type f_1, @function
+# leaf true
+f_1:
+.f_1_0:
+  addi sp, sp, -16
+  mv a0, s10
+  li a0, 12345
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl start
+  .type start, @object
+  .bss
+start:
+  .zero 4
+
+
+
+Testing test/test_src/print.mbt
+  .p2align 3
+  .globl main_0
+  .type main_0, @function
 # leaf false
-main:
-.main_b0:
+main_0:
+.main_0_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 123
@@ -5152,6 +5534,62 @@ main:
   ret
 
   .p2align 3
+  .globl T$start_1
+  .type T$start_1, @function
+# leaf false
+T$start_1:
+.T$start_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_0
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_1
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
   .globl start
   .type start, @object
   .bss
@@ -5162,11 +5600,11 @@ start:
 
 Testing test/test_src/shuffle.mbt
   .p2align 3
-  .globl foo
-  .type foo, @function
+  .globl foo_0
+  .type foo_0, @function
 # leaf false
-foo:
-.foo_b0:
+foo_0:
+.foo_0_0:
   addi sp, sp, -64
   sd s4, 0(sp)
   sd s3, 8(sp)
@@ -5207,25 +5645,25 @@ foo:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl bar
-  .type bar, @function
+  .globl bar_1
+  .type bar_1, @function
 # leaf false
-bar:
-.bar_b0:
+bar_1:
+.bar_1_0:
   addi sp, sp, -64
   sd ra, 0(sp)
   mv a7, a0
@@ -5236,7 +5674,27 @@ bar:
   mv a4, a5
   mv a1, a7
   mv a5, a6
-  call foo
+  call foo_0
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 64
+  ret
+
+  .p2align 3
+  .globl main_2
+  .type main_2, @function
+# leaf false
+main_2:
+.main_2_0:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  li a0, 1
+  li a1, 2
+  li a2, 3
+  li a3, 4
+  li a4, 5
+  li a5, 6
+  call bar_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 64
@@ -5262,12 +5720,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_3
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5285,26 +5743,6 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  li a0, 1
-  li a1, 2
-  li a2, 3
-  li a3, 4
-  li a4, 5
-  li a5, 6
-  call bar
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 3
   .globl start
   .type start, @object
   .bss
@@ -5315,11 +5753,72 @@ start:
 
 Testing test/test_src/spill.mbt
   .p2align 3
-  .globl f
-  .type f, @function
+  .globl main_1
+  .type main_1, @function
+# leaf false
+main_1:
+.main_1_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  li a0, 1
+  li a1, 2
+  li a2, 3
+  li a3, 4
+  call f_0
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
 # leaf true
-f:
-.f_b0:
+f_0:
+.f_0_0:
   addi sp, sp, -240
   sd s10, 0(sp)
   sd s9, 8(sp)
@@ -5478,78 +5977,17 @@ f:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  li a0, 1
-  li a1, 2
-  li a2, 3
-  li a3, 4
-  call f
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 48
   ret
 
   .p2align 3
@@ -5563,89 +6001,25 @@ start:
 
 Testing test/test_src/spill2.mbt
   .p2align 3
-  .globl f
-  .type f, @function
-# leaf true
-f:
-.f_b0:
-  addi sp, sp, -16
-  li a0, 12345
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_2
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 3
-  .globl g
-  .type g, @function
-# leaf true
-g:
-.g_b0:
-  addi sp, sp, -16
-  addi a0, a0, 1
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
+  .globl main_2
+  .type main_2, @function
 # leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
+main_2:
+.main_2_0:
   addi sp, sp, -160
   sd s4, 0(sp)
   sd s3, 8(sp)
@@ -5667,29 +6041,48 @@ main:
   sw a0, 28(s0)
   sw a0, 32(s0)
   sw a0, 36(s0)
-  call f
-  mv t2, a0
-  lw a0, 0(s0)
+  call f_0
+  mv t1, a0
+  lw a5, 0(s0)
+  add s4, a5, a5
+  add a4, s4, s4
+  add t2, a4, a4
+  add a0, t2, t2
   add a2, a0, a0
-  add s2, a2, a2
-  add a6, s2, s2
-  add a1, a6, a6
-  add t0, a1, a1
-  add a3, t0, t0
-  add s3, a3, a3
-  add a5, s3, s3
-  add a4, a5, a5
-  add t3, a4, a4
-  add s4, t3, t3
-  add a7, s4, s4
-  add t1, a7, a7
-  add t4, t1, t1
-  add s1, t4, t4
+  add a7, a2, a2
+  add a1, a7, a7
+  add s1, a1, a1
+  add a6, s1, s1
+  add t3, a6, a6
+  add s2, t3, t3
+  add a3, s2, s2
+  add t0, a3, a3
+  add s3, t0, t0
+  add t4, s3, s3
   lw s0, 4(s0)
-  beq s0, zero, .main_b1
-  j .main_b2
+  beq s0, zero, .main_2_1
+  j .main_2_2
 
-.main_b3:
+.main_2_2:
+  add a5, a5, s4
+  add a4, a5, a4
+  add a4, a4, t2
+  add a0, a4, a0
+  add a0, a0, a2
+  add a0, a0, a7
+  add a0, a0, a1
+  add a0, a0, s1
+  add a0, a0, a6
+  add a0, a0, t3
+  add a0, a0, s2
+  add a0, a0, a3
+  add a0, a0, t0
+  add a0, a0, s3
+  add a0, a0, t4
+  add a0, a0, t1
+  j .main_2_3
+
+.main_2_3:
   call minimbt_print_int
   mv a0, zero
   ld s4, 0(sp)
@@ -5701,29 +6094,74 @@ main:
   addi sp, sp, 160
   ret
 
-.main_b1:
+.main_2_1:
   li a0, 67890
-  call g
-  j .main_b3
+  call g_1
+  j .main_2_3
 
-.main_b2:
-  add a0, a0, a2
-  add a0, a0, s2
-  add a0, a0, a6
-  add a0, a0, a1
-  add a0, a0, t0
-  add a0, a0, a3
-  add a0, a0, s3
-  add a0, a0, a5
-  add a0, a0, a4
-  add a0, a0, t3
-  add a0, a0, s4
-  add a0, a0, a7
-  add a0, a0, t1
-  add a0, a0, t4
-  add a0, a0, s1
-  add a0, a0, t2
-  j .main_b3
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_3
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
+# leaf true
+f_0:
+.f_0_0:
+  addi sp, sp, -16
+  li a0, 12345
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl g_1
+  .type g_1, @function
+# leaf true
+g_1:
+.g_1_0:
+  addi sp, sp, -16
+  addi a0, a0, 1
+  addi sp, sp, 16
+  ret
 
   .p2align 3
   .globl start
@@ -5736,11 +6174,69 @@ start:
 
 Testing test/test_src/spill3.mbt
   .p2align 3
-  .globl f
-  .type f, @function
+  .globl main_1
+  .type main_1, @function
+# leaf false
+main_1:
+.main_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, zero
+  call f_0
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  call T$start_2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl f_0
+  .type f_0, @function
 # leaf true
-f:
-.f_b0:
+f_0:
+.f_0_0:
   addi sp, sp, -224
   sd s10, 0(sp)
   sd s9, 8(sp)
@@ -5884,72 +6380,14 @@ f:
   ret
 
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 3
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  li a0, 131072
-  mv s0, a0
-  call minimbt_malloc
-  add a0, s0, a0
-  mv s11, a0
-  call thunk_start
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, zero
-  call f
-  call minimbt_print_int
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -5966,17 +6404,34 @@ start:
 
 Testing test/test_src/sum-tail.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_1
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl main_1
+  .type main_1, @function
+# leaf false
+main_1:
+.main_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  mv a0, zero
+  li a1, 10000
+  call sum_0
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 3
@@ -5999,12 +6454,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6022,46 +6477,29 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl sum
-  .type sum, @function
+  .globl sum_0
+  .type sum_0, @function
 # leaf false
-sum:
-.sum_b0:
+sum_0:
+.sum_0_0:
   addi sp, sp, -32
   sd ra, 0(sp)
-  bge zero, a1, .sum_b1
-  j .sum_b2
+  bge zero, a1, .sum_0_1
+  j .sum_0_2
 
-.sum_b1:
-  j .sum_b3
-
-.sum_b3:
+.sum_0_3:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
 
-.sum_b2:
+.sum_0_2:
   add a0, a0, a1
   addi a1, a1, -1
-  call sum
-  j .sum_b3
+  call sum_0
+  j .sum_0_3
 
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  mv a0, zero
-  li a1, 10000
-  call sum
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
+.sum_0_1:
+  j .sum_0_3
 
   .p2align 3
   .globl start
@@ -6074,14 +6512,30 @@ start:
 
 Testing test/test_src/sum.mbt
   .p2align 3
-  .globl thunk_start
-  .type thunk_start, @function
+  .globl T$start_2
+  .type T$start_2, @function
 # leaf false
-thunk_start:
-.thunk_start_b0:
+T$start_2:
+.T$start_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main
+  call main_1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl main_1
+  .type main_1, @function
+# leaf false
+main_1:
+.main_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 10000
+  call sum_0
+  call minimbt_print_int
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -6107,12 +6561,12 @@ minimbt_main:
   sd s9, 80(sp)
   sd s10, 88(sp)
   sd s11, 96(sp)
-  li a0, 131072
+  li a0, 134217728
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
-  call thunk_start
+  call T$start_2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6130,49 +6584,33 @@ minimbt_main:
   ret
 
   .p2align 3
-  .globl sum
-  .type sum, @function
+  .globl sum_0
+  .type sum_0, @function
 # leaf false
-sum:
-.sum_b0:
+sum_0:
+.sum_0_0:
   addi sp, sp, -32
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
-  bge zero, s0, .sum_b1
-  j .sum_b2
+  bge zero, s0, .sum_0_1
+  j .sum_0_2
 
-.sum_b1:
-  mv a0, zero
-  j .sum_b3
-
-.sum_b3:
+.sum_0_3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
   ret
 
-.sum_b2:
+.sum_0_2:
   addi a0, s0, -1
-  call sum
+  call sum_0
   add a0, a0, s0
-  j .sum_b3
+  j .sum_0_3
 
-  .p2align 3
-  .globl main
-  .type main, @function
-# leaf false
-main:
-.main_b0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 10000
-  call sum
-  call minimbt_print_int
+.sum_0_1:
   mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  j .sum_0_3
 
   .p2align 3
   .globl start

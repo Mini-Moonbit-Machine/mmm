@@ -1,5 +1,7 @@
 typealias Knf = @knf.Knf
 
+typealias RenameCtx = @immut/hashmap.T[@knf.Name, @knf.Name]
+
 typealias SymbolCtx = @immut/hashmap.T[@knf.Name, SymbolRef]
 
 typealias FnCtx = @immut/hashmap.T[@knf.Name, FnRef]
@@ -14,7 +16,6 @@ pub struct CoreEnv {
   mut func_insn_counter : Int
   mut func_block_counter : Int
   mut func_mem_counter : Int
-  mut lifted_func_counter : Int
   mut sym_counter : Int
 } derive(Show)
 
@@ -28,6 +29,7 @@ pub struct Ctx {
   name_ctx : NameCtx // local names
   top_fn_ctx : FnCtx // top-level function names
   top_sym_ctx : SymbolCtx // top-level thunks names
+  rename_ctx : RenameCtx // rename names
 } derive(Show)
 
 fn Ctx::new() -> Ctx {
@@ -36,6 +38,7 @@ fn Ctx::new() -> Ctx {
     name_ctx: NameCtx::new(),
     top_fn_ctx: FnCtx::new(),
     top_sym_ctx: SymbolCtx::new(),
+    rename_ctx: RenameCtx::new(),
   }
 }
 
@@ -50,6 +53,7 @@ fn Ctx::add_local_name_value_ty(
     name_ctx: self.name_ctx.add(name, val),
     top_fn_ctx: self.top_fn_ctx,
     top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx,
   }
 }
 
@@ -59,6 +63,7 @@ fn Ctx::add_name_ty(self : Ctx, name : @knf.Name, ty : Type) -> Ctx {
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx,
     top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx,
   }
 }
 
@@ -68,6 +73,7 @@ fn Ctx::add_local_name_value(self : Ctx, name : @knf.Name, val : Value) -> Ctx {
     name_ctx: self.name_ctx.add(name, val),
     top_fn_ctx: self.top_fn_ctx,
     top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx,
   }
 }
 
@@ -77,6 +83,7 @@ fn Ctx::add_top_fn_value(self : Ctx, name : @knf.Name, fref : FnRef) -> Ctx {
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx.add(name, fref),
     top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx,
   }
 }
 
@@ -86,6 +93,17 @@ fn Ctx::add_top_sym_value(self : Ctx, name : @knf.Name, sym : SymbolRef) -> Ctx 
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx,
     top_sym_ctx: self.top_sym_ctx.add(name, sym),
+    rename_ctx: self.rename_ctx,
+  }
+}
+
+fn Ctx::add_rename(self : Ctx, name : @knf.Name, new_name : @knf.Name) -> Ctx {
+  {
+    ty_ctx: self.ty_ctx,
+    name_ctx: self.name_ctx,
+    top_fn_ctx: self.top_fn_ctx,
+    top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx.add(name, new_name),
   }
 }
 
@@ -96,6 +114,7 @@ fn Ctx::enter_func_def(self : Ctx) -> Ctx {
     name_ctx: NameCtx::new(),
     top_fn_ctx: self.top_fn_ctx,
     top_sym_ctx: self.top_sym_ctx,
+    rename_ctx: self.rename_ctx,
   }
 }
 
@@ -106,7 +125,6 @@ pub fn CoreEnv::new() -> CoreEnv {
     func_insn_counter: 0,
     func_block_counter: 0,
     func_mem_counter: 0,
-    lifted_func_counter: 0,
     sym_counter: 0,
   }
 }
@@ -118,7 +136,6 @@ pub fn inherit(self : CoreEnv) -> CoreEnv {
     func_insn_counter: 0,
     func_block_counter: 0,
     func_mem_counter: 0,
-    lifted_func_counter: 0,
     sym_counter: 0,
   }
 }
@@ -194,6 +211,12 @@ fn build_func_def(
   let mut self = self
   let mut ctx = ctx.enter_func_def()
   let func_ref = FnRef({ id: self.func_counter.val })
+  let new_name = name.to_string() + "_" + self.func_counter.val.to_string()
+  let new_name = try {
+    @types.Name::from_string!(new_name)
+  } catch {
+    x => fail!("\{Show::to_string(x)}")
+  }
   self.func_counter.val += 1
   let subenv = self.inherit()
   self = subenv
@@ -208,18 +231,20 @@ fn build_func_def(
   }
   let res_ty = self.lower_type!(ty, false)
   let ty = if top {
-    ctx = ctx.add_top_fn_value(name, func_ref)
-    ctx = ctx.add_name_ty(name, DirectFn(params=tys, ty=res_ty))
+    ctx = ctx.add_rename(name, new_name)
+    ctx = ctx.add_top_fn_value(new_name, func_ref)
+    ctx = ctx.add_name_ty(new_name, DirectFn(params=tys, ty=res_ty))
     Type::DirectFn(params=tys, ty=res_ty)
   } else {
-    ctx = ctx.add_local_name_value(name, Value::Self(fref=func_ref))
-    ctx = ctx.add_name_ty(name, ClosureFn(params=tys, ty=res_ty))
+    ctx = ctx.add_rename(name, new_name)
+    ctx = ctx.add_local_name_value(new_name, Value::Self(fref=func_ref))
+    ctx = ctx.add_name_ty(new_name, ClosureFn(params=tys, ty=res_ty))
     Type::ClosureFn(params=tys, ty=res_ty)
   }
   let entry_block_ref = BlockRef({ id: self.func_block_counter })
   let func = Fn::{
     id: func_ref,
-    name: name.to_string(),
+    name: new_name.to_string(),
     ty,
     fvars: [],
     entry: entry_block_ref,
@@ -229,7 +254,9 @@ fn build_func_def(
   }
   // Consider to rename here
   // It shouldn't cause problem before backend code generation
-  core.names.set(fd.name.to_string(), func_ref)
+  // Days later:
+  // It has caused problem
+  core.names.set(new_name.to_string(), func_ref)
   core.funcs.set(func_ref, func)
   let entry_block = self.add_basic_block(func, [])
   let (_, exit_block, exit_val) = self.build_knf_expr!(
@@ -292,6 +319,7 @@ fn build_local_or_free_var!(
   func : Fn,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
+  let name = ctx.rename_ctx.find(name).or(name)
   match ctx.name_ctx.find(name) {
     Some(val) => (ctx, val)
     None => {
@@ -325,6 +353,7 @@ fn build_symbol_or_var(
   bb : BasicBlock,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
+  let name = ctx.rename_ctx.find(name).or(name)
   match ctx.top_sym_ctx.find(name) {
     Some(sref) => {
       let sym = core.global_symbols.get(sref).unwrap()
@@ -344,6 +373,7 @@ fn build_name!(
   bb : BasicBlock,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
+  let name = ctx.rename_ctx.find(name).or(name)
   match ctx.top_fn_ctx.find(name) {
     Some(val) => self.build_top_level_closure!(ctx, core, func, bb, val)
     None => self.build_symbol_or_var!(free_names, ctx, core, func, bb, name)
@@ -359,6 +389,7 @@ fn build_name_without_top_level_closure!(
   bb : BasicBlock,
   name : @knf.Name
 ) -> (Ctx, Value)!Failure {
+  let name = ctx.rename_ctx.find(name).or(name)
   match ctx.top_fn_ctx.find(name) {
     Some(val) => (ctx, Value::Fn(fref=val))
     None => self.build_symbol_or_var!(free_names, ctx, core, func, bb, name)
@@ -578,7 +609,7 @@ fn build_knf_expr(
         DirectFn(~ty, ..) =>
           match f_val {
             Value::Fn(~fref) => Insn::Call(~ty, f=fref, args=arg_vals)
-            _ => fail!("not a function: \{f_val}")
+            _ => fail!("\{f} not a function: \{f_val}")
           }
         _ => fail!("not a function: \{f_val} is \{f_ty}")
       }
@@ -746,7 +777,7 @@ fn build_top_level(
 ) -> Unit!Failure {
   match knf {
     Let((x, ty), e1, e2) => {
-      let thunk_name = "thunk_" + x.to_string()
+      let thunk_name = "T$" + x.to_string()
       let name = try {
         @knf.Name::from_string!(thunk_name)
       } catch {

@@ -1130,7 +1130,7 @@ fn RiscvFnLoweringCtx::assign_regs_for_function_parameters(
 }
 
 pub fn fn_block_name(func : @core.Fn, bb : @core.BlockRef) -> String {
-  ".\{func.name}_b\{bb.id}"
+  ".\{func.name}_\{bb.id}"
 }
 
 fn RiscvFnLoweringCtx::block_label(

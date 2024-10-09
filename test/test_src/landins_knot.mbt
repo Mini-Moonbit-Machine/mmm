@@ -2,7 +2,7 @@ fn dummy(i : Int) -> Int {
   i
 };
 
-fn landins_kont(f : ((Int) -> Int) -> (Int) -> Int) -> (Int) -> Int {
+fn landins_knot(f : ((Int) -> Int) -> (Int) -> Int) -> (Int) -> Int {
   let arr = Array::make(1, dummy);
   fn aux(x) {
     arr[0](x)
@@ -25,10 +25,10 @@ let factorial : (Int) -> Int = {
     h
   };
 
-  landins_kont(g)
+  landins_knot(g)
 };
 
-fn init {
+fn f1() -> Unit {
   print_int(factorial(5))
 };
 
@@ -41,7 +41,8 @@ let with_effect : (Int) -> Int = {
   g
 };
 
-fn init {
-  let _ = print_int(with_effect(10));
+fn main {
+  f1();
+  print_int(with_effect(10));
   print_int(with_effect(31))
 }
