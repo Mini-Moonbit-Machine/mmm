@@ -7,6 +7,8 @@ pub struct BlockInfo {
   uses : Set[AnyReg] // used in the block
   upward_exposed : Set[AnyReg] // used but not defined in the block
   params_defs : Set[AnyReg] // block parameters defined
+  moves_x : Set[(AnyReg, AnyReg)] // move instructions. for coalescing
+  moves_f : Set[(AnyReg, AnyReg)] // float move instructions. for coalescing
 }
 
 pub fn BlockInfo::to_string(self : BlockInfo) -> String {
@@ -110,11 +112,18 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
   let uses = Set::new()
   let upward_exposed = Set::new()
   let params_defs = Set::new()
+  let moves_x = Set::new()
+  let moves_f = Set::new()
   for param in mbb.params {
     params_defs.insert(param)
   }
   // still SSA? no kills
   for insn in mbb.insns {
+    match insn {
+      Mv(~rd, ~rs) => moves_x.insert((rd.to_any(), rs.to_any()))
+      FmvD(~rd, ~rs) => moves_f.insert((rd.to_any(), rs.to_any()))
+      _ => ()
+    }
     let (d, u) = def_use(insn)
     for reg in d {
       defs.insert(reg)
@@ -127,6 +136,11 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
     }
   }
   for control in mbb.control {
+    match control {
+      Mv(~rd, ~rs) => moves_x.insert((rd.to_any(), rs.to_any()))
+      FmvD(~rd, ~rs) => moves_f.insert((rd.to_any(), rs.to_any()))
+      _ => ()
+    }
     let (d, u) = def_use(control)
     for reg in d {
       defs.insert(reg)
@@ -138,7 +152,7 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
       }
     }
   }
-  BlockInfo::{ defs, uses, upward_exposed, params_defs }
+  BlockInfo::{ defs, uses, upward_exposed, params_defs, moves_x, moves_f }
 }
 
 pub struct IteratedBlockInfo {

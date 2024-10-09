@@ -48,13 +48,18 @@ pub fn PPAllocator::go[Info : Show](self : PPAllocator[Info]) -> Unit {
   self.mcs()
   self.assign_color()
   self.post_spill()
+  // self.coalesce()
 }
 
 pub fn PPAllocator::query_assigned_color[R : RegToId, Info : Show](
   self : PPAllocator[Info],
   reg : R
 ) -> Info? {
-  self.assignment.get(reg.to_reg_id()).bind(fn(c) { self.color_info.get(c) })
+  let color = self.assignment.get(reg.to_reg_id())
+  match color {
+    Some(c) => self.color_info.get(c)
+    None => None
+  }
 }
 
 pub fn PPAllocator::query_spill[R : RegToId, Info](
@@ -197,22 +202,36 @@ pub fn PPAllocator::set_color_info[Info](
   self.color_info.set(color, info)
 }
 
+fn PPAllocator::add_neighbor_of[Info](
+  self : PPAllocator[Info],
+  x : Int,
+  neighbor : Int
+) -> Unit {
+  if x != neighbor {
+    match self.neighbors.get(x) {
+      Some(neighbors) => neighbors.insert(neighbor)
+      None => self.neighbors.set(x, Set::of([neighbor]))
+    }
+  }
+}
+
 fn PPAllocator::add_neighbor[Info](
   self : PPAllocator[Info],
   a : Int,
   b : Int
 ) -> Unit {
-  fn f(x, y) {
-    if x != y {
-      match self.neighbors.get(x) {
-        Some(neighbors) => neighbors.insert(y)
-        None => self.neighbors.set(x, Set::of([y]))
-      }
-    }
-  }
+  self.add_neighbor_of(a, b)
+  self.add_neighbor_of(b, a)
+}
 
-  f(a, b)
-  f(b, a)
+fn PPAllocator::prepare_neighbor[Info](
+  self : PPAllocator[Info],
+  a : Int
+) -> Unit {
+  match self.neighbors.get(a) {
+    Some(_) => ()
+    None => self.neighbors.set(a, Set::new())
+  }
 }
 
 pub fn PPAllocator::add_edge[R : RegToId, Info](
