@@ -1893,8 +1893,10 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
   { core, }
 }
 
+let init_mem_size = "134217728"
+
 fn pre_allocate(insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Li(rd=@riscv.A0, i="131072"))
+  insns.push(MInsn::Li(rd=@riscv.A0, i=init_mem_size))
   insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
   insns.push(
     MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),
