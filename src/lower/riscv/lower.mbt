@@ -1173,6 +1173,17 @@ fn RiscvFnLoweringCtx::has_type(
   (v, ty)
 }
 
+fn RiscvFnLoweringCtx::not_double(
+  self : RiscvFnLoweringCtx,
+  v : @core.Value
+) -> @core.Value? {
+  let ty = self.type_of(v)
+  match ty {
+    @core.Type::Double => None
+    _ => Some(v)
+  }
+}
+
 fn RiscvFnLoweringCtx::type_of(
   self : RiscvFnLoweringCtx,
   v : @core.Value

@@ -77,9 +77,6 @@
 (decl imm12_from_neg_val (Imm12) Value)
 (extern extractor imm12_from_neg_val imm12_from_neg_val)
 
-(decl has_type (Value Type) Value)
-(extern extractor infallible has_type has_type)
-
 ;;;; Lower control instructions
 
 (decl emit_block_parameters (BlockRef Values) Unit)
@@ -115,6 +112,41 @@
   (let ((r XReg (lower_value cond))
         (_ Unit (emit_block_parameters t t_args))
         (_ Unit (rv_bnez r (block_label t)))
+        (_ Unit (emit_block_parameters f f_args)))
+    (rv_j (block_label f))))
+
+(rule 1 (lower_control (control_branch (val_bool $true) t t_args f f_args))
+  (let ((_ Unit (emit_block_parameters t t_args)))
+    (rv_j (block_label t))))
+
+(rule 2 (lower_control (control_branch (val_bool $false) t t_args f f_args))
+  (let ((_ Unit (emit_block_parameters f f_args)))
+    (rv_j (block_label t))))
+
+(decl not_double (Value) Value)
+(extern extractor not_double not_double)
+
+;;; branch (eq a:!double b:!double) t f
+
+(rule 1
+  (lower_control
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_eq) (arg2 (not_double a) (not_double b))))) t t_args f f_args))
+  (let ((_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_beq a b (block_label t)))
+        (_ Unit (emit_block_parameters f f_args)))
+    (rv_j (block_label f))))
+
+;;; branch (le a:!double b:!double) t f
+
+(rule 1
+  (lower_control
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_le) (arg2 (not_double a) (not_double b))))) t t_args f f_args))
+  (let ((_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_bge b a (block_label t)))
         (_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label f))))
 
