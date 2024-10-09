@@ -685,7 +685,7 @@ fn build_knf_expr(
           )
           (ctx, bb, Value::Mem(fref=func.id, mref=mem))
         }
-        "minimbt_int_of_float" => {
+        "minimbt_int_of_float" | "minimbt_truncate" => {
           let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,
           )

@@ -423,7 +423,7 @@ fn CoreInterpreter::eval_insn(
           }
           (ctx, Unit)
         }
-        "print_endline" => {
+        "print_endline" | "print_newline" => {
           guard args.length() == 0 else {
             fail!("print_endline expects 0 args")
           }
@@ -434,6 +434,13 @@ fn CoreInterpreter::eval_insn(
           guard args.length() == 1 else { fail!("truncate expects 1 arg") }
           match args[0] {
             Double(d) => (ctx, Int32(d.to_int()))
+            _ => fail!("truncate expects Double")
+          }
+        }
+        "floor" => {
+          guard args.length() == 1 else { fail!("floor expects 1 arg") }
+          match args[0] {
+            Double(d) => (ctx, Double(d.floor()))
             _ => fail!("truncate expects Double")
           }
         }

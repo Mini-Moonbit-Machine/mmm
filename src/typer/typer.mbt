@@ -412,6 +412,7 @@ pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
   .add("print_int", @types.Fun([Int], Unit))
   .add("print_char", @types.Fun([Int], Unit))
   .add("print_endline", @types.Fun([], Unit))
+  .add("print_newline", @types.Fun([], Unit))
   .add("create_array", @types.Fun([Int, Int], @types.Type::Array(Int)))
   .add(
     "create_float_array",
@@ -419,8 +420,10 @@ pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
   )
   .add("create_ptr_array", @types.Fun([Int, Ptr], @types.Type::Array(Ptr)))
   .add("truncate", @types.Fun([Double], Int))
+  .add("floor", @types.Fun([Double], Double))
   .add("sin", @types.Fun([Double], Double))
   .add("cos", @types.Fun([Double], Double))
+  .add("atan", @types.Fun([Double], Double))
   .add("sqrt", @types.Fun([Double], Double))
   .add("abs_float", @types.Fun([Double], Double))
   .add("int_of_float", @types.Fun([Double], Int))
