@@ -35,11 +35,9 @@ ack_0:
   sd s0, 0(sp)
   sd ra, 8(sp)
   bge zero, a0, .ack_0_1
-  j .ack_0_2
 
 .ack_0_2:
   bge zero, a1, .ack_0_3
-  j .ack_0_4
 
 .ack_0_4:
   addi s0, a0, -1
@@ -48,20 +46,18 @@ ack_0:
   mv a1, a0
   mv a0, s0
   call ack_0
-  j .ack_0_5
 
 .ack_0_5:
-  j .ack_0_6
-
-.ack_0_1:
-  addi a0, a1, 1
-  j .ack_0_6
 
 .ack_0_6:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
   ret
+
+.ack_0_1:
+  addi a0, a1, 1
+  j .ack_0_6
 
 .ack_0_3:
   addi a0, a0, -1
@@ -535,28 +531,24 @@ read_ch_until_newline_or_eof_0:
   mv a1, a0
   li a0, 10
   beq a1, a0, .read_ch_until_newline_or_eof_0_1
-  j .read_ch_until_newline_or_eof_0_2
 
 .read_ch_until_newline_or_eof_0_2:
   li a0, 13
-  beq a1, a0, .read_ch_until_newline_or_eof_0_3
-  j .read_ch_until_newline_or_eof_0_4
+  bne a1, a0, .read_ch_until_newline_or_eof_0_4
 
 .read_ch_until_newline_or_eof_0_3:
   li a0, -1
-  j .read_ch_until_newline_or_eof_0_5
 
 .read_ch_until_newline_or_eof_0_5:
-  j .read_ch_until_newline_or_eof_0_6
-
-.read_ch_until_newline_or_eof_0_1:
-  li a0, -1
-  j .read_ch_until_newline_or_eof_0_6
 
 .read_ch_until_newline_or_eof_0_6:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+.read_ch_until_newline_or_eof_0_1:
+  li a0, -1
+  j .read_ch_until_newline_or_eof_0_6
 
 .read_ch_until_newline_or_eof_0_4:
   mv a0, a1
@@ -613,7 +605,6 @@ skip_2:
   lw a0, 8(a3)
   ld a1, 16(a3)
   bge a2, a0, .skip_2_1
-  j .skip_2_2
 
 .skip_2_2:
   slli a0, a2, 2
@@ -621,16 +612,13 @@ skip_2:
   lw a0, 0(a0)
   li a1, 91
   beq a0, a1, .skip_2_3
-  j .skip_2_4
 
 .skip_2_4:
   li a1, 93
-  beq a0, a1, .skip_2_5
-  j .skip_2_6
+  bne a0, a1, .skip_2_6
 
 .skip_2_5:
   beq a4, zero, .skip_2_7
-  j .skip_2_8
 
 .skip_2_8:
   addi a0, a2, 1
@@ -638,25 +626,21 @@ skip_2:
   mv s10, a3
   ld a2, 0(a3)
   jalr a2
-  j .skip_2_9
 
 .skip_2_9:
-  j .skip_2_10
 
 .skip_2_10:
-  j .skip_2_11
 
 .skip_2_11:
-  j .skip_2_12
-
-.skip_2_1:
-  mv a0, a2
-  j .skip_2_12
 
 .skip_2_12:
   ld ra, 0(sp)
   addi sp, sp, 48
   ret
+
+.skip_2_1:
+  mv a0, a2
+  j .skip_2_12
 
 .skip_2_3:
   addi a0, a2, 1
@@ -701,7 +685,6 @@ lp_4:
   add a2, a2, a3
   lw a2, 0(a2)
   beq a2, zero, .lp_4_1
-  j .lp_4_2
 
 .lp_4_2:
   addi a1, a4, 1
@@ -714,7 +697,13 @@ lp_4:
   ld a0, 0(s1)
   jalr a0
   mv a0, zero
-  j .lp_4_3
+
+.lp_4_3:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 64
+  ret
 
 .lp_4_1:
   addi a0, a4, 1
@@ -725,13 +714,6 @@ lp_4:
   sw a0, 0(s0)
   mv a0, zero
   j .lp_4_3
-
-.lp_4_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 64
-  ret
 
   .p2align 2
   .text
@@ -755,7 +737,6 @@ aux_3:
   ld s1, 40(s3)
   ld a1, 48(s3)
   bge s2, a3, .aux_3_1
-  j .aux_3_2
 
 .aux_3_2:
   slli a3, s2, 2
@@ -763,74 +744,53 @@ aux_3:
   lw a3, 0(a0)
   li a0, 62
   beq a3, a0, .aux_3_3
-  j .aux_3_4
 
 .aux_3_4:
   li a0, 60
   beq a3, a0, .aux_3_5
-  j .aux_3_6
 
 .aux_3_6:
   li a0, 43
   beq a3, a0, .aux_3_7
-  j .aux_3_8
 
 .aux_3_8:
   li a0, 45
   beq a3, a0, .aux_3_9
-  j .aux_3_10
 
 .aux_3_10:
   li a0, 46
   beq a3, a0, .aux_3_11
-  j .aux_3_12
 
 .aux_3_12:
   li a0, 44
   beq a3, a0, .aux_3_13
-  j .aux_3_14
 
 .aux_3_14:
   li a0, 91
   beq a3, a0, .aux_3_15
-  j .aux_3_16
 
 .aux_3_16:
   li a0, 93
-  beq a3, a0, .aux_3_17
-  j .aux_3_18
+  bne a3, a0, .aux_3_18
 
 .aux_3_17:
   mv a0, s2
-  j .aux_3_19
 
 .aux_3_19:
-  j .aux_3_20
 
 .aux_3_20:
-  j .aux_3_21
 
 .aux_3_21:
-  j .aux_3_22
 
 .aux_3_22:
-  j .aux_3_23
 
 .aux_3_23:
-  j .aux_3_24
 
 .aux_3_24:
-  j .aux_3_25
 
 .aux_3_25:
-  j .aux_3_26
 
 .aux_3_26:
-  j .aux_3_27
-
-.aux_3_1:
-  mv a0, s2
-  j .aux_3_27
 
 .aux_3_27:
   ld s3, 0(sp)
@@ -840,6 +800,10 @@ aux_3:
   ld ra, 32(sp)
   addi sp, sp, 80
   ret
+
+.aux_3_1:
+  mv a0, s2
+  j .aux_3_27
 
 .aux_3_3:
   lw a0, 0(a2)
@@ -965,7 +929,6 @@ read_prog_6:
   mv a1, a0
   li a0, -1
   beq a1, a0, .read_prog_6_1
-  j .read_prog_6_2
 
 .read_prog_6_2:
   slli a0, s1, 2
@@ -976,14 +939,6 @@ read_prog_6:
   ld a1, 0(s2)
   jalr a1
   mv a0, zero
-  j .read_prog_6_3
-
-.read_prog_6_1:
-  mv a0, s1
-  mv a1, s0
-  call bf_1
-  mv a0, zero
-  j .read_prog_6_3
 
 .read_prog_6_3:
   ld s2, 0(sp)
@@ -992,6 +947,13 @@ read_prog_6:
   ld ra, 24(sp)
   addi sp, sp, 48
   ret
+
+.read_prog_6_1:
+  mv a0, s1
+  mv a1, s0
+  call bf_1
+  mv a0, zero
+  j .read_prog_6_3
 
   .p2align 2
   .text
@@ -1257,8 +1219,7 @@ f_0:
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
-  bge s0, zero, .f_0_1
-  j .f_0_2
+  blt s0, zero, .f_0_2
 
 .f_0_1:
   mv a0, s0
@@ -1279,17 +1240,16 @@ f_0:
   ld a1, 0(a1)
   jalr a1
   mv a0, zero
-  j .f_0_3
-
-.f_0_2:
-  mv a0, zero
-  j .f_0_3
 
 .f_0_3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
   ret
+
+.f_0_2:
+  mv a0, zero
+  j .f_0_3
 
   .p2align 2
   .text
@@ -1360,7 +1320,6 @@ f_1:
   addi sp, sp, -32
   sd ra, 0(sp)
   beq a0, zero, .f_1_1
-  j .f_1_2
 
 .f_1_2:
   addi a0, a0, -1
@@ -1369,16 +1328,15 @@ f_1:
   la a0, x.1
   lw a0, 0(a0)
   add a0, a0, a1
-  j .f_1_3
-
-.f_1_1:
-  mv a0, zero
-  j .f_1_3
 
 .f_1_3:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+.f_1_1:
+  mv a0, zero
+  j .f_1_3
 
   .p2align 2
   .text
@@ -1644,23 +1602,21 @@ g_1:
   add a0, a0, a3
   add a0, a0, a4
   add a0, a0, a2
-  bge zero, t3, .g_1_1
-  j .g_1_2
+  blt zero, t3, .g_1_2
 
 .g_1_1:
   neg a0, t3
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
-  j .g_1_3
-
-.g_1_2:
-  j .g_1_3
 
 .g_1_3:
   ld ra, 0(sp)
   addi sp, sp, 112
   ret
+
+.g_1_2:
+  j .g_1_3
 
   .p2align 2
   .bss
@@ -1737,13 +1693,16 @@ f_2:
   sd a1, 8(a2)
   li a1, 1
   li a0, 1
-  beq a1, a0, .f_2_1
-  j .f_2_2
+  bne a1, a0, .f_2_2
 
 .f_2_1:
   li a0, 1
   call f_2
-  j .f_2_3
+
+.f_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
 
 .f_2_2:
   mv s10, a2
@@ -1751,11 +1710,6 @@ f_2:
   li a0, 2
   jalr a1
   j .f_2_3
-
-.f_2_3:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
 
   .p2align 2
   .text
@@ -1902,22 +1856,23 @@ even_2:
   mv s11, a1
   la a0, odd_3
   sd a0, 0(a1)
-  bge a2, zero, .even_2_1
-  j .even_2_2
+  blt a2, zero, .even_2_2
 
 .even_2_1:
   beq a2, zero, .even_2_3
-  j .even_2_4
 
 .even_2_4:
   addi a0, a2, -1
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
-  j .even_2_5
 
 .even_2_5:
-  j .even_2_6
+
+.even_2_6:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
 
 .even_2_2:
   addi a0, a2, 1
@@ -1925,11 +1880,6 @@ even_2:
   ld a1, 0(a1)
   jalr a1
   j .even_2_6
-
-.even_2_6:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
 
 .even_2_3:
   la a0, t.1
@@ -2010,30 +1960,26 @@ odd_3:
   addi sp, sp, -32
   sd ra, 0(sp)
   mv a1, s10
-  bge a0, zero, .odd_3_1
-  j .odd_3_2
+  blt a0, zero, .odd_3_2
 
 .odd_3_1:
   beq a0, zero, .odd_3_3
-  j .odd_3_4
 
 .odd_3_4:
   addi a0, a0, -1
   call even_2
-  j .odd_3_5
 
 .odd_3_5:
-  j .odd_3_6
-
-.odd_3_2:
-  addi a0, a0, 1
-  call even_2
-  j .odd_3_6
 
 .odd_3_6:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+.odd_3_2:
+  addi a0, a0, 1
+  call even_2
+  j .odd_3_6
 
 .odd_3_3:
   la a0, f.2
@@ -2115,14 +2061,12 @@ main_0:
   li a0, 4611686018427387904
   fmv.d.x fa0, a0
   fle.d a0, fa1, fa0
-  bne a0, zero, .main_0_1
-  j .main_0_2
+  beq a0, zero, .main_0_2
 
 .main_0_1:
   li a0, 1
   call minimbt_print_int
   mv a0, zero
-  j .main_0_3
 
 .main_0_3:
   li a0, 4607182418800017408
@@ -2130,14 +2074,17 @@ main_0:
   li a0, 4607182418800017408
   fmv.d.x fa0, a0
   feq.d a0, fa1, fa0
-  bne a0, zero, .main_0_4
-  j .main_0_5
+  beq a0, zero, .main_0_5
 
 .main_0_4:
   li a0, 1
   call minimbt_print_int
   mv a0, zero
-  j .main_0_6
+
+.main_0_6:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
 
 .main_0_2:
   mv a0, zero
@@ -2150,11 +2097,6 @@ main_0:
   call minimbt_print_int
   mv a0, zero
   j .main_0_6
-
-.main_0_6:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
 
   .p2align 2
   .text
@@ -2248,7 +2190,6 @@ fib_0:
   mv s1, a0
   li a0, 1
   bge a0, s1, .fib_0_1
-  j .fib_0_2
 
 .fib_0_2:
   addi a0, s1, -1
@@ -2257,11 +2198,6 @@ fib_0:
   addi a0, s1, -2
   call fib_0
   add a0, s0, a0
-  j .fib_0_3
-
-.fib_0_1:
-  mv a0, s1
-  j .fib_0_3
 
 .fib_0_3:
   ld s1, 0(sp)
@@ -2269,6 +2205,10 @@ fib_0:
   ld ra, 16(sp)
   addi sp, sp, 32
   ret
+
+.fib_0_1:
+  mv a0, s1
+  j .fib_0_3
 
   .p2align 2
   .text
@@ -2755,28 +2695,24 @@ gcd_0:
   mv a2, a0
   mv a0, a1
   beq a2, zero, .gcd_0_1
-  j .gcd_0_2
 
 .gcd_0_2:
-  bge a0, a2, .gcd_0_3
-  j .gcd_0_4
+  blt a0, a2, .gcd_0_4
 
 .gcd_0_3:
   sub a1, a0, a2
   mv a0, a2
   call gcd_0
-  j .gcd_0_5
 
 .gcd_0_5:
-  j .gcd_0_6
-
-.gcd_0_1:
-  j .gcd_0_6
 
 .gcd_0_6:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+.gcd_0_1:
+  j .gcd_0_6
 
 .gcd_0_4:
   sub a1, a2, a0
@@ -3021,8 +2957,7 @@ inprod_0:
   mv a3, a0
   fmv.d fa2, fa0
   mv a0, a2
-  bge a0, zero, .inprod_0_1
-  j .inprod_0_2
+  blt a0, zero, .inprod_0_2
 
 .inprod_0_1:
   slli a2, a0, 3
@@ -3036,16 +2971,15 @@ inprod_0:
   addi a2, a0, -1
   mv a0, a3
   call inprod_0
-  j .inprod_0_3
-
-.inprod_0_2:
-  fmv.d fa0, fa2
-  j .inprod_0_3
 
 .inprod_0_3:
   ld ra, 0(sp)
   addi sp, sp, 64
   ret
+
+.inprod_0_2:
+  fmv.d fa0, fa2
+  j .inprod_0_3
 
   .p2align 2
   .text
@@ -3177,8 +3111,7 @@ inprod_0:
   sd ra, 8(sp)
   mv a3, a0
   mv a0, a2
-  bge a0, zero, .inprod_0_1
-  j .inprod_0_2
+  blt a0, zero, .inprod_0_2
 
 .inprod_0_1:
   slli a2, a0, 3
@@ -3192,17 +3125,16 @@ inprod_0:
   mv a0, a3
   call inprod_0
   fadd.d fa0, fs0, fa0
-  j .inprod_0_3
-
-.inprod_0_2:
-  fmv.d.x fa0, zero
-  j .inprod_0_3
 
 .inprod_0_3:
   fld fs0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 64
   ret
+
+.inprod_0_2:
+  fmv.d.x fa0, zero
+  j .inprod_0_3
 
   .p2align 2
   .text
@@ -3577,13 +3509,11 @@ main_3:
   mv a0, zero
   call h_2
   beq a0, zero, .main_3_1
-  j .main_3_2
 
 .main_3_2:
   sub a0, s0, s1
   add a0, a0, s1
   add a0, a0, s0
-  j .main_3_3
 
 .main_3_3:
   call minimbt_print_int
@@ -3726,14 +3656,12 @@ main_3:
   call f_0
   mv s0, a0
   bge zero, s0, .main_3_1
-  j .main_3_2
 
 .main_3_2:
   mv a0, zero
   call h_2
   sub a0, a0, s0
   add a0, a0, s0
-  j .main_3_3
 
 .main_3_3:
   call minimbt_print_int
@@ -3883,13 +3811,11 @@ main_3:
   mv a0, zero
   call h_2
   beq a0, zero, .main_3_1
-  j .main_3_2
 
 .main_3_2:
   addi a0, s0, 2
   add a0, a0, s1
   add a0, a0, s0
-  j .main_3_3
 
 .main_3_3:
   call minimbt_print_int
@@ -4046,14 +3972,12 @@ main_2:
   mv a0, zero
   call f_0
   mv s0, a0
-  bge zero, s0, .main_2_1
-  j .main_2_2
+  blt zero, s0, .main_2_2
 
 .main_2_1:
   mv a0, zero
   call g_1
   add a0, a0, s0
-  j .main_2_3
 
 .main_2_3:
   call minimbt_print_int
@@ -4167,13 +4091,11 @@ main_3:
   mv a0, zero
   call f_0
   mv s0, a0
-  bge zero, s0, .main_3_1
-  j .main_3_2
+  blt zero, s0, .main_3_2
 
 .main_3_1:
   mv a0, zero
   call g_1
-  j .main_3_3
 
 .main_3_3:
   add a0, a0, s0
@@ -4465,7 +4387,6 @@ h_4:
   mv s0, a0
   ld a0, 8(a1)
   beq s0, zero, .h_4_1
-  j .h_4_2
 
 .h_4_2:
   addi a1, s0, -1
@@ -4474,17 +4395,16 @@ h_4:
   mv a0, a1
   jalr a2
   mulw a0, s0, a0
-  j .h_4_3
-
-.h_4_1:
-  li a0, 1
-  j .h_4_3
 
 .h_4_3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 48
   ret
+
+.h_4_1:
+  li a0, 1
+  j .h_4_3
 
   .p2align 2
   .text
@@ -4656,8 +4576,7 @@ loop1_3:
   lw a2, 24(s1)
   fld fa1, 32(s1)
   ld a1, 40(s1)
-  bge a0, s0, .loop1_3_1
-  j .loop1_3_2
+  blt a0, s0, .loop1_3_2
 
 .loop1_3_1:
   fcvt.d.w fa2, s0
@@ -4684,11 +4603,6 @@ loop1_3:
   ld a1, 0(s1)
   jalr a1
   mv a0, zero
-  j .loop1_3_3
-
-.loop1_3_2:
-  mv a0, zero
-  j .loop1_3_3
 
 .loop1_3_3:
   ld s1, 0(sp)
@@ -4696,6 +4610,10 @@ loop1_3:
   ld ra, 16(sp)
   addi sp, sp, 80
   ret
+
+.loop1_3_2:
+  mv a0, zero
+  j .loop1_3_3
 
   .p2align 2
   .text
@@ -4736,7 +4654,6 @@ loop3_5:
   fld fa0, 0(a2)
   fle.d a2, fa0, fa1
   bne a2, zero, .loop3_5_1
-  j .loop3_5_2
 
 .loop3_5_2:
   lw a2, 0(a0)
@@ -4745,8 +4662,7 @@ loop3_5:
   lw a2, 0(a0)
   la a0, niter.2
   lw a0, 0(a0)
-  beq a2, a0, .loop3_5_3
-  j .loop3_5_4
+  bne a2, a0, .loop3_5_4
 
 .loop3_5_3:
   lw a2, 0(a1)
@@ -4755,10 +4671,13 @@ loop3_5:
   addi a0, a0, 1
   sw a0, 0(a1)
   mv a0, zero
-  j .loop3_5_5
 
 .loop3_5_5:
-  j .loop3_5_6
+
+.loop3_5_6:
+  ld ra, 0(sp)
+  addi sp, sp, 96
+  ret
 
 .loop3_5_1:
   lw a2, 0(a1)
@@ -4767,11 +4686,6 @@ loop3_5:
   sw a0, 0(a1)
   mv a0, zero
   j .loop3_5_6
-
-.loop3_5_6:
-  ld ra, 0(sp)
-  addi sp, sp, 96
-  ret
 
 .loop3_5_4:
   fsub.d fa0, fa3, fa2
@@ -4828,8 +4742,7 @@ loop2_4:
   fld fa1, 16(s0)
   fld fa2, 24(s0)
   ld s2, 32(s0)
-  bge a0, s1, .loop2_4_1
-  j .loop2_4_2
+  blt a0, s1, .loop2_4_2
 
 .loop2_4_1:
   fcvt.d.w fa0, s1
@@ -4878,8 +4791,7 @@ loop2_4:
   li a1, 8
   mulw a0, a0, a1
   addi a1, s1, 1
-  beq a0, a1, .loop2_4_3
-  j .loop2_4_4
+  bne a0, a1, .loop2_4_4
 
 .loop2_4_3:
   lw a0, 0(s2)
@@ -4888,7 +4800,6 @@ loop2_4:
   call minimbt_print_endline
   mv a0, zero
   mv a0, zero
-  j .loop2_4_5
 
 .loop2_4_5:
   addi a0, s1, 1
@@ -4896,11 +4807,6 @@ loop2_4:
   ld a1, 0(s0)
   jalr a1
   mv a0, zero
-  j .loop2_4_6
-
-.loop2_4_2:
-  mv a0, zero
-  j .loop2_4_6
 
 .loop2_4_6:
   ld s2, 0(sp)
@@ -4909,6 +4815,10 @@ loop2_4:
   ld ra, 24(sp)
   addi sp, sp, 112
   ret
+
+.loop2_4_2:
+  mv a0, zero
+  j .loop2_4_6
 
 .loop2_4_4:
   mv a0, zero
@@ -5109,8 +5019,7 @@ loop3_0:
   sd ra, 0(sp)
   mv a6, a0
   mv a0, a2
-  bge a0, zero, .loop3_0_1
-  j .loop3_0_2
+  blt a0, zero, .loop3_0_2
 
 .loop3_0_1:
   slli a2, a6, 3
@@ -5143,16 +5052,15 @@ loop3_0:
   mv a0, a6
   call loop3_0
   mv a0, zero
-  j .loop3_0_3
-
-.loop3_0_2:
-  mv a0, zero
-  j .loop3_0_3
 
 .loop3_0_3:
   ld ra, 0(sp)
   addi sp, sp, 112
   ret
+
+.loop3_0_2:
+  mv a0, zero
+  j .loop3_0_3
 
   .p2align 2
   .text
@@ -5190,8 +5098,7 @@ loop1_2:
   mv s1, a3
   mv s2, a4
   mv s3, a5
-  bge s5, zero, .loop1_2_1
-  j .loop1_2_2
+  blt s5, zero, .loop1_2_2
 
 .loop1_2_1:
   addi a2, s0, -1
@@ -5210,11 +5117,6 @@ loop1_2:
   mv a5, s3
   call loop1_2
   mv a0, zero
-  j .loop1_2_3
-
-.loop1_2_2:
-  mv a0, zero
-  j .loop1_2_3
 
 .loop1_2_3:
   ld s5, 0(sp)
@@ -5226,6 +5128,10 @@ loop1_2:
   ld ra, 48(sp)
   addi sp, sp, 80
   ret
+
+.loop1_2_2:
+  mv a0, zero
+  j .loop1_2_3
 
   .p2align 2
   .text
@@ -5262,8 +5168,7 @@ init_arr_5:
   mv s3, a0
   mv s1, a1
   mv s0, a2
-  bge s3, zero, .init_arr_5_1
-  j .init_arr_5_2
+  blt s3, zero, .init_arr_5_2
 
 .init_arr_5_1:
   slli a0, s1, 3
@@ -5284,11 +5189,6 @@ init_arr_5:
   mv a2, s0
   jalr a3
   mv a0, zero
-  j .init_arr_5_3
-
-.init_arr_5_2:
-  mv a0, zero
-  j .init_arr_5_3
 
 .init_arr_5_3:
   ld s4, 0(sp)
@@ -5299,6 +5199,10 @@ init_arr_5:
   ld ra, 40(sp)
   addi sp, sp, 80
   ret
+
+.init_arr_5_2:
+  mv a0, zero
+  j .init_arr_5_3
 
   .p2align 2
   .text
@@ -5461,8 +5365,7 @@ loop2_1:
   mv s0, a3
   mv s3, a4
   mv s4, a5
-  bge s5, zero, .loop2_1_1
-  j .loop2_1_2
+  blt s5, zero, .loop2_1_2
 
 .loop2_1_1:
   addi a2, s2, -1
@@ -5481,11 +5384,6 @@ loop2_1:
   mv a5, s4
   call loop2_1
   mv a0, zero
-  j .loop2_1_3
-
-.loop2_1_2:
-  mv a0, zero
-  j .loop2_1_3
 
 .loop2_1_3:
   ld s5, 0(sp)
@@ -5497,6 +5395,10 @@ loop2_1:
   ld ra, 48(sp)
   addi sp, sp, 80
   ret
+
+.loop2_1_2:
+  mv a0, zero
+  j .loop2_1_3
 
   .p2align 2
   .text
@@ -5708,8 +5610,7 @@ init_arr_6:
   mv s1, a0
   lw a0, 8(s2)
   ld s0, 16(s2)
-  bge s1, zero, .init_arr_6_1
-  j .init_arr_6_2
+  blt s1, zero, .init_arr_6_2
 
 .init_arr_6_1:
   slli a1, a0, 3
@@ -5728,11 +5629,6 @@ init_arr_6:
   ld a1, 0(s2)
   jalr a1
   mv a0, zero
-  j .init_arr_6_3
-
-.init_arr_6_2:
-  mv a0, zero
-  j .init_arr_6_3
 
 .init_arr_6_3:
   ld s3, 0(sp)
@@ -5742,6 +5638,10 @@ init_arr_6:
   ld ra, 32(sp)
   addi sp, sp, 64
   ret
+
+.init_arr_6_2:
+  mv a0, zero
+  j .init_arr_6_3
 
   .p2align 2
   .text
@@ -5759,8 +5659,7 @@ loop3_3:
   lw a4, 24(a1)
   ld a7, 32(a1)
   ld a5, 40(a1)
-  bge a2, zero, .loop3_3_1
-  j .loop3_3_2
+  blt a2, zero, .loop3_3_2
 
 .loop3_3_1:
   slli a0, a6, 3
@@ -5794,16 +5693,15 @@ loop3_3:
   ld a1, 0(a1)
   jalr a1
   mv a0, zero
-  j .loop3_3_3
-
-.loop3_3_2:
-  mv a0, zero
-  j .loop3_3_3
 
 .loop3_3_3:
   ld ra, 0(sp)
   addi sp, sp, 112
   ret
+
+.loop3_3_2:
+  mv a0, zero
+  j .loop3_3_3
 
   .p2align 2
   .text
@@ -5823,8 +5721,7 @@ loop2_2:
   ld a4, 24(s0)
   ld a6, 32(s0)
   lw a3, 40(s0)
-  bge s1, zero, .loop2_2_1
-  j .loop2_2_2
+  blt s1, zero, .loop2_2_2
 
 .loop2_2_1:
   addi a1, s11, -48
@@ -5847,11 +5744,6 @@ loop2_2:
   ld a1, 0(s0)
   jalr a1
   mv a0, zero
-  j .loop2_2_3
-
-.loop2_2_2:
-  mv a0, zero
-  j .loop2_2_3
 
 .loop2_2_3:
   ld s1, 0(sp)
@@ -5859,6 +5751,10 @@ loop2_2:
   ld ra, 16(sp)
   addi sp, sp, 80
   ret
+
+.loop2_2_2:
+  mv a0, zero
+  j .loop2_2_3
 
   .p2align 2
   .text
@@ -5878,8 +5774,7 @@ loop1_1:
   ld a2, 24(s0)
   lw a4, 32(s0)
   lw a0, 40(s0)
-  bge s1, zero, .loop1_1_1
-  j .loop1_1_2
+  blt s1, zero, .loop1_1_2
 
 .loop1_1_1:
   addi a1, s11, -48
@@ -5902,11 +5797,6 @@ loop1_1:
   ld a1, 0(s0)
   jalr a1
   mv a0, zero
-  j .loop1_1_3
-
-.loop1_1_2:
-  mv a0, zero
-  j .loop1_1_3
 
 .loop1_1_3:
   ld s1, 0(sp)
@@ -5914,6 +5804,10 @@ loop1_1:
   ld ra, 16(sp)
   addi sp, sp, 80
   ret
+
+.loop1_1_2:
+  mv a0, zero
+  j .loop1_1_3
 
   .p2align 2
   .text
@@ -6158,29 +6052,23 @@ main_0:
   li a0, -4602802668162399601
   fmv.d.x fa0, a0
   fcvt.w.d a3, fa0, rtz
-  bge a3, zero, .main_0_1
-  j .main_0_2
+  blt a3, zero, .main_0_2
 
 .main_0_1:
   mv a4, a2
-  j .main_0_3
 
 .main_0_3:
-  bge zero, a2, .main_0_4
-  j .main_0_5
+  blt zero, a2, .main_0_5
 
 .main_0_4:
   mv a0, a1
-  j .main_0_6
 
 .main_0_6:
   add a0, a4, a0
-  bge a1, zero, .main_0_7
-  j .main_0_8
+  blt a1, zero, .main_0_8
 
 .main_0_7:
   mv a1, a3
-  j .main_0_9
 
 .main_0_9:
   add a0, a0, a1
@@ -6326,8 +6214,7 @@ main_0:
   sw a0, 36(s0)
   lw a1, 0(s0)
   li a0, 3
-  beq a1, a0, .main_0_1
-  j .main_0_2
+  bne a1, a0, .main_0_2
 
 .main_0_1:
   mv s10, a2
@@ -6337,7 +6224,6 @@ main_0:
   add a0, a0, a1
   li a1, 67890
   add a0, a0, a1
-  j .main_0_3
 
 .main_0_3:
   call minimbt_print_int
@@ -6560,8 +6446,7 @@ quicksort_3:
   mv s1, a1
   mv s2, a2
   addi a0, s2, -1
-  bge a0, s1, .quicksort_3_1
-  j .quicksort_3_2
+  blt a0, s1, .quicksort_3_2
 
 .quicksort_3_1:
   mv a0, s0
@@ -6579,11 +6464,6 @@ quicksort_3:
   mv a2, s2
   call quicksort_3
   mv a0, zero
-  j .quicksort_3_3
-
-.quicksort_3_2:
-  mv a0, zero
-  j .quicksort_3_3
 
 .quicksort_3_3:
   ld s3, 0(sp)
@@ -6593,6 +6473,10 @@ quicksort_3:
   ld ra, 32(sp)
   addi sp, sp, 64
   ret
+
+.quicksort_3_2:
+  mv a0, zero
+  j .quicksort_3_3
 
   .p2align 2
   .text
@@ -6733,15 +6617,13 @@ l_2:
   lw a2, 24(s1)
   ld a3, 32(s1)
   addi a0, a0, -1
-  bge a0, s0, .l_2_1
-  j .l_2_2
+  blt a0, s0, .l_2_2
 
 .l_2_1:
   slli a0, s0, 2
   add a0, a1, a0
   lw a0, 0(a0)
-  bge a2, a0, .l_2_3
-  j .l_2_4
+  blt a2, a0, .l_2_4
 
 .l_2_3:
   lw a0, 0(a3)
@@ -6753,7 +6635,6 @@ l_2:
   mv a2, s0
   call swap_0
   mv a0, zero
-  j .l_2_5
 
 .l_2_5:
   addi a0, s0, 1
@@ -6761,11 +6642,6 @@ l_2:
   ld a1, 0(s1)
   jalr a1
   mv a0, zero
-  j .l_2_6
-
-.l_2_2:
-  mv a0, zero
-  j .l_2_6
 
 .l_2_6:
   ld s1, 0(sp)
@@ -6773,6 +6649,10 @@ l_2:
   ld ra, 16(sp)
   addi sp, sp, 64
   ret
+
+.l_2_2:
+  mv a0, zero
+  j .l_2_6
 
 .l_2_4:
   mv a0, zero
@@ -7361,7 +7241,6 @@ main_2:
   add t4, s3, s3
   lw s0, 4(s0)
   beq s0, zero, .main_2_1
-  j .main_2_2
 
 .main_2_2:
   add a5, a5, s4
@@ -7380,7 +7259,6 @@ main_2:
   add a0, a0, s3
   add a0, a0, t4
   add a0, a0, t1
-  j .main_2_3
 
 .main_2_3:
   call minimbt_print_int
@@ -7819,21 +7697,19 @@ sum_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   bge zero, a1, .sum_0_1
-  j .sum_0_2
 
 .sum_0_2:
   add a0, a0, a1
   addi a1, a1, -1
   call sum_0
-  j .sum_0_3
-
-.sum_0_1:
-  j .sum_0_3
 
 .sum_0_3:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
+
+.sum_0_1:
+  j .sum_0_3
 
   .p2align 2
   .bss
@@ -7942,23 +7818,21 @@ sum_0:
   sd ra, 8(sp)
   mv s0, a0
   bge zero, s0, .sum_0_1
-  j .sum_0_2
 
 .sum_0_2:
   addi a0, s0, -1
   call sum_0
   add a0, a0, s0
-  j .sum_0_3
-
-.sum_0_1:
-  mv a0, zero
-  j .sum_0_3
 
 .sum_0_3:
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 32
   ret
+
+.sum_0_1:
+  mv a0, zero
+  j .sum_0_3
 
   .p2align 2
   .bss

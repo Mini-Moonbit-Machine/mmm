@@ -120,7 +120,7 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
     let succs = succs.map(
       fn(bref) { func.blocks[bref].unwrap().basic_block(func) },
     )
-    let mut value = 0
+    let mut value = -1
     let mut selected_bb = None
     for succ in succs {
       let succ_value = bb_metric(succ)

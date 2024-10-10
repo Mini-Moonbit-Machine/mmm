@@ -94,44 +94,65 @@
   (let ((_ Unit (emit_block_parameters target args)))
     (rv_j (block_label target))))
 
+(rule 1 (lower_control color (control_jump (target_color color target) args))
+  (emit_block_parameters target args))
+
 (rule (lower_control color (control_return (arg0)))
   (let ((_ Unit (rv_mv_to (return_reg) (zero_reg)))
         (_ Unit (emit_fake_epilogue)))
     (rv_xret)))
 
-(rule (lower_control color (control_return (arg1 (has_type x (ty_double)))))
+(rule (lower_control _ (control_return (arg1 (has_type x (ty_double)))))
   (let ((r FReg (lower_value x))
         (_ Unit (rv_fmv_to (float_return_reg) r))
         (_ Unit (emit_fake_epilogue)))
     (rv_fret)))
 
-(rule -1 (lower_control color (control_return (arg1 x)))
+(rule -1 (lower_control _ (control_return (arg1 x)))
   (let ((r XReg (lower_value x))
         (_ Unit (rv_mv_to (return_reg) r))
         (_ Unit (emit_fake_epilogue)))
     (rv_xret)))
 
-(rule (lower_control color (control_branch cond t t_args f f_args))
+(rule (lower_control _ (control_branch cond t t_args f f_args))
   (let ((r XReg (lower_value cond))
         (_ Unit (emit_block_parameters t t_args))
         (_ Unit (rv_bnez r (block_label t)))
         (_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label f))))
 
-(rule 1 (lower_control color (control_branch (val_bool $true) t t_args f f_args))
+(rule 1 (lower_control color (control_branch cond t t_args (target_color color f) f_args))
+  (let ((r XReg (lower_value cond))
+        (_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_bnez r (block_label t))))
+    (emit_block_parameters f f_args)))
+
+(rule 2 (lower_control color (control_branch cond (target_color color t) t_args f f_args))
+  (let ((r XReg (lower_value cond))
+        (_ Unit (emit_block_parameters f f_args))
+        (_ Unit (rv_beqz r (block_label f))))
+    (emit_block_parameters t t_args)))
+
+(rule 3 (lower_control color (control_branch (val_bool $true) t t_args f f_args))
   (let ((_ Unit (emit_block_parameters t t_args)))
     (rv_j (block_label t))))
 
-(rule 2 (lower_control color (control_branch (val_bool $false) t t_args f f_args))
+(rule 4 (lower_control color (control_branch (val_bool $true) (target_color color t) t_args f f_args))
+  (emit_block_parameters t t_args))
+
+(rule 5 (lower_control color (control_branch (val_bool $false) t t_args f f_args))
   (let ((_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label t))))
+
+(rule 6 (lower_control color (control_branch (val_bool $false) t t_args (target_color color f) f_args))
+  (emit_block_parameters f f_args))
 
 (decl not_double (Value) Value)
 (extern extractor not_double not_double)
 
 ;;; branch (eq a:!double b:!double) t f
 
-(rule 1
+(rule 4
   (lower_control color
     (control_branch
       (val_insn (ref_insn
@@ -141,9 +162,28 @@
         (_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label f))))
 
+(rule 5
+  (lower_control color
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_eq) (arg2 (not_double a) (not_double b))))) (target_color color t) t_args f f_args))
+  (let ((_ Unit (emit_block_parameters f f_args))
+        (_ Unit (rv_bne a b (block_label f))))
+     (emit_block_parameters t t_args)))
+
+(rule 6
+  (lower_control color
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_eq) (arg2 (not_double a) (not_double b))))) t t_args (target_color color f) f_args))
+  (let ((_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_beq a b (block_label t)))
+        (_ Unit (emit_block_parameters f f_args)))
+    (emit_block_parameters f f_args)))
+
 ;;; branch (le a:!double b:!double) t f
 
-(rule 1
+(rule 4
   (lower_control color
     (control_branch
       (val_insn (ref_insn
@@ -152,6 +192,25 @@
         (_ Unit (rv_bge b a (block_label t)))
         (_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label f))))
+
+(rule 5
+  (lower_control color
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_le) (arg2 (not_double a) (not_double b))))) (target_color color t) t_args f f_args))
+  (let ((_ Unit (emit_block_parameters f f_args))
+        (_ Unit (rv_blt b a (block_label f)))
+        (_ Unit (emit_block_parameters t t_args)))
+    (emit_block_parameters t t_args)))
+
+(rule 6
+  (lower_control color
+    (control_branch
+      (val_insn (ref_insn
+        (insn_op (ty_bool) (op_le) (arg2 (not_double a) (not_double b))))) t t_args (target_color color f) f_args))
+  (let ((_ Unit (emit_block_parameters t t_args))
+        (_ Unit (rv_bge b a (block_label t))))
+    (emit_block_parameters f f_args)))
 
 ;;;; Lower instructions
 
