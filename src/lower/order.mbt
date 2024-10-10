@@ -105,9 +105,9 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   }
   fn bb_metric(bb : @core.BasicBlock) -> Int {
     let x = match bb.control {
-      @core.Control::Branch(..) => 110
-      Select(..) => 120
-      Jump(..) => 100
+      @core.Control::Branch(..) => 30
+      Select(..) => 20
+      Jump(..) => 10
       Return(..) => 0
       Panic => 0
     }
