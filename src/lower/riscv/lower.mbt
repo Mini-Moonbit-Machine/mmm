@@ -1895,7 +1895,7 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
 
 let init_mem_size = "134217728"
 
-let init_stack_size = "134217728"
+let init_stack_size = "1073741824"
 
 fn save_sp(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Mv(rd=@riscv.S9, rs=@riscv.Sp))

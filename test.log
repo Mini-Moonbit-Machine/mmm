@@ -86,7 +86,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -225,7 +225,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -364,7 +364,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -412,36 +412,319 @@ memseti32:
   ret
 
   .p2align 3
-  .globl lp_2
-  .type lp_2, @function
+  .globl read_prog_5
+  .type read_prog_5, @function
 # leaf false
-lp_2:
-.lp_2_0:
+read_prog_5:
+.read_prog_5_0:
+  addi sp, sp, -48
+  sd s2, 0(sp)
+  sd s1, 8(sp)
+  sd s0, 16(sp)
+  sd ra, 24(sp)
+  mv s0, s10
+  mv s2, a0
+  ld s1, 8(s0)
+  call minimbt_read_char
+  mv a1, a0
+  li a0, -1
+  beq a1, a0, .read_prog_5_1
+  j .read_prog_5_2
+
+.read_prog_5_3:
+  ld s2, 0(sp)
+  ld s1, 8(sp)
+  ld s0, 16(sp)
+  ld ra, 24(sp)
+  addi sp, sp, 48
+  ret
+
+.read_prog_5_2:
+  slli a0, s2, 2
+  add a0, s1, a0
+  sw a1, 0(a0)
+  addi a0, s2, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv a0, zero
+  j .read_prog_5_3
+
+.read_prog_5_1:
+  mv a0, s2
+  mv a1, s1
+  call bf_0
+  mv a0, zero
+  j .read_prog_5_3
+
+  .p2align 3
+  .globl aux_2
+  .type aux_2, @function
+# leaf false
+aux_2:
+.aux_2_0:
+  addi sp, sp, -80
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s1, s10
+  mv s2, a0
+  lw a0, 8(s1)
+  ld a3, 16(s1)
+  ld a1, 24(s1)
+  ld s0, 32(s1)
+  ld s3, 40(s1)
+  ld a2, 48(s1)
+  bge s2, a0, .aux_2_1
+  j .aux_2_2
+
+.aux_2_2:
+  slli a0, s2, 2
+  add a0, a3, a0
+  lw a3, 0(a0)
+  li a0, 62
+  beq a3, a0, .aux_2_3
+  j .aux_2_4
+
+.aux_2_25:
+  j .aux_2_26
+
+.aux_2_27:
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 80
+  ret
+
+.aux_2_12:
+  li a0, 44
+  beq a3, a0, .aux_2_13
+  j .aux_2_14
+
+.aux_2_1:
+  mv a0, s2
+  j .aux_2_27
+
+.aux_2_13:
+  lw s3, 0(a1)
+  call minimbt_read_char
+  slli a1, s3, 2
+  add a1, s0, a1
+  sw a0, 0(a1)
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_21
+
+.aux_2_18:
+  mv a0, s2
+  j .aux_2_19
+
+.aux_2_8:
+  li a0, 45
+  beq a3, a0, .aux_2_9
+  j .aux_2_10
+
+.aux_2_9:
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, s0, a1
+  lw a1, 0(a1)
+  addi a1, a1, -1
+  slli a0, a0, 2
+  add a0, s0, a0
+  sw a1, 0(a0)
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_23
+
+.aux_2_26:
+  j .aux_2_27
+
+.aux_2_7:
+  lw a0, 0(a1)
+  lw a1, 0(a1)
+  slli a1, a1, 2
+  add a1, s0, a1
+  lw a1, 0(a1)
+  addi a1, a1, 1
+  slli a0, a0, 2
+  add a0, s0, a0
+  sw a1, 0(a0)
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_24
+
+.aux_2_15:
+  sw s2, 0(s3)
+  addi a0, s11, -56
+  andi a0, a0, -8
+  mv s11, a0
+  la a3, lp_3
+  sd a3, 0(a0)
+  sd a1, 8(a0)
+  sd s0, 16(a0)
+  sd s2, 24(a0)
+  sd a2, 32(a0)
+  sd s3, 40(a0)
+  sd s1, 48(a0)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  mv a0, zero
+  lw a0, 0(s3)
+  addi a0, a0, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_20
+
+.aux_2_24:
+  j .aux_2_25
+
+.aux_2_5:
+  lw a0, 0(a1)
+  addi a0, a0, -1
+  sw a0, 0(a1)
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_25
+
+.aux_2_3:
+  lw a0, 0(a1)
+  addi a0, a0, 1
+  sw a0, 0(a1)
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_26
+
+.aux_2_17:
+  mv a0, s2
+  j .aux_2_19
+
+.aux_2_20:
+  j .aux_2_21
+
+.aux_2_6:
+  li a0, 43
+  beq a3, a0, .aux_2_7
+  j .aux_2_8
+
+.aux_2_11:
+  lw a0, 0(a1)
+  slli a0, a0, 2
+  add a0, s0, a0
+  lw a0, 0(a0)
+  call minimbt_print_char
+  mv a0, zero
+  addi a0, s2, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  j .aux_2_22
+
+.aux_2_10:
+  li a0, 46
+  beq a3, a0, .aux_2_11
+  j .aux_2_12
+
+.aux_2_21:
+  j .aux_2_22
+
+.aux_2_16:
+  li a0, 93
+  beq a3, a0, .aux_2_17
+  j .aux_2_18
+
+.aux_2_23:
+  j .aux_2_24
+
+.aux_2_4:
+  li a0, 60
+  beq a3, a0, .aux_2_5
+  j .aux_2_6
+
+.aux_2_22:
+  j .aux_2_23
+
+.aux_2_19:
+  j .aux_2_20
+
+.aux_2_14:
+  li a0, 91
+  beq a3, a0, .aux_2_15
+  j .aux_2_16
+
+  .p2align 3
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl lp_3
+  .type lp_3, @function
+# leaf false
+lp_3:
+.lp_3_0:
   addi sp, sp, -64
   sd s1, 0(sp)
   sd s0, 8(sp)
   sd ra, 16(sp)
   mv s0, s10
   ld a0, 8(s0)
-  ld a3, 16(s0)
+  ld a4, 16(s0)
   lw a2, 24(s0)
-  ld a1, 32(s0)
+  ld a3, 32(s0)
   ld s1, 40(s0)
+  ld a1, 48(s0)
   lw a0, 0(a0)
   slli a0, a0, 2
-  add a0, a3, a0
+  add a0, a4, a0
   lw a0, 0(a0)
-  beq a0, zero, .lp_2_1
-  j .lp_2_2
+  beq a0, zero, .lp_3_1
+  j .lp_3_2
 
-.lp_2_3:
+.lp_3_1:
+  addi a0, a2, 1
+  mv s10, a3
+  ld a2, 0(a3)
+  mv a1, zero
+  jalr a2
+  sw a0, 0(s1)
+  mv a0, zero
+  j .lp_3_3
+
+.lp_3_3:
   ld s1, 0(sp)
   ld s0, 8(sp)
   ld ra, 16(sp)
   addi sp, sp, 64
   ret
 
-.lp_2_2:
+.lp_3_2:
   addi a0, a2, 1
   mv s10, a1
   ld a1, 0(a1)
@@ -451,36 +734,7 @@ lp_2:
   ld a0, 0(s0)
   jalr a0
   mv a0, zero
-  j .lp_2_3
-
-.lp_2_1:
-  mv a0, zero
-  j .lp_2_3
-
-  .p2align 3
-  .globl main_3
-  .type main_3, @function
-# leaf true
-main_3:
-.main_3_0:
-  addi sp, sp, 0
-  mv a0, zero
-  addi sp, sp, 0
-  ret
-
-  .p2align 3
-  .globl T$start_4
-  .type T$start_4, @function
-# leaf false
-T$start_4:
-.T$start_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main_3
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  j .lp_3_3
 
   .p2align 3
   .globl bf_0
@@ -488,38 +742,51 @@ T$start_4:
 # leaf false
 bf_0:
 .bf_0_0:
-  addi sp, sp, -64
+  addi sp, sp, -80
   sd s3, 0(sp)
   sd s2, 8(sp)
   sd s1, 16(sp)
   sd s0, 24(sp)
   sd ra, 32(sp)
-  mv s0, a0
-  mv s1, a1
+  mv s1, a0
+  mv s3, a1
   addi a0, s11, -4
-  andi s2, a0, -8
-  mv s11, s2
-  sw zero, 0(s2)
+  andi s0, a0, -8
+  mv s11, s0
+  sw zero, 0(s0)
   li a0, 1024
   li a1, 1024
   mulw a0, a0, a1
   slli a1, a0, 2
   sub a1, s11, a1
-  andi s3, a1, -8
-  mv s11, s3
+  andi s2, a1, -8
+  mv s11, s2
   mv a1, a0
-  mv a0, s3
+  mv a0, s2
   mv a2, zero
   call memseti32
-  addi a0, s11, -40
+  addi a0, s11, -4
+  andi a3, a0, -8
+  mv s11, a3
+  sw zero, 0(a3)
+  addi a0, s11, -24
+  andi a2, a0, -8
+  mv s11, a2
+  la a0, skip_1
+  sd a0, 0(a2)
+  sd s1, 8(a2)
+  sd s3, 16(a2)
+  addi a0, s11, -56
   andi a1, a0, -8
   mv s11, a1
-  la a0, aux_1
+  la a0, aux_2
   sd a0, 0(a1)
-  sd s0, 8(a1)
-  sd s1, 16(a1)
-  sd s2, 24(a1)
-  sd s3, 32(a1)
+  sd s1, 8(a1)
+  sd s3, 16(a1)
+  sd s0, 24(a1)
+  sd s2, 32(a1)
+  sd a3, 40(a1)
+  sd a2, 48(a1)
   mv s10, a1
   ld a1, 0(a1)
   mv a0, zero
@@ -530,220 +797,121 @@ bf_0:
   ld s1, 16(sp)
   ld s0, 24(sp)
   ld ra, 32(sp)
-  addi sp, sp, 64
+  addi sp, sp, 80
   ret
 
   .p2align 3
-  .globl aux_1
-  .type aux_1, @function
+  .globl main_4
+  .type main_4, @function
 # leaf false
-aux_1:
-.aux_1_0:
-  addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s2, s10
-  mv s0, a0
-  lw a0, 8(s2)
-  ld a2, 16(s2)
-  ld a1, 24(s2)
-  ld s1, 32(s2)
-  bge s0, a0, .aux_1_1
-  j .aux_1_2
-
-.aux_1_24:
-  j .aux_1_25
-
-.aux_1_26:
-  j .aux_1_27
-
-.aux_1_7:
-  lw a0, 0(a1)
-  lw a1, 0(a1)
-  slli a1, a1, 2
-  add a1, s1, a1
-  lw a1, 0(a1)
-  addi a1, a1, 1
-  slli a0, a0, 2
-  add a0, s1, a0
-  sw a1, 0(a0)
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_24
-
-.aux_1_2:
-  slli a0, s0, 2
-  add a0, a2, a0
-  lw a2, 0(a0)
-  li a0, 62
-  beq a2, a0, .aux_1_3
-  j .aux_1_4
-
-.aux_1_12:
-  li a0, 44
-  beq a2, a0, .aux_1_13
-  j .aux_1_14
-
-.aux_1_6:
-  li a0, 43
-  beq a2, a0, .aux_1_7
-  j .aux_1_8
-
-.aux_1_14:
-  li a0, 91
-  beq a2, a0, .aux_1_15
-  j .aux_1_16
-
-.aux_1_5:
-  lw a0, 0(a1)
-  addi a0, a0, -1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_25
-
-.aux_1_17:
+main_4:
+.main_4_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  addi a0, s11, -512
+  andi s0, a0, -8
+  mv s11, s0
+  li a0, 128
+  mv a1, a0
   mv a0, s0
-  j .aux_1_19
-
-.aux_1_8:
-  li a0, 45
-  beq a2, a0, .aux_1_9
-  j .aux_1_10
-
-.aux_1_27:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 64
-  ret
-
-.aux_1_25:
-  j .aux_1_26
-
-.aux_1_11:
-  lw a0, 0(a1)
-  slli a0, a0, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
-  call minimbt_print_char
-  mv a0, zero
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_22
-
-.aux_1_21:
-  j .aux_1_22
-
-.aux_1_16:
-  li a0, 93
-  beq a2, a0, .aux_1_17
-  j .aux_1_18
-
-.aux_1_15:
-  addi a0, s11, -4
-  andi s3, a0, -8
-  mv s11, s3
-  sw s0, 0(s3)
-  addi a0, s11, -48
+  mv a2, zero
+  call memseti32
+  addi a0, s11, -16
   andi a0, a0, -8
   mv s11, a0
-  la a2, lp_2
-  sd a2, 0(a0)
-  sd a1, 8(a0)
-  sd s1, 16(a0)
-  sd s0, 24(a0)
-  sd s2, 32(a0)
-  sd s3, 40(a0)
+  la a1, read_prog_5
+  sd a1, 0(a0)
+  sd s0, 8(a0)
   mv s10, a0
-  ld a0, 0(a0)
-  jalr a0
+  ld a1, 0(a0)
   mv a0, zero
-  lw a0, 0(s3)
-  addi a0, a0, 1
-  mv s10, s2
-  ld a1, 0(s2)
   jalr a1
-  j .aux_1_20
+  mv a0, zero
+  mv a0, zero
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
+  ret
 
-.aux_1_22:
-  j .aux_1_23
+  .p2align 3
+  .globl skip_1
+  .type skip_1, @function
+# leaf false
+skip_1:
+.skip_1_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  mv a4, s10
+  mv a2, a0
+  mv a3, a1
+  lw a0, 8(a4)
+  ld a1, 16(a4)
+  bge a2, a0, .skip_1_1
+  j .skip_1_2
 
-.aux_1_1:
-  mv a0, s0
-  j .aux_1_27
+.skip_1_6:
+  addi a0, a2, 1
+  mv s10, a4
+  ld a2, 0(a4)
+  mv a1, a3
+  jalr a2
+  j .skip_1_10
 
-.aux_1_23:
-  j .aux_1_24
+.skip_1_7:
+  mv a0, a2
+  j .skip_1_9
 
-.aux_1_13:
-  lw s3, 0(a1)
-  call minimbt_read_char
-  slli a1, s3, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_21
+.skip_1_11:
+  j .skip_1_12
 
-.aux_1_20:
-  j .aux_1_21
+.skip_1_10:
+  j .skip_1_11
 
-.aux_1_19:
-  j .aux_1_20
+.skip_1_3:
+  addi a0, a2, 1
+  addi a1, a3, 1
+  mv s10, a4
+  ld a2, 0(a4)
+  jalr a2
+  j .skip_1_11
 
-.aux_1_4:
-  li a0, 60
-  beq a2, a0, .aux_1_5
-  j .aux_1_6
+.skip_1_5:
+  beq a3, zero, .skip_1_7
+  j .skip_1_8
 
-.aux_1_3:
-  lw a0, 0(a1)
-  addi a0, a0, 1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_26
+.skip_1_2:
+  slli a0, a2, 2
+  add a0, a1, a0
+  lw a1, 0(a0)
+  li a0, 91
+  beq a1, a0, .skip_1_3
+  j .skip_1_4
 
-.aux_1_9:
-  lw a0, 0(a1)
-  lw a1, 0(a1)
-  slli a1, a1, 2
-  add a1, s1, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slli a0, a0, 2
-  add a0, s1, a0
-  sw a1, 0(a0)
-  addi a0, s0, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  j .aux_1_23
+.skip_1_1:
+  mv a0, a2
+  j .skip_1_12
 
-.aux_1_10:
-  li a0, 46
-  beq a2, a0, .aux_1_11
-  j .aux_1_12
+.skip_1_8:
+  addi a0, a2, 1
+  addi a1, a3, -1
+  mv s10, a4
+  ld a2, 0(a4)
+  jalr a2
+  j .skip_1_9
 
-.aux_1_18:
-  mv a0, s0
-  j .aux_1_19
+.skip_1_12:
+  ld ra, 0(sp)
+  addi sp, sp, 48
+  ret
+
+.skip_1_4:
+  li a0, 93
+  beq a1, a0, .skip_1_5
+  j .skip_1_6
+
+.skip_1_9:
+  j .skip_1_10
 
   .p2align 3
   .globl minimbt_main
@@ -771,12 +939,12 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv sp, a0
-  call T$start_4
+  call T$start_6
   mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -864,7 +1032,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -965,7 +1133,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1152,7 +1320,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1316,7 +1484,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1517,7 +1685,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1665,7 +1833,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1843,7 +2011,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -1967,7 +2135,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2154,7 +2322,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2230,7 +2398,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2358,7 +2526,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2482,7 +2650,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2631,7 +2799,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -2877,7 +3045,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3001,7 +3169,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3143,7 +3311,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3289,7 +3457,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3417,7 +3585,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3557,7 +3725,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -3871,7 +4039,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -4281,7 +4449,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -4792,7 +4960,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -5352,7 +5520,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -5486,7 +5654,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -5614,7 +5782,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -5721,12 +5889,342 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
   mv sp, a0
   call T$start_1
+  mv sp, s9
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 3
+  .globl start
+  .type start, @object
+  .bss
+start:
+  .zero 4
+
+
+
+Testing test/test_src/quicksort.mbt
+  .p2align 3
+  .globl T$start_5
+  .type T$start_5, @function
+# leaf false
+T$start_5:
+.T$start_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_4
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 3
+  .globl quicksort_3
+  .type quicksort_3, @function
+# leaf false
+quicksort_3:
+.quicksort_3_0:
+  addi sp, sp, -64
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+  addi a0, s2, -1
+  bge a0, s1, .quicksort_3_1
+  j .quicksort_3_2
+
+.quicksort_3_1:
+  mv a0, s0
+  mv a1, s1
+  mv a2, s2
+  call partition_1
+  mv s3, a0
+  addi a2, s3, -1
+  mv a0, s0
+  mv a1, s1
+  call quicksort_3
+  mv a0, zero
+  addi a1, s3, 1
+  mv a0, s0
+  mv a2, s2
+  call quicksort_3
+  mv a0, zero
+  j .quicksort_3_3
+
+.quicksort_3_3:
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 64
+  ret
+
+.quicksort_3_2:
+  mv a0, zero
+  j .quicksort_3_3
+
+  .p2align 3
+  .globl main_4
+  .type main_4, @function
+# leaf false
+main_4:
+.main_4_0:
+  addi sp, sp, -32
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  addi a0, s11, -24
+  andi s0, a0, -8
+  mv s11, s0
+  sw zero, 0(s0)
+  sw zero, 4(s0)
+  sw zero, 8(s0)
+  sw zero, 12(s0)
+  sw zero, 16(s0)
+  sw zero, 20(s0)
+  li a0, 10
+  sw a0, 0(s0)
+  li a0, 7
+  sw a0, 4(s0)
+  li a0, 8
+  sw a0, 8(s0)
+  li a0, 9
+  sw a0, 12(s0)
+  li a0, 1
+  sw a0, 16(s0)
+  li a0, 5
+  sw a0, 20(s0)
+  mv a0, s0
+  mv a1, zero
+  li a2, 5
+  call quicksort_3
+  mv a0, zero
+  lw a0, 0(s0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  lw a0, 4(s0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  lw a0, 8(s0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  lw a0, 12(s0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  lw a0, 16(s0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  lw a0, 20(s0)
+  call minimbt_print_int
+  mv a0, zero
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 3
+  .globl partition_1
+  .type partition_1, @function
+# leaf false
+partition_1:
+.partition_1_0:
+  addi sp, sp, -64
+  sd s2, 0(sp)
+  sd s1, 8(sp)
+  sd s0, 16(sp)
+  sd ra, 24(sp)
+  mv s2, a0
+  mv a0, a1
+  mv s1, a2
+  slli a1, s1, 2
+  add a1, s2, a1
+  lw a2, 0(a1)
+  addi a1, a0, -1
+  addi a3, s11, -4
+  andi s0, a3, -8
+  mv s11, s0
+  sw a1, 0(s0)
+  addi a1, s11, -40
+  andi a1, a1, -8
+  mv s11, a1
+  la a3, l_2
+  sd a3, 0(a1)
+  sd s1, 8(a1)
+  sd s2, 16(a1)
+  sd a2, 24(a1)
+  sd s0, 32(a1)
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mv a0, zero
+  lw a0, 0(s0)
+  addi a0, a0, 1
+  sw a0, 0(s0)
+  lw a1, 0(s0)
+  mv a0, s2
+  mv a2, s1
+  call swap_0
+  mv a0, zero
+  lw a0, 0(s0)
+  ld s2, 0(sp)
+  ld s1, 8(sp)
+  ld s0, 16(sp)
+  ld ra, 24(sp)
+  addi sp, sp, 64
+  ret
+
+  .p2align 3
+  .globl l_2
+  .type l_2, @function
+# leaf false
+l_2:
+.l_2_0:
+  addi sp, sp, -64
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv s1, s10
+  mv s0, a0
+  lw a0, 8(s1)
+  ld a1, 16(s1)
+  lw a2, 24(s1)
+  ld a3, 32(s1)
+  addi a0, a0, -1
+  bge a0, s0, .l_2_1
+  j .l_2_2
+
+.l_2_5:
+  addi a0, s0, 1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  mv a0, zero
+  j .l_2_6
+
+.l_2_3:
+  lw a0, 0(a3)
+  addi a0, a0, 1
+  sw a0, 0(a3)
+  lw a2, 0(a3)
+  mv a0, a1
+  mv a1, a2
+  mv a2, s0
+  call swap_0
+  mv a0, zero
+  j .l_2_5
+
+.l_2_1:
+  slli a0, s0, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  bge a2, a0, .l_2_3
+  j .l_2_4
+
+.l_2_6:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 64
+  ret
+
+.l_2_4:
+  mv a0, zero
+  j .l_2_5
+
+.l_2_2:
+  mv a0, zero
+  j .l_2_6
+
+  .p2align 3
+  .globl swap_0
+  .type swap_0, @function
+# leaf true
+swap_0:
+.swap_0_0:
+  addi sp, sp, -48
+  mv a3, a0
+  mv a0, a1
+  mv a4, a2
+  slli a1, a0, 2
+  add a1, a3, a1
+  lw a1, 0(a1)
+  slli a2, a4, 2
+  add a2, a3, a2
+  lw a2, 0(a2)
+  slli a0, a0, 2
+  add a0, a3, a0
+  sw a2, 0(a0)
+  slli a0, a4, 2
+  add a0, a3, a0
+  sw a1, 0(a0)
+  mv a0, zero
+  addi sp, sp, 48
+  ret
+
+  .p2align 3
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  mv s9, sp
+  li a0, 1073741824
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
+  call T$start_5
   mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -5881,7 +6379,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -5959,7 +6457,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -6294,7 +6792,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -6391,7 +6889,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -6643,7 +7141,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0
@@ -6757,7 +7255,7 @@ minimbt_main:
   add a0, s0, a0
   mv s11, a0
   mv s9, sp
-  li a0, 134217728
+  li a0, 1073741824
   mv s0, a0
   call minimbt_malloc
   add a0, s0, a0

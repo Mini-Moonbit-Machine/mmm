@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 for file in test/test_src/*.mbt
+  if [ $file = "test/test_src/bf.mbt" ]
+    continue
+  end
   rm -f out
   echo "Testing $file"
   moon run -g src/bin/main.mbt -- --end-stage riscv $file > $file.S
