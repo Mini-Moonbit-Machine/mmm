@@ -85,10 +85,12 @@
 (decl emit_fake_epilogue () Unit)
 (extern constructor emit_fake_epilogue emit_fake_epilogue)
 
-(decl target_color (Int32 BlockRef) BlockRef)
+(type ColorSeq (primitive `@lower.ColorSeq`))
+
+(decl target_color (ColorSeq BlockRef) BlockRef)
 (extern extractor infallible target_color target_color)
 
-(decl partial lower_control (Int32 Control) Unit)
+(decl partial lower_control (ColorSeq Control) Unit)
 
 (rule (lower_control _ (control_jump target args))
   (let ((_ Unit (emit_block_parameters target args)))

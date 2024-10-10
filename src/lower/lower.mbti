@@ -12,6 +12,11 @@ impl ColorFreq {
   op_equal(Self, Self) -> Bool
 }
 
+pub type ColorSeq (Int, Int)
+impl ColorSeq {
+  op_equal(Self, Self) -> Bool
+}
+
 pub type Edge (Int, Int)
 impl Edge {
   hash_combine(Self, Hasher) -> Unit
@@ -34,6 +39,7 @@ pub struct LoweringOrder {
   pub succs : Array[Array[LoweredBlock]]
   pub color : @hashmap.T[@core.BlockRef, Int]
   pub seq : Array[@core.BlockRef]
+  pub color_seq : @hashmap.T[@core.BlockRef, Int]
 }
 impl LoweringOrder {
   new(@core.Fn) -> Self

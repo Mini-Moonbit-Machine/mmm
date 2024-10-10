@@ -7,6 +7,12 @@ pub enum LoweredBlock {
   CriticalEdge(~pred : BasicBlock, ~succ : BasicBlock, ~succ_idx : Int)
 }
 
+pub type ColorSeq (Int, Int)
+
+pub fn ColorSeq::op_equal(self : ColorSeq, other : ColorSeq) -> Bool {
+  self._.0 == other._.0 && self._.1 < other._.1
+}
+
 pub fn LoweredBlock::to_string(self : LoweredBlock) -> String {
   match self {
     LoweredBlock::BasicBlock(~bb) => bb.id.to_string()
@@ -43,6 +49,7 @@ pub struct LoweringOrder {
   succs : Array[Array[LoweredBlock]]
   color : MutMap[BlockRef, Int]
   seq : Array[BlockRef]
+  color_seq : MutMap[BlockRef, Int]
 } derive(Show)
 
 pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
@@ -110,12 +117,14 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   let worklist = []
   let colored = MutMap::new()
   let seq = []
-  fn mark_bb(bb : @core.BasicBlock, color : Int) {
+  let color_seq = MutMap::new()
+  fn mark_bb(bb : @core.BasicBlock, color : Int, n : Int) {
     if colored.contains(bb.id) {
       return
     }
     seq.push(bb.id)
     colored.set(bb.id, color)
+    color_seq.set(bb.id, n)
     let succs = bb.control.successors()
     let succs = succs.map(
       fn(bref) { func.blocks[bref].unwrap().basic_block(func) },
@@ -131,7 +140,7 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
     }
     match selected_bb {
       Some(sbb) => {
-        mark_bb(sbb, color)
+        mark_bb(sbb, color, n + 1)
         for succ in succs {
           if colored.contains(succ.id) == false && succ.id != sbb.id {
             worklist.push(succ)
@@ -151,8 +160,8 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   let mut used_color = 0
   while worklist.is_empty() == false {
     let bb = worklist.pop().unwrap()
-    mark_bb(bb, used_color)
+    mark_bb(bb, used_color, 0)
     used_color += 1
   }
-  { order, succs, color: colored, seq }
+  { order, succs, color: colored, seq, color_seq }
 }
