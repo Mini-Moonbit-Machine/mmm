@@ -1334,12 +1334,21 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
   self.finalize_insn()
 }
 
+fn RiscvFnLoweringCtx::target_color(
+  self : RiscvFnLoweringCtx,
+  target : @core.BlockRef
+) -> (Int, @core.BlockRef) {
+  let color = self.order.color[target].unwrap()
+  (color, target)
+}
+
 fn RiscvFnLoweringCtx::lower_block(
   self : RiscvFnLoweringCtx,
-  block : @core.BasicBlock
+  block : @core.BasicBlock,
+  color : Int
 ) -> MBasicBlock!Failure {
   let id = self.block_label(block.id)
-  @generated.constructor_lower_control(self, block.control).or_error!(
+  @generated.constructor_lower_control(self, color, block.control).or_error!(
     Failure("lower control failed: \{block.control}"),
   )
   self.finalize_insn()
@@ -1382,8 +1391,10 @@ fn RiscvFnLoweringCtx::lower(
   let blocks = MutMap::new()
   for block in self.order.order.rev() {
     match block {
-      BasicBlock(~bb) =>
-        blocks.set(self.block_label(bb.id), self.lower_block!(bb))
+      BasicBlock(~bb) => {
+        let color = self.order.color[bb.id].unwrap()
+        blocks.set(self.block_label(bb.id), self.lower_block!(bb, color))
+      }
       _ => fail!("Critical edge not supported")
     }
   }

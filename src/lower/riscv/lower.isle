@@ -85,41 +85,44 @@
 (decl emit_fake_epilogue () Unit)
 (extern constructor emit_fake_epilogue emit_fake_epilogue)
 
-(decl partial lower_control (Control) Unit)
+(decl target_color (Int32 BlockRef) BlockRef)
+(extern extractor infallible target_color target_color)
 
-(rule (lower_control (control_jump target args))
+(decl partial lower_control (Int32 Control) Unit)
+
+(rule (lower_control color (control_jump (target_color _ target) args))
   (let ((_ Unit (emit_block_parameters target args)))
     (rv_j (block_label target))))
 
-(rule (lower_control (control_return (arg0)))
+(rule (lower_control color (control_return (arg0)))
   (let ((_ Unit (rv_mv_to (return_reg) (zero_reg)))
         (_ Unit (emit_fake_epilogue)))
     (rv_xret)))
 
-(rule (lower_control (control_return (arg1 (has_type x (ty_double)))))
+(rule (lower_control color (control_return (arg1 (has_type x (ty_double)))))
   (let ((r FReg (lower_value x))
         (_ Unit (rv_fmv_to (float_return_reg) r))
         (_ Unit (emit_fake_epilogue)))
     (rv_fret)))
 
-(rule -1 (lower_control (control_return (arg1 x)))
+(rule -1 (lower_control color (control_return (arg1 x)))
   (let ((r XReg (lower_value x))
         (_ Unit (rv_mv_to (return_reg) r))
         (_ Unit (emit_fake_epilogue)))
     (rv_xret)))
 
-(rule (lower_control (control_branch cond t t_args f f_args))
+(rule (lower_control color (control_branch cond t t_args f f_args))
   (let ((r XReg (lower_value cond))
         (_ Unit (emit_block_parameters t t_args))
         (_ Unit (rv_bnez r (block_label t)))
         (_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label f))))
 
-(rule 1 (lower_control (control_branch (val_bool $true) t t_args f f_args))
+(rule 1 (lower_control color (control_branch (val_bool $true) t t_args f f_args))
   (let ((_ Unit (emit_block_parameters t t_args)))
     (rv_j (block_label t))))
 
-(rule 2 (lower_control (control_branch (val_bool $false) t t_args f f_args))
+(rule 2 (lower_control color (control_branch (val_bool $false) t t_args f f_args))
   (let ((_ Unit (emit_block_parameters f f_args)))
     (rv_j (block_label t))))
 
@@ -129,7 +132,7 @@
 ;;; branch (eq a:!double b:!double) t f
 
 (rule 1
-  (lower_control
+  (lower_control color
     (control_branch
       (val_insn (ref_insn
         (insn_op (ty_bool) (op_eq) (arg2 (not_double a) (not_double b))))) t t_args f f_args))
@@ -141,7 +144,7 @@
 ;;; branch (le a:!double b:!double) t f
 
 (rule 1
-  (lower_control
+  (lower_control color
     (control_branch
       (val_insn (ref_insn
         (insn_op (ty_bool) (op_le) (arg2 (not_double a) (not_double b))))) t t_args f f_args))

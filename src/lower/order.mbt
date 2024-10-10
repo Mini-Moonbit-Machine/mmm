@@ -41,6 +41,8 @@ typealias MutMap[K, V] = @hashmap.T[K, V]
 pub struct LoweringOrder {
   order : Array[LoweredBlock]
   succs : Array[Array[LoweredBlock]]
+  color : MutMap[BlockRef, Int]
+  seq : Array[BlockRef]
 } derive(Show)
 
 pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
@@ -94,5 +96,60 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
       CriticalEdge(~succ, ..) => succs.push([BasicBlock(bb=succ)])
     }
   }
-  { order, succs }
+  fn bb_metric(bb : @core.BasicBlock) -> Int {
+    let x = match bb.control {
+      @core.Control::Branch(..) => 110
+      Select(..) => 120
+      Jump(..) => 100
+      Return(..) => 0
+      Panic => 0
+    }
+    bb.seq.length() + x
+  }
+
+  let worklist = []
+  let colored = MutMap::new()
+  let seq = []
+  fn mark_bb(bb : @core.BasicBlock, color : Int) {
+    seq.push(bb.id)
+    colored.set(bb.id, color)
+    let succs = bb.control.successors()
+    let succs = succs.map(
+      fn(bref) { func.blocks[bref].unwrap().basic_block(func) },
+    )
+    let mut value = 0
+    let mut selected_bb = None
+    for succ in succs {
+      let succ_value = bb_metric(succ)
+      if succ_value > value && colored.contains(succ.id) == false {
+        value = succ_value
+        selected_bb = Some(succ)
+      }
+    }
+    match selected_bb {
+      Some(sbb) => {
+        mark_bb(sbb, color)
+        for succ in succs {
+          if colored.contains(succ.id) == false && succ.id != sbb.id {
+            worklist.push(succ)
+          }
+        }
+      }
+      None =>
+        for succ in succs {
+          if colored.contains(succ.id) == false {
+            worklist.push(succ)
+          }
+        }
+    }
+  }
+
+  worklist.push(func.blocks[func.entry].unwrap().basic_block(func))
+  let mut used_color = 0
+  while worklist.is_empty() == false {
+    let bb = worklist.pop().unwrap()
+    mark_bb(bb, used_color)
+    used_color += 1
+  }
+  { order, succs, color: colored, seq }
 }
