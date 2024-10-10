@@ -108,22 +108,24 @@ pub fn MFn::print_with_info(
 }
 
 pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
+  logger.write_string(large_stack)
   for primitive in self.primitives {
     logger.write_string("\{primitive_map[primitive].unwrap()}\n")
   }
   for fpair in self.funcs {
     let (_, func) = fpair
-    logger.write_string("  .p2align 3\n")
+    logger.write_string("  .p2align 2\n")
+    logger.write_string("  .text\n")
     logger.write_string("  .globl \{func.name._}\n")
     logger.write_string("  .type \{func.name._}, @function\n")
     func.output(logger)
   }
   for global in self.globals {
     let (global, sz) = global
-    logger.write_string("  .p2align 3\n")
+    logger.write_string("  .p2align 2\n")
+    logger.write_string("  .bss\n")
     logger.write_string("  .globl \{global._}\n")
     logger.write_string("  .type \{global._}, @object\n")
-    logger.write_string("  .bss\n")
     logger.write_string("\{global._}:\n")
     logger.write_string("  .zero \{sz}\n")
   }
@@ -136,7 +138,7 @@ pub fn MCoreWithRichInfo::output(
   let self = self._
   for fpair in self.funcs {
     let (_, func) = fpair
-    logger.write_string("  .p2align 3\n")
+    logger.write_string("  .p2align 2\n")
     logger.write_string("  .globl \{func.name._}\n")
     logger.write_string("  .type \{func.name._}, @function\n")
     func.print_with_info(
@@ -148,7 +150,7 @@ pub fn MCoreWithRichInfo::output(
   }
   for global in self.globals {
     let (global, sz) = global
-    logger.write_string("  .p2align 3\n")
+    logger.write_string("  .p2align 2\n")
     logger.write_string("  .globl \{global._}\n")
     logger.write_string("  .type \{global._}, @object\n")
     logger.write_string("\{global._}:\n")
@@ -157,7 +159,8 @@ pub fn MCoreWithRichInfo::output(
 }
 
 let raw_memseti32 =
-  #|  .p2align 3
+  #|  .p2align 2
+  #|  .text
   #|  .globl memseti32
   #|  .type memseti32, @function
   #|memseti32:
@@ -173,7 +176,8 @@ let raw_memseti32 =
   #|
 
 let raw_memseti64 =
-  #|  .p2align 3
+  #|  .p2align 2
+  #|  .text
   #|  .globl memseti64
   #|  .type memseti64, @function
   #|memseti64:
@@ -187,8 +191,13 @@ let raw_memseti64 =
   #|.memseti64_b1:
   #|  ret
   #|
+  #|
 
 let raw_memsetf64 =
+  #|  .p2align 2
+  #|  .text
+  #|  .globl memsetf64
+  #|  .type memsetf64, @function
   #|memsetf64:
   #|  blez a1, .memsetf64_b1
   #|  slli a1, a1, 3
@@ -202,7 +211,8 @@ let raw_memsetf64 =
   #|
 
 let raw_memset0e4 =
-  #|  .p2align 3
+  #|  .p2align 2
+  #|  .text
   #|  .globl memset0e4
   #|  .type memset0e4, @function
   #|memset0e4:
@@ -218,7 +228,8 @@ let raw_memset0e4 =
   #|
 
 let raw_memset0e8 =
-  #|  .p2align 3
+  #|  .p2align 2
+  #|  .text
   #|  .globl memset0e8
   #|  .type memset0e8, @function
   #|memset0e8:
@@ -240,3 +251,13 @@ let primitive_map : Map[String, String] = {
   "memset0e4": raw_memset0e4,
   "memset0e8": raw_memset0e8,
 }
+
+let large_stack =
+  #|  .p2align 2
+  #|  .bss
+  #|  .type large_stack, @object
+  #|large_stack:
+  #|  .zero 1073741824
+  #|large_stack_end:
+  #|  .zero 16
+  #|

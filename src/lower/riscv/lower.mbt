@@ -1895,8 +1895,6 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
 
 let init_mem_size = "134217728"
 
-let init_stack_size = "1073741824"
-
 fn save_sp(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Mv(rd=@riscv.S9, rs=@riscv.Sp))
 }
@@ -1916,13 +1914,7 @@ fn pre_allocate(insns : Array[MInsn]) -> Unit {
 }
 
 fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Li(rd=@riscv.A0, i=init_stack_size))
-  insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
-  insns.push(
-    MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),
-  )
-  insns.push(MInsn::Add(rd=@riscv.A0, rs1=@riscv.Fp, rs2=@riscv.A0))
-  insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.A0))
+  insns.push(MInsn::La(rd=@riscv.Sp, l=Label("large_stack_end")))
 }
 
 pub fn RiscvLoweringCtx::lower_globals(
