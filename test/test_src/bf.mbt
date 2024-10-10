@@ -1,3 +1,16 @@
+fn read_ch_until_newline_or_eof() -> Int {
+  let c = read_char();
+  if c == 10 {
+    -1
+  } else {
+    if c == 13 {
+      -1
+    } else {
+      c
+    }
+  }
+};
+
 fn bf(len : Int, prog : Array[Int]) -> Unit {
   let ptr = Array::make(1, 0);
   let cells = Array::make(1024 * 1024, 0);
@@ -41,7 +54,7 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
         print_char(cells[ptr[0]]);
         aux(pc + 1)
       } else if i == 44 { // ','
-        cells[ptr[0]] = read_char();
+        cells[ptr[0]] = read_ch_until_newline_or_eof();
         aux(pc + 1)
       } else if i == 91 { // '['
         next_pc[0] = pc;
@@ -66,12 +79,11 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
   let _ = aux(0);
   ()
 };
-
 fn main {
-  let len = 128;
+  let len = 1024;
   let prog = Array::make(len, 0);
   fn read_prog(i) {
-    let x = read_char();
+    let x = read_ch_until_newline_or_eof();
     if x == -1 {
       bf(i, prog)
     } else {
