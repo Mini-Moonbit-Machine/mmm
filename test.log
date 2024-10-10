@@ -1,5 +1,5 @@
 Testing test/test_src/ack.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -140,7 +140,7 @@ start:
 
 
 Testing test/test_src/adder.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -273,7 +273,7 @@ start:
 
 
 Testing test/test_src/adder2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -420,7 +420,7 @@ start:
 
 
 Testing test/test_src/bf.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1007,7 +1007,7 @@ start:
 
 
 Testing test/test_src/cls-bug.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1135,7 +1135,7 @@ start:
 
 
 Testing test/test_src/cls-bug2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1274,7 +1274,7 @@ start:
 
 
 Testing test/test_src/cls-rec.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1420,7 +1420,7 @@ start:
 
 
 Testing test/test_src/cls-reg-bug.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1630,7 +1630,7 @@ start:
 
 
 Testing test/test_src/debug.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -1794,7 +1794,7 @@ start:
 
 
 Testing test/test_src/even-odd.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2020,7 +2020,7 @@ start:
 
 
 Testing test/test_src/fib.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2151,7 +2151,7 @@ start:
 
 
 Testing test/test_src/float.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2267,7 +2267,7 @@ start:
 
 
 Testing test/test_src/funcomp.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2465,7 +2465,7 @@ start:
 
 
 Testing test/test_src/gcd.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2601,7 +2601,7 @@ start:
 
 
 Testing test/test_src/id.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2708,7 +2708,7 @@ start:
 
 
 Testing test/test_src/inprod-loop.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -2865,7 +2865,7 @@ start:
 
 
 Testing test/test_src/inprod-rec.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3022,7 +3022,7 @@ start:
 
 
 Testing test/test_src/inprod.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3225,8 +3225,125 @@ start:
 
 
 
-Testing test/test_src/join-reg.mbt
+Testing test/test_src/int_min.mbt
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 1073741824
+large_stack_end:
+  .zero 16
   .p2align 2
+  .text
+  .globl main_1
+  .type main_1, @function
+# leaf false
+main_1:
+.main_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  la a0, int_min.1
+  lw a0, 0(a0)
+  call minimbt_print_int
+  mv a0, zero
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  mv s9, sp
+  la sp, large_stack_end
+  call T$int_min.10
+  la t5, int_min.1
+  sw a0, 0(t5)
+  call T$start_2
+  mv sp, s9
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 2
+  .text
+  .globl T$int_min.10
+  .type T$int_min.10, @function
+# leaf true
+T$int_min.10:
+.T$int_min.10_0:
+  addi sp, sp, -16
+  li a0, -2147483648
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_2
+  .type T$start_2, @function
+# leaf false
+T$start_2:
+.T$start_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main_1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .bss
+  .globl int_min.1
+  .type int_min.1, @object
+int_min.1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4
+
+
+
+Testing test/test_src/join-reg.mbt
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3381,7 +3498,7 @@ start:
 
 
 Testing test/test_src/join-reg2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3532,7 +3649,7 @@ start:
 
 
 Testing test/test_src/join-stack.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3687,7 +3804,7 @@ start:
 
 
 Testing test/test_src/join-stack2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3823,7 +3940,7 @@ start:
 
 
 Testing test/test_src/join-stack3.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -3972,7 +4089,7 @@ start:
 
 
 Testing test/test_src/landins_knot.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -4307,7 +4424,7 @@ factorial.18:
 
 
 Testing test/test_src/mandelbrot.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -4736,7 +4853,7 @@ start:
 
 
 Testing test/test_src/matmul-flat.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -5270,7 +5387,7 @@ start:
 
 
 Testing test/test_src/matmul.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -5809,7 +5926,7 @@ start:
 
 
 Testing test/test_src/non-tail-if.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -5949,7 +6066,7 @@ start:
 
 
 Testing test/test_src/non-tail-if2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -6096,7 +6213,7 @@ start:
 
 
 Testing test/test_src/print.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -6197,7 +6314,7 @@ start:
 
 
 Testing test/test_src/quicksort.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -6537,7 +6654,7 @@ start:
 
 
 Testing test/test_src/shuffle.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -6705,7 +6822,7 @@ start:
 
 
 Testing test/test_src/spill.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -6967,7 +7084,7 @@ start:
 
 
 Testing test/test_src/spill2.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -7155,7 +7272,7 @@ start:
 
 
 Testing test/test_src/spill3.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -7399,7 +7516,7 @@ start:
 
 
 Testing test/test_src/sum-tail.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
@@ -7521,7 +7638,7 @@ start:
 
 
 Testing test/test_src/sum.mbt
-  .p2align 2
+  .p2align 4
   .bss
   .type large_stack, @object
 large_stack:

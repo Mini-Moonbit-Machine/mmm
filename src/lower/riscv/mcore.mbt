@@ -253,7 +253,7 @@ let primitive_map : Map[String, String] = {
 }
 
 let large_stack =
-  #|  .p2align 2
+  #|  .p2align 4
   #|  .bss
   #|  .type large_stack, @object
   #|large_stack:
