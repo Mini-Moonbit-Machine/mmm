@@ -20,6 +20,7 @@ pub struct MFn {
   leaf : Bool
   entry : Label
   blocks : MutMap[Label, MBasicBlock]
+  seq : Array[Label]
 }
 
 pub struct MBasicBlock {
@@ -76,14 +77,8 @@ pub fn MBasicBlock::print_with_info(
 pub fn MFn::output(self : MFn, logger : Logger) -> Unit {
   logger.write_string("# leaf \{self.leaf}\n")
   logger.write_string("\{self.name._}:\n")
-  let entry = self.entry
-  let block = self.blocks[entry].unwrap()
-  logger.write_object(block)
-  for block in self.blocks {
-    let (_, block) = block
-    if block.id == entry {
-      continue
-    }
+  for bref in self.seq {
+    let block = self.blocks[bref].unwrap()
     logger.write_object(block)
   }
 }
@@ -95,14 +90,8 @@ pub fn MFn::print_with_info(
 ) -> Unit {
   logger.write_string("# leaf \{self.leaf}\n")
   logger.write_string("\{self.name._}:\n")
-  let entry = self.entry
-  let block = self.blocks[entry].unwrap()
-  block.print_with_info(logger, info.iter_block_info[entry._].unwrap())
-  for block in self.blocks {
-    let (_, block) = block
-    if block.id == entry {
-      continue
-    }
+  for bref in self.seq {
+    let block = self.blocks[bref].unwrap()
     block.print_with_info(logger, info.iter_block_info[block.id._].unwrap())
   }
 }

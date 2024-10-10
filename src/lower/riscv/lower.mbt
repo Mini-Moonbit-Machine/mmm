@@ -1399,7 +1399,8 @@ fn RiscvFnLoweringCtx::lower(
     }
   }
   let entry = self.block_label(self.func.entry)
-  let mfn = { name: self.func.name, entry, blocks, leaf: self.is_leaf }
+  let seq = self.order.seq.map(fn(bref) { self.block_label(bref) })
+  let mfn = { name: self.func.name, entry, blocks, leaf: self.is_leaf, seq }
   let liveness = Liveness::new(Some(self.func), mfn)
   liveness.compute_block_liveness()
   self.mfn = Some(mfn)
@@ -1820,6 +1821,7 @@ fn RiscvFnLoweringCtx::post_lower(
     entry: mfn.entry,
     blocks: MutMap::new(),
     leaf: self.is_leaf,
+    seq: mfn.seq,
   }
   // this is accurate
   let x_save = union_array(clobbered_x, @riscv.reg_callee_saved_list)
@@ -2002,7 +2004,7 @@ pub fn RiscvLoweringCtx::lower_globals(
   let control = [MInsn::XRet]
   let params = []
   blocks.set(entry, { id: entry, insns, control, params })
-  { name, entry, blocks, leaf: false }
+  { name, entry, blocks, leaf: false, seq: [entry] }
 }
 
 pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {

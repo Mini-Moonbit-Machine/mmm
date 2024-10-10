@@ -1368,124 +1368,123 @@ pub fn constructor_lower_control[C : Context](
 ) -> Unit? {
   match arg1 {
     @core.Control::Jump(target=v2, args=v3) => {
-      let v4 = C::target_color(ctx, v2)
-      let v7 = C::emit_block_parameters(ctx, v4.1, v3)
-      let v8 = C::block_label(ctx, v4.1)
-      let v9 = constructor_rv_j(ctx, v8)
-      let v10 = Some(v9)
+      let v4 = C::emit_block_parameters(ctx, v2, v3)
+      let v5 = C::block_label(ctx, v2)
+      let v6 = constructor_rv_j(ctx, v5)
+      let v7 = Some(v6)
       // Rule at src/lower/riscv/lower.isle line 92.
-      return v10
+      return v7
     }
-    @core.Control::Return(args=v11) => {
-      let v12 = C::values_to_args(ctx, v11)
-      match v12 {
-        Some(v13) =>
-          match v13 {
-            Args::Args1(arg1=v20) => {
-              let v21 = C::has_type(ctx, v20)
-              match v21.1 {
+    @core.Control::Return(args=v8) => {
+      let v9 = C::values_to_args(ctx, v8)
+      match v9 {
+        Some(v10) =>
+          match v10 {
+            Args::Args1(arg1=v17) => {
+              let v18 = C::has_type(ctx, v17)
+              match v18.1 {
                 @core.Type::Double => {
-                  let v24 = constructor_lower_value(ctx, v21.0)
-                  let v25 = C::freg_new(ctx, v24)
-                  let v26 = C::float_return_reg(ctx)
-                  let v27 = constructor_rv_fmv_to(ctx, v26, v25)
-                  let v28 = C::emit_fake_epilogue(ctx)
-                  let v29 = constructor_rv_fret(ctx)
-                  let v30 = Some(v29)
+                  let v21 = constructor_lower_value(ctx, v18.0)
+                  let v22 = C::freg_new(ctx, v21)
+                  let v23 = C::float_return_reg(ctx)
+                  let v24 = constructor_rv_fmv_to(ctx, v23, v22)
+                  let v25 = C::emit_fake_epilogue(ctx)
+                  let v26 = constructor_rv_fret(ctx)
+                  let v27 = Some(v26)
                   // Rule at src/lower/riscv/lower.isle line 101.
-                  return v30
+                  return v27
                 }
                 _ => ()
               }
-              let v31 = constructor_lower_value(ctx, v20)
-              let v32 = C::xreg_new(ctx, v31)
-              let v33 = C::return_reg(ctx)
-              let v34 = constructor_rv_mv_to(ctx, v33, v32)
-              let v28 = C::emit_fake_epilogue(ctx)
-              let v35 = constructor_rv_xret(ctx)
-              let v36 = Some(v35)
+              let v28 = constructor_lower_value(ctx, v17)
+              let v29 = C::xreg_new(ctx, v28)
+              let v30 = C::return_reg(ctx)
+              let v31 = constructor_rv_mv_to(ctx, v30, v29)
+              let v25 = C::emit_fake_epilogue(ctx)
+              let v32 = constructor_rv_xret(ctx)
+              let v33 = Some(v32)
               // Rule at src/lower/riscv/lower.isle line 107.
-              return v36
+              return v33
             }
             Args::Args0 => {
-              let v14 = C::return_reg(ctx)
-              let v15 = C::zero_reg(ctx)
-              let v16 = constructor_rv_mv_to(ctx, v14, v15)
-              let v17 = C::emit_fake_epilogue(ctx)
-              let v18 = constructor_rv_xret(ctx)
-              let v19 = Some(v18)
+              let v11 = C::return_reg(ctx)
+              let v12 = C::zero_reg(ctx)
+              let v13 = constructor_rv_mv_to(ctx, v11, v12)
+              let v14 = C::emit_fake_epilogue(ctx)
+              let v15 = constructor_rv_xret(ctx)
+              let v16 = Some(v15)
               // Rule at src/lower/riscv/lower.isle line 96.
-              return v19
+              return v16
             }
             _ => ()
           }
         _ => ()
       }
     }
-    @core.Control::Branch(cond=v37, t=v38, t_args=v39, f=v40, f_args=v41) => {
-      match v37 {
-        @core.Value::Bool(val=v51) =>
-          match v51 {
+    @core.Control::Branch(cond=v34, t=v35, t_args=v36, f=v37, f_args=v38) => {
+      match v34 {
+        @core.Value::Bool(val=v48) =>
+          match v48 {
             true => {
-              let v52 = C::emit_block_parameters(ctx, v38, v39)
-              let v53 = C::block_label(ctx, v38)
-              let v54 = constructor_rv_j(ctx, v53)
-              let v55 = Some(v54)
+              let v49 = C::emit_block_parameters(ctx, v35, v36)
+              let v50 = C::block_label(ctx, v35)
+              let v51 = constructor_rv_j(ctx, v50)
+              let v52 = Some(v51)
               // Rule at src/lower/riscv/lower.isle line 120.
-              return v55
+              return v52
             }
             false => {
-              let v56 = C::emit_block_parameters(ctx, v40, v41)
-              let v53 = C::block_label(ctx, v38)
-              let v54 = constructor_rv_j(ctx, v53)
-              let v55 = Some(v54)
+              let v53 = C::emit_block_parameters(ctx, v37, v38)
+              let v50 = C::block_label(ctx, v35)
+              let v51 = constructor_rv_j(ctx, v50)
+              let v52 = Some(v51)
               // Rule at src/lower/riscv/lower.isle line 124.
-              return v55
+              return v52
             }
             _ => ()
           }
-        @core.Value::Insn(iref=v57) => {
-          let v58 = C::ref_insn(ctx, v57)
-          match v58 {
-            @core.Insn::Op(ty=v59, op=v60, args=v61) =>
-              match v59 {
+        @core.Value::Insn(iref=v54) => {
+          let v55 = C::ref_insn(ctx, v54)
+          match v55 {
+            @core.Insn::Op(ty=v56, op=v57, args=v58) =>
+              match v56 {
                 @core.Type::Bool =>
-                  match v60 {
+                  match v57 {
                     @core.Op::Eq => {
-                      let v62 = C::values_to_args(ctx, v61)
-                      match v62 {
-                        Some(v63) =>
-                          match v63 {
-                            Args::Args2(arg1=v64, arg2=v65) => {
-                              let v66 = C::not_double(ctx, v64)
-                              match v66 {
-                                Some(v67) => {
-                                  let v68 = C::not_double(ctx, v65)
-                                  match v68 {
-                                    Some(v69) => {
-                                      let v52 = C::emit_block_parameters(
-                                        ctx, v38, v39,
+                      let v59 = C::values_to_args(ctx, v58)
+                      match v59 {
+                        Some(v60) =>
+                          match v60 {
+                            Args::Args2(arg1=v61, arg2=v62) => {
+                              let v63 = C::not_double(ctx, v61)
+                              match v63 {
+                                Some(v64) => {
+                                  let v65 = C::not_double(ctx, v62)
+                                  match v65 {
+                                    Some(v66) => {
+                                      let v49 = C::emit_block_parameters(
+                                        ctx, v35, v36,
                                       )
-                                      let v70 = constructor_lower_value(
-                                        ctx, v67,
+                                      let v67 = constructor_lower_value(
+                                        ctx, v64,
                                       )
-                                      let v71 = C::xreg_new(ctx, v70)
-                                      let v72 = constructor_lower_value(
-                                        ctx, v69,
+                                      let v68 = C::xreg_new(ctx, v67)
+                                      let v69 = constructor_lower_value(
+                                        ctx, v66,
                                       )
-                                      let v73 = C::xreg_new(ctx, v72)
-                                      let v74 = C::block_label(ctx, v38)
-                                      let v75 = constructor_rv_beq(
-                                        ctx, v71, v73, v74,
+                                      let v70 = C::xreg_new(ctx, v69)
+                                      let v71 = C::block_label(ctx, v35)
+                                      let v72 = constructor_rv_beq(
+                                        ctx, v68, v70, v71,
                                       )
-                                      let v76 = C::emit_block_parameters(
-                                        ctx, v40, v41,
+                                      let v73 = C::emit_block_parameters(
+                                        ctx, v37, v38,
                                       )
-                                      let v77 = C::block_label(ctx, v40)
-                                      let v78 = constructor_rv_j(ctx, v77)
-                                      let v79 = Some(v78)
+                                      let v74 = C::block_label(ctx, v37)
+                                      let v75 = constructor_rv_j(ctx, v74)
+                                      let v76 = Some(v75)
                                       // Rule at src/lower/riscv/lower.isle line 133.
-                                      return v79
+                                      return v76
                                     }
                                     _ => ()
                                   }
@@ -1499,40 +1498,40 @@ pub fn constructor_lower_control[C : Context](
                       }
                     }
                     @core.Op::Le => {
-                      let v62 = C::values_to_args(ctx, v61)
-                      match v62 {
-                        Some(v63) =>
-                          match v63 {
-                            Args::Args2(arg1=v64, arg2=v65) => {
-                              let v66 = C::not_double(ctx, v64)
-                              match v66 {
-                                Some(v67) => {
-                                  let v68 = C::not_double(ctx, v65)
-                                  match v68 {
-                                    Some(v69) => {
-                                      let v52 = C::emit_block_parameters(
-                                        ctx, v38, v39,
+                      let v59 = C::values_to_args(ctx, v58)
+                      match v59 {
+                        Some(v60) =>
+                          match v60 {
+                            Args::Args2(arg1=v61, arg2=v62) => {
+                              let v63 = C::not_double(ctx, v61)
+                              match v63 {
+                                Some(v64) => {
+                                  let v65 = C::not_double(ctx, v62)
+                                  match v65 {
+                                    Some(v66) => {
+                                      let v49 = C::emit_block_parameters(
+                                        ctx, v35, v36,
                                       )
-                                      let v80 = constructor_lower_value(
-                                        ctx, v69,
+                                      let v77 = constructor_lower_value(
+                                        ctx, v66,
                                       )
-                                      let v81 = C::xreg_new(ctx, v80)
-                                      let v82 = constructor_lower_value(
-                                        ctx, v67,
+                                      let v78 = C::xreg_new(ctx, v77)
+                                      let v79 = constructor_lower_value(
+                                        ctx, v64,
                                       )
-                                      let v83 = C::xreg_new(ctx, v82)
-                                      let v74 = C::block_label(ctx, v38)
-                                      let v84 = constructor_rv_bge(
-                                        ctx, v81, v83, v74,
+                                      let v80 = C::xreg_new(ctx, v79)
+                                      let v71 = C::block_label(ctx, v35)
+                                      let v81 = constructor_rv_bge(
+                                        ctx, v78, v80, v71,
                                       )
-                                      let v76 = C::emit_block_parameters(
-                                        ctx, v40, v41,
+                                      let v73 = C::emit_block_parameters(
+                                        ctx, v37, v38,
                                       )
-                                      let v77 = C::block_label(ctx, v40)
-                                      let v78 = constructor_rv_j(ctx, v77)
-                                      let v79 = Some(v78)
+                                      let v74 = C::block_label(ctx, v37)
+                                      let v75 = constructor_rv_j(ctx, v74)
+                                      let v76 = Some(v75)
                                       // Rule at src/lower/riscv/lower.isle line 145.
-                                      return v79
+                                      return v76
                                     }
                                     _ => ()
                                   }
@@ -1554,17 +1553,17 @@ pub fn constructor_lower_control[C : Context](
         }
         _ => ()
       }
-      let v42 = constructor_lower_value(ctx, v37)
-      let v43 = C::xreg_new(ctx, v42)
-      let v44 = C::emit_block_parameters(ctx, v38, v39)
-      let v45 = C::block_label(ctx, v38)
-      let v46 = constructor_rv_bnez(ctx, v43, v45)
-      let v47 = C::emit_block_parameters(ctx, v40, v41)
-      let v48 = C::block_label(ctx, v40)
-      let v49 = constructor_rv_j(ctx, v48)
-      let v50 = Some(v49)
+      let v39 = constructor_lower_value(ctx, v34)
+      let v40 = C::xreg_new(ctx, v39)
+      let v41 = C::emit_block_parameters(ctx, v35, v36)
+      let v42 = C::block_label(ctx, v35)
+      let v43 = constructor_rv_bnez(ctx, v40, v42)
+      let v44 = C::emit_block_parameters(ctx, v37, v38)
+      let v45 = C::block_label(ctx, v37)
+      let v46 = constructor_rv_j(ctx, v45)
+      let v47 = Some(v46)
       // Rule at src/lower/riscv/lower.isle line 113.
-      return v50
+      return v47
     }
     _ => ()
   }

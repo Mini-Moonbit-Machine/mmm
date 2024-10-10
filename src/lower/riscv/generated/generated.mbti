@@ -12,7 +12,7 @@ fn constructor_arg2[C : Context](C, @core.Value, @core.Value) -> Args
 
 fn constructor_lower[C : Context](C, @core.Insn) -> @riscv.AnyReg?
 
-fn constructor_lower_control[C : Context](C, @core.Control) -> Unit?
+fn constructor_lower_control[C : Context](C, Int, @core.Control) -> Unit?
 
 fn constructor_lower_f_value[C : Context](C, @core.Value) -> @riscv.FReg
 
@@ -271,6 +271,7 @@ pub trait Context {
   imm12_from_neg_val(Self, @core.Value) -> @riscv.Imm12?
   emit_block_parameters(Self, @core.BlockRef, Array[@core.Value]) -> Unit
   emit_fake_epilogue(Self) -> Unit
+  target_color(Self, @core.BlockRef) -> (Int, @core.BlockRef)
   not_double(Self, @core.Value) -> @core.Value?
   lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg

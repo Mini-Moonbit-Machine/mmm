@@ -111,6 +111,9 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   let colored = MutMap::new()
   let seq = []
   fn mark_bb(bb : @core.BasicBlock, color : Int) {
+    if colored.contains(bb.id) {
+      return
+    }
     seq.push(bb.id)
     colored.set(bb.id, color)
     let succs = bb.control.successors()
