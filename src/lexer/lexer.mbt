@@ -109,7 +109,7 @@ fn Lexer::ch_at(self : Lexer, i : Int) -> Char {
   self.buffer[self.index + i]
 }
 
-fn Lexer::numeric_literal(self : Lexer, loc : Loc, neg : Bool) -> Token {
+fn Lexer::numeric_literal(self : Lexer, loc : Loc) -> Token {
   let start = self.index
   self.index += 1
   while true {
@@ -132,10 +132,7 @@ fn Lexer::numeric_literal(self : Lexer, loc : Loc, neg : Bool) -> Token {
       let value = @strconv.parse_double!(
         self.buffer.substring(~start, end=self.index),
       )
-      self.make_token(
-        TokenTag::DoubleLiteral(if neg { -value } else { value }),
-        loc,
-      )
+      self.make_token(TokenTag::DoubleLiteral(value), loc)
     } catch {
       StrConvError(msg) => self.make_error(loc, msg)
     }
@@ -144,10 +141,7 @@ fn Lexer::numeric_literal(self : Lexer, loc : Loc, neg : Bool) -> Token {
       let value = @strconv.parse_int64!(
         self.buffer.substring(~start, end=self.index),
       )
-      self.make_token(
-        TokenTag::IntLiteral(if neg { -value } else { value }),
-        loc,
-      )
+      self.make_token(TokenTag::IntLiteral(value), loc)
     } catch {
       StrConvError(msg) => self.make_error(loc, msg)
     }
@@ -262,10 +256,10 @@ fn Lexer::next(self : Lexer) -> Token {
         return self.make_token(TokenTag::PairedClose(Paired::Brace), loc)
       }
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
-        return self.numeric_literal(loc, false)
+        return self.numeric_literal(loc)
       '+' | '-' =>
         if c == '-' && self.ch_at(1) >= '0' && self.ch_at(1) <= '9' {
-          return self.numeric_literal(loc, true)
+          return self.numeric_literal(loc)
         } else {
           return self.operator(loc, c)
         }
