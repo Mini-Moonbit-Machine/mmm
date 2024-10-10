@@ -1916,7 +1916,7 @@ fn pre_allocate(insns : Array[MInsn]) -> Unit {
 }
 
 fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Li(rd=@riscv.A0, i=init_mem_size))
+  insns.push(MInsn::Li(rd=@riscv.A0, i=init_stack_size))
   insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.A0))
   insns.push(
     MInsn::Call(num_xregs=1, num_fregs=0, target=Label("minimbt_malloc")),

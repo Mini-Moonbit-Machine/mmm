@@ -33,7 +33,7 @@ pub enum TokenTag {
   Kw(Keyword)
   Op(String)
   StrLiteral(String)
-  IntLiteral(Int)
+  IntLiteral(Int64)
   DoubleLiteral(Double)
   PairedOpen(Paired)
   PairedClose(Paired)
@@ -141,7 +141,7 @@ fn Lexer::numeric_literal(self : Lexer, loc : Loc, neg : Bool) -> Token {
     }
   } else {
     try {
-      let value = @strconv.parse_int!(
+      let value = @strconv.parse_int64!(
         self.buffer.substring(~start, end=self.index),
       )
       self.make_token(
@@ -263,7 +263,12 @@ fn Lexer::next(self : Lexer) -> Token {
       }
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
         return self.numeric_literal(loc, false)
-      '+' | '-' => return self.operator(loc, c)
+      '+' | '-' =>
+        if c == '-' && self.ch_at(1) >= '0' && self.ch_at(1) <= '9' {
+          return self.numeric_literal(loc, true)
+        } else {
+          return self.operator(loc, c)
+        }
       '/' =>
         if self.ch_at(1) == '/' {
           self.skip_comment()

@@ -326,7 +326,7 @@ pub fn Parser::parse_expr_with_level(
   let lhs_token = self.next_token!()
   let mut ntokens = lhs_token.ntokens
   let mut lhs = match lhs_token.inner.tag {
-    IntLiteral(n) => Syntax::Int(n)
+    IntLiteral(n) => Syntax::Int(n.to_int())
     DoubleLiteral(n) => Syntax::Double(n)
     Identifer =>
       match lhs_token.inner.span {

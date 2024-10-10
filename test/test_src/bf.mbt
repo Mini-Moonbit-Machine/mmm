@@ -1,27 +1,30 @@
 fn bf(len : Int, prog : Array[Int]) -> Unit {
   let ptr = Array::make(1, 0);
-  let cells = Array::make(1024, 0);
+  let cells = Array::make(1024 * 1024, 0);
   fn aux(pc) {
     if len <= pc {
       pc
     } else {
       let i = prog[pc];
-      if i == 1 { // '>'
+      if i == 62 { // '>'
         ptr[0] = ptr[0] + 1;
         aux(pc + 1)
-      } else if i == 2 { // '<'
+      } else if i == 60 { // '<'
         ptr[0] = ptr[0] - 1;
         aux(pc + 1)
-      } else if i == 3 { // '+'
+      } else if i == 43 { // '+'
         cells[ptr[0]] = cells[ptr[0]] + 1;
         aux(pc + 1)
-      } else if i == 4 { // '-'
+      } else if i == 45 { // '-'
         cells[ptr[0]] = cells[ptr[0]] - 1;
         aux(pc + 1)
-      } else if i == 5 { // '.'
+      } else if i == 46 { // '.'
         print_char(cells[ptr[0]]);
         aux(pc + 1)
-      } else if i == 7 { // '['
+      } else if i == 44 { // ','
+        cells[ptr[0]] = read_char();
+        aux(pc + 1)
+      } else if i == 91 { // '['
         let next_pc = Array::make(1, pc);
         fn lp() {
           if cells[ptr[0]] == 0 {
@@ -33,7 +36,7 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
         };
         lp();
         aux(next_pc[0] + 1)
-      } else if i == 8 { // ']'
+      } else if i == 93 { // ']'
         pc
       } else {
         pc
@@ -45,29 +48,22 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
 };
 
 fn main {
-  let prog = Array::make(23, 0);
-  prog[0] = 3;
-  prog[1] = 3;
-  prog[2] = 3;
-  prog[3] = 3;
-  prog[4] = 3;
-  prog[5] = 3;
-  prog[6] = 3;
-  prog[7] = 3;
-  prog[8] = 7;
-  prog[9] = 1;
-  prog[10] = 3;
-  prog[11] = 3;
-  prog[12] = 3;
-  prog[13] = 3;
-  prog[14] = 3;
-  prog[15] = 3;
-  prog[16] = 3;
-  prog[17] = 3;
-  prog[18] = 2;
-  prog[19] = 4;
-  prog[20] = 8;
-  prog[21] = 1;
-  prog[22] = 5;
-  bf(23, prog)
+  // let len = 128;
+  // let prog = Array::make(len, 0);
+  // fn read_prog(i) {
+  //   let x = read_char();
+  //   if x == -1 {
+  //     ()
+  //   } else { 
+  //     if x == 10 {
+  //       ()
+  //     } else {
+  //       prog[i] = x;
+  //       read_prog(i + 1)
+  //     }
+  //   }
+  // };
+  // read_prog(0);
+  // bf(len, prog)
+  ()
 };

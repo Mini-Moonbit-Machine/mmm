@@ -85,7 +85,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -217,7 +224,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -349,7 +363,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -439,88 +460,12 @@ lp_2:
   .p2align 3
   .globl main_3
   .type main_3, @function
-# leaf false
+# leaf true
 main_3:
 .main_3_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  addi a0, s11, -92
-  andi a1, a0, -8
-  mv s11, a1
-  sw zero, 0(a1)
-  sw zero, 4(a1)
-  sw zero, 8(a1)
-  sw zero, 12(a1)
-  sw zero, 16(a1)
-  sw zero, 20(a1)
-  sw zero, 24(a1)
-  sw zero, 28(a1)
-  sw zero, 32(a1)
-  sw zero, 36(a1)
-  sw zero, 40(a1)
-  sw zero, 44(a1)
-  sw zero, 48(a1)
-  sw zero, 52(a1)
-  sw zero, 56(a1)
-  sw zero, 60(a1)
-  sw zero, 64(a1)
-  sw zero, 68(a1)
-  sw zero, 72(a1)
-  sw zero, 76(a1)
-  sw zero, 80(a1)
-  sw zero, 84(a1)
-  sw zero, 88(a1)
-  li a0, 3
-  sw a0, 0(a1)
-  li a0, 3
-  sw a0, 4(a1)
-  li a0, 3
-  sw a0, 8(a1)
-  li a0, 3
-  sw a0, 12(a1)
-  li a0, 3
-  sw a0, 16(a1)
-  li a0, 3
-  sw a0, 20(a1)
-  li a0, 3
-  sw a0, 24(a1)
-  li a0, 3
-  sw a0, 28(a1)
-  li a0, 7
-  sw a0, 32(a1)
-  li a0, 1
-  sw a0, 36(a1)
-  li a0, 3
-  sw a0, 40(a1)
-  li a0, 3
-  sw a0, 44(a1)
-  li a0, 3
-  sw a0, 48(a1)
-  li a0, 3
-  sw a0, 52(a1)
-  li a0, 3
-  sw a0, 56(a1)
-  li a0, 3
-  sw a0, 60(a1)
-  li a0, 3
-  sw a0, 64(a1)
-  li a0, 3
-  sw a0, 68(a1)
-  li a0, 2
-  sw a0, 72(a1)
-  li a0, 4
-  sw a0, 76(a1)
-  li a0, 8
-  sw a0, 80(a1)
-  li a0, 1
-  sw a0, 84(a1)
-  li a0, 5
-  sw a0, 88(a1)
-  li a0, 23
-  call bf_0
+  addi sp, sp, 0
   mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
+  addi sp, sp, 0
   ret
 
   .p2align 3
@@ -549,32 +494,34 @@ bf_0:
   sd s1, 16(sp)
   sd s0, 24(sp)
   sd ra, 32(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   addi a0, s11, -4
-  andi s3, a0, -8
-  mv s11, s3
-  sw zero, 0(s3)
-  li a0, 4096
-  sub a0, s11, a0
   andi s2, a0, -8
   mv s11, s2
+  sw zero, 0(s2)
   li a0, 1024
+  li a1, 1024
+  mulw a0, a0, a1
+  slli a1, a0, 2
+  sub a1, s11, a1
+  andi s3, a1, -8
+  mv s11, s3
   mv a1, a0
-  mv a0, s2
+  mv a0, s3
   mv a2, zero
   call memseti32
   addi a0, s11, -40
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, aux_1
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s0, 16(a0)
-  sd s3, 24(a0)
-  sd s2, 32(a0)
-  mv s10, a0
-  ld a1, 0(a0)
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, aux_1
+  sd a0, 0(a1)
+  sd s0, 8(a1)
+  sd s1, 16(a1)
+  sd s2, 24(a1)
+  sd s3, 32(a1)
+  mv s10, a1
+  ld a1, 0(a1)
   mv a0, zero
   jalr a1
   mv a0, zero
@@ -593,187 +540,209 @@ bf_0:
 aux_1:
 .aux_1_0:
   addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a3, 16(s0)
-  ld a1, 24(s0)
-  ld a2, 32(s0)
-  bge s1, a0, .aux_1_1
+  sd s3, 0(sp)
+  sd s2, 8(sp)
+  sd s1, 16(sp)
+  sd s0, 24(sp)
+  sd ra, 32(sp)
+  mv s2, s10
+  mv s0, a0
+  lw a0, 8(s2)
+  ld a2, 16(s2)
+  ld a1, 24(s2)
+  ld s1, 32(s2)
+  bge s0, a0, .aux_1_1
   j .aux_1_2
 
 .aux_1_24:
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
+  j .aux_1_25
+
+.aux_1_26:
+  j .aux_1_27
 
 .aux_1_7:
   lw a0, 0(a1)
   lw a1, 0(a1)
   slli a1, a1, 2
-  add a1, a2, a1
+  add a1, s1, a1
   lw a1, 0(a1)
   addi a1, a1, 1
   slli a0, a0, 2
-  add a0, a2, a0
+  add a0, s1, a0
   sw a1, 0(a0)
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
-  j .aux_1_21
+  j .aux_1_24
 
 .aux_1_2:
-  slli a0, s1, 2
-  add a0, a3, a0
-  lw a3, 0(a0)
-  li a0, 1
-  beq a3, a0, .aux_1_3
+  slli a0, s0, 2
+  add a0, a2, a0
+  lw a2, 0(a0)
+  li a0, 62
+  beq a2, a0, .aux_1_3
   j .aux_1_4
 
 .aux_1_12:
-  li a0, 7
-  beq a3, a0, .aux_1_13
+  li a0, 44
+  beq a2, a0, .aux_1_13
   j .aux_1_14
 
 .aux_1_6:
-  li a0, 3
-  beq a3, a0, .aux_1_7
+  li a0, 43
+  beq a2, a0, .aux_1_7
   j .aux_1_8
 
 .aux_1_14:
-  li a0, 8
-  beq a3, a0, .aux_1_15
+  li a0, 91
+  beq a2, a0, .aux_1_15
   j .aux_1_16
 
 .aux_1_5:
   lw a0, 0(a1)
   addi a0, a0, -1
   sw a0, 0(a1)
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
-  j .aux_1_22
+  j .aux_1_25
 
 .aux_1_17:
-  j .aux_1_18
+  mv a0, s0
+  j .aux_1_19
 
 .aux_1_8:
-  li a0, 4
-  beq a3, a0, .aux_1_9
+  li a0, 45
+  beq a2, a0, .aux_1_9
   j .aux_1_10
 
-.aux_1_21:
-  j .aux_1_22
+.aux_1_27:
+  ld s3, 0(sp)
+  ld s2, 8(sp)
+  ld s1, 16(sp)
+  ld s0, 24(sp)
+  ld ra, 32(sp)
+  addi sp, sp, 64
+  ret
+
+.aux_1_25:
+  j .aux_1_26
 
 .aux_1_11:
   lw a0, 0(a1)
   slli a0, a0, 2
-  add a0, a2, a0
+  add a0, s1, a0
   lw a0, 0(a0)
   call minimbt_print_char
   mv a0, zero
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
-  j .aux_1_19
+  j .aux_1_22
+
+.aux_1_21:
+  j .aux_1_22
 
 .aux_1_16:
-  mv a0, s1
-  j .aux_1_17
+  li a0, 93
+  beq a2, a0, .aux_1_17
+  j .aux_1_18
 
 .aux_1_15:
-  mv a0, s1
-  j .aux_1_17
+  addi a0, s11, -4
+  andi s3, a0, -8
+  mv s11, s3
+  sw s0, 0(s3)
+  addi a0, s11, -48
+  andi a0, a0, -8
+  mv s11, a0
+  la a2, lp_2
+  sd a2, 0(a0)
+  sd a1, 8(a0)
+  sd s1, 16(a0)
+  sd s0, 24(a0)
+  sd s2, 32(a0)
+  sd s3, 40(a0)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  mv a0, zero
+  lw a0, 0(s3)
+  addi a0, a0, 1
+  mv s10, s2
+  ld a1, 0(s2)
+  jalr a1
+  j .aux_1_20
 
 .aux_1_22:
   j .aux_1_23
 
 .aux_1_1:
-  mv a0, s1
-  j .aux_1_24
+  mv a0, s0
+  j .aux_1_27
 
 .aux_1_23:
   j .aux_1_24
 
-.aux_1_20:
+.aux_1_13:
+  lw s3, 0(a1)
+  call minimbt_read_char
+  slli a1, s3, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
+  jalr a1
   j .aux_1_21
 
-.aux_1_13:
-  addi a0, s11, -4
-  andi s2, a0, -8
-  mv s11, s2
-  sw s1, 0(s2)
-  addi a0, s11, -48
-  andi a0, a0, -8
-  mv s11, a0
-  la a3, lp_2
-  sd a3, 0(a0)
-  sd a1, 8(a0)
-  sd a2, 16(a0)
-  sd s1, 24(a0)
-  sd s0, 32(a0)
-  sd s2, 40(a0)
-  mv s10, a0
-  ld a0, 0(a0)
-  jalr a0
-  mv a0, zero
-  lw a0, 0(s2)
-  addi a0, a0, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  j .aux_1_18
+.aux_1_20:
+  j .aux_1_21
 
 .aux_1_19:
   j .aux_1_20
 
 .aux_1_4:
-  li a0, 2
-  beq a3, a0, .aux_1_5
+  li a0, 60
+  beq a2, a0, .aux_1_5
   j .aux_1_6
 
 .aux_1_3:
   lw a0, 0(a1)
   addi a0, a0, 1
   sw a0, 0(a1)
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
-  j .aux_1_23
+  j .aux_1_26
 
 .aux_1_9:
   lw a0, 0(a1)
   lw a1, 0(a1)
   slli a1, a1, 2
-  add a1, a2, a1
+  add a1, s1, a1
   lw a1, 0(a1)
   addi a1, a1, -1
   slli a0, a0, 2
-  add a0, a2, a0
+  add a0, s1, a0
   sw a1, 0(a0)
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
+  addi a0, s0, 1
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
-  j .aux_1_20
+  j .aux_1_23
 
 .aux_1_10:
-  li a0, 5
-  beq a3, a0, .aux_1_11
+  li a0, 46
+  beq a2, a0, .aux_1_11
   j .aux_1_12
 
 .aux_1_18:
+  mv a0, s0
   j .aux_1_19
 
   .p2align 3
@@ -801,7 +770,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_4
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -887,7 +863,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -981,7 +964,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1161,10 +1151,17 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$x.10
   la t5, x.1
   sw a0, 0(t5)
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1318,7 +1315,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1512,7 +1516,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_5
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1653,6 +1664,12 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$t.10
   la t5, t.1
   sw a0, 0(t5)
@@ -1660,6 +1677,7 @@ minimbt_main:
   la t5, f.2
   sw a0, 0(t5)
   call T$start_5
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1824,7 +1842,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -1875,7 +1900,6 @@ main_0:
   sd ra, 0(sp)
   li a0, 4623113902481840538
   fmv.d.x fa0, a0
-  fneg.d fa0, fa0
   fabs.d fa0, fa0
   fsqrt.d fa0, fa0
   call minimbt_cos
@@ -1942,7 +1966,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_1
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2122,7 +2153,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_6
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2191,7 +2229,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2312,7 +2357,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2429,7 +2481,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2571,7 +2630,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2810,7 +2876,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_5
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -2927,7 +3000,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_4
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3062,7 +3142,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_4
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3201,7 +3288,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_4
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3322,7 +3416,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3455,7 +3556,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_4
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -3762,6 +3870,12 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$factorial.185
   la t5, factorial.18
   sd a0, 0(t5)
@@ -3772,6 +3886,7 @@ minimbt_main:
   la t5, a.22
   sw a0, 0(t5)
   call T$start_11
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -4165,6 +4280,12 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$limit.10
   la t5, limit.1
   fsd fa0, 0(t5)
@@ -4172,6 +4293,7 @@ minimbt_main:
   la t5, niter.2
   sw a0, 0(t5)
   call T$start_7
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -4196,7 +4318,7 @@ main_6:
 .main_6_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 16
+  li a0, 320
   call mandelbrot_2
   mv a0, zero
   mv a0, zero
@@ -4669,7 +4791,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_7
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5222,7 +5351,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_7
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5262,25 +5398,24 @@ main_0:
   fcvt.w.d a2, fa0, rtz
   li a0, 4616820122002590269
   fmv.d.x fa0, a0
-  fcvt.w.d a4, fa0, rtz
+  fcvt.w.d a1, fa0, rtz
   li a0, 4620569368692376207
   fmv.d.x fa0, a0
-  fneg.d fa0, fa0
   fcvt.w.d a3, fa0, rtz
   bge a3, zero, .main_0_1
   j .main_0_2
 
 .main_0_1:
-  mv a1, a2
+  mv a4, a2
   j .main_0_3
 
 .main_0_2:
-  mv a1, a4
+  mv a4, a1
   j .main_0_3
 
 .main_0_6:
-  add a0, a1, a0
-  bge a4, zero, .main_0_7
+  add a0, a4, a0
+  bge a1, zero, .main_0_7
   j .main_0_8
 
 .main_0_3:
@@ -5308,7 +5443,7 @@ main_0:
   j .main_0_9
 
 .main_0_4:
-  mv a0, a4
+  mv a0, a1
   j .main_0_6
 
   .p2align 3
@@ -5350,7 +5485,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_1
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5471,7 +5613,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5522,7 +5671,6 @@ main_0:
   call minimbt_print_int
   mv a0, zero
   li a0, 456
-  neg a0, a0
   call minimbt_print_int
   mv a0, zero
   addi a0, zero, 789
@@ -5572,7 +5720,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_1
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5725,7 +5880,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -5796,7 +5958,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6124,7 +6293,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_3
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6214,7 +6390,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6459,7 +6642,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -6566,7 +6756,14 @@ minimbt_main:
   call minimbt_malloc
   add a0, s0, a0
   mv s11, a0
+  mv s9, sp
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv sp, a0
   call T$start_2
+  mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
