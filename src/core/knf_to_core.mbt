@@ -793,6 +793,12 @@ fn build_knf_expr(
           let val = self.add_insn(func, bb, insn)
           (ctx, bb, val)
         }
+        "minimbt_read_int" | "minimbt_read_char" => {
+          while true {
+
+          }
+          panic()
+        }
         _ => {
           let (ctx, arg_vals) = self.build_names!(
             free_names, ctx, core, func, bb, args,
