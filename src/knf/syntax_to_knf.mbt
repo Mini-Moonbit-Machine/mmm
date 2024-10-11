@@ -193,7 +193,13 @@ fn build_knf(
         }
         (
           ExternalFunctionApplication("minimbt_" + f, args),
-          self.externals.find(f).unwrap(),
+          match self.externals.find(f).unwrap() {
+            @types.Type::Fun(_, t) => t
+            _ =>
+              fail!(
+                "not a function: \{fv} : \{self.externals.find(f).unwrap()}",
+              )
+          },
           let_list,
         )
       } else {

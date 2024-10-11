@@ -34,23 +34,25 @@ fn quicksort(arr: Array[Int], low: Int, high: Int) -> Unit {
 };
 
 fn main {
-  let arr = Array::make(6, 0);
-  arr[0] = 10;
-  arr[1] = 7;
-  arr[2] = 8;
-  arr[3] = 9;
-  arr[4] = 1;
-  arr[5] = 5;
-  quicksort(arr, 0, 5);
-  print_int(arr[0]);
-  print_endline();
-  print_int(arr[1]);
-  print_endline();
-  print_int(arr[2]);
-  print_endline();
-  print_int(arr[3]);
-  print_endline();
-  print_int(arr[4]);
-  print_endline();
-  print_int(arr[5])
+  let len = read_int();
+  let arr = Array::make(len, 0);
+  fn input(i: Int) {
+    if i <= len - 1 {
+      arr[i] = read_int();
+      input(i + 1)
+    } else {
+      ()
+    }
+  };
+  input(0);
+  quicksort(arr, 0, len - 1);
+  fn output(i: Int) {
+    if i <= len - 1 {
+      print_int(arr[i]);
+      output(i + 1)
+    } else {
+      ()
+    }
+  };
+  output(0)
 }

@@ -550,7 +550,9 @@ fn build_knf_expr(
       let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
       let n1_ty = self.get_type!(ctx, core, func, bb, n1_val)
       let n2_ty = self.get_type!(ctx, core, func, bb, n2_val)
-      guard n1_ty == n2_ty else { fail!("type mismatch \{n1_ty} != \{n2_ty}") }
+      guard n1_ty == n2_ty else {
+        fail!("type mismatch \{n1_ty} != \{n2_ty} of \{knf}")
+      }
       let insn = Insn::Op(
         ty=n1_ty,
         op=Op::from_knf(knf).unwrap(),
@@ -792,12 +794,6 @@ fn build_knf_expr(
           let insn = Insn::Op(ty=Type::Double, op=Op::Sqrt, args=[arg_vals[0]])
           let val = self.add_insn(func, bb, insn)
           (ctx, bb, val)
-        }
-        "minimbt_read_int" | "minimbt_read_char" => {
-          while true {
-
-          }
-          panic()
         }
         _ => {
           let (ctx, arg_vals) = self.build_names!(
