@@ -61,7 +61,7 @@ pub fn KnfInterpreter::eval(
 ) -> Value!Failure {
   match expr {
     Unit => Unit
-    Int(i) => Int(i)
+    Int(i) => Int(i.to_int())
     Double(d) => Double(d)
     Var(v) => find!(env, v)
     Neg(x) => {

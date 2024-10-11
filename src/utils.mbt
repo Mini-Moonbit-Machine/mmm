@@ -168,7 +168,7 @@ pub fn Syntax::from_json(json : Json) -> Syntax! {
           if i.to_int().to_double() != i {
             fail!("invalid json: an int should be an integer")
           } else {
-            Int(i.to_int())
+            Int(i.to_int64())
           }
         None => fail!("invalid json: should contain a number as int")
       }

@@ -123,6 +123,7 @@ fn build_knf(
   match node {
     Unit => (Unit, Unit, let_list)
     Int(i) => (Int(i), Int, let_list)
+    Neg(Int(i), ..) => (Int(-i), Int, let_list)
     Bool(b) => (Int(if b { 1 } else { 0 }), Int, let_list)
     Double(d) => (Double(d), Double, let_list)
     Var(x) =>

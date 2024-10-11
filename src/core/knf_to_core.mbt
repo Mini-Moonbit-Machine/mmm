@@ -533,7 +533,7 @@ fn build_knf_expr(
 ) -> (Ctx, BasicBlock, Value)!Failure {
   match knf {
     Unit => (ctx, bb, Value::Unit)
-    Int(i) => (ctx, bb, Value::Int32(val=i))
+    Int(i) => (ctx, bb, Value::Int32(val=i.to_int()))
     Double(d) => (ctx, bb, Value::Double(val=d))
     Neg(n) | FNeg(n) => {
       let (ctx, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)

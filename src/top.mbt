@@ -1,7 +1,7 @@
 pub enum Syntax {
   Unit
   Bool(Bool) // true false
-  Int(Int) // int
+  Int(Int64) // int
   Double(Double) // double
   Var(String) // _
   Tuple(Array[Syntax]) // (_, _, _)
