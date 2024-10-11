@@ -14,6 +14,10 @@ pub type BlockRef Id derive(Eq, Hash)
 
 pub type InsnRef Id derive(Eq, Hash)
 
+pub fn InsnRef::default() -> InsnRef {
+  { id: -1 }
+}
+
 pub type BlockParamRef Id derive(Eq, Hash)
 
 pub type FnParamRef Id derive(Eq, Hash)
@@ -271,6 +275,60 @@ pub fn Block::basic_block(self : Block, func : Fn) -> BasicBlock {
   }
 }
 
+// BasicBlock support sparse collection operation
+pub fn iter(self : BasicBlock) -> Iter[InsnRef] {
+  Iter::new(
+    fn(yield) {
+      for i = 0, len = self.seq.length(); i < len; i = i + 1 {
+        if self.seq[i] == InsnRef::default() {
+          continue
+        }
+        if yield(self.seq[i]) == IterEnd {
+          break IterEnd
+        }
+      } else {
+        IterContinue
+      }
+    },
+  )
+}
+
+pub fn iter2(self : BasicBlock) -> Iter2[Int, InsnRef] {
+  Iter2::new(
+    fn(yield) {
+      for i = 0, len = self.seq.length(); i < len; i = i + 1 {
+        if self.seq[i] == InsnRef::default() {
+          continue
+        }
+        if yield(i, self.seq[i]) == IterEnd {
+          break IterEnd
+        }
+      } else {
+        IterContinue
+      }
+    },
+  )
+}
+
+pub fn BasicBlock::pack_indices(self : BasicBlock) -> Unit {
+  self.seq.retain(fn(insn) { insn != InsnRef::default() })
+}
+
+pub fn BasicBlock::remove_insn(
+  self : BasicBlock,
+  index : Int,
+  func : Fn
+) -> Unit!Failure {
+  if index < 0 || index >= self.seq.length() {
+    fail!("instruction index out of range")
+  }
+  // invalidate instruction reference
+  let insn = self.seq[index]
+  // TODO: cascade delete the children of instruction
+  func.insns.remove(insn)
+  self.seq[index] = InsnRef::default()
+}
+
 pub fn Insn::ty(self : Insn) -> Type {
   match self {
     Op(~ty, ..)
@@ -280,6 +338,45 @@ pub fn Insn::ty(self : Insn) -> Type {
     | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Store(~ty, ..) | Load(~ty, ..) =>
       ty
   }
+}
+
+pub fn Insn::operands(self : Insn) -> Array[Value] {
+  let operands = []
+  match self {
+    Op(~args, ..) | Call(~args, ..) | ExtCall(~args, ..) =>
+      operands.append(args)
+    Apply(~f, ~args, ..) => {
+      operands.push(f)
+      operands.append(args)
+    }
+    Alloc(~fills, ..) =>
+      for fill in fills {
+        match fill {
+          Zero => ()
+          Init(~val) | Field(~val, ..) => operands.push(val)
+        }
+      }
+    Store(~ma, ~val, ..) => {
+      match ma {
+        Field(~val, ..) => operands.push(val)
+        Offset(~val, ~offset, ..) => {
+          operands.push(val)
+          operands.push(offset)
+        }
+      }
+      operands.push(val)
+    }
+    Load(~ma, ..) =>
+      match ma {
+        Field(~val, ..) => operands.push(val)
+        Offset(~val, ~offset, ..) => {
+          operands.push(val)
+          operands.push(offset)
+        }
+      }
+    LoadSymbol(..) => ()
+  }
+  operands
 }
 
 pub fn Type::size(self : Type) -> Int {
