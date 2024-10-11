@@ -246,7 +246,7 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
         fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
         fdef.ty,
       )
-      if new_args_length > 6 {
+      if new_args_length > 4 {
         // we don't want to lift functions with too many arguments
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
