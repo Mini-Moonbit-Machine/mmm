@@ -179,3 +179,71 @@ export fn mincaml_create_ptr_array(n: u32, init: u32) [*]u32 {
 export fn mincaml_create_float_array(n: u32, v: f64) [*]f64 {
     return minimbt_create_float_array(n, v);
 }
+
+export fn __my_read_int() i32 {
+    var buf: [512]u8 = undefined;
+    if (stdin.reader().readUntilDelimiterOrEof(buf[0..], '\n') catch return std.math.minInt(i32)) |i| {
+        return std.fmt.parseInt(i32, i, 10) catch return std.math.minInt(i32);
+    } else {
+        return std.math.minInt(i32);
+    }
+}
+
+export fn __my_read_char() i32 {
+    var buf: [1]u8 = undefined;
+    const sz = stdin.read(buf[0..]) catch return -1;
+    if (sz > 0) {
+        return buf[0];
+    } else {
+        return -1;
+    }
+}
+
+export fn __my_print_char(i: i32) void {
+    const c1: u32 = @intCast(i);
+    var c2: [1]u8 = undefined;
+    c2[0] = @truncate(c1);
+    _ = std.os.linux.write(1, &c2, 1);
+}
+
+export fn __my_print_endline() void {
+    @call(.never_inline, __my_print_char, .{'\n'});
+}
+
+export fn __my_print_int(x: i32) void {
+    const int_value = x;
+    const value_info = @typeInfo(i32).Int;
+
+    // The type must have the same size as `base` or be wider in order for the
+    // division to work
+    const min_int_bits = comptime @max(value_info.bits, 8);
+    const MinInt = std.meta.Int(.unsigned, min_int_bits);
+
+    const abs_value = @abs(int_value);
+    // The worst case in terms of space needed is base 2, plus 1 for the sign
+    var buf: [1 + @max(@as(comptime_int, value_info.bits), 1)]u8 = undefined;
+
+    var a: MinInt = abs_value;
+    var index: usize = buf.len;
+
+    while (true) {
+        const digit = a % 10;
+        index -= 1;
+        const d: u8 = @intCast(digit);
+        buf[index] = d + '0';
+        a /= 10;
+        if (a == 0) break;
+    }
+
+    if (value_info.signedness == .signed) {
+        if (int_value < 0) {
+            // Negative integer
+            index -= 1;
+            buf[index] = '-';
+        }
+    }
+
+    for (buf[index..]) |elem| {
+        @call(.never_inline, __my_print_char, .{elem});
+    }
+}

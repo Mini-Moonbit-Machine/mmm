@@ -529,7 +529,15 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   self.is_leaf = false
   @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
-  @generated.constructor_rv_call(self, Label(f), nx, nf)
+  let map = {
+    "minimbt_read_int": "my_read_int",
+    "minimbt_read_char": "my_read_char",
+    "minimbt_print_int": "my_print_int",
+    "minimbt_print_char": "my_print_char",
+    "minimbt_print_endline": "my_print_endline",
+    "minimbt_print_newline": "my_print_newline",
+  }
+  @generated.constructor_rv_call(self, Label(map.get(f).or(f)), nx, nf)
   let r = self.copy_return_value(ty)
   @generated.constructor_rv_restore_ctx2(self)
   r
