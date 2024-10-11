@@ -257,12 +257,7 @@ fn Lexer::next(self : Lexer) -> Token {
       }
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
         return self.numeric_literal(loc)
-      '+' | '-' =>
-        if c == '-' && self.ch_at(1) >= '0' && self.ch_at(1) <= '9' {
-          return self.numeric_literal(loc)
-        } else {
-          return self.operator(loc, c)
-        }
+      '+' | '-' => return self.operator(loc, c)
       '/' =>
         if self.ch_at(1) == '/' {
           self.skip_comment()

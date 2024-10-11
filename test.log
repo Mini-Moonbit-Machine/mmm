@@ -537,7 +537,8 @@ read_ch_until_newline_or_eof_0:
   bne a1, a0, .read_ch_until_newline_or_eof_0_4
 
 .read_ch_until_newline_or_eof_0_3:
-  li a0, -1
+  li a0, 1
+  neg a0, a0
 
 .read_ch_until_newline_or_eof_0_5:
 
@@ -547,7 +548,8 @@ read_ch_until_newline_or_eof_0:
   ret
 
 .read_ch_until_newline_or_eof_0_1:
-  li a0, -1
+  li a0, 1
+  neg a0, a0
   j .read_ch_until_newline_or_eof_0_6
 
 .read_ch_until_newline_or_eof_0_4:
@@ -922,21 +924,22 @@ read_prog_6:
   sd s1, 8(sp)
   sd s0, 16(sp)
   sd ra, 24(sp)
-  mv s2, s10
-  mv s1, a0
-  ld s0, 8(s2)
+  mv s0, s10
+  mv s2, a0
+  ld s1, 8(s0)
   call read_ch_until_newline_or_eof_0
   mv a1, a0
-  li a0, -1
+  li a0, 1
+  neg a0, a0
   beq a1, a0, .read_prog_6_1
 
 .read_prog_6_2:
-  slli a0, s1, 2
-  add a0, s0, a0
+  slli a0, s2, 2
+  add a0, s1, a0
   sw a1, 0(a0)
-  addi a0, s1, 1
-  mv s10, s2
-  ld a1, 0(s2)
+  addi a0, s2, 1
+  mv s10, s0
+  ld a1, 0(s0)
   jalr a1
   mv a0, zero
 
@@ -949,8 +952,8 @@ read_prog_6:
   ret
 
 .read_prog_6_1:
-  mv a0, s1
-  mv a1, s0
+  mv a0, s2
+  mv a1, s1
   call bf_1
   mv a0, zero
   j .read_prog_6_3
@@ -1657,6 +1660,7 @@ useless_0:
 .useless_0_0:
   addi sp, sp, -16
   li a0, 10
+  addi a0, a0, -1
   addi sp, sp, 16
   ret
 
@@ -2314,8 +2318,9 @@ main_0:
 .main_0_0:
   addi sp, sp, -48
   sd ra, 0(sp)
-  li a0, -4600258134372935270
+  li a0, 4623113902481840538
   fmv.d.x fa0, a0
+  fneg.d fa0, fa0
   fabs.d fa0, fa0
   fsqrt.d fa0, fa0
   call minimbt_cos
@@ -3374,14 +3379,55 @@ large_stack_end:
   .zero 16
   .p2align 2
   .text
-  .globl main_1
-  .type main_1, @function
+  .globl T$_1_0
+  .type T$_1_0, @function
+# leaf true
+T$_1_0:
+.T$_1_0_0:
+  addi sp, sp, -16
+  li a0, -2147483648
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_3
+  .type T$start_3, @function
 # leaf false
-main_1:
-.main_1_0:
+T$start_3:
+.T$start_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  la a0, int_min.1
+  call main_2
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$int_min.21
+  .type T$int_min.21, @function
+# leaf true
+T$int_min.21:
+.T$int_min.21_0:
+  addi sp, sp, -16
+  la a0, _1
+  lw a0, 0(a0)
+  neg a0, a0
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main_2
+  .type main_2, @function
+# leaf false
+main_2:
+.main_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  la a0, int_min.2
   lw a0, 0(a0)
   call minimbt_print_int
   mv a0, zero
@@ -3418,10 +3464,13 @@ minimbt_main:
   mv s11, a0
   mv s9, sp
   la sp, large_stack_end
-  call T$int_min.10
-  la t5, int_min.1
+  call T$_1_0
+  la t5, _1
   sw a0, 0(t5)
-  call T$start_2
+  call T$int_min.21
+  la t5, int_min.2
+  sw a0, 0(t5)
+  call T$start_3
   mv sp, s9
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -3440,43 +3489,22 @@ minimbt_main:
   ret
 
   .p2align 2
-  .text
-  .globl T$int_min.10
-  .type T$int_min.10, @function
-# leaf true
-T$int_min.10:
-.T$int_min.10_0:
-  addi sp, sp, -16
-  li a0, -2147483648
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_2
-  .type T$start_2, @function
-# leaf false
-T$start_2:
-.T$start_2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main_1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
   .bss
-  .globl int_min.1
-  .type int_min.1, @object
-int_min.1:
+  .globl _1
+  .type _1, @object
+_1:
   .zero 4
   .p2align 2
   .bss
   .globl start
   .type start, @object
 start:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl int_min.2
+  .type int_min.2, @object
+int_min.2:
   .zero 4
 
 
@@ -6048,24 +6076,25 @@ main_0:
   fcvt.w.d a2, fa0, rtz
   li a0, 4616820122002590269
   fmv.d.x fa0, a0
-  fcvt.w.d a1, fa0, rtz
-  li a0, -4602802668162399601
+  fcvt.w.d a4, fa0, rtz
+  li a0, 4620569368692376207
   fmv.d.x fa0, a0
+  fneg.d fa0, fa0
   fcvt.w.d a3, fa0, rtz
   blt a3, zero, .main_0_2
 
 .main_0_1:
-  mv a4, a2
+  mv a1, a2
 
 .main_0_3:
   blt zero, a2, .main_0_5
 
 .main_0_4:
-  mv a0, a1
+  mv a0, a4
 
 .main_0_6:
-  add a0, a4, a0
-  blt a1, zero, .main_0_8
+  add a0, a1, a0
+  blt a4, zero, .main_0_8
 
 .main_0_7:
   mv a1, a3
@@ -6079,7 +6108,7 @@ main_0:
   ret
 
 .main_0_2:
-  mv a4, a1
+  mv a1, a4
   j .main_0_3
 
 .main_0_5:
@@ -6325,7 +6354,8 @@ main_0:
   li a0, 123
   call minimbt_print_int
   mv a0, zero
-  li a0, -456
+  li a0, 456
+  neg a0, a0
   call minimbt_print_int
   mv a0, zero
   addi a0, zero, 789

@@ -1,6 +1,6 @@
 fn useless(x: Int) -> Int {
   let y = x;
-  10
+  10-1
 };
 fn dummy(x: Int) -> Int {
   x
