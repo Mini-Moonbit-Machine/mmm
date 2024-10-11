@@ -104,7 +104,9 @@ fn make_name(self : KnfEnv, name : String) -> Name!Failure {
     if name == "_" {
       self.new_temp()
     } else {
-      Name::from_string!(name)
+      let new_id = self.counter
+      self.counter += 1
+      Name::from_string!(name + new_id.to_string())
     }
   } catch {
     _ => fail!("invalid variable name: \{name}")

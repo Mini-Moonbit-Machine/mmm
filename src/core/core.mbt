@@ -351,7 +351,7 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
     FnParam(~fref, ~fpref) => {
       let func = match core.funcs.get(fref) {
         Some(func) => func
-        None => fail!("func not found")
+        None => fail!("ty: fn_param \{fref} - func not found")
       }
       match func.ty {
         DirectFn(~params, ..) => params[fpref.id]
@@ -362,7 +362,7 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
     Mem(~fref, ~mref) => {
       let func = match core.funcs.get(fref) {
         Some(func) => func
-        None => fail!("func not found")
+        None => fail!("ty: mem - func not found")
       }
       let mem = match func.mems.get(mref) {
         Some(mem) => mem
@@ -376,14 +376,14 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
     Fn(~fref) => {
       let func = match core.funcs.get(fref) {
         Some(func) => func
-        None => fail!("func not found")
+        None => fail!("ty: fn \{fref} - func not found")
       }
       func.ty
     }
     Self(~fref) => {
       let func = match core.funcs.get(fref) {
         Some(func) => func
-        None => fail!("func not found")
+        None => fail!("ty: self \{fref} - func not found")
       }
       guard (match func.ty {
         ClosureFn(..) => true

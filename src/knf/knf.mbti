@@ -1,13 +1,29 @@
 package moonbitlang/minimbt/knf
 
+alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/core/immut/hashmap as @hashmap
 alias @moonbitlang/minimbt as @minimbt
 
 // Values
+fn knf_fdef_free_vars(FuncDef) -> @hashset.T[@minimbt.Name]
+
+fn knf_free_vars(Knf) -> @hashset.T[@minimbt.Name]
+
 fn knf_max_counter(Knf) -> Int
 
 // Types and methods
 type Binding
+
+pub struct FreeSetClosure {
+  pub ctx : Map[@minimbt.Name, @hashset.T[@minimbt.Name]]
+  pub changed : Bool
+}
+impl FreeSetClosure {
+  compute(Self, Knf) -> (@hashset.T[@minimbt.Name], Map[@minimbt.Name, @hashset.T[@minimbt.Name]])
+  knf_fdef_free_vars_closure(Self, FuncDef) -> @hashset.T[@minimbt.Name]
+  knf_free_vars_closure(Self, Knf) -> @hashset.T[@minimbt.Name]
+  new() -> Self
+}
 
 pub struct FuncDef {
   pub name : @minimbt.Name
@@ -61,9 +77,23 @@ type KnfEnv
 impl KnfEnv {
   init_counter_from_existing(Self, Knf) -> Unit
   new(@hashmap.T[String, @minimbt.Type]) -> Self
-  opt_pass(Self, Knf) -> Knf
   syntax_preprocess(Self, @minimbt.Syntax, Bool, Bool) -> @minimbt.Syntax
   to_knf(Self, @minimbt.Syntax) -> Knf!Failure
+}
+
+pub struct LambdaLiftEnv {
+  pub name_ctx : @hashmap.T[@minimbt.Name, (@minimbt.Name, Array[@minimbt.Name], Array[@minimbt.Name], @minimbt.Type)]
+  pub type_ctx : @hashmap.T[@minimbt.Name, @minimbt.Type]
+  pub free_set_closure : Map[@minimbt.Name, @hashset.T[@minimbt.Name]]
+  pub top_bindings : Array[Binding]
+  pub top_names : @hashset.T[@minimbt.Name]
+  pub lifted_counter : UInt
+  pub closure_counter : UInt
+}
+impl LambdaLiftEnv {
+  eta_expand(Self, @minimbt.Name) -> (Array[Binding], @minimbt.Name, Self)
+  go(Self, Knf) -> Knf
+  new() -> Self
 }
 
 type PrettyKnf

@@ -6,6 +6,8 @@ typealias SymbolCtx = @immut/hashmap.T[@knf.Name, SymbolRef]
 
 typealias FnCtx = @immut/hashmap.T[@knf.Name, FnRef]
 
+typealias FnNameCtx = @immut/hashmap.T[FnRef, @knf.Name]
+
 typealias NameCtx = @immut/hashmap.T[@knf.Name, Value]
 
 typealias TypeCtx = @immut/hashmap.T[@knf.Name, Type]
@@ -28,6 +30,7 @@ pub struct Ctx {
   ty_ctx : TypeCtx // types of names
   name_ctx : NameCtx // local names
   top_fn_ctx : FnCtx // top-level function names
+  top_fref_name_ctx : FnNameCtx // top-level function names
   top_sym_ctx : SymbolCtx // top-level thunks names
   rename_ctx : RenameCtx // rename names
 } derive(Show)
@@ -37,6 +40,7 @@ fn Ctx::new() -> Ctx {
     ty_ctx: TypeCtx::new(),
     name_ctx: NameCtx::new(),
     top_fn_ctx: FnCtx::new(),
+    top_fref_name_ctx: FnNameCtx::new(),
     top_sym_ctx: SymbolCtx::new(),
     rename_ctx: RenameCtx::new(),
   }
@@ -52,6 +56,7 @@ fn Ctx::add_local_name_value_ty(
     ty_ctx: self.ty_ctx.add(name, ty),
     name_ctx: self.name_ctx.add(name, val),
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx,
   }
@@ -62,6 +67,7 @@ fn Ctx::add_name_ty(self : Ctx, name : @knf.Name, ty : Type) -> Ctx {
     ty_ctx: self.ty_ctx.add(name, ty),
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx,
   }
@@ -72,6 +78,7 @@ fn Ctx::add_local_name_value(self : Ctx, name : @knf.Name, val : Value) -> Ctx {
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx.add(name, val),
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx,
   }
@@ -82,6 +89,7 @@ fn Ctx::add_top_fn_value(self : Ctx, name : @knf.Name, fref : FnRef) -> Ctx {
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx.add(name, fref),
+    top_fref_name_ctx: self.top_fref_name_ctx.add(fref, name),
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx,
   }
@@ -92,6 +100,7 @@ fn Ctx::add_top_sym_value(self : Ctx, name : @knf.Name, sym : SymbolRef) -> Ctx 
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx.add(name, sym),
     rename_ctx: self.rename_ctx,
   }
@@ -102,6 +111,7 @@ fn Ctx::add_rename(self : Ctx, name : @knf.Name, new_name : @knf.Name) -> Ctx {
     ty_ctx: self.ty_ctx,
     name_ctx: self.name_ctx,
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx.add(name, new_name),
   }
@@ -113,6 +123,7 @@ fn Ctx::enter_func_def(self : Ctx) -> Ctx {
     ty_ctx: self.ty_ctx,
     name_ctx: NameCtx::new(),
     top_fn_ctx: self.top_fn_ctx,
+    top_fref_name_ctx: self.top_fref_name_ctx,
     top_sym_ctx: self.top_sym_ctx,
     rename_ctx: self.rename_ctx,
   }
@@ -199,19 +210,37 @@ fn add_symbol(
   sym_ref
 }
 
+fn next_fn_ref(self : CoreEnv) -> FnRef {
+  let fref = FnRef({ id: self.func_counter.val })
+  self.func_counter.val += 1
+  fref
+}
+
+fn make_top_func_def_type(self : CoreEnv, fd : @knf.FuncDef) -> Type!Failure {
+  let { ty, args, .. } = fd
+  let tys = []
+  for arg in args {
+    let (_, ty) = arg
+    let ty = self.lower_type!(ty, false)
+    tys.push(ty)
+  }
+  let res_ty = self.lower_type!(ty, false)
+  Type::DirectFn(params=tys, ty=res_ty)
+}
+
 fn build_func_def(
   self : CoreEnv,
   ctx : Ctx,
   core : Core,
+  fref : FnRef,
   fd : @knf.FuncDef,
   free_names : FreeNames,
   top : Bool
-) -> FnRef!Failure {
+) -> Unit!Failure {
   let { name, ty, args, body } = fd
   let mut self = self
   let mut ctx = ctx.enter_func_def()
-  let func_ref = FnRef({ id: self.func_counter.val })
-  let new_name = name.to_string() + "_" + self.func_counter.val.to_string()
+  let new_name = name.to_string() + "_" + fref._.id.to_string()
   let new_name = try {
     @types.Name::from_string!(new_name)
   } catch {
@@ -225,25 +254,25 @@ fn build_func_def(
     let (name, ty) = arg
     let ty = self.lower_type!(ty, false)
     tys.push(ty)
-    let val = Value::FnParam(fref=func_ref, fpref=FnParamRef(Id::new(i)))
+    let val = Value::FnParam(~fref, fpref=FnParamRef(Id::new(i)))
     ctx = ctx.add_local_name_value(name, val)
     ctx = ctx.add_name_ty(name, ty)
   }
   let res_ty = self.lower_type!(ty, false)
   let ty = if top {
     ctx = ctx.add_rename(name, new_name)
-    ctx = ctx.add_top_fn_value(new_name, func_ref)
+    ctx = ctx.add_top_fn_value(new_name, fref)
     ctx = ctx.add_name_ty(new_name, DirectFn(params=tys, ty=res_ty))
     Type::DirectFn(params=tys, ty=res_ty)
   } else {
     ctx = ctx.add_rename(name, new_name)
-    ctx = ctx.add_local_name_value(new_name, Value::Self(fref=func_ref))
+    ctx = ctx.add_local_name_value(new_name, Value::Self(~fref))
     ctx = ctx.add_name_ty(new_name, ClosureFn(params=tys, ty=res_ty))
     Type::ClosureFn(params=tys, ty=res_ty)
   }
   let entry_block_ref = BlockRef({ id: self.func_block_counter })
   let func = Fn::{
-    id: func_ref,
+    id: fref,
     name: new_name.to_string(),
     ty,
     fvars: [],
@@ -256,15 +285,14 @@ fn build_func_def(
   // It shouldn't cause problem before backend code generation
   // Days later:
   // It has caused problem
-  core.names.set(new_name.to_string(), func_ref)
-  core.funcs.set(func_ref, func)
+  core.names.set(new_name.to_string(), fref)
+  core.funcs.set(fref, func)
   let entry_block = self.add_basic_block(func, [])
   let (_, exit_block, exit_val) = self.build_knf_expr!(
     free_names, ctx, core, func, entry_block, body,
   )
   guard exit_block.control == Control::Panic else { fail!("expect panic") }
   exit_block.control = Control::Return(args=[exit_val])
-  func_ref
 }
 
 // In some cases we get a direct function declared in the top level
@@ -417,13 +445,25 @@ fn build_names(
 
 fn get_type(
   self : CoreEnv,
+  ctx : Ctx,
   core : Core,
   func : Fn,
   _bb : BasicBlock,
   val : Value
 ) -> Type!Failure {
   let _ = self
-  val.ty!(core, func)
+  match val {
+    // in this stage, core may not hold enough information for fn ref value
+    // extract it from type context
+    Fn(~fref) => {
+      let name = ctx.top_fref_name_ctx.find(fref).unwrap()
+      match ctx.ty_ctx.find(name) {
+        Some(ty) => ty
+        None => fail!("failed to find type for \{fref}")
+      }
+    }
+    _ => val.ty!(core, func)
+  }
 }
 
 fn get_external_function_type(self : CoreEnv, name : String) -> Type!Failure {
@@ -497,7 +537,7 @@ fn build_knf_expr(
     Double(d) => (ctx, bb, Value::Double(val=d))
     Neg(n) | FNeg(n) => {
       let (ctx, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)
-      let n_ty = self.get_type!(core, func, bb, n_val)
+      let n_ty = self.get_type!(ctx, core, func, bb, n_val)
       let insn = Insn::Op(ty=n_ty, op=Op::Neg, args=[n_val])
       let val = self.add_insn(func, bb, insn)
       (ctx, bb, val)
@@ -508,8 +548,8 @@ fn build_knf_expr(
     | FSub(n1, n2) | Mul(n1, n2) | FMul(n1, n2) | Div(n1, n2) | FDiv(n1, n2) => {
       let (ctx, n1_val) = self.build_name!(free_names, ctx, core, func, bb, n1)
       let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
-      let n1_ty = self.get_type!(core, func, bb, n1_val)
-      let n2_ty = self.get_type!(core, func, bb, n2_val)
+      let n1_ty = self.get_type!(ctx, core, func, bb, n1_val)
+      let n2_ty = self.get_type!(ctx, core, func, bb, n2_val)
       guard n1_ty == n2_ty else { fail!("type mismatch \{n1_ty} != \{n2_ty}") }
       let insn = Insn::Op(
         ty=n1_ty,
@@ -542,8 +582,8 @@ fn build_knf_expr(
       )
       // NOTICE: merge ctx1 instead of ctx
       self.merge(ctx1, free_names, e2_free_names)
-      let then_ty = self.get_type!(core, func, bb, then_val)
-      let else_ty = self.get_type!(core, func, bb, else_val)
+      let then_ty = self.get_type!(ctx, core, func, bb, then_val)
+      let else_ty = self.get_type!(ctx, core, func, bb, else_val)
       guard then_ty == else_ty else { fail!("type mismatch") }
       let res_bb = self.add_basic_block(func, [then_ty])
       let then_cont = Control::Jump(target=res_bb.id, args=[then_val])
@@ -583,7 +623,8 @@ fn build_knf_expr(
     }
     LetRec(fd, other) => {
       let sub_free_names = FreeNames::new()
-      let fdv = self.build_func_def!(ctx, core, fd, sub_free_names, false)
+      let fdv = self.next_fn_ref()
+      self.build_func_def!(ctx, core, fdv, fd, sub_free_names, false)
       self.merge(ctx, free_names, sub_free_names)
       // always generate a closure for inner let rec
       let (ctx, clos) = self.build_closure!(
@@ -592,7 +633,7 @@ fn build_knf_expr(
       let ctx = ctx.add_local_name_value_ty(
         fd.name,
         clos,
-        self.get_type!(core, func, bb, clos),
+        self.get_type!(ctx, core, func, bb, clos),
       )
       self.build_knf_expr!(free_names, ctx, core, func, bb, other)
     }
@@ -603,7 +644,7 @@ fn build_knf_expr(
       let (ctx, arg_vals) = self.build_names!(
         free_names, ctx, core, func, bb, args,
       )
-      let f_ty = self.get_type!(core, func, bb, f_val)
+      let f_ty = self.get_type!(ctx, core, func, bb, f_val)
       let insn = match f_ty {
         ClosureFn(~ty, ..) => Insn::Apply(~ty, f=f_val, args=arg_vals)
         DirectFn(~ty, ..) =>
@@ -620,7 +661,7 @@ fn build_knf_expr(
       let (ctx, xs_val) = self.build_names!(free_names, ctx, core, func, bb, xs)
       let tys = []
       for x in xs_val {
-        tys.push(self.get_type!(core, func, bb, x))
+        tys.push(self.get_type!(ctx, core, func, bb, x))
       }
       let ty = Type::Tuple(fields=tys)
       let mem = self.add_mem(
@@ -655,7 +696,7 @@ fn build_knf_expr(
       let (ctx, idx_val) = self.build_name!(
         free_names, ctx, core, func, bb, idx,
       )
-      let ty = self.get_type!(core, func, bb, x_val)
+      let ty = self.get_type!(ctx, core, func, bb, x_val)
       let ty = match ty {
         Array(~elem) => elem
         _ => fail!("not an array: \{ty}")
@@ -673,7 +714,7 @@ fn build_knf_expr(
         free_names, ctx, core, func, bb, idx,
       )
       let (ctx, y_val) = self.build_name!(free_names, ctx, core, func, bb, y)
-      let ty = match self.get_type!(core, func, bb, x_val) {
+      let ty = match self.get_type!(ctx, core, func, bb, x_val) {
         Array(~elem) => elem
         _ => fail!("not an array")
       }
@@ -701,7 +742,7 @@ fn build_knf_expr(
             "minimbt_create_array" => Type::Array(elem=Type::Int32)
             "minimbt_create_float_array" => Type::Array(elem=Type::Double)
             "minimbt_create_ptr_array" => {
-              let arg_ty = self.get_type!(core, func, bb, arg_vals[1])
+              let arg_ty = self.get_type!(ctx, core, func, bb, arg_vals[1])
               Type::Array(elem=arg_ty)
             }
             _ => fail!("not supported")
@@ -769,6 +810,36 @@ fn build_knf_expr(
   }
 }
 
+fn update_ctx_for_top_level_recursive_group(
+  self : CoreEnv,
+  ctx : Ctx,
+  defs : Array[@knf.FuncDef]
+) -> Ctx!Failure {
+  let mut ctx = ctx
+  for fdef in defs {
+    let fref = self.next_fn_ref()
+    let fty = self.make_top_func_def_type!(fdef)
+    ctx = ctx.add_name_ty(fdef.name, fty)
+    ctx = ctx.add_top_fn_value(fdef.name, fref)
+  }
+  ctx
+}
+
+fn collect_top_level_recursive_group(
+  self : CoreEnv,
+  ctx : Ctx,
+  defs : Array[@knf.FuncDef],
+  knf : Knf
+) -> Knf!Failure {
+  match knf {
+    LetRec(fd, other) => {
+      defs.push(fd)
+      self.collect_top_level_recursive_group!(ctx, defs, other)
+    }
+    _ => knf
+  }
+}
+
 fn build_top_level(
   self : CoreEnv,
   ctx : Ctx,
@@ -784,28 +855,29 @@ fn build_top_level(
         _ => fail!("invalid name")
       }
       let fd = @knf.FuncDef::{ name, ty, args: [], body: e1 }
-      let f = self.build_func_def!(ctx, core, fd, FreeNames::new(), true)
-      let func = match core.funcs.get(f) {
+      let fref = self.next_fn_ref()
+      self.build_func_def!(ctx, core, fref, fd, FreeNames::new(), true)
+      let func = match core.funcs.get(fref) {
         Some(func) => func
-        None => fail!("func not found")
+        None => fail!("build_top_level: func not found")
       }
       let ctx = ctx.add_name_ty(fd.name, func.ty)
-      let ctx = ctx.add_top_fn_value(fd.name, f)
+      let ctx = ctx.add_top_fn_value(fd.name, fref)
       let ty = self.lower_type!(ty, false)
       let ctx = ctx.add_name_ty(x, ty)
       let sref = self.add_symbol(core, func, x.to_string(), ty)
       let ctx = ctx.add_top_sym_value(x, sref)
       self.build_top_level!(ctx, core, e2)
     }
-    LetRec(fd, other) => {
-      let f = self.build_func_def!(ctx, core, fd, FreeNames::new(), true)
-      let func = match core.funcs.get(f) {
-        Some(func) => func
-        None => fail!("func not found")
+    LetRec(_, _) => {
+      let rec_group = []
+      let knf = self.collect_top_level_recursive_group!(ctx, rec_group, knf)
+      let ctx = self.update_ctx_for_top_level_recursive_group!(ctx, rec_group)
+      for def in rec_group {
+        let fref = ctx.top_fn_ctx.find(def.name).unwrap()
+        self.build_func_def!(ctx, core, fref, def, FreeNames::new(), true)
       }
-      let ctx = ctx.add_name_ty(fd.name, func.ty)
-      let ctx = ctx.add_top_fn_value(fd.name, f)
-      self.build_top_level!(ctx, core, other)
+      self.build_top_level!(ctx, core, knf)
     }
     Unit => ()
     e => {

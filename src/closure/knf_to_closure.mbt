@@ -34,62 +34,6 @@ typealias LetList = Array[Binding]
 
 typealias ClosureResult = (Expr, FuncDefList, LetList)
 
-typealias FreeSet = @hashset.T[Name]
-
-fn knf_free_vars(k : @knf.Knf) -> FreeSet {
-  match k {
-    Unit | Int(_) | Double(_) => FreeSet::new()
-    Neg(x) | FNeg(x) => FreeSet::of([x])
-    Add(x, y)
-    | Sub(x, y)
-    | Mul(x, y) | Div(x, y) | FAdd(x, y) | FSub(x, y) | FMul(x, y) | FDiv(x, y) =>
-      FreeSet::of([x, y])
-    IfEq(x, y, k1, k2) | IfLe(x, y, k1, k2) => {
-      let fv1 = knf_free_vars(k1)
-      let fv2 = knf_free_vars(k2)
-      let fv = fv1.union(fv2)
-      fv.insert(x)
-      fv.insert(y)
-      fv
-    }
-    Var(x) => FreeSet::of([x])
-    Apply(f, args) => {
-      let fv = FreeSet::from_array(args)
-      fv.insert(f)
-      fv
-    }
-    Tuple(fields) => FreeSet::from_array(fields)
-    Let((x, _), e1, e2) => {
-      let fv2 = knf_free_vars(e2)
-      let fv1 = knf_free_vars(e1)
-      let fv = fv1.union(fv2)
-      // x is bounded
-      fv.remove(x)
-      fv
-    }
-    LetRec(f, k) => {
-      let fv2 = knf_free_vars(k)
-      let fv1 = knf_free_vars(f.body)
-      let fv = fv1.union(fv2)
-      // f, args is bounded
-      f.args.each(fn(argt) { fv.remove(argt.0) })
-      fv.remove(f.name)
-      fv
-    }
-    LetTuple(xts, y, k) => {
-      let fv = knf_free_vars(k)
-      fv.insert(y)
-      // xts is bounded
-      xts.each(fn(xt) { fv.remove(xt.0) })
-      fv
-    }
-    Get(array, index) => FreeSet::of([array, index])
-    Put(array, index, value) => FreeSet::of([array, index, value])
-    ExternalArray(_) => FreeSet::new()
-    ExternalFunctionApplication(_, args) => FreeSet::from_array(args)
-  }
-}
-
 pub fn knf_to_closure(
   self : ClosureEnv,
   knf : @knf.Knf,
@@ -207,7 +151,7 @@ fn build_closure(
       let label = self.make_label(name)
       let loty = type_to_lowtype(ty)
       let args = args.map(fn(arg) { (arg.0, type_to_lowtype(arg.1)) })
-      let actual_free_vars = knf_free_vars(frec).iter().collect()
+      let actual_free_vars = @knf.knf_free_vars(frec).iter().collect()
       let formal_free_vars = actual_free_vars.map(
         fn(name) { (name, ty_env.find(name).unwrap()) },
       )
