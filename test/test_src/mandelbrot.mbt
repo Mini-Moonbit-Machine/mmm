@@ -57,6 +57,6 @@ fn mandelbrot(w: Int) -> Unit {
 };
 
 fn main {
-  mandelbrot(320);
+  mandelbrot(16);
   ()
 }

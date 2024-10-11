@@ -1471,19 +1471,209 @@ start:
 
 
 Testing test/test_src/cls-reg-bug.mbt
-Too many arguments
-RuntimeError: unreachable
-    at wasm://wasm/001bf732:wasm-function[2519]:0x57a88
-    at wasm://wasm/001bf732:wasm-function[2600]:0x5a443
-    at wasm://wasm/001bf732:wasm-function[2603]:0x5a526
-    at wasm://wasm/001bf732:wasm-function[2489]:0x571b2
-    at wasm://wasm/001bf732:wasm-function[2649]:0x5bd9c
-    at wasm://wasm/001bf732:wasm-function[2650]:0x5bf4c
-    at wasm://wasm/001bf732:wasm-function[2693]:0x5ee39
-    at wasm://wasm/001bf732:wasm-function[1819]:0x2628f
-    at wasm://wasm/001bf732:wasm-function[2692]:0x5ed43
-    at wasm://wasm/001bf732:wasm-function[2724]:0x601e1
-error: failed to run
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 1073741824
+large_stack_end:
+  .zero 16
+  .p2align 2
+  .text
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main39l1_1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl g24_3
+  .type g24_3, @function
+# leaf false
+g24_3:
+.g24_3_0:
+  addi sp, sp, -112
+  sd ra, 0(sp)
+  mv a1, s10
+  lw a2, 8(a1)
+  lw a3, 16(a1)
+  lw a4, 24(a1)
+  lw a5, 32(a1)
+  lw a6, 40(a1)
+  lw a7, 48(a1)
+  lw t0, 56(a1)
+  lw t1, 64(a1)
+  lw t2, 72(a1)
+  lw t3, 80(a1)
+  add a2, a2, a3
+  add a2, a2, a4
+  add a2, a2, a5
+  add a2, a2, a6
+  add a2, a2, a7
+  add a2, a2, t0
+  add a2, a2, t1
+  add a2, a2, t2
+  add a2, a2, t3
+  blt zero, a0, .g24_3_2
+
+.g24_3_1:
+  neg a0, a0
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+
+.g24_3_3:
+  ld ra, 0(sp)
+  addi sp, sp, 112
+  ret
+
+.g24_3_2:
+  mv a0, a2
+  j .g24_3_3
+
+  .p2align 2
+  .text
+  .globl main39l1_1
+  .type main39l1_1, @function
+# leaf false
+main39l1_1:
+.main39l1_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  addi a0, s11, -40
+  andi a0, a0, -8
+  mv s11, a0
+  li a1, 1
+  sw a1, 0(a0)
+  li a1, 2
+  sw a1, 4(a0)
+  li a1, 3
+  sw a1, 8(a0)
+  li a1, 4
+  sw a1, 12(a0)
+  li a1, 5
+  sw a1, 16(a0)
+  li a1, 6
+  sw a1, 20(a0)
+  li a1, 7
+  sw a1, 24(a0)
+  li a1, 8
+  sw a1, 28(a0)
+  li a1, 9
+  sw a1, 32(a0)
+  li a1, 10
+  sw a1, 36(a0)
+  call h1l0_0
+  call minimbt_print_int
+  mv a0, zero
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  mv s9, sp
+  la sp, large_stack_end
+  call T$start_6
+  mv sp, s9
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 2
+  .text
+  .globl h1l0_0
+  .type h1l0_0, @function
+# leaf false
+h1l0_0:
+.h1l0_0_0:
+  addi sp, sp, -112
+  sd ra, 0(sp)
+  lw a1, 0(a0)
+  lw a2, 4(a0)
+  lw a3, 8(a0)
+  lw a4, 12(a0)
+  lw a5, 16(a0)
+  lw a6, 20(a0)
+  lw a7, 24(a0)
+  lw t0, 28(a0)
+  lw t1, 32(a0)
+  lw a0, 36(a0)
+  addi t2, s11, -88
+  andi t2, t2, -8
+  mv s11, t2
+  la t3, g24_3
+  sd t3, 0(t2)
+  sd a1, 8(t2)
+  sd a2, 16(t2)
+  sd a3, 24(t2)
+  sd a4, 32(t2)
+  sd a5, 40(t2)
+  sd a6, 48(t2)
+  sd a7, 56(t2)
+  sd t0, 64(t2)
+  sd t1, 72(t2)
+  sd a0, 80(t2)
+  mv s10, t2
+  ld a1, 0(t2)
+  li a0, 1
+  jalr a1
+  ld ra, 0(sp)
+  addi sp, sp, 112
+  ret
+
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4
+
 
 
 Testing test/test_src/debug.mbt
@@ -4572,6 +4762,48 @@ large_stack_end:
   .zero 16
   .p2align 2
   .text
+  .globl mandelbrot3l0_4
+  .type mandelbrot3l0_4, @function
+# leaf false
+mandelbrot3l0_4:
+.mandelbrot3l0_4_0:
+  addi sp, sp, -80
+  sd ra, 0(sp)
+  fcvt.d.w fa0, a0
+  li a1, 4611686018427387904
+  fmv.d.x fa1, a1
+  fdiv.d fa0, fa0, fa1
+  fcvt.d.w fa1, a0
+  li a1, 4611686018427387904
+  fmv.d.x fa2, a1
+  fdiv.d fa1, fa1, fa2
+  addi a1, a0, -1
+  addi a0, a0, -1
+  addi a2, s11, -4
+  andi a2, a2, -8
+  mv s11, a2
+  sw zero, 0(a2)
+  addi a3, s11, -48
+  andi a3, a3, -8
+  mv s11, a3
+  la a4, loop119_7
+  sd a4, 0(a3)
+  sd a1, 8(a3)
+  fsd fa1, 16(a3)
+  sd a0, 24(a3)
+  fsd fa0, 32(a3)
+  sd a2, 40(a3)
+  mv s10, a3
+  ld a1, 0(a3)
+  mv a0, zero
+  jalr a1
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 80
+  ret
+
+  .p2align 2
+  .text
   .globl T$limit.10
   .type T$limit.10, @function
 # leaf true
@@ -4585,127 +4817,141 @@ T$limit.10:
 
   .p2align 2
   .text
-  .globl loop119l1_6
-  .type loop119l1_6, @function
+  .globl loop119_7
+  .type loop119_7, @function
 # leaf false
-loop119l1_6:
-.loop119l1_6_0:
-  addi sp, sp, -112
-  fsd fs1, 0(sp)
-  fsd fs0, 8(sp)
-  sd s3, 16(sp)
-  sd s2, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
-  mv s0, a0
-  fmv.d fs0, fa0
-  fmv.d fs1, fa1
-  mv s1, a1
-  fmv.d fa0, fa2
-  mv a0, a2
-  mv s2, a3
-  mv s3, a4
-  blt s2, s0, .loop119l1_6_2
+loop119_7:
+.loop119_7_0:
+  addi sp, sp, -80
+  sd s1, 0(sp)
+  sd s0, 8(sp)
+  sd ra, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  fld fa1, 16(s0)
+  lw a1, 24(s0)
+  fld fa2, 32(s0)
+  ld a2, 40(s0)
+  blt a0, s1, .loop119_7_2
 
-.loop119l1_6_1:
-  fcvt.d.w fa0, s0
-  fdiv.d fa0, fa0, fs0
+.loop119_7_1:
+  fcvt.d.w fa0, s1
+  fdiv.d fa0, fa0, fa1
   li a0, 4607182418800017408
   fmv.d.x fa1, a0
   fsub.d fa0, fa0, fa1
-  la a0, limit.1
-  fld fa2, 0(a0)
-  la a0, niter.2
-  lw a2, 0(a0)
+  addi a0, s11, -40
+  andi a0, a0, -8
+  mv s11, a0
+  la a3, loop226_9
+  sd a3, 0(a0)
+  sd a1, 8(a0)
+  fsd fa2, 16(a0)
+  fsd fa0, 24(a0)
+  sd a2, 32(a0)
+  mv s10, a0
+  ld a1, 0(a0)
   mv a0, zero
-  fmv.d fa1, fs1
-  mv a1, s1
-  mv a3, s3
-  call loop226l2_5
+  jalr a1
   mv a0, zero
-  addi a0, s0, 1
-  la a1, limit.1
-  fld fa2, 0(a1)
-  la a1, niter.2
-  lw a2, 0(a1)
-  fmv.d fa0, fs0
-  fmv.d fa1, fs1
-  mv a1, s1
-  mv a3, s2
-  mv a4, s3
-  call loop119l1_6
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
   mv a0, zero
 
-.loop119l1_6_3:
-  fld fs1, 0(sp)
-  fld fs0, 8(sp)
-  ld s3, 16(sp)
-  ld s2, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
-  addi sp, sp, 112
-  ret
-
-.loop119l1_6_2:
-  mv a0, zero
-  j .loop119l1_6_3
-
-  .p2align 2
-  .text
-  .globl main129l1_8
-  .type main129l1_8, @function
-# leaf false
-main129l1_8:
-.main129l1_8_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  la a0, limit.1
-  fld fa0, 0(a0)
-  la a0, niter.2
-  lw a1, 0(a0)
-  li a0, 320
-  call mandelbrot3l0_7
-  mv a0, zero
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl mandelbrot3l0_7
-  .type mandelbrot3l0_7, @function
-# leaf false
-mandelbrot3l0_7:
-.mandelbrot3l0_7_0:
-  addi sp, sp, -80
-  sd ra, 0(sp)
-  fcvt.d.w fa0, a0
-  li a1, 4611686018427387904
-  fmv.d.x fa1, a1
-  fdiv.d fa1, fa0, fa1
-  fcvt.d.w fa0, a0
-  li a1, 4611686018427387904
-  fmv.d.x fa2, a1
-  fdiv.d fa0, fa0, fa2
-  addi a3, a0, -1
-  addi a4, a0, -1
-  addi a0, s11, -4
-  andi a1, a0, -8
-  mv s11, a1
-  sw zero, 0(a1)
-  la a0, limit.1
-  fld fa2, 0(a0)
-  la a0, niter.2
-  lw a2, 0(a0)
-  mv a0, zero
-  call loop119l1_6
-  mv a0, zero
-  ld ra, 0(sp)
+.loop119_7_3:
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
   addi sp, sp, 80
   ret
+
+.loop119_7_2:
+  mv a0, zero
+  j .loop119_7_3
+
+  .p2align 2
+  .text
+  .globl loop345_11
+  .type loop345_11, @function
+# leaf false
+loop345_11:
+.loop345_11_0:
+  addi sp, sp, -96
+  sd ra, 0(sp)
+  mv a0, s10
+  ld a2, 8(a0)
+  ld a3, 16(a0)
+  fld fa0, 24(a0)
+  ld a4, 32(a0)
+  fld fa1, 40(a0)
+  ld a1, 48(a0)
+  ld a5, 56(a0)
+  fld fa2, 0(a2)
+  li a6, 4611686018427387904
+  fmv.d.x fa3, a6
+  fmul.d fa2, fa3, fa2
+  fld fa3, 0(a3)
+  fmul.d fa2, fa2, fa3
+  fadd.d fa0, fa2, fa0
+  fsd fa0, 0(a3)
+  fld fa0, 0(a4)
+  fadd.d fa0, fa0, fa1
+  fsd fa0, 0(a2)
+  fld fa0, 0(a2)
+  fld fa1, 0(a2)
+  fmul.d fa0, fa0, fa1
+  fld fa1, 0(a3)
+  fld fa2, 0(a3)
+  fmul.d fa1, fa1, fa2
+  fadd.d fa2, fa0, fa1
+  la a2, limit.1
+  fld fa3, 0(a2)
+  fle.d a2, fa3, fa2
+  bne a2, zero, .loop345_11_1
+
+.loop345_11_2:
+  lw a2, 0(a5)
+  addi a2, a2, 1
+  sw a2, 0(a5)
+  lw a2, 0(a5)
+  la a3, niter.2
+  lw a3, 0(a3)
+  bne a2, a3, .loop345_11_4
+
+.loop345_11_3:
+  lw a0, 0(a1)
+  li a2, 2
+  mulw a0, a0, a2
+  addi a0, a0, 1
+  sw a0, 0(a1)
+  mv a0, zero
+
+.loop345_11_5:
+
+.loop345_11_6:
+  ld ra, 0(sp)
+  addi sp, sp, 96
+  ret
+
+.loop345_11_1:
+  lw a0, 0(a1)
+  li a2, 2
+  mulw a0, a0, a2
+  sw a0, 0(a1)
+  mv a0, zero
+  j .loop345_11_6
+
+.loop345_11_4:
+  fsub.d fa0, fa0, fa1
+  fsd fa0, 0(a4)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  mv a0, zero
+  j .loop345_11_5
 
   .p2align 2
   .text
@@ -4720,7 +4966,7 @@ T$start_14:
   fld fa0, 0(a0)
   la a0, niter.2
   lw a0, 0(a0)
-  call main129l1_8
+  call main129l1_5
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 32
@@ -4728,181 +4974,124 @@ T$start_14:
 
   .p2align 2
   .text
-  .globl loop226l2_5
-  .type loop226l2_5, @function
+  .globl main129l1_5
+  .type main129l1_5, @function
 # leaf false
-loop226l2_5:
-.loop226l2_5_0:
-  addi sp, sp, -128
-  fsd fs1, 0(sp)
-  fsd fs0, 8(sp)
-  sd s2, 16(sp)
-  sd s1, 24(sp)
-  sd s0, 32(sp)
-  sd ra, 40(sp)
-  mv s2, a0
-  fmv.d fs1, fa0
-  fmv.d fs0, fa1
-  mv s0, a1
-  fmv.d fa0, fa2
-  mv a0, a2
-  mv s1, a3
-  blt s1, s2, .loop226l2_5_2
+main129l1_5:
+.main129l1_5_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  la a0, limit.1
+  fld fa0, 0(a0)
+  la a0, niter.2
+  lw a1, 0(a0)
+  li a0, 16
+  call mandelbrot3l0_4
+  mv a0, zero
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
 
-.loop226l2_5_1:
-  fcvt.d.w fa0, s2
-  fdiv.d fa0, fa0, fs0
+  .p2align 2
+  .text
+  .globl loop226_9
+  .type loop226_9, @function
+# leaf false
+loop226_9:
+.loop226_9_0:
+  addi sp, sp, -112
+  sd s2, 0(sp)
+  sd s1, 8(sp)
+  sd s0, 16(sp)
+  sd ra, 24(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  fld fa0, 16(s0)
+  fld fa1, 24(s0)
+  ld s2, 32(s0)
+  blt a0, s1, .loop226_9_2
+
+.loop226_9_1:
+  fcvt.d.w fa2, s1
+  fdiv.d fa0, fa2, fa0
   li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fa1, fa0, fa1
+  fmv.d.x fa2, a0
+  fsub.d fa0, fa0, fa2
   addi a0, s11, -8
-  andi a2, a0, -8
-  mv s11, a2
-  fmv.d.x fa0, zero
-  fsd fa0, 0(a2)
-  addi a0, s11, -8
-  andi a1, a0, -8
-  mv s11, a1
-  fmv.d.x fa0, zero
-  fsd fa0, 0(a1)
-  addi a0, s11, -8
-  andi a3, a0, -8
-  mv s11, a3
-  fmv.d.x fa0, zero
-  fsd fa0, 0(a3)
-  addi a0, s11, -4
   andi a0, a0, -8
   mv s11, a0
-  sw zero, 0(a0)
-  la a4, limit.1
-  fld fa2, 0(a4)
-  la a4, niter.2
-  lw a5, 0(a4)
-  fmv.d fa0, fs1
-  mv a4, s0
-  call loop345l3_4
+  fmv.d.x fa2, zero
+  fsd fa2, 0(a0)
+  addi a1, s11, -8
+  andi a1, a1, -8
+  mv s11, a1
+  fmv.d.x fa2, zero
+  fsd fa2, 0(a1)
+  addi a2, s11, -8
+  andi a2, a2, -8
+  mv s11, a2
+  fmv.d.x fa2, zero
+  fsd fa2, 0(a2)
+  addi a3, s11, -4
+  andi a3, a3, -8
+  mv s11, a3
+  sw zero, 0(a3)
+  addi a4, s11, -64
+  andi a4, a4, -8
+  mv s11, a4
+  la a5, loop345_11
+  sd a5, 0(a4)
+  sd a0, 8(a4)
+  sd a1, 16(a4)
+  fsd fa1, 24(a4)
+  sd a2, 32(a4)
+  fsd fa0, 40(a4)
+  sd s2, 48(a4)
+  sd a3, 56(a4)
+  mv s10, a4
+  ld a0, 0(a4)
+  jalr a0
   mv a0, zero
-  addi a0, s2, 1
+  addi a0, s1, 1
   li a1, 8
   divw a0, a0, a1
   li a1, 8
   mulw a0, a0, a1
-  addi a1, s2, 1
-  bne a0, a1, .loop226l2_5_4
+  addi a1, s1, 1
+  bne a0, a1, .loop226_9_4
 
-.loop226l2_5_3:
-  lw a0, 0(s0)
+.loop226_9_3:
+  lw a0, 0(s2)
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   mv a0, zero
 
-.loop226l2_5_5:
-  addi a0, s2, 1
-  la a1, limit.1
-  fld fa2, 0(a1)
-  la a1, niter.2
-  lw a2, 0(a1)
-  fmv.d fa0, fs1
-  fmv.d fa1, fs0
-  mv a1, s0
-  mv a3, s1
-  call loop226l2_5
+.loop226_9_5:
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
   mv a0, zero
 
-.loop226l2_5_6:
-  fld fs1, 0(sp)
-  fld fs0, 8(sp)
-  ld s2, 16(sp)
-  ld s1, 24(sp)
-  ld s0, 32(sp)
-  ld ra, 40(sp)
-  addi sp, sp, 128
-  ret
-
-.loop226l2_5_2:
-  mv a0, zero
-  j .loop226l2_5_6
-
-.loop226l2_5_4:
-  mv a0, zero
-  j .loop226l2_5_5
-
-  .p2align 2
-  .text
-  .globl loop345l3_4
-  .type loop345l3_4, @function
-# leaf false
-loop345l3_4:
-.loop345l3_4_0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  fld fa2, 0(a2)
-  li a5, 4611686018427387904
-  fmv.d.x fa3, a5
-  fmul.d fa2, fa3, fa2
-  fld fa3, 0(a1)
-  fmul.d fa2, fa2, fa3
-  fadd.d fa2, fa2, fa0
-  fsd fa2, 0(a1)
-  fld fa2, 0(a3)
-  fadd.d fa2, fa2, fa1
-  fsd fa2, 0(a2)
-  fld fa2, 0(a2)
-  fld fa3, 0(a2)
-  fmul.d fa2, fa2, fa3
-  fld fa3, 0(a1)
-  fld fa4, 0(a1)
-  fmul.d fa3, fa3, fa4
-  fadd.d fa4, fa2, fa3
-  la a5, limit.1
-  fld fa5, 0(a5)
-  fle.d a5, fa5, fa4
-  bne a5, zero, .loop345l3_4_1
-
-.loop345l3_4_2:
-  lw a5, 0(a0)
-  addi a5, a5, 1
-  sw a5, 0(a0)
-  lw a5, 0(a0)
-  la a6, niter.2
-  lw a6, 0(a6)
-  beq a5, a6, .loop345l3_4_3
-
-.loop345l3_4_4:
-  fsub.d fa2, fa2, fa3
-  fsd fa2, 0(a3)
-  la a5, limit.1
-  fld fa2, 0(a5)
-  la a5, niter.2
-  lw a5, 0(a5)
-  call loop345l3_4
-  mv a0, zero
-
-.loop345l3_4_5:
-
-.loop345l3_4_6:
-  ld ra, 0(sp)
+.loop226_9_6:
+  ld s2, 0(sp)
+  ld s1, 8(sp)
+  ld s0, 16(sp)
+  ld ra, 24(sp)
   addi sp, sp, 112
   ret
 
-.loop345l3_4_1:
-  lw a0, 0(a4)
-  li a1, 2
-  mulw a0, a0, a1
-  sw a0, 0(a4)
+.loop226_9_2:
   mv a0, zero
-  j .loop345l3_4_6
+  j .loop226_9_6
 
-.loop345l3_4_3:
-  lw a0, 0(a4)
-  li a1, 2
-  mulw a0, a0, a1
-  addi a0, a0, 1
-  sw a0, 0(a4)
+.loop226_9_4:
   mv a0, zero
-  j .loop345l3_4_5
+  j .loop226_9_5
 
   .p2align 2
   .text

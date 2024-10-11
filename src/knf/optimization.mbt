@@ -237,35 +237,42 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
             panic()
           },
         )
-      self.top_names.insert(fdef.name)
       self.top_names.each(fn(name) { fvars.remove(name) })
+      fvars.remove(fdef.name)
       let fvars = fvars.iter().collect()
       fvars.sort()
       let fvars_with_type = fvars.map(fn(name) { (name, self.get_type(name)) })
-      let (new_name, self) = self.add_lifted_name(
-        fdef.name,
-        fdef.args.map(fn(arg) { arg.0 }),
-        fvars,
-        Fun(fdef.args.iter().map(fn(arg) { arg.1 }).collect(), fdef.ty),
-      )
-      let old_fun_type = Type::Fun(
-        fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
-        fdef.ty,
-      )
-      let self = self.add_name_type(new_name, old_fun_type)
-      let new_args = fdef.args + fvars_with_type
-      let body_env = new_args.fold(
-        init=self,
-        fn(env, arg) { env.add_name_type(arg.0, arg.1) },
-      )
-      let fdef = FuncDef::{
-        name: new_name,
-        ty: fdef.ty,
-        args: new_args,
-        body: body_env.lift(fdef.body, false),
+      let new_args_length = fdef.args.length() + fvars.length()
+      if new_args_length > 6 {
+        // we don't want to lift functions with too many arguments
+        LetRec(fdef, self.lift(e, top))
+      } else {
+        self.top_names.insert(fdef.name)
+        let (new_name, self) = self.add_lifted_name(
+          fdef.name,
+          fdef.args.map(fn(arg) { arg.0 }),
+          fvars,
+          Fun(fdef.args.iter().map(fn(arg) { arg.1 }).collect(), fdef.ty),
+        )
+        let old_fun_type = Type::Fun(
+          fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
+          fdef.ty,
+        )
+        let self = self.add_name_type(new_name, old_fun_type)
+        let new_args = fdef.args + fvars_with_type
+        let body_env = new_args.fold(
+          init=self,
+          fn(env, arg) { env.add_name_type(arg.0, arg.1) },
+        )
+        let fdef = FuncDef::{
+          name: new_name,
+          ty: fdef.ty,
+          args: new_args,
+          body: body_env.lift(fdef.body, false),
+        }
+        self.top_bindings.push(LetRec(fdef))
+        self.lift(e, top)
       }
-      self.top_bindings.push(LetRec(fdef))
-      self.lift(e, top)
     }
   }
 }

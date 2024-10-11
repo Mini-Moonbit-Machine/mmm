@@ -2069,6 +2069,6 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
   }
-  //println("before colored: \{Show::to_string(before_colored.to_rich_info())}")
+  trace("before colored: \{Show::to_string(before_colored.to_rich_info())}")
   after_colored
 }

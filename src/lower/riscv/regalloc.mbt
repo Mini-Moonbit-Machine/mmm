@@ -110,6 +110,9 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
       let move_origin = info.move_origin[i]
+      trace("defs: \{defs}")
+      trace("live_set: \{live_set}")
+      trace("move_origin: \{move_origin}")
       for defined in defs {
         let reg_ctx = match defined.class {
           X => reg_ctx_x
