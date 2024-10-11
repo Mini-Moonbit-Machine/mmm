@@ -260,6 +260,7 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
           body: body_env.lift(fdef.body, false),
         }
         if top {
+          self.top_names.insert(fdef.name)
           self.top_bindings.push(LetRec(fdef))
           self.lift(e, top)
         } else {

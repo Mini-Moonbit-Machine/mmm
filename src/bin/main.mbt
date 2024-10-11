@@ -136,10 +136,10 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
     }
     KnfOpt => {
       let knf = self.knf.unwrap()
-      //println("\{Show::to_string(knf.to_pretty_print())}")
+      // println("\{Show::to_string(knf.to_pretty_print())}")
       let lamlift = @knf.LambdaLiftEnv::new()
       let knf = lamlift.go(knf)
-      //println("\n\n\nOpt: \{Show::to_string(knf.to_pretty_print())}")
+      // println("\n\n\nOpt: \{Show::to_string(knf.to_pretty_print())}")
       self.opt_knf = Some(knf)
     }
     Core => {
@@ -153,7 +153,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Core error")
         }
       }
-      //println("\{Show::to_string(core.to_pretty_print())}")
+      // println("\{Show::to_string(core.to_pretty_print())}")
       let opt = @core_opt.CoreOpt::new(core)
       opt.go()
       self.opt = Some(core)
