@@ -708,6 +708,7 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
   init_rc : RegClass,
   init_reg : AnyReg
 ) -> Unit {
+  self.is_leaf = false
   match fill {
     Init(..) =>
       match (init_rc, elem_sz) {
@@ -1969,8 +1970,8 @@ pub fn RiscvLoweringCtx::lower_globals(
   pre_allocate(insns)
   save_sp(insns)
   pre_allocate_for_stack(insns)
-  for symbols in core.global_symbols {
-    let (_, symbol) = symbols
+  for symbol in core.global_names {
+    let symbol = core.global_symbols.get(symbol.1).unwrap()
     let ty_size = symbol.ty.size()
     let rc = ty_to_reg_class(symbol.ty)
     let thunk = core.funcs.get(symbol.thunk).unwrap()

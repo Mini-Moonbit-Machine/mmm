@@ -6016,6 +6016,399 @@ start:
 
 
 
+Testing test/test_src/multiple-init.mbt
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 1073741824
+large_stack_end:
+  .zero 16
+  .p2align 2
+  .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_11_10
+  .type T$_11_10, @function
+# leaf true
+T$_11_10:
+.T$_11_10_0:
+  addi sp, sp, -16
+  li a0, 1
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl init21_20
+  .type init21_20, @function
+# leaf true
+init21_20:
+.init21_20_0:
+  addi sp, sp, -16
+  la a0, len.3
+  ld a0, 0(a0)
+  li a1, 3
+  sw a1, 0(a0)
+  la a0, len2.13
+  ld a0, 0(a0)
+  li a1, 4
+  sw a1, 0(a0)
+  mv a0, zero
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_1_0
+  .type T$_1_0, @function
+# leaf true
+T$_1_0:
+.T$_1_0_0:
+  addi sp, sp, -16
+  li a0, 1
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_2_2
+  .type T$_2_2, @function
+# leaf true
+T$_2_2:
+.T$_2_2_0:
+  addi sp, sp, 0
+  mv a0, zero
+  addi sp, sp, 0
+  ret
+
+  .p2align 2
+  .text
+  .globl main32_24
+  .type main32_24, @function
+# leaf false
+main32_24:
+.main32_24_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  la a0, len.3
+  ld a0, 0(a0)
+  lw a0, 0(a0)
+  call minimbt_print_int
+  mv a0, zero
+  call minimbt_print_endline
+  mv a0, zero
+  la a0, len2.13
+  ld a0, 0(a0)
+  lw a0, 0(a0)
+  call minimbt_print_int
+  mv a0, zero
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$len.34
+  .type T$len.34, @function
+# leaf false
+T$len.34:
+.T$len.34_0:
+  addi sp, sp, -48
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  la a0, _1
+  lw a0, 0(a0)
+  la a1, _2
+  lw a2, 0(a1)
+  slli a1, a0, 2
+  sub a1, s11, a1
+  andi s0, a1, -8
+  mv s11, s0
+  mv a1, a0
+  mv a0, s0
+  call memseti32
+  mv a0, s0
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 2
+  .text
+  .globl T$len2.1314
+  .type T$len2.1314, @function
+# leaf false
+T$len2.1314:
+.T$len2.1314_0:
+  addi sp, sp, -48
+  sd s0, 0(sp)
+  sd ra, 8(sp)
+  la a0, _11
+  lw a0, 0(a0)
+  la a1, _12
+  lw a2, 0(a1)
+  slli a1, a0, 2
+  sub a1, s11, a1
+  andi s0, a1, -8
+  mv s11, s0
+  mv a1, a0
+  mv a0, s0
+  call memseti32
+  mv a0, s0
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_20_18
+  .type T$_20_18, @function
+# leaf false
+T$_20_18:
+.T$_20_18_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call init14_16
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_26
+  .type T$start_26, @function
+# leaf false
+T$start_26:
+.T$start_26_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main32_24
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_31_22
+  .type T$_31_22, @function
+# leaf false
+T$_31_22:
+.T$_31_22_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call init21_20
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_10_8
+  .type T$_10_8, @function
+# leaf false
+T$_10_8:
+.T$_10_8_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call init4_6
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_12_12
+  .type T$_12_12, @function
+# leaf true
+T$_12_12:
+.T$_12_12_0:
+  addi sp, sp, 0
+  mv a0, zero
+  addi sp, sp, 0
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -128
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  sd s11, 96(sp)
+  li a0, 134217728
+  mv s0, a0
+  call minimbt_malloc
+  add a0, s0, a0
+  mv s11, a0
+  mv s9, sp
+  la sp, large_stack_end
+  call T$_1_0
+  la t5, _1
+  sw a0, 0(t5)
+  call T$_2_2
+  la t5, _2
+  sw a0, 0(t5)
+  call T$len.34
+  la t5, len.3
+  sd a0, 0(t5)
+  call T$_10_8
+  call T$_11_10
+  la t5, _11
+  sw a0, 0(t5)
+  call T$_12_12
+  la t5, _12
+  sw a0, 0(t5)
+  call T$len2.1314
+  la t5, len2.13
+  sd a0, 0(t5)
+  call T$_20_18
+  call T$_31_22
+  call T$start_26
+  mv sp, s9
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  ld s11, 96(sp)
+  addi sp, sp, 128
+  ret
+
+  .p2align 2
+  .text
+  .globl init4_6
+  .type init4_6, @function
+# leaf true
+init4_6:
+.init4_6_0:
+  addi sp, sp, -16
+  la a0, len.3
+  ld a0, 0(a0)
+  li a1, 1
+  sw a1, 0(a0)
+  mv a0, zero
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl init14_16
+  .type init14_16, @function
+# leaf true
+init14_16:
+.init14_16_0:
+  addi sp, sp, -16
+  la a0, len2.13
+  ld a0, 0(a0)
+  li a1, 2
+  sw a1, 0(a0)
+  mv a0, zero
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .bss
+  .globl _11
+  .type _11, @object
+_11:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _10
+  .type _10, @object
+_10:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _1
+  .type _1, @object
+_1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl len.3
+  .type len.3, @object
+len.3:
+  .zero 8
+  .p2align 2
+  .bss
+  .globl _31
+  .type _31, @object
+_31:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _20
+  .type _20, @object
+_20:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _2
+  .type _2, @object
+_2:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _12
+  .type _12, @object
+_12:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl len2.13
+  .type len2.13, @object
+len2.13:
+  .zero 8
+
+
+
 Testing test/test_src/non-tail-if.mbt
   .p2align 4
   .bss
