@@ -48,7 +48,6 @@ pub fn PPAllocator::go[Info : Show](self : PPAllocator[Info]) -> Unit {
   self.mcs()
   self.assign_color()
   self.post_spill()
-  // self.coalesce()
 }
 
 pub fn PPAllocator::query_assigned_color[R : RegToId, Info : Show](
@@ -121,7 +120,7 @@ pub fn PPAllocator::to_dot[Info : Show](
       match assigned_color {
         Some(c) =>
           if c >= self.avail {
-            s += "  r\{reg} [label=\"\{info} ! spill\", color=orange];\n"
+            s += "  r\{reg} [label=\"\{info} ! spill with color \{c}\", color=orange];\n"
             asgn += "\{info}<-!\{info};"
           } else {
             let color_info = self.color_info.get(c).unwrap()
@@ -262,7 +261,12 @@ pub fn PPAllocator::add_single_vertex[R : RegToId, Info](
 type V (Int, Int) derive(Eq, Show) // (weight, vertex)
 
 impl Compare for V with compare(self, other) {
-  Compare::compare(self._.0, other._.0)
+  let cmp = self._.0.compare(other._.0)
+  if cmp == 0 {
+    -self._.1.compare(other._.1) // prefer the lower vertex
+  } else {
+    cmp // prefer the higher weight
+  }
 }
 
 fn mcs[Info](self : PPAllocator[Info]) -> Unit {
@@ -353,7 +357,8 @@ fn post_spill[Info : Show](self : PPAllocator[Info]) -> Unit {
       used_color += 1
     }
   }
-  for asgn in self.assignment {
+  let asgns = self.assignment.iter().to_array()
+  for asgn in asgns {
     let (reg, color) = asgn
     if spilled_color.contains(color) {
       self.spilled.set(reg, spilled_order.search(color).unwrap())

@@ -109,6 +109,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     let (_, info) = info
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
+      let move_origin = info.move_origin[i]
       for defined in defs {
         let reg_ctx = match defined.class {
           X => reg_ctx_x
@@ -117,9 +118,11 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
         let rw1 = reg_ctx.record_reg(defined)
         reg_ctx.allocator.add_single_vertex(rw1)
         for live in live_set {
-          if defined.class == live.class {
-            let rw1 = reg_ctx.record_reg(defined)
-            let rw2 = reg_ctx.record_reg(live)
+          let rw2 = reg_ctx.record_reg(live)
+          reg_ctx.allocator.add_single_vertex(rw2)
+          if defined.class == live.class &&
+            defined != live &&
+            move_origin.contains(live) == false {
             reg_ctx.allocator.add_edge(rw1, rw2)
           }
         }

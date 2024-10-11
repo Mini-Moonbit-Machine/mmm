@@ -1596,13 +1596,21 @@ fn subst_vreg_with_preg_or_spill(
     Comment(x) => Comment(x)
   }
   for i, x in input_xreg_spilled {
-    let slot = alloc.query_spill(x.to_any()).unwrap()
-    let offset = frame.spill[slot].unwrap()
+    let slot = alloc
+      .query_spill(x.to_any())
+      .or_else(fn() { abort("spill \{x.to_any()} not found") })
+    let offset = frame.spill[slot].or_else(
+      fn() { abort("spill offset \{x.to_any()} not found") },
+    )
     buf.push(MInsn::Lw(rd=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
   }
   for i, f in input_freg_spilled {
-    let slot = alloc.query_spill(f.to_any()).unwrap()
-    let offset = frame.spill[slot].unwrap()
+    let slot = alloc
+      .query_spill(f.to_any())
+      .or_else(fn() { abort("spill \{f.to_any()} not found") })
+    let offset = frame.spill[slot].or_else(
+      fn() { abort("spill offset \{f.to_any()} not found") },
+    )
     buf.push(
       MInsn::Fld(rd=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
     )
@@ -1610,13 +1618,21 @@ fn subst_vreg_with_preg_or_spill(
   trace("subst \{Show::to_string(insn)} -> \{Show::to_string(insn2)}")
   buf.push(insn2)
   for i, x in output_xreg_spilled {
-    let slot = alloc.query_spill(x.to_any()).unwrap()
-    let offset = frame.spill[slot].unwrap()
+    let slot = alloc
+      .query_spill(x.to_any())
+      .or_else(fn() { abort("spill \{x.to_any()} not found") })
+    let offset = frame.spill[slot].or_else(
+      fn() { abort("spill offset \{x.to_any()} not found") },
+    )
     buf.push(MInsn::Sw(rs=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
   }
   for i, f in output_freg_spilled {
-    let slot = alloc.query_spill(f.to_any()).unwrap()
-    let offset = frame.spill[slot].unwrap()
+    let slot = alloc
+      .query_spill(f.to_any())
+      .or_else(fn() { abort("spill \{f.to_any()} not found") })
+    let offset = frame.spill[slot].or_else(
+      fn() { abort("spill offset \{f.to_any()} not found") },
+    )
     buf.push(
       MInsn::Fsd(rs=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
     )

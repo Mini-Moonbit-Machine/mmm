@@ -7,8 +7,6 @@ pub struct BlockInfo {
   uses : Set[AnyReg] // used in the block
   upward_exposed : Set[AnyReg] // used but not defined in the block
   params_defs : Set[AnyReg] // block parameters defined
-  moves_x : Set[(AnyReg, AnyReg)] // move instructions. for coalescing
-  moves_f : Set[(AnyReg, AnyReg)] // float move instructions. for coalescing
 }
 
 pub fn BlockInfo::to_string(self : BlockInfo) -> String {
@@ -112,18 +110,11 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
   let uses = Set::new()
   let upward_exposed = Set::new()
   let params_defs = Set::new()
-  let moves_x = Set::new()
-  let moves_f = Set::new()
   for param in mbb.params {
     params_defs.insert(param)
   }
   // still SSA? no kills
   for insn in mbb.insns {
-    match insn {
-      Mv(~rd, ~rs) => moves_x.insert((rd.to_any(), rs.to_any()))
-      FmvD(~rd, ~rs) => moves_f.insert((rd.to_any(), rs.to_any()))
-      _ => ()
-    }
     let (d, u) = def_use(insn)
     for reg in d {
       defs.insert(reg)
@@ -136,11 +127,6 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
     }
   }
   for control in mbb.control {
-    match control {
-      Mv(~rd, ~rs) => moves_x.insert((rd.to_any(), rs.to_any()))
-      FmvD(~rd, ~rs) => moves_f.insert((rd.to_any(), rs.to_any()))
-      _ => ()
-    }
     let (d, u) = def_use(control)
     for reg in d {
       defs.insert(reg)
@@ -152,13 +138,14 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
       }
     }
   }
-  BlockInfo::{ defs, uses, upward_exposed, params_defs, moves_x, moves_f }
+  BlockInfo::{ defs, uses, upward_exposed, params_defs }
 }
 
 pub struct IteratedBlockInfo {
   live_in : Set[AnyReg]
   live_out : Set[AnyReg]
   block_info : BlockInfo
+  move_origin : Array[Array[AnyReg]]
   defs : Array[Array[AnyReg]]
   live_set : Array[Array[AnyReg]]
 }
@@ -175,11 +162,17 @@ pub fn IteratedBlockInfo::compute_live_set(
 ) -> Unit {
   let live_set = self.live_set
   let defs = self.defs
+  let move_origin = self.move_origin
   let live = MutSet::from_iter(self.live_out.iter())
   for insn in block.control.rev() {
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)
+    match insn {
+      FmvD(~rs, ..) => move_origin.push([rs.to_any()])
+      Mv(~rs, ..) => move_origin.push([rs.to_any()])
+      _ => move_origin.push([])
+    }
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
     live.remove(@riscv.Sp.to_any())
@@ -188,12 +181,18 @@ pub fn IteratedBlockInfo::compute_live_set(
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)
+    match insn {
+      FmvD(~rs, ..) => move_origin.push([rs.to_any()])
+      Mv(~rs, ..) => move_origin.push([rs.to_any()])
+      _ => move_origin.push([])
+    }
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
     live.remove(@riscv.Sp.to_any())
   }
   live_set.push(live.iter().to_array())
   defs.rev_inplace()
+  move_origin.rev_inplace()
   live_set.rev_inplace()
 }
 
@@ -249,6 +248,7 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
       live_in: Set::new(),
       live_out: Set::new(),
       block_info: info,
+      move_origin: [],
       live_set,
       defs,
     }
