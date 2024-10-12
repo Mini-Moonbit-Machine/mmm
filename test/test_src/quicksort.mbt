@@ -49,6 +49,7 @@ fn main {
   fn output(i: Int) {
     if i <= len - 1 {
       print_int(arr[i]);
+      print_endline();
       output(i + 1)
     } else {
       ()
