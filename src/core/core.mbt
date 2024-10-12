@@ -129,7 +129,7 @@ pub struct Fn {
   name : String
   ty : Type
   fvars : Array[Type]
-  entry : BlockRef
+  mut entry : BlockRef
   blocks : MutMap[BlockRef, Block]
   insns : MutMap[InsnRef, Insn]
   mems : MutMap[MemRef, Mem]
@@ -485,6 +485,55 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
       }
       func.ty
     }
+  }
+}
+
+pub fn Value::replace_all_uses_with(
+  self : Value,
+  func : Fn,
+  value : Value
+) -> Unit {
+  fn replace(v : Value) -> Value {
+    if v == self {
+      value
+    } else {
+      v
+    }
+  }
+
+  fn replace_addr(addr : Address) -> Address {
+    match addr {
+      Field(~ty, ~val, ~index) => Address::Field(~ty, val=replace(val), ~index)
+      Offset(~ty, ~val, ~offset) =>
+        Address::Offset(~ty, val=replace(val), offset=replace(offset))
+    }
+  }
+
+  let insn_updates = []
+  for insnpair in func.insns {
+    let (handle, instruction) = insnpair
+    let operands = instruction.operands()
+    // check if old value is a child of the instruction
+    if operands.iter().any(fn(op) { op == self }) {
+      let new_insn = match instruction {
+        Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(replace))
+        Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(replace))
+        Apply(~ty, ~f, ~args) => Apply(~ty, ~f, args=args.map(replace))
+        ExtCall(~ty, ~ext_f, ~args) =>
+          ExtCall(~ty, ~ext_f, args=args.map(replace))
+        LoadSymbol(..) as ldsym => ldsym
+        Alloc(..) as alloc => alloc // We think there is no such cases
+        Store(~ty, ~ma, ~val) =>
+          Store(~ty, ma=replace_addr(ma), val=replace(val))
+        Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
+      }
+      insn_updates.push((handle, new_insn))
+    }
+  }
+  // bulk update
+  for insnpair in insn_updates {
+    let (handle, new_insn) = insnpair
+    func.insns.set(handle, new_insn)
   }
 }
 

@@ -41,6 +41,14 @@ pub fn ControlFlowGraph::compute(
   self.clear()
   for bpair in func.blocks {
     let (_, block) = bpair
+    let bb = @core.Block::basic_block(block, func)
+    self.data.set(
+      bb.id,
+      CFGNode::{ predcessors: MutSet::new(), successors: MutSet::new() },
+    )
+  }
+  for bpair in func.blocks {
+    let (_, block) = bpair
     match block {
       @core.Block::BasicBlock(~bb) => {
         let succs = bb.control.successors()
