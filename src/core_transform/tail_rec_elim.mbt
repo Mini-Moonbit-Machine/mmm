@@ -33,7 +33,7 @@ fn TailRecEliminator::create_loop_header(
   )
   // Let header parameters simulate function parameters.
   let func_param_types = match func.ty {
-    @core.ClosureFn(~params, ..) => params
+    @core.ClosureFn(~params, ..) | @core.DirectFn(~params, ..) => params
     _ => fail!("not a function (closure) type")
   }
   let func_args = []
@@ -45,7 +45,13 @@ fn TailRecEliminator::create_loop_header(
     func_args.push(param)
   }
   let new_entry = self.core_env.add_basic_block(func, func_param_types)
+  println("Create Loop Header .bb #\{new_entry.id} for .fn #\{func.name}")
   new_entry.control = @core.Jump(target=func.entry, args=func_args)
+  func.entry = new_entry.id
+  // Update loop header block parameters.
+  func_entry.params.clear()
+  func_entry.params.append(func_param_types)
+
   // Update the use of function argument.
   for arg_index, func_arg in func_args.iter2() {
     let new_arg = @core.BlockParam(
@@ -120,6 +126,9 @@ fn TailRecEliminator::eliminate_call(
   let unconditional_jump = @core.Jump(target=loop_header, args=rec_args)
   block.control = unconditional_jump
   block.remove_insn!(call_index, func)
+  println(
+    "Eliminate Tail Call at instruction \{call_index}, .bb #\{block.id} of .fn #\{func.name}",
+  )
 }
 
 fn TailRecEliminator::process_block(
@@ -138,19 +147,20 @@ fn TailRecEliminator::process_block(
         func,
       )
       // if the only valid instruction is return
-      if block.seq.length() > 0 {
+      if succ.seq.length() > 0 {
         return
       }
       guard let @core.Return(args=ret_args) = succ.control else { _ => return  }
       let candidate_call_site = find_candidate_call(func, block)
-      guard let Some(call_site) = candidate_call_site else {
-        _ => return
+      guard let Some(call_site) = candidate_call_site else { _ => return  }
+      println(
+        "Find Tail Call at instruction \{call_site.0}, .bb #\{block.id} of .fn #\{func.name}",
+      )
 
-        // fold the single ret in the successor block into the current block,
-        // and adjust the ret argument (block parameters) and cfg.
-        // canonicalize to the form that call and return in the same basic block:
-        // BB1: call self(); ...; return v';
-      }
+      // fold the single ret in the successor block into the current block,
+      // and adjust the ret argument (block parameters) and cfg.
+      // canonicalize to the form that call and return in the same basic block:
+      // BB1: call self(); ...; return v';
       let new_ret_args = ret_args.copy()
       for index, ret_arg in new_ret_args.iter2() {
         guard let @core.BlockParam(bref=bid, ..) = ret_arg else {
@@ -171,6 +181,9 @@ fn TailRecEliminator::process_block(
       // Case II: BB1: call self(); ...; return v;
       let candidate_call_site = find_candidate_call(func, block)
       guard let Some(call_site) = candidate_call_site else { _ => return  }
+      println(
+        "Find Tail Call at instruction \{call_site.0}, .bb #\{block.id} of .fn #\{func.name}",
+      )
       self.eliminate_call!(func, block, call_site)
     }
     _ => ()
@@ -187,22 +200,27 @@ pub fn tail_recursive_elimination(
     // TODO: collect lists of updates
     guard let @core.Block::BasicBlock(~bb) = block else { _ => continue }
     let cfg = @analysis.ControlFlowGraph::with_function(func)
+    ctx.bind_function(func)
     eliminator.process_block!(func, cfg, bb)
+    bb.pack_indices()
   }
 }
 
-struct TailRecElimPass {
+pub struct TailRecElimPass {
   ctx : @core.CoreEnv
 }
 
-pub fn with_ctx(ctx : @core.CoreEnv) -> TailRecElimPass {
+pub fn TailRecElimPass::with_ctx(ctx : @core.CoreEnv) -> TailRecElimPass {
   TailRecElimPass::{ ctx, }
 }
 
-pub fn run(self : TailRecElimPass, func : @core.Fn) -> Unit!Failure {
+pub fn TailRecElimPass::run(
+  self : TailRecElimPass,
+  func : @core.Fn
+) -> Unit!Failure {
   tail_recursive_elimination!(func, self.ctx)
 }
 
-pub fn name(self : TailRecElimPass) -> String {
+pub fn TailRecElimPass::name(self : TailRecElimPass) -> String {
   "Tail Recursion Elimination".to_string()
 }

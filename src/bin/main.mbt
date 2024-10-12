@@ -6,7 +6,6 @@ enum Stages {
   KnfOpt
   Closure
   Core
-  CoreOpt
   Asm
   Finished
 } derive(Show, Eq, Compare)
@@ -18,7 +17,6 @@ fn Stages::from_string(s : String) -> Stages? {
     "knf" => Some(Stages::Knf)
     "knf-opt" => Some(Stages::KnfOpt)
     "core" => Some(Stages::Core)
-    "core-opt" => Some(Stages::CoreOpt)
     "closure" => Some(Stages::Closure)
     "riscv" => Some(Stages::Asm)
     "finished" => Some(Stages::Finished)
@@ -33,8 +31,7 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Knf => Stages::KnfOpt
     Stages::KnfOpt => Stages::Closure
     Stages::Closure => Stages::Core
-    Stages::Core => Stages::CoreOpt
-    Stages::CoreOpt => Stages::Asm
+    Stages::Core => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
@@ -154,15 +151,19 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         }
       }
       println("\{core.to_pretty_print()}")
-      self.opt = Some(core)
-    }
-    CoreOpt => {
-      let core = self.opt.unwrap()
+      // optimizations
       let passes = [
         @transform.Local(@transform.TailRecElimPass::with_ctx(core_env)),
       ]
       let pipeline = @transform.PassPipeline::with_passes(passes)
-      pipeline.run!(core)
+      try {
+        pipeline.run!(core, is_debug=true)
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Core Optimization Error")
+        }
+      }
       self.opt = Some(core)
     }
     Closure => {

@@ -111,12 +111,13 @@ pub fn CoreEnv::new() -> CoreEnv {
   }
 }
 
-pub fn CoreEnv::bind_function(self: CoreEnv, func: Fn) -> Unit {
+pub fn CoreEnv::bind_function(self : CoreEnv, func : Fn) -> Unit {
   self.func_fvar_counter = func.fvars.length()
   self.func_insn_counter = func.insns.size()
   self.func_block_counter = func.blocks.size()
   self.func_mem_counter = func.mems.size()
 }
+
 pub fn inherit(self : CoreEnv) -> CoreEnv {
   CoreEnv::{
     func_counter: self.func_counter,
