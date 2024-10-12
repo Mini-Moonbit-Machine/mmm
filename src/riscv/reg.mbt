@@ -212,7 +212,7 @@ pub fn to_xreg(self : AnyReg) -> Reg {
   r
 }
 
-pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4, T5]
+pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4]
 
 pub let reg_saved_list : Array[Reg] = [
   Fp,
