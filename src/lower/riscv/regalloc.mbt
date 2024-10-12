@@ -123,8 +123,9 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
         for live in live_set {
           let rw2 = reg_ctx.record_reg(live)
           reg_ctx.allocator.add_single_vertex(rw2)
-          if defined.class == live.class && defined != live {
-            // move_origin.contains(live) == false
+          if defined.class == live.class &&
+            defined != live &&
+            move_origin.contains(live) == false {
             reg_ctx.allocator.add_edge(rw1, rw2)
           }
         }

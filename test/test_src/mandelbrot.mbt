@@ -43,5 +43,5 @@ fn mandelbrot(w: Int) -> Unit {
 };
 
 fn main {
-  mandelbrot(1000)
+  mandelbrot(40)
 }
