@@ -101,7 +101,7 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
   for primitive in self.primitives {
     logger.write_string("\{primitive_map[primitive].unwrap()}\n")
   }
-  logger.write_string(my_rt)
+  //logger.write_string(my_rt)
   for fpair in self.funcs {
     let (_, func) = fpair
     logger.write_string("  .p2align 2\n")
