@@ -1567,6 +1567,12 @@ fn subst_vreg_with_preg_or_spill(
     FcvtDW(~rd, ~rs) => FcvtDW(rd=frf(rd), rs=fx(rs))
     FabsD(~rd, ~rs) => FabsD(rd=frf(rd), rs=ff(rs))
     FsqrtD(~rd, ~rs) => FsqrtD(rd=frf(rd), rs=ff(rs))
+    FmaddD(~rd, ~rs1, ~rs2, ~rs3) =>
+      FmaddD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
+    FmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
+      FmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
+    FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
+      FnmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
     La(~rd, ~l) => La(rd=frx(rd), ~l)
     Li(~rd, ~i) => Li(rd=frx(rd), ~i)
     Neg(~rd, ~rs) => Neg(rd=frx(rd), rs=fx(rs))

@@ -71,6 +71,9 @@ pub enum RvAsm {
   FcvtDW(~rd : FReg, ~rs : Reg)
   FabsD(~rd : FReg, ~rs : FReg)
   FsqrtD(~rd : FReg, ~rs : FReg)
+  FmaddD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
+  FmsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
+  FnmsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
   // pseudo instructions
   Nop
   La(~rd : Reg, ~l : Label)
@@ -109,6 +112,25 @@ fn write3[TReg1 : Show, TReg2 : Show, TReg3 : Show](
   rs1.output(logger)
   logger.write_string(", ")
   rs2.output(logger)
+}
+
+fn write4[TReg1 : Show, TReg2 : Show, TReg3 : Show, TReg4 : Show](
+  logger : Logger,
+  op : String,
+  rd : TReg1,
+  rs1 : TReg2,
+  rs2 : TReg3,
+  rs3 : TReg4
+) -> Unit {
+  logger.write_string(op)
+  logger.write_string(" ")
+  rd.output(logger)
+  logger.write_string(", ")
+  rs1.output(logger)
+  logger.write_string(", ")
+  rs2.output(logger)
+  logger.write_string(", ")
+  rs3.output(logger)
 }
 
 fn write2imm[TReg : Show](
@@ -242,6 +264,12 @@ pub impl Show for RvAsm with output(self, logger) {
     FcvtDW(~rd, ~rs) => write2(logger, "fcvt.d.w", rd, rs)
     FabsD(~rd, ~rs) => write2(logger, "fabs.d", rd, rs)
     FsqrtD(~rd, ~rs) => write2(logger, "fsqrt.d", rd, rs)
+    FmaddD(~rd, ~rs1, ~rs2, ~rs3) =>
+      write4(logger, "fmadd.d", rd, rs1, rs2, rs3)
+    FmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
+      write4(logger, "fmsub.d", rd, rs1, rs2, rs3)
+    FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
+      write4(logger, "fnmadd.d", rd, rs1, rs2, rs3)
     Nop => logger.write_string("nop")
     La(~rd, ~l) => {
       logger.write_string("la ")
