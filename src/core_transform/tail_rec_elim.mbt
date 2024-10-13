@@ -68,11 +68,10 @@ fn TailRecEliminator::create_loop_header(
 }
 
 fn can_move_above_call(
-  insnref : @core.InsnRef,
   insn : @core.Insn,
-  call : @core.Insn
+  callref : @core.InsnRef
 ) -> Bool {
-  let call_operands = call.operands()
+  let insn_operands = insn.operands()
   match insn {
     @core.Store(..) => false // Alias analysis required for more precision.
     _ =>
@@ -81,9 +80,9 @@ fn can_move_above_call(
       // return value of the call, it must only use things that are defined before
       // the call, or movable instructions between the call and the instruction
       // itself.
-      for op in call_operands {
+      for op in insn_operands {
         guard let @core.Value::Insn(iref=insnid) = op else { _ => continue }
-        if insnref == insnid {
+        if insnid == callref {
           break false
         }
       } else {
@@ -106,7 +105,7 @@ fn TailRecEliminator::eliminate_call(
   let call = func.insns.get(call_insn).unwrap()
   for insnref in block.iter()[call_index + 1:] {
     let insn = func.insns.get(insnref).unwrap()
-    if not(can_move_above_call(insnref, insn, call)) {
+    if not(can_move_above_call(insn, call_insn)) {
       return
     }
   }
