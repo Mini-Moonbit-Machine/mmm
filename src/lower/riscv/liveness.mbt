@@ -48,6 +48,7 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     | Ori(~rd, ~rs1, ..)
     | Andi(~rd, ~rs1, ..)
     | Slli(~rd, ~rs1, ..)
+    | Slliw(~rd, ~rs1, ..)
     | Srli(~rd, ~rs1, ..)
     | Srai(~rd, ~rs1, ..) | Slti(~rd, ~rs1, ..) | Sltiu(~rd, ~rs1, ..) =>
       ([rd.to_any()], [rs1.to_any()])

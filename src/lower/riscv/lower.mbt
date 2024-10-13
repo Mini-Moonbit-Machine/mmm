@@ -635,8 +635,8 @@ fn RiscvFnLoweringCtx::lower_address(
       let base = @generated.constructor_lower_value(self, val)
       let index = @generated.constructor_lower_value(self, offset)
       let offset = match size {
-        4 => @generated.constructor_rv_slli(self, xreg(index), 2)
-        8 => @generated.constructor_rv_slli(self, xreg(index), 3)
+        4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
+        8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
         _ => abort("Invalid type size")
       }
       let addr = @generated.constructor_rv_add(self, xreg(base), offset)
@@ -718,22 +718,22 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
   self.is_leaf = false
   match fill {
     Init(..) =>
-      match (init_rc, elem_sz) {
-        (X, 4) => {
+      match (elem_sz, init_rc) {
+        (4, X) => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("memseti32"), 3, 0)
           self.used_primitive.insert("memseti32")
         }
-        (X, 8) => {
+        (8, X) => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
           self.used_primitive.insert("memseti64")
         }
-        (F, 8) => {
+        (8, F) => {
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
@@ -893,7 +893,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
         }
         None => {
           let len = @generated.constructor_lower_value(self, len)
-          let size = @generated.constructor_rv_slli(
+          let size = @generated.constructor_rv_slliw(
             self,
             xreg(len),
             match elem_sz {
@@ -1518,6 +1518,7 @@ fn subst_vreg_with_preg_or_spill(
     Ori(~rd, ~rs1, ~imm) => Ori(rd=frx(rd), rs1=fx(rs1), ~imm)
     Andi(~rd, ~rs1, ~imm) => Andi(rd=frx(rd), rs1=fx(rs1), ~imm)
     Slli(~rd, ~rs1, ~imm) => Slli(rd=frx(rd), rs1=fx(rs1), ~imm)
+    Slliw(~rd, ~rs1, ~imm) => Slliw(rd=frx(rd), rs1=fx(rs1), ~imm)
     Srli(~rd, ~rs1, ~imm) => Srli(rd=frx(rd), rs1=fx(rs1), ~imm)
     Srai(~rd, ~rs1, ~imm) => Srai(rd=frx(rd), rs1=fx(rs1), ~imm)
     Slti(~rd, ~rs1, ~imm) => Slti(rd=frx(rd), rs1=fx(rs1), ~imm)
@@ -1991,26 +1992,26 @@ pub fn RiscvLoweringCtx::lower_globals(
     insns.push(
       MInsn::La(rd=@riscv.reg_swap[0], l=Label(symbol.name.to_string())),
     )
-    match (rc, ty_size) {
-      (X, 4) =>
+    match (ty_size, rc) {
+      (4, X) =>
         insns.push(
           MInsn::Sw(
             rs=@riscv.reg_ret,
             mem={ base: @riscv.reg_swap[0], offset: 0 },
           ),
         )
-      (X, 8) =>
+      (8, X) =>
         insns.push(
           MInsn::Sd(
             rs=@riscv.reg_ret,
             mem={ base: @riscv.reg_swap[0], offset: 0 },
           ),
         )
-      (F, 8) =>
+      (8, F) =>
         insns.push(
           MInsn::Fsd(rs=@riscv.Fa0, mem={ base: @riscv.reg_swap[0], offset: 0 }),
         )
-      (_, 0) => {
+      (0, _) => {
         let _ = insns.unsafe_pop()
 
       }

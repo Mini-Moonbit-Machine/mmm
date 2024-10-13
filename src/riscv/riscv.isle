@@ -24,6 +24,7 @@
     (Ori (rd XReg) (rs1 XReg) (imm Int32))
     (Andi (rd XReg) (rs1 XReg) (imm Int32))
     (Slli (rd XReg) (rs1 XReg) (imm Int32))
+    (Slliw (rd XReg) (rs1 XReg) (imm Int32))
     (Srli (rd XReg) (rs1 XReg) (imm Int32))
     (Srai (rd XReg) (rs1 XReg) (imm Int32))
     (Slti (rd XReg) (rs1 XReg) (imm Int32))
@@ -204,6 +205,12 @@
 (rule (rv_slli x y)
   (let ((dst XReg (next_virtual_xreg))
         (_ Unit (emit_risc_v (RvAsm.Slli dst x y))))
+    dst))
+
+(decl rv_slliw (XReg Int32) XReg)
+(rule (rv_slliw x y)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.Slliw dst x y))))
     dst))
 
 (decl rv_srli (XReg Int32) XReg)
