@@ -11,7 +11,8 @@ fn TailRecEliminator::find_candidate_call(
   for rev_index, insn in block.seq.rev().iter2() {
     guard let Some(instruction) = func.insns.get(insn) else { _ => continue }
     guard let @core.Call(f=fid, ..)
-    | @core.Apply(f=@core.Value::Fn(fref=fid), ..) = instruction else {
+    | @core.Apply(f=@core.Value::Fn(fref=fid), ..)
+    | @core.Apply(f=@core.Value::Self(fref=fid), ..) = instruction else {
       _ => continue
     }
     if fid == func.id {
