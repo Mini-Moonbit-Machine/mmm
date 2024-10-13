@@ -1,5 +1,5 @@
 fn fannkuch(n: Int) -> (Int, Int) {
-  fn gen_perml(len: Int) -> Array[Int] {
+  fn gen_perm1(len: Int) -> Array[Int] {
     let arr = Array::make(len, 0);
     fn init_arr(i: Int) -> Unit {
       if i <= len - 1 {
@@ -12,8 +12,8 @@ fn fannkuch(n: Int) -> (Int, Int) {
     let _ = init_arr(0);
     arr
   };
-  let perml = gen_perml(n);
-  let perm= Array::make(n, 0);
+  let perm1 = gen_perm1(n);
+  let perm = Array::make(n, 0);
   let count = Array::make(n, 0);
   let flips = Array::make(1, 0);
   let max_flips = Array::make(1, 0);
@@ -24,7 +24,7 @@ fn fannkuch(n: Int) -> (Int, Int) {
     if 1 <= r[0] {
       fn copy_perm(i: Int) -> Unit {
         if i <= n - 1 {
-          perm[i] = perml[i];
+          perm[i] = perm1[i];
           copy_perm(i + 1)
         } else {
           ()
@@ -43,7 +43,7 @@ fn fannkuch(n: Int) -> (Int, Int) {
 
       flips[0] = 0;
       let k = Array::make(1, perm[0]);
-      fn do_flip(k: Array[Int]) -> Unit {
+      fn do_flip(k: Array[Int]) -> Unit { // remove k
         if not(k[0] == 0) {
           let t = Array::make(1, 0);
           fn flip_loop(i: Int) -> Unit {
@@ -78,19 +78,19 @@ fn fannkuch(n: Int) -> (Int, Int) {
             r[0] = 0;
             ()
           } else {
-            t[0] = perml[0];
-            fn move_perml_forward(i: Int) -> Unit {
+            t[0] = perm1[0];
+            fn move_perm1_forward(i: Int) -> Unit {
               if i <= r[0] - 1 {
-                perml[i] = perml[i + 1];
-                let _ =move_perml_forward(i + 1);
+                perm1[i] = perm1[i + 1];
+                let _ = move_perm1_forward(i + 1);
                 ()
               } else {
                 ()
               }
             };
-            let _ = move_perml_forward(0);
+            let _ = move_perm1_forward(0);
 
-            perml[r[0]] = t[0];
+            perm1[r[0]] = t[0];
 
             count[r[0]] = count[r[0]] - 1;
             if 1 <= count[r[0]] {
@@ -119,7 +119,7 @@ fn fannkuch(n: Int) -> (Int, Int) {
 };
 
 fn main {
-  let (max_flips, check_sum) = fannkuch(8);
+  let (max_flips, check_sum) = fannkuch(9);
   print_int(check_sum);
   print_int(max_flips)
 };

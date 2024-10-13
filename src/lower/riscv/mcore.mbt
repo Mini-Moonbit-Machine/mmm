@@ -243,12 +243,24 @@ let primitive_map : Map[String, String] = {
 }
 
 let large_stack =
+  #|  .rodata
+  #|stack_begin_sentinel:
+  #|  .asciz "stack begin"
+  #|
   #|  .p2align 4
   #|  .bss
   #|  .type large_stack, @object
   #|large_stack:
   #|  .zero 268435456
   #|large_stack_end:
+  #|
+  #|  .rodata
+  #|stack_end_sentinel:
+  #|  .asciz "stack end"
+  #|
+  #|  .rodata
+  #|heap_begin_sentinel:
+  #|  .asciz "heap begin"
   #|  
   #|  .p2align 4
   #|  .bss
@@ -257,4 +269,7 @@ let large_stack =
   #|  .zero 1610612736
   #|large_heap_end:
   #|
+  #|  .rodata
+  #|heap_end_sentinel:
+  #|  .asciz "heap end"
   #|
