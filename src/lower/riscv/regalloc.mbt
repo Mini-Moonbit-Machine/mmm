@@ -118,11 +118,16 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           X => reg_ctx_x
           F => reg_ctx_f
         }
+        trace("defined: \{defined} is \{defined.class}")
         let rw1 = reg_ctx.record_reg(defined)
         reg_ctx.allocator.add_single_vertex(rw1)
         for live in live_set {
-          let rw2 = reg_ctx.record_reg(live)
-          reg_ctx.allocator.add_single_vertex(rw2)
+          let reg_ctx_for_live = match live.class {
+            X => reg_ctx_x
+            F => reg_ctx_f
+          }
+          let rw2 = reg_ctx_for_live.record_reg(live)
+          reg_ctx_for_live.allocator.add_single_vertex(rw2)
           if defined.class == live.class &&
             defined != live &&
             move_origin.contains(live) == false {

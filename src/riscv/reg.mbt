@@ -13,7 +13,7 @@ pub fn abort[T](msg : String) -> T {
 pub enum RegClass {
   X
   F
-} derive(Eq, Compare, Hash)
+} derive(Eq, Compare, Hash, Show)
 
 pub trait ToAnyReg {
   to_any(Self) -> AnyReg
