@@ -2942,7 +2942,6 @@ large_heap_end:
 inprod1_0:
 .inprod1_0_4:
   addi sp, sp, -64
-  fmv.d fa1, fa0
 
 .inprod1_0_0:
   blt a2, zero, .inprod1_0_2
@@ -2950,12 +2949,12 @@ inprod1_0:
 .inprod1_0_1:
   slliw a3, a2, 3
   add a3, a0, a3
-  fld fa2, 0(a3)
+  fld fa1, 0(a3)
   slliw a3, a2, 3
   add a3, a1, a3
-  fld fa3, 0(a3)
-  fmul.d fa2, fa2, fa3
-  fadd.d fa1, fa1, fa2
+  fld fa2, 0(a3)
+  fmul.d fa1, fa1, fa2
+  fadd.d fa0, fa0, fa1
   addi a2, a2, -1
   j .inprod1_0_0
 
@@ -4915,29 +4914,29 @@ xloop10_7:
   sd s0, 32(sp)
   sd ra, 40(sp)
   mv a2, s10
-  mv s0, a1
-  lw s1, 8(a2)
-  ld s2, 16(a2)
-  mv s3, a0
+  lw s0, 8(a2)
+  ld s1, 16(a2)
+  mv s2, a0
+  mv s3, a1
 
 .xloop10_7_0:
-  bge s3, s1, .xloop10_7_1
+  bge s2, s0, .xloop10_7_1
 
 .xloop10_7_2:
-  fcvt.d.w fa0, s3
-  mv s10, s2
-  ld a0, 0(s2)
+  fcvt.d.w fa0, s2
+  mv s10, s1
+  ld a0, 0(s1)
   jalr a0
-  fcvt.d.w fa1, s1
+  fcvt.d.w fa1, s0
   fdiv.d fa0, fa0, fa1
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
   fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s0
-  mv s10, s2
-  ld a0, 0(s2)
+  fcvt.d.w fa0, s3
+  mv s10, s1
+  ld a0, 0(s1)
   jalr a0
-  fcvt.d.w fa1, s1
+  fcvt.d.w fa1, s0
   fdiv.d fa0, fa0, fa1
   li a0, 4607182418800017408
   fmv.d.x fa1, a0
@@ -4947,7 +4946,7 @@ xloop10_7:
   mv s11, a1
   la a0, iloop29_9
   sd a0, 0(a1)
-  sd s2, 8(a1)
+  sd s1, 8(a1)
   mv s10, a1
   ld a1, 0(a1)
   li a0, 1000
@@ -4958,8 +4957,8 @@ xloop10_7:
   fmv.d fa4, fs0
   jalr a1
   mv a0, zero
-  addi a0, s3, 1
-  mv s3, a0
+  addi a0, s2, 1
+  mv s2, a0
   j .xloop10_7_0
 
 .xloop10_7_1:
@@ -5039,48 +5038,50 @@ memsetf64:
 # leaf false
 init_arr89_10:
 .init_arr89_10_4:
-  addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
+  addi sp, sp, -80
+  sd s4, 0(sp)
+  sd s3, 8(sp)
+  sd s2, 16(sp)
+  sd s1, 24(sp)
+  sd s0, 32(sp)
+  sd ra, 40(sp)
   mv a3, s10
   mv s0, a1
-  mv s1, a2
-  mv s2, a0
-  mv a0, s0
+  mv a1, a2
+  mv s1, a0
+  mv s2, s0
+  mv s3, a1
 
 .init_arr89_10_0:
-  blt s2, zero, .init_arr89_10_2
+  blt s1, zero, .init_arr89_10_2
 
 .init_arr89_10_1:
   slliw a0, s0, 3
   sub a0, s11, a0
-  andi s3, a0, -8
-  mv s11, s3
+  andi s4, a0, -8
+  mv s11, s4
   fmv.d.x fa0, zero
   mv a1, s0
-  mv a0, s3
+  mv a0, s4
   call memsetf64
-  slliw a0, s2, 3
-  add a0, s1, a0
-  sd s3, 0(a0)
-  addi a0, s2, -1
-  mv s2, a0
-  mv a0, s0
+  slliw a0, s1, 3
+  add a0, s3, a0
+  sd s4, 0(a0)
+  addi a0, s1, -1
+  mv s1, a0
   j .init_arr89_10_0
 
 .init_arr89_10_2:
   mv a0, zero
 
 .init_arr89_10_3:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 64
+  ld s4, 0(sp)
+  ld s3, 8(sp)
+  ld s2, 16(sp)
+  ld s1, 24(sp)
+  ld s0, 32(sp)
+  ld ra, 40(sp)
+  addi sp, sp, 80
   ret
 
   .p2align 2
@@ -5100,32 +5101,25 @@ loop228_1:
   sd ra, 48(sp)
   mv s0, a0
   mv s1, a1
-  mv a1, a2
-  mv s2, a3
-  mv s3, a4
-  mv s4, a5
-  mv a0, s0
-  mv a2, s1
-  mv s5, a1
-  mv a3, s2
-  mv a4, s3
-  mv a5, s4
+  mv s2, a2
+  mv s3, a3
+  mv s4, a4
+  mv s5, a5
 
 .loop228_1_0:
-  blt s5, zero, .loop228_1_2
+  blt s2, zero, .loop228_1_2
 
 .loop228_1_1:
-  addi a2, a2, -1
-  mv a1, s5
+  addi a2, s1, -1
+  mv a0, s0
+  mv a1, s2
+  mv a3, s3
+  mv a4, s4
+  mv a5, s5
   call loop31_0
   mv a0, zero
-  addi a1, s5, -1
-  mv a0, s0
-  mv a2, s1
-  mv s5, a1
-  mv a3, s2
-  mv a4, s3
-  mv a5, s4
+  addi a0, s2, -1
+  mv s2, a0
   j .loop228_1_0
 
 .loop228_1_2:
@@ -5157,33 +5151,27 @@ loop148_2:
   sd s1, 32(sp)
   sd s0, 40(sp)
   sd ra, 48(sp)
-  mv s5, a1
-  mv s3, a2
-  mv s0, a3
-  mv s4, a4
-  mv s2, a5
   mv s1, a0
-  mv a1, s5
-  mv a0, s3
-  mv a3, s0
-  mv a4, s4
-  mv a5, s2
+  mv s5, a1
+  mv s0, a2
+  mv s4, a3
+  mv s2, a4
+  mv s3, a5
 
 .loop148_2_0:
   blt s1, zero, .loop148_2_2
 
 .loop148_2_1:
-  addi a2, a0, -1
+  addi a2, s0, -1
   mv a0, s1
+  mv a1, s5
+  mv a3, s4
+  mv a4, s2
+  mv a5, s3
   call loop228_1
   mv a0, zero
   addi a0, s1, -1
   mv s1, a0
-  mv a1, s5
-  mv a0, s3
-  mv a3, s0
-  mv a4, s4
-  mv a5, s2
   j .loop148_2_0
 
 .loop148_2_2:
@@ -5501,45 +5489,47 @@ make_arr103_12:
 # leaf true
 loop31_0:
 .loop31_0_4:
-  addi sp, sp, -112
-  mv a7, a0
-  mv a0, a2
-  mv a6, a4
-  mv a4, a7
-  mv a2, a0
+  addi sp, sp, -96
+  mv t0, a0
+  mv a6, a1
+  mv a7, a3
+  mv a3, a4
+  mv a0, a5
+  mv a1, t0
+  mv a5, a7
+  mv a4, a0
 
 .loop31_0_0:
   blt a2, zero, .loop31_0_2
 
 .loop31_0_1:
-  slliw a0, a4, 3
-  add a0, a5, a0
+  slliw a0, a1, 3
+  add a0, a4, a0
   ld a0, 0(a0)
-  slliw t0, a4, 3
-  add t0, a5, t0
-  ld t0, 0(t0)
-  slliw t1, a1, 3
-  add t0, t0, t1
-  fld fa0, 0(t0)
-  slliw a4, a4, 3
-  add a4, a3, a4
-  ld a4, 0(a4)
+  slliw a7, a1, 3
+  add a7, a4, a7
+  ld a7, 0(a7)
+  slliw t0, a6, 3
+  add a7, a7, t0
+  fld fa0, 0(a7)
+  slliw a7, a1, 3
+  add a7, a5, a7
+  ld a7, 0(a7)
   slliw t0, a2, 3
-  add a4, a4, t0
-  fld fa1, 0(a4)
-  slliw a4, a2, 3
-  add a4, a6, a4
-  ld a4, 0(a4)
-  slliw t0, a1, 3
-  add a4, a4, t0
-  fld fa2, 0(a4)
+  add a7, a7, t0
+  fld fa1, 0(a7)
+  slliw a7, a2, 3
+  add a7, a3, a7
+  ld a7, 0(a7)
+  slliw t0, a6, 3
+  add a7, a7, t0
+  fld fa2, 0(a7)
   fmul.d fa1, fa1, fa2
   fadd.d fa0, fa0, fa1
-  slliw a4, a1, 3
-  add a0, a0, a4
+  slliw a7, a6, 3
+  add a0, a0, a7
   fsd fa0, 0(a0)
   addi a0, a2, -1
-  mv a4, a7
   mv a2, a0
   j .loop31_0_0
 
@@ -5547,7 +5537,7 @@ loop31_0:
   mv a0, zero
 
 .loop31_0_3:
-  addi sp, sp, 112
+  addi sp, sp, 96
   ret
 
   .p2align 2
@@ -7279,46 +7269,45 @@ choose_pivot129_4:
 # leaf false
 quick_sort210_5:
 .quick_sort210_5_4:
-  addi sp, sp, -64
+  addi sp, sp, -80
   sd s3, 0(sp)
   sd s2, 8(sp)
   sd s1, 16(sp)
   sd s0, 24(sp)
   sd ra, 32(sp)
   mv s0, a0
-  mv a0, a1
-  mv s1, a2
-  mv s2, a0
+  mv s1, a1
+  mv s2, a2
 
 .quick_sort210_5_0:
-  sub a0, s1, s2
+  sub a0, s2, s1
   li a1, 16
   bge a1, a0, .quick_sort210_5_1
 
 .quick_sort210_5_2:
   mv a0, s0
-  mv a1, s2
-  mv a2, s1
+  mv a1, s1
+  mv a2, s2
   call choose_pivot129_4
   lw a1, 0(a0)
   mv a0, s0
-  mv a2, s2
-  mv a3, s1
+  mv a2, s1
+  mv a3, s2
   call partition65_3
   lw s3, 0(a0)
   mv a0, s0
-  mv a1, s2
+  mv a1, s1
   mv a2, s3
   call quick_sort210_5
   mv a0, zero
   addi a0, s3, 1
-  mv s2, a0
+  mv s1, a0
   j .quick_sort210_5_0
 
 .quick_sort210_5_1:
   mv a0, s0
-  mv a1, s2
-  mv a2, s1
+  mv a1, s1
+  mv a2, s2
   call insertion_sort30_2
   mv a0, zero
 
@@ -7328,7 +7317,7 @@ quick_sort210_5:
   ld s1, 16(sp)
   ld s0, 24(sp)
   ld ra, 32(sp)
-  addi sp, sp, 64
+  addi sp, sp, 80
   ret
 
   .p2align 2
@@ -7344,28 +7333,23 @@ output14_1:
   sd s0, 16(sp)
   sd ra, 24(sp)
   mv s2, a0
-  mv a0, a1
+  mv s1, a1
   mv s0, a2
-  mv a1, s2
-  mv s1, a0
-  mv a0, s0
 
 .output14_1_0:
-  addi a0, a0, -1
+  addi a0, s0, -1
   blt a0, s1, .output14_1_2
 
 .output14_1_1:
   slliw a0, s1, 2
-  add a0, a1, a0
+  add a0, s2, a0
   lw a0, 0(a0)
   call minimbt_print_int
   mv a0, zero
   call minimbt_print_endline
   mv a0, zero
   addi a0, s1, 1
-  mv a1, s2
   mv s1, a0
-  mv a0, s0
   j .output14_1_0
 
 .output14_1_2:
@@ -7968,35 +7952,33 @@ output97_12:
 # leaf false
 quicksort59_2:
 .quicksort59_2_4:
-  addi sp, sp, -64
+  addi sp, sp, -80
   sd s3, 0(sp)
   sd s2, 8(sp)
   sd s1, 16(sp)
   sd s0, 24(sp)
   sd ra, 32(sp)
-  mv s0, a0
-  mv a0, a1
-  mv s2, a2
-  mv s1, a0
-  mv a2, s2
+  mv s2, a0
+  mv s1, a1
+  mv s0, a2
 
 .quicksort59_2_0:
-  addi a0, a2, -1
+  addi a0, s0, -1
   blt a0, s1, .quicksort59_2_2
 
 .quicksort59_2_1:
-  mv a0, s0
+  mv a0, s2
   mv a1, s1
+  mv a2, s0
   call partition14_1
   mv s3, a0
   addi a2, s3, -1
-  mv a0, s0
+  mv a0, s2
   mv a1, s1
   call quicksort59_2
   mv a0, zero
   addi a0, s3, 1
   mv s1, a0
-  mv a2, s2
   j .quicksort59_2_0
 
 .quicksort59_2_2:
@@ -8008,7 +7990,7 @@ quicksort59_2:
   ld s1, 16(sp)
   ld s0, 24(sp)
   ld ra, 32(sp)
-  addi sp, sp, 64
+  addi sp, sp, 80
   ret
 
   .p2align 2
@@ -9395,9 +9377,7 @@ minimbt_main:
 # leaf true
 sum1_0:
 .sum1_0_4:
-  addi sp, sp, -32
-  mv a2, a0
-  mv a0, a2
+  addi sp, sp, -16
 
 .sum1_0_0:
   bge zero, a1, .sum1_0_1
@@ -9408,10 +9388,9 @@ sum1_0:
   j .sum1_0_0
 
 .sum1_0_1:
-  mv a0, a2
 
 .sum1_0_3:
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 2

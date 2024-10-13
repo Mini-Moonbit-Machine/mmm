@@ -44,6 +44,9 @@ fn TailRecEliminator::create_loop_header(
     @core.ClosureFn(~params, ..) | @core.DirectFn(~params, ..) => params
     _ => fail!("not a function (closure) type")
   }
+  // Update loop header block parameters.
+  func_entry.params.clear()
+  func_entry.params.append(func_param_types)
   let func_args = []
   for i = 0, len = func_param_types.length(); i < len; i = i + 1 {
     let param = @core.FnParam(
@@ -52,13 +55,6 @@ fn TailRecEliminator::create_loop_header(
     )
     func_args.push(param)
   }
-  let new_entry = self.core_env.add_basic_block(func, func_param_types)
-  trace("Create Loop Header .bb #\{new_entry.id} for .fn #\{func.name}")
-  new_entry.control = @core.Jump(target=func.entry, args=func_args)
-  func.entry = new_entry.id
-  // Update loop header block parameters.
-  func_entry.params.clear()
-  func_entry.params.append(func_param_types)
 
   // Update the use of function argument.
   for arg_index, func_arg in func_args.iter2() {
@@ -70,7 +66,10 @@ fn TailRecEliminator::create_loop_header(
   }
 
   // TODO: Handle return value?
-
+  let new_entry = self.core_env.add_basic_block(func, func_param_types)
+  trace("Create Loop Header .bb #\{new_entry.id} for .fn #\{func.name}")
+  new_entry.control = @core.Jump(target=func.entry, args=func_args)
+  func.entry = new_entry.id
   func_entry.id
 }
 
@@ -106,7 +105,6 @@ fn TailRecEliminator::eliminate_call(
   // TODO: recognize the accumulator pattern of commutative operators.
   let call_index = call_site.0
   let call_insn = call_site.1
-  let call = func.insns.get(call_insn).unwrap()
   for insnref in block.seq[call_index + 1:] {
     let insn = func.insns.get(insnref).unwrap()
     if not(can_move_above_call(insn, call_insn)) {
@@ -126,6 +124,7 @@ fn TailRecEliminator::eliminate_call(
   }
 
   // remove the call and return instructions, replacing them with jump
+  let call = func.insns.get(call_insn).unwrap()
   let rec_args = match call {
     @core.Call(~args, ..) => args
     @core.Apply(~args, ..) => args

@@ -254,6 +254,25 @@ pub enum Control {
   Panic
 } derive(Show, Eq)
 
+pub fn Control::operands(self : Control) -> Values {
+  match self {
+    Jump(~args, ..) => args
+    Return(~args) => args
+    Branch(~cond, ~t_args, ~f_args, ..) => {
+      let operands = [cond]
+      operands.append(t_args)
+      operands.append(f_args)
+      operands
+    }
+    Select(~cond, ~args, ..) => {
+      let operands = [cond]
+      operands.append(args)
+      operands
+    }
+    Panic => []
+  }
+}
+
 pub fn Block::all_basic_blocks(self : Block, func : Fn) -> Array[BasicBlock] {
   let result = []
   match self {
@@ -475,7 +494,7 @@ pub fn Value::replace_all_uses_with(
         Address::Offset(~ty, val=replace(val), offset=replace(offset))
     }
   }
-
+  // enumerate instructions
   let insn_updates = []
   for insnpair in func.insns {
     let (handle, instruction) = insnpair
@@ -495,6 +514,29 @@ pub fn Value::replace_all_uses_with(
         Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
       }
       insn_updates.push((handle, new_insn))
+    }
+  }
+  // enumerate controls
+  for bpair in func.blocks {
+    let (_, block) = bpair
+    let bb = Block::basic_block(block, func)
+    let operands = bb.control.operands()
+    if operands.iter().any(fn(op) { op == self }) {
+      bb.control = match bb.control {
+        Jump(~target, ~args) => Jump(~target, args=args.map(replace))
+        Return(~args) => Return(args=args.map(replace))
+        Branch(~cond, ~t_args, ~f_args, ~t, ~f) =>
+          Branch(
+            cond=replace(cond),
+            t_args=t_args.map(replace),
+            f_args=f_args.map(replace),
+            ~t,
+            ~f,
+          )
+        Select(~cond, ~targets, ~args) =>
+          Select(cond=replace(cond), ~targets, args=args.map(replace))
+        Panic => Panic
+      }
     }
   }
   // bulk update
