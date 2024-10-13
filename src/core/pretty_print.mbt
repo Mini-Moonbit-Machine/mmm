@@ -306,7 +306,9 @@ fn print_func(logger : @util.IndentLogger, val : Fn) -> Unit {
   print_types(logger, val.fvars)
   logger.write_string(")\n.entry \{val.entry} {\n")
   logger.indent()
-  for block in val.blocks {
+  let all_blocks = val.blocks.iter().to_array()
+  all_blocks.sort_by(fn(b1, b2) { b1.0._.id.compare(b2.0._.id) })
+  for block in all_blocks {
     let (_, block) = block
     print_block(logger, val, block)
   }
