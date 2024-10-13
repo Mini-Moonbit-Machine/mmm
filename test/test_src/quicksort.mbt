@@ -57,3 +57,4 @@ fn main {
   };
   output(0)
 }
+
