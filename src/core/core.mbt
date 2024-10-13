@@ -494,21 +494,31 @@ pub fn Value::replace_all_uses_with(
         Address::Offset(~ty, val=replace(val), offset=replace(offset))
     }
   }
+
+  fn replace_fill(fill : Fill) -> Fill {
+    match fill {
+      Zero => Zero
+      Init(~val) => Init(val=replace(val))
+      Field(~index, ~val) => Field(~index, val=replace(val))
+    }
+  }
+
   // enumerate instructions
   let insn_updates = []
   for insnpair in func.insns {
-    let (handle, instruction) = insnpair
-    let operands = instruction.operands()
+    let (handle, insn) = insnpair
+    let operands = insn.operands()
     // check if old value is a child of the instruction
     if operands.iter().any(fn(op) { op == self }) {
-      let new_insn = match instruction {
+      let new_insn = match insn {
         Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(replace))
         Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(replace))
         Apply(~ty, ~f, ~args) => Apply(~ty, ~f, args=args.map(replace))
         ExtCall(~ty, ~ext_f, ~args) =>
           ExtCall(~ty, ~ext_f, args=args.map(replace))
-        LoadSymbol(..) as ldsym => ldsym
-        Alloc(..) as alloc => alloc // We think there is no such cases
+        LoadSymbol(..) => insn
+        Alloc(~ty, ~mref, ~fills) =>
+          Alloc(~ty, ~mref, fills=fills.map(replace_fill))
         Store(~ty, ~ma, ~val) =>
           Store(~ty, ma=replace_addr(ma), val=replace(val))
         Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
