@@ -421,592 +421,18 @@ start:
 
 
 Testing test/test_src/bf.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
-  .globl skip21_5
-  .type skip21_5, @function
-# leaf false
-skip21_5:
-.skip21_5_0:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  mv a2, s10
-  lw a3, 8(a2)
-  ld a4, 16(a2)
-  bge a0, a3, .skip21_5_1
-
-.skip21_5_2:
-  slliw a3, a0, 2
-  add a3, a4, a3
-  lw a4, 0(a3)
-  li a3, 91
-  beq a4, a3, .skip21_5_3
-
-.skip21_5_4:
-  li a3, 93
-  bne a4, a3, .skip21_5_6
-
-.skip21_5_5:
-  beq a1, zero, .skip21_5_7
-
-.skip21_5_8:
-  addi a0, a0, 1
-  addi a1, a1, -1
-  mv s10, a2
-  ld a2, 0(a2)
-  jalr a2
-
-.skip21_5_9:
-
-.skip21_5_10:
-
-.skip21_5_11:
-
-.skip21_5_12:
-  ld ra, 0(sp)
-  addi sp, sp, 48
-  ret
-
-.skip21_5_1:
-  j .skip21_5_12
-
-.skip21_5_3:
-  addi a0, a0, 1
-  addi a1, a1, 1
-  mv s10, a2
-  ld a2, 0(a2)
-  jalr a2
-  j .skip21_5_11
-
-.skip21_5_6:
-  addi a0, a0, 1
-  mv s10, a2
-  ld a2, 0(a2)
-  jalr a2
-  j .skip21_5_10
-
-.skip21_5_7:
-  j .skip21_5_9
-
-  .p2align 2
-  .text
-  .globl main136l1_2
-  .type main136l1_2, @function
-# leaf false
-main136l1_2:
-.main136l1_2_0:
-  addi sp, sp, -48
-  sd s0, 0(sp)
-  sd ra, 8(sp)
-  li a0, 4096
-  sub a0, s11, a0
-  andi s0, a0, -8
-  mv s11, s0
-  li a0, 1024
-  mv a1, a0
-  mv a0, s0
-  mv a2, zero
-  call memseti32
-  addi a0, s11, -16
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, read_prog140_12
-  sd a1, 0(a0)
-  sd s0, 8(a0)
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  mv a0, zero
-  ld s0, 0(sp)
-  ld ra, 8(sp)
-  addi sp, sp, 48
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main136l1_2
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl lp108_9
-  .type lp108_9, @function
-# leaf false
-lp108_9:
-.lp108_9_0:
-  addi sp, sp, -80
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s1, s10
-  ld a0, 8(s1)
-  ld a2, 16(s1)
-  lw a3, 24(s1)
-  ld a1, 32(s1)
-  ld s0, 40(s1)
-  ld a4, 48(s1)
-  lw a0, 0(a0)
-  slliw a0, a0, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  beq a0, zero, .lp108_9_1
-
-.lp108_9_2:
-  addi a0, a3, 1
-  mv s10, a4
-  ld a1, 0(a4)
-  jalr a1
-  sw a0, 0(s0)
-  mv s10, s1
-  ld a0, 0(s1)
-  jalr a0
-  mv a0, zero
-
-.lp108_9_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 80
-  ret
-
-.lp108_9_1:
-  addi a0, a3, 1
-  mv s10, a1
-  ld a2, 0(a1)
-  mv a1, zero
-  jalr a2
-  sw a0, 0(s0)
-  mv a0, zero
-  j .lp108_9_3
-
-  .p2align 2
-  .text
-  .globl read_ch_until_newline_or_eof1l0_0
-  .type read_ch_until_newline_or_eof1l0_0, @function
-# leaf false
-read_ch_until_newline_or_eof1l0_0:
-.read_ch_until_newline_or_eof1l0_0_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  call minimbt_read_char
-  li a1, 10
-  beq a0, a1, .read_ch_until_newline_or_eof1l0_0_1
-
-.read_ch_until_newline_or_eof1l0_0_2:
-  li a1, 13
-  bne a0, a1, .read_ch_until_newline_or_eof1l0_0_4
-
-.read_ch_until_newline_or_eof1l0_0_3:
-  li a0, -1
-
-.read_ch_until_newline_or_eof1l0_0_5:
-
-.read_ch_until_newline_or_eof1l0_0_6:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-.read_ch_until_newline_or_eof1l0_0_1:
-  li a0, -1
-  j .read_ch_until_newline_or_eof1l0_0_6
-
-.read_ch_until_newline_or_eof1l0_0_4:
-  j .read_ch_until_newline_or_eof1l0_0_5
-
-  .p2align 2
-  .text
-  .globl bf5_1
-  .type bf5_1, @function
-# leaf false
-bf5_1:
-.bf5_1_0:
-  addi sp, sp, -80
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s0, a0
-  mv s1, a1
-  addi a0, s11, -4
-  andi s2, a0, -8
-  mv s11, s2
-  sw zero, 0(s2)
-  li a0, 1024
-  li a1, 1024
-  mulw a0, a0, a1
-  slliw a1, a0, 2
-  sub a1, s11, a1
-  andi s3, a1, -8
-  mv s11, s3
-  mv a1, a0
-  mv a0, s3
-  mv a2, zero
-  call memseti32
-  addi a0, s11, -4
-  andi a0, a0, -8
-  mv s11, a0
-  sw zero, 0(a0)
-  addi a1, s11, -24
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, skip21_5
-  sd a2, 0(a1)
-  sd s0, 8(a1)
-  sd s1, 16(a1)
-  addi a2, s11, -56
-  andi a2, a2, -8
-  mv s11, a2
-  la a3, aux40_7
-  sd a3, 0(a2)
-  sd s0, 8(a2)
-  sd s1, 16(a2)
-  sd s2, 24(a2)
-  sd s3, 32(a2)
-  sd a0, 40(a2)
-  sd a1, 48(a2)
-  mv s10, a2
-  ld a1, 0(a2)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 80
-  ret
-
-  .p2align 2
-  .text
-  .globl read_prog140_12
-  .type read_prog140_12, @function
-# leaf false
-read_prog140_12:
-.read_prog140_12_0:
-  addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv s0, s10
-  mv s1, a0
-  ld s2, 8(s0)
-  call read_ch_until_newline_or_eof1l0_0
-  li a1, -1
-  beq a0, a1, .read_prog140_12_1
-
-.read_prog140_12_2:
-  slliw a1, s1, 2
-  add a1, s2, a1
-  sw a0, 0(a1)
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.read_prog140_12_3:
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
-
-.read_prog140_12_1:
-  mv a0, s1
-  mv a1, s2
-  call bf5_1
-  mv a0, zero
-  j .read_prog140_12_3
-
-  .p2align 2
-  .text
-  .globl aux40_7
-  .type aux40_7, @function
-# leaf false
-aux40_7:
-.aux40_7_0:
-  addi sp, sp, -80
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s1, s10
-  mv s3, a0
-  lw a0, 8(s1)
-  ld a1, 16(s1)
-  ld a2, 24(s1)
-  ld s2, 32(s1)
-  ld s0, 40(s1)
-  ld a3, 48(s1)
-  bge s3, a0, .aux40_7_1
-
-.aux40_7_2:
-  slliw a0, s3, 2
-  add a0, a1, a0
-  lw a1, 0(a0)
-  li a0, 62
-  beq a1, a0, .aux40_7_3
-
-.aux40_7_4:
-  li a0, 60
-  beq a1, a0, .aux40_7_5
-
-.aux40_7_6:
-  li a0, 43
-  beq a1, a0, .aux40_7_7
-
-.aux40_7_8:
-  li a0, 45
-  beq a1, a0, .aux40_7_9
-
-.aux40_7_10:
-  li a0, 46
-  beq a1, a0, .aux40_7_11
-
-.aux40_7_12:
-  li a0, 44
-  beq a1, a0, .aux40_7_13
-
-.aux40_7_14:
-  li a0, 91
-  beq a1, a0, .aux40_7_15
-
-.aux40_7_16:
-  li a0, 93
-  bne a1, a0, .aux40_7_18
-
-.aux40_7_17:
-  mv a0, s3
-
-.aux40_7_19:
-
-.aux40_7_20:
-
-.aux40_7_21:
-
-.aux40_7_22:
-
-.aux40_7_23:
-
-.aux40_7_24:
-
-.aux40_7_25:
-
-.aux40_7_26:
-
-.aux40_7_27:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 80
-  ret
-
-.aux40_7_1:
-  mv a0, s3
-  j .aux40_7_27
-
-.aux40_7_3:
-  lw a0, 0(a2)
-  addi a0, a0, 1
-  sw a0, 0(a2)
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_26
-
-.aux40_7_5:
-  lw a0, 0(a2)
-  addi a0, a0, -1
-  sw a0, 0(a2)
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_25
-
-.aux40_7_7:
-  lw a0, 0(a2)
-  lw a1, 0(a2)
-  slliw a1, a1, 2
-  add a1, s2, a1
-  lw a1, 0(a1)
-  addi a1, a1, 1
-  slliw a0, a0, 2
-  add a0, s2, a0
-  sw a1, 0(a0)
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_24
-
-.aux40_7_9:
-  lw a0, 0(a2)
-  lw a1, 0(a2)
-  slliw a1, a1, 2
-  add a1, s2, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slliw a0, a0, 2
-  add a0, s2, a0
-  sw a1, 0(a0)
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_23
-
-.aux40_7_11:
-  lw a0, 0(a2)
-  slliw a0, a0, 2
-  add a0, s2, a0
-  lw a0, 0(a0)
-  call minimbt_print_char
-  mv a0, zero
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_22
-
-.aux40_7_13:
-  lw s0, 0(a2)
-  call read_ch_until_newline_or_eof1l0_0
-  slliw a1, s0, 2
-  add a1, s2, a1
-  sw a0, 0(a1)
-  addi a0, s3, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_21
-
-.aux40_7_15:
-  sw s3, 0(s0)
-  addi a0, s11, -56
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, lp108_9
-  sd a1, 0(a0)
-  sd a2, 8(a0)
-  sd s2, 16(a0)
-  sd s3, 24(a0)
-  sd a3, 32(a0)
-  sd s0, 40(a0)
-  sd s1, 48(a0)
-  mv s10, a0
-  ld a0, 0(a0)
-  jalr a0
-  mv a0, zero
-  lw a0, 0(s0)
-  addi a0, a0, 1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  j .aux40_7_20
-
-.aux40_7_18:
-  mv a0, s3
-  j .aux40_7_19
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_14
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/cls-bug.mbt
@@ -1196,7 +622,9 @@ f1_0:
   andi a1, a1, -8
   mv s11, a1
   sd a0, 0(a1)
-  ld a0, 0(a1)
+  slliw a0, zero, 3
+  add a0, a1, a0
+  ld a0, 0(a0)
   addi a1, s0, -1
   mv s10, a0
   ld a2, 0(a0)
@@ -1348,7 +776,15 @@ f2_2:
 .f2_2_0:
   addi sp, sp, -32
   sd ra, 0(sp)
-  beq a0, zero, .f2_2_1
+  bne a0, zero, .f2_2_2
+
+.f2_2_1:
+  mv a0, zero
+
+.f2_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 32
+  ret
 
 .f2_2_2:
   addi a0, a0, -1
@@ -1356,15 +792,9 @@ f2_2:
   la a1, x.1
   lw a1, 0(a1)
   add a0, a1, a0
-
-.f2_2_3:
   ld ra, 0(sp)
   addi sp, sp, 32
   ret
-
-.f2_2_1:
-  mv a0, zero
-  j .f2_2_3
 
   .p2align 2
   .text
@@ -1427,212 +857,18 @@ start:
 
 
 Testing test/test_src/cls-reg-bug.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl T$start_6
-  .type T$start_6, @function
-# leaf false
-T$start_6:
-.T$start_6_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main39l0_1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl h1_0
-  .type h1_0, @function
-# leaf false
-h1_0:
-.h1_0_0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  lw a1, 0(a0)
-  lw a2, 4(a0)
-  lw a3, 8(a0)
-  lw a4, 12(a0)
-  lw a5, 16(a0)
-  lw a6, 20(a0)
-  lw a7, 24(a0)
-  lw t0, 28(a0)
-  lw t1, 32(a0)
-  lw a0, 36(a0)
-  addi t2, s11, -88
-  andi t2, t2, -8
-  mv s11, t2
-  la t3, g24_3
-  sd t3, 0(t2)
-  sd a1, 8(t2)
-  sd a2, 16(t2)
-  sd a3, 24(t2)
-  sd a4, 32(t2)
-  sd a5, 40(t2)
-  sd a6, 48(t2)
-  sd a7, 56(t2)
-  sd t0, 64(t2)
-  sd t1, 72(t2)
-  sd a0, 80(t2)
-  mv s10, t2
-  ld a1, 0(t2)
-  li a0, 1
-  jalr a1
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-  .p2align 2
-  .text
-  .globl g24_3
-  .type g24_3, @function
-# leaf false
-g24_3:
-.g24_3_0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  mv a1, s10
-  lw a2, 8(a1)
-  lw a3, 16(a1)
-  lw a4, 24(a1)
-  lw a5, 32(a1)
-  lw a6, 40(a1)
-  lw a7, 48(a1)
-  lw t0, 56(a1)
-  lw t1, 64(a1)
-  lw t2, 72(a1)
-  lw t3, 80(a1)
-  add a2, a2, a3
-  add a2, a2, a4
-  add a2, a2, a5
-  add a2, a2, a6
-  add a2, a2, a7
-  add a2, a2, t0
-  add a2, a2, t1
-  add a2, a2, t2
-  add a2, a2, t3
-  blt zero, a0, .g24_3_2
-
-.g24_3_1:
-  neg a0, a0
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-
-.g24_3_3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-.g24_3_2:
-  mv a0, a2
-  j .g24_3_3
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_6
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .text
-  .globl main39l0_1
-  .type main39l0_1, @function
-# leaf false
-main39l0_1:
-.main39l0_1_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  addi a0, s11, -40
-  andi a0, a0, -8
-  mv s11, a0
-  li a1, 1
-  sw a1, 0(a0)
-  li a1, 2
-  sw a1, 4(a0)
-  li a1, 3
-  sw a1, 8(a0)
-  li a1, 4
-  sw a1, 12(a0)
-  li a1, 5
-  sw a1, 16(a0)
-  li a1, 6
-  sw a1, 20(a0)
-  li a1, 7
-  sw a1, 24(a0)
-  li a1, 8
-  sw a1, 28(a0)
-  li a1, 9
-  sw a1, 32(a0)
-  li a1, 10
-  sw a1, 36(a0)
-  call h1_0
-  call minimbt_print_int
-  mv a0, zero
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/debug.mbt
@@ -1709,34 +945,36 @@ T$start_10:
   .type f9_2, @function
 # leaf false
 f9_2:
-.f9_2_0:
-  addi sp, sp, -32
+.f9_2_4:
+  addi sp, sp, -48
   sd ra, 0(sp)
-  addi a1, s11, -16
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, g12_7
-  sd a2, 0(a1)
-  sd a0, 8(a1)
-  li a0, 1
-  li a2, 1
-  bne a0, a2, .f9_2_2
+  mv a1, a0
 
-.f9_2_1:
-  li a0, 1
-  call f9_2
+.f9_2_0:
+  addi a1, s11, -16
+  andi a2, a1, -8
+  mv s11, a2
+  la a1, g12_7
+  sd a1, 0(a2)
+  sd a0, 8(a2)
+  li a1, 1
+  li a3, 1
+  beq a1, a3, .f9_2_1
+
+.f9_2_2:
+  mv s10, a2
+  ld a1, 0(a2)
+  li a0, 2
+  jalr a1
 
 .f9_2_3:
   ld ra, 0(sp)
-  addi sp, sp, 32
+  addi sp, sp, 48
   ret
 
-.f9_2_2:
-  mv s10, a1
-  ld a1, 0(a1)
-  li a0, 2
-  jalr a1
-  j .f9_2_3
+.f9_2_1:
+  li a1, 1
+  j .f9_2_4
 
   .p2align 2
   .text
@@ -2244,15 +1482,10 @@ fib1_0:
   sd ra, 16(sp)
   mv s0, a0
   li a0, 1
-  bge a0, s0, .fib1_0_1
+  blt a0, s0, .fib1_0_2
 
-.fib1_0_2:
-  addi a0, s0, -1
-  call fib1_0
-  mv s1, a0
-  addi a0, s0, -2
-  call fib1_0
-  add a0, s1, a0
+.fib1_0_1:
+  mv a0, s0
 
 .fib1_0_3:
   ld s1, 0(sp)
@@ -2261,9 +1494,18 @@ fib1_0:
   addi sp, sp, 48
   ret
 
-.fib1_0_1:
-  mv a0, s0
-  j .fib1_0_3
+.fib1_0_2:
+  addi a0, s0, -1
+  call fib1_0
+  mv s1, a0
+  addi a0, s0, -2
+  call fib1_0
+  add a0, s1, a0
+  ld s1, 0(sp)
+  ld s0, 8(sp)
+  ld ra, 16(sp)
+  addi sp, sp, 48
+  ret
 
   .p2align 2
   .text
@@ -2897,39 +2139,37 @@ large_heap_end:
   .text
   .globl inprod1_0
   .type inprod1_0, @function
-# leaf false
+# leaf true
 inprod1_0:
-.inprod1_0_0:
-  addi sp, sp, -80
-  sd ra, 0(sp)
+.inprod1_0_4:
+  addi sp, sp, -96
   mv a3, a0
   mv a4, a1
   fmv.d fa1, fa0
-  mv a1, a2
-  blt a1, zero, .inprod1_0_2
+  mv a5, a2
+
+.inprod1_0_0:
+  blt a5, zero, .inprod1_0_2
 
 .inprod1_0_1:
-  slliw a0, a1, 3
-  add a0, a3, a0
-  fld fa0, 0(a0)
-  slliw a0, a1, 3
-  add a0, a4, a0
-  fld fa2, 0(a0)
-  fmul.d fa0, fa0, fa2
-  fadd.d fa0, fa1, fa0
-  addi a2, a1, -1
-  mv a0, a3
-  mv a1, a4
-  call inprod1_0
-
-.inprod1_0_3:
-  ld ra, 0(sp)
-  addi sp, sp, 80
-  ret
+  slliw a6, a5, 3
+  add a3, a3, a6
+  fld fa2, 0(a3)
+  slliw a3, a5, 3
+  add a3, a4, a3
+  fld fa3, 0(a3)
+  fmul.d fa2, fa2, fa3
+  fadd.d fa1, fa1, fa2
+  addi a3, a5, -1
+  mv a4, a0
+  mv a5, a1
+  j .inprod1_0_4
 
 .inprod1_0_2:
-  fmv.d fa0, fa1
-  j .inprod1_0_3
+
+.inprod1_0_3:
+  addi sp, sp, 96
+  ret
 
   .p2align 2
   .text
@@ -3063,7 +2303,16 @@ inprod1_0:
   mv a3, a0
   mv a4, a1
   mv a1, a2
-  blt a1, zero, .inprod1_0_2
+  bge a1, zero, .inprod1_0_1
+
+.inprod1_0_2:
+  fmv.d.x fa0, zero
+
+.inprod1_0_3:
+  fld fs0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 80
+  ret
 
 .inprod1_0_1:
   slliw a0, a1, 3
@@ -3078,16 +2327,10 @@ inprod1_0:
   mv a1, a4
   call inprod1_0
   fadd.d fa0, fs0, fa0
-
-.inprod1_0_3:
   fld fs0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 80
   ret
-
-.inprod1_0_2:
-  fmv.d.x fa0, zero
-  j .inprod1_0_3
 
   .p2align 2
   .text
@@ -4348,7 +3591,9 @@ landins_knot4_1:
   ld a2, 0(a0)
   mv a0, a1
   jalr a2
-  sd a0, 0(s0)
+  slliw a1, zero, 3
+  add a1, s0, a1
+  sd a0, 0(a1)
   ld s0, 0(sp)
   ld ra, 8(sp)
   addi sp, sp, 48
@@ -4418,6 +3663,8 @@ aux9_5:
   sd ra, 0(sp)
   mv a1, s10
   ld a1, 8(a1)
+  slliw a2, zero, 3
+  add a1, a1, a2
   ld a1, 0(a1)
   mv s10, a1
   ld a1, 0(a1)
@@ -4601,1407 +3848,48 @@ factorial.28:
 
 
 Testing test/test_src/mandelbrot.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl T$start_12
-  .type T$start_12, @function
-# leaf false
-T$start_12:
-.T$start_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main75l0_1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main75l0_1
-  .type main75l0_1, @function
-# leaf false
-main75l0_1:
-.main75l0_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 40
-  call mandelbrot1_0
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl iloop29_9
-  .type iloop29_9, @function
-# leaf false
-iloop29_9:
-.iloop29_9_0:
-  addi sp, sp, -112
-  fsd fs3, 0(sp)
-  fsd fs2, 8(sp)
-  fsd fs1, 16(sp)
-  fsd fs0, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
-  mv s0, s10
-  mv s1, a0
-  fmv.d fs0, fa1
-  fmv.d fa1, fa2
-  fmv.d fa2, fa3
-  fmv.d fs1, fa4
-  fmv.d fs2, fa5
-  ld a0, 8(s0)
-  beq s1, zero, .iloop29_9_1
-
-.iloop29_9_2:
-  fsub.d fa1, fa1, fa2
-  fadd.d fs3, fa1, fs1
-  mv s10, a0
-  ld a0, 0(a0)
-  jalr a0
-  fmul.d fa0, fa0, fs0
-  fadd.d fa1, fa0, fs2
-  fmul.d fa2, fs3, fs3
-  fmul.d fa3, fa1, fa1
-  li a0, 4611686018427387904
-  fmv.d.x fa0, a0
-  li a0, 4611686018427387904
-  fmv.d.x fa4, a0
-  fmul.d fa0, fa0, fa4
-  fadd.d fa4, fa2, fa3
-  fle.d a0, fa0, fa4
-  bne a0, zero, .iloop29_9_3
-
-.iloop29_9_4:
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  fmv.d fa0, fs3
-  fmv.d fa4, fs1
-  fmv.d fa5, fs2
-  jalr a1
-  mv a0, zero
-
-.iloop29_9_5:
-
-.iloop29_9_6:
-  fld fs3, 0(sp)
-  fld fs2, 8(sp)
-  fld fs1, 16(sp)
-  fld fs0, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
-  addi sp, sp, 112
-  ret
-
-.iloop29_9_1:
-  li a0, 1
-  call minimbt_print_int
-  mv a0, zero
-  j .iloop29_9_6
-
-.iloop29_9_3:
-  mv a0, zero
-  call minimbt_print_int
-  mv a0, zero
-  j .iloop29_9_5
-
-  .p2align 2
-  .text
-  .globl mandelbrot1_0
-  .type mandelbrot1_0, @function
-# leaf false
-mandelbrot1_0:
-.mandelbrot1_0_0:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  addi a1, s11, -8
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, dbl4_3
-  sd a2, 0(a1)
-  addi a2, s11, -24
-  andi a2, a2, -8
-  mv s11, a2
-  la a3, yloop7_5
-  sd a3, 0(a2)
-  sd a0, 8(a2)
-  sd a1, 16(a2)
-  mv s10, a2
-  ld a1, 0(a2)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 48
-  ret
-
-  .p2align 2
-  .text
-  .globl dbl4_3
-  .type dbl4_3, @function
-# leaf true
-dbl4_3:
-.dbl4_3_0:
-  addi sp, sp, -16
-  mv a0, s10
-  fadd.d fa0, fa0, fa0
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_12
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .text
-  .globl yloop7_5
-  .type yloop7_5, @function
-# leaf false
-yloop7_5:
-.yloop7_5_0:
-  addi sp, sp, -64
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a1, 16(s0)
-  bge s1, a0, .yloop7_5_1
-
-.yloop7_5_2:
-  addi a2, s11, -24
-  andi a2, a2, -8
-  mv s11, a2
-  la a3, xloop10_7
-  sd a3, 0(a2)
-  sd a0, 8(a2)
-  sd a1, 16(a2)
-  mv s10, a2
-  ld a2, 0(a2)
-  mv a0, zero
-  mv a1, s1
-  jalr a2
-  mv a0, zero
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.yloop7_5_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 64
-  ret
-
-.yloop7_5_1:
-  mv a0, zero
-  j .yloop7_5_3
-
-  .p2align 2
-  .text
-  .globl xloop10_7
-  .type xloop10_7, @function
-# leaf false
-xloop10_7:
-.xloop10_7_0:
-  addi sp, sp, -128
-  fsd fs0, 0(sp)
-  sd s4, 8(sp)
-  sd s3, 16(sp)
-  sd s2, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
-  mv s0, s10
-  mv s1, a0
-  mv s2, a1
-  lw s3, 8(s0)
-  ld s4, 16(s0)
-  bge s1, s3, .xloop10_7_1
-
-.xloop10_7_2:
-  fcvt.d.w fa0, s1
-  mv s10, s4
-  ld a0, 0(s4)
-  jalr a0
-  fcvt.d.w fa1, s3
-  fdiv.d fa0, fa0, fa1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s2
-  mv s10, s4
-  ld a0, 0(s4)
-  jalr a0
-  fcvt.d.w fa1, s3
-  fdiv.d fa0, fa0, fa1
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa5, fa0, fa1
-  addi a0, s11, -16
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, iloop29_9
-  sd a1, 0(a0)
-  sd s4, 8(a0)
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 1000
-  fmv.d.x fa0, zero
-  fmv.d.x fa1, zero
-  fmv.d.x fa2, zero
-  fmv.d.x fa3, zero
-  fmv.d fa4, fs0
-  jalr a1
-  mv a0, zero
-  addi a0, s1, 1
-  mv s10, s0
-  ld a2, 0(s0)
-  mv a1, s2
-  jalr a2
-  mv a0, zero
-
-.xloop10_7_3:
-  fld fs0, 0(sp)
-  ld s4, 8(sp)
-  ld s3, 16(sp)
-  ld s2, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
-  addi sp, sp, 128
-  ret
-
-.xloop10_7_1:
-  call minimbt_print_endline
-  mv a0, zero
-  mv a0, zero
-  j .xloop10_7_3
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/matmul-flat.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-
-  .p2align 2
-  .text
-  .globl memsetf64
-  .type memsetf64, @function
-memsetf64:
-  blez a1, .memsetf64_b1
-  slli a1, a1, 3
-  add a1, a1, a0
-.memsetf64_b0:
-  fsd fa0, 0(a0)
-  addi a0, a0, 8
-  bne a0, a1, .memsetf64_b0
-.memsetf64_b1:
-  ret
-
-  .p2align 2
-  .text
-  .globl init_arr89_10
-  .type init_arr89_10, @function
-# leaf false
-init_arr89_10:
-.init_arr89_10_0:
-  addi sp, sp, -80
-  sd s4, 0(sp)
-  sd s3, 8(sp)
-  sd s2, 16(sp)
-  sd s1, 24(sp)
-  sd s0, 32(sp)
-  sd ra, 40(sp)
-  mv s1, s10
-  mv s3, a0
-  mv s0, a1
-  mv s2, a2
-  blt s3, zero, .init_arr89_10_2
-
-.init_arr89_10_1:
-  slliw a0, s0, 3
-  sub a0, s11, a0
-  andi s4, a0, -8
-  mv s11, s4
-  fmv.d.x fa0, zero
-  mv a1, s0
-  mv a0, s4
-  call memsetf64
-  slliw a0, s3, 3
-  add a0, s2, a0
-  sd s4, 0(a0)
-  addi a0, s3, -1
-  mv s10, s1
-  ld a3, 0(s1)
-  mv a1, s0
-  mv a2, s2
-  jalr a3
-  mv a0, zero
-
-.init_arr89_10_3:
-  ld s4, 0(sp)
-  ld s3, 8(sp)
-  ld s2, 16(sp)
-  ld s1, 24(sp)
-  ld s0, 32(sp)
-  ld ra, 40(sp)
-  addi sp, sp, 80
-  ret
-
-.init_arr89_10_2:
-  mv a0, zero
-  j .init_arr89_10_3
-
-  .p2align 2
-  .text
-  .globl loop228_1
-  .type loop228_1, @function
-# leaf false
-loop228_1:
-.loop228_1_0:
-  addi sp, sp, -80
-  sd s5, 0(sp)
-  sd s4, 8(sp)
-  sd s3, 16(sp)
-  sd s2, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
-  mv s3, a3
-  mv s4, a4
-  mv s5, a5
-  blt s2, zero, .loop228_1_2
-
-.loop228_1_1:
-  addi a2, s1, -1
-  mv a0, s0
-  mv a1, s2
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop31_0
-  mv a0, zero
-  addi a2, s2, -1
-  mv a0, s0
-  mv a1, s1
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop228_1
-  mv a0, zero
-
-.loop228_1_3:
-  ld s5, 0(sp)
-  ld s4, 8(sp)
-  ld s3, 16(sp)
-  ld s2, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
-  addi sp, sp, 80
-  ret
-
-.loop228_1_2:
-  mv a0, zero
-  j .loop228_1_3
-
-  .p2align 2
-  .text
-  .globl loop148_2
-  .type loop148_2, @function
-# leaf false
-loop148_2:
-.loop148_2_0:
-  addi sp, sp, -80
-  sd s5, 0(sp)
-  sd s4, 8(sp)
-  sd s3, 16(sp)
-  sd s2, 24(sp)
-  sd s1, 32(sp)
-  sd s0, 40(sp)
-  sd ra, 48(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
-  mv s3, a3
-  mv s4, a4
-  mv s5, a5
-  blt s0, zero, .loop148_2_2
-
-.loop148_2_1:
-  addi a2, s2, -1
-  mv a0, s0
-  mv a1, s1
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop228_1
-  mv a0, zero
-  addi a0, s0, -1
-  mv a1, s1
-  mv a2, s2
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop148_2
-  mv a0, zero
-
-.loop148_2_3:
-  ld s5, 0(sp)
-  ld s4, 8(sp)
-  ld s3, 16(sp)
-  ld s2, 24(sp)
-  ld s1, 32(sp)
-  ld s0, 40(sp)
-  ld ra, 48(sp)
-  addi sp, sp, 80
-  ret
-
-.loop148_2_2:
-  mv a0, zero
-  j .loop148_2_3
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main85l0_4
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl mul68_3
-  .type mul68_3, @function
-# leaf false
-mul68_3:
-.mul68_3_0:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  addi a0, a0, -1
-  call loop148_2
-  mv a0, zero
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl main85l0_4
-  .type main85l0_4, @function
-# leaf false
-main85l0_4:
-.main85l0_4_0:
-  addi sp, sp, -80
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  addi a0, s11, 0
-  andi s0, a0, -8
-  mv s11, s0
-  fmv.d.x fa0, zero
-  addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, init_arr89_10
-  sd a1, 0(a0)
-  addi a1, s11, -16
-  andi s1, a1, -8
-  mv s11, s1
-  la a1, make_arr103_12
-  sd a1, 0(s1)
-  sd a0, 8(s1)
-  mv s10, s1
-  ld a3, 0(s1)
-  li a0, 2
-  li a1, 3
-  mv a2, s0
-  jalr a3
-  mv s2, a0
-  mv s10, s1
-  ld a3, 0(s1)
-  li a0, 3
-  li a1, 2
-  mv a2, s0
-  jalr a3
-  mv s3, a0
-  mv s10, s1
-  ld a3, 0(s1)
-  li a0, 2
-  li a1, 2
-  mv a2, s0
-  jalr a3
-  mv s0, a0
-  ld a0, 0(s2)
-  li a1, 4607182418800017408
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 0(s2)
-  li a1, 4611686018427387904
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 0(s2)
-  li a1, 4613937818241073152
-  fmv.d.x fa0, a1
-  fsd fa0, 16(a0)
-  ld a0, 8(s2)
-  li a1, 4616189618054758400
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 8(s2)
-  li a1, 4617315517961601024
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 8(s2)
-  li a1, 4618441417868443648
-  fmv.d.x fa0, a1
-  fsd fa0, 16(a0)
-  ld a0, 0(s3)
-  li a1, 4619567317775286272
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 0(s3)
-  li a1, 4620693217682128896
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 8(s3)
-  li a1, 4621256167635550208
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 8(s3)
-  li a1, 4621819117588971520
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 16(s3)
-  li a1, 4622382067542392832
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 16(s3)
-  li a1, 4622945017495814144
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  li a0, 2
-  li a1, 3
-  li a2, 2
-  mv a3, s2
-  mv a4, s3
-  mv a5, s0
-  call mul68_3
-  mv a0, zero
-  ld a0, 0(s0)
-  fld fa0, 0(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 0(s0)
-  fld fa0, 8(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 8(s0)
-  fld fa0, 0(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 8(s0)
-  fld fa0, 8(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  mv a0, zero
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 80
-  ret
-
-  .p2align 2
-  .text
-  .globl make_arr103_12
-  .type make_arr103_12, @function
-# leaf false
-make_arr103_12:
-.make_arr103_12_0:
-  addi sp, sp, -80
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv a3, s10
-  mv s0, a0
-  mv s1, a1
-  ld s2, 8(a3)
-  slliw a0, s0, 3
-  sub a0, s11, a0
-  andi s3, a0, -8
-  mv s11, s3
-  mv a1, s0
-  mv a0, s3
-  call memseti64
-  addi a0, s0, -1
-  mv s10, s2
-  ld a3, 0(s2)
-  mv a1, s1
-  mv a2, s3
-  jalr a3
-  mv a0, zero
-  mv a0, s3
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 80
-  ret
-
-  .p2align 2
-  .text
-  .globl loop31_0
-  .type loop31_0, @function
-# leaf false
-loop31_0:
-.loop31_0_0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  blt a2, zero, .loop31_0_2
-
-.loop31_0_1:
-  slliw a6, a0, 3
-  add a6, a5, a6
-  ld a6, 0(a6)
-  slliw a7, a0, 3
-  add a7, a5, a7
-  ld a7, 0(a7)
-  slliw t0, a1, 3
-  add a7, a7, t0
-  fld fa0, 0(a7)
-  slliw a7, a0, 3
-  add a7, a3, a7
-  ld a7, 0(a7)
-  slliw t0, a2, 3
-  add a7, a7, t0
-  fld fa1, 0(a7)
-  slliw a7, a2, 3
-  add a7, a4, a7
-  ld a7, 0(a7)
-  slliw t0, a1, 3
-  add a7, a7, t0
-  fld fa2, 0(a7)
-  fmul.d fa1, fa1, fa2
-  fadd.d fa0, fa0, fa1
-  slliw a7, a1, 3
-  add a6, a6, a7
-  fsd fa0, 0(a6)
-  addi a2, a2, -1
-  call loop31_0
-  mv a0, zero
-
-.loop31_0_3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-.loop31_0_2:
-  mv a0, zero
-  j .loop31_0_3
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_14
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/matmul.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-
-  .p2align 2
-  .text
-  .globl memsetf64
-  .type memsetf64, @function
-memsetf64:
-  blez a1, .memsetf64_b1
-  slli a1, a1, 3
-  add a1, a1, a0
-.memsetf64_b0:
-  fsd fa0, 0(a0)
-  addi a0, a0, 8
-  bne a0, a1, .memsetf64_b0
-.memsetf64_b1:
-  ret
-
-  .p2align 2
-  .text
-  .globl matmul1_0
-  .type matmul1_0, @function
-# leaf false
-matmul1_0:
-.matmul1_0_0:
-  addi sp, sp, -80
-  sd ra, 0(sp)
-  addi a6, s11, -48
-  andi a6, a6, -8
-  mv s11, a6
-  la a7, loop114_3
-  sd a7, 0(a6)
-  sd a5, 8(a6)
-  sd a3, 16(a6)
-  sd a4, 24(a6)
-  sd a1, 32(a6)
-  sd a2, 40(a6)
-  addi a0, a0, -1
-  mv s10, a6
-  ld a1, 0(a6)
-  jalr a1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 80
-  ret
-
-  .p2align 2
-  .text
-  .globl init_arr63_12
-  .type init_arr63_12, @function
-# leaf false
-init_arr63_12:
-.init_arr63_12_0:
-  addi sp, sp, -64
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s0, s10
-  mv s2, a0
-  lw a1, 8(s0)
-  ld s1, 16(s0)
-  blt s2, zero, .init_arr63_12_2
-
-.init_arr63_12_1:
-  slliw a0, a1, 3
-  sub a0, s11, a0
-  andi s3, a0, -8
-  mv s11, s3
-  fmv.d.x fa0, zero
-  mv a0, s3
-  call memsetf64
-  slliw a0, s2, 3
-  add a0, s1, a0
-  sd s3, 0(a0)
-  addi a0, s2, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.init_arr63_12_3:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 64
-  ret
-
-.init_arr63_12_2:
-  mv a0, zero
-  j .init_arr63_12_3
-
-  .p2align 2
-  .text
-  .globl loop218_5
-  .type loop218_5, @function
-# leaf false
-loop218_5:
-.loop218_5_0:
-  addi sp, sp, -96
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a1, 8(s0)
-  lw a4, 16(s0)
-  ld a2, 24(s0)
-  ld a5, 32(s0)
-  lw a3, 40(s0)
-  blt s1, zero, .loop218_5_2
-
-.loop218_5_1:
-  addi a0, s11, -48
-  andi a0, a0, -8
-  mv s11, a0
-  la a6, loop322_7
-  sd a6, 0(a0)
-  sd a1, 8(a0)
-  sd a4, 16(a0)
-  sd s1, 24(a0)
-  sd a2, 32(a0)
-  sd a5, 40(a0)
-  addi a1, a3, -1
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  jalr a2
-  mv a0, zero
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.loop218_5_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 96
-  ret
-
-.loop218_5_2:
-  mv a0, zero
-  j .loop218_5_3
-
-  .p2align 2
-  .text
-  .globl loop322_7
-  .type loop322_7, @function
-# leaf false
-loop322_7:
-.loop322_7_0:
-  addi sp, sp, -112
-  sd ra, 0(sp)
-  mv a4, s10
-  mv a7, a0
-  ld a1, 8(a4)
-  lw a5, 16(a4)
-  lw a2, 24(a4)
-  ld a6, 32(a4)
-  ld a3, 40(a4)
-  blt a7, zero, .loop322_7_2
-
-.loop322_7_1:
-  slliw a0, a5, 3
-  add a0, a1, a0
-  ld a0, 0(a0)
-  slliw t0, a5, 3
-  add a1, a1, t0
-  ld a1, 0(a1)
-  slliw t0, a2, 3
-  add a1, a1, t0
-  fld fa0, 0(a1)
-  slliw a1, a5, 3
-  add a1, a6, a1
-  ld a1, 0(a1)
-  slliw a5, a7, 3
-  add a1, a1, a5
-  fld fa1, 0(a1)
-  slliw a1, a7, 3
-  add a1, a3, a1
-  ld a1, 0(a1)
-  slliw a3, a2, 3
-  add a1, a1, a3
-  fld fa2, 0(a1)
-  fmul.d fa1, fa1, fa2
-  fadd.d fa0, fa0, fa1
-  slliw a1, a2, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  addi a0, a7, -1
-  mv s10, a4
-  ld a1, 0(a4)
-  jalr a1
-  mv a0, zero
-
-.loop322_7_3:
-  ld ra, 0(sp)
-  addi sp, sp, 112
-  ret
-
-.loop322_7_2:
-  mv a0, zero
-  j .loop322_7_3
-
-  .p2align 2
-  .text
-  .globl loop114_3
-  .type loop114_3, @function
-# leaf false
-loop114_3:
-.loop114_3_0:
-  addi sp, sp, -96
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a0, 8(s0)
-  ld a2, 16(s0)
-  ld a3, 24(s0)
-  lw a4, 32(s0)
-  lw a5, 40(s0)
-  blt s1, zero, .loop114_3_2
-
-.loop114_3_1:
-  addi a1, s11, -48
-  andi a1, a1, -8
-  mv s11, a1
-  la a6, loop218_5
-  sd a6, 0(a1)
-  sd a0, 8(a1)
-  sd s1, 16(a1)
-  sd a2, 24(a1)
-  sd a3, 32(a1)
-  sd a4, 40(a1)
-  addi a0, a5, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  mv a0, zero
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.loop114_3_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 96
-  ret
-
-.loop114_3_2:
-  mv a0, zero
-  j .loop114_3_3
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main53l0_1
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main53l0_1
-  .type main53l0_1, @function
-# leaf false
-main53l0_1:
-.main53l0_1_0:
-  addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  addi a0, s11, 0
-  andi a0, a0, -8
-  mv s11, a0
-  fmv.d.x fa0, zero
-  addi a1, s11, -16
-  andi s0, a1, -8
-  mv s11, s0
-  la a1, gen_arr57_10
-  sd a1, 0(s0)
-  sd a0, 8(s0)
-  mv s10, s0
-  ld a2, 0(s0)
-  li a0, 2
-  li a1, 3
-  jalr a2
-  mv s1, a0
-  mv s10, s0
-  ld a2, 0(s0)
-  li a0, 3
-  li a1, 2
-  jalr a2
-  mv s2, a0
-  mv s10, s0
-  ld a2, 0(s0)
-  li a0, 2
-  li a1, 2
-  jalr a2
-  mv s0, a0
-  ld a0, 0(s1)
-  li a1, 4607182418800017408
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 0(s1)
-  li a1, 4611686018427387904
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 0(s1)
-  li a1, 4613937818241073152
-  fmv.d.x fa0, a1
-  fsd fa0, 16(a0)
-  ld a0, 8(s1)
-  li a1, 4616189618054758400
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 8(s1)
-  li a1, 4617315517961601024
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 8(s1)
-  li a1, 4618441417868443648
-  fmv.d.x fa0, a1
-  fsd fa0, 16(a0)
-  ld a0, 0(s2)
-  li a1, 4619567317775286272
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 0(s2)
-  li a1, 4620693217682128896
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 8(s2)
-  li a1, 4621256167635550208
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 8(s2)
-  li a1, 4621819117588971520
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  ld a0, 16(s2)
-  li a1, 4622382067542392832
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  ld a0, 16(s2)
-  li a1, 4622945017495814144
-  fmv.d.x fa0, a1
-  fsd fa0, 8(a0)
-  li a0, 2
-  li a1, 3
-  li a2, 2
-  mv a3, s1
-  mv a4, s2
-  mv a5, s0
-  call matmul1_0
-  mv a0, zero
-  ld a0, 0(s0)
-  fld fa0, 0(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 0(s0)
-  fld fa0, 8(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 8(s0)
-  fld fa0, 0(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  ld a0, 8(s0)
-  fld fa0, 8(a0)
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  mv a0, zero
-  mv a0, zero
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl gen_arr57_10
-  .type gen_arr57_10, @function
-# leaf false
-gen_arr57_10:
-.gen_arr57_10_0:
-  addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv a2, s10
-  mv s0, a0
-  mv s1, a1
-  ld a2, 8(a2)
-  slliw a0, s0, 3
-  sub a0, s11, a0
-  andi s2, a0, -8
-  mv s11, s2
-  mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s11, -24
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, init_arr63_12
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s2, 16(a0)
-  addi a1, s0, -1
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  jalr a2
-  mv a0, zero
-  mv a0, s2
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_14
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/multiple-init.mbt
@@ -6053,17 +3941,21 @@ T$_11_10:
 # leaf true
 init21_20:
 .init21_20_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   la a0, len.3
   ld a0, 0(a0)
   li a1, 3
+  slliw a2, zero, 2
+  add a0, a0, a2
   sw a1, 0(a0)
   la a0, len2.13
   ld a0, 0(a0)
   li a1, 4
+  slliw a2, zero, 2
+  add a0, a0, a2
   sw a1, 0(a0)
   mv a0, zero
-  addi sp, sp, 16
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -6097,10 +3989,12 @@ T$_2_2:
 # leaf false
 main32_24:
 .main32_24_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
   la a0, len.3
   ld a0, 0(a0)
+  slliw a1, zero, 2
+  add a0, a0, a1
   lw a0, 0(a0)
   call minimbt_print_int
   mv a0, zero
@@ -6108,12 +4002,14 @@ main32_24:
   mv a0, zero
   la a0, len2.13
   ld a0, 0(a0)
+  slliw a1, zero, 2
+  add a0, a0, a1
   lw a0, 0(a0)
   call minimbt_print_int
   mv a0, zero
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 16
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -6312,13 +4208,15 @@ minimbt_main:
 # leaf true
 init4_6:
 .init4_6_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   la a0, len.3
   ld a0, 0(a0)
   li a1, 1
+  slliw a2, zero, 2
+  add a0, a0, a2
   sw a1, 0(a0)
   mv a0, zero
-  addi sp, sp, 16
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -6328,13 +4226,15 @@ init4_6:
 # leaf true
 init14_16:
 .init14_16_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   la a0, len2.13
   ld a0, 0(a0)
   li a1, 2
+  slliw a2, zero, 2
+  add a0, a0, a2
   sw a1, 0(a0)
   mv a0, zero
-  addi sp, sp, 16
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -6634,13 +4534,18 @@ main1l0_1:
   sw a0, 28(s0)
   sw a0, 32(s0)
   sw a0, 36(s0)
-  lw a0, 0(s0)
+  slliw a0, zero, 2
+  add a0, s0, a0
+  lw a0, 0(a0)
   li a1, 3
   bne a0, a1, .main1l0_1_2
 
 .main1l0_1_1:
   call f2l1_0
-  lw a1, 4(s0)
+  li a1, 1
+  slliw a1, a1, 2
+  add a1, s0, a1
+  lw a1, 0(a1)
   add a0, a0, a1
   li a1, 67890
   add a0, a0, a1
@@ -6782,423 +4687,34 @@ start:
 
 
 
+Testing test/test_src/quicksort-std.mbt
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
+
+
 Testing test/test_src/quicksort.mbt
-  .p2align 4
-  .bss
-  .type large_stack, @object
-large_stack:
-  .zero 268435456
-large_stack_end:
-  
-  .p2align 4
-  .bss
-  .type large_heap, @object
-large_heap:
-  .zero 1610612736
-large_heap_end:
-
-  .p2align 2
-  .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
-  .globl output97_12
-  .type output97_12, @function
-# leaf false
-output97_12:
-.output97_12_0:
-  addi sp, sp, -48
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a1, 16(s0)
-  addi a0, a0, -1
-  blt a0, s1, .output97_12_2
-
-.output97_12_1:
-  slliw a0, s1, 2
-  add a0, a1, a0
-  lw a0, 0(a0)
-  call minimbt_print_int
-  mv a0, zero
-  call minimbt_print_endline
-  mv a0, zero
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.output97_12_3:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 48
-  ret
-
-.output97_12_2:
-  mv a0, zero
-  j .output97_12_3
-
-  .p2align 2
-  .text
-  .globl quicksort59_2
-  .type quicksort59_2, @function
-# leaf false
-quicksort59_2:
-.quicksort59_2_0:
-  addi sp, sp, -80
-  sd s3, 0(sp)
-  sd s2, 8(sp)
-  sd s1, 16(sp)
-  sd s0, 24(sp)
-  sd ra, 32(sp)
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
-  addi a0, s1, -1
-  blt a0, s0, .quicksort59_2_2
-
-.quicksort59_2_1:
-  mv a0, s2
-  mv a1, s0
-  mv a2, s1
-  call partition14_1
-  mv s3, a0
-  addi a2, s3, -1
-  mv a0, s2
-  mv a1, s0
-  call quicksort59_2
-  mv a0, zero
-  addi a1, s3, 1
-  mv a0, s2
-  mv a2, s1
-  call quicksort59_2
-  mv a0, zero
-
-.quicksort59_2_3:
-  ld s3, 0(sp)
-  ld s2, 8(sp)
-  ld s1, 16(sp)
-  ld s0, 24(sp)
-  ld ra, 32(sp)
-  addi sp, sp, 80
-  ret
-
-.quicksort59_2_2:
-  mv a0, zero
-  j .quicksort59_2_3
-
-  .p2align 2
-  .text
-  .globl input79_10
-  .type input79_10, @function
-# leaf false
-input79_10:
-.input79_10_0:
-  addi sp, sp, -64
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv s0, s10
-  mv s2, a0
-  lw a0, 8(s0)
-  ld s1, 16(s0)
-  addi a0, a0, -1
-  blt a0, s2, .input79_10_2
-
-.input79_10_1:
-  call minimbt_read_int
-  slliw a1, s2, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s2, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.input79_10_3:
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 64
-  ret
-
-.input79_10_2:
-  mv a0, zero
-  j .input79_10_3
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main75l0_3
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl partition14_1
-  .type partition14_1, @function
-# leaf false
-partition14_1:
-.partition14_1_0:
-  addi sp, sp, -80
-  sd s2, 0(sp)
-  sd s1, 8(sp)
-  sd s0, 16(sp)
-  sd ra, 24(sp)
-  mv s0, a0
-  mv a0, a1
-  mv s1, a2
-  slliw a1, s1, 2
-  add a1, s0, a1
-  lw a1, 0(a1)
-  addi a2, a0, -1
-  addi a3, s11, -4
-  andi s2, a3, -8
-  mv s11, s2
-  sw a2, 0(s2)
-  addi a2, s11, -40
-  andi a2, a2, -8
-  mv s11, a2
-  la a3, l26_6
-  sd a3, 0(a2)
-  sd s1, 8(a2)
-  sd s0, 16(a2)
-  sd a1, 24(a2)
-  sd s2, 32(a2)
-  mv s10, a2
-  ld a1, 0(a2)
-  jalr a1
-  mv a0, zero
-  lw a0, 0(s2)
-  addi a0, a0, 1
-  sw a0, 0(s2)
-  lw a1, 0(s2)
-  mv a0, s0
-  mv a2, s1
-  call swap1_0
-  mv a0, zero
-  lw a0, 0(s2)
-  ld s2, 0(sp)
-  ld s1, 8(sp)
-  ld s0, 16(sp)
-  ld ra, 24(sp)
-  addi sp, sp, 80
-  ret
-
-  .p2align 2
-  .text
-  .globl swap1_0
-  .type swap1_0, @function
-# leaf true
-swap1_0:
-.swap1_0_0:
-  addi sp, sp, -48
-  slliw a3, a1, 2
-  add a3, a0, a3
-  lw a3, 0(a3)
-  slliw a4, a2, 2
-  add a4, a0, a4
-  lw a4, 0(a4)
-  slliw a1, a1, 2
-  add a1, a0, a1
-  sw a4, 0(a1)
-  slliw a1, a2, 2
-  add a0, a0, a1
-  sw a3, 0(a0)
-  mv a0, zero
-  addi sp, sp, 48
-  ret
-
-  .p2align 2
-  .text
-  .globl l26_6
-  .type l26_6, @function
-# leaf false
-l26_6:
-.l26_6_0:
-  addi sp, sp, -64
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a1, 8(s0)
-  ld a0, 16(s0)
-  lw a2, 24(s0)
-  ld a3, 32(s0)
-  addi a1, a1, -1
-  blt a1, s1, .l26_6_2
-
-.l26_6_1:
-  slliw a1, s1, 2
-  add a1, a0, a1
-  lw a1, 0(a1)
-  blt a2, a1, .l26_6_4
-
-.l26_6_3:
-  lw a1, 0(a3)
-  addi a1, a1, 1
-  sw a1, 0(a3)
-  lw a1, 0(a3)
-  mv a2, s1
-  call swap1_0
-  mv a0, zero
-
-.l26_6_5:
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv a0, zero
-
-.l26_6_6:
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 64
-  ret
-
-.l26_6_2:
-  mv a0, zero
-  j .l26_6_6
-
-.l26_6_4:
-  mv a0, zero
-  j .l26_6_5
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -128
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  sd s9, 80(sp)
-  sd s10, 88(sp)
-  sd s11, 96(sp)
-  la s11, large_heap_end
-  mv s9, sp
-  la sp, large_stack_end
-  call T$start_14
-  mv sp, s9
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  ld s9, 80(sp)
-  ld s10, 88(sp)
-  ld s11, 96(sp)
-  addi sp, sp, 128
-  ret
-
-  .p2align 2
-  .text
-  .globl main75l0_3
-  .type main75l0_3, @function
-# leaf false
-main75l0_3:
-.main75l0_3_0:
-  addi sp, sp, -64
-  sd s1, 0(sp)
-  sd s0, 8(sp)
-  sd ra, 16(sp)
-  call minimbt_read_int
-  mv s0, a0
-  slliw a0, s0, 2
-  sub a0, s11, a0
-  andi s1, a0, -8
-  mv s11, s1
-  mv a1, s0
-  mv a0, s1
-  mv a2, zero
-  call memseti32
-  addi a0, s11, -24
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, input79_10
-  sd a0, 0(a1)
-  sd s0, 8(a1)
-  sd s1, 16(a1)
-  mv s10, a1
-  ld a1, 0(a1)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  addi a2, s0, -1
-  mv a0, s1
-  mv a1, zero
-  call quicksort59_2
-  mv a0, zero
-  addi a0, s11, -24
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, output97_12
-  sd a1, 0(a0)
-  sd s0, 8(a0)
-  sd s1, 16(a0)
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, zero
-  jalr a1
-  mv a0, zero
-  ld s1, 0(sp)
-  ld s0, 8(sp)
-  ld ra, 16(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
-
+RuntimeError: unreachable
+    at wasm://wasm/001c77fa:wasm-function[280]:0xc578
+    at wasm://wasm/001c77fa:wasm-function[2723]:0x5d30f
+    at wasm://wasm/001c77fa:wasm-function[2565]:0x5697a
+    at wasm://wasm/001c77fa:wasm-function[2735]:0x5d7c3
+    at wasm://wasm/001c77fa:wasm-function[2736]:0x5da61
+    at wasm://wasm/001c77fa:wasm-function[2778]:0x6097b
+    at wasm://wasm/001c77fa:wasm-function[1875]:0x26e52
+    at wasm://wasm/001c77fa:wasm-function[2777]:0x6086c
+    at wasm://wasm/001c77fa:wasm-function[2809]:0x61d87
+    at wasm://wasm/001c77fa:wasm-function[2828]:0x63512
+error: failed to run
 
 
 Testing test/test_src/read.mbt
@@ -7294,17 +4810,17 @@ main1l0_1:
   .type f2l1_0, @function
 # leaf false
 f2l1_0:
-.f2l1_0_0:
+.f2l1_0_4:
   addi sp, sp, -32
   sd ra, 0(sp)
+
+.f2l1_0_0:
   call minimbt_read_int
   li a1, -2147483648
-  beq a0, a1, .f2l1_0_1
+  bne a0, a1, .f2l1_0_2
 
-.f2l1_0_2:
+.f2l1_0_1:
   call minimbt_print_int
-  mv a0, zero
-  call f2l1_0
   mv a0, zero
 
 .f2l1_0_3:
@@ -7312,10 +4828,10 @@ f2l1_0:
   addi sp, sp, 32
   ret
 
-.f2l1_0_1:
+.f2l1_0_2:
   call minimbt_print_int
   mv a0, zero
-  j .f2l1_0_3
+  j .f2l1_0_4
 
   .p2align 2
   .bss
@@ -7785,13 +5301,14 @@ T$start_6:
 # leaf false
 main6l1_2:
 .main6l1_2_0:
-  addi sp, sp, -160
-  sd s4, 0(sp)
-  sd s3, 8(sp)
-  sd s2, 16(sp)
-  sd s1, 24(sp)
-  sd s0, 32(sp)
-  sd ra, 40(sp)
+  addi sp, sp, -176
+  sd s5, 0(sp)
+  sd s4, 8(sp)
+  sd s3, 16(sp)
+  sd s2, 24(sp)
+  sd s1, 32(sp)
+  sd s0, 40(sp)
+  sd ra, 48(sp)
   addi a0, s11, -40
   andi s0, a0, -8
   mv s11, s0
@@ -7807,7 +5324,9 @@ main6l1_2:
   sw a0, 32(s0)
   sw a0, 36(s0)
   call f1l0_0
-  lw a1, 0(s0)
+  slliw a1, zero, 2
+  add a1, s0, a1
+  lw a1, 0(a1)
   add a2, a1, a1
   add a3, a2, a2
   add a4, a3, a3
@@ -7823,7 +5342,10 @@ main6l1_2:
   add s2, s1, s1
   add s3, s2, s2
   add s4, s3, s3
-  lw s0, 4(s0)
+  li s5, 1
+  slliw s5, s5, 2
+  add s0, s0, s5
+  lw s0, 0(s0)
   beq s0, zero, .main6l1_2_1
 
 .main6l1_2_2:
@@ -7847,13 +5369,14 @@ main6l1_2:
 .main6l1_2_3:
   call minimbt_print_int
   mv a0, zero
-  ld s4, 0(sp)
-  ld s3, 8(sp)
-  ld s2, 16(sp)
-  ld s1, 24(sp)
-  ld s0, 32(sp)
-  ld ra, 40(sp)
-  addi sp, sp, 160
+  ld s5, 0(sp)
+  ld s4, 8(sp)
+  ld s3, 16(sp)
+  ld s2, 24(sp)
+  ld s1, 32(sp)
+  ld s0, 40(sp)
+  ld ra, 48(sp)
+  addi sp, sp, 176
   ret
 
 .main6l1_2_1:
@@ -8259,25 +5782,26 @@ minimbt_main:
   .text
   .globl sum1_0
   .type sum1_0, @function
-# leaf false
+# leaf true
 sum1_0:
-.sum1_0_0:
+.sum1_0_4:
   addi sp, sp, -32
-  sd ra, 0(sp)
-  bge zero, a1, .sum1_0_1
+  mv a2, a0
+  mv a3, a1
+
+.sum1_0_0:
+  bge zero, a3, .sum1_0_1
 
 .sum1_0_2:
-  add a0, a0, a1
-  addi a1, a1, -1
-  call sum1_0
-
-.sum1_0_3:
-  ld ra, 0(sp)
-  addi sp, sp, 32
-  ret
+  add a2, a2, a3
+  addi a3, a3, -1
+  j .sum1_0_4
 
 .sum1_0_1:
-  j .sum1_0_3
+
+.sum1_0_3:
+  addi sp, sp, 32
+  ret
 
   .p2align 2
   .bss
@@ -8371,12 +5895,10 @@ sum1_0:
   sd s0, 0(sp)
   sd ra, 8(sp)
   mv s0, a0
-  bge zero, s0, .sum1_0_1
+  blt zero, s0, .sum1_0_2
 
-.sum1_0_2:
-  addi a0, s0, -1
-  call sum1_0
-  add a0, a0, s0
+.sum1_0_1:
+  mv a0, zero
 
 .sum1_0_3:
   ld s0, 0(sp)
@@ -8384,9 +5906,14 @@ sum1_0:
   addi sp, sp, 32
   ret
 
-.sum1_0_1:
-  mv a0, zero
-  j .sum1_0_3
+.sum1_0_2:
+  addi a0, s0, -1
+  call sum1_0
+  add a0, a0, s0
+  ld s0, 0(sp)
+  ld ra, 8(sp)
+  addi sp, sp, 32
+  ret
 
   .p2align 2
   .text

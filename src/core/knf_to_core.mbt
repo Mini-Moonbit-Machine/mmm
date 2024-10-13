@@ -140,6 +140,13 @@ pub fn CoreEnv::new() -> CoreEnv {
   }
 }
 
+pub fn CoreEnv::bind_function(self : CoreEnv, func : Fn) -> Unit {
+  self.func_fvar_counter = func.fvars.length()
+  self.func_insn_counter = func.insns.size()
+  self.func_block_counter = func.blocks.size()
+  self.func_mem_counter = func.mems.size()
+}
+
 pub fn inherit(self : CoreEnv) -> CoreEnv {
   CoreEnv::{
     func_counter: self.func_counter,
@@ -178,7 +185,12 @@ fn merge(
   }
 }
 
-fn add_insn(self : CoreEnv, func : Fn, bb : BasicBlock, insn : Insn) -> Value {
+pub fn add_insn(
+  self : CoreEnv,
+  func : Fn,
+  bb : BasicBlock,
+  insn : Insn
+) -> Value {
   let insn_ref = InsnRef({ id: self.func_insn_counter })
   self.func_insn_counter += 1
   func.insns.set(insn_ref, insn)
@@ -186,7 +198,12 @@ fn add_insn(self : CoreEnv, func : Fn, bb : BasicBlock, insn : Insn) -> Value {
   Value::Insn(iref=insn_ref)
 }
 
-fn add_mem(self : CoreEnv, func : Fn, _bb : BasicBlock, mem : Mem) -> MemRef {
+pub fn add_mem(
+  self : CoreEnv,
+  func : Fn,
+  _bb : BasicBlock,
+  mem : Mem
+) -> MemRef {
   let mem_ref = MemRef({ id: self.func_mem_counter })
   self.func_mem_counter += 1
   func.mems.set(mem_ref, mem)
@@ -505,7 +522,7 @@ fn lower_type(self : CoreEnv, ty : @knf.Type, native : Bool) -> Type!Failure {
   }
 }
 
-fn add_basic_block(
+pub fn add_basic_block(
   self : CoreEnv,
   func : Fn,
   params : Array[Type]

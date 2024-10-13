@@ -14,6 +14,10 @@ pub type BlockRef Id derive(Eq, Hash)
 
 pub type InsnRef Id derive(Eq, Hash)
 
+pub fn InsnRef::default() -> InsnRef {
+  { id: -1 }
+}
+
 pub type BlockParamRef Id derive(Eq, Hash)
 
 pub type FnParamRef Id derive(Eq, Hash)
@@ -125,7 +129,7 @@ pub struct Fn {
   name : String
   ty : Type
   fvars : Array[Type]
-  entry : BlockRef
+  mut entry : BlockRef
   blocks : MutMap[BlockRef, Block]
   insns : MutMap[InsnRef, Insn]
   mems : MutMap[MemRef, Mem]
@@ -271,6 +275,22 @@ pub fn Block::basic_block(self : Block, func : Fn) -> BasicBlock {
   }
 }
 
+pub fn BasicBlock::pack_indices(self : BasicBlock) -> Unit {
+  self.seq.retain(fn(insn) { insn != InsnRef::default() })
+}
+
+pub fn BasicBlock::remove_insn(
+  self : BasicBlock,
+  index : Int,
+  func : Fn
+) -> Unit {
+  let insn = self.seq[index]
+  // TODO: cascade delete the children of instruction
+  func.insns.remove(insn)
+  let _ = self.seq.remove(index)
+
+}
+
 pub fn Insn::ty(self : Insn) -> Type {
   match self {
     Op(~ty, ..)
@@ -280,6 +300,45 @@ pub fn Insn::ty(self : Insn) -> Type {
     | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Store(~ty, ..) | Load(~ty, ..) =>
       ty
   }
+}
+
+pub fn Insn::operands(self : Insn) -> Array[Value] {
+  let operands = []
+  match self {
+    Op(~args, ..) | Call(~args, ..) | ExtCall(~args, ..) =>
+      operands.append(args)
+    Apply(~f, ~args, ..) => {
+      operands.push(f)
+      operands.append(args)
+    }
+    Alloc(~fills, ..) =>
+      for fill in fills {
+        match fill {
+          Zero => ()
+          Init(~val) | Field(~val, ..) => operands.push(val)
+        }
+      }
+    Store(~ma, ~val, ..) => {
+      match ma {
+        Field(~val, ..) => operands.push(val)
+        Offset(~val, ~offset, ..) => {
+          operands.push(val)
+          operands.push(offset)
+        }
+      }
+      operands.push(val)
+    }
+    Load(~ma, ..) =>
+      match ma {
+        Field(~val, ..) => operands.push(val)
+        Offset(~val, ~offset, ..) => {
+          operands.push(val)
+          operands.push(offset)
+        }
+      }
+    LoadSymbol(..) => ()
+  }
+  operands
 }
 
 pub fn Type::size(self : Type) -> Int {
@@ -393,6 +452,55 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
       }
       func.ty
     }
+  }
+}
+
+pub fn Value::replace_all_uses_with(
+  self : Value,
+  func : Fn,
+  value : Value
+) -> Unit {
+  fn replace(v : Value) -> Value {
+    if v == self {
+      value
+    } else {
+      v
+    }
+  }
+
+  fn replace_addr(addr : Address) -> Address {
+    match addr {
+      Field(~ty, ~val, ~index) => Address::Field(~ty, val=replace(val), ~index)
+      Offset(~ty, ~val, ~offset) =>
+        Address::Offset(~ty, val=replace(val), offset=replace(offset))
+    }
+  }
+
+  let insn_updates = []
+  for insnpair in func.insns {
+    let (handle, instruction) = insnpair
+    let operands = instruction.operands()
+    // check if old value is a child of the instruction
+    if operands.iter().any(fn(op) { op == self }) {
+      let new_insn = match instruction {
+        Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(replace))
+        Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(replace))
+        Apply(~ty, ~f, ~args) => Apply(~ty, ~f, args=args.map(replace))
+        ExtCall(~ty, ~ext_f, ~args) =>
+          ExtCall(~ty, ~ext_f, args=args.map(replace))
+        LoadSymbol(..) as ldsym => ldsym
+        Alloc(..) as alloc => alloc // We think there is no such cases
+        Store(~ty, ~ma, ~val) =>
+          Store(~ty, ma=replace_addr(ma), val=replace(val))
+        Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
+      }
+      insn_updates.push((handle, new_insn))
+    }
+  }
+  // bulk update
+  for insnpair in insn_updates {
+    let (handle, new_insn) = insnpair
+    func.insns.set(handle, new_insn)
   }
 }
 

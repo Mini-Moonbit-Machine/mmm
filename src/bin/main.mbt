@@ -152,9 +152,23 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           @util.die("Core error")
         }
       }
-      //println("\{Show::to_string(core.to_pretty_print())}")
-      let opt = @core_opt.CoreOpt::new(core)
-      opt.go()
+      //println("\{core.to_pretty_print()}")
+      // optimizations
+      let passes = [
+        @core_transform.Local(
+          @core_transform.TailRecElimPass::with_ctx(core_env),
+        ),
+      ]
+      let pipeline = @core_transform.PassPipeline::with_passes(passes)
+      try {
+        pipeline.run!(core)
+      } catch {
+        Failure(msg) => {
+          println(msg)
+          @util.die("Core Optimization Error")
+        }
+      }
+      //println("Opted: \{core.to_pretty_print()}")
       self.opt = Some(core)
     }
     Closure => {
