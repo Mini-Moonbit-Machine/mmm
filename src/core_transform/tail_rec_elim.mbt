@@ -7,7 +7,7 @@ let trace_flag = false
 
 fn trace(msg : String) -> Unit {
   if trace_flag {
-    trace(msg)
+    println(msg)
   }
 }
 
@@ -71,7 +71,7 @@ fn TailRecEliminator::create_loop_header(
 
   // TODO: Handle return value?
 
-  new_entry.id
+  func_entry.id
 }
 
 fn can_move_above_call(insn : @core.Insn, callref : @core.InsnRef) -> Bool {
@@ -126,7 +126,11 @@ fn TailRecEliminator::eliminate_call(
   }
 
   // remove the call and return instructions, replacing them with jump
-  let rec_args = call.operands()
+  let rec_args = match call {
+    @core.Call(~args, ..) => args
+    @core.Apply(~args, ..) => args
+    _ => fail!("unexpected call instruction")
+  }
   let unconditional_jump = @core.Jump(target=loop_header, args=rec_args)
   block.control = unconditional_jump
   block.remove_insn(call_index, func)
