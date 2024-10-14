@@ -32,7 +32,7 @@ test "knf_to_core" {
   let typer = @typer.Typer::new(ast)
   typer.check_all!()
   let knf_env = @knf.KnfEnv::new(@typer.externals())
-  let preprocessed = knf_env.syntax_preprocess(ast, false, false)
+  let preprocessed = knf_env.syntax_preprocess(ast, false)
   let knf = knf_env.to_knf!(preprocessed)
   let core_env = @core.CoreEnv::new()
   let core = core_env.build!(knf)
