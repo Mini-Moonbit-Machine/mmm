@@ -143,15 +143,30 @@ fn TailRecEliminator::process_block(
   func : @core.Fn,
   block : @core.BasicBlock
 ) -> Unit!Failure {
+  trace("Process Block .bb #\{block.id} of .fn #\{func.name}")
   let terminator = block.control
   match terminator {
     @core.Jump(~target, args=jump_args) => {
+      // TODO: simplify CFG first
+      // workaround for brainfuck interpreter test input, filter empty blocks
+      let potential_return_bb = for blockref = target {
+        let bb = @core.Block::basic_block(
+          func.blocks.get(blockref).unwrap(),
+          func,
+        )
+        // empty block with unconditional jump
+        match (bb.seq.length(), bb.control) {
+          (0, @core.Jump(target=succ, ..)) => continue succ
+          _ => break blockref
+        }
+      }
       // Case I: BB1: call self(); ...; jump BB2. BB2: return v;
       // check the succcessor block as the candidate tail call
       let succ = @core.Block::basic_block(
-        func.blocks.get(target).unwrap(),
+        func.blocks.get(potential_return_bb).unwrap(),
         func,
       )
+      println("potential_return_bb of \{block.id}:  \{succ.id}")
       // if the only valid instruction is return
       if succ.seq.length() > 0 {
         return
