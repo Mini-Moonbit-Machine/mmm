@@ -98,6 +98,7 @@ pub fn MFn::print_with_info(
 
 pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
   logger.write_string(large_stack)
+  logger.write_string("__begin_text:\n")
   for primitive in self.primitives {
     logger.write_string("\{primitive_map[primitive].unwrap()}\n")
   }
@@ -110,6 +111,7 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
     logger.write_string("  .type \{func.name._}, @function\n")
     func.output(logger)
   }
+  logger.write_string("__end_text:\n")
   for global in self.globals {
     let (global, sz) = global
     logger.write_string("  .p2align 2\n")
@@ -128,9 +130,6 @@ pub fn MCoreWithRichInfo::output(
   let self = self._
   for fpair in self.funcs {
     let (_, func) = fpair
-    logger.write_string("  .p2align 2\n")
-    logger.write_string("  .globl \{func.name._}\n")
-    logger.write_string("  .type \{func.name._}, @function\n")
     func.print_with_info(
       logger,
       self.liveness[func.name].or_else(
@@ -140,9 +139,6 @@ pub fn MCoreWithRichInfo::output(
   }
   for global in self.globals {
     let (global, sz) = global
-    logger.write_string("  .p2align 2\n")
-    logger.write_string("  .globl \{global._}\n")
-    logger.write_string("  .type \{global._}, @object\n")
     logger.write_string("\{global._}:\n")
     logger.write_string("  .zero \{sz}\n")
   }
@@ -180,7 +176,6 @@ let raw_memseti64 =
   #|  bne a0, a1, .memseti64_b0
   #|.memseti64_b1:
   #|  ret
-  #|
   #|
 
 let raw_memsetf64 =
@@ -243,9 +238,12 @@ let primitive_map : Map[String, String] = {
 }
 
 let large_stack =
-  #|  .rodata
-  #|stack_begin_sentinel:
-  #|  .asciz "stack begin"
+  #|  .p2align 4
+  #|  .bss
+  #|  .type large_heap, @object
+  #|large_heap:
+  #|  .zero 1610612736
+  #|large_heap_end:
   #|
   #|  .p2align 4
   #|  .bss
@@ -254,22 +252,4 @@ let large_stack =
   #|  .zero 268435456
   #|large_stack_end:
   #|
-  #|  .rodata
-  #|stack_end_sentinel:
-  #|  .asciz "stack end"
-  #|
-  #|  .rodata
-  #|heap_begin_sentinel:
-  #|  .asciz "heap begin"
-  #|  
-  #|  .p2align 4
-  #|  .bss
-  #|  .type large_heap, @object
-  #|large_heap:
-  #|  .zero 1610612736
-  #|large_heap_end:
-  #|
-  #|  .rodata
-  #|heap_end_sentinel:
-  #|  .asciz "heap end"
   #|
