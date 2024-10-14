@@ -153,12 +153,9 @@ fn LambdaLiftEnv::get_type(self : LambdaLiftEnv, name : Name) -> Type {
 
 fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
   match knf {
-    Unit
-    | Int(_)
-    | Double(_)
-    | Neg(_)
-    | FNeg(_)
-    | Add(_, _)
+    Unit | Int(_) | Double(_) => knf
+    Neg(_) | FNeg(_) => knf
+    Add(_, _)
     | Sub(_, _)
     | Mul(_, _) | Div(_, _) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
       // we assume that the names here are non-function, otherwise it tends to be a type error
@@ -246,7 +243,7 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
         fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
         fdef.ty,
       )
-      if new_args_length > 0 {
+      if new_args_length >= 0 {
         // we don't want to lift functions with too many arguments
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
