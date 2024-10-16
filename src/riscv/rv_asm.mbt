@@ -269,7 +269,7 @@ pub impl Show for RvAsm with output(self, logger) {
     FmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
       write4(logger, "fmsub.d", rd, rs1, rs2, rs3)
     FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
-      write4(logger, "fnmadd.d", rd, rs1, rs2, rs3)
+      write4(logger, "fnmsub.d", rd, rs1, rs2, rs3)
     Nop => logger.write_string("nop")
     La(~rd, ~l) => {
       logger.write_string("la ")
