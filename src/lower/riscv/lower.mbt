@@ -501,7 +501,7 @@ fn RiscvFnLoweringCtx::copy_return_value(
   match ty_to_reg_class_opt(ty) {
     Some(X) => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
     Some(F) => freg_to(@generated.constructor_rv_fmv_d(self, @riscv.freg_ret))
-    None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
+    None => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
   }
 }
 
@@ -529,12 +529,6 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   self.is_leaf = false
   @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
-  // "minimbt_read_int": "my_read_int",
-  // "minimbt_read_char": "my_read_char",
-  // "minimbt_print_int": "my_print_int",
-  // "minimbt_print_char": "my_print_char",
-  // "minimbt_print_endline": "my_print_endline",
-  // "minimbt_print_newline": "my_print_newline",
   let map = {}
   @generated.constructor_rv_call(self, Label(map.get(f).or(f)), nx, nf)
   let r = self.copy_return_value(ty)
