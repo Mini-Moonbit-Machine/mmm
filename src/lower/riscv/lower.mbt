@@ -1836,6 +1836,8 @@ fn FrameLayout::spill(self : FrameLayout, spilled : Array[AnyReg]) -> Unit {
 
 fn FrameLayout::calculate(self : FrameLayout) -> Unit {
   self.function_saves.sort()
+  // reverse because the physical register id is negative and grows downward
+  self.function_saves.rev_inplace()
   for i, reg in self.function_saves {
     self.function_save.set(reg, 8 * i)
   }
