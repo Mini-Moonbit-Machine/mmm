@@ -1679,7 +1679,25 @@ fn store_to_sp_offset(
 }
 
 fn adjust_sp(offset : @riscv.Imm12, insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Addi(rd=@riscv.Sp, rs1=@riscv.Sp, imm=offset._))
+  if offset._ != 0 {
+    insns.push(MInsn::Addi(rd=@riscv.Sp, rs1=@riscv.Sp, imm=offset._))
+  }
+}
+
+fn need_to_be_saved(r : AnyReg, alloc : RegAllocator) -> Bool {
+  let r = alloc.query_assigned_color(r).or(r)
+  if r.is_phy_freg() || r.is_phy_xreg() {
+    match r.class {
+      X =>
+        @riscv.reg_caller_saved_list.contains(r.to_xreg()) &&
+        r != @riscv.reg_ret.to_any()
+      F =>
+        @riscv.freg_caller_saved_list.contains(r.to_freg()) &&
+        r != @riscv.freg_ret.to_any()
+    }
+  } else {
+    false
+  }
 }
 
 fn RiscvFnLoweringCtx::post_lower_block(
@@ -1687,8 +1705,6 @@ fn RiscvFnLoweringCtx::post_lower_block(
   alloc : RegAllocator,
   mbb : MBasicBlock,
   ibi : IteratedBlockInfo,
-  x_call_save : MutSet[AnyReg],
-  f_call_save : MutSet[AnyReg],
   frame : FrameLayout
 ) -> MBasicBlock {
   let _ = self
@@ -1723,39 +1739,29 @@ fn RiscvFnLoweringCtx::post_lower_block(
         }
         let live_at_call = ibi.live_set[x + 1]
         for r in live_at_call {
-          let r = alloc.query_assigned_color(r).or(r)
-          // don't save a0 or fa0 because their weird liveness
-          if r.is_phy_freg() || r.is_phy_xreg() {
+          if need_to_be_saved(r, alloc) {
             match r.class {
-              X =>
-                if x_call_save.contains(r) && r != @riscv.reg_ret.to_any() {
-                  last_save_x.push(r)
-                }
-              F =>
-                if f_call_save.contains(r) && r != @riscv.freg_ret.to_any() {
-                  last_save_f.push(r)
-                }
+              X => last_save_x.push(r)
+              F => last_save_f.push(r)
             }
-          } else {
-            // they are spilled. don't need to save them
           }
         }
-        for r in last_save_x {
-          let offset = frame.save[r].unwrap()
+        for i, r in last_save_x {
+          let offset = frame.save[i].unwrap()
           store_to_sp_offset(r, offset, insns)
         }
-        for r in last_save_f {
-          let offset = frame.save[r].unwrap()
+        for i, r in last_save_f {
+          let offset = frame.save[i].unwrap()
           store_to_sp_offset(r, offset, insns)
         }
       }
       RestoreCtx2 => {
-        for r in last_save_f.rev() {
-          let offset = frame.save[r].unwrap()
+        for i, r in last_save_f.rev() {
+          let offset = frame.save[i].unwrap()
           load_to_sp_offset(r, offset, insns)
         }
-        for r in last_save_x.rev() {
-          let offset = frame.save[r].unwrap()
+        for i, r in last_save_x.rev() {
+          let offset = frame.save[i].unwrap()
           load_to_sp_offset(r, offset, insns)
         }
         last_save_x.clear()
@@ -1795,8 +1801,8 @@ fn union_array[R : @riscv.ToAnyReg](
 struct FrameLayout {
   mut spills : Int
   spill : MutMap[Int, Int] // spill n -> sp - n * 8 - saves.len() * 8 - function_saves.len() * 8
-  saves : Array[AnyReg] // saved regs for a call
-  save : MutMap[AnyReg, Int] // save reg -> sp - n * 8 - function_saves.len() * 8
+  mut saves : Int
+  save : MutMap[Int, Int]
   function_saves : Array[AnyReg] // saved regs for the function
   function_save : MutMap[AnyReg, Int] // save reg -> sp - n * 8
   mut adjust_sp : Int
@@ -1806,7 +1812,7 @@ fn FrameLayout::new() -> FrameLayout {
   {
     spills: 0,
     spill: MutMap::new(),
-    saves: [],
+    saves: 0,
     save: MutMap::new(),
     function_saves: [],
     function_save: MutMap::new(),
@@ -1814,10 +1820,12 @@ fn FrameLayout::new() -> FrameLayout {
   }
 }
 
-fn FrameLayout::save(self : FrameLayout, reg : AnyReg) -> Unit {
-  self.saves.push(reg)
+// save a reg for a call
+fn FrameLayout::save(self : FrameLayout, num : Int) -> Unit {
+  self.saves = @math.maximum(self.saves, num)
 }
 
+// save a reg in the prologue of the function
 fn FrameLayout::save_at_prologue(self : FrameLayout, reg : AnyReg) -> Unit {
   self.function_saves.push(reg)
 }
@@ -1832,17 +1840,57 @@ fn FrameLayout::calculate(self : FrameLayout) -> Unit {
     self.function_save.set(reg, 8 * i)
   }
   let x = self.function_saves.length()
-  self.saves.sort()
-  for i, reg in self.saves {
-    self.save.set(reg, 8 * (i + x))
+  for i in 0..<self.saves {
+    self.save.set(i, 8 * (i + x))
   }
-  let y = self.saves.length()
+  let y = self.saves
   for i in 0..<self.spills {
     self.spill.set(i, 8 * (i + x + y))
   }
   self.adjust_sp = 8 * (x + y + self.spills)
   if self.adjust_sp % 16 != 0 {
     self.adjust_sp += 8
+  }
+}
+
+fn RiscvFnLoweringCtx::scan_for_max_lives(
+  self : RiscvFnLoweringCtx,
+  alloc : RegAllocator,
+  mbb : MBasicBlock,
+  ibi : IteratedBlockInfo,
+  frame : FrameLayout
+) -> Unit {
+  let _ = self
+  for i, insn in mbb.insns {
+    match insn {
+      SaveCtx2 => {
+        // find the call instruction, and get its live set
+        // otherwise, we will save more than we need
+        let x = {
+          let mut x = i + 1
+          while true {
+            match mbb.insns[x] {
+              Call(..) | Jalr(..) => break
+              _ => ()
+            }
+            x += 1
+          }
+          x
+        }
+        let live_at_call = ibi.live_set[x + 1]
+        let x = live_at_call
+          .filter(fn(r) { need_to_be_saved(r, alloc) })
+          .length()
+        frame.save(x)
+      }
+      _ => ()
+    }
+  }
+  for insn in mbb.control {
+    match insn {
+      RestoreCtx2 => abort("RestoreCtx2 should not be in control")
+      _ => ()
+    }
   }
 }
 
@@ -1867,30 +1915,25 @@ fn RiscvFnLoweringCtx::post_lower(
     x_save.insert(@riscv.Ra.to_any())
   }
   // this is a overapproximation w.r.t all calls in the function
-  let x_call_save = union_array(clobbered_x, @riscv.reg_caller_saved_list)
-  let f_call_save = union_array(clobbered_f, @riscv.freg_caller_saved_list)
   let x_spilled = alloc.query_all_x_spilled()
   let f_spilled = alloc.query_all_f_spilled()
   let frame = FrameLayout::new()
   x_save.each(fn(r) { frame.save_at_prologue(r) })
   f_save.each(fn(r) { frame.save_at_prologue(r) })
-  x_call_save.each(fn(r) { frame.save(r) })
-  f_call_save.each(fn(r) { frame.save(r) })
   frame.spill(x_spilled)
   frame.spill(f_spilled)
+  for block in mfn.blocks {
+    let ibi = liveness.iter_block_info
+      .get(block.0._)
+      .or_error!(Failure("No block info for \{block.0}"))
+    self.scan_for_max_lives(alloc, block.1, ibi, frame)
+  }
   frame.calculate()
   for block in mfn.blocks {
     let ibi = liveness.iter_block_info
       .get(block.0._)
       .or_error!(Failure("No block info for \{block.0}"))
-    let mbb = self.post_lower_block(
-      alloc,
-      block.1,
-      ibi,
-      x_call_save,
-      f_call_save,
-      frame,
-    )
+    let mbb = self.post_lower_block(alloc, block.1, ibi, frame)
     new_mfn.blocks.set(block.0, mbb)
   }
   new_mfn
