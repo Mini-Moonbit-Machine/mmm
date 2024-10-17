@@ -571,19 +571,22 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
   sym : @core.SymbolRef
 ) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
-    Some(c) => {
-      let addr = @generated.constructor_rv_la(self, self.ref_symbol(sym).name)
-      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
-        base: addr,
-        offset: 0,
-      }
+    Some(c) =>
       match (ty.size(), c) {
-        (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
-        (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
-        (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
+        (4, X) =>
+          xreg_to(
+            @generated.constructor_rv_lwsym(self, self.ref_symbol(sym).name),
+          )
+        (8, X) =>
+          xreg_to(
+            @generated.constructor_rv_ldsym(self, self.ref_symbol(sym).name),
+          )
+        (8, F) =>
+          freg_to(
+            @generated.constructor_rv_fldsym(self, self.ref_symbol(sym).name),
+          )
         _ => abort("Invalid type size")
       }
-    }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
   }
 }
@@ -1567,6 +1570,9 @@ fn subst_vreg_with_preg_or_spill(
       FmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
     FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
       FnmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
+    LdSym(~rd, ~l) => LdSym(rd=frx(rd), ~l)
+    LwSym(~rd, ~l) => LwSym(rd=frx(rd), ~l)
+    FldSym(~rd, ~l) => FldSym(rd=frf(rd), ~l)
     La(~rd, ~l) => La(rd=frx(rd), ~l)
     Li(~rd, ~i) => Li(rd=frx(rd), ~i)
     Neg(~rd, ~rs) => Neg(rd=frx(rd), rs=fx(rs))

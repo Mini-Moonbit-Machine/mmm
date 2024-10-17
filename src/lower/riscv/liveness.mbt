@@ -91,7 +91,9 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     FmaddD(~rd, ~rs1, ~rs2, ~rs3)
     | FmsubD(~rd, ~rs1, ~rs2, ~rs3) | FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
       ([rd.to_any()], [rs1.to_any(), rs2.to_any(), rs3.to_any()])
-    La(~rd, ..) | Li(~rd, ..) => ([rd.to_any()], [])
+    LdSym(~rd, ..) | LwSym(~rd, ..) | La(~rd, ..) | Li(~rd, ..) =>
+      ([rd.to_any()], [])
+    FldSym(~rd, ..) => ([rd.to_any()], [])
     Neg(~rd, ~rs) | Mv(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
     FnegD(~rd, ~rs) | FmvD(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
     XRet => ([], xret_use)

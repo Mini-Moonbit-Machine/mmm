@@ -202,6 +202,7 @@ impl RegClass {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
 }
 
 pub enum RvAsm {
@@ -220,6 +221,7 @@ pub enum RvAsm {
   Ori(Reg, Reg, Int)
   Andi(Reg, Reg, Int)
   Slli(Reg, Reg, Int)
+  Slliw(Reg, Reg, Int)
   Srli(Reg, Reg, Int)
   Srai(Reg, Reg, Int)
   Slti(Reg, Reg, Int)
@@ -268,7 +270,13 @@ pub enum RvAsm {
   FcvtDW(FReg, Reg)
   FabsD(FReg, FReg)
   FsqrtD(FReg, FReg)
+  FmaddD(FReg, FReg, FReg, FReg)
+  FmsubD(FReg, FReg, FReg, FReg)
+  FnmsubD(FReg, FReg, FReg, FReg)
   Nop
+  LwSym(Reg, Label)
+  LdSym(Reg, Label)
+  FldSym(FReg, Label)
   La(Reg, Label)
   Li(Reg, String)
   Neg(Reg, Reg)
@@ -301,6 +309,8 @@ pub trait ToAnyReg {
 impl Show for Label
 
 impl Show for MemAccess
+
+impl Show for RegClass
 
 impl Show for RvAsm
 

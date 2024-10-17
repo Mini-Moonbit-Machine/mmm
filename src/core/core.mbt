@@ -276,9 +276,9 @@ pub fn Insn::ty(self : Insn) -> Type {
     Op(~ty, ..)
     | Call(~ty, ..)
     | Apply(~ty, ..)
-    | ExtCall(~ty, ..)
-    | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Store(~ty, ..) | Load(~ty, ..) =>
+    | ExtCall(~ty, ..) | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Load(~ty, ..) =>
       ty
+    Store(..) => Type::Unit
   }
 }
 
@@ -326,16 +326,7 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
         None =>
           fail!("insn \{Show::to_string(iref)} not found in \{func.insns}")
       }
-      match insn {
-        Op(~ty, ..) => ty
-        Apply(~ty, ..) => ty
-        Call(~ty, ..) => ty
-        ExtCall(~ty, ..) => ty
-        LoadSymbol(~ty, ..) => ty
-        Alloc(~ty, ..) => ty
-        Load(~ty, ..) => ty
-        Store(..) => Type::Unit
-      }
+      insn.ty()
     }
     FreeVar(~fvref) => func.fvars[fvref.id - 1]
     BlockParam(~bref, ~bpref) => {
