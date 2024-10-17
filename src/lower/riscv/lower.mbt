@@ -1944,11 +1944,11 @@ pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
 }
 
 fn save_sp(insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Mv(rd=@riscv.S9, rs=@riscv.Sp))
+  insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.Sp))
 }
 
 fn restore_sp(insns : Array[MInsn]) -> Unit {
-  insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.S9))
+  insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.Fp))
 }
 
 fn pre_allocate(insns : Array[MInsn]) -> Unit {
@@ -1968,10 +1968,14 @@ pub fn RiscvLoweringCtx::lower_globals(
   let entry = @riscv.Label::Label(".minimbt_main_b0")
   let blocks = MutMap::new()
   let insns = []
-  adjust_sp(-128, insns)
-  store_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
-  for i, reg in @riscv.reg_callee_saved_list {
-    store_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
+  let save_list = [@riscv.Ra, @riscv.Fp, @riscv.S11]
+  let mut len = save_list.length() * 8
+  if len % 16 != 0 {
+    len += 8
+  }
+  adjust_sp(-len, insns)
+  for i, reg in save_list {
+    store_to_sp_offset(reg.to_any(), i * 8, insns)
   }
   pre_allocate(insns)
   save_sp(insns)
@@ -2025,11 +2029,10 @@ pub fn RiscvLoweringCtx::lower_globals(
     }
   }
   restore_sp(insns)
-  load_to_sp_offset(@riscv.Ra.to_any(), 0, insns)
-  for i, reg in @riscv.reg_callee_saved_list {
-    load_to_sp_offset(reg.to_any(), i * 8 + 8, insns)
+  for i, reg in save_list {
+    load_to_sp_offset(reg.to_any(), i * 8, insns)
   }
-  adjust_sp(128, insns)
+  adjust_sp(len, insns)
   let control = [MInsn::XRet]
   let params = []
   blocks.set(entry, { id: entry, insns, control, params })
