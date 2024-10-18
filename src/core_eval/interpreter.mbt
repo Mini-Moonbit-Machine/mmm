@@ -1,10 +1,10 @@
-pub struct CoreInterpreter {}
-
-pub fn CoreInterpreter::new() -> CoreInterpreter {
-  CoreInterpreter::{  }
+pub struct CoreInterpreter {
+  tracer : @util.SubTracer
 }
 
-let trace = false
+pub fn CoreInterpreter::new(tracer : @util.SubTracer) -> CoreInterpreter {
+  CoreInterpreter::{ tracer, }
+}
 
 typealias Fn = @core.Fn
 
@@ -219,13 +219,7 @@ fn CoreInterpreter::eval_bb(
       Some(insn) => insn
       None => return fail!("insn not found: \{ir}")
     }
-    if trace {
-      println(":::: \{func.name} \{ir} = \{insn}")
-    }
     let (ctx2, obj) = self.eval_insn!(ctx, func, insn)
-    if trace {
-      println(":::: \{func.name} \{ir} |-> \{obj}")
-    }
     ctx = ctx2.update_insn(ir, obj)
   }
   self.eval_control!(ctx, func, bb.control)
@@ -410,7 +404,7 @@ fn CoreInterpreter::eval_insn(
         "print_int" => {
           guard args.length() == 1 else { fail!("print_int expects 1 arg") }
           match args[0] {
-            Int32(x) => println("\{x}")
+            Int32(x) => self.tracer.print("\{x}")
             _ => fail!("print_int expects Int")
           }
           (ctx, Unit)
@@ -418,7 +412,7 @@ fn CoreInterpreter::eval_insn(
         "print_char" => {
           guard args.length() == 1 else { fail!("print_char expects 1 arg") }
           match args[0] {
-            Int32(x) => println("\{Char::from_int(x)}")
+            Int32(x) => self.tracer.print("\{Char::from_int(x)}")
             _ => fail!("print_char expects Int")
           }
           (ctx, Unit)
@@ -427,7 +421,7 @@ fn CoreInterpreter::eval_insn(
           guard args.length() == 0 else {
             fail!("print_endline expects 0 args")
           }
-          println("")
+          self.tracer.println("")
           (ctx, Unit)
         }
         "truncate" => {
@@ -680,10 +674,6 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
       obj
     }
     Mem(~fref, ~mref) => {
-      if trace {
-        println(":::: stack \{ctx.stack}")
-        println(":::: heap \{ctx.heap}")
-      }
       let obj = match ctx.stack.find(mref) {
         Some(obj) => obj
         None =>
@@ -696,9 +686,6 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
     }
     Fn(~fref) => FnPtr(fref)
     FreeVar(fvref=FnFreeVarRef({ id }), ..) => {
-      if trace {
-        println(":::: closure \{ctx.closure}")
-      }
       let fld = match ctx.closure {
         Mem(~fields) =>
           if id < fields.length() {

@@ -14,9 +14,10 @@ pub struct LambdaLiftEnv {
   top_names : FreeSet
   lifted_counter : UInt
   closure_counter : UInt
+  tracer : @util.SubTracer
 }
 
-pub fn LambdaLiftEnv::new() -> LambdaLiftEnv {
+pub fn LambdaLiftEnv::new(tracer : @util.SubTracer) -> LambdaLiftEnv {
   LambdaLiftEnv::{
     name_ctx: NameCtx::new(),
     type_ctx: TypeCtx::new(),
@@ -25,6 +26,7 @@ pub fn LambdaLiftEnv::new() -> LambdaLiftEnv {
     top_names: FreeSet::new(),
     lifted_counter: 0,
     closure_counter: 0,
+    tracer,
   }
 }
 
@@ -44,6 +46,7 @@ fn add_name_type(self : LambdaLiftEnv, name : Name, ty : Type) -> LambdaLiftEnv 
     top_names,
     lifted_counter,
     closure_counter,
+    tracer: self.tracer,
   }
 }
 
@@ -58,10 +61,7 @@ fn add_lifted_name(
   let new_name = try {
     Name::from_string!(new_name)
   } catch {
-    _ => {
-      println("failed to create new name \{new_name}")
-      panic()
-    }
+    _ => self.tracer.abort("failed to create new name \{new_name}")
   }
   let name_ctx = self.name_ctx.add(old_name, (new_name, args, fvars, ty0))
   let type_ctx = self.type_ctx
@@ -78,6 +78,7 @@ fn add_lifted_name(
     top_names,
     lifted_counter,
     closure_counter,
+    tracer: self.tracer,
   }
   (new_name, env)
 }
@@ -92,17 +93,11 @@ pub fn LambdaLiftEnv::eta_expand(
       let cls_name = try {
         Name::from_string!(cls_name)
       } catch {
-        _ => {
-          println("failed to create new name \{cls_name}")
-          panic()
-        }
+        _ => self.tracer.abort("failed to create new name \{cls_name}")
       }
       let (ty, args_ty) = match ty0 {
         Fun(args_ty, ty) => (ty, args_ty)
-        _ => {
-          println("failed to find fun type for \{name}")
-          panic()
-        }
+        _ => self.tracer.abort("failed to find fun type for \{name}")
       }
       let zipped_args = []
       for i, arg in args {
@@ -144,10 +139,8 @@ fn LambdaLiftEnv::get_type(self : LambdaLiftEnv, name : Name) -> Type {
   }
   match self.type_ctx.find(name) {
     Some(ty) => ty
-    None => {
-      println("failed to find type for \{name} in \{self.type_ctx}")
-      panic()
-    }
+    None =>
+      self.tracer.abort("failed to find type for \{name} in \{self.type_ctx}")
   }
 }
 
@@ -229,10 +222,7 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
       let fvars = self.free_set_closure
         .get(fdef.name)
         .or_else(
-          fn() {
-            println("failed to find free set for \{fdef.name}")
-            panic()
-          },
+          fn() { self.tracer.abort("failed to find free set for \{fdef.name}") },
         )
       self.top_names.each(fn(name) { fvars.remove(name) })
       fvars.remove(fdef.name)

@@ -12,6 +12,7 @@ struct RegAllocator {
   xctx : RegAllocCtx
   fctx : RegAllocCtx
   color_cache : MutMap[AnyReg, AnyReg]
+  tracer : @util.SubTracer
 }
 
 struct RegWrapper {
@@ -52,7 +53,11 @@ fn RegWrapper::pre_colored(self : RegWrapper) -> Int? {
   self.color
 }
 
-fn RegAllocator::new(mfn : MFn, liveness : Liveness) -> RegAllocator {
+fn RegAllocator::new(
+  mfn : MFn,
+  liveness : Liveness,
+  tracer : @util.SubTracer
+) -> RegAllocator {
   let xctx = RegAllocCtx::new(@riscv.preferred_reg_list.length())
   let fctx = RegAllocCtx::new(@riscv.preferred_freg_list.length())
   for i, r in @riscv.preferred_reg_list {
@@ -62,7 +67,7 @@ fn RegAllocator::new(mfn : MFn, liveness : Liveness) -> RegAllocator {
     fctx.allocator.set_color_info(i, r.to_any())
   }
   let color_cache = MutMap::new()
-  RegAllocator::{ mfn, liveness, xctx, fctx, color_cache }
+  RegAllocator::{ mfn, liveness, xctx, fctx, color_cache, tracer }
 }
 
 struct RegAllocCtx {
@@ -110,15 +115,15 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
       let move_origin = info.move_origin[i]
-      trace("defs: \{defs}")
-      trace("live_set: \{live_set}")
-      trace("move_origin: \{move_origin}")
+      self.tracer.println("defs: \{defs}")
+      self.tracer.println("live_set: \{live_set}")
+      self.tracer.println("move_origin: \{move_origin}")
       for defined in defs {
         let reg_ctx = match defined.class {
           X => reg_ctx_x
           F => reg_ctx_f
         }
-        trace("defined: \{defined} is \{defined.class}")
+        self.tracer.println("defined: \{defined} is \{defined.class}")
         let rw1 = reg_ctx.record_reg(defined)
         reg_ctx.allocator.add_single_vertex(rw1)
         for live in live_set {
@@ -141,12 +146,12 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
   reg_ctx_f.set_info()
   self.xctx.allocator.go()
   self.fctx.allocator.go()
-  trace(
+  self.tracer.println(
     self.xctx.allocator.to_dot(
       "integer interference graph of \{self.mfn.name._}",
     ),
   )
-  trace(
+  self.tracer.println(
     self.fctx.allocator.to_dot("float interference graph of \{self.mfn.name._}"),
   )
 }
@@ -191,7 +196,9 @@ fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
       .retrive_reg(r)
       .or_else(
         fn() {
-          abort("query_spill: register \{r} not found in \{self.xctx.reg_memo}")
+          self.tracer.abort(
+            "query_spill: register \{r} not found in \{self.xctx.reg_memo}",
+          )
         },
       )
     self.xctx.allocator.query_spill(rw)
@@ -200,7 +207,9 @@ fn RegAllocator::query_spill(self : RegAllocator, r : AnyReg) -> Int? {
       .retrive_reg(r)
       .or_else(
         fn() {
-          abort("query_spill: register \{r} not found in \{self.fctx.reg_memo}")
+          self.tracer.abort(
+            "query_spill: register \{r} not found in \{self.fctx.reg_memo}",
+          )
         },
       )
     self.fctx.allocator.query_spill(rw)

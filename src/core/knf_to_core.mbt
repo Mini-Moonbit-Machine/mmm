@@ -19,7 +19,8 @@ pub struct CoreEnv {
   mut func_block_counter : Int
   mut func_mem_counter : Int
   mut sym_counter : Int
-} derive(Show)
+  tracer : @util.SubTracer
+}
 
 pub struct Ctx {
   // A name should always be in ty_ctx
@@ -129,7 +130,7 @@ fn Ctx::enter_func_def(self : Ctx) -> Ctx {
   }
 }
 
-pub fn CoreEnv::new() -> CoreEnv {
+pub fn CoreEnv::new(tracer : @util.SubTracer) -> CoreEnv {
   CoreEnv::{
     func_counter: Ref::new(0),
     func_fvar_counter: 0,
@@ -137,6 +138,7 @@ pub fn CoreEnv::new() -> CoreEnv {
     func_block_counter: 0,
     func_mem_counter: 0,
     sym_counter: 0,
+    tracer,
   }
 }
 
@@ -148,6 +150,7 @@ pub fn inherit(self : CoreEnv) -> CoreEnv {
     func_block_counter: 0,
     func_mem_counter: 0,
     sym_counter: 0,
+    tracer: self.tracer,
   }
 }
 
@@ -909,5 +912,6 @@ pub fn build(self : CoreEnv, knf : Knf) -> Core!Failure {
   }
   let ctx = Ctx::new()
   let _ = self.build_top_level!(ctx, core, knf)
+  self.tracer.record("knf_to_core", core.to_pretty_print())
   core
 }

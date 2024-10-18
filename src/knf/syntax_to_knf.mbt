@@ -5,10 +5,14 @@ pub typealias NameEnv = @immut/hashmap.T[String, Name]
 struct KnfEnv {
   mut counter : Int
   externals : LocalEnv
+  tracer : @util.SubTracer
 }
 
-pub fn KnfEnv::new(externals : @immut/hashmap.T[String, Type]) -> KnfEnv {
-  { counter: 1, externals }
+pub fn KnfEnv::new(
+  externals : @immut/hashmap.T[String, Type],
+  tracer : @util.SubTracer
+) -> KnfEnv {
+  { counter: 1, externals, tracer }
 }
 
 pub fn KnfEnv::init_counter_from_existing(
@@ -120,6 +124,7 @@ fn build_knf(
   env : NameEnv,
   ty_env : LocalEnv
 ) -> KnfResult!Failure {
+  self.tracer.println("build_knf: \{node}")
   match node {
     Unit => (Unit, Unit, let_list)
     Int(i) => (Int(i), Int, let_list)

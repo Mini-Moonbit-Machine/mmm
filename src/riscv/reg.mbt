@@ -5,11 +5,6 @@ pub struct MemAccess[TBase, TOff] {
 
 pub type Label String derive(Show, Eq, Hash)
 
-pub fn abort[T](msg : String) -> T {
-  println(msg)
-  panic()
-}
-
 pub enum RegClass {
   X
   F

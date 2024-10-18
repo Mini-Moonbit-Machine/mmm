@@ -130,12 +130,7 @@ pub fn MCoreWithRichInfo::output(
   let self = self._
   for fpair in self.funcs {
     let (_, func) = fpair
-    func.print_with_info(
-      logger,
-      self.liveness[func.name].or_else(
-        fn() { abort("liveness not found: \{func.name}") },
-      ),
-    )
+    func.print_with_info(logger, self.liveness[func.name].unwrap())
   }
   for global in self.globals {
     let (global, sz) = global

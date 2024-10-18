@@ -6,6 +6,7 @@ enum Stages {
   KnfOpt
   Closure
   Core
+  CoreOpt
   Asm
   Finished
 } derive(Show, Eq, Compare)
@@ -17,6 +18,7 @@ fn Stages::from_string(s : String) -> Stages? {
     "knf" => Some(Stages::Knf)
     "knf-opt" => Some(Stages::KnfOpt)
     "core" => Some(Stages::Core)
+    "core-opt" => Some(Stages::CoreOpt)
     "closure" => Some(Stages::Closure)
     "riscv" => Some(Stages::Asm)
     "finished" => Some(Stages::Finished)
@@ -31,24 +33,40 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Knf => Stages::KnfOpt
     Stages::KnfOpt => Stages::Closure
     Stages::Closure => Stages::Core
-    Stages::Core => Stages::Asm
+    Stages::Core => Stages::CoreOpt
+    Stages::CoreOpt => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
 }
 
+let tracer : @util.Tracer = @util.tracer
+
+let mt : @util.SubTracer = @util.mt
+
+let opts : Options = Options::new()
+
+type Flags @hashset.T[String]
+
+fn Flags::has(self : Flags, flag : String) -> Bool {
+  self._.contains(flag)
+}
+
 struct CompileStatus {
+  mut flags : Flags
   mut curr_stage : Stages
   end_stage : Stages
   mut source_code : String?
   mut ast : @types.Syntax?
   mut typechecked : @types.Syntax?
-  knf_env : @knf.KnfEnv
   mut knf : @knf.Knf?
   mut opt_knf : @knf.Knf?
-  mut opt : @core.Core?
+  mut core : @core.Core?
+  mut opt_core : @core.Core?
   mut closure_ir : @closure.Program?
   mut asm : @lower_riscv.MCore?
+  mut knf_env : @knf.KnfEnv?
+  mut core_env : @core.CoreEnv?
 }
 
 fn CompileStatus::initialize(
@@ -57,30 +75,23 @@ fn CompileStatus::initialize(
   file : String
 ) -> CompileStatus! {
   let v = CompileStatus::{
+    flags: @hashset.new(),
     curr_stage: start_stage,
     end_stage,
     source_code: None,
     ast: None,
     typechecked: None,
-    knf_env: @knf.KnfEnv::new(@typer.externals()),
     knf: None,
     opt_knf: None,
     closure_ir: None,
     asm: None,
-    opt: None,
+    core: None,
+    opt_core: None,
+    knf_env: None,
+    core_env: None,
   }
   match start_stage {
     Parse => v.source_code = Some(file)
-    Typecheck => v.ast = Some(@types.Syntax::from_json!(@json.parse!(file)))
-    Knf => v.typechecked = Some(@types.Syntax::from_json!(@json.parse!(file)))
-    KnfOpt => {
-      v.knf = Some(@knf.Knf::from_json!(@json.parse!(file)))
-      v.knf_env.init_counter_from_existing(v.knf.unwrap())
-    }
-    Closure => {
-      v.opt_knf = Some(@knf.Knf::from_json!(@json.parse!(file)))
-      v.knf_env.init_counter_from_existing(v.opt_knf.unwrap())
-    }
     _ => fail!("invalid start stage")
   }
   v
@@ -94,72 +105,106 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
   match self.curr_stage {
     Parse => {
       let source_code = self.source_code.unwrap()
-      let parser = @parser.Parser::new(source_code)
+      let subtracer = tracer.new_subtracer(
+        "Parser",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      subtracer.set_output_to_console(false)
+      subtracer.set_redirect_to_log(true)
+      let parser = @parser.Parser::new(source_code, subtracer)
       let parsed = try {
         parser.parse!()
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Parse error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
+      self.flags = Flags(@hashset.from_array(parser.get_flags()))
       self.ast = Some(parsed.inner)
     }
     Typecheck => {
       let ast = self.ast.unwrap()
-      let typer = @typer.Typer::new(ast)
+      let subtracer = tracer.new_subtracer(
+        "Typer",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let typer = @typer.Typer::new(ast, subtracer)
       try {
         typer.check_all!()
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Typecheck error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
       self.typechecked = Some(ast)
     }
     Knf => {
+      let subtracer = tracer.new_subtracer(
+        "Knf",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let knf_env = @knf.KnfEnv::new(@typer.externals(), subtracer)
       let knf = try {
-        let preprocessed = self.knf_env.syntax_preprocess(
+        let preprocessed = knf_env.syntax_preprocess(
           self.typechecked.unwrap(),
           false,
         )
-        self.knf_env.to_knf!(preprocessed)
+        knf_env.to_knf!(preprocessed)
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Knf error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
+      self.knf_env = Some(knf_env)
       self.knf = Some(knf)
     }
     KnfOpt => {
+      let _knf_env = self.knf_env.unwrap()
+      let tracer = tracer.new_subtracer(
+        "KnfOpt",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
       let knf = self.knf.unwrap()
-      //println("\{Show::to_string(knf.to_pretty_print())}")
-      let lamlift = @knf.LambdaLiftEnv::new()
+      let lamlift = @knf.LambdaLiftEnv::new(tracer)
       let knf = lamlift.go(knf)
-      // println("\n\n\nOpt: \{Show::to_string(knf.to_pretty_print())}")
       self.opt_knf = Some(knf)
     }
     Core => {
+      let subtracer = tracer.new_subtracer(
+        "Core",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
       let knf = self.opt_knf.unwrap()
-      let core_env = @core.CoreEnv::new()
+      let core_env = @core.CoreEnv::new(subtracer)
       let core = try {
         core_env.build!(knf)
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Core error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
-      //println("\{Show::to_string(core.to_pretty_print())}")
-      let opt = @core_opt.CoreOpt::new(core)
+      self.core_env = Some(core_env)
+      self.core = Some(core)
+    }
+    CoreOpt => {
+      let _core_env = self.core_env.unwrap()
+      let subtracer = tracer.new_subtracer(
+        "CoreOpt",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let core = self.core.unwrap()
+      let opt = @core_opt.CoreOpt::new(core, subtracer)
       opt.go()
-      self.opt = Some(core)
+      self.core_env = Some(_core_env)
+      self.opt_core = Some(core)
     }
     Closure => {
+      let subtracer = tracer.new_subtracer(
+        "Closure",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
       let closure_env = @closure.ClosureEnv::new_from_existing(
         self.knf.unwrap(),
+        subtracer,
       )
       let closure_ir = try {
         closure_env.knf_to_closure!(
@@ -167,23 +212,22 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
           Map::from_iter(@typer.externals().iter()),
         )
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Closure error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
       self.closure_ir = Some(closure_ir)
     }
     Asm => {
-      let core = self.opt.unwrap()
-      let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(core)
+      let core = self.core.unwrap()
+      let subtracer = tracer.new_subtracer(
+        "Asm",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(core, subtracer)
       let asm = try {
         lower_ctx.lower!()
       } catch {
-        Failure(msg) => {
-          println(msg)
-          @util.die("Asm error")
-        }
+        Failure(msg) => subtracer.abort(msg)
       }
       self.asm = Some(asm)
     }
@@ -201,8 +245,9 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Knf => @json.stringify(self.typechecked.unwrap().to_json())
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
-      Core => @json.stringify(self.closure_ir.unwrap().to_json())
-      Asm => @util.die("No json output for core IR")
+      Core => @json.stringify(self.opt_knf.unwrap().to_json())
+      CoreOpt => mt.abort("No json output for core IR")
+      Asm => mt.abort("No json output for core IR")
       Finished => Show::to_string(self.asm.unwrap())
     }
   } else {
@@ -213,39 +258,64 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       KnfOpt => self.knf.unwrap().to_string()
       Closure => self.opt_knf.unwrap().to_string()
       Core => self.closure_ir.unwrap().to_string()
-      Asm => Show::to_string(self.opt.unwrap().to_pretty_print())
+      CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
+      Asm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
       Finished => Show::to_string(self.asm.unwrap())
     }
   }
 }
 
+struct Options {
+  mut json : Bool
+  mut start_stage : Stages
+  mut end_stage : Stages
+  mut knf_interpreter : Bool
+  mut closure_interpreter : Bool
+  mut core_interpreter : Bool
+  mut out_file : String
+  mut print : Array[String]
+  mut file : String?
+  mut output_to_console : Bool
+  mut redirect_to_log : Bool
+}
+
+fn Options::new() -> Options {
+  Options::{
+    json: false,
+    start_stage: Stages::Parse,
+    end_stage: Stages::Finished,
+    knf_interpreter: false,
+    closure_interpreter: false,
+    core_interpreter: false,
+    out_file: "-",
+    print: [],
+    file: None,
+    output_to_console: false,
+    redirect_to_log: true,
+  }
+}
+
+fn Options::update_from_flags(
+  _self : Options,
+  _flags : Flags,
+  _tracer : @util.SubTracer
+) -> Unit {
+
+}
+
 fn main {
   let argv = @env.get_args()
-  let mut file = None
-  let knf_opt_iters = Ref::new(10)
-  let knf_opt_inline_threshold = Ref::new(10)
-
-  // Testing directives
-  let json = Ref::new(false)
-  let start_stage = Ref::new(Stages::Parse)
-  let end_stage = Ref::new(Stages::Finished)
-  let knf_interpreter = Ref::new(false)
-  let closure_interpreter = Ref::new(false)
-  let core_interpreter = Ref::new(false)
-  let out_file = Ref::new("-")
-  let print = Ref::new([])
-
   // 
   @ArgParser.parse(
     [
       (
         "--start-stage",
-        "",
+        "-ss",
         @ArgParser.String(
           fn(s) {
             match Stages::from_string(s) {
-              Some(stage) => start_stage.val = stage
-              None => @util.die("Invalid stage")
+              Some(stage) => opts.start_stage = stage
+              None => mt.abort("Invalid stage")
             }
           },
         ),
@@ -253,133 +323,130 @@ fn main {
       ),
       (
         "--end-stage",
-        "",
+        "-es",
         @ArgParser.String(
           fn(s) {
             match Stages::from_string(s) {
-              Some(stage) => end_stage.val = stage
-              None => @util.die("Invalid stage")
+              Some(stage) => opts.end_stage = stage
+              None => mt.abort("Invalid stage")
             }
           },
         ),
         "End stage",
       ),
       (
-        "--knf-interpreter",
+        "--output-to-console",
+        "-otc",
+        @ArgParser.Unit(fn() { opts.output_to_console = true }),
         "",
-        @ArgParser.Set(knf_interpreter),
+      ),
+      (
+        "--redirect-to-log",
+        "-rtl",
+        @ArgParser.Unit(fn() { opts.redirect_to_log = true }),
+        "",
+      ),
+      (
+        "--knf-interpreter",
+        "-ki",
+        @ArgParser.Unit(fn() { opts.knf_interpreter = true }),
         "Run with KNF interpreter",
       ),
       (
         "--closure-interpreter",
-        "",
-        @ArgParser.Set(closure_interpreter),
+        "-ci",
+        @ArgParser.Unit(fn() { opts.closure_interpreter = true }),
         "Run with closure interpreter",
       ),
       (
         "--core-interpreter",
-        "",
-        @ArgParser.Set(core_interpreter),
+        "-coi",
+        @ArgParser.Unit(fn() { opts.core_interpreter = true }),
         "Run with core interpreter",
       ),
       (
         "--out-file",
         "-o",
-        @ArgParser.String(fn(s) { out_file.val = s }),
+        @ArgParser.String(fn(s) { opts.out_file = s }),
         "Output file",
       ),
-      ("--json", "", @ArgParser.Set(json), "Print results as JSON"),
+      (
+        "--json",
+        "",
+        @ArgParser.Unit(fn() { opts.json = true }),
+        "Print results as JSON",
+      ),
 
       // Regular directives
       (
         "--print",
+        "-p",
+        @ArgParser.String(fn(s) { opts.print = s.split(",").collect() }),
         "",
-        @ArgParser.String(fn(s) { print.val = s.split(",").collect() }),
-        "",
-      ),
-      (
-        "--knf-opt-iters",
-        "N",
-        @ArgParser.String(
-          fn(s) {
-            let i = @strconv.parse_int?(s)
-            match i {
-              Ok(i) => knf_opt_iters.val = i
-              Err(_) => @util.die("Invalid number")
-            }
-          },
-        ),
-        "Number of optimization iterations",
-      ),
-      (
-        "--knf-opt-inline-threshold",
-        "N",
-        @ArgParser.String(
-          fn(s) {
-            let i = @strconv.parse_int?(s)
-            match i {
-              Ok(i) => knf_opt_inline_threshold.val = i
-              Err(_) => @util.die("Invalid number")
-            }
-          },
-        ),
-        "Inline threshold for KNF optimization",
       ),
     ],
     fn(s) {
-      if file.is_empty().not() {
-        @util.die("multiple files are given")
+      if opts.file.is_empty().not() {
+        mt.abort("multiple files are given")
       }
-      file = Some(s)
+      opts.file = Some(s)
     },
     "",
     argv,
   )
-
+  if opts.output_to_console {
+    mt.set_output_to_console(true)
+  }
+  if opts.redirect_to_log {
+    mt.set_redirect_to_log(true)
+  }
   // Configure pipeline
-  if knf_interpreter.val {
-    end_stage.val = Stages::Knf
+  if opts.knf_interpreter {
+    opts.end_stage = Stages::Knf
   }
-  if closure_interpreter.val {
-    end_stage.val = Stages::Closure
+  if opts.closure_interpreter {
+    opts.end_stage = Stages::Closure
   }
-  if core_interpreter.val {
-    end_stage.val = Stages::Core
+  if opts.core_interpreter {
+    opts.end_stage = Stages::CoreOpt
   }
-  let stages_to_print = print.val.map(
+  let stages_to_print = opts.print.map(
     fn(s) {
       match Stages::from_string(s) {
         Some(stage) => stage
-        None => @util.die("Invalid stage to print: \{s}")
+        None => mt.abort("Invalid stage to print: \{s}")
       }
     },
   )
 
   // Input
-  let file = if file.is_empty() {
-    @util.die("no input file provided")
+  let file = if opts.file.is_empty() {
+    mt.abort("no input file provided")
   } else {
-    file.unwrap()
+    opts.file.unwrap()
   }
   let contents = @fs.read_to_string(file)
 
   // Compilation
   let status = match
-    CompileStatus::initialize?(start_stage.val, end_stage.val.next(), contents) {
+    CompileStatus::initialize?(
+      opts.start_stage,
+      opts.end_stage.next(),
+      contents,
+    ) {
     Ok(status) => status
-    Err(e) => {
-      println(e)
-      @util.die("Initialization error")
-    }
+    Err(e) => mt.abort("Initialization failed: \{Show::to_string(e)}")
   }
 
   // Run stages
   while true {
     let stg = status.curr_stage
     let stop = status.step()
+    let flags = status.flags
+    opts.update_from_flags(flags, mt)
     if stages_to_print.contains(stg) {
-      println("Stage: \{stg}")
-      println(status.output(json.val))
+      mt.println("Stage: \{stg}")
+      mt.println(status.output(opts.json))
     }
     if stop {
       break
@@ -387,41 +454,234 @@ fn main {
   }
 
   // Output
-  if knf_interpreter.val {
+  if opts.knf_interpreter {
     let knfi = @knf_eval.KnfInterpreter::new()
     add_interpreter_fns(knfi)
     match knfi.eval_full?(status.knf.unwrap()) {
       Ok(_) => ()
       Err(Failure(e)) => {
-        println(e)
-        @util.die("KNF interpreter error")
+        mt.println(e)
+        mt.abort("KNF interpreter error")
       }
     }
-  } else if closure_interpreter.val {
+  } else if opts.closure_interpreter {
     let clsi = @closure_eval.ClosureInterpreter::new()
     add_closure_interpreter_fns(clsi)
     match clsi.eval_full?(status.closure_ir.unwrap()) {
       Ok(_) => ()
       Err(Failure(e)) => {
-        println(e)
-        @util.die("Closure interpreter error")
+        mt.println(e)
+        mt.abort("Closure interpreter error")
       }
     }
-  } else if core_interpreter.val {
-    let corei = @core_eval.CoreInterpreter::new()
-    match corei.interpret?(status.opt.unwrap()) {
+  } else if opts.core_interpreter {
+    let corei = @core_eval.CoreInterpreter::new(mt)
+    match corei.interpret?(status.core.unwrap()) {
       Ok(_) => ()
       Err(Failure(e)) => {
-        println(e)
-        @util.die("Core interpreter error")
+        mt.println(e)
+        mt.abort("Core interpreter error")
       }
     }
   } else {
-    let out_string = status.output(json.val)
-    if out_file.val == "-" {
-      println(out_string)
+    let out_string = status.output(opts.json)
+    if opts.out_file == "-" {
+      mt.println(out_string)
     } else {
-      @fs.write_to_string(out_file.val, out_string)
+      @fs.write_to_string(opts.out_file, out_string)
     }
   }
+  let file_name = opts.file.unwrap().split(".").collect()
+  let file_name = file_name[0:file_name.length() - 1]
+  let file_name = file_name.iter().collect().join("")
+  tracer.done(
+    fn(_name, log) { @fs.write_to_string("\{file_name}.log", log) },
+    fn(name, record) { @fs.write_to_string("\{file_name}.\{name}.txt", record) },
+  )
+}
+
+fn add_interpreter_fns(interpreter : @knf_eval.KnfInterpreter) -> Unit {
+  interpreter.add_extern_fn(
+    "minimbt_print_int",
+    fn(args) {
+      match args[0] {
+        Int(i) => mt.print(i)
+        _ => mt.abort("print_int expects Int")
+      }
+      Unit
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_print_endline",
+    fn(_args) {
+      mt.print("\n")
+      Unit
+    },
+  )
+  let create_array = fn(args : Array[@knf_eval.Value]) {
+    match args[0] {
+      Int(n) => @knf_eval.Value::Array(Array::make(n, args[1]))
+      _ => mt.abort("create_array expects Int")
+    }
+  }
+  interpreter.add_extern_fn("minimbt_create_array", create_array)
+  interpreter.add_extern_fn("minimbt_create_float_array", create_array)
+  interpreter.add_extern_fn("minimbt_create_ptr_array", create_array)
+  interpreter.add_extern_fn(
+    "minimbt_truncate",
+    fn(args) {
+      match args[0] {
+        Double(d) => Int(d.to_int())
+        _ => mt.abort("truncate expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_sin",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@math.sin(d))
+        _ => mt.abort("sin expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_cos",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@math.cos(d))
+        _ => mt.abort("cos expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_sqrt",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(d.sqrt())
+        _ => mt.abort("sqrt expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_abs_float",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@double.abs(d))
+        _ => mt.abort("abs_float expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_int_of_float",
+    fn(args) {
+      match args[0] {
+        Double(d) => Int(d.to_int())
+        _ => mt.abort("int_of_float expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_float_of_int",
+    fn(args) {
+      match args[0] {
+        Int(i) => Double(i.to_double())
+        _ => mt.abort("float_of_int expects Int")
+      }
+    },
+  )
+}
+
+fn add_closure_interpreter_fns(
+  interpreter : @closure_eval.ClosureInterpreter
+) -> Unit {
+  interpreter.add_extern_fn(
+    "minimbt_print_int",
+    fn(args) {
+      match args[0] {
+        Int(i) => mt.print(i)
+        _ => mt.abort("print_int expects Int")
+      }
+      Unit
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_print_endline",
+    fn(_args) {
+      mt.print("\n")
+      Unit
+    },
+  )
+  let create_array = fn(args : Array[@closure_eval.Value]) {
+    match args[0] {
+      Int(n) => @closure_eval.Value::Array(Array::make(n, args[1]))
+      _ => mt.abort("create_array expects Int")
+    }
+  }
+  interpreter.add_extern_fn("minimbt_create_array", create_array)
+  interpreter.add_extern_fn("minimbt_create_float_array", create_array)
+  interpreter.add_extern_fn("minimbt_create_ptr_array", create_array)
+  interpreter.add_extern_fn(
+    "minimbt_truncate",
+    fn(args) {
+      match args[0] {
+        Double(d) => Int(d.to_int())
+        _ => mt.abort("truncate expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_sin",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@math.sin(d))
+        _ => mt.abort("sin expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_cos",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@math.cos(d))
+        _ => mt.abort("cos expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_sqrt",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(d.sqrt())
+        _ => mt.abort("sqrt expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_abs_float",
+    fn(args) {
+      match args[0] {
+        Double(d) => Double(@double.abs(d))
+        _ => mt.abort("abs_float expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_int_of_float",
+    fn(args) {
+      match args[0] {
+        Double(d) => Int(d.to_int())
+        _ => mt.abort("int_of_float expects Double")
+      }
+    },
+  )
+  interpreter.add_extern_fn(
+    "minimbt_float_of_int",
+    fn(args) {
+      match args[0] {
+        Int(i) => Double(i.to_double())
+        _ => mt.abort("float_of_int expects Int")
+      }
+    },
+  )
 }

@@ -1,13 +1,15 @@
 pub struct CoreOpt {
   core : @core.Core
+  tracer : @util.SubTracer
 }
 
-pub fn CoreOpt::new(core : @core.Core) -> CoreOpt {
-  { core, }
+pub fn CoreOpt::new(core : @core.Core, tracer : @util.SubTracer) -> CoreOpt {
+  { core, tracer }
 }
 
 pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let core = self.core
   let o2f = Offset2Field::new(core)
   o2f.go()
+  self.tracer.record("core_opt_after_o2f", core.to_pretty_print())
 }

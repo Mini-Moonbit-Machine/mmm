@@ -1,30 +1,33 @@
 typealias MutMap = @hashmap.T[String, Keyword]
 
+typealias MutSet[T] = @hashset.T[T]
+
 pub struct Lexer {
   buffer : String
+  flags : MutSet[Token]
   mut index : Int
   mut colstart : Int
   mut line : Int
-} derive(Eq, Show)
+} derive(Show)
 
 pub struct Loc {
   mut line : Int
   mut column : Int
   mut index : Int
-} derive(Eq, Show)
+} derive(Hash, Eq, Show)
 
 pub enum Keyword {
   Fn
   Let
   If
   Else
-} derive(Eq, Show)
+} derive(Hash, Eq, Show)
 
 pub enum Paired {
   Parenthesis
   Bracket
   Brace
-} derive(Eq, Show)
+} derive(Hash, Eq, Show)
 
 pub enum TokenTag {
   Eof
@@ -38,7 +41,7 @@ pub enum TokenTag {
   PairedOpen(Paired)
   PairedClose(Paired)
   Error(String)
-} derive(Eq, Show)
+} derive(Hash, Eq, Show)
 
 let keywords : MutMap = MutMap::new()
 
@@ -53,7 +56,7 @@ pub struct Token {
   tag : TokenTag
   loc : Loc
   span : String
-} derive(Eq, Show)
+} derive(Hash, Eq, Show)
 
 fn Token::new(tag : TokenTag, loc : Loc, span : String) -> Token {
   { tag, loc, span }
@@ -63,7 +66,13 @@ pub fn Lexer::new(s : String) -> Lexer {
   let buffer = Buffer::new(size_hint=s.length() + 1)
   buffer.write_string(s)
   buffer.write_char(Char::from_int(0))
-  { buffer: buffer.to_string(), index: 0, colstart: 0, line: 1 }
+  {
+    buffer: buffer.to_string(),
+    flags: MutSet::new(),
+    index: 0,
+    colstart: 0,
+    line: 1,
+  }
 }
 
 pub fn Lexer::reset(self : Lexer) -> Unit {
@@ -169,13 +178,38 @@ fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
   )
 }
 
+fn Lexer::flag(self : Lexer) -> Array[Token] {
+  let res = []
+  while true {
+    let ident = self.ident(self.get_loc())
+    let flag = match ident.tag {
+      TokenTag::Identifer => ident
+      _ => self.make_error(ident.loc, "invalid flag \{ident.span}")
+    }
+    res.push(flag)
+    if self.ch() == ';' {
+      self.index += 1
+    } else {
+      break
+    }
+  }
+  res
+}
+
 fn Lexer::skip_comment(self : Lexer) -> Unit {
   self.index += 2
+  let mut has_flag = false
   while true {
-    if self.ch() == '\n' {
+    if self.ch() == '\x00' {
+      break
+    } else if self.ch() == '\n' {
       self.index += 1
       self.move_to_newline()
       break
+    } else if self.ch() == ':' && not(has_flag) {
+      self.index += 1
+      has_flag = true
+      self.flag().each(fn(f) { self.flags.insert(f) })
     }
     self.index += 1
   }

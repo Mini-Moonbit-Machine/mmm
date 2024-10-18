@@ -16,6 +16,7 @@ typealias Op = @types.Op
 
 pub struct Parser {
   tokenizer : Lexer
+  tracer : @util.SubTracer
   mut token : Token?
 }
 
@@ -88,17 +89,20 @@ fn Parser::type_infix(op : String) -> (Int, Int)? {
   }
 }
 
-pub fn Parser::new(input : String) -> Parser {
-  { tokenizer: Lexer::new(input), token: None }
+pub fn Parser::new(input : String, tracer : @util.SubTracer) -> Parser {
+  { tokenizer: Lexer::new(input), tracer, token: None }
+}
+
+pub fn Parser::get_flags(self : Parser) -> Array[String] {
+  let flags = self.tokenizer.flags.iter().map(fn(flag) { flag.span }).collect()
+  self.tracer.log("flags: \{flags}")
+  flags
 }
 
 fn Parser::skip_token(self : Parser) -> Unit {
   // if it's eof, don't skip
   match self.token {
-    Some({ tag: TokenTag::Eof, .. }) => {
-      println("trying to skip eof")
-      panic()
-    }
+    Some({ tag: TokenTag::Eof, .. }) => self.tracer.abort("trying to skip eof")
     _ => self.token = None
   }
 }
@@ -773,14 +777,6 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
 }
 
 pub fn Parser::parse(self : Parser) -> PSyntax!Failure {
-  // while true {
-  //   let tok = self.next_token!()
-  //   println("\{tok.inner}")
-  //   if tok.inner.tag == TokenTag::Eof {
-  //     break
-  //   }
-  // }
-  // self.tokenizer.reset()
   let stmt = self.parse_stmt!(true)
   if self.reach_eof() == false {
     fail!("unexpected token after parsing: \{self.peek_token!().inner}")

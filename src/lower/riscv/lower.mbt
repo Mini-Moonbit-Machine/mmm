@@ -4,19 +4,6 @@ typealias MutSet[K] = @hashset.T[K]
 
 typealias RegClass = @riscv.RegClass
 
-fn abort[T](msg : String) -> T {
-  println(msg)
-  panic()
-}
-
-let trace_flag : Bool = false
-
-fn trace(msg : String) -> Unit {
-  if trace_flag {
-    println(msg)
-  }
-}
-
 pub struct RiscvFnLoweringCtx {
   core : @core.Core
   func : @core.Fn
@@ -33,6 +20,7 @@ pub struct RiscvFnLoweringCtx {
   used_primitive : MutSet[String]
   mut is_leaf : Bool
   mut mfn : MFn?
+  tracer : @util.SubTracer
 }
 
 fn RiscvFnLoweringCtx::value_regs_to_string(
@@ -97,7 +85,7 @@ fn RiscvFnLoweringCtx::ref_free_v(
   let _ = self
   let id = fvref._.id
   if id < 0 {
-    abort("Invalid free var ref")
+    self.tracer.abort("Invalid free var ref")
   }
   id.reinterpret_as_uint()
 }
@@ -111,7 +99,7 @@ fn RiscvFnLoweringCtx::i64_sext_u64(
   match ty {
     @core.Type::Int32 => u64.to_uint().reinterpret_as_int().to_int64()
     @core.Type::Int64 => u64.to_int64()
-    _ => abort("Invalid type")
+    _ => self.tracer.abort("Invalid type")
   }
 }
 
@@ -249,10 +237,10 @@ fn RiscvFnLoweringCtx::put_in_reg(
   v : @core.Value
 ) -> AnyReg {
   let r = self.value_regs[v].or_else(
-    fn() { abort("No reg assigned for value \{v}") },
+    fn() { self.tracer.abort("No reg assigned for value \{v}") },
   )
   self.value_ref_count[v] = self.value_ref_count[v].or_else(
-      fn() { abort("No ref count assigned for value \{v}") },
+      fn() { self.tracer.abort("No ref count assigned for value \{v}") },
     ) +
     1
   r
@@ -475,7 +463,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
         )
         used_xarg += 1
         if used_xarg >= @riscv.reg_arg_list.length() {
-          abort("Too many arguments")
+          self.tracer.abort("Too many arguments")
         }
       }
       F => {
@@ -486,7 +474,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
         )
         used_farg += 1
         if used_farg >= @riscv.freg_arg_list.length() {
-          abort("Too many arguments")
+          self.tracer.abort("Too many arguments")
         }
       }
     }
@@ -585,7 +573,7 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
           freg_to(
             @generated.constructor_rv_fldsym(self, self.ref_symbol(sym).name),
           )
-        _ => abort("Invalid type size")
+        _ => self.tracer.abort("Invalid type size")
       }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
   }
@@ -602,7 +590,7 @@ fn RiscvFnLoweringCtx::lower_address(
       let offset = index * size
       let imm = self
         .i32_generate_imm(offset)
-        .or_else(fn() { abort("offset too large") })
+        .or_else(fn() { self.tracer.abort("offset too large") })
       if imm.0._ != 0 {
         let imm_in_reg = @generated.constructor_lower_imm(
           self,
@@ -634,7 +622,7 @@ fn RiscvFnLoweringCtx::lower_address(
       let offset = match size {
         4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
         8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
-        _ => abort("Invalid type size")
+        _ => self.tracer.abort("Invalid type size")
       }
       let addr = @generated.constructor_rv_add(self, xreg(base), offset)
       let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
@@ -660,7 +648,7 @@ fn RiscvFnLoweringCtx::lower_store(
         (4, X) => @generated.constructor_rv_sw(self, xreg(r), ma)
         (8, X) => @generated.constructor_rv_sd(self, xreg(r), ma)
         (8, F) => @generated.constructor_rv_fsd(self, freg(r), ma)
-        _ => abort("Invalid type size")
+        _ => self.tracer.abort("Invalid type size")
       }
     }
     None => ()
@@ -680,7 +668,7 @@ fn RiscvFnLoweringCtx::lower_load(
         (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
         (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
         (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
-        _ => abort("Invalid type size")
+        _ => self.tracer.abort("Invalid type size")
       }
     }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
@@ -737,14 +725,14 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
           @generated.constructor_rv_call(self, Label("memsetf64"), 2, 1)
           self.used_primitive.insert("memsetf64")
         }
-        _ => abort("Invalid fill")
+        _ => self.tracer.abort("Invalid fill")
       }
     Zero => {
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
       @generated.constructor_rv_call(self, Label("memset0e\{elem_sz}"), 2, 0)
       self.used_primitive.insert("memset0e\{elem_sz}")
     }
-    _ => abort("Invalid fill")
+    _ => self.tracer.abort("Invalid fill")
   }
 }
 
@@ -765,7 +753,7 @@ fn RiscvFnLoweringCtx::do_fill_at_small_offset(
       @generated.constructor_rv_sd(self, xreg(init_reg), { base, offset })
     (8, F) =>
       @generated.constructor_rv_fsd(self, freg(init_reg), { base, offset })
-    _ => abort("Invalid type size")
+    _ => self.tracer.abort("Invalid type size")
   }
 }
 
@@ -795,7 +783,7 @@ fn RiscvFnLoweringCtx::do_fill_field(
   match imm_offset {
     Some(imm12) =>
       self.do_fill_at_small_offset(ptr, elem_sz, imm12, init_rc, init_reg)
-    None => abort("Field offset too large")
+    None => self.tracer.abort("Field offset too large")
   }
 }
 
@@ -841,7 +829,7 @@ fn RiscvFnLoweringCtx::do_fill(
             }
             Field(~index, ..) => self.do_fill_field(fill, ptr, elem_sz, index)
           }
-        None => abort("Invalid length")
+        None => self.tracer.abort("Invalid length")
       }
   }
 }
@@ -853,11 +841,11 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
 ) -> AnyReg {
   let mem = self.ref_mem(mref)
   match mem {
-    Stack(..) => abort("Stack allocation not supported")
+    Stack(..) => self.tracer.abort("Stack allocation not supported")
     Heap(~len, ~ty) => {
       let elem_sz = ty.elem_size()
       if elem_sz == 0 {
-        abort("Zero size type")
+        self.tracer.abort("Zero size type")
       }
       match self.imm32_from_val(len) {
         Some(len) => {
@@ -896,7 +884,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
             match elem_sz {
               4 => 2
               8 => 3
-              _ => abort("Invalid type size")
+              _ => self.tracer.abort("Invalid type size")
             },
           )
           let unaligned_ptr = @generated.constructor_rv_sub(
@@ -1074,7 +1062,7 @@ fn RiscvFnLoweringCtx::finalize_insn(self : RiscvFnLoweringCtx) -> Unit {
   self.buffer.append(self.ibuffer)
   self.ibuffer.clear()
   if self.ialias.length() > 0 {
-    abort("Alias set is not empty")
+    self.tracer.abort("Alias set is not empty")
   }
 }
 
@@ -1130,7 +1118,7 @@ fn RiscvFnLoweringCtx::assign_regs_for_function_parameters(
       for i, param in params {
         assign_with_ty(i, param)
       }
-    _ => abort("Invalid function type")
+    _ => self.tracer.abort("Invalid function type")
   }
 }
 
@@ -1204,7 +1192,7 @@ fn RiscvFnLoweringCtx::type_of(
   let ty = try {
     v.ty!(self.core, self.func)
   } catch {
-    Failure(msg) => abort(msg)
+    Failure(msg) => self.tracer.abort(msg)
   }
   ty
 }
@@ -1250,7 +1238,7 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
   let params = match self.func.ty {
     @core.Type::ClosureFn(~params, ..) | @core.Type::DirectFn(~params, ..) =>
       params
-    _ => abort("Invalid function type")
+    _ => self.tracer.abort("Invalid function type")
   }
   for i, ty in params {
     let val = @core.Value::FnParam(fref=self.func.id, fpref={ id: i })
@@ -1333,7 +1321,7 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
         let reg = self.mark_maybe_aliased(reg |> freg_to)
         self.alias_reg(pre_assigned_reg, reg)
       }
-      _ => abort("invalid freevar type or size")
+      _ => self.tracer.abort("invalid freevar type or size")
     }
   }
   self.finalize_insn()
@@ -1378,7 +1366,7 @@ fn RiscvFnLoweringCtx::lower_block(
         self.finalize_insn()
       }
     } else {
-      trace("skipping \{insn}")
+      self.tracer.log("skipping \{insn}")
     }
   }
   if block.id == self.func.entry {
@@ -1419,6 +1407,7 @@ fn RiscvFnLoweringCtx::lower(
 }
 
 fn subst_vreg_with_preg_or_spill(
+  self : RiscvFnLoweringCtx,
   alloc : RegAllocator,
   frame : FrameLayout,
   insn : MInsn,
@@ -1439,7 +1428,9 @@ fn subst_vreg_with_preg_or_spill(
           input_xreg_spilled.push(reg)
           @riscv.reg_swap[input_xreg_spilled.length() - 1]
         } else {
-          abort("Two input xregs are spilled \{Show::to_string(insn)}")
+          self.tracer.abort(
+            "Two input xregs are spilled \{Show::to_string(insn)}",
+          )
         }
     }
   }
@@ -1455,7 +1446,9 @@ fn subst_vreg_with_preg_or_spill(
           input_freg_spilled.push(reg)
           @riscv.freg_swap[input_freg_spilled.length() - 1]
         } else {
-          abort("Two input fregs are spilled \{Show::to_string(insn)}")
+          self.tracer.abort(
+            "Two input fregs are spilled \{Show::to_string(insn)}",
+          )
         }
     }
   }
@@ -1478,7 +1471,9 @@ fn subst_vreg_with_preg_or_spill(
           output_xreg_spilled.push(reg)
           @riscv.reg_swap[output_xreg_spilled.length() - 1]
         } else {
-          abort("Two output xregs are spilled \{Show::to_string(insn)}")
+          self.tracer.abort(
+            "Two output xregs are spilled \{Show::to_string(insn)}",
+          )
         }
     }
   }
@@ -1494,7 +1489,9 @@ fn subst_vreg_with_preg_or_spill(
           output_freg_spilled.push(reg)
           @riscv.freg_swap[output_freg_spilled.length() - 1]
         } else {
-          abort("Two output fregs are spilled \{Show::to_string(insn)}")
+          self.tracer.abort(
+            "Two output fregs are spilled \{Show::to_string(insn)}",
+          )
         }
     }
   }
@@ -1613,40 +1610,42 @@ fn subst_vreg_with_preg_or_spill(
   for i, x in input_xreg_spilled {
     let slot = alloc
       .query_spill(x.to_any())
-      .or_else(fn() { abort("spill \{x.to_any()} not found") })
+      .or_else(fn() { self.tracer.abort("spill \{x.to_any()} not found") })
     let offset = frame.spill[slot].or_else(
-      fn() { abort("spill offset \{x.to_any()} not found") },
+      fn() { self.tracer.abort("spill offset \{x.to_any()} not found") },
     )
     buf.push(MInsn::Lw(rd=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
   }
   for i, f in input_freg_spilled {
     let slot = alloc
       .query_spill(f.to_any())
-      .or_else(fn() { abort("spill \{f.to_any()} not found") })
+      .or_else(fn() { self.tracer.abort("spill \{f.to_any()} not found") })
     let offset = frame.spill[slot].or_else(
-      fn() { abort("spill offset \{f.to_any()} not found") },
+      fn() { self.tracer.abort("spill offset \{f.to_any()} not found") },
     )
     buf.push(
       MInsn::Fld(rd=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
     )
   }
-  trace("subst \{Show::to_string(insn)} -> \{Show::to_string(insn2)}")
+  self.tracer.println(
+    "subst \{Show::to_string(insn)} -> \{Show::to_string(insn2)}",
+  )
   buf.push(insn2)
   for i, x in output_xreg_spilled {
     let slot = alloc
       .query_spill(x.to_any())
-      .or_else(fn() { abort("spill \{x.to_any()} not found") })
+      .or_else(fn() { self.tracer.abort("spill \{x.to_any()} not found") })
     let offset = frame.spill[slot].or_else(
-      fn() { abort("spill offset \{x.to_any()} not found") },
+      fn() { self.tracer.abort("spill offset \{x.to_any()} not found") },
     )
     buf.push(MInsn::Sw(rs=@riscv.reg_swap[i], mem={ base: @riscv.Sp, offset }))
   }
   for i, f in output_freg_spilled {
     let slot = alloc
       .query_spill(f.to_any())
-      .or_else(fn() { abort("spill \{f.to_any()} not found") })
+      .or_else(fn() { self.tracer.abort("spill \{f.to_any()} not found") })
     let offset = frame.spill[slot].or_else(
-      fn() { abort("spill offset \{f.to_any()} not found") },
+      fn() { self.tracer.abort("spill offset \{f.to_any()} not found") },
     )
     buf.push(
       MInsn::Fsd(rs=@riscv.freg_swap[i], mem={ base: @riscv.Sp, offset }),
@@ -1767,7 +1766,7 @@ fn RiscvFnLoweringCtx::post_lower_block(
         last_save_x.clear()
         last_save_f.clear()
       }
-      _ => subst_vreg_with_preg_or_spill(alloc, frame, insn, insns)
+      _ => self.subst_vreg_with_preg_or_spill(alloc, frame, insn, insns)
     }
   }
   for insn in mbb.control {
@@ -1779,7 +1778,8 @@ fn RiscvFnLoweringCtx::post_lower_block(
         }
         adjust_sp(frame.adjust_sp, new_mbb.control)
       }
-      _ => subst_vreg_with_preg_or_spill(alloc, frame, insn, new_mbb.control)
+      _ =>
+        self.subst_vreg_with_preg_or_spill(alloc, frame, insn, new_mbb.control)
     }
   }
   new_mbb
@@ -1890,7 +1890,7 @@ fn RiscvFnLoweringCtx::scan_for_max_lives(
   }
   for insn in mbb.control {
     match insn {
-      RestoreCtx2 => abort("RestoreCtx2 should not be in control")
+      RestoreCtx2 => self.tracer.abort("RestoreCtx2 should not be in control")
       _ => ()
     }
   }
@@ -1943,7 +1943,8 @@ fn RiscvFnLoweringCtx::post_lower(
 
 pub fn RiscvFnLoweringCtx::new(
   core : @core.Core,
-  func : @core.Fn
+  func : @core.Fn,
+  tracer : @util.SubTracer
 ) -> RiscvFnLoweringCtx {
   let value_ref_count = MutMap::new()
   let value_regs = MutMap::new()
@@ -1970,22 +1971,27 @@ pub fn RiscvFnLoweringCtx::new(
     is_leaf: true,
     mfn: None,
     used_primitive: MutSet::new(),
+    tracer,
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
   lower_ctx.assign_regs_for_free_variables()
   lower_ctx.assign_regs_for_mem()
   lower_ctx.assign_regs_for_block_params_and_instrs()
-  trace("pre_assigned_registers: \{lower_ctx.value_regs_to_string()}")
+  tracer.println("pre_assigned_registers: \{lower_ctx.value_regs_to_string()}")
   lower_ctx
 }
 
 pub struct RiscvLoweringCtx {
   core : @core.Core
+  tracer : @util.SubTracer
 }
 
-pub fn RiscvLoweringCtx::new(core : @core.Core) -> RiscvLoweringCtx {
-  { core, }
+pub fn RiscvLoweringCtx::new(
+  core : @core.Core,
+  tracer : @util.SubTracer
+) -> RiscvLoweringCtx {
+  { core, tracer }
 }
 
 fn save_sp(insns : Array[MInsn]) -> Unit {
@@ -2070,7 +2076,7 @@ pub fn RiscvLoweringCtx::lower_globals(
         let _ = insns.unsafe_pop()
 
       }
-      _ => abort("Invalid thunk type size")
+      _ => self.tracer.abort("Invalid thunk type size")
     }
   }
   restore_sp(insns)
@@ -2108,7 +2114,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
   }
   for func in self.core.funcs {
     let (_, func) = func
-    let lower_ctx = RiscvFnLoweringCtx::new(self.core, func)
+    let lower_ctx = RiscvFnLoweringCtx::new(self.core, func, self.tracer)
     let (mfn, liveness) = lower_ctx.lower!()
     let lbl = @riscv.Label::Label(func.name)
     before_colored.funcs.set(lbl, mfn)
@@ -2119,11 +2125,14 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
         after_colored.primitives.insert(p)
       },
     )
-    let regalloc = RegAllocator::new(mfn, liveness)
+    let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
     regalloc.assign()
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
   }
-  trace("before colored: \{Show::to_string(before_colored.to_rich_info())}")
+  self.tracer.println(
+    "before colored: \{Show::to_string(before_colored.to_rich_info())}",
+  )
+  self.tracer.record("mcore", after_colored)
   after_colored
 }

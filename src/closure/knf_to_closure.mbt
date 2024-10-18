@@ -2,10 +2,14 @@ pub typealias LocalEnv = @immut/hashmap.T[Name, LowType]
 
 struct ClosureEnv {
   mut counter : Int
+  tracer : @util.SubTracer
 }
 
-pub fn ClosureEnv::new_from_existing(knf : @knf.Knf) -> ClosureEnv {
-  { counter: @knf.knf_max_counter(knf) + 1 }
+pub fn ClosureEnv::new_from_existing(
+  knf : @knf.Knf,
+  tracer : @util.SubTracer
+) -> ClosureEnv {
+  { counter: @knf.knf_max_counter(knf) + 1, tracer }
 }
 
 fn ClosureEnv::new_temp(self : ClosureEnv) -> Name {
@@ -44,7 +48,8 @@ pub fn knf_to_closure(
   let ty_env = LocalEnv::new()
   let r = self.build_closure!(knf, fundefs, let_list, ty_env)
   let body = bind_all(r)
-  Program::{ fundefs, body }
+  let prog = Program::{ fundefs, body }
+  prog
 }
 
 fn bind_all(cr : ClosureResult) -> Expr {
@@ -62,20 +67,23 @@ fn bind_all(cr : ClosureResult) -> Expr {
   body
 }
 
-fn type_to_lowtype(ty : Type) -> LowType {
+fn type_to_lowtype(self : ClosureEnv, ty : Type) -> LowType {
   match ty.repr() {
     Unit => LowType::Unit
     Bool => LowType::Bool
     Int => LowType::Int
     Double => LowType::Double
     Fun(args, ret) =>
-      LowType::ClosureFn(args.map(type_to_lowtype), type_to_lowtype(ret)) // Optimizated into direct fn further
-    Tuple(tys) => LowType::Tuple(tys.map(type_to_lowtype))
-    Array(ty) => LowType::Array(type_to_lowtype(ty))
+      LowType::ClosureFn(
+        args.map(fn(ty) { self.type_to_lowtype(ty) }),
+        self.type_to_lowtype(ret),
+      ) // Optimizated into direct fn further
+    Tuple(tys) => LowType::Tuple(tys.map(fn(ty) { self.type_to_lowtype(ty) }))
+    Array(ty) => LowType::Array(self.type_to_lowtype(ty))
     Var(ref_ty) =>
       match ref_ty.val {
-        Some(t) => type_to_lowtype(t)
-        None => abort("Uninstantiated type variable")
+        Some(t) => self.type_to_lowtype(t)
+        None => self.tracer.abort("Uninstantiated type variable")
       }
     Ptr => LowType::Ptr
   }
@@ -127,7 +135,7 @@ fn build_closure(
     Apply(function, args) =>
       (CallClosure(function, args), func_def_list, let_list)
     LetTuple(xts, y, k) => {
-      let new_binder = xts.map(fn(xt) { (xt.0, type_to_lowtype(xt.1)) })
+      let new_binder = xts.map(fn(xt) { (xt.0, self.type_to_lowtype(xt.1)) })
       let_list.push(Binding::LetTuple(new_binder, y))
       // update type environment
       let inner_ty_env = new_binder.fold(
@@ -138,7 +146,7 @@ fn build_closure(
       (r.0, r.1, let_list)
     }
     Let((x, ty), e1, e2) => {
-      let loty = type_to_lowtype(ty)
+      let loty = self.type_to_lowtype(ty)
       // TODO: lift functional binding to function definition
       let r1 = self.build_closure!(e1, func_def_list, let_list, ty_env)
       let_list.push(Binding::Let(x, loty, r1.0))
@@ -149,8 +157,8 @@ fn build_closure(
     }
     LetRec({ name, ty, args, body }, k) as frec => {
       let label = self.make_label(name)
-      let loty = type_to_lowtype(ty)
-      let args = args.map(fn(arg) { (arg.0, type_to_lowtype(arg.1)) })
+      let loty = self.type_to_lowtype(ty)
+      let args = args.map(fn(arg) { (arg.0, self.type_to_lowtype(arg.1)) })
       let actual_free_vars = @knf.knf_free_vars(frec).iter().collect()
       let formal_free_vars = actual_free_vars.map(
         fn(name) { (name, ty_env.find(name).unwrap()) },

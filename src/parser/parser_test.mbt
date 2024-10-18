@@ -5,7 +5,9 @@ fn test_parse_type(
   expected_str : String,
   expected_ntokens : Int
 ) -> Unit!Error {
-  let parser = Parser::new(source)
+  let tracer = @util.Tracer::new()
+  let subtracer = tracer.new_subtracer("Test")
+  let parser = Parser::new(source, subtracer)
   let ty = parser.parse_type!()
   let ty_ntokens = ty.ntokens
   assert_eq!(ty.inner.to_json().stringify(), expected_str)
@@ -19,7 +21,9 @@ fn test_parse_expr(
   expected_str : String,
   expected_ntokens : Int
 ) -> Unit!Error {
-  let parser = Parser::new(source)
+  let tracer = @util.Tracer::new()
+  let subtracer = tracer.new_subtracer("Test")
+  let parser = Parser::new(source, subtracer)
   let expr = parser.parse_expr!()
   let expr_ntokens = expr.ntokens
   assert_eq!(expr.inner.to_json().stringify(), expected_str)

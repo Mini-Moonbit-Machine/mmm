@@ -84,7 +84,7 @@ pub fn Type::size_of(self : Type, size_of_ptr : Int) -> Int {
     Var(t) =>
       match t.val {
         Some(t) => t.size_of(size_of_ptr)
-        None => @util.die("Uninstantiated type variable")
+        None => abort("Uninstantiated type variable")
       }
   }
 }

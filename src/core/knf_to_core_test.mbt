@@ -1,4 +1,6 @@
 test "knf_to_core" {
+  let tracer = @util.Tracer::new()
+  let subtracer = tracer.new_subtracer("Test", true, false)
   let src =
     #|fn matmul(l: Int, m: Int, n: Int) -> Unit {
     #|  fn loop1(i: Int) -> Unit {
@@ -27,14 +29,14 @@ test "knf_to_core" {
     #|  };
     #|  loop1(l - 1)
     #|};
-  let parser = @parser.Parser::new(src)
+  let parser = @parser.Parser::new(src, subtracer)
   let ast = parser.parse!().inner
-  let typer = @typer.Typer::new(ast)
+  let typer = @typer.Typer::new(ast, subtracer)
   typer.check_all!()
-  let knf_env = @knf.KnfEnv::new(@typer.externals())
+  let knf_env = @knf.KnfEnv::new(@typer.externals(), subtracer)
   let preprocessed = knf_env.syntax_preprocess(ast, false)
   let knf = knf_env.to_knf!(preprocessed)
-  let core_env = @core.CoreEnv::new()
+  let core_env = @core.CoreEnv::new(subtracer)
   let core = core_env.build!(knf)
   let _ = core
 

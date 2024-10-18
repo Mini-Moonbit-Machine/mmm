@@ -8,10 +8,11 @@ typealias TyEnv = @immut/hashmap.T[String, Type]
 
 pub struct Typer {
   syntax : @types.Syntax
+  tracer : @util.SubTracer
 }
 
-pub fn Typer::new(syntax : Syntax) -> Typer {
-  Typer::{ syntax, }
+pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
+  Typer::{ syntax, tracer }
 }
 
 fn Typer::find(ty1 : Type) -> Type {
