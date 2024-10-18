@@ -1,0 +1,489 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl memseti64
+  .type memseti64, @function
+memseti64:
+  blez a1, .memseti64_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti64_b0:
+  sd a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti64_b0
+.memseti64_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl memsetf64
+  .type memsetf64, @function
+memsetf64:
+  blez a1, .memsetf64_b1
+  slli a1, a1, 3
+  add a1, a1, a0
+.memsetf64_b0:
+  fsd fa0, 0(a0)
+  addi a0, a0, 8
+  bne a0, a1, .memsetf64_b0
+.memsetf64_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl matmul1_0
+  .type matmul1_0, @function
+# leaf false
+matmul1_0:
+.matmul1_0_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a6, s11, -48
+  andi a6, a6, -8
+  mv s11, a6
+  la a7, loop114_3
+  sd a7, 0(a6)
+  sd a5, 8(a6)
+  sd a3, 16(a6)
+  sd a4, 24(a6)
+  sd a1, 32(a6)
+  sd a2, 40(a6)
+  addi a0, a0, -1
+  mv s10, a6
+  ld a1, 0(a6)
+  jalr a1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl init_arr63_12
+  .type init_arr63_12, @function
+# leaf false
+init_arr63_12:
+.init_arr63_12_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv s0, s10
+  mv s2, a0
+  lw a1, 8(s0)
+  ld s1, 16(s0)
+  blt s2, zero, .init_arr63_12_2
+
+.init_arr63_12_1:
+  slliw a0, a1, 3
+  sub a0, s11, a0
+  andi s3, a0, -8
+  mv s11, s3
+  fmv.d.x fa0, zero
+  mv a0, s3
+  call memsetf64
+  slliw a0, s2, 3
+  add a0, s1, a0
+  sd s3, 0(a0)
+  addi a0, s2, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.init_arr63_12_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
+
+.init_arr63_12_2:
+  mv a0, zero
+  j .init_arr63_12_3
+
+  .p2align 2
+  .text
+  .globl loop218_5
+  .type loop218_5, @function
+# leaf false
+loop218_5:
+.loop218_5_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  ld a1, 8(s0)
+  lw a4, 16(s0)
+  ld a2, 24(s0)
+  ld a5, 32(s0)
+  lw a3, 40(s0)
+  blt s1, zero, .loop218_5_2
+
+.loop218_5_1:
+  addi a0, s11, -48
+  andi a0, a0, -8
+  mv s11, a0
+  la a6, loop322_7
+  sd a6, 0(a0)
+  sd a1, 8(a0)
+  sd a4, 16(a0)
+  sd s1, 24(a0)
+  sd a2, 32(a0)
+  sd a5, 40(a0)
+  addi a1, a3, -1
+  mv s10, a0
+  ld a2, 0(a0)
+  mv a0, a1
+  jalr a2
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.loop218_5_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.loop218_5_2:
+  mv a0, zero
+  j .loop218_5_3
+
+  .p2align 2
+  .text
+  .globl loop322_7
+  .type loop322_7, @function
+# leaf false
+loop322_7:
+.loop322_7_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a4, s10
+  mv a7, a0
+  ld a1, 8(a4)
+  lw a5, 16(a4)
+  lw a2, 24(a4)
+  ld a6, 32(a4)
+  ld a3, 40(a4)
+  blt a7, zero, .loop322_7_2
+
+.loop322_7_1:
+  slliw a0, a5, 3
+  add a0, a1, a0
+  ld a0, 0(a0)
+  slliw t0, a5, 3
+  add a1, a1, t0
+  ld a1, 0(a1)
+  slliw t0, a2, 3
+  add a1, a1, t0
+  fld fa0, 0(a1)
+  slliw a1, a5, 3
+  add a1, a6, a1
+  ld a1, 0(a1)
+  slliw a5, a7, 3
+  add a1, a1, a5
+  fld fa1, 0(a1)
+  slliw a1, a7, 3
+  add a1, a3, a1
+  ld a1, 0(a1)
+  slliw a3, a2, 3
+  add a1, a1, a3
+  fld fa2, 0(a1)
+  fmadd.d fa0, fa1, fa2, fa0
+  slliw a1, a2, 3
+  add a0, a0, a1
+  fsd fa0, 0(a0)
+  addi a0, a7, -1
+  mv s10, a4
+  ld a1, 0(a4)
+  jalr a1
+
+.loop322_7_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.loop322_7_2:
+  mv a0, zero
+  j .loop322_7_3
+
+  .p2align 2
+  .text
+  .globl main53_1
+  .type main53_1, @function
+# leaf false
+main53_1:
+.main53_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  addi a0, s11, 0
+  andi a0, a0, -8
+  mv s11, a0
+  fmv.d.x fa0, zero
+  addi a1, s11, -16
+  andi s0, a1, -8
+  mv s11, s0
+  la a1, gen_arr57_10
+  sd a1, 0(s0)
+  sd a0, 8(s0)
+  mv s10, s0
+  ld a2, 0(s0)
+  li a0, 2
+  li a1, 3
+  jalr a2
+  mv s1, a0
+  mv s10, s0
+  ld a2, 0(s0)
+  li a0, 3
+  li a1, 2
+  jalr a2
+  mv s2, a0
+  mv s10, s0
+  ld a2, 0(s0)
+  li a0, 2
+  li a1, 2
+  jalr a2
+  mv s0, a0
+  ld a0, 0(s1)
+  li a1, 4607182418800017408
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  ld a0, 0(s1)
+  li a1, 4611686018427387904
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a0, 0(s1)
+  li a1, 4613937818241073152
+  fmv.d.x fa0, a1
+  fsd fa0, 16(a0)
+  ld a0, 8(s1)
+  li a1, 4616189618054758400
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  ld a0, 8(s1)
+  li a1, 4617315517961601024
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a0, 8(s1)
+  li a1, 4618441417868443648
+  fmv.d.x fa0, a1
+  fsd fa0, 16(a0)
+  ld a0, 0(s2)
+  li a1, 4619567317775286272
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  ld a0, 0(s2)
+  li a1, 4620693217682128896
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a0, 8(s2)
+  li a1, 4621256167635550208
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  ld a0, 8(s2)
+  li a1, 4621819117588971520
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  ld a0, 16(s2)
+  li a1, 4622382067542392832
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  ld a0, 16(s2)
+  li a1, 4622945017495814144
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  li a0, 2
+  li a1, 3
+  li a2, 2
+  mv a3, s1
+  mv a4, s2
+  mv a5, s0
+  call matmul1_0
+  ld a0, 0(s0)
+  fld fa0, 0(a0)
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  call minimbt_print_endline
+  ld a0, 0(s0)
+  fld fa0, 8(a0)
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  call minimbt_print_endline
+  ld a0, 8(s0)
+  fld fa0, 0(a0)
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  call minimbt_print_endline
+  ld a0, 8(s0)
+  fld fa0, 8(a0)
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl loop114_3
+  .type loop114_3, @function
+# leaf false
+loop114_3:
+.loop114_3_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  ld a0, 8(s0)
+  ld a2, 16(s0)
+  ld a3, 24(s0)
+  lw a4, 32(s0)
+  lw a5, 40(s0)
+  blt s1, zero, .loop114_3_2
+
+.loop114_3_1:
+  addi a1, s11, -48
+  andi a1, a1, -8
+  mv s11, a1
+  la a6, loop218_5
+  sd a6, 0(a1)
+  sd a0, 8(a1)
+  sd s1, 16(a1)
+  sd a2, 24(a1)
+  sd a3, 32(a1)
+  sd a4, 40(a1)
+  addi a0, a5, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.loop114_3_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.loop114_3_2:
+  mv a0, zero
+  j .loop114_3_3
+
+  .p2align 2
+  .text
+  .globl T$start_14
+  .type T$start_14, @function
+# leaf false
+T$start_14:
+.T$start_14_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main53_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl gen_arr57_10
+  .type gen_arr57_10, @function
+# leaf false
+gen_arr57_10:
+.gen_arr57_10_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv a2, s10
+  mv s0, a0
+  mv s1, a1
+  ld a2, 8(a2)
+  slliw a0, s0, 3
+  sub a0, s11, a0
+  andi s2, a0, -8
+  mv s11, s2
+  mv a1, s0
+  mv a0, s2
+  call memseti64
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, init_arr63_12
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s2, 16(a0)
+  addi a1, s0, -1
+  mv s10, a0
+  ld a2, 0(a0)
+  mv a0, a1
+  jalr a2
+  mv a0, s2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_14
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

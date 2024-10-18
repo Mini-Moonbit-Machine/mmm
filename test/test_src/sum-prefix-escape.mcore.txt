@@ -1,0 +1,185 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main25_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl sum_nested8_3
+  .type sum_nested8_3, @function
+# leaf false
+sum_nested8_3:
+.sum_nested8_3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a2, s10
+  lw a3, 8(a2)
+  ld a4, 16(a2)
+  ld a5, 24(a2)
+  addi a3, a3, -1
+  blt a3, a1, .sum_nested8_3_2
+
+.sum_nested8_3_1:
+  slliw a3, a1, 2
+  add a3, a4, a3
+  lw a3, 0(a3)
+  add a0, a0, a3
+  slliw a3, a1, 2
+  add a3, a5, a3
+  sw a0, 0(a3)
+  addi a1, a1, 1
+  mv s10, a2
+  ld a2, 0(a2)
+  jalr a2
+
+.sum_nested8_3_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.sum_nested8_3_2:
+  mv a0, zero
+  j .sum_nested8_3_3
+
+  .p2align 2
+  .text
+  .globl sum_prefix1_0
+  .type sum_prefix1_0, @function
+# leaf false
+sum_prefix1_0:
+.sum_prefix1_0_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  slliw a0, s1, 2
+  sub a0, s11, a0
+  andi s2, a0, -8
+  mv s11, s2
+  mv a1, s1
+  mv a0, s2
+  mv a2, zero
+  call memseti32
+  addi a0, s11, -32
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, sum_nested8_3
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s0, 16(a0)
+  sd s2, 24(a0)
+  mv s10, a0
+  ld a2, 0(a0)
+  mv a0, zero
+  mv a1, zero
+  jalr a2
+  mv a0, s2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main25_1
+  .type main25_1, @function
+# leaf false
+main25_1:
+.main25_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -40
+  andi a0, a0, -8
+  mv s11, a0
+  li a1, 4
+  sw a1, 0(a0)
+  sw a1, 4(a0)
+  sw a1, 8(a0)
+  sw a1, 12(a0)
+  sw a1, 16(a0)
+  sw a1, 20(a0)
+  sw a1, 24(a0)
+  sw a1, 28(a0)
+  sw a1, 32(a0)
+  sw a1, 36(a0)
+  li a1, 10
+  call sum_prefix1_0
+  lw a0, 0(a0)
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_6
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

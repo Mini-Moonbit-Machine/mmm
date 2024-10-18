@@ -1,0 +1,93 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl T$start_4
+  .type T$start_4, @function
+# leaf false
+T$start_4:
+.T$start_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main2_2
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main2_2
+  .type main2_2, @function
+# leaf false
+main2_2:
+.main2_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  lw a0, int_min.1
+  call minimbt_print_int
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$int_min.10
+  la t5, int_min.1
+  sw a0, 0(t5)
+  call T$start_4
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl T$int_min.10
+  .type T$int_min.10, @function
+# leaf true
+T$int_min.10:
+.T$int_min.10_0:
+  li a0, -2147483648
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl int_min.1
+  .type int_min.1, @object
+int_min.1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

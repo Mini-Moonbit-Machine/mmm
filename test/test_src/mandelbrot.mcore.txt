@@ -1,0 +1,312 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl main75_1
+  .type main75_1, @function
+# leaf false
+main75_1:
+.main75_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 40
+  call mandelbrot1_0
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_12
+  .type T$start_12, @function
+# leaf false
+T$start_12:
+.T$start_12_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main75_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl iloop29_9
+  .type iloop29_9, @function
+# leaf false
+iloop29_9:
+.iloop29_9_0:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  fsd fs0, 24(sp)
+  fsd fs1, 32(sp)
+  fsd fs2, 40(sp)
+  fsd fs3, 48(sp)
+  mv s0, s10
+  mv s1, a0
+  fmv.d fs0, fa1
+  fmv.d fa1, fa2
+  fmv.d fa2, fa3
+  fmv.d fs1, fa4
+  fmv.d fs2, fa5
+  ld a0, 8(s0)
+  beq s1, zero, .iloop29_9_1
+
+.iloop29_9_2:
+  fsub.d fa1, fa1, fa2
+  fadd.d fs3, fa1, fs1
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
+  fmadd.d fa1, fa0, fs0, fs2
+  fmul.d fa2, fs3, fs3
+  fmul.d fa3, fa1, fa1
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
+  li a0, 4611686018427387904
+  fmv.d.x fa4, a0
+  fmul.d fa0, fa0, fa4
+  fmadd.d fa4, fa1, fa1, fa2
+  fle.d a0, fa0, fa4
+  bne a0, zero, .iloop29_9_3
+
+.iloop29_9_4:
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  fmv.d fa0, fs3
+  fmv.d fa4, fs1
+  fmv.d fa5, fs2
+  jalr a1
+
+.iloop29_9_5:
+
+.iloop29_9_6:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  fld fs0, 24(sp)
+  fld fs1, 32(sp)
+  fld fs2, 40(sp)
+  fld fs3, 48(sp)
+  addi sp, sp, 64
+  ret
+
+.iloop29_9_1:
+  li a0, 1
+  call minimbt_print_int
+  j .iloop29_9_6
+
+.iloop29_9_3:
+  mv a0, zero
+  call minimbt_print_int
+  j .iloop29_9_5
+
+  .p2align 2
+  .text
+  .globl mandelbrot1_0
+  .type mandelbrot1_0, @function
+# leaf false
+mandelbrot1_0:
+.mandelbrot1_0_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a1, s11, -8
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, dbl4_3
+  sd a2, 0(a1)
+  addi a2, s11, -24
+  andi a2, a2, -8
+  mv s11, a2
+  la a3, yloop7_5
+  sd a3, 0(a2)
+  sd a0, 8(a2)
+  sd a1, 16(a2)
+  mv s10, a2
+  ld a1, 0(a2)
+  mv a0, zero
+  jalr a1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl dbl4_3
+  .type dbl4_3, @function
+# leaf true
+dbl4_3:
+.dbl4_3_0:
+  mv a0, s10
+  fadd.d fa0, fa0, fa0
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_12
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl yloop7_5
+  .type yloop7_5, @function
+# leaf false
+yloop7_5:
+.yloop7_5_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  ld a1, 16(s0)
+  bge s1, a0, .yloop7_5_1
+
+.yloop7_5_2:
+  addi a2, s11, -24
+  andi a2, a2, -8
+  mv s11, a2
+  la a3, xloop10_7
+  sd a3, 0(a2)
+  sd a0, 8(a2)
+  sd a1, 16(a2)
+  mv s10, a2
+  ld a2, 0(a2)
+  mv a0, zero
+  mv a1, s1
+  jalr a2
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.yloop7_5_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.yloop7_5_1:
+  mv a0, zero
+  j .yloop7_5_3
+
+  .p2align 2
+  .text
+  .globl xloop10_7
+  .type xloop10_7, @function
+# leaf false
+xloop10_7:
+.xloop10_7_0:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  fsd fs0, 48(sp)
+  mv s0, s10
+  mv s1, a0
+  mv s2, a1
+  lw s3, 8(s0)
+  ld s4, 16(s0)
+  bge s1, s3, .xloop10_7_1
+
+.xloop10_7_2:
+  fcvt.d.w fa0, s1
+  mv s10, s4
+  ld a0, 0(s4)
+  jalr a0
+  fcvt.d.w fa1, s3
+  fdiv.d fa0, fa0, fa1
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fs0, fa0, fa1
+  fcvt.d.w fa0, s2
+  mv s10, s4
+  ld a0, 0(s4)
+  jalr a0
+  fcvt.d.w fa1, s3
+  fdiv.d fa0, fa0, fa1
+  li a0, 4607182418800017408
+  fmv.d.x fa1, a0
+  fsub.d fa5, fa0, fa1
+  addi a0, s11, -16
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, iloop29_9
+  sd a1, 0(a0)
+  sd s4, 8(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 1000
+  fmv.d.x fa0, zero
+  fmv.d.x fa1, zero
+  fmv.d.x fa2, zero
+  fmv.d.x fa3, zero
+  fmv.d fa4, fs0
+  jalr a1
+  addi a0, s1, 1
+  mv s10, s0
+  ld a2, 0(s0)
+  mv a1, s2
+  jalr a2
+
+.xloop10_7_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  fld fs0, 48(sp)
+  addi sp, sp, 64
+  ret
+
+.xloop10_7_1:
+  call minimbt_print_endline
+  mv a0, zero
+  j .xloop10_7_3
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

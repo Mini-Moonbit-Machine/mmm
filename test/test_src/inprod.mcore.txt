@@ -1,0 +1,172 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl gety10_1
+  .type gety10_1, @function
+# leaf true
+gety10_1:
+.gety10_1_0:
+  fld fa0, 8(a0)
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_10
+  .type T$start_10, @function
+# leaf false
+T$start_10:
+.T$start_10_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main43_4
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl getx1_0
+  .type getx1_0, @function
+# leaf true
+getx1_0:
+.getx1_0_0:
+  fld fa0, 0(a0)
+  ret
+
+  .p2align 2
+  .text
+  .globl inprod28_3
+  .type inprod28_3, @function
+# leaf false
+inprod28_3:
+.inprod28_3_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  fsd fs0, 24(sp)
+  fsd fs1, 32(sp)
+  mv s0, a0
+  mv s1, a1
+  mv a0, s0
+  call getx1_0
+  fmv.d fs0, fa0
+  mv a0, s1
+  call getx1_0
+  fmul.d fs0, fs0, fa0
+  mv a0, s0
+  call gety10_1
+  fmv.d fs1, fa0
+  mv a0, s1
+  call gety10_1
+  fmadd.d fs0, fs1, fa0, fs0
+  mv a0, s0
+  call getz19_2
+  fmv.d fs1, fa0
+  mv a0, s1
+  call getz19_2
+  fmadd.d fa0, fs1, fa0, fs0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  fld fs0, 24(sp)
+  fld fs1, 32(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 2
+  .text
+  .globl main43_4
+  .type main43_4, @function
+# leaf false
+main43_4:
+.main43_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  li a1, 4607182418800017408
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  li a1, 4611686018427387904
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  li a1, 4613937818241073152
+  fmv.d.x fa0, a1
+  fsd fa0, 16(a0)
+  addi a1, s11, -24
+  andi a1, a1, -8
+  mv s11, a1
+  li a2, 4616189618054758400
+  fmv.d.x fa0, a2
+  fsd fa0, 0(a1)
+  li a2, 4617315517961601024
+  fmv.d.x fa0, a2
+  fsd fa0, 8(a1)
+  li a2, 4618441417868443648
+  fmv.d.x fa0, a2
+  fsd fa0, 16(a1)
+  call inprod28_3
+  li a0, 4696837146684686336
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_10
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl getz19_2
+  .type getz19_2, @function
+# leaf true
+getz19_2:
+.getz19_2_0:
+  fld fa0, 16(a0)
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

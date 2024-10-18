@@ -1,0 +1,120 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl make_adder1_0
+  .type make_adder1_0, @function
+# leaf true
+make_adder1_0:
+.make_adder1_0_0:
+  addi a1, s11, -16
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, adder4_3
+  sd a2, 0(a1)
+  sd a0, 8(a1)
+  mv a0, a1
+  ret
+
+  .p2align 2
+  .text
+  .globl adder4_3
+  .type adder4_3, @function
+# leaf true
+adder4_3:
+.adder4_3_0:
+  mv a1, s10
+  lw a1, 8(a1)
+  add a0, a1, a0
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main7_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main7_1
+  .type main7_1, @function
+# leaf false
+main7_1:
+.main7_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  li a0, 2
+  call make_adder1_0
+  mv s0, a0
+  li a0, 3
+  call make_adder1_0
+  mv s1, a0
+  mv s10, s0
+  ld a1, 0(s0)
+  li a0, 10
+  jalr a1
+  mv s0, a0
+  mv s10, s1
+  ld a1, 0(s1)
+  li a0, 20
+  jalr a1
+  add a0, s0, a0
+  call minimbt_print_int
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_6
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

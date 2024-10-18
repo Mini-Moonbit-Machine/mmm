@@ -1,0 +1,130 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl inprod1_0
+  .type inprod1_0, @function
+# leaf false
+inprod1_0:
+.inprod1_0_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a3, a0
+  mv a4, a1
+  mv a1, a2
+  blt a1, zero, .inprod1_0_2
+
+.inprod1_0_1:
+  slliw a0, a1, 3
+  add a0, a3, a0
+  fld fa1, 0(a0)
+  slliw a0, a1, 3
+  add a0, a4, a0
+  fld fa2, 0(a0)
+  fmadd.d fa0, fa1, fa2, fa0
+  addi a2, a1, -1
+  mv a0, a3
+  mv a1, a4
+  call inprod1_0
+
+.inprod1_0_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.inprod1_0_2:
+  j .inprod1_0_3
+
+  .p2align 2
+  .text
+  .globl T$start_4
+  .type T$start_4, @function
+# leaf false
+T$start_4:
+.T$start_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main17_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_4
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main17_1
+  .type main17_1, @function
+# leaf false
+main17_1:
+.main17_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  li a1, 4608218246714312622
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  fsd fa0, 8(a0)
+  fsd fa0, 16(a0)
+  addi a1, s11, -24
+  andi a1, a1, -8
+  mv s11, a1
+  li a2, 4616820122002590269
+  fmv.d.x fa0, a2
+  fsd fa0, 0(a1)
+  fsd fa0, 8(a1)
+  fsd fa0, 16(a1)
+  fmv.d.x fa0, zero
+  li a2, 2
+  call inprod1_0
+  li a0, 4696837146684686336
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

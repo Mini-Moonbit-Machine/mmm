@@ -1,0 +1,190 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl T$t.10
+  .type T$t.10, @function
+# leaf true
+T$t.10:
+.T$t.10_0:
+  li a0, 123
+  ret
+
+  .p2align 2
+  .text
+  .globl odd6_7
+  .type odd6_7, @function
+# leaf false
+odd6_7:
+.odd6_7_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, s10
+  blt a0, zero, .odd6_7_2
+
+.odd6_7_1:
+  beq a0, zero, .odd6_7_3
+
+.odd6_7_4:
+  addi a0, a0, -1
+  call even3_4
+
+.odd6_7_5:
+
+.odd6_7_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.odd6_7_2:
+  addi a0, a0, 1
+  call even3_4
+  j .odd6_7_6
+
+.odd6_7_3:
+  lw a0, f.2
+  j .odd6_7_5
+
+  .p2align 2
+  .text
+  .globl even3_4
+  .type even3_4, @function
+# leaf false
+even3_4:
+.even3_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a1, s11, -8
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, odd6_7
+  sd a2, 0(a1)
+  blt a0, zero, .even3_4_2
+
+.even3_4_1:
+  beq a0, zero, .even3_4_3
+
+.even3_4_4:
+  addi a0, a0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+
+.even3_4_5:
+
+.even3_4_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.even3_4_2:
+  addi a0, a0, 1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  j .even3_4_6
+
+.even3_4_3:
+  lw a0, t.1
+  j .even3_4_5
+
+  .p2align 2
+  .text
+  .globl T$start_10
+  .type T$start_10, @function
+# leaf false
+T$start_10:
+.T$start_10_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main21_5
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$t.10
+  la t5, t.1
+  sw a0, 0(t5)
+  call T$f.22
+  la t5, f.2
+  sw a0, 0(t5)
+  call T$start_10
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl T$f.22
+  .type T$f.22, @function
+# leaf true
+T$f.22:
+.T$f.22_0:
+  li a0, 456
+  ret
+
+  .p2align 2
+  .text
+  .globl main21_5
+  .type main21_5, @function
+# leaf false
+main21_5:
+.main21_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 789
+  call even3_4
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl t.1
+  .type t.1, @object
+t.1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl f.2
+  .type f.2, @object
+f.2:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

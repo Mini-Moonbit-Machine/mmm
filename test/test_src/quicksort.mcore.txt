@@ -1,0 +1,383 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl output97_12
+  .type output97_12, @function
+# leaf false
+output97_12:
+.output97_12_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  ld a1, 16(s0)
+  addi a0, a0, -1
+  blt a0, s1, .output97_12_2
+
+.output97_12_1:
+  slliw a0, s1, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  call minimbt_print_int
+  call minimbt_print_endline
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.output97_12_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.output97_12_2:
+  mv a0, zero
+  j .output97_12_3
+
+  .p2align 2
+  .text
+  .globl quicksort59_2
+  .type quicksort59_2, @function
+# leaf false
+quicksort59_2:
+.quicksort59_2_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv s2, a0
+  mv s0, a1
+  mv s1, a2
+  addi a0, s1, -1
+  blt a0, s0, .quicksort59_2_2
+
+.quicksort59_2_1:
+  mv a0, s2
+  mv a1, s0
+  mv a2, s1
+  call partition14_1
+  mv s3, a0
+  addi a2, s3, -1
+  mv a0, s2
+  mv a1, s0
+  call quicksort59_2
+  addi a1, s3, 1
+  mv a0, s2
+  mv a2, s1
+  call quicksort59_2
+
+.quicksort59_2_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
+
+.quicksort59_2_2:
+  mv a0, zero
+  j .quicksort59_2_3
+
+  .p2align 2
+  .text
+  .globl input79_10
+  .type input79_10, @function
+# leaf false
+input79_10:
+.input79_10_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, s10
+  mv s2, a0
+  lw a0, 8(s0)
+  ld s1, 16(s0)
+  addi a0, a0, -1
+  blt a0, s2, .input79_10_2
+
+.input79_10_1:
+  call minimbt_read_int
+  slliw a1, s2, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+  addi a0, s2, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.input79_10_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.input79_10_2:
+  mv a0, zero
+  j .input79_10_3
+
+  .p2align 2
+  .text
+  .globl main75_3
+  .type main75_3, @function
+# leaf false
+main75_3:
+.main75_3_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  call minimbt_read_int
+  mv s0, a0
+  slliw a0, s0, 2
+  sub a0, s11, a0
+  andi s1, a0, -8
+  mv s11, s1
+  mv a1, s0
+  mv a0, s1
+  mv a2, zero
+  call memseti32
+  addi a0, s11, -24
+  andi a1, a0, -8
+  mv s11, a1
+  la a0, input79_10
+  sd a0, 0(a1)
+  sd s0, 8(a1)
+  sd s1, 16(a1)
+  mv s10, a1
+  ld a1, 0(a1)
+  mv a0, zero
+  jalr a1
+  addi a2, s0, -1
+  mv a0, s1
+  mv a1, zero
+  call quicksort59_2
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, output97_12
+  sd a1, 0(a0)
+  sd s0, 8(a0)
+  sd s1, 16(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  mv a0, zero
+  jalr a1
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_14
+  .type T$start_14, @function
+# leaf false
+T$start_14:
+.T$start_14_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main75_3
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl partition14_1
+  .type partition14_1, @function
+# leaf false
+partition14_1:
+.partition14_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv a0, a1
+  mv s1, a2
+  slliw a1, s1, 2
+  add a1, s0, a1
+  lw a1, 0(a1)
+  addi a2, a0, -1
+  addi a3, s11, -4
+  andi s2, a3, -8
+  mv s11, s2
+  sw a2, 0(s2)
+  addi a2, s11, -40
+  andi a2, a2, -8
+  mv s11, a2
+  la a3, l26_6
+  sd a3, 0(a2)
+  sd s1, 8(a2)
+  sd s0, 16(a2)
+  sd a1, 24(a2)
+  sd s2, 32(a2)
+  mv s10, a2
+  ld a1, 0(a2)
+  jalr a1
+  lw a0, 0(s2)
+  addi a0, a0, 1
+  sw a0, 0(s2)
+  lw a1, 0(s2)
+  mv a0, s0
+  mv a2, s1
+  call swap1_0
+  lw a0, 0(s2)
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl swap1_0
+  .type swap1_0, @function
+# leaf true
+swap1_0:
+.swap1_0_0:
+  slliw a3, a1, 2
+  add a3, a0, a3
+  lw a3, 0(a3)
+  slliw a4, a2, 2
+  add a4, a0, a4
+  lw a4, 0(a4)
+  slliw a1, a1, 2
+  add a1, a0, a1
+  sw a4, 0(a1)
+  slliw a1, a2, 2
+  add a0, a0, a1
+  sw a3, 0(a0)
+  mv a0, zero
+  ret
+
+  .p2align 2
+  .text
+  .globl l26_6
+  .type l26_6, @function
+# leaf false
+l26_6:
+.l26_6_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, s10
+  mv s1, a0
+  lw a0, 8(s0)
+  ld a1, 16(s0)
+  lw a2, 24(s0)
+  ld a3, 32(s0)
+  addi a0, a0, -1
+  blt a0, s1, .l26_6_2
+
+.l26_6_1:
+  slliw a0, s1, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  blt a2, a0, .l26_6_4
+
+.l26_6_3:
+  lw a0, 0(a3)
+  addi a0, a0, 1
+  sw a0, 0(a3)
+  lw a2, 0(a3)
+  mv a0, a1
+  mv a1, a2
+  mv a2, s1
+  call swap1_0
+
+.l26_6_5:
+  addi a0, s1, 1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+
+.l26_6_6:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.l26_6_2:
+  mv a0, zero
+  j .l26_6_6
+
+.l26_6_4:
+  mv a0, zero
+  j .l26_6_5
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_14
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

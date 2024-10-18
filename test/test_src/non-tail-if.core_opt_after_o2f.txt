@@ -1,0 +1,62 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main1_0 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = conv.d2i.rtz(1.23)
+    let %1: int32 = conv.d2i.rtz(4.56)
+    let %2: double = neg(7.89)
+    let %3: int32 = conv.d2i.rtz(%2)
+    let %4: bool = le(0, %3)
+    br %4 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(%0)
+  }
+  .bb #b2 () {
+    jump b3(%1)
+  }
+  .bb #b3 (int32) {
+    let %5: bool = le(%0, 0)
+    br %5 b4() b5()
+  }
+  .bb #b4 () {
+    jump b6(%1)
+  }
+  .bb #b5 () {
+    jump b6(%3)
+  }
+  .bb #b6 (int32) {
+    let %6: int32 = add($b3.0, $b6.0)
+    let %7: bool = le(0, %1)
+    br %7 b7() b8()
+  }
+  .bb #b7 () {
+    jump b9(%3)
+  }
+  .bb #b8 () {
+    jump b9(%0)
+  }
+  .bb #b9 (int32) {
+    let %8: int32 = add(%6, $b9.0)
+    let %9: unit = ext_call minimbt_print_int(%8)
+    return %9
+  }
+}
+.fn T$start_2 #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.thunk ::0 start

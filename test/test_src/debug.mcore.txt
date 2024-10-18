@@ -1,0 +1,134 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl g12_7
+  .type g12_7, @function
+# leaf true
+g12_7:
+.g12_7_0:
+  mv a1, s10
+  lw a0, 8(a1)
+  ret
+
+  .p2align 2
+  .text
+  .globl useless1_0
+  .type useless1_0, @function
+# leaf true
+useless1_0:
+.useless1_0_0:
+  li a0, 10
+  addi a0, a0, -1
+  ret
+
+  .p2align 2
+  .text
+  .globl main19_3
+  .type main19_3, @function
+# leaf true
+main19_3:
+.main19_3_0:
+  mv a0, zero
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_10
+  .type T$start_10, @function
+# leaf false
+T$start_10:
+.T$start_10_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main19_3
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl f9_2
+  .type f9_2, @function
+# leaf false
+f9_2:
+.f9_2_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a1, s11, -16
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, g12_7
+  sd a2, 0(a1)
+  sd a0, 8(a1)
+  li a0, 1
+  li a2, 1
+  bne a0, a2, .f9_2_2
+
+.f9_2_1:
+  li a0, 1
+  call f9_2
+
+.f9_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.f9_2_2:
+  mv s10, a1
+  ld a1, 0(a1)
+  li a0, 2
+  jalr a1
+  j .f9_2_3
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_10
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl dummy6_1
+  .type dummy6_1, @function
+# leaf true
+dummy6_1:
+.dummy6_1_0:
+  ret
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4
