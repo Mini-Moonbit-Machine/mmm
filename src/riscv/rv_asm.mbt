@@ -78,7 +78,7 @@ pub enum RvAsm {
   Nop
   LwSym(~rd : Reg, ~l : Label)
   LdSym(~rd : Reg, ~l : Label)
-  FldSym(~rd : FReg, ~l : Label)
+  FldSym(~rd : FReg, ~l : Label, ~rt : Reg)
   La(~rd : Reg, ~l : Label)
   Li(~rd : Reg, ~i : String)
   Neg(~rd : Reg, ~rs : Reg)
@@ -286,11 +286,13 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string(", ")
       logger.write_string(l._)
     }
-    FldSym(~rd, ~l) => {
+    FldSym(~rd, ~l, ~rt) => {
       logger.write_string("fld ")
       Show::output(rd, logger)
       logger.write_string(", ")
       logger.write_string(l._)
+      logger.write_string(", ")
+      Show::output(rt, logger)
     }
     La(~rd, ~l) => {
       logger.write_string("la ")

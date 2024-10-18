@@ -79,7 +79,7 @@
     (Nop)
     (LwSym (rd XReg) (l Label))
     (LdSym (rd XReg) (l Label))
-    (FldSym (rd FReg) (l Label))
+    (FldSym (rd FReg) (l Label) (rt XReg))
     (La (rd XReg) (l Label))
     (Li (rd XReg) (i String))
     (Neg (rd XReg) (rs XReg))
@@ -498,10 +498,10 @@
         (_ Unit (emit_risc_v (RvAsm.LdSym dst x))))
     dst))
 
-(decl rv_fldsym (Label) FReg)
-(rule (rv_fldsym x)
+(decl rv_fldsym (Label XReg) FReg)
+(rule (rv_fldsym x t)
   (let ((dst FReg (next_virtual_freg))
-        (_ Unit (emit_risc_v (RvAsm.FldSym dst x))))
+        (_ Unit (emit_risc_v (RvAsm.FldSym dst x t))))
     dst))
 
 (decl rv_la (Label) XReg)

@@ -569,10 +569,16 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
           xreg_to(
             @generated.constructor_rv_ldsym(self, self.ref_symbol(sym).name),
           )
-        (8, F) =>
+        (8, F) => {
+          let treg = @riscv.reg_swap[0]
           freg_to(
-            @generated.constructor_rv_fldsym(self, self.ref_symbol(sym).name),
+            @generated.constructor_rv_fldsym(
+              self,
+              self.ref_symbol(sym).name,
+              treg,
+            ),
           )
+        }
         _ => self.tracer.abort("Invalid type size")
       }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
@@ -1569,7 +1575,8 @@ fn subst_vreg_with_preg_or_spill(
       FnmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
     LdSym(~rd, ~l) => LdSym(rd=frx(rd), ~l)
     LwSym(~rd, ~l) => LwSym(rd=frx(rd), ~l)
-    FldSym(~rd, ~l) => FldSym(rd=frf(rd), ~l)
+    // TODO: rt need to be handled specially
+    FldSym(~rd, ~l, ~rt) => FldSym(rd=frf(rd), ~l, rt=fx(rt))
     La(~rd, ~l) => La(rd=frx(rd), ~l)
     Li(~rd, ~i) => Li(rd=frx(rd), ~i)
     Neg(~rd, ~rs) => Neg(rd=frx(rd), rs=fx(rs))

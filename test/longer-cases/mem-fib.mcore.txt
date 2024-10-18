@@ -1,0 +1,257 @@
+  .p2align 4
+  .bss
+  .type large_heap, @object
+large_heap:
+  .zero 1610612736
+large_heap_end:
+
+  .p2align 4
+  .bss
+  .type large_stack, @object
+large_stack:
+  .zero 268435456
+large_stack_end:
+
+__begin_text:
+  .p2align 2
+  .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_12
+  .type T$start_12, @function
+# leaf false
+T$start_12:
+.T$start_12_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main33_5
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$unmem_magic.10
+  .type T$unmem_magic.10, @function
+# leaf true
+T$unmem_magic.10:
+.T$unmem_magic.10_0:
+  li a0, -1919810
+  ret
+
+  .p2align 2
+  .text
+  .globl mem2_2
+  .type mem2_2, @function
+# leaf false
+mem2_2:
+.mem2_2_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, a0
+  mv a0, a1
+  lw a2, unmem_magic.1
+  slliw a1, a0, 2
+  sub a1, s11, a1
+  andi s1, a1, -8
+  mv s11, s1
+  mv a1, a0
+  mv a0, s1
+  call memseti32
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, memed8_7
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s0, 16(a0)
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main33_5
+  .type main33_5, @function
+# leaf false
+main33_5:
+.main33_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call minimbt_read_int
+  call fib27_4
+  call minimbt_print_int
+  li a0, 10
+  call minimbt_print_char
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl fib27_4
+  .type fib27_4, @function
+# leaf false
+fib27_4:
+.fib27_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, a0
+  addi a1, s0, 1
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a2, mem_fib15_3
+  sd a2, 0(a0)
+  call mem2_2
+  mv s10, a0
+  ld a1, 0(a0)
+  mv a0, s0
+  jalr a1
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$unmem_magic.10
+  la t5, unmem_magic.1
+  sw a0, 0(t5)
+  call T$start_12
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl memed8_7
+  .type memed8_7, @function
+# leaf false
+memed8_7:
+.memed8_7_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv a1, s10
+  mv s0, a0
+  ld s1, 8(a1)
+  ld a0, 16(a1)
+  slliw a2, s0, 2
+  add a2, s1, a2
+  lw a2, 0(a2)
+  lw a3, unmem_magic.1
+  bne a2, a3, .memed8_7_2
+
+.memed8_7_1:
+  mv s10, a0
+  ld a2, 0(a0)
+  mv a0, a1
+  mv a1, s0
+  jalr a2
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+
+.memed8_7_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.memed8_7_2:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  j .memed8_7_3
+
+  .p2align 2
+  .text
+  .globl mem_fib15_3
+  .type mem_fib15_3, @function
+# leaf false
+mem_fib15_3:
+.mem_fib15_3_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  li a0, 1
+  bge a0, s1, .mem_fib15_3_1
+
+.mem_fib15_3_2:
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv s2, a0
+  addi a0, s1, -2
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  add a0, s2, a0
+
+.mem_fib15_3_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.mem_fib15_3_1:
+  mv a0, s1
+  j .mem_fib15_3_3
+
+__end_text:
+  .p2align 2
+  .bss
+  .globl unmem_magic.1
+  .type unmem_magic.1, @object
+unmem_magic.1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl start
+  .type start, @object
+start:
+  .zero 4

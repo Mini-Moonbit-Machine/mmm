@@ -86,7 +86,7 @@ fn Returns::length[T, C : Context](self : Returns[T, C]) -> Int {
 
 let _MAX_ISLE_RETURNS = 64
 
-/// Internal type Args: defined at src/core/core.isle line 332.
+/// Internal type Args: defined at src/core/core.isle line 328.
 pub enum Args {
   Args2(~arg1 : @core.Value, ~arg2 : @core.Value)
   Args1(~arg1 : @core.Value)
@@ -196,20 +196,20 @@ pub fn constructor_arg2[C : Context](
   arg1 : @core.Value
 ) -> Args {
   let v2 = Args::Args2(arg1=arg0, arg2=arg1)
-  // Rule at src/core/core.isle line 339.
+  // Rule at src/core/core.isle line 335.
   return v2
 }
 
 // Generated as internal constructor for term arg1.
 pub fn constructor_arg1[C : Context](ctx : C, arg0 : @core.Value) -> Args {
   let v1 = Args::Args1(arg1=arg0)
-  // Rule at src/core/core.isle line 343.
+  // Rule at src/core/core.isle line 339.
   return v1
 }
 
 // Generated as internal constructor for term arg0.
 pub fn constructor_arg0[C : Context](ctx : C) -> Args {
-  // Rule at src/core/core.isle line 347.
+  // Rule at src/core/core.isle line 343.
   return Args::Args0
 }
 
@@ -1110,13 +1110,14 @@ pub fn constructor_rv_ldsym[C : Context](
 // Generated as internal constructor for term rv_fldsym.
 pub fn constructor_rv_fldsym[C : Context](
   ctx : C,
-  arg0 : @riscv.Label
+  arg0 : @riscv.Label,
+  arg1 : @riscv.Reg
 ) -> @riscv.FReg {
-  let v1 = C::next_virtual_freg(ctx)
-  let v2 = @riscv.RvAsm::FldSym(rd=v1, l=arg0)
-  let v3 = C::emit_risc_v(ctx, v2)
+  let v2 = C::next_virtual_freg(ctx)
+  let v3 = @riscv.RvAsm::FldSym(rd=v2, l=arg0, rt=arg1)
+  let v4 = C::emit_risc_v(ctx, v3)
   // Rule at src/riscv/riscv.isle line 501.
-  return v1
+  return v2
 }
 
 // Generated as internal constructor for term rv_la.
