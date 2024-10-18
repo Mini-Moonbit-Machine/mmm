@@ -571,22 +571,19 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
   sym : @core.SymbolRef
 ) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
-    Some(c) =>
+    Some(c) => {
+      let addr = @generated.constructor_rv_la(self, self.ref_symbol(sym).name)
+      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
+        base: addr,
+        offset: 0,
+      }
       match (ty.size(), c) {
-        (4, X) =>
-          xreg_to(
-            @generated.constructor_rv_lwsym(self, self.ref_symbol(sym).name),
-          )
-        (8, X) =>
-          xreg_to(
-            @generated.constructor_rv_ldsym(self, self.ref_symbol(sym).name),
-          )
-        (8, F) =>
-          freg_to(
-            @generated.constructor_rv_fldsym(self, self.ref_symbol(sym).name),
-          )
+        (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
+        (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
+        (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
         _ => abort("Invalid type size")
       }
+    }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
   }
 }
