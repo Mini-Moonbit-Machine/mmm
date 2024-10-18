@@ -3219,3 +3219,564 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("swap", Unit), args: [("arr", Array(Int)), ("i", Int), ("j", Int)], body: Let(("tmp", Var({val: Some(Int)})), Get(Var("arr"), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))}, LetRec({name: ("partition", Int), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Var("high")), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Prim(Var("low"), Int(1), Sub, kind=Some(Int))), LetRec({name: ("l", Var({val: Some(Unit)})), args: [("j", Var({val: Some(Int)}))], body: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0))))))))}, LetRec({name: ("quicksort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: If(LE(Var("low"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("pi", Var({val: Some(Int)})), App(Var("partition"), [Var("arr"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")]))), Unit)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))))}, App(Var("main"), [])))))
+// [Knf] build_knf: Let(("tmp", Var({val: Some(Int)})), Get(Var("arr"), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))
+// [Knf] build_knf: Get(Var("arr"), Var("i"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit))
+// [Knf] build_knf: Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j")))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Get(Var("arr"), Var("j"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)
+// [Knf] build_knf: Put(Var("arr"), Var("j"), Var("tmp"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Var("tmp")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("partition", Int), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Var("high")), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Prim(Var("low"), Int(1), Sub, kind=Some(Int))), LetRec({name: ("l", Var({val: Some(Unit)})), args: [("j", Var({val: Some(Int)}))], body: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0))))))))}, LetRec({name: ("quicksort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: If(LE(Var("low"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("pi", Var({val: Some(Int)})), App(Var("partition"), [Var("arr"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")]))), Unit)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))))}, App(Var("main"), []))))
+// [Knf] build_knf: Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Var("high")), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Prim(Var("low"), Int(1), Sub, kind=Some(Int))), LetRec({name: ("l", Var({val: Some(Unit)})), args: [("j", Var({val: Some(Int)}))], body: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0))))))))
+// [Knf] build_knf: Get(Var("arr"), Var("high"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Prim(Var("low"), Int(1), Sub, kind=Some(Int))), LetRec({name: ("l", Var({val: Some(Unit)})), args: [("j", Var({val: Some(Int)}))], body: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0)))))))
+// [Knf] build_knf: Array(Int(1), Prim(Var("low"), Int(1), Sub, kind=Some(Int)))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Prim(Var("low"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("l", Var({val: Some(Unit)})), args: [("j", Var({val: Some(Int)}))], body: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0))))))
+// [Knf] build_knf: If(LE(Var("j"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit), App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: If(LE(Get(Var("arr"), Var("j")), Var("pivot")), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])), Unit)
+// [Knf] build_knf: Get(Var("arr"), Var("j"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Var("pivot")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]))
+// [Knf] build_knf: Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int)))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("l"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("l")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("l"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0)))))
+// [Knf] build_knf: App(Var("l"), [Var("low")])
+// [Knf] build_knf: Var("l")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0))))
+// [Knf] build_knf: Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int)))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")]), Get(Var("i"), Int(0)))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("high")])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: LetRec({name: ("quicksort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: If(LE(Var("low"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("pi", Var({val: Some(Int)})), App(Var("partition"), [Var("arr"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")]))), Unit)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))))}, App(Var("main"), [])))
+// [Knf] build_knf: If(LE(Var("low"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("pi", Var({val: Some(Int)})), App(Var("partition"), [Var("arr"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")]))), Unit)
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("pi", Var({val: Some(Int)})), App(Var("partition"), [Var("arr"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")])))
+// [Knf] build_knf: App(Var("partition"), [Var("arr"), Var("low"), Var("high")])
+// [Knf] build_knf: Var("partition")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))]), App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")]))
+// [Knf] build_knf: App(Var("quicksort"), [Var("arr"), Var("low"), Prim(Var("pi"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("quicksort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Prim(Var("pi"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("pi")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("quicksort"), [Var("arr"), Prim(Var("pi"), Int(1), Add, kind=Some(Int)), Var("high")])
+// [Knf] build_knf: Var("quicksort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Prim(Var("pi"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("pi")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))))
+// [Knf] build_knf: App(Var("read_int"), [])
+// [Knf] build_knf: Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)]))))))
+// [Knf] build_knf: Array(Var("len"), Int(0))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: Put(Var("arr"), Var("i"), App(Var("read_int"), []))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: App(Var("read_int"), [])
+// [Knf] build_knf: App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("input")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)]))))
+// [Knf] build_knf: App(Var("input"), [Int(0)])
+// [Knf] build_knf: Var("input")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))]), LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)])))
+// [Knf] build_knf: App(Var("quicksort"), [Var("arr"), Int(0), Prim(Var("len"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("quicksort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("output", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("output"), [Int(0)]))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: App(Var("print_int"), [Get(Var("arr"), Var("i"))])
+// [Knf] build_knf: Get(Var("arr"), Var("i"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("print_endline"), [])
+// [Knf] build_knf: App(Var("output"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("output")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("output"), [Int(0)])
+// [Knf] build_knf: Var("output")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl memseti32
+// [Main]   .type memseti32, @function
+// [Main] memseti32:
+// [Main]   blez a1, .memseti32_b1
+// [Main]   slli a1, a1, 2
+// [Main]   add a1, a1, a0
+// [Main] .memseti32_b0:
+// [Main]   sw a2, 0(a0)
+// [Main]   addi a0, a0, 4
+// [Main]   bne a0, a1, .memseti32_b0
+// [Main] .memseti32_b1:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl output97_12
+// [Main]   .type output97_12, @function
+// [Main] # leaf false
+// [Main] output97_12:
+// [Main] .output97_12_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   lw a0, 8(s0)
+// [Main]   ld a1, 16(s0)
+// [Main]   addi a0, a0, -1
+// [Main]   blt a0, s1, .output97_12_2
+// [Main] 
+// [Main] .output97_12_1:
+// [Main]   slliw a0, s1, 2
+// [Main]   add a0, a1, a0
+// [Main]   lw a0, 0(a0)
+// [Main]   call minimbt_print_int
+// [Main]   call minimbt_print_endline
+// [Main]   addi a0, s1, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .output97_12_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .output97_12_2:
+// [Main]   mv a0, zero
+// [Main]   j .output97_12_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl quicksort59_2
+// [Main]   .type quicksort59_2, @function
+// [Main] # leaf false
+// [Main] quicksort59_2:
+// [Main] .quicksort59_2_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   mv s2, a0
+// [Main]   mv s0, a1
+// [Main]   mv s1, a2
+// [Main]   addi a0, s1, -1
+// [Main]   blt a0, s0, .quicksort59_2_2
+// [Main] 
+// [Main] .quicksort59_2_1:
+// [Main]   mv a0, s2
+// [Main]   mv a1, s0
+// [Main]   mv a2, s1
+// [Main]   call partition14_1
+// [Main]   mv s3, a0
+// [Main]   addi a2, s3, -1
+// [Main]   mv a0, s2
+// [Main]   mv a1, s0
+// [Main]   call quicksort59_2
+// [Main]   addi a1, s3, 1
+// [Main]   mv a0, s2
+// [Main]   mv a2, s1
+// [Main]   call quicksort59_2
+// [Main] 
+// [Main] .quicksort59_2_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .quicksort59_2_2:
+// [Main]   mv a0, zero
+// [Main]   j .quicksort59_2_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl input79_10
+// [Main]   .type input79_10, @function
+// [Main] # leaf false
+// [Main] input79_10:
+// [Main] .input79_10_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s2, a0
+// [Main]   lw a0, 8(s0)
+// [Main]   ld s1, 16(s0)
+// [Main]   addi a0, a0, -1
+// [Main]   blt a0, s2, .input79_10_2
+// [Main] 
+// [Main] .input79_10_1:
+// [Main]   call minimbt_read_int
+// [Main]   slliw a1, s2, 2
+// [Main]   add a1, s1, a1
+// [Main]   sw a0, 0(a1)
+// [Main]   addi a0, s2, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .input79_10_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .input79_10_2:
+// [Main]   mv a0, zero
+// [Main]   j .input79_10_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main75_3
+// [Main]   .type main75_3, @function
+// [Main] # leaf false
+// [Main] main75_3:
+// [Main] .main75_3_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   call minimbt_read_int
+// [Main]   mv s0, a0
+// [Main]   slliw a0, s0, 2
+// [Main]   sub a0, s11, a0
+// [Main]   andi s1, a0, -8
+// [Main]   mv s11, s1
+// [Main]   mv a1, s0
+// [Main]   mv a0, s1
+// [Main]   mv a2, zero
+// [Main]   call memseti32
+// [Main]   addi a0, s11, -24
+// [Main]   andi a1, a0, -8
+// [Main]   mv s11, a1
+// [Main]   la a0, input79_10
+// [Main]   sd a0, 0(a1)
+// [Main]   sd s0, 8(a1)
+// [Main]   sd s1, 16(a1)
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   mv a0, zero
+// [Main]   jalr a1
+// [Main]   addi a2, s0, -1
+// [Main]   mv a0, s1
+// [Main]   mv a1, zero
+// [Main]   call quicksort59_2
+// [Main]   addi a0, s11, -24
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, output97_12
+// [Main]   sd a1, 0(a0)
+// [Main]   sd s0, 8(a0)
+// [Main]   sd s1, 16(a0)
+// [Main]   mv s10, a0
+// [Main]   ld a1, 0(a0)
+// [Main]   mv a0, zero
+// [Main]   jalr a1
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_14
+// [Main]   .type T$start_14, @function
+// [Main] # leaf false
+// [Main] T$start_14:
+// [Main] .T$start_14_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main75_3
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl partition14_1
+// [Main]   .type partition14_1, @function
+// [Main] # leaf false
+// [Main] partition14_1:
+// [Main] .partition14_1_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv s0, a0
+// [Main]   mv a0, a1
+// [Main]   mv s1, a2
+// [Main]   slliw a1, s1, 2
+// [Main]   add a1, s0, a1
+// [Main]   lw a1, 0(a1)
+// [Main]   addi a2, a0, -1
+// [Main]   addi a3, s11, -4
+// [Main]   andi s2, a3, -8
+// [Main]   mv s11, s2
+// [Main]   sw a2, 0(s2)
+// [Main]   addi a2, s11, -40
+// [Main]   andi a2, a2, -8
+// [Main]   mv s11, a2
+// [Main]   la a3, l26_6
+// [Main]   sd a3, 0(a2)
+// [Main]   sd s1, 8(a2)
+// [Main]   sd s0, 16(a2)
+// [Main]   sd a1, 24(a2)
+// [Main]   sd s2, 32(a2)
+// [Main]   mv s10, a2
+// [Main]   ld a1, 0(a2)
+// [Main]   jalr a1
+// [Main]   lw a0, 0(s2)
+// [Main]   addi a0, a0, 1
+// [Main]   sw a0, 0(s2)
+// [Main]   lw a1, 0(s2)
+// [Main]   mv a0, s0
+// [Main]   mv a2, s1
+// [Main]   call swap1_0
+// [Main]   lw a0, 0(s2)
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl swap1_0
+// [Main]   .type swap1_0, @function
+// [Main] # leaf true
+// [Main] swap1_0:
+// [Main] .swap1_0_0:
+// [Main]   slliw a3, a1, 2
+// [Main]   add a3, a0, a3
+// [Main]   lw a3, 0(a3)
+// [Main]   slliw a4, a2, 2
+// [Main]   add a4, a0, a4
+// [Main]   lw a4, 0(a4)
+// [Main]   slliw a1, a1, 2
+// [Main]   add a1, a0, a1
+// [Main]   sw a4, 0(a1)
+// [Main]   slliw a1, a2, 2
+// [Main]   add a0, a0, a1
+// [Main]   sw a3, 0(a0)
+// [Main]   mv a0, zero
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl l26_6
+// [Main]   .type l26_6, @function
+// [Main] # leaf false
+// [Main] l26_6:
+// [Main] .l26_6_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   lw a0, 8(s0)
+// [Main]   ld a1, 16(s0)
+// [Main]   lw a2, 24(s0)
+// [Main]   ld a3, 32(s0)
+// [Main]   addi a0, a0, -1
+// [Main]   blt a0, s1, .l26_6_2
+// [Main] 
+// [Main] .l26_6_1:
+// [Main]   slliw a0, s1, 2
+// [Main]   add a0, a1, a0
+// [Main]   lw a0, 0(a0)
+// [Main]   blt a2, a0, .l26_6_4
+// [Main] 
+// [Main] .l26_6_3:
+// [Main]   lw a0, 0(a3)
+// [Main]   addi a0, a0, 1
+// [Main]   sw a0, 0(a3)
+// [Main]   lw a2, 0(a3)
+// [Main]   mv a0, a1
+// [Main]   mv a1, a2
+// [Main]   mv a2, s1
+// [Main]   call swap1_0
+// [Main] 
+// [Main] .l26_6_5:
+// [Main]   addi a0, s1, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .l26_6_6:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .l26_6_2:
+// [Main]   mv a0, zero
+// [Main]   j .l26_6_6
+// [Main] 
+// [Main] .l26_6_4:
+// [Main]   mv a0, zero
+// [Main]   j .l26_6_5
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_14
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

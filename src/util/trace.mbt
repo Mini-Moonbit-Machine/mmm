@@ -1,14 +1,10 @@
 typealias MutMap[T] = @hashmap.T[String, T]
 
-// enum Line {
-//   Print   // a print will be output to console directly or redirect into log
-//   Log     // a log will be output to log with a prefix // [TracerName]
-//   Record  // a record will be output to log with a prefix ///
-// }
-
 pub let tracer : Tracer = Tracer::new()
 
-pub let mt : SubTracer = tracer.new_subtracer("Main", false, false)
+pub let t : SubTracer = tracer.new_subtracer("Main", false, false)
+
+pub let output : SubTracer = tracer.new_subtracer("Output", true, true)
 
 pub struct SubTracer {
   name : String
@@ -32,6 +28,10 @@ pub fn SubTracer::set_redirect_to_log(
   redirect_to_log : Bool
 ) -> Unit {
   self.redirect_to_log = redirect_to_log
+}
+
+fn SubTracer::has_buffered_content(self : SubTracer) -> Bool {
+  self.print_buf.to_bytes().length() != 0
 }
 
 fn SubTracer::flush(self : SubTracer) -> Unit {
@@ -64,11 +64,7 @@ pub fn SubTracer::log[T : Show](self : SubTracer, msg : T) -> Unit {
   let s = "// [\{self.name}] \{Show::to_string(msg)}"
   match self.log_buf.get(self.name) {
     Some(buf) => buf.push(s)
-    None => {
-      let buf = []
-      buf.push(s)
-      self.log_buf.set(self.name, buf)
-    }
+    None => self.log_buf.set(self.name, [s])
   }
 }
 
@@ -124,7 +120,9 @@ pub fn Tracer::new_subtracer(
 
 pub fn Tracer::flush(self : Tracer) -> Unit {
   for subtracer in self.tracers {
-    subtracer.1.flush()
+    if subtracer.1.has_buffered_content() {
+      subtracer.1.flush()
+    }
   }
 }
 
@@ -133,11 +131,22 @@ pub fn Tracer::done(
   log : (String, String) -> Unit,
   record : (String, String) -> Unit
 ) -> Unit {
-  self.log_buf.each(
-    fn(name, buf) {
+  self.flush()
+  let log_buf = self.log_buf.to_array()
+  log_buf.sort_by_key(fn(x) { x.0 })
+  log_buf.each(
+    fn(pair) {
+      let (name, buf) = pair
       let s = buf.join("\n")
       log(name, s)
     },
   )
-  self.record_buf.each(fn(name, buf) { record(name, buf.to_string()) })
+  let record_buf = self.record_buf.to_array()
+  record_buf.sort_by_key(fn(x) { x.0 })
+  record_buf.each(
+    fn(pair) {
+      let (name, buf) = pair
+      record(name, buf.to_string())
+    },
+  )
 }

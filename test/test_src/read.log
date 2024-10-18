@@ -721,3 +721,133 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: LetRec({name: ("f", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=Some(Int))), App(Var("print_int"), [Var("x")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({name: ("f", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=Some(Int))), App(Var("print_int"), [Var("x")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))
+// [Knf] build_knf: Let(("x", Var({val: Some(Int)})), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=Some(Int))), App(Var("print_int"), [Var("x")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))
+// [Knf] build_knf: App(Var("read_int"), [])
+// [Knf] build_knf: If(Eq(Var("x"), Neg(Int(2147483648), kind=Some(Int))), App(Var("print_int"), [Var("x")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("x")]), App(Var("f"), [])))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Neg(Int(2147483648), kind=Some(Int))
+// [Knf] build_knf: App(Var("print_int"), [Var("x")])
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("x")]), App(Var("f"), []))
+// [Knf] build_knf: App(Var("print_int"), [Var("x")])
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: App(Var("f"), [])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: App(Var("f"), [])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_4
+// [Main]   .type T$start_4, @function
+// [Main] # leaf false
+// [Main] T$start_4:
+// [Main] .T$start_4_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main1_0
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl f2_2
+// [Main]   .type f2_2, @function
+// [Main] # leaf false
+// [Main] f2_2:
+// [Main] .f2_2_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv s0, s10
+// [Main]   call minimbt_read_int
+// [Main]   li a1, -2147483648
+// [Main]   beq a0, a1, .f2_2_1
+// [Main] 
+// [Main] .f2_2_2:
+// [Main]   call minimbt_print_int
+// [Main]   mv s10, s0
+// [Main]   ld a0, 0(s0)
+// [Main]   jalr a0
+// [Main] 
+// [Main] .f2_2_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .f2_2_1:
+// [Main]   call minimbt_print_int
+// [Main]   j .f2_2_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_4
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main1_0
+// [Main]   .type main1_0, @function
+// [Main] # leaf false
+// [Main] main1_0:
+// [Main] .main1_0_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a0, s11, -8
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, f2_2
+// [Main]   sd a1, 0(a0)
+// [Main]   mv s10, a0
+// [Main]   ld a0, 0(a0)
+// [Main]   jalr a0
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

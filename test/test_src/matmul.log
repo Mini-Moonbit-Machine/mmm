@@ -4436,3 +4436,748 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("matmul", Unit), args: [("l", Int), ("m", Int), ("n", Int), ("a", Array(Array(Double))), ("b", Array(Array(Double))), ("c", Array(Array(Double)))], body: LetRec({name: ("loop1", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), LetRec({name: ("loop2", Unit), args: [("j", Int)], body: If(LE(Int(0), Var("j")), LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))]), App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))]))), Unit)}, App(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int))]))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("dummy", Var({val: Some(Array(Double))})), Array(Int(0), Double(0)), LetRec({name: ("gen_arr", Array(Array(Double))), args: [("m", Int), ("n", Int)], body: Let(("mat", Var({val: Some(Array(Array(Double)))})), Array(Var("m"), Var("dummy")), LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))))}, Let(("a", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(3)]), Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))))))))}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({name: ("loop1", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), LetRec({name: ("loop2", Unit), args: [("j", Int)], body: If(LE(Int(0), Var("j")), LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))]), App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))]))), Unit)}, App(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: If(LE(Int(0), Var("i")), LetRec({name: ("loop2", Unit), args: [("j", Int)], body: If(LE(Int(0), Var("j")), LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))]), App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: LetRec({name: ("loop2", Unit), args: [("j", Int)], body: If(LE(Int(0), Var("j")), LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))]), App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])))
+// [Knf] build_knf: If(LE(Int(0), Var("j")), LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: LetRec({name: ("loop3", Unit), args: [("k", Int)], body: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])))
+// [Knf] build_knf: If(LE(Int(0), Var("k")), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("k")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))), App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: Put(Get(Var("c"), Var("i")), Var("j"), Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double)))
+// [Knf] build_knf: Get(Var("c"), Var("i"))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))
+// [Knf] build_knf: Get(Get(Var("c"), Var("i")), Var("j"))
+// [Knf] build_knf: Get(Var("c"), Var("i"))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double))
+// [Knf] build_knf: Get(Get(Var("a"), Var("i")), Var("k"))
+// [Knf] build_knf: Get(Var("a"), Var("i"))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Var("k")
+// [Knf] build_knf: Get(Get(Var("b"), Var("k")), Var("j"))
+// [Knf] build_knf: Get(Var("b"), Var("k"))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Var("k")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: App(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop3")
+// [Knf] build_knf: Prim(Var("k"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("k")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop3")
+// [Knf] build_knf: Prim(Var("m"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("m")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop2")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))]), App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop2")
+// [Knf] build_knf: Prim(Var("n"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("n")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop1")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("loop1")
+// [Knf] build_knf: Prim(Var("l"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("l")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("dummy", Var({val: Some(Array(Double))})), Array(Int(0), Double(0)), LetRec({name: ("gen_arr", Array(Array(Double))), args: [("m", Int), ("n", Int)], body: Let(("mat", Var({val: Some(Array(Array(Double)))})), Array(Var("m"), Var("dummy")), LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))))}, Let(("a", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(3)]), Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))))))))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("dummy", Var({val: Some(Array(Double))})), Array(Int(0), Double(0)), LetRec({name: ("gen_arr", Array(Array(Double))), args: [("m", Int), ("n", Int)], body: Let(("mat", Var({val: Some(Array(Array(Double)))})), Array(Var("m"), Var("dummy")), LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))))}, Let(("a", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(3)]), Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))))))))
+// [Knf] build_knf: Array(Int(0), Double(0))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(0)
+// [Knf] build_knf: LetRec({name: ("gen_arr", Array(Array(Double))), args: [("m", Int), ("n", Int)], body: Let(("mat", Var({val: Some(Array(Array(Double)))})), Array(Var("m"), Var("dummy")), LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))))}, Let(("a", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(3)]), Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))))))))))))
+// [Knf] build_knf: Let(("mat", Var({val: Some(Array(Array(Double)))})), Array(Var("m"), Var("dummy")), LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))))
+// [Knf] build_knf: Array(Var("m"), Var("dummy"))
+// [Knf] build_knf: Var("m")
+// [Knf] build_knf: Var("dummy")
+// [Knf] build_knf: LetRec({name: ("init_arr", Unit), args: [("i", Int)], body: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat")))
+// [Knf] build_knf: If(LE(Int(0), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("mat"), Var("i"), Array(Var("n"), Double(0))), App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: Put(Var("mat"), Var("i"), Array(Var("n"), Double(0)))
+// [Knf] build_knf: Var("mat")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Array(Var("n"), Double(0))
+// [Knf] build_knf: Var("n")
+// [Knf] build_knf: Double(0)
+// [Knf] build_knf: App(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("init_arr")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))]), Var("mat"))
+// [Knf] build_knf: App(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("init_arr")
+// [Knf] build_knf: Prim(Var("m"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("m")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("mat")
+// [Knf] build_knf: Let(("a", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(3)]), Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))))))
+// [Knf] build_knf: App(Var("gen_arr"), [Int(2), Int(3)])
+// [Knf] build_knf: Var("gen_arr")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Let(("b", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(3), Int(2)]), Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))))))))))
+// [Knf] build_knf: App(Var("gen_arr"), [Int(3), Int(2)])
+// [Knf] build_knf: Var("gen_arr")
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Let(("c", Var({val: Some(Array(Array(Double)))})), App(Var("gen_arr"), [Int(2), Int(2)]), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))))
+// [Knf] build_knf: App(Var("gen_arr"), [Int(2), Int(2)])
+// [Knf] build_knf: Var("gen_arr")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(0), Double(1)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(0)), Int(0), Double(1))
+// [Knf] build_knf: Get(Var("a"), Int(0))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(1), Double(2)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(0)), Int(1), Double(2))
+// [Knf] build_knf: Get(Var("a"), Int(0))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(2)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(0)), Int(2), Double(3)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(0)), Int(2), Double(3))
+// [Knf] build_knf: Get(Var("a"), Int(0))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Double(3)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(0), Double(4)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(1)), Int(0), Double(4))
+// [Knf] build_knf: Get(Var("a"), Int(1))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(4)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(1), Double(5)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(1)), Int(1), Double(5))
+// [Knf] build_knf: Get(Var("a"), Int(1))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(5)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("a"), Int(1)), Int(2), Double(6)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))))
+// [Knf] build_knf: Put(Get(Var("a"), Int(1)), Int(2), Double(6))
+// [Knf] build_knf: Get(Var("a"), Int(1))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Double(6)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(0), Double(7)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(0)), Int(0), Double(7))
+// [Knf] build_knf: Get(Var("b"), Int(0))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(7)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(0)), Int(1), Double(8)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(0)), Int(1), Double(8))
+// [Knf] build_knf: Get(Var("b"), Int(0))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(8)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(0), Double(9)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(1)), Int(0), Double(9))
+// [Knf] build_knf: Get(Var("b"), Int(1))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(9)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(1)), Int(1), Double(10)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(1)), Int(1), Double(10))
+// [Knf] build_knf: Get(Var("b"), Int(1))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(10)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(0), Double(11)), Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(2)), Int(0), Double(11))
+// [Knf] build_knf: Get(Var("b"), Int(2))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(11)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Get(Var("b"), Int(2)), Int(1), Double(12)), Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))))
+// [Knf] build_knf: Put(Get(Var("b"), Int(2)), Int(1), Double(12))
+// [Knf] build_knf: Get(Var("b"), Int(2))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(12)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")]), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))))
+// [Knf] build_knf: App(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c")])
+// [Knf] build_knf: Var("matmul")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])])
+// [Knf] build_knf: App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))])
+// [Knf] build_knf: Get(Get(Var("c"), Int(0)), Int(0))
+// [Knf] build_knf: Get(Var("c"), Int(0))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))))
+// [Knf] build_knf: App(Var("print_endline"), [])
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])])
+// [Knf] build_knf: App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))])
+// [Knf] build_knf: Get(Get(Var("c"), Int(0)), Int(1))
+// [Knf] build_knf: Get(Var("c"), Int(0))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))))
+// [Knf] build_knf: App(Var("print_endline"), [])
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])])
+// [Knf] build_knf: App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))])
+// [Knf] build_knf: Get(Get(Var("c"), Int(1)), Int(0))
+// [Knf] build_knf: Get(Var("c"), Int(1))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit))
+// [Knf] build_knf: App(Var("print_endline"), [])
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])]), Unit)
+// [Knf] build_knf: App(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])])
+// [Knf] build_knf: App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))])
+// [Knf] build_knf: Get(Get(Var("c"), Int(1)), Int(1))
+// [Knf] build_knf: Get(Var("c"), Int(1))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl memseti64
+// [Main]   .type memseti64, @function
+// [Main] memseti64:
+// [Main]   blez a1, .memseti64_b1
+// [Main]   slli a1, a1, 2
+// [Main]   add a1, a1, a0
+// [Main] .memseti64_b0:
+// [Main]   sd a2, 0(a0)
+// [Main]   addi a0, a0, 4
+// [Main]   bne a0, a1, .memseti64_b0
+// [Main] .memseti64_b1:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl memsetf64
+// [Main]   .type memsetf64, @function
+// [Main] memsetf64:
+// [Main]   blez a1, .memsetf64_b1
+// [Main]   slli a1, a1, 3
+// [Main]   add a1, a1, a0
+// [Main] .memsetf64_b0:
+// [Main]   fsd fa0, 0(a0)
+// [Main]   addi a0, a0, 8
+// [Main]   bne a0, a1, .memsetf64_b0
+// [Main] .memsetf64_b1:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl matmul1_0
+// [Main]   .type matmul1_0, @function
+// [Main] # leaf false
+// [Main] matmul1_0:
+// [Main] .matmul1_0_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a6, s11, -48
+// [Main]   andi a6, a6, -8
+// [Main]   mv s11, a6
+// [Main]   la a7, loop114_3
+// [Main]   sd a7, 0(a6)
+// [Main]   sd a5, 8(a6)
+// [Main]   sd a3, 16(a6)
+// [Main]   sd a4, 24(a6)
+// [Main]   sd a1, 32(a6)
+// [Main]   sd a2, 40(a6)
+// [Main]   addi a0, a0, -1
+// [Main]   mv s10, a6
+// [Main]   ld a1, 0(a6)
+// [Main]   jalr a1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl init_arr63_12
+// [Main]   .type init_arr63_12, @function
+// [Main] # leaf false
+// [Main] init_arr63_12:
+// [Main] .init_arr63_12_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s2, a0
+// [Main]   lw a1, 8(s0)
+// [Main]   ld s1, 16(s0)
+// [Main]   blt s2, zero, .init_arr63_12_2
+// [Main] 
+// [Main] .init_arr63_12_1:
+// [Main]   slliw a0, a1, 3
+// [Main]   sub a0, s11, a0
+// [Main]   andi s3, a0, -8
+// [Main]   mv s11, s3
+// [Main]   fmv.d.x fa0, zero
+// [Main]   mv a0, s3
+// [Main]   call memsetf64
+// [Main]   slliw a0, s2, 3
+// [Main]   add a0, s1, a0
+// [Main]   sd s3, 0(a0)
+// [Main]   addi a0, s2, -1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .init_arr63_12_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .init_arr63_12_2:
+// [Main]   mv a0, zero
+// [Main]   j .init_arr63_12_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl loop218_5
+// [Main]   .type loop218_5, @function
+// [Main] # leaf false
+// [Main] loop218_5:
+// [Main] .loop218_5_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   ld a1, 8(s0)
+// [Main]   lw a4, 16(s0)
+// [Main]   ld a2, 24(s0)
+// [Main]   ld a5, 32(s0)
+// [Main]   lw a3, 40(s0)
+// [Main]   blt s1, zero, .loop218_5_2
+// [Main] 
+// [Main] .loop218_5_1:
+// [Main]   addi a0, s11, -48
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a6, loop322_7
+// [Main]   sd a6, 0(a0)
+// [Main]   sd a1, 8(a0)
+// [Main]   sd a4, 16(a0)
+// [Main]   sd s1, 24(a0)
+// [Main]   sd a2, 32(a0)
+// [Main]   sd a5, 40(a0)
+// [Main]   addi a1, a3, -1
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, a1
+// [Main]   jalr a2
+// [Main]   addi a0, s1, -1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .loop218_5_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .loop218_5_2:
+// [Main]   mv a0, zero
+// [Main]   j .loop218_5_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl loop322_7
+// [Main]   .type loop322_7, @function
+// [Main] # leaf false
+// [Main] loop322_7:
+// [Main] .loop322_7_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   mv a4, s10
+// [Main]   mv a7, a0
+// [Main]   ld a1, 8(a4)
+// [Main]   lw a5, 16(a4)
+// [Main]   lw a2, 24(a4)
+// [Main]   ld a6, 32(a4)
+// [Main]   ld a3, 40(a4)
+// [Main]   blt a7, zero, .loop322_7_2
+// [Main] 
+// [Main] .loop322_7_1:
+// [Main]   slliw a0, a5, 3
+// [Main]   add a0, a1, a0
+// [Main]   ld a0, 0(a0)
+// [Main]   slliw t0, a5, 3
+// [Main]   add a1, a1, t0
+// [Main]   ld a1, 0(a1)
+// [Main]   slliw t0, a2, 3
+// [Main]   add a1, a1, t0
+// [Main]   fld fa0, 0(a1)
+// [Main]   slliw a1, a5, 3
+// [Main]   add a1, a6, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   slliw a5, a7, 3
+// [Main]   add a1, a1, a5
+// [Main]   fld fa1, 0(a1)
+// [Main]   slliw a1, a7, 3
+// [Main]   add a1, a3, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   slliw a3, a2, 3
+// [Main]   add a1, a1, a3
+// [Main]   fld fa2, 0(a1)
+// [Main]   fmadd.d fa0, fa1, fa2, fa0
+// [Main]   slliw a1, a2, 3
+// [Main]   add a0, a0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   addi a0, a7, -1
+// [Main]   mv s10, a4
+// [Main]   ld a1, 0(a4)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .loop322_7_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .loop322_7_2:
+// [Main]   mv a0, zero
+// [Main]   j .loop322_7_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main53_1
+// [Main]   .type main53_1, @function
+// [Main] # leaf false
+// [Main] main53_1:
+// [Main] .main53_1_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   addi a0, s11, 0
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   fmv.d.x fa0, zero
+// [Main]   addi a1, s11, -16
+// [Main]   andi s0, a1, -8
+// [Main]   mv s11, s0
+// [Main]   la a1, gen_arr57_10
+// [Main]   sd a1, 0(s0)
+// [Main]   sd a0, 8(s0)
+// [Main]   mv s10, s0
+// [Main]   ld a2, 0(s0)
+// [Main]   li a0, 2
+// [Main]   li a1, 3
+// [Main]   jalr a2
+// [Main]   mv s1, a0
+// [Main]   mv s10, s0
+// [Main]   ld a2, 0(s0)
+// [Main]   li a0, 3
+// [Main]   li a1, 2
+// [Main]   jalr a2
+// [Main]   mv s2, a0
+// [Main]   mv s10, s0
+// [Main]   ld a2, 0(s0)
+// [Main]   li a0, 2
+// [Main]   li a1, 2
+// [Main]   jalr a2
+// [Main]   mv s0, a0
+// [Main]   ld a0, 0(s1)
+// [Main]   li a1, 4607182418800017408
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   ld a0, 0(s1)
+// [Main]   li a1, 4611686018427387904
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 8(a0)
+// [Main]   ld a0, 0(s1)
+// [Main]   li a1, 4613937818241073152
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 16(a0)
+// [Main]   ld a0, 8(s1)
+// [Main]   li a1, 4616189618054758400
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   ld a0, 8(s1)
+// [Main]   li a1, 4617315517961601024
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 8(a0)
+// [Main]   ld a0, 8(s1)
+// [Main]   li a1, 4618441417868443648
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 16(a0)
+// [Main]   ld a0, 0(s2)
+// [Main]   li a1, 4619567317775286272
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   ld a0, 0(s2)
+// [Main]   li a1, 4620693217682128896
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 8(a0)
+// [Main]   ld a0, 8(s2)
+// [Main]   li a1, 4621256167635550208
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   ld a0, 8(s2)
+// [Main]   li a1, 4621819117588971520
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 8(a0)
+// [Main]   ld a0, 16(s2)
+// [Main]   li a1, 4622382067542392832
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   ld a0, 16(s2)
+// [Main]   li a1, 4622945017495814144
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 8(a0)
+// [Main]   li a0, 2
+// [Main]   li a1, 3
+// [Main]   li a2, 2
+// [Main]   mv a3, s1
+// [Main]   mv a4, s2
+// [Main]   mv a5, s0
+// [Main]   call matmul1_0
+// [Main]   ld a0, 0(s0)
+// [Main]   fld fa0, 0(a0)
+// [Main]   fcvt.w.d a0, fa0, rtz
+// [Main]   call minimbt_print_int
+// [Main]   call minimbt_print_endline
+// [Main]   ld a0, 0(s0)
+// [Main]   fld fa0, 8(a0)
+// [Main]   fcvt.w.d a0, fa0, rtz
+// [Main]   call minimbt_print_int
+// [Main]   call minimbt_print_endline
+// [Main]   ld a0, 8(s0)
+// [Main]   fld fa0, 0(a0)
+// [Main]   fcvt.w.d a0, fa0, rtz
+// [Main]   call minimbt_print_int
+// [Main]   call minimbt_print_endline
+// [Main]   ld a0, 8(s0)
+// [Main]   fld fa0, 8(a0)
+// [Main]   fcvt.w.d a0, fa0, rtz
+// [Main]   call minimbt_print_int
+// [Main]   mv a0, zero
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl loop114_3
+// [Main]   .type loop114_3, @function
+// [Main] # leaf false
+// [Main] loop114_3:
+// [Main] .loop114_3_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   ld a0, 8(s0)
+// [Main]   ld a2, 16(s0)
+// [Main]   ld a3, 24(s0)
+// [Main]   lw a4, 32(s0)
+// [Main]   lw a5, 40(s0)
+// [Main]   blt s1, zero, .loop114_3_2
+// [Main] 
+// [Main] .loop114_3_1:
+// [Main]   addi a1, s11, -48
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a6, loop218_5
+// [Main]   sd a6, 0(a1)
+// [Main]   sd a0, 8(a1)
+// [Main]   sd s1, 16(a1)
+// [Main]   sd a2, 24(a1)
+// [Main]   sd a3, 32(a1)
+// [Main]   sd a4, 40(a1)
+// [Main]   addi a0, a5, -1
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   jalr a1
+// [Main]   addi a0, s1, -1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .loop114_3_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .loop114_3_2:
+// [Main]   mv a0, zero
+// [Main]   j .loop114_3_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_14
+// [Main]   .type T$start_14, @function
+// [Main] # leaf false
+// [Main] T$start_14:
+// [Main] .T$start_14_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main53_1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl gen_arr57_10
+// [Main]   .type gen_arr57_10, @function
+// [Main] # leaf false
+// [Main] gen_arr57_10:
+// [Main] .gen_arr57_10_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv a2, s10
+// [Main]   mv s0, a0
+// [Main]   mv s1, a1
+// [Main]   ld a2, 8(a2)
+// [Main]   slliw a0, s0, 3
+// [Main]   sub a0, s11, a0
+// [Main]   andi s2, a0, -8
+// [Main]   mv s11, s2
+// [Main]   mv a1, s0
+// [Main]   mv a0, s2
+// [Main]   call memseti64
+// [Main]   addi a0, s11, -24
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, init_arr63_12
+// [Main]   sd a1, 0(a0)
+// [Main]   sd s1, 8(a0)
+// [Main]   sd s2, 16(a0)
+// [Main]   addi a1, s0, -1
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, a1
+// [Main]   jalr a2
+// [Main]   mv a0, s2
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_14
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

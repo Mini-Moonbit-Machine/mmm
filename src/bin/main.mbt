@@ -42,7 +42,9 @@ fn Stages::next(self : Stages) -> Stages {
 
 let tracer : @util.Tracer = @util.tracer
 
-let mt : @util.SubTracer = @util.mt
+let mt : @util.SubTracer = @util.t
+
+let ot : @util.SubTracer = @util.output
 
 let opts : Options = Options::new()
 
@@ -335,9 +337,9 @@ fn main {
         "End stage",
       ),
       (
-        "--output-to-console",
-        "-otc",
-        @ArgParser.Unit(fn() { opts.output_to_console = true }),
+        "--no-output-to-console",
+        "-notc",
+        @ArgParser.Unit(fn() { opts.output_to_console = false }),
         "",
       ),
       (
@@ -394,12 +396,8 @@ fn main {
     "",
     argv,
   )
-  if opts.output_to_console {
-    mt.set_output_to_console(true)
-  }
-  if opts.redirect_to_log {
-    mt.set_redirect_to_log(true)
-  }
+  mt.set_output_to_console(opts.output_to_console)
+  mt.set_redirect_to_log(opts.redirect_to_log)
   // Configure pipeline
   if opts.knf_interpreter {
     opts.end_stage = Stages::Knf
@@ -485,19 +483,23 @@ fn main {
     }
   } else {
     let out_string = status.output(opts.json)
-    if opts.out_file == "-" {
-      mt.println(out_string)
-    } else {
+    mt.println(out_string)
+    if opts.out_file != "-" {
       @fs.write_to_string(opts.out_file, out_string)
     }
   }
   let file_name = opts.file.unwrap().split(".").collect()
   let file_name = file_name[0:file_name.length() - 1]
   let file_name = file_name.iter().collect().join("")
+  let log_buf = Buffer::new()
   tracer.done(
-    fn(_name, log) { @fs.write_to_string("\{file_name}.log", log) },
+    fn(_name, log) {
+      log_buf.write_string(log)
+      log_buf.write_string("\n")
+    },
     fn(name, record) { @fs.write_to_string("\{file_name}.\{name}.txt", record) },
   )
+  @fs.write_to_string("\{file_name}.log", log_buf.to_string())
 }
 
 fn add_interpreter_fns(interpreter : @knf_eval.KnfInterpreter) -> Unit {
@@ -505,7 +507,7 @@ fn add_interpreter_fns(interpreter : @knf_eval.KnfInterpreter) -> Unit {
     "minimbt_print_int",
     fn(args) {
       match args[0] {
-        Int(i) => mt.print(i)
+        Int(i) => ot.print(i)
         _ => mt.abort("print_int expects Int")
       }
       Unit
@@ -514,14 +516,14 @@ fn add_interpreter_fns(interpreter : @knf_eval.KnfInterpreter) -> Unit {
   interpreter.add_extern_fn(
     "minimbt_print_endline",
     fn(_args) {
-      mt.print("\n")
+      ot.print("\n")
       Unit
     },
   )
   let create_array = fn(args : Array[@knf_eval.Value]) {
     match args[0] {
       Int(n) => @knf_eval.Value::Array(Array::make(n, args[1]))
-      _ => mt.abort("create_array expects Int")
+      _ => ot.abort("create_array expects Int")
     }
   }
   interpreter.add_extern_fn("minimbt_create_array", create_array)
@@ -599,7 +601,7 @@ fn add_closure_interpreter_fns(
     "minimbt_print_int",
     fn(args) {
       match args[0] {
-        Int(i) => mt.print(i)
+        Int(i) => ot.print(i)
         _ => mt.abort("print_int expects Int")
       }
       Unit
@@ -608,7 +610,7 @@ fn add_closure_interpreter_fns(
   interpreter.add_extern_fn(
     "minimbt_print_endline",
     fn(_args) {
-      mt.print("\n")
+      ot.print("\n")
       Unit
     },
   )

@@ -1223,3 +1223,239 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("sum_prefix", Array(Int)), args: [("arr", Array(Int)), ("len", Int)], body: Let(("res", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("sum_nested", Unit), args: [("acc", Int), ("x", Int)], body: If(LE(Var("x"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("s", Var({val: Some(Int)})), Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("sum_nested"), [Int(0), Int(0)]), Var("res"))))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("arr", Var({val: Some(Array(Int))})), Array(Int(10), Int(4)), App(Var("print_int"), [Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0))]))}, App(Var("main"), [])))
+// [Knf] build_knf: Let(("res", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("sum_nested", Unit), args: [("acc", Int), ("x", Int)], body: If(LE(Var("x"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("s", Var({val: Some(Int)})), Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("sum_nested"), [Int(0), Int(0)]), Var("res"))))
+// [Knf] build_knf: Array(Var("len"), Int(0))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: LetRec({name: ("sum_nested", Unit), args: [("acc", Int), ("x", Int)], body: If(LE(Var("x"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("s", Var({val: Some(Int)})), Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]))), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("sum_nested"), [Int(0), Int(0)]), Var("res")))
+// [Knf] build_knf: If(LE(Var("x"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("s", Var({val: Some(Int)})), Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("s", Var({val: Some(Int)})), Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: Prim(Var("acc"), Get(Var("arr"), Var("x")), Add, kind=Some(Int))
+// [Knf] build_knf: Var("acc")
+// [Knf] build_knf: Get(Var("arr"), Var("x"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("res"), Var("x"), Var("s")), App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: Put(Var("res"), Var("x"), Var("s"))
+// [Knf] build_knf: Var("res")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("s")
+// [Knf] build_knf: App(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("sum_nested")
+// [Knf] build_knf: Var("s")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sum_nested"), [Int(0), Int(0)]), Var("res"))
+// [Knf] build_knf: App(Var("sum_nested"), [Int(0), Int(0)])
+// [Knf] build_knf: Var("sum_nested")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("res")
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("arr", Var({val: Some(Array(Int))})), Array(Int(10), Int(4)), App(Var("print_int"), [Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0))]))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("arr", Var({val: Some(Array(Int))})), Array(Int(10), Int(4)), App(Var("print_int"), [Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0))]))
+// [Knf] build_knf: Array(Int(10), Int(4))
+// [Knf] build_knf: Int(10)
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: App(Var("print_int"), [Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0))])
+// [Knf] build_knf: Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0))
+// [Knf] build_knf: App(Var("sum_prefix"), [Var("arr"), Int(10)])
+// [Knf] build_knf: Var("sum_prefix")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(10)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl memseti32
+// [Main]   .type memseti32, @function
+// [Main] memseti32:
+// [Main]   blez a1, .memseti32_b1
+// [Main]   slli a1, a1, 2
+// [Main]   add a1, a1, a0
+// [Main] .memseti32_b0:
+// [Main]   sw a2, 0(a0)
+// [Main]   addi a0, a0, 4
+// [Main]   bne a0, a1, .memseti32_b0
+// [Main] .memseti32_b1:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_6
+// [Main]   .type T$start_6, @function
+// [Main] # leaf false
+// [Main] T$start_6:
+// [Main] .T$start_6_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main25_1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sum_nested8_3
+// [Main]   .type sum_nested8_3, @function
+// [Main] # leaf false
+// [Main] sum_nested8_3:
+// [Main] .sum_nested8_3_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   mv a2, s10
+// [Main]   lw a3, 8(a2)
+// [Main]   ld a4, 16(a2)
+// [Main]   ld a5, 24(a2)
+// [Main]   addi a3, a3, -1
+// [Main]   blt a3, a1, .sum_nested8_3_2
+// [Main] 
+// [Main] .sum_nested8_3_1:
+// [Main]   slliw a3, a1, 2
+// [Main]   add a3, a4, a3
+// [Main]   lw a3, 0(a3)
+// [Main]   add a0, a0, a3
+// [Main]   slliw a3, a1, 2
+// [Main]   add a3, a5, a3
+// [Main]   sw a0, 0(a3)
+// [Main]   addi a1, a1, 1
+// [Main]   mv s10, a2
+// [Main]   ld a2, 0(a2)
+// [Main]   jalr a2
+// [Main] 
+// [Main] .sum_nested8_3_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .sum_nested8_3_2:
+// [Main]   mv a0, zero
+// [Main]   j .sum_nested8_3_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sum_prefix1_0
+// [Main]   .type sum_prefix1_0, @function
+// [Main] # leaf false
+// [Main] sum_prefix1_0:
+// [Main] .sum_prefix1_0_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv s0, a0
+// [Main]   mv s1, a1
+// [Main]   slliw a0, s1, 2
+// [Main]   sub a0, s11, a0
+// [Main]   andi s2, a0, -8
+// [Main]   mv s11, s2
+// [Main]   mv a1, s1
+// [Main]   mv a0, s2
+// [Main]   mv a2, zero
+// [Main]   call memseti32
+// [Main]   addi a0, s11, -32
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, sum_nested8_3
+// [Main]   sd a1, 0(a0)
+// [Main]   sd s1, 8(a0)
+// [Main]   sd s0, 16(a0)
+// [Main]   sd s2, 24(a0)
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, zero
+// [Main]   mv a1, zero
+// [Main]   jalr a2
+// [Main]   mv a0, s2
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main25_1
+// [Main]   .type main25_1, @function
+// [Main] # leaf false
+// [Main] main25_1:
+// [Main] .main25_1_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a0, s11, -40
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   li a1, 4
+// [Main]   sw a1, 0(a0)
+// [Main]   sw a1, 4(a0)
+// [Main]   sw a1, 8(a0)
+// [Main]   sw a1, 12(a0)
+// [Main]   sw a1, 16(a0)
+// [Main]   sw a1, 20(a0)
+// [Main]   sw a1, 24(a0)
+// [Main]   sw a1, 28(a0)
+// [Main]   sw a1, 32(a0)
+// [Main]   sw a1, 36(a0)
+// [Main]   li a1, 10
+// [Main]   call sum_prefix1_0
+// [Main]   lw a0, 0(a0)
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_6
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

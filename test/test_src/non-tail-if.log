@@ -533,3 +533,150 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("truncate"), [Double(1.23)]), Let(("y", Var({val: Some(Int)})), App(Var("truncate"), [Double(4.56)]), Let(("z", Var({val: Some(Int)})), App(Var("truncate"), [Neg(Double(7.89), kind=Some(Double))]), App(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))]))))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("x", Var({val: Some(Int)})), App(Var("truncate"), [Double(1.23)]), Let(("y", Var({val: Some(Int)})), App(Var("truncate"), [Double(4.56)]), Let(("z", Var({val: Some(Int)})), App(Var("truncate"), [Neg(Double(7.89), kind=Some(Double))]), App(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))]))))
+// [Knf] build_knf: App(Var("truncate"), [Double(1.23)])
+// [Knf] build_knf: Double(1.23)
+// [Knf] build_knf: Let(("y", Var({val: Some(Int)})), App(Var("truncate"), [Double(4.56)]), Let(("z", Var({val: Some(Int)})), App(Var("truncate"), [Neg(Double(7.89), kind=Some(Double))]), App(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))])))
+// [Knf] build_knf: App(Var("truncate"), [Double(4.56)])
+// [Knf] build_knf: Double(4.56)
+// [Knf] build_knf: Let(("z", Var({val: Some(Int)})), App(Var("truncate"), [Neg(Double(7.89), kind=Some(Double))]), App(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("truncate"), [Neg(Double(7.89), kind=Some(Double))])
+// [Knf] build_knf: Neg(Double(7.89), kind=Some(Double))
+// [Knf] build_knf: Double(7.89)
+// [Knf] build_knf: App(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))])
+// [Knf] build_knf: Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int))
+// [Knf] build_knf: Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int))
+// [Knf] build_knf: If(LE(Int(0), Var("z")), Var("x"), Var("y"))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("z")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("y")
+// [Knf] build_knf: If(LE(Var("x"), Int(0)), Var("y"), Var("z"))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("y")
+// [Knf] build_knf: Var("z")
+// [Knf] build_knf: If(LE(Int(0), Var("y")), Var("z"), Var("x"))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("y")
+// [Knf] build_knf: Var("z")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_2
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main1_0
+// [Main]   .type main1_0, @function
+// [Main] # leaf false
+// [Main] main1_0:
+// [Main] .main1_0_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 4608218246714312622
+// [Main]   fmv.d.x fa0, a0
+// [Main]   fcvt.w.d a4, fa0, rtz
+// [Main]   li a0, 4616820122002590269
+// [Main]   fmv.d.x fa0, a0
+// [Main]   fcvt.w.d a2, fa0, rtz
+// [Main]   li a0, 4620569368692376207
+// [Main]   fmv.d.x fa0, a0
+// [Main]   fneg.d fa0, fa0
+// [Main]   fcvt.w.d a3, fa0, rtz
+// [Main]   blt a3, zero, .main1_0_2
+// [Main] 
+// [Main] .main1_0_1:
+// [Main]   mv a1, a4
+// [Main] 
+// [Main] .main1_0_3:
+// [Main]   blt zero, a4, .main1_0_5
+// [Main] 
+// [Main] .main1_0_4:
+// [Main]   mv a0, a2
+// [Main] 
+// [Main] .main1_0_6:
+// [Main]   add a0, a1, a0
+// [Main]   blt a2, zero, .main1_0_8
+// [Main] 
+// [Main] .main1_0_7:
+// [Main]   mv a1, a3
+// [Main] 
+// [Main] .main1_0_9:
+// [Main]   add a0, a0, a1
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .main1_0_2:
+// [Main]   mv a1, a2
+// [Main]   j .main1_0_3
+// [Main] 
+// [Main] .main1_0_5:
+// [Main]   mv a0, a3
+// [Main]   j .main1_0_6
+// [Main] 
+// [Main] .main1_0_8:
+// [Main]   mv a1, a4
+// [Main]   j .main1_0_9
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_2
+// [Main]   .type T$start_2, @function
+// [Main] # leaf false
+// [Main] T$start_2:
+// [Main] .T$start_2_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main1_0
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

@@ -697,3 +697,163 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("useless", Int), args: [("x", Int)], body: Let(("y", Var({val: Some(Int)})), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))}, LetRec({name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), [])))))
+// [Knf] build_knf: Let(("y", Var({val: Some(Int)})), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Prim(Int(10), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Int(10)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), []))))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)]))
+// [Knf] build_knf: Bool(true)
+// [Knf] build_knf: App(Var("f"), [Int(1)])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("g"), [Int(2)])
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), []))
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl g12_7
+// [Main]   .type g12_7, @function
+// [Main] # leaf true
+// [Main] g12_7:
+// [Main] .g12_7_0:
+// [Main]   mv a1, s10
+// [Main]   lw a0, 8(a1)
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl useless1_0
+// [Main]   .type useless1_0, @function
+// [Main] # leaf true
+// [Main] useless1_0:
+// [Main] .useless1_0_0:
+// [Main]   li a0, 10
+// [Main]   addi a0, a0, -1
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main19_3
+// [Main]   .type main19_3, @function
+// [Main] # leaf true
+// [Main] main19_3:
+// [Main] .main19_3_0:
+// [Main]   mv a0, zero
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_10
+// [Main]   .type T$start_10, @function
+// [Main] # leaf false
+// [Main] T$start_10:
+// [Main] .T$start_10_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main19_3
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl f9_2
+// [Main]   .type f9_2, @function
+// [Main] # leaf false
+// [Main] f9_2:
+// [Main] .f9_2_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a1, s11, -16
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a2, g12_7
+// [Main]   sd a2, 0(a1)
+// [Main]   sd a0, 8(a1)
+// [Main]   li a0, 1
+// [Main]   li a2, 1
+// [Main]   bne a0, a2, .f9_2_2
+// [Main] 
+// [Main] .f9_2_1:
+// [Main]   li a0, 1
+// [Main]   call f9_2
+// [Main] 
+// [Main] .f9_2_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .f9_2_2:
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   li a0, 2
+// [Main]   jalr a1
+// [Main]   j .f9_2_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_10
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl dummy6_1
+// [Main]   .type dummy6_1, @function
+// [Main] # leaf true
+// [Main] dummy6_1:
+// [Main] .dummy6_1_0:
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

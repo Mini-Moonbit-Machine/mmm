@@ -577,3 +577,126 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("sum", Int), args: [("x", Int)], body: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int)))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), [])))
+// [Knf] build_knf: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int)))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int))
+// [Knf] build_knf: App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("sum")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), []))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])
+// [Knf] build_knf: App(Var("sum"), [Int(10000)])
+// [Knf] build_knf: Var("sum")
+// [Knf] build_knf: Int(10000)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main8_1
+// [Main]   .type main8_1, @function
+// [Main] # leaf false
+// [Main] main8_1:
+// [Main] .main8_1_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 10000
+// [Main]   call sum1_0
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_4
+// [Main]   .type T$start_4, @function
+// [Main] # leaf false
+// [Main] T$start_4:
+// [Main] .T$start_4_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main8_1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_4
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sum1_0
+// [Main]   .type sum1_0, @function
+// [Main] # leaf false
+// [Main] sum1_0:
+// [Main] .sum1_0_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv s0, a0
+// [Main]   bge zero, s0, .sum1_0_1
+// [Main] 
+// [Main] .sum1_0_2:
+// [Main]   addi a0, s0, -1
+// [Main]   call sum1_0
+// [Main]   add a0, a0, s0
+// [Main] 
+// [Main] .sum1_0_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .sum1_0_1:
+// [Main]   mv a0, zero
+// [Main]   j .sum1_0_3
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

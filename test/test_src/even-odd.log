@@ -1157,3 +1157,242 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: Let(("t", Int), Int(123), Let(("f", Int), Int(456), LetRec({name: ("even", Int), args: [("x", Int)], body: LetRec({name: ("odd", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))}, If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("even"), [Int(789)])])}, App(Var("main"), [])))))
+// [Knf] build_knf: Int(123)
+// [Knf] build_knf: Let(("f", Int), Int(456), LetRec({name: ("even", Int), args: [("x", Int)], body: LetRec({name: ("odd", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))}, If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("even"), [Int(789)])])}, App(Var("main"), []))))
+// [Knf] build_knf: Int(456)
+// [Knf] build_knf: LetRec({name: ("even", Int), args: [("x", Int)], body: LetRec({name: ("odd", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))}, If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("even"), [Int(789)])])}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({name: ("odd", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))}, If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: If(Eq(Var("x"), Int(0)), Var("f"), App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: App(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("even")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("even")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: If(LE(Int(0), Var("x")), If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])), App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: If(Eq(Var("x"), Int(0)), Var("t"), App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("t")
+// [Knf] build_knf: App(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("odd")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("odd")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("even"), [Int(789)])])}, App(Var("main"), []))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("even"), [Int(789)])])
+// [Knf] build_knf: App(Var("even"), [Int(789)])
+// [Knf] build_knf: Var("even")
+// [Knf] build_knf: Int(789)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$t.10
+// [Main]   .type T$t.10, @function
+// [Main] # leaf true
+// [Main] T$t.10:
+// [Main] .T$t.10_0:
+// [Main]   li a0, 123
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl odd6_7
+// [Main]   .type odd6_7, @function
+// [Main] # leaf false
+// [Main] odd6_7:
+// [Main] .odd6_7_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   mv a1, s10
+// [Main]   blt a0, zero, .odd6_7_2
+// [Main] 
+// [Main] .odd6_7_1:
+// [Main]   beq a0, zero, .odd6_7_3
+// [Main] 
+// [Main] .odd6_7_4:
+// [Main]   addi a0, a0, -1
+// [Main]   call even3_4
+// [Main] 
+// [Main] .odd6_7_5:
+// [Main] 
+// [Main] .odd6_7_6:
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .odd6_7_2:
+// [Main]   addi a0, a0, 1
+// [Main]   call even3_4
+// [Main]   j .odd6_7_6
+// [Main] 
+// [Main] .odd6_7_3:
+// [Main]   lw a0, f.2
+// [Main]   j .odd6_7_5
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl even3_4
+// [Main]   .type even3_4, @function
+// [Main] # leaf false
+// [Main] even3_4:
+// [Main] .even3_4_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a1, s11, -8
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a2, odd6_7
+// [Main]   sd a2, 0(a1)
+// [Main]   blt a0, zero, .even3_4_2
+// [Main] 
+// [Main] .even3_4_1:
+// [Main]   beq a0, zero, .even3_4_3
+// [Main] 
+// [Main] .even3_4_4:
+// [Main]   addi a0, a0, -1
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .even3_4_5:
+// [Main] 
+// [Main] .even3_4_6:
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .even3_4_2:
+// [Main]   addi a0, a0, 1
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   jalr a1
+// [Main]   j .even3_4_6
+// [Main] 
+// [Main] .even3_4_3:
+// [Main]   lw a0, t.1
+// [Main]   j .even3_4_5
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_10
+// [Main]   .type T$start_10, @function
+// [Main] # leaf false
+// [Main] T$start_10:
+// [Main] .T$start_10_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main21_5
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$t.10
+// [Main]   la t5, t.1
+// [Main]   sw a0, 0(t5)
+// [Main]   call T$f.22
+// [Main]   la t5, f.2
+// [Main]   sw a0, 0(t5)
+// [Main]   call T$start_10
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$f.22
+// [Main]   .type T$f.22, @function
+// [Main] # leaf true
+// [Main] T$f.22:
+// [Main] .T$f.22_0:
+// [Main]   li a0, 456
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main21_5
+// [Main]   .type main21_5, @function
+// [Main] # leaf false
+// [Main] main21_5:
+// [Main] .main21_5_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 789
+// [Main]   call even3_4
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl t.1
+// [Main]   .type t.1, @object
+// [Main] t.1:
+// [Main]   .zero 4
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl f.2
+// [Main]   .type f.2, @object
+// [Main] f.2:
+// [Main]   .zero 4
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

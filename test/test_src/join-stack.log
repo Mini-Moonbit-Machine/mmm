@@ -745,3 +745,164 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("f", Int), args: [("u", Unit)], body: Int(123)}, LetRec({name: ("g", Int), args: [("u", Unit)], body: Int(456)}, LetRec({name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("f"), [Unit]), Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])))}, App(Var("main"), [])))))
+// [Knf] build_knf: Int(123)
+// [Knf] build_knf: LetRec({name: ("g", Int), args: [("u", Unit)], body: Int(456)}, LetRec({name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("f"), [Unit]), Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])))}, App(Var("main"), []))))
+// [Knf] build_knf: Int(456)
+// [Knf] build_knf: LetRec({name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("f"), [Unit]), Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])))}, App(Var("main"), [])))
+// [Knf] build_knf: Int(789)
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("x", Var({val: Some(Int)})), App(Var("f"), [Unit]), Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("x", Var({val: Some(Int)})), App(Var("f"), [Unit]), Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])))
+// [Knf] build_knf: App(Var("f"), [Unit])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("y", Var({val: Some(Int)})), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))]))
+// [Knf] build_knf: App(Var("g"), [Unit])
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))])
+// [Knf] build_knf: If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int)))
+// [Knf] build_knf: App(Var("h"), [Unit])
+// [Knf] build_knf: Var("h")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Var("x"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Prim(Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int)), Var("y"), Add, kind=Some(Int))
+// [Knf] build_knf: Prim(Prim(Var("y"), Int(2), Add, kind=Some(Int)), Var("x"), Add, kind=Some(Int))
+// [Knf] build_knf: Prim(Var("y"), Int(2), Add, kind=Some(Int))
+// [Knf] build_knf: Var("y")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("y")
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl f1_0
+// [Main]   .type f1_0, @function
+// [Main] # leaf true
+// [Main] f1_0:
+// [Main] .f1_0_0:
+// [Main]   li a0, 123
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl h7_2
+// [Main]   .type h7_2, @function
+// [Main] # leaf true
+// [Main] h7_2:
+// [Main] .h7_2_0:
+// [Main]   li a0, 789
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl g4_1
+// [Main]   .type g4_1, @function
+// [Main] # leaf true
+// [Main] g4_1:
+// [Main] .g4_1_0:
+// [Main]   li a0, 456
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_8
+// [Main]   .type T$start_8, @function
+// [Main] # leaf false
+// [Main] T$start_8:
+// [Main] .T$start_8_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main10_3
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main10_3
+// [Main]   .type main10_3, @function
+// [Main] # leaf false
+// [Main] main10_3:
+// [Main] .main10_3_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv a0, zero
+// [Main]   call f1_0
+// [Main]   mv s0, a0
+// [Main]   mv a0, zero
+// [Main]   call g4_1
+// [Main]   mv s1, a0
+// [Main]   mv a0, zero
+// [Main]   call h7_2
+// [Main]   beq a0, zero, .main10_3_1
+// [Main] 
+// [Main] .main10_3_2:
+// [Main]   addi a0, s1, 2
+// [Main]   add a0, a0, s0
+// [Main]   add a0, a0, s1
+// [Main] 
+// [Main] .main10_3_3:
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .main10_3_1:
+// [Main]   addi a0, s0, 1
+// [Main]   j .main10_3_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_8
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

@@ -2106,3 +2106,370 @@
 // [Asm] factorial.28:
 // [Asm]   .zero 8
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("dummy", Int), args: [("i", Int)], body: Var("i")}, LetRec({name: ("landins_knot", Fun([Int], Int)), args: [("f", Fun([Fun([Int], Int)], Fun([Int], Int)))], body: Let(("arr", Var({val: Some(Array(Fun([Int], Int)))})), Array(Int(1), Var("dummy")), LetRec({name: ("aux", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: App(Get(Var("arr"), Int(0)), [Var("x")])}, Let(("fixedpoint", Var({val: Some(Fun([Int], Int))})), App(Var("f"), [Var("aux")]), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint")))))}, Let(("factorial", Fun([Int], Int)), LetRec({name: ("g", Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))})), args: [("f", Var({val: Some(Fun([Int], Var({val: Some(Int)})))}))], body: LetRec({name: ("h", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))}, Var("h"))}, App(Var("landins_knot"), [Var("g")])), LetRec({name: ("f1", Unit), args: [], body: App(Var("print_int"), [App(Var("factorial"), [Int(5)])])}, Let(("with_effect", Fun([Int], Int)), Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), [])))))))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: LetRec({name: ("landins_knot", Fun([Int], Int)), args: [("f", Fun([Fun([Int], Int)], Fun([Int], Int)))], body: Let(("arr", Var({val: Some(Array(Fun([Int], Int)))})), Array(Int(1), Var("dummy")), LetRec({name: ("aux", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: App(Get(Var("arr"), Int(0)), [Var("x")])}, Let(("fixedpoint", Var({val: Some(Fun([Int], Int))})), App(Var("f"), [Var("aux")]), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint")))))}, Let(("factorial", Fun([Int], Int)), LetRec({name: ("g", Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))})), args: [("f", Var({val: Some(Fun([Int], Var({val: Some(Int)})))}))], body: LetRec({name: ("h", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))}, Var("h"))}, App(Var("landins_knot"), [Var("g")])), LetRec({name: ("f1", Unit), args: [], body: App(Var("print_int"), [App(Var("factorial"), [Int(5)])])}, Let(("with_effect", Fun([Int], Int)), Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), []))))))
+// [Knf] build_knf: Let(("arr", Var({val: Some(Array(Fun([Int], Int)))})), Array(Int(1), Var("dummy")), LetRec({name: ("aux", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: App(Get(Var("arr"), Int(0)), [Var("x")])}, Let(("fixedpoint", Var({val: Some(Fun([Int], Int))})), App(Var("f"), [Var("aux")]), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint")))))
+// [Knf] build_knf: Array(Int(1), Var("dummy"))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("dummy")
+// [Knf] build_knf: LetRec({name: ("aux", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: App(Get(Var("arr"), Int(0)), [Var("x")])}, Let(("fixedpoint", Var({val: Some(Fun([Int], Int))})), App(Var("f"), [Var("aux")]), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint"))))
+// [Knf] build_knf: App(Get(Var("arr"), Int(0)), [Var("x")])
+// [Knf] build_knf: Get(Var("arr"), Int(0))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Let(("fixedpoint", Var({val: Some(Fun([Int], Int))})), App(Var("f"), [Var("aux")]), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint")))
+// [Knf] build_knf: App(Var("f"), [Var("aux")])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Var("aux")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Int(0), Var("fixedpoint")), Var("fixedpoint"))
+// [Knf] build_knf: Put(Var("arr"), Int(0), Var("fixedpoint"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("fixedpoint")
+// [Knf] build_knf: Var("fixedpoint")
+// [Knf] build_knf: Let(("factorial", Fun([Int], Int)), LetRec({name: ("g", Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))})), args: [("f", Var({val: Some(Fun([Int], Var({val: Some(Int)})))}))], body: LetRec({name: ("h", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))}, Var("h"))}, App(Var("landins_knot"), [Var("g")])), LetRec({name: ("f1", Unit), args: [], body: App(Var("print_int"), [App(Var("factorial"), [Int(5)])])}, Let(("with_effect", Fun([Int], Int)), Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), [])))))
+// [Knf] build_knf: LetRec({name: ("g", Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))})), args: [("f", Var({val: Some(Fun([Int], Var({val: Some(Int)})))}))], body: LetRec({name: ("h", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))}, Var("h"))}, App(Var("landins_knot"), [Var("g")]))
+// [Knf] build_knf: LetRec({name: ("h", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))}, Var("h"))
+// [Knf] build_knf: If(Eq(Var("x"), Int(0)), Int(1), Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int)))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Prim(Var("x"), App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Mul, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Prim(Var("x"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("h")
+// [Knf] build_knf: App(Var("landins_knot"), [Var("g")])
+// [Knf] build_knf: Var("landins_knot")
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: LetRec({name: ("f1", Unit), args: [], body: App(Var("print_int"), [App(Var("factorial"), [Int(5)])])}, Let(("with_effect", Fun([Int], Int)), Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), []))))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("factorial"), [Int(5)])])
+// [Knf] build_knf: App(Var("factorial"), [Int(5)])
+// [Knf] build_knf: Var("factorial")
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: Let(("with_effect", Fun([Int], Int)), Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), [])))
+// [Knf] build_knf: Let(("a", Var({val: Some(Int)})), App(Var("factorial"), [Int(5)]), LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g")))
+// [Knf] build_knf: App(Var("factorial"), [Int(5)])
+// [Knf] build_knf: Var("factorial")
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: LetRec({name: ("g", Var({val: Some(Int)})), args: [("x", Var({val: Some(Int)}))], body: Prim(Var("x"), Var("a"), Add, kind=Some(Int))}, Var("g"))
+// [Knf] build_knf: Prim(Var("x"), Var("a"), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("f1"), []), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])))
+// [Knf] build_knf: App(Var("f1"), [])
+// [Knf] build_knf: Var("f1")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [App(Var("with_effect"), [Int(10)])]), App(Var("print_int"), [App(Var("with_effect"), [Int(31)])]))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("with_effect"), [Int(10)])])
+// [Knf] build_knf: App(Var("with_effect"), [Int(10)])
+// [Knf] build_knf: Var("with_effect")
+// [Knf] build_knf: Int(10)
+// [Knf] build_knf: App(Var("print_int"), [App(Var("with_effect"), [Int(31)])])
+// [Knf] build_knf: App(Var("with_effect"), [Int(31)])
+// [Knf] build_knf: Var("with_effect")
+// [Knf] build_knf: Int(31)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl g18_2
+// [Main]   .type g18_2, @function
+// [Main] # leaf true
+// [Main] g18_2:
+// [Main] .g18_2_0:
+// [Main]   addi a1, s11, -16
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a2, h21_8
+// [Main]   sd a2, 0(a1)
+// [Main]   sd a0, 8(a1)
+// [Main]   mv a0, a1
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$factorial.2810
+// [Main]   .type T$factorial.2810, @function
+// [Main] # leaf false
+// [Main] T$factorial.2810:
+// [Main] .T$factorial.2810_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a0, s11, -8
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, g18_2
+// [Main]   sd a1, 0(a0)
+// [Main]   call landins_knot4_1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl landins_knot4_1
+// [Main]   .type landins_knot4_1, @function
+// [Main] # leaf false
+// [Main] landins_knot4_1:
+// [Main] .landins_knot4_1_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   addi a1, s11, -8
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a2, dummy1_0
+// [Main]   sd a2, 0(a1)
+// [Main]   addi a2, s11, -8
+// [Main]   andi s0, a2, -8
+// [Main]   mv s11, s0
+// [Main]   sd a1, 0(s0)
+// [Main]   addi a1, s11, -16
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   la a2, aux9_5
+// [Main]   sd a2, 0(a1)
+// [Main]   sd s0, 8(a1)
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, a1
+// [Main]   jalr a2
+// [Main]   sd a0, 0(s0)
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$a.3316
+// [Main]   .type T$a.3316, @function
+// [Main] # leaf false
+// [Main] T$a.3316:
+// [Main] .T$a.3316_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   ld a0, factorial.28
+// [Main]   lw a1, _32
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, a1
+// [Main]   jalr a2
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl h21_8
+// [Main]   .type h21_8, @function
+// [Main] # leaf false
+// [Main] h21_8:
+// [Main] .h21_8_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv a1, s10
+// [Main]   mv s0, a0
+// [Main]   ld a1, 8(a1)
+// [Main]   beq s0, zero, .h21_8_1
+// [Main] 
+// [Main] .h21_8_2:
+// [Main]   addi a0, s0, -1
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   jalr a1
+// [Main]   mul a0, s0, a0
+// [Main] 
+// [Main] .h21_8_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .h21_8_1:
+// [Main]   li a0, 1
+// [Main]   j .h21_8_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl aux9_5
+// [Main]   .type aux9_5, @function
+// [Main] # leaf false
+// [Main] aux9_5:
+// [Main] .aux9_5_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   mv a1, s10
+// [Main]   ld a1, 8(a1)
+// [Main]   ld a1, 0(a1)
+// [Main]   mv s10, a1
+// [Main]   ld a1, 0(a1)
+// [Main]   jalr a1
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$_32_14
+// [Main]   .type T$_32_14, @function
+// [Main] # leaf true
+// [Main] T$_32_14:
+// [Main] .T$_32_14_0:
+// [Main]   li a0, 5
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl f129_12
+// [Main]   .type f129_12, @function
+// [Main] # leaf false
+// [Main] f129_12:
+// [Main] .f129_12_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   ld a0, factorial.28
+// [Main]   mv s10, a0
+// [Main]   ld a1, 0(a0)
+// [Main]   li a0, 5
+// [Main]   jalr a1
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main37_19
+// [Main]   .type main37_19, @function
+// [Main] # leaf false
+// [Main] main37_19:
+// [Main] .main37_19_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call f129_12
+// [Main]   li a0, 10
+// [Main]   call g34_18
+// [Main]   call minimbt_print_int
+// [Main]   li a0, 31
+// [Main]   call g34_18
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl g34_18
+// [Main]   .type g34_18, @function
+// [Main] # leaf true
+// [Main] g34_18:
+// [Main] .g34_18_0:
+// [Main]   lw a1, a.33
+// [Main]   add a0, a0, a1
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_22
+// [Main]   .type T$start_22, @function
+// [Main] # leaf false
+// [Main] T$start_22:
+// [Main] .T$start_22_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main37_19
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl dummy1_0
+// [Main]   .type dummy1_0, @function
+// [Main] # leaf true
+// [Main] dummy1_0:
+// [Main] .dummy1_0_0:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$factorial.2810
+// [Main]   la t5, factorial.28
+// [Main]   sd a0, 0(t5)
+// [Main]   call T$_32_14
+// [Main]   la t5, _32
+// [Main]   sw a0, 0(t5)
+// [Main]   call T$a.3316
+// [Main]   la t5, a.33
+// [Main]   sw a0, 0(t5)
+// [Main]   call T$start_22
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl _32
+// [Main]   .type _32, @object
+// [Main] _32:
+// [Main]   .zero 4
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl a.33
+// [Main]   .type a.33, @object
+// [Main] a.33:
+// [Main]   .zero 4
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl factorial.28
+// [Main]   .type factorial.28, @object
+// [Main] factorial.28:
+// [Main]   .zero 8
+// [Main] 
+// [Parser] flags: []

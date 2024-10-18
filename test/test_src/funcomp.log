@@ -1168,3 +1168,206 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("compose", Fun([Int], Int)), args: [("f", Fun([Int], Int)), ("g", Fun([Int], Int))], body: LetRec({name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed"))}, LetRec({name: ("dbl", Int), args: [("x", Int)], body: Prim(Var("x"), Var("x"), Add, kind=Some(Int))}, LetRec({name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=Some(Int))}, LetRec({name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=Some(Int))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, App(Var("main"), []))))))
+// [Knf] build_knf: LetRec({name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed"))
+// [Knf] build_knf: App(Var("g"), [App(Var("f"), [Var("x")])])
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: App(Var("f"), [Var("x")])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("composed")
+// [Knf] build_knf: LetRec({name: ("dbl", Int), args: [("x", Int)], body: Prim(Var("x"), Var("x"), Add, kind=Some(Int))}, LetRec({name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=Some(Int))}, LetRec({name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=Some(Int))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, App(Var("main"), [])))))
+// [Knf] build_knf: Prim(Var("x"), Var("x"), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: LetRec({name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=Some(Int))}, LetRec({name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=Some(Int))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, App(Var("main"), []))))
+// [Knf] build_knf: Prim(Var("x"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=Some(Int))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, App(Var("main"), [])))
+// [Knf] build_knf: Prim(Var("x"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("h", Var({val: Some(Fun([Int], Int))})), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))
+// [Knf] build_knf: App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])])
+// [Knf] build_knf: Var("compose")
+// [Knf] build_knf: Var("inc")
+// [Knf] build_knf: App(Var("compose"), [Var("dbl"), Var("dec")])
+// [Knf] build_knf: Var("compose")
+// [Knf] build_knf: Var("dbl")
+// [Knf] build_knf: Var("dec")
+// [Knf] build_knf: App(Var("print_int"), [App(Var("h"), [Int(123)])])
+// [Knf] build_knf: App(Var("h"), [Int(123)])
+// [Knf] build_knf: Var("h")
+// [Knf] build_knf: Int(123)
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl dbl10_1
+// [Main]   .type dbl10_1, @function
+// [Main] # leaf true
+// [Main] dbl10_1:
+// [Main] .dbl10_1_0:
+// [Main]   add a0, a0, a0
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl dec17_3
+// [Main]   .type dec17_3, @function
+// [Main] # leaf true
+// [Main] dec17_3:
+// [Main] .dec17_3_0:
+// [Main]   addi a0, a0, -1
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_12
+// [Main]   .type T$start_12, @function
+// [Main] # leaf false
+// [Main] T$start_12:
+// [Main] .T$start_12_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main21_4
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl composed6_6
+// [Main]   .type composed6_6, @function
+// [Main] # leaf false
+// [Main] composed6_6:
+// [Main] .composed6_6_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv a1, s10
+// [Main]   ld a2, 8(a1)
+// [Main]   ld s0, 16(a1)
+// [Main]   mv s10, a2
+// [Main]   ld a1, 0(a2)
+// [Main]   jalr a1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl inc13_2
+// [Main]   .type inc13_2, @function
+// [Main] # leaf true
+// [Main] inc13_2:
+// [Main] .inc13_2_0:
+// [Main]   addi a0, a0, 1
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main21_4
+// [Main]   .type main21_4, @function
+// [Main] # leaf false
+// [Main] main21_4:
+// [Main] .main21_4_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a0, s11, -8
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, dbl10_1
+// [Main]   sd a1, 0(a0)
+// [Main]   addi a1, s11, -8
+// [Main]   andi a2, a1, -8
+// [Main]   mv s11, a2
+// [Main]   la a1, dec17_3
+// [Main]   sd a1, 0(a2)
+// [Main]   mv a1, a2
+// [Main]   call compose1_0
+// [Main]   mv a1, a0
+// [Main]   addi a0, s11, -8
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a2, inc13_2
+// [Main]   sd a2, 0(a0)
+// [Main]   call compose1_0
+// [Main]   mv s10, a0
+// [Main]   ld a1, 0(a0)
+// [Main]   li a0, 123
+// [Main]   jalr a1
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl compose1_0
+// [Main]   .type compose1_0, @function
+// [Main] # leaf true
+// [Main] compose1_0:
+// [Main] .compose1_0_0:
+// [Main]   addi a2, s11, -24
+// [Main]   andi a2, a2, -8
+// [Main]   mv s11, a2
+// [Main]   la a3, composed6_6
+// [Main]   sd a3, 0(a2)
+// [Main]   sd a0, 8(a2)
+// [Main]   sd a1, 16(a2)
+// [Main]   mv a0, a2
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_12
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []

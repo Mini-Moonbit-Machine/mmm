@@ -7265,3 +7265,1186 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
+// [Knf] build_knf: LetRec({name: ("swap", Unit), args: [("arr", Array(Int)), ("i", Int), ("j", Int)], body: Let(("tmp", Var({val: Some(Int)})), Get(Var("arr"), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))}, LetRec({name: ("output", Unit), args: [("arr", Array(Int)), ("i", Int), ("len", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")]))), Unit)}, LetRec({name: ("insertion_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: LetRec({name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit), Unit)}, LetRec({name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("partition", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({name: ("choose_pivot", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), [])))))))))
+// [Knf] build_knf: Let(("tmp", Var({val: Some(Int)})), Get(Var("arr"), Var("i")), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))
+// [Knf] build_knf: Get(Var("arr"), Var("i"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit))
+// [Knf] build_knf: Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j")))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Get(Var("arr"), Var("j"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("j"), Var("tmp")), Unit)
+// [Knf] build_knf: Put(Var("arr"), Var("j"), Var("tmp"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Var("tmp")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("output", Unit), args: [("arr", Array(Int)), ("i", Int), ("len", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")]))), Unit)}, LetRec({name: ("insertion_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: LetRec({name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit), Unit)}, LetRec({name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("partition", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({name: ("choose_pivot", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), []))))))))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")]))), Unit)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")])))
+// [Knf] build_knf: App(Var("print_int"), [Get(Var("arr"), Var("i"))])
+// [Knf] build_knf: Get(Var("arr"), Var("i"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")]))
+// [Knf] build_knf: App(Var("print_endline"), [])
+// [Knf] build_knf: App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len")])
+// [Knf] build_knf: Var("output")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("insertion_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: LetRec({name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit), Unit)}, LetRec({name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))])))}, LetRec({name: ("partition", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({name: ("choose_pivot", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), [])))))))
+// [Knf] build_knf: LetRec({name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit), Unit)}, LetRec({name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: If(LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit), Unit)
+// [Knf] build_knf: Prim(Int(1), Var("low"), Add, kind=Some(Int))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Get(Var("arr"), Var("j"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int)))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("j", Var({val: Some(Int)})), Var("i"), Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("g"), [Var("j")])
+// [Knf] build_knf: Var("g")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Prim(Var("low"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("partition", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({name: ("choose_pivot", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), []))))))
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("pivot_index")
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("pivot", Var({val: Some(Int)})), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int))), Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))))))
+// [Knf] build_knf: Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=Some(Int)))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("i", Var({val: Some(Array(Int))})), Array(Int(1), Var("low")), Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))
+// [Knf] build_knf: Array(Int(1), Var("low"))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Let(("partitioned", Var({val: Some(Array(Int))})), Array(Int(1), Int(1)), LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))))
+// [Knf] build_knf: Array(Int(1), Int(1))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("aux", Var({val: Some(Unit)})), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))
+// [Knf] build_knf: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Var("high"), Int(2), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)), Unit)
+// [Knf] build_knf: Get(Var("arr"), Var("j"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Prim(Var("pivot"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("pivot")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit))
+// [Knf] build_knf: If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0))))
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Put(Var("partitioned"), Int(0), Int(0))
+// [Knf] build_knf: Var("partitioned")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))), Unit)
+// [Knf] build_knf: Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int)))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("aux")
+// [Knf] build_knf: Prim(Var("j"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("j")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("aux"), [Var("low")]), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))
+// [Knf] build_knf: App(Var("aux"), [Var("low")])
+// [Knf] build_knf: Var("aux")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int))])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Var("high"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])
+// [Knf] build_knf: Get(Var("i"), Int(0))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Eq(Get(Var("partitioned"), Int(0)), Int(1))
+// [Knf] build_knf: Get(Var("partitioned"), Int(0))
+// [Knf] build_knf: Var("partitioned")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: LetRec({name: ("choose_pivot", Tuple([Int, Bool])), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), [])))))
+// [Knf] build_knf: Let(("use_median_of_medians", Var({val: Some(Int)})), Int(50), Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))
+// [Knf] build_knf: Int(50)
+// [Knf] build_knf: Let(("swaps", Var({val: Some(Array(Int))})), Array(Int(1), Int(0)), Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])))))
+// [Knf] build_knf: Array(Int(1), Int(0))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))
+// [Knf] build_knf: Prim(Var("high"), Var("low"), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Let(("b", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])))
+// [Knf] build_knf: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Add, kind=Some(Int))
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int))
+// [Knf] build_knf: Prim(Var("len"), Int(4), Div, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))
+// [Knf] build_knf: If(LE(Int(8), Var("len")), Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit)
+// [Knf] build_knf: Int(8)
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Let(("a", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int)), Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))))))
+// [Knf] build_knf: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int)), Add, kind=Some(Int))
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int))
+// [Knf] build_knf: Prim(Var("len"), Int(4), Div, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("c", Var({val: Some(Int)})), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int)), LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))
+// [Knf] build_knf: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int)), Add, kind=Some(Int))
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int))
+// [Knf] build_knf: Prim(Var("len"), Int(4), Div, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: LetRec({name: ("sort_2", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)}, LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))))
+// [Knf] build_knf: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))), Unit)
+// [Knf] build_knf: Get(Var("arr"), Var("b"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Get(Var("arr"), Var("a"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int))))
+// [Knf] build_knf: App(Var("swap"), [Var("arr"), Var("a"), Var("b")])
+// [Knf] build_knf: Var("swap")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int)))
+// [Knf] build_knf: Var("swaps")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Get(Var("swaps"), Int(0))
+// [Knf] build_knf: Var("swaps")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: LetRec({name: ("sort_3", Var({val: Some(Unit)})), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))
+// [Knf] build_knf: App(Var("sort_2"), [Var("a"), Var("b")])
+// [Knf] build_knf: Var("sort_2")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")]))
+// [Knf] build_knf: App(Var("sort_2"), [Var("b"), Var("c")])
+// [Knf] build_knf: Var("sort_2")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: App(Var("sort_2"), [Var("a"), Var("b")])
+// [Knf] build_knf: Var("sort_2")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))
+// [Knf] build_knf: If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))), Unit)
+// [Knf] build_knf: Var("use_median_of_medians")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))]), Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))])))
+// [Knf] build_knf: App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("sort_3")
+// [Knf] build_knf: Prim(Var("a"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Prim(Var("a"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("sort_3")
+// [Knf] build_knf: Prim(Var("b"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Prim(Var("b"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("sort_3")
+// [Knf] build_knf: Prim(Var("c"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Prim(Var("c"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])
+// [Knf] build_knf: Var("sort_3")
+// [Knf] build_knf: Var("a")
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Var("c")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])
+// [Knf] build_knf: Var("b")
+// [Knf] build_knf: Eq(Get(Var("swaps"), Int(0)), Int(0))
+// [Knf] build_knf: Get(Var("swaps"), Int(0))
+// [Knf] build_knf: Var("swaps")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: LetRec({name: ("quick_sort", Unit), args: [("arr", Array(Int)), ("low", Int), ("high", Int)], body: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))}, LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), []))))
+// [Knf] build_knf: Let(("len", Var({val: Some(Int)})), Prim(Var("high"), Var("low"), Sub, kind=Some(Int)), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))))
+// [Knf] build_knf: Prim(Var("high"), Var("low"), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")])))))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(16)
+// [Knf] build_knf: App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")])
+// [Knf] build_knf: Var("insertion_sort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: LetTuple([("pivot_index", Var({val: Some(Int)})), ("likely_sorted", Var({val: Some(Bool)}))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))))
+// [Knf] build_knf: App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")])
+// [Knf] build_knf: Var("choose_pivot")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: LetTuple([("pivot", Var({val: Some(Int)})), ("partitioned", Var({val: Some(Bool)}))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")])))
+// [Knf] build_knf: App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
+// [Knf] build_knf: Var("partition")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("pivot_index")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")]))
+// [Knf] build_knf: App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")])
+// [Knf] build_knf: Var("quick_sort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("low")
+// [Knf] build_knf: Var("pivot")
+// [Knf] build_knf: App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high")])
+// [Knf] build_knf: Var("quick_sort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Prim(Var("pivot"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("pivot")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Var("high")
+// [Knf] build_knf: LetRec({name: ("sort", Unit), args: [("x", Array(Int)), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), [])))
+// [Knf] build_knf: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])
+// [Knf] build_knf: Var("quick_sort")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("len", Var({val: Some(Int)})), App(Var("read_int"), []), Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))
+// [Knf] build_knf: App(Var("read_int"), [])
+// [Knf] build_knf: Let(("arr", Var({val: Some(Array(Int))})), Array(Var("len"), Int(0)), LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")])))))
+// [Knf] build_knf: Array(Var("len"), Int(0))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: LetRec({name: ("input", Var({val: Some(Unit)})), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)}, Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])), Unit)
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]))
+// [Knf] build_knf: Put(Var("arr"), Var("i"), App(Var("read_int"), []))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: App(Var("read_int"), [])
+// [Knf] build_knf: App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("input")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("input"), [Int(0)]), Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")])))
+// [Knf] build_knf: App(Var("input"), [Int(0)])
+// [Knf] build_knf: Var("input")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))
+// [Knf] build_knf: App(Var("sort"), [Var("arr"), Var("len")])
+// [Knf] build_knf: Var("sort")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: App(Var("output"), [Var("arr"), Int(0), Var("len")])
+// [Knf] build_knf: Var("output")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl memseti32
+// [Main]   .type memseti32, @function
+// [Main] memseti32:
+// [Main]   blez a1, .memseti32_b1
+// [Main]   slli a1, a1, 2
+// [Main]   add a1, a1, a0
+// [Main] .memseti32_b0:
+// [Main]   sw a2, 0(a0)
+// [Main]   addi a0, a0, 4
+// [Main]   bne a0, a1, .memseti32_b0
+// [Main] .memseti32_b1:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl g37_11
+// [Main]   .type g37_11, @function
+// [Main] # leaf false
+// [Main] g37_11:
+// [Main] .g37_11_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   lw a1, 8(s0)
+// [Main]   ld a0, 16(s0)
+// [Main]   addi a1, a1, 1
+// [Main]   blt s1, a1, .g37_11_2
+// [Main] 
+// [Main] .g37_11_1:
+// [Main]   slliw a1, s1, 2
+// [Main]   add a1, a0, a1
+// [Main]   lw a1, 0(a1)
+// [Main]   addi a2, s1, -1
+// [Main]   slliw a2, a2, 2
+// [Main]   add a2, a0, a2
+// [Main]   lw a2, 0(a2)
+// [Main]   addi a2, a2, -1
+// [Main]   blt a2, a1, .g37_11_4
+// [Main] 
+// [Main] .g37_11_3:
+// [Main]   addi a2, s1, -1
+// [Main]   mv a1, s1
+// [Main]   call swap1_0
+// [Main]   addi a0, s1, -1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .g37_11_5:
+// [Main] 
+// [Main] .g37_11_6:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .g37_11_2:
+// [Main]   mv a0, zero
+// [Main]   j .g37_11_6
+// [Main] 
+// [Main] .g37_11_4:
+// [Main]   mv a0, zero
+// [Main]   j .g37_11_5
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl insertion_sort30_2
+// [Main]   .type insertion_sort30_2, @function
+// [Main] # leaf false
+// [Main] insertion_sort30_2:
+// [Main] .insertion_sort30_2_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a3, s11, -24
+// [Main]   andi a3, a3, -8
+// [Main]   mv s11, a3
+// [Main]   la a4, g37_11
+// [Main]   sd a4, 0(a3)
+// [Main]   sd a1, 8(a3)
+// [Main]   sd a0, 16(a3)
+// [Main]   addi a0, s11, -24
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a4, f54_13
+// [Main]   sd a4, 0(a0)
+// [Main]   sd a2, 8(a0)
+// [Main]   sd a3, 16(a0)
+// [Main]   addi a1, a1, 1
+// [Main]   mv s10, a0
+// [Main]   ld a2, 0(a0)
+// [Main]   mv a0, a1
+// [Main]   jalr a2
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl choose_pivot129_4
+// [Main]   .type choose_pivot129_4, @function
+// [Main] # leaf false
+// [Main] choose_pivot129_4:
+// [Main] .choose_pivot129_4_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   sd s4, 40(sp)
+// [Main]   mv a3, a1
+// [Main]   mv a1, a2
+// [Main]   addi a2, s11, -4
+// [Main]   andi s0, a2, -8
+// [Main]   mv s11, s0
+// [Main]   sw zero, 0(s0)
+// [Main]   sub a1, a1, a3
+// [Main]   li a2, 4
+// [Main]   div a2, a1, a2
+// [Main]   li a4, 2
+// [Main]   mul a2, a2, a4
+// [Main]   add s1, a3, a2
+// [Main]   li a2, 8
+// [Main]   blt a1, a2, .choose_pivot129_4_2
+// [Main] 
+// [Main] .choose_pivot129_4_1:
+// [Main]   li a2, 4
+// [Main]   div a2, a1, a2
+// [Main]   li a4, 1
+// [Main]   mul a2, a2, a4
+// [Main]   add s4, a3, a2
+// [Main]   li a2, 4
+// [Main]   div a2, a1, a2
+// [Main]   li a4, 3
+// [Main]   mul a2, a2, a4
+// [Main]   add s2, a3, a2
+// [Main]   addi a2, s11, -24
+// [Main]   andi a2, a2, -8
+// [Main]   mv s11, a2
+// [Main]   la a3, sort_2157_19
+// [Main]   sd a3, 0(a2)
+// [Main]   sd a0, 8(a2)
+// [Main]   sd s0, 16(a2)
+// [Main]   addi a0, s11, -16
+// [Main]   andi s3, a0, -8
+// [Main]   mv s11, s3
+// [Main]   la a0, sort_3173_21
+// [Main]   sd a0, 0(s3)
+// [Main]   sd a2, 8(s3)
+// [Main]   addi a0, a1, -1
+// [Main]   li a1, 50
+// [Main]   blt a0, a1, .choose_pivot129_4_4
+// [Main] 
+// [Main] .choose_pivot129_4_3:
+// [Main]   addi a0, s4, -1
+// [Main]   addi a2, s4, 1
+// [Main]   mv s10, s3
+// [Main]   ld a3, 0(s3)
+// [Main]   mv a1, s4
+// [Main]   jalr a3
+// [Main]   addi a0, s1, -1
+// [Main]   addi a2, s1, 1
+// [Main]   mv s10, s3
+// [Main]   ld a3, 0(s3)
+// [Main]   mv a1, s1
+// [Main]   jalr a3
+// [Main]   addi a0, s2, -1
+// [Main]   addi a2, s2, 1
+// [Main]   mv s10, s3
+// [Main]   ld a3, 0(s3)
+// [Main]   mv a1, s2
+// [Main]   jalr a3
+// [Main] 
+// [Main] .choose_pivot129_4_5:
+// [Main]   mv s10, s3
+// [Main]   ld a3, 0(s3)
+// [Main]   mv a0, s4
+// [Main]   mv a1, s1
+// [Main]   mv a2, s2
+// [Main]   jalr a3
+// [Main] 
+// [Main] .choose_pivot129_4_6:
+// [Main]   lw a0, 0(s0)
+// [Main]   bne a0, zero, .choose_pivot129_4_8
+// [Main] 
+// [Main] .choose_pivot129_4_7:
+// [Main]   li a0, 1
+// [Main] 
+// [Main] .choose_pivot129_4_9:
+// [Main]   addi a1, s11, -8
+// [Main]   andi a1, a1, -8
+// [Main]   mv s11, a1
+// [Main]   sw s1, 0(a1)
+// [Main]   sw a0, 4(a1)
+// [Main]   mv a0, a1
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   ld s4, 40(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .choose_pivot129_4_2:
+// [Main]   mv a0, zero
+// [Main]   j .choose_pivot129_4_6
+// [Main] 
+// [Main] .choose_pivot129_4_4:
+// [Main]   mv a0, zero
+// [Main]   j .choose_pivot129_4_5
+// [Main] 
+// [Main] .choose_pivot129_4_8:
+// [Main]   mv a0, zero
+// [Main]   j .choose_pivot129_4_9
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl quick_sort210_5
+// [Main]   .type quick_sort210_5, @function
+// [Main] # leaf false
+// [Main] quick_sort210_5:
+// [Main] .quick_sort210_5_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   mv s0, a0
+// [Main]   mv s1, a1
+// [Main]   mv s2, a2
+// [Main]   sub a0, s2, s1
+// [Main]   li a1, 16
+// [Main]   bge a1, a0, .quick_sort210_5_1
+// [Main] 
+// [Main] .quick_sort210_5_2:
+// [Main]   mv a0, s0
+// [Main]   mv a1, s1
+// [Main]   mv a2, s2
+// [Main]   call choose_pivot129_4
+// [Main]   lw a1, 0(a0)
+// [Main]   mv a0, s0
+// [Main]   mv a2, s1
+// [Main]   mv a3, s2
+// [Main]   call partition65_3
+// [Main]   lw s3, 0(a0)
+// [Main]   mv a0, s0
+// [Main]   mv a1, s1
+// [Main]   mv a2, s3
+// [Main]   call quick_sort210_5
+// [Main]   addi a1, s3, 1
+// [Main]   mv a0, s0
+// [Main]   mv a2, s2
+// [Main]   call quick_sort210_5
+// [Main] 
+// [Main] .quick_sort210_5_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .quick_sort210_5_1:
+// [Main]   mv a0, s0
+// [Main]   mv a1, s1
+// [Main]   mv a2, s2
+// [Main]   call insertion_sort30_2
+// [Main]   j .quick_sort210_5_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main239_7
+// [Main]   .type main239_7, @function
+// [Main] # leaf false
+// [Main] main239_7:
+// [Main] .main239_7_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   call minimbt_read_int
+// [Main]   mv s0, a0
+// [Main]   slliw a0, s0, 2
+// [Main]   sub a0, s11, a0
+// [Main]   andi s1, a0, -8
+// [Main]   mv s11, s1
+// [Main]   mv a1, s0
+// [Main]   mv a0, s1
+// [Main]   mv a2, zero
+// [Main]   call memseti32
+// [Main]   addi a0, s11, -24
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   la a1, input243_26
+// [Main]   sd a1, 0(a0)
+// [Main]   sd s0, 8(a0)
+// [Main]   sd s1, 16(a0)
+// [Main]   mv s10, a0
+// [Main]   ld a1, 0(a0)
+// [Main]   mv a0, zero
+// [Main]   jalr a1
+// [Main]   mv a0, s1
+// [Main]   mv a1, s0
+// [Main]   call sort233_6
+// [Main]   mv a0, s1
+// [Main]   mv a1, zero
+// [Main]   mv a2, s0
+// [Main]   call output14_1
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl output14_1
+// [Main]   .type output14_1, @function
+// [Main] # leaf false
+// [Main] output14_1:
+// [Main] .output14_1_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv s2, a0
+// [Main]   mv s0, a1
+// [Main]   mv s1, a2
+// [Main]   addi a0, s1, -1
+// [Main]   blt a0, s0, .output14_1_2
+// [Main] 
+// [Main] .output14_1_1:
+// [Main]   slliw a0, s0, 2
+// [Main]   add a0, s2, a0
+// [Main]   lw a0, 0(a0)
+// [Main]   call minimbt_print_int
+// [Main]   call minimbt_print_endline
+// [Main]   addi a1, s0, 1
+// [Main]   mv a0, s2
+// [Main]   mv a2, s1
+// [Main]   call output14_1
+// [Main] 
+// [Main] .output14_1_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .output14_1_2:
+// [Main]   mv a0, zero
+// [Main]   j .output14_1_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl input243_26
+// [Main]   .type input243_26, @function
+// [Main] # leaf false
+// [Main] input243_26:
+// [Main] .input243_26_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s2, a0
+// [Main]   lw a0, 8(s0)
+// [Main]   ld s1, 16(s0)
+// [Main]   addi a0, a0, -1
+// [Main]   blt a0, s2, .input243_26_2
+// [Main] 
+// [Main] .input243_26_1:
+// [Main]   call minimbt_read_int
+// [Main]   slliw a1, s2, 2
+// [Main]   add a1, s1, a1
+// [Main]   sw a0, 0(a1)
+// [Main]   addi a0, s2, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .input243_26_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .input243_26_2:
+// [Main]   mv a0, zero
+// [Main]   j .input243_26_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sort_3173_21
+// [Main]   .type sort_3173_21, @function
+// [Main] # leaf false
+// [Main] sort_3173_21:
+// [Main] .sort_3173_21_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   mv a3, s10
+// [Main]   mv s0, a0
+// [Main]   mv s1, a1
+// [Main]   mv s2, a2
+// [Main]   ld s3, 8(a3)
+// [Main]   mv s10, s3
+// [Main]   ld a2, 0(s3)
+// [Main]   mv a0, s0
+// [Main]   mv a1, s1
+// [Main]   jalr a2
+// [Main]   mv s10, s3
+// [Main]   ld a2, 0(s3)
+// [Main]   mv a0, s1
+// [Main]   mv a1, s2
+// [Main]   jalr a2
+// [Main]   mv s10, s3
+// [Main]   ld a2, 0(s3)
+// [Main]   mv a0, s0
+// [Main]   mv a1, s1
+// [Main]   jalr a2
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sort233_6
+// [Main]   .type sort233_6, @function
+// [Main] # leaf false
+// [Main] sort233_6:
+// [Main] .sort233_6_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   mv a2, a1
+// [Main]   mv a1, zero
+// [Main]   call quick_sort210_5
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sort_2157_19
+// [Main]   .type sort_2157_19, @function
+// [Main] # leaf false
+// [Main] sort_2157_19:
+// [Main] .sort_2157_19_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv a4, s10
+// [Main]   mv a2, a0
+// [Main]   mv a3, a1
+// [Main]   ld a0, 8(a4)
+// [Main]   ld s0, 16(a4)
+// [Main]   slliw a1, a3, 2
+// [Main]   add a1, a0, a1
+// [Main]   lw a1, 0(a1)
+// [Main]   slliw a4, a2, 2
+// [Main]   add a4, a0, a4
+// [Main]   lw a4, 0(a4)
+// [Main]   addi a4, a4, -1
+// [Main]   blt a4, a1, .sort_2157_19_2
+// [Main] 
+// [Main] .sort_2157_19_1:
+// [Main]   mv a1, a2
+// [Main]   mv a2, a3
+// [Main]   call swap1_0
+// [Main]   lw a0, 0(s0)
+// [Main]   addi a0, a0, 1
+// [Main]   sw a0, 0(s0)
+// [Main]   mv a0, zero
+// [Main] 
+// [Main] .sort_2157_19_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .sort_2157_19_2:
+// [Main]   mv a0, zero
+// [Main]   j .sort_2157_19_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl swap1_0
+// [Main]   .type swap1_0, @function
+// [Main] # leaf true
+// [Main] swap1_0:
+// [Main] .swap1_0_0:
+// [Main]   slliw a3, a1, 2
+// [Main]   add a3, a0, a3
+// [Main]   lw a3, 0(a3)
+// [Main]   slliw a4, a2, 2
+// [Main]   add a4, a0, a4
+// [Main]   lw a4, 0(a4)
+// [Main]   slliw a1, a1, 2
+// [Main]   add a1, a0, a1
+// [Main]   sw a4, 0(a1)
+// [Main]   slliw a1, a2, 2
+// [Main]   add a0, a0, a1
+// [Main]   sw a3, 0(a0)
+// [Main]   mv a0, zero
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl f54_13
+// [Main]   .type f54_13, @function
+// [Main] # leaf false
+// [Main] f54_13:
+// [Main] .f54_13_0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   lw a1, 8(s0)
+// [Main]   ld a0, 16(s0)
+// [Main]   addi a1, a1, -1
+// [Main]   blt a1, s1, .f54_13_2
+// [Main] 
+// [Main] .f54_13_1:
+// [Main]   mv s10, a0
+// [Main]   ld a1, 0(a0)
+// [Main]   mv a0, s1
+// [Main]   jalr a1
+// [Main]   addi a0, s1, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .f54_13_3:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] .f54_13_2:
+// [Main]   mv a0, zero
+// [Main]   j .f54_13_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl T$start_28
+// [Main]   .type T$start_28, @function
+// [Main] # leaf false
+// [Main] T$start_28:
+// [Main] .T$start_28_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   call main239_7
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl aux86_16
+// [Main]   .type aux86_16, @function
+// [Main] # leaf false
+// [Main] aux86_16:
+// [Main] .aux86_16_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   mv s0, s10
+// [Main]   mv s1, a0
+// [Main]   lw a1, 8(s0)
+// [Main]   ld a0, 16(s0)
+// [Main]   lw a2, 24(s0)
+// [Main]   ld s2, 32(s0)
+// [Main]   ld s3, 40(s0)
+// [Main]   addi a1, a1, -2
+// [Main]   blt a1, s1, .aux86_16_2
+// [Main] 
+// [Main] .aux86_16_1:
+// [Main]   slliw a1, s1, 2
+// [Main]   add a1, a0, a1
+// [Main]   lw a1, 0(a1)
+// [Main]   addi a2, a2, -1
+// [Main]   blt a2, a1, .aux86_16_4
+// [Main] 
+// [Main] .aux86_16_3:
+// [Main]   lw a1, 0(s2)
+// [Main]   beq a1, s1, .aux86_16_5
+// [Main] 
+// [Main] .aux86_16_6:
+// [Main]   lw a1, 0(s2)
+// [Main]   mv a2, s1
+// [Main]   call swap1_0
+// [Main]   sw zero, 0(s3)
+// [Main]   mv a0, zero
+// [Main] 
+// [Main] .aux86_16_7:
+// [Main]   lw a0, 0(s2)
+// [Main]   addi a0, a0, 1
+// [Main]   sw a0, 0(s2)
+// [Main]   mv a0, zero
+// [Main] 
+// [Main] .aux86_16_8:
+// [Main]   addi a0, s1, 1
+// [Main]   mv s10, s0
+// [Main]   ld a1, 0(s0)
+// [Main]   jalr a1
+// [Main] 
+// [Main] .aux86_16_9:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .aux86_16_2:
+// [Main]   mv a0, zero
+// [Main]   j .aux86_16_9
+// [Main] 
+// [Main] .aux86_16_4:
+// [Main]   mv a0, zero
+// [Main]   j .aux86_16_8
+// [Main] 
+// [Main] .aux86_16_5:
+// [Main]   mv a0, zero
+// [Main]   j .aux86_16_7
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl partition65_3
+// [Main]   .type partition65_3, @function
+// [Main] # leaf false
+// [Main] partition65_3:
+// [Main] .partition65_3_0:
+// [Main]   addi sp, sp, -48
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s1, 16(sp)
+// [Main]   sd s2, 24(sp)
+// [Main]   sd s3, 32(sp)
+// [Main]   sd s4, 40(sp)
+// [Main]   mv s1, a0
+// [Main]   mv s2, a2
+// [Main]   mv s3, a3
+// [Main]   addi a2, s3, -1
+// [Main]   mv a0, s1
+// [Main]   call swap1_0
+// [Main]   addi a0, s3, -1
+// [Main]   slliw a0, a0, 2
+// [Main]   add a0, s1, a0
+// [Main]   lw a0, 0(a0)
+// [Main]   addi a1, s11, -4
+// [Main]   andi s4, a1, -8
+// [Main]   mv s11, s4
+// [Main]   sw s2, 0(s4)
+// [Main]   addi a1, s11, -4
+// [Main]   andi s0, a1, -8
+// [Main]   mv s11, s0
+// [Main]   li a1, 1
+// [Main]   sw a1, 0(s0)
+// [Main]   addi a1, s11, -48
+// [Main]   andi a2, a1, -8
+// [Main]   mv s11, a2
+// [Main]   la a1, aux86_16
+// [Main]   sd a1, 0(a2)
+// [Main]   sd s3, 8(a2)
+// [Main]   sd s1, 16(a2)
+// [Main]   sd a0, 24(a2)
+// [Main]   sd s4, 32(a2)
+// [Main]   sd s0, 40(a2)
+// [Main]   mv s10, a2
+// [Main]   ld a1, 0(a2)
+// [Main]   mv a0, s2
+// [Main]   jalr a1
+// [Main]   lw a1, 0(s4)
+// [Main]   addi a2, s3, -1
+// [Main]   mv a0, s1
+// [Main]   call swap1_0
+// [Main]   lw a2, 0(s4)
+// [Main]   lw a0, 0(s0)
+// [Main]   li a1, 1
+// [Main]   bne a0, a1, .partition65_3_2
+// [Main] 
+// [Main] .partition65_3_1:
+// [Main]   li a0, 1
+// [Main]   mv a1, a0
+// [Main] 
+// [Main] .partition65_3_3:
+// [Main]   addi a0, s11, -8
+// [Main]   andi a0, a0, -8
+// [Main]   mv s11, a0
+// [Main]   sw a2, 0(a0)
+// [Main]   sw a1, 4(a0)
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s1, 16(sp)
+// [Main]   ld s2, 24(sp)
+// [Main]   ld s3, 32(sp)
+// [Main]   ld s4, 40(sp)
+// [Main]   addi sp, sp, 48
+// [Main]   ret
+// [Main] 
+// [Main] .partition65_3_2:
+// [Main]   mv a1, zero
+// [Main]   j .partition65_3_3
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -32
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   sd s11, 16(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   mv s0, sp
+// [Main]   la sp, large_stack_end
+// [Main]   call T$start_28
+// [Main]   mv sp, s0
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   ld s11, 16(sp)
+// [Main]   addi sp, sp, 32
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Parser] flags: []
