@@ -7,7 +7,7 @@ async function read(stream) {
     for await (const chunk of stream) chunks.push(chunk);
     return Buffer.concat(chunks).toString('utf8');
 }
-let input = await read(process.stdin)
+let input = Buffer.of()
 
 let ptr = 0
 
@@ -30,7 +30,7 @@ let importObject = {
         return parseInt(result[0])
     },
     minimbt_read_char: () => {
-        return input[ptr++].charCodeAt(0)
+        return '\x00'
     },
     minimbt_print_int: (value) => process.stdout.write(`${value}`),
     minimbt_print_char: (value) => process.stdout.write(String.fromCharCode(value)),
