@@ -54,7 +54,7 @@ fn JsLoweringCtx::lower_expr(self : JsLoweringCtx, knf : Knf) -> JsExpr {
     FDiv(l, r) => BinOp("/", self.to_js_var(l), self.to_js_var(r))
     IfEq(l, r, t, f) =>
       If(
-        BinOp("==", self.to_js_var(l), self.to_js_var(r)),
+        BinOp("===", self.to_js_var(l), self.to_js_var(r)),
         self.lower_expr(t),
         self.lower_expr(f),
       )
