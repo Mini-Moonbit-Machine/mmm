@@ -4,6 +4,7 @@ enum Stages {
   Typecheck
   Knf
   KnfOpt
+  Js
   Closure
   Core
   CoreOpt
@@ -17,6 +18,7 @@ fn Stages::from_string(s : String) -> Stages? {
     "typecheck" => Some(Stages::Typecheck)
     "knf" => Some(Stages::Knf)
     "knf-opt" => Some(Stages::KnfOpt)
+    "js" => Some(Stages::Js)
     "core" => Some(Stages::Core)
     "core-opt" => Some(Stages::CoreOpt)
     "closure" => Some(Stages::Closure)
@@ -31,7 +33,8 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Parse => Stages::Typecheck
     Stages::Typecheck => Stages::Knf
     Stages::Knf => Stages::KnfOpt
-    Stages::KnfOpt => Stages::Closure
+    Stages::KnfOpt => Stages::Js
+    Stages::Js => Stages::Closure
     Stages::Closure => Stages::Core
     Stages::Core => Stages::CoreOpt
     Stages::CoreOpt => Stages::Asm
@@ -63,6 +66,7 @@ struct CompileStatus {
   mut typechecked : @types.Syntax?
   mut knf : @knf.Knf?
   mut opt_knf : @knf.Knf?
+  mut js : @lower_js.JsCore?
   mut core : @core.Core?
   mut opt_core : @core.Core?
   mut closure_ir : @closure.Program?
@@ -85,6 +89,7 @@ fn CompileStatus::initialize(
     typechecked: None,
     knf: None,
     opt_knf: None,
+    js: None,
     closure_ir: None,
     asm: None,
     core: None,
@@ -169,6 +174,17 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let knf = lamlift.go(knf)
       self.opt_knf = Some(knf)
     }
+    Js => {
+      let knf = self.opt_knf.unwrap()
+      let tracer = tracer.new_subtracer(
+        "Js",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let lower_ctx = @lower_js.JsLoweringCtx::new(knf, tracer)
+      let js = lower_ctx.lower()
+      self.js = Some(js)
+    }
     Core => {
       let subtracer = tracer.new_subtracer(
         "Core",
@@ -246,7 +262,8 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => @json.stringify(self.ast.unwrap().to_json())
       Knf => @json.stringify(self.typechecked.unwrap().to_json())
       KnfOpt => @json.stringify(self.knf.unwrap().to_json())
-      Closure => @json.stringify(self.opt_knf.unwrap().to_json())
+      Js => @json.stringify(self.opt_knf.unwrap().to_json())
+      Closure => mt.abort("No json output for JavaScript")
       Core => @json.stringify(self.opt_knf.unwrap().to_json())
       CoreOpt => mt.abort("No json output for core IR")
       Asm => mt.abort("No json output for core IR")
@@ -258,7 +275,8 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Typecheck => self.ast.unwrap().to_string()
       Knf => self.typechecked.unwrap().to_string()
       KnfOpt => self.knf.unwrap().to_string()
-      Closure => self.opt_knf.unwrap().to_string()
+      Js => self.opt_knf.unwrap().to_string()
+      Closure => Show::to_string(self.js.unwrap())
       Core => self.closure_ir.unwrap().to_string()
       CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
       Asm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
@@ -269,6 +287,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
 
 struct Options {
   mut json : Bool
+  mut js : Bool
   mut start_stage : Stages
   mut end_stage : Stages
   mut knf_interpreter : Bool
@@ -284,6 +303,7 @@ struct Options {
 fn Options::new() -> Options {
   Options::{
     json: false,
+    js: false,
     start_stage: Stages::Parse,
     end_stage: Stages::Finished,
     knf_interpreter: false,
@@ -378,7 +398,7 @@ fn main {
         @ArgParser.Unit(fn() { opts.json = true }),
         "Print results as JSON",
       ),
-
+      ("--js", "", @ArgParser.Unit(fn() { opts.js = true }), "Output JS"),
       // Regular directives
       (
         "--print",
@@ -407,6 +427,9 @@ fn main {
   }
   if opts.core_interpreter {
     opts.end_stage = Stages::CoreOpt
+  }
+  if opts.js {
+    opts.end_stage = Stages::Js
   }
   let stages_to_print = opts.print.map(
     fn(s) {
