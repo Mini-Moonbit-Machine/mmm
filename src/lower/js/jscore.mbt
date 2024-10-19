@@ -187,7 +187,7 @@ pub fn JsExpr::output_as_expr(
     UnOp(op, expr) => logger.write_string("\{op}\{expr}")
     BinOp(op, lhs, rhs) => logger.write_string("\{lhs} \{op} \{rhs}")
     If(cond, then, els) => {
-      logger.write_string("(() => {\n")
+      logger.write_string("$force((() => {\n")
       logger.indent()
       logger.write_string("if (")
       cond.output_as_expr(logger)
@@ -201,7 +201,7 @@ pub fn JsExpr::output_as_expr(
       logger.outdent()
       logger.write_string("\n}")
       logger.outdent()
-      logger.write_string("\n})()")
+      logger.write_string("\n})())")
     }
     Call(name, args) => {
       logger.write_string("\{name}(")
