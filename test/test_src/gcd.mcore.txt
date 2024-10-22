@@ -70,37 +70,35 @@ minimbt_main:
   .text
   .globl gcd1_0
   .type gcd1_0, @function
-# leaf false
+# leaf true
 gcd1_0:
-.gcd1_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
+.gcd1_0_7:
   mv a2, a0
   mv a0, a1
+  mv a1, a0
+
+.gcd1_0_0:
   beq a2, zero, .gcd1_0_1
 
 .gcd1_0_2:
-  blt a0, a2, .gcd1_0_4
+  blt a1, a2, .gcd1_0_4
 
 .gcd1_0_3:
-  sub a1, a0, a2
-  mv a0, a2
-  call gcd1_0
-
-.gcd1_0_5:
-
-.gcd1_0_6:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  sub a0, a1, a2
+  mv a1, a0
+  j .gcd1_0_0
 
 .gcd1_0_1:
-  j .gcd1_0_6
+  mv a0, a1
+
+.gcd1_0_6:
+  ret
 
 .gcd1_0_4:
-  sub a1, a2, a0
-  call gcd1_0
-  j .gcd1_0_5
+  sub a0, a2, a1
+  mv a2, a1
+  mv a1, a0
+  j .gcd1_0_0
 
 __end_text:
   .p2align 2

@@ -19,10 +19,12 @@ __begin_text:
   .type ack1_0, @function
 # leaf false
 ack1_0:
-.ack1_0_0:
+.ack1_0_7:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
+
+.ack1_0_0:
   bge zero, a0, .ack1_0_1
 
 .ack1_0_2:
@@ -34,9 +36,10 @@ ack1_0:
   call ack1_0
   mv a1, a0
   mv a0, s0
-  call ack1_0
+  j .ack1_0_0
 
-.ack1_0_5:
+.ack1_0_1:
+  addi a0, a1, 1
 
 .ack1_0_6:
   ld ra, 0(sp)
@@ -44,15 +47,10 @@ ack1_0:
   addi sp, sp, 16
   ret
 
-.ack1_0_1:
-  addi a0, a1, 1
-  j .ack1_0_6
-
 .ack1_0_3:
   addi a0, a0, -1
   li a1, 1
-  call ack1_0
-  j .ack1_0_5
+  j .ack1_0_0
 
   .p2align 2
   .text

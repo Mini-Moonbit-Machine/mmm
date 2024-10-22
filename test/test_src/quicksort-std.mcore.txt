@@ -34,54 +34,57 @@ memseti32:
   .type g37_11, @function
 # leaf false
 g37_11:
-.g37_11_0:
+.g37_11_7:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a1, 8(s0)
-  ld a0, 16(s0)
-  addi a1, a1, 1
-  blt s1, a1, .g37_11_2
+  sd s2, 24(sp)
+  mv a1, s10
+  lw s2, 8(a1)
+  ld s1, 16(a1)
+  mv s0, a0
+
+.g37_11_0:
+  addi a0, s2, 1
+  blt s0, a0, .g37_11_2
 
 .g37_11_1:
-  slliw a1, s1, 2
-  add a1, a0, a1
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  addi a1, s0, -1
+  slliw a1, a1, 2
+  add a1, s1, a1
   lw a1, 0(a1)
-  addi a2, s1, -1
-  slliw a2, a2, 2
-  add a2, a0, a2
-  lw a2, 0(a2)
-  addi a2, a2, -1
-  blt a2, a1, .g37_11_4
+  addi a1, a1, -1
+  blt a1, a0, .g37_11_4
 
 .g37_11_3:
-  addi a2, s1, -1
-  mv a1, s1
+  addi a2, s0, -1
+  mv a0, s1
+  mv a1, s0
   call swap1_0
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s0, -1
+  mv s0, a0
+  j .g37_11_0
 
-.g37_11_5:
+.g37_11_2:
+  mv a0, zero
 
 .g37_11_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
 
-.g37_11_2:
-  mv a0, zero
-  j .g37_11_6
-
 .g37_11_4:
   mv a0, zero
-  j .g37_11_5
+
+.g37_11_5:
+  j .g37_11_6
 
   .p2align 2
   .text
@@ -241,7 +244,7 @@ choose_pivot129_4:
   .type quick_sort210_5, @function
 # leaf false
 quick_sort210_5:
-.quick_sort210_5_0:
+.quick_sort210_5_4:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -251,6 +254,8 @@ quick_sort210_5:
   mv s0, a0
   mv s1, a1
   mv s2, a2
+
+.quick_sort210_5_0:
   sub a0, s2, s1
   li a1, 16
   bge a1, a0, .quick_sort210_5_1
@@ -270,10 +275,15 @@ quick_sort210_5:
   mv a1, s1
   mv a2, s3
   call quick_sort210_5
-  addi a1, s3, 1
+  addi a0, s3, 1
+  mv s1, a0
+  j .quick_sort210_5_0
+
+.quick_sort210_5_1:
   mv a0, s0
+  mv a1, s1
   mv a2, s2
-  call quick_sort210_5
+  call insertion_sort30_2
 
 .quick_sort210_5_3:
   ld ra, 0(sp)
@@ -283,13 +293,6 @@ quick_sort210_5:
   ld s3, 32(sp)
   addi sp, sp, 48
   ret
-
-.quick_sort210_5_1:
-  mv a0, s0
-  mv a1, s1
-  mv a2, s2
-  call insertion_sort30_2
-  j .quick_sort210_5_3
 
   .p2align 2
   .text
@@ -342,28 +345,32 @@ main239_7:
   .type output14_1, @function
 # leaf false
 output14_1:
-.output14_1_0:
+.output14_1_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
-  addi a0, s1, -1
-  blt a0, s0, .output14_1_2
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+
+.output14_1_0:
+  addi a0, s2, -1
+  blt a0, s1, .output14_1_2
 
 .output14_1_1:
-  slliw a0, s0, 2
-  add a0, s2, a0
+  slliw a0, s1, 2
+  add a0, s0, a0
   lw a0, 0(a0)
   call minimbt_print_int
   call minimbt_print_endline
-  addi a1, s0, 1
-  mv a0, s2
-  mv a2, s1
-  call output14_1
+  addi a0, s1, 1
+  mv s1, a0
+  j .output14_1_0
+
+.output14_1_2:
+  mv a0, zero
 
 .output14_1_3:
   ld ra, 0(sp)
@@ -373,27 +380,25 @@ output14_1:
   addi sp, sp, 32
   ret
 
-.output14_1_2:
-  mv a0, zero
-  j .output14_1_3
-
   .p2align 2
   .text
   .globl input243_26
   .type input243_26, @function
 # leaf false
 input243_26:
-.input243_26_0:
+.input243_26_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, s10
+  mv a1, s10
+  lw s0, 8(a1)
+  ld s1, 16(a1)
   mv s2, a0
-  lw a0, 8(s0)
-  ld s1, 16(s0)
-  addi a0, a0, -1
+
+.input243_26_0:
+  addi a0, s0, -1
   blt a0, s2, .input243_26_2
 
 .input243_26_1:
@@ -402,9 +407,11 @@ input243_26:
   add a1, s1, a1
   sw a0, 0(a1)
   addi a0, s2, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  mv s2, a0
+  j .input243_26_0
+
+.input243_26_2:
+  mv a0, zero
 
 .input243_26_3:
   ld ra, 0(sp)
@@ -413,10 +420,6 @@ input243_26:
   ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.input243_26_2:
-  mv a0, zero
-  j .input243_26_3
 
   .p2align 2
   .text
@@ -546,38 +549,40 @@ swap1_0:
   .type f54_13, @function
 # leaf false
 f54_13:
-.f54_13_0:
+.f54_13_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a1, 8(s0)
-  ld a0, 16(s0)
-  addi a1, a1, -1
-  blt a1, s1, .f54_13_2
+  sd s2, 24(sp)
+  mv a1, s10
+  lw s0, 8(a1)
+  ld s1, 16(a1)
+  mv s2, a0
+
+.f54_13_0:
+  addi a0, s0, -1
+  blt a0, s2, .f54_13_2
 
 .f54_13_1:
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, s1
+  mv s10, s1
+  ld a1, 0(s1)
+  mv a0, s2
   jalr a1
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s2, 1
+  mv s2, a0
+  j .f54_13_0
+
+.f54_13_2:
+  mv a0, zero
 
 .f54_13_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.f54_13_2:
-  mv a0, zero
-  j .f54_13_3
 
   .p2align 2
   .text
@@ -599,52 +604,59 @@ T$start_28:
   .type aux86_16, @function
 # leaf false
 aux86_16:
-.aux86_16_0:
-  addi sp, sp, -48
+.aux86_16_10:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a1, 8(s0)
-  ld a0, 16(s0)
-  lw a2, 24(s0)
-  ld s2, 32(s0)
-  ld s3, 40(s0)
-  addi a1, a1, -2
-  blt a1, s1, .aux86_16_2
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  mv a1, s10
+  lw s0, 8(a1)
+  ld s1, 16(a1)
+  lw s2, 24(a1)
+  ld s3, 32(a1)
+  ld s4, 40(a1)
+  mv s5, a0
+
+.aux86_16_0:
+  addi a0, s0, -2
+  blt a0, s5, .aux86_16_2
 
 .aux86_16_1:
-  slliw a1, s1, 2
-  add a1, a0, a1
-  lw a1, 0(a1)
-  addi a2, a2, -1
-  blt a2, a1, .aux86_16_4
+  slliw a0, s5, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  addi a1, s2, -1
+  blt a1, a0, .aux86_16_4
 
 .aux86_16_3:
-  lw a1, 0(s2)
-  beq a1, s1, .aux86_16_5
+  lw a0, 0(s3)
+  beq a0, s5, .aux86_16_5
 
 .aux86_16_6:
-  lw a1, 0(s2)
-  mv a2, s1
+  lw a1, 0(s3)
+  mv a0, s1
+  mv a2, s5
   call swap1_0
-  sw zero, 0(s3)
+  sw zero, 0(s4)
   mv a0, zero
 
 .aux86_16_7:
-  lw a0, 0(s2)
+  lw a0, 0(s3)
   addi a0, a0, 1
-  sw a0, 0(s2)
+  sw a0, 0(s3)
   mv a0, zero
 
 .aux86_16_8:
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s5, 1
+  mv s5, a0
+  j .aux86_16_0
+
+.aux86_16_2:
+  mv a0, zero
 
 .aux86_16_9:
   ld ra, 0(sp)
@@ -652,12 +664,10 @@ aux86_16:
   ld s1, 16(sp)
   ld s2, 24(sp)
   ld s3, 32(sp)
-  addi sp, sp, 48
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  addi sp, sp, 64
   ret
-
-.aux86_16_2:
-  mv a0, zero
-  j .aux86_16_9
 
 .aux86_16_4:
   mv a0, zero

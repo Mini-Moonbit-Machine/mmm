@@ -1,0 +1,108 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn T$t.10 #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn odd6_7 #f7 : closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: bool = eq($f0, 0)
+    br %1 b3() b4()
+  }
+  .bb #b2 () {
+    let %5: int32 = add($f0, 1)
+    let %6: int32 = call f4(%5)
+    jump b6(%6)
+  }
+  .bb #b3 () {
+    let %2: int32 = load_symbol ::1
+    jump b5(%2)
+  }
+  .bb #b4 () {
+    let %3: int32 = sub($f0, 1)
+    let %4: int32 = call f4(%3)
+    jump b5(%4)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+}
+.fn even3_4 #f4 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f7
+    let %1: bool = le(0, $f0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: bool = eq($f0, 0)
+    br %2 b3() b4()
+  }
+  .bb #b2 () {
+    let %6: int32 = add($f0, 1)
+    let %7: int32 = apply f4.m0(%6)
+    jump b6(%7)
+  }
+  .bb #b3 () {
+    let %3: int32 = load_symbol ::0
+    jump b5(%3)
+  }
+  .bb #b4 () {
+    let %4: int32 = sub($f0, 1)
+    let %5: int32 = apply f4.m0(%4)
+    jump b5(%5)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+}
+.fn T$start_10 #f10 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn T$f.22 #f2 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn main21_5 #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f4(789)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.thunk ::0 t.1
+.thunk ::1 f.2
+.thunk ::2 start

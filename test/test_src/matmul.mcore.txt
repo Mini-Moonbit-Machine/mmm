@@ -76,34 +76,39 @@ matmul1_0:
   .type init_arr63_12, @function
 # leaf false
 init_arr63_12:
-.init_arr63_12_0:
+.init_arr63_12_4:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s0, s10
-  mv s2, a0
-  lw a1, 8(s0)
-  ld s1, 16(s0)
-  blt s2, zero, .init_arr63_12_2
+  mv a1, s10
+  lw s2, 8(a1)
+  ld s0, 16(a1)
+  mv s1, a0
+
+.init_arr63_12_0:
+  blt s1, zero, .init_arr63_12_2
 
 .init_arr63_12_1:
-  slliw a0, a1, 3
+  slliw a0, s2, 3
   sub a0, s11, a0
   andi s3, a0, -8
   mv s11, s3
   fmv.d.x fa0, zero
+  mv a1, s2
   mv a0, s3
   call memsetf64
-  slliw a0, s2, 3
-  add a0, s1, a0
+  slliw a0, s1, 3
+  add a0, s0, a0
   sd s3, 0(a0)
-  addi a0, s2, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s1, -1
+  mv s1, a0
+  j .init_arr63_12_0
+
+.init_arr63_12_2:
+  mv a0, zero
 
 .init_arr63_12_3:
   ld ra, 0(sp)
@@ -114,119 +119,120 @@ init_arr63_12:
   addi sp, sp, 48
   ret
 
-.init_arr63_12_2:
-  mv a0, zero
-  j .init_arr63_12_3
-
   .p2align 2
   .text
   .globl loop218_5
   .type loop218_5, @function
 # leaf false
 loop218_5:
-.loop218_5_0:
-  addi sp, sp, -32
+.loop218_5_4:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a1, 8(s0)
-  lw a4, 16(s0)
-  ld a2, 24(s0)
-  ld a5, 32(s0)
-  lw a3, 40(s0)
-  blt s1, zero, .loop218_5_2
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  mv a1, s10
+  ld s5, 8(a1)
+  lw s2, 16(a1)
+  ld s0, 24(a1)
+  ld s3, 32(a1)
+  lw s1, 40(a1)
+  mv s4, a0
+
+.loop218_5_0:
+  blt s4, zero, .loop218_5_2
 
 .loop218_5_1:
   addi a0, s11, -48
   andi a0, a0, -8
   mv s11, a0
-  la a6, loop322_7
-  sd a6, 0(a0)
-  sd a1, 8(a0)
-  sd a4, 16(a0)
-  sd s1, 24(a0)
-  sd a2, 32(a0)
-  sd a5, 40(a0)
-  addi a1, a3, -1
+  la a1, loop322_7
+  sd a1, 0(a0)
+  sd s5, 8(a0)
+  sd s2, 16(a0)
+  sd s4, 24(a0)
+  sd s0, 32(a0)
+  sd s3, 40(a0)
+  addi a1, s1, -1
   mv s10, a0
   ld a2, 0(a0)
   mv a0, a1
   jalr a2
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s4, -1
+  mv s4, a0
+  j .loop218_5_0
+
+.loop218_5_2:
+  mv a0, zero
 
 .loop218_5_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  addi sp, sp, 32
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  addi sp, sp, 64
   ret
-
-.loop218_5_2:
-  mv a0, zero
-  j .loop218_5_3
 
   .p2align 2
   .text
   .globl loop322_7
   .type loop322_7, @function
-# leaf false
+# leaf true
 loop322_7:
+.loop322_7_4:
+  mv a1, s10
+  mv a5, a0
+  ld a4, 8(a1)
+  lw a2, 16(a1)
+  lw a0, 24(a1)
+  ld a3, 32(a1)
+  ld a1, 40(a1)
+  mv a6, a5
+
 .loop322_7_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a4, s10
-  mv a7, a0
-  ld a1, 8(a4)
-  lw a5, 16(a4)
-  lw a2, 24(a4)
-  ld a6, 32(a4)
-  ld a3, 40(a4)
-  blt a7, zero, .loop322_7_2
+  blt a6, zero, .loop322_7_2
 
 .loop322_7_1:
-  slliw a0, a5, 3
-  add a0, a1, a0
-  ld a0, 0(a0)
-  slliw t0, a5, 3
-  add a1, a1, t0
-  ld a1, 0(a1)
-  slliw t0, a2, 3
-  add a1, a1, t0
-  fld fa0, 0(a1)
-  slliw a1, a5, 3
-  add a1, a6, a1
-  ld a1, 0(a1)
-  slliw a5, a7, 3
-  add a1, a1, a5
-  fld fa1, 0(a1)
-  slliw a1, a7, 3
-  add a1, a3, a1
-  ld a1, 0(a1)
-  slliw a3, a2, 3
-  add a1, a1, a3
-  fld fa2, 0(a1)
+  slliw a5, a2, 3
+  add a5, a4, a5
+  ld a5, 0(a5)
+  slliw a7, a2, 3
+  add a7, a4, a7
+  ld a7, 0(a7)
+  slliw t0, a0, 3
+  add a7, a7, t0
+  fld fa0, 0(a7)
+  slliw a7, a2, 3
+  add a7, a3, a7
+  ld a7, 0(a7)
+  slliw t0, a6, 3
+  add a7, a7, t0
+  fld fa1, 0(a7)
+  slliw a7, a6, 3
+  add a7, a1, a7
+  ld a7, 0(a7)
+  slliw t0, a0, 3
+  add a7, a7, t0
+  fld fa2, 0(a7)
   fmadd.d fa0, fa1, fa2, fa0
-  slliw a1, a2, 3
-  add a0, a0, a1
-  fsd fa0, 0(a0)
-  addi a0, a7, -1
-  mv s10, a4
-  ld a1, 0(a4)
-  jalr a1
-
-.loop322_7_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  slliw a7, a0, 3
+  add a5, a5, a7
+  fsd fa0, 0(a5)
+  addi a5, a6, -1
+  mv a6, a5
+  j .loop322_7_0
 
 .loop322_7_2:
   mv a0, zero
-  j .loop322_7_3
+
+.loop322_7_3:
+  ret
 
   .p2align 2
   .text
@@ -356,50 +362,58 @@ main53_1:
   .type loop114_3, @function
 # leaf false
 loop114_3:
-.loop114_3_0:
-  addi sp, sp, -32
+.loop114_3_4:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  ld a0, 8(s0)
-  ld a2, 16(s0)
-  ld a3, 24(s0)
-  lw a4, 32(s0)
-  lw a5, 40(s0)
-  blt s1, zero, .loop114_3_2
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  mv a1, s10
+  ld s0, 8(a1)
+  ld s1, 16(a1)
+  ld s2, 24(a1)
+  lw s3, 32(a1)
+  lw s4, 40(a1)
+  mv s5, a0
+
+.loop114_3_0:
+  blt s5, zero, .loop114_3_2
 
 .loop114_3_1:
-  addi a1, s11, -48
-  andi a1, a1, -8
+  addi a0, s11, -48
+  andi a1, a0, -8
   mv s11, a1
-  la a6, loop218_5
-  sd a6, 0(a1)
-  sd a0, 8(a1)
-  sd s1, 16(a1)
-  sd a2, 24(a1)
-  sd a3, 32(a1)
-  sd a4, 40(a1)
-  addi a0, a5, -1
+  la a0, loop218_5
+  sd a0, 0(a1)
+  sd s0, 8(a1)
+  sd s5, 16(a1)
+  sd s1, 24(a1)
+  sd s2, 32(a1)
+  sd s3, 40(a1)
+  addi a0, s4, -1
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s5, -1
+  mv s5, a0
+  j .loop114_3_0
+
+.loop114_3_2:
+  mv a0, zero
 
 .loop114_3_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  addi sp, sp, 32
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  addi sp, sp, 64
   ret
-
-.loop114_3_2:
-  mv a0, zero
-  j .loop114_3_3
 
   .p2align 2
   .text

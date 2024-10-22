@@ -65,34 +65,35 @@ T$start_10:
   .type f9_2, @function
 # leaf false
 f9_2:
-.f9_2_0:
+.f9_2_4:
   addi sp, sp, -16
   sd ra, 0(sp)
-  addi a1, s11, -16
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, g12_7
-  sd a2, 0(a1)
-  sd a0, 8(a1)
-  li a0, 1
-  li a2, 1
-  bne a0, a2, .f9_2_2
 
-.f9_2_1:
+.f9_2_0:
+  addi a1, s11, -16
+  andi a2, a1, -8
+  mv s11, a2
+  la a1, g12_7
+  sd a1, 0(a2)
+  sd a0, 8(a2)
   li a0, 1
-  call f9_2
+  li a1, 1
+  beq a0, a1, .f9_2_1
+
+.f9_2_2:
+  mv s10, a2
+  ld a1, 0(a2)
+  li a0, 2
+  jalr a1
 
 .f9_2_3:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.f9_2_2:
-  mv s10, a1
-  ld a1, 0(a1)
-  li a0, 2
-  jalr a1
-  j .f9_2_3
+.f9_2_1:
+  li a0, 1
+  j .f9_2_0
 
   .p2align 2
   .text

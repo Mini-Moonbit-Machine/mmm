@@ -12,4 +12,7 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let o2f = Offset2Field::new(core)
   o2f.go()
   self.tracer.record("core_opt_after_o2f", core.to_pretty_print())
+  let tre = TailRecElim::new(core, self.tracer)
+  tre.go()
+  self.tracer.record("core_opt_after_tre", core.to_pretty_print())
 }

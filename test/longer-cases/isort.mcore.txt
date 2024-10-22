@@ -89,39 +89,41 @@ isort33_3:
   .type aux73_17, @function
 # leaf false
 aux73_17:
-.aux73_17_0:
+.aux73_17_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a1, 16(s0)
-  beq s1, a0, .aux73_17_1
+  sd s2, 24(sp)
+  mv a1, s10
+  lw s0, 8(a1)
+  ld s1, 16(a1)
+  mv s2, a0
+
+.aux73_17_0:
+  beq s2, s0, .aux73_17_1
 
 .aux73_17_2:
-  slliw a0, s1, 2
-  add a0, a1, a0
+  slliw a0, s2, 2
+  add a0, s1, a0
   lw a0, 0(a0)
   call minimbt_print_int
   li a0, 32
   call minimbt_print_char
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s2, 1
+  mv s2, a0
+  j .aux73_17_0
+
+.aux73_17_1:
+  mv a0, zero
 
 .aux73_17_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.aux73_17_1:
-  mv a0, zero
-  j .aux73_17_3
 
   .p2align 2
   .text
@@ -159,58 +161,53 @@ main85_5:
   .text
   .globl insert38_12
   .type insert38_12, @function
-# leaf false
+# leaf true
 insert38_12:
-.insert38_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
+.insert38_12_7:
   mv a2, s10
+
+.insert38_12_0:
   beq a1, zero, .insert38_12_1
 
 .insert38_12_2:
+  addi a2, a1, -1
+  slliw a2, a2, 2
+  add a2, a0, a2
+  lw a2, 0(a2)
+  slliw a3, a1, 2
+  add a3, a0, a3
+  lw a3, 0(a3)
+  bge a3, a2, .insert38_12_3
+
+.insert38_12_4:
+  slliw a2, a1, 2
+  add a2, a0, a2
+  lw a2, 0(a2)
   addi a3, a1, -1
   slliw a3, a3, 2
   add a3, a0, a3
   lw a3, 0(a3)
   slliw a4, a1, 2
   add a4, a0, a4
-  lw a4, 0(a4)
-  bge a4, a3, .insert38_12_3
-
-.insert38_12_4:
-  slliw a3, a1, 2
-  add a3, a0, a3
-  lw a3, 0(a3)
-  addi a4, a1, -1
-  slliw a4, a4, 2
-  add a4, a0, a4
-  lw a4, 0(a4)
-  slliw a5, a1, 2
-  add a5, a0, a5
-  sw a4, 0(a5)
-  addi a4, a1, -1
-  slliw a4, a4, 2
-  add a4, a0, a4
   sw a3, 0(a4)
+  addi a3, a1, -1
+  slliw a3, a3, 2
+  add a3, a0, a3
+  sw a2, 0(a3)
   addi a1, a1, -1
-  mv s10, a2
-  ld a2, 0(a2)
-  jalr a2
-
-.insert38_12_5:
-
-.insert38_12_6:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  j .insert38_12_0
 
 .insert38_12_1:
   mv a0, zero
-  j .insert38_12_6
+
+.insert38_12_6:
+  ret
 
 .insert38_12_3:
   mv a0, zero
-  j .insert38_12_5
+
+.insert38_12_5:
+  j .insert38_12_6
 
   .p2align 2
   .text
@@ -218,31 +215,34 @@ insert38_12:
   .type aux19_9, @function
 # leaf false
 aux19_9:
-.aux19_9_0:
+.aux19_9_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, s10
+  mv a2, s10
+  lw s0, 8(a2)
+  ld s1, 16(a2)
   mv s2, a0
   mv a0, a1
-  lw a1, 8(s0)
-  ld s1, 16(s0)
-  beq s2, a1, .aux19_9_1
+
+.aux19_9_0:
+  beq s2, s0, .aux19_9_1
 
 .aux19_9_2:
   call random1_0
   li a1, 65537
   call modulo7_1
-  mv a1, a0
-  slliw a0, s2, 2
-  add a0, s1, a0
-  sw a1, 0(a0)
-  addi a0, s2, 1
-  mv s10, s0
-  ld a2, 0(s0)
-  jalr a2
+  slliw a1, s2, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+  addi a1, s2, 1
+  mv s2, a1
+  j .aux19_9_0
+
+.aux19_9_1:
+  mv a0, zero
 
 .aux19_9_3:
   ld ra, 0(sp)
@@ -251,10 +251,6 @@ aux19_9:
   ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.aux19_9_1:
-  mv a0, zero
-  j .aux19_9_3
 
   .p2align 2
   .text
@@ -276,38 +272,43 @@ T$start_20:
   .type aux60_14, @function
 # leaf false
 aux60_14:
-.aux60_14_0:
-  addi sp, sp, -32
+.aux60_14_4:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a2, 8(s0)
-  ld a1, 16(s0)
-  ld a0, 24(s0)
-  beq s1, a2, .aux60_14_1
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv a1, s10
+  lw s3, 8(a1)
+  ld s1, 16(a1)
+  ld s0, 24(a1)
+  mv s2, a0
+
+.aux60_14_0:
+  beq s2, s3, .aux60_14_1
 
 .aux60_14_2:
-  mv s10, a1
-  ld a2, 0(a1)
-  mv a1, s1
+  mv s10, s1
+  ld a2, 0(s1)
+  mv a0, s0
+  mv a1, s2
   jalr a2
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s2, 1
+  mv s2, a0
+  j .aux60_14_0
+
+.aux60_14_1:
+  mv a0, zero
 
 .aux60_14_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  addi sp, sp, 32
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
   ret
-
-.aux60_14_1:
-  mv a0, zero
-  j .aux60_14_3
 
   .p2align 2
   .text

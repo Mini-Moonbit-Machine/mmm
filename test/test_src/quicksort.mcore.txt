@@ -34,39 +34,41 @@ memseti32:
   .type output97_12, @function
 # leaf false
 output97_12:
-.output97_12_0:
+.output97_12_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
-  mv s1, a0
-  lw a0, 8(s0)
-  ld a1, 16(s0)
-  addi a0, a0, -1
-  blt a0, s1, .output97_12_2
+  sd s2, 24(sp)
+  mv a1, s10
+  lw s0, 8(a1)
+  ld s1, 16(a1)
+  mv s2, a0
+
+.output97_12_0:
+  addi a0, s0, -1
+  blt a0, s2, .output97_12_2
 
 .output97_12_1:
-  slliw a0, s1, 2
-  add a0, a1, a0
+  slliw a0, s2, 2
+  add a0, s1, a0
   lw a0, 0(a0)
   call minimbt_print_int
   call minimbt_print_endline
-  addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s2, 1
+  mv s2, a0
+  j .output97_12_0
+
+.output97_12_2:
+  mv a0, zero
 
 .output97_12_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.output97_12_2:
-  mv a0, zero
-  j .output97_12_3
 
   .p2align 2
   .text
@@ -74,33 +76,37 @@ output97_12:
   .type quicksort59_2, @function
 # leaf false
 quicksort59_2:
-.quicksort59_2_0:
+.quicksort59_2_4:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
-  addi a0, s1, -1
-  blt a0, s0, .quicksort59_2_2
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+
+.quicksort59_2_0:
+  addi a0, s2, -1
+  blt a0, s1, .quicksort59_2_2
 
 .quicksort59_2_1:
-  mv a0, s2
-  mv a1, s0
-  mv a2, s1
+  mv a0, s0
+  mv a1, s1
+  mv a2, s2
   call partition14_1
   mv s3, a0
   addi a2, s3, -1
-  mv a0, s2
-  mv a1, s0
+  mv a0, s0
+  mv a1, s1
   call quicksort59_2
-  addi a1, s3, 1
-  mv a0, s2
-  mv a2, s1
-  call quicksort59_2
+  addi a0, s3, 1
+  mv s1, a0
+  j .quicksort59_2_0
+
+.quicksort59_2_2:
+  mv a0, zero
 
 .quicksort59_2_3:
   ld ra, 0(sp)
@@ -111,38 +117,38 @@ quicksort59_2:
   addi sp, sp, 48
   ret
 
-.quicksort59_2_2:
-  mv a0, zero
-  j .quicksort59_2_3
-
   .p2align 2
   .text
   .globl input79_10
   .type input79_10, @function
 # leaf false
 input79_10:
-.input79_10_0:
+.input79_10_4:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, s10
-  mv s2, a0
-  lw a0, 8(s0)
-  ld s1, 16(s0)
-  addi a0, a0, -1
-  blt a0, s2, .input79_10_2
+  mv a1, s10
+  lw s2, 8(a1)
+  ld s0, 16(a1)
+  mv s1, a0
+
+.input79_10_0:
+  addi a0, s2, -1
+  blt a0, s1, .input79_10_2
 
 .input79_10_1:
   call minimbt_read_int
-  slliw a1, s2, 2
-  add a1, s1, a1
+  slliw a1, s1, 2
+  add a1, s0, a1
   sw a0, 0(a1)
-  addi a0, s2, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  addi a0, s1, 1
+  mv s1, a0
+  j .input79_10_0
+
+.input79_10_2:
+  mv a0, zero
 
 .input79_10_3:
   ld ra, 0(sp)
@@ -151,10 +157,6 @@ input79_10:
   ld s2, 24(sp)
   addi sp, sp, 32
   ret
-
-.input79_10_2:
-  mv a0, zero
-  j .input79_10_3
 
   .p2align 2
   .text
@@ -301,52 +303,57 @@ swap1_0:
   .type l26_6, @function
 # leaf false
 l26_6:
-.l26_6_0:
-  addi sp, sp, -32
+.l26_6_7:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv s0, s10
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  mv a1, s10
+  lw s4, 8(a1)
+  ld s2, 16(a1)
+  lw s0, 24(a1)
+  ld s3, 32(a1)
   mv s1, a0
-  lw a0, 8(s0)
-  ld a1, 16(s0)
-  lw a2, 24(s0)
-  ld a3, 32(s0)
-  addi a0, a0, -1
+
+.l26_6_0:
+  addi a0, s4, -1
   blt a0, s1, .l26_6_2
 
 .l26_6_1:
   slliw a0, s1, 2
-  add a0, a1, a0
+  add a0, s2, a0
   lw a0, 0(a0)
-  blt a2, a0, .l26_6_4
+  blt s0, a0, .l26_6_4
 
 .l26_6_3:
-  lw a0, 0(a3)
+  lw a0, 0(s3)
   addi a0, a0, 1
-  sw a0, 0(a3)
-  lw a2, 0(a3)
-  mv a0, a1
-  mv a1, a2
+  sw a0, 0(s3)
+  lw a1, 0(s3)
+  mv a0, s2
   mv a2, s1
   call swap1_0
 
 .l26_6_5:
   addi a0, s1, 1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+  mv s1, a0
+  j .l26_6_0
+
+.l26_6_2:
+  mv a0, zero
 
 .l26_6_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  addi sp, sp, 32
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  addi sp, sp, 48
   ret
-
-.l26_6_2:
-  mv a0, zero
-  j .l26_6_6
 
 .l26_6_4:
   mv a0, zero
