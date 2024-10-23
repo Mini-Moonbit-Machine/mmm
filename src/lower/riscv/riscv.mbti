@@ -4,6 +4,7 @@ alias @moonbitlang/core/hashmap as @hashmap
 alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/minimbt/core as @core
 alias @moonbitlang/minimbt/lower as @lower
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 fn def_use(@moonbitlang/minimbt/riscv.RvAsm) -> (Array[@moonbitlang/minimbt/riscv.AnyReg], Array[@moonbitlang/minimbt/riscv.AnyReg])
@@ -115,18 +116,20 @@ pub struct RiscvFnLoweringCtx {
   pub used_primitive : @hashset.T[String]
   pub is_leaf : Bool
   pub mfn : MFn?
+  pub tracer : @util.SubTracer
 }
 impl RiscvFnLoweringCtx {
-  new(@core.Core, @core.Fn) -> Self
+  new(@core.Core, @core.Fn, @util.SubTracer) -> Self
 }
 
 pub struct RiscvLoweringCtx {
   pub core : @core.Core
+  pub tracer : @util.SubTracer
 }
 impl RiscvLoweringCtx {
   lower(Self) -> MCore!Failure
   lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]) -> MFn
-  new(@core.Core) -> Self
+  new(@core.Core, @util.SubTracer) -> Self
 }
 
 // Type aliases

@@ -6,7 +6,7 @@ fn test_parse_type(
   expected_ntokens : Int
 ) -> Unit!Error {
   let tracer = @util.Tracer::new()
-  let subtracer = tracer.new_subtracer("Test")
+  let subtracer = tracer.new_subtracer("Test", true, false)
   let parser = Parser::new(source, subtracer)
   let ty = parser.parse_type!()
   let ty_ntokens = ty.ntokens
@@ -22,7 +22,7 @@ fn test_parse_expr(
   expected_ntokens : Int
 ) -> Unit!Error {
   let tracer = @util.Tracer::new()
-  let subtracer = tracer.new_subtracer("Test")
+  let subtracer = tracer.new_subtracer("Test", true, false)
   let parser = Parser::new(source, subtracer)
   let expr = parser.parse_expr!()
   let expr_ntokens = expr.ntokens

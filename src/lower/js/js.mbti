@@ -1,0 +1,60 @@
+package moonbitlang/minimbt/lower/js
+
+alias @moonbitlang/minimbt/knf as @knf
+alias @moonbitlang/minimbt/util as @util
+
+// Values
+
+// Types and methods
+pub struct JsCore {
+  pub entry : JsFn
+}
+impl JsCore {
+  output(Self, Logger) -> Unit
+}
+
+pub enum JsExpr {
+  Var(String)
+  Lit(String)
+  Thunk(JsExpr)
+  Fn(JsFn)
+  LetRec(JsFn, JsExpr)
+  Let(String, JsExpr, JsExpr)
+  LetTuple(Array[String], JsExpr, JsExpr)
+  Get(String, String)
+  Put(String, String, String)
+  UnOp(String, String)
+  BinOp(String, String, String)
+  If(JsExpr, JsExpr, JsExpr)
+  Call(String, Array[JsExpr])
+  Tuple(Array[String])
+}
+impl JsExpr {
+  output_as_expr(Self, @util.IndentLogger) -> Unit
+  output_with_tail_return(Self, @util.IndentLogger) -> Unit
+}
+
+pub struct JsFn {
+  pub name : String?
+  pub params : Array[String]
+  pub expr : JsExpr
+}
+impl JsFn {
+  output(Self, @util.IndentLogger) -> Unit
+}
+
+pub struct JsLoweringCtx {
+  pub knf : @knf.Knf
+  pub tracer : @util.SubTracer
+}
+impl JsLoweringCtx {
+  lower(Self) -> JsCore
+  new(@knf.Knf, @util.SubTracer) -> Self
+}
+
+// Type aliases
+
+// Traits
+
+// Extension Methods
+

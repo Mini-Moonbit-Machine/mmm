@@ -1,6 +1,6 @@
 fn test_tychk(source : String) -> Unit!Error {
   let tracer = @util.Tracer::new()
-  let subtracer = tracer.new_subtracer("Test")
+  let subtracer = tracer.new_subtracer("Test", true, false)
   let parser = @parser.Parser::new(source, subtracer)
   let ast = parser.parse!()
   let typer = @typer.Typer::new(ast.inner, subtracer)

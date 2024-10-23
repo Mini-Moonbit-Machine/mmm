@@ -2,6 +2,7 @@ package moonbitlang/minimbt/parser
 
 alias @moonbitlang/minimbt as @minimbt
 alias @moonbitlang/minimbt/lexer as @lexer
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 
@@ -13,10 +14,12 @@ pub struct PResult {
 
 pub struct Parser {
   pub tokenizer : @lexer.Lexer
+  pub tracer : @util.SubTracer
   pub token : @lexer.Token?
 }
 impl Parser {
-  new(String) -> Self
+  get_flags(Self) -> Array[String]
+  new(String, @util.SubTracer) -> Self
   next_token(Self) -> PResult[@lexer.Token]!Failure
   parse(Self) -> PResult[@minimbt.Syntax]!Failure
   parse_expr(Self) -> PResult[@minimbt.Syntax]!Failure

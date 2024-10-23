@@ -1,0 +1,183 @@
+package moonbitlang/minimbt/lower/wasm
+
+alias @moonbitlang/core/hashmap as @hashmap
+alias @moonbitlang/minimbt/core as @core
+alias @moonbitlang/minimbt/lower as @lower
+alias @moonbitlang/minimbt/util as @util
+
+// Values
+
+// Types and methods
+pub type Label String
+impl Label {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub type LabelIndex Int
+impl LabelIndex {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct MCore {
+  pub func_type_ctx : @hashmap.T[Label, (Array[Type], Type?)]
+  pub table : MTable
+  pub globals : @hashmap.T[Name, Type]
+  pub mfuncs : Array[MFn]
+}
+impl MCore {
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct MFn {
+  pub name : Label
+  pub args : Array[(Name, Type)]
+  pub ret : Type?
+  pub locals : Array[(Name, Type)]
+  pub seq : Array[WasmInsn]
+}
+impl MFn {
+  output(Self, Logger) -> Unit
+}
+
+pub struct MTable {
+  pub name : Label
+  pub size : Int
+  pub elems : Array[Label]
+}
+
+pub type Name String
+impl Name {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub type TableIndex Int
+impl TableIndex {
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub enum Type {
+  I32
+  F64
+  FunRef
+}
+impl Type {
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct WasmFnLoweringCtx {
+  pub core : @core.Core
+  pub func : @core.Fn
+  pub order : @lower.LoweringOrder
+  pub buffer : Array[WasmInsn]
+  pub icache : Array[WasmInsn]
+  pub func_type_ctx : @hashmap.T[Label, (Array[Type], Type?)]
+  pub local_reg : @hashmap.T[@core.Value, Name]
+  pub branch_aux_reg : Name
+  pub this_ptr : Name
+  pub closure_ptr : Name
+  pub closure_table : Label
+  pub closure_table_index : @hashmap.T[@core.FnRef, TableIndex]
+  pub tracer : @util.SubTracer
+}
+impl WasmFnLoweringCtx {
+  emit_prologue(Self) -> Unit
+  emit_wasm(Self, WasmInsn) -> Unit
+  lower(Self) -> MFn
+  lower_address(Self, @core.Address) -> Unit
+  lower_block(Self, @core.BasicBlock, @hashmap.T[@core.BlockRef, LabelIndex]) -> Unit
+  lower_control(Self, @core.Control, @hashmap.T[@core.BlockRef, LabelIndex]) -> Unit
+  lower_insn(Self, @core.InsnRef, @core.Insn) -> Unit
+  lower_value(Self, @core.Value) -> Unit
+  set_local_variable(Self, @core.Value) -> Unit
+  set_none_unit_block_args(Self, @core.BlockRef, Array[@core.Value]) -> Unit
+  set_none_unit_call_args(Self, Array[@core.Value]) -> Unit
+}
+
+pub enum WasmInsn {
+  GetLocal(Name)
+  SetLocal(Name)
+  GetGlobal(Name)
+  SetGlobal(Name)
+  LocalTee
+  Drop
+  I32Add
+  I32Sub
+  I32Mul
+  I32Div
+  I32Xor
+  I32Or
+  I32And
+  I32Sll
+  I32Srl
+  I32Sra
+  I32Eq
+  I32Le
+  I32Eqz
+  I32Store
+  I32Load
+  F64Store
+  F64Load
+  Block
+  If
+  Else
+  End
+  Br(Label)
+  BrTable(Array[LabelIndex])
+  Loop(Label)
+  Call(Label)
+  Return
+  CallIndirect(Label)
+  F64Add
+  F64Sub
+  F64Mul
+  F64Div
+  F64Eq
+  F64Le
+  F64Neg
+  F64Abs
+  F64Sqrt
+  F64CvtI32
+  I32TruncF64
+  I32WrapI64
+  I64ExtendI32
+  I32Const(Int)
+  F64Const(Double)
+  TableSet(Label)
+  RefFunc(Label)
+  Comment(String)
+}
+impl WasmInsn {
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct WasmLoweringCtx {
+  pub core : @core.Core
+  pub tracer : @util.SubTracer
+}
+impl WasmLoweringCtx {
+  lower(Self) -> MCore
+  lower_globals(Self, @hashmap.T[Name, Type]) -> MFn
+  new(@core.Core, @util.SubTracer) -> Self
+}
+
+// Type aliases
+
+// Traits
+
+// Extension Methods
+

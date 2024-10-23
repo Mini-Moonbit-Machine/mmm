@@ -1,11 +1,17 @@
 package moonbitlang/minimbt/util
 
-// Values
-fn die[T](String) -> T
+alias @moonbitlang/core/hashmap as @hashmap
 
+// Values
 fn i32_to_hex(Int) -> String
 
 fn i64_to_hex(Int64) -> String
+
+let output : SubTracer
+
+let t : SubTracer
+
+let tracer : Tracer
 
 // Types and methods
 type IndentLogger
@@ -14,6 +20,37 @@ impl IndentLogger {
   new(Logger) -> Self
   outdent(Self) -> Unit
   write_string(Self, String) -> Unit
+}
+
+pub struct SubTracer {
+  pub name : String
+  pub output_to_console : Bool
+  pub redirect_to_log : Bool
+  pub print_buf : Buffer
+  pub log_buf : @hashmap.T[String, Array[String]]
+  pub record_buf : @hashmap.T[String, Buffer]
+  pub tracer : Tracer
+}
+impl SubTracer {
+  abort[T](Self, String) -> T
+  log[T : Show](Self, T) -> Unit
+  print[T : Show](Self, T) -> Unit
+  println[T : Show](Self, T) -> Unit
+  record[T : Show](Self, String, T) -> Unit
+  set_output_to_console(Self, Bool) -> Unit
+  set_redirect_to_log(Self, Bool) -> Unit
+}
+
+pub struct Tracer {
+  pub tracers : Array[(String, SubTracer)]
+  pub log_buf : @hashmap.T[String, Array[String]]
+  pub record_buf : @hashmap.T[String, Buffer]
+}
+impl Tracer {
+  done(Self, (String, String) -> Unit, (String, String) -> Unit) -> Unit
+  flush(Self) -> Unit
+  new() -> Self
+  new_subtracer(Self, String, Bool, Bool) -> SubTracer
 }
 
 // Type aliases

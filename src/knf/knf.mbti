@@ -3,6 +3,7 @@ package moonbitlang/minimbt/knf
 alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/core/immut/hashmap as @hashmap
 alias @moonbitlang/minimbt as @minimbt
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 fn knf_fdef_free_vars(FuncDef) -> @hashset.T[@minimbt.Name]
@@ -76,7 +77,7 @@ impl Knf {
 type KnfEnv
 impl KnfEnv {
   init_counter_from_existing(Self, Knf) -> Unit
-  new(@hashmap.T[String, @minimbt.Type]) -> Self
+  new(@hashmap.T[String, @minimbt.Type], @util.SubTracer) -> Self
   syntax_preprocess(Self, @minimbt.Syntax, Bool) -> @minimbt.Syntax
   to_knf(Self, @minimbt.Syntax) -> Knf!Failure
 }
@@ -89,11 +90,12 @@ pub struct LambdaLiftEnv {
   pub top_names : @hashset.T[@minimbt.Name]
   pub lifted_counter : UInt
   pub closure_counter : UInt
+  pub tracer : @util.SubTracer
 }
 impl LambdaLiftEnv {
   eta_expand(Self, @minimbt.Name) -> (Array[Binding], @minimbt.Name, Self)
   go(Self, Knf) -> Knf
-  new() -> Self
+  new(@util.SubTracer) -> Self
 }
 
 type PrettyKnf

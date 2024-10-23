@@ -1,16 +1,27 @@
 package moonbitlang/minimbt/core_opt
 
 alias @moonbitlang/minimbt/core as @core
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 
 // Types and methods
 pub struct CoreOpt {
   pub core : @core.Core
+  pub tracer : @util.SubTracer
 }
 impl CoreOpt {
   go(Self) -> Unit
-  new(@core.Core) -> Self
+  new(@core.Core, @util.SubTracer) -> Self
+}
+
+pub struct FnTailRecElim {
+  pub func : @core.Fn
+  pub tracer : @util.SubTracer
+}
+impl FnTailRecElim {
+  new(@core.Fn, @util.SubTracer) -> Self
+  update_old_entry_basic_block(Self, @core.BasicBlock) -> Unit
 }
 
 pub struct Offset2Field {
@@ -19,6 +30,15 @@ pub struct Offset2Field {
 impl Offset2Field {
   go(Self) -> Unit
   new(@core.Core) -> Self
+}
+
+pub struct TailRecElim {
+  pub core : @core.Core
+  pub tracer : @util.SubTracer
+}
+impl TailRecElim {
+  go(Self) -> Unit
+  new(@core.Core, @util.SubTracer) -> Self
 }
 
 // Type aliases

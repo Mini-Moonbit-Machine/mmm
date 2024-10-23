@@ -1,5 +1,7 @@
 package moonbitlang/minimbt/lexer
 
+alias @moonbitlang/core/hashset as @hashset
+
 // Values
 
 // Types and methods
@@ -10,12 +12,14 @@ pub enum Keyword {
   Else
 }
 impl Keyword {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
 
 pub struct Lexer {
   pub buffer : String
+  pub flags : @hashset.T[Token]
   pub index : Int
   pub colstart : Int
   pub line : Int
@@ -23,7 +27,6 @@ pub struct Lexer {
 impl Lexer {
   new(String) -> Self
   next_err(Self) -> Token!Failure
-  op_equal(Self, Self) -> Bool
   reset(Self) -> Unit
   to_string(Self) -> String
 }
@@ -34,6 +37,7 @@ pub struct Loc {
   pub index : Int
 }
 impl Loc {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
@@ -44,6 +48,7 @@ pub enum Paired {
   Brace
 }
 impl Paired {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
@@ -54,6 +59,7 @@ pub struct Token {
   pub span : String
 }
 impl Token {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
@@ -72,6 +78,7 @@ pub enum TokenTag {
   Error(String)
 }
 impl TokenTag {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }

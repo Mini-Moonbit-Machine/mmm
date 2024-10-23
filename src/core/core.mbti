@@ -2,13 +2,14 @@ package moonbitlang/minimbt/core
 
 alias @moonbitlang/minimbt as @minimbt
 alias @moonbitlang/minimbt/knf as @knf
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 
 // Types and methods
 pub enum Address {
-  Field(Type, Value, Int)
-  Offset(Type, Value, Value)
+  Field(Type, Value, Int, Width)
+  Offset(Type, Value, Value, Width)
 }
 impl Address {
   op_equal(Self, Self) -> Bool
@@ -82,12 +83,12 @@ pub struct CoreEnv {
   pub func_block_counter : Int
   pub func_mem_counter : Int
   pub sym_counter : Int
+  pub tracer : @util.SubTracer
 }
 impl CoreEnv {
   build(Self, @knf.Knf) -> Core!Failure
   inherit(Self) -> Self
-  new() -> Self
-  to_string(Self) -> String
+  new(@util.SubTracer) -> Self
 }
 
 pub struct Ctx {
@@ -123,6 +124,7 @@ pub struct Fn {
   pub mems : @moonbitlang/core/hashmap.T[MemRef, Mem]
 }
 impl Fn {
+  next_block_id(Self) -> Int
   to_string(Self) -> String
 }
 
@@ -291,10 +293,14 @@ pub enum Type {
   Ptr
 }
 impl Type {
-  elem_size(Self) -> Int
+  elem_size_of_ilp32(Self) -> Int
+  elem_size_of_lp64(Self) -> Int
+  elem_width(Self) -> Width?
   op_equal(Self, Self) -> Bool
-  size(Self) -> Int
+  size_of_ilp32(Self) -> Int
+  size_of_lp64(Self) -> Int
   to_string(Self) -> String
+  width(Self) -> Width
 }
 
 pub enum Value {
@@ -313,8 +319,21 @@ pub enum Value {
 }
 impl Value {
   op_equal(Self, Self) -> Bool
+  replace_all_uses_with(Self, Fn, BasicBlock, Self) -> Unit
   to_string(Self) -> String
   ty(Self, Core, Fn) -> Type!Failure
+}
+
+pub enum Width {
+  WidthPtr
+  Width64
+  Width32
+  Mix(Width, Width)
+}
+impl Width {
+  op_equal(Self, Self) -> Bool
+  size_of_ilp32(Self) -> Int
+  size_of_lp64(Self) -> Int
 }
 
 // Type aliases
@@ -341,8 +360,6 @@ impl Show for Control
 
 impl Show for Core
 
-impl Show for CoreEnv
-
 impl Show for Ctx
 
 impl Show for Fill
@@ -366,4 +383,6 @@ impl Show for Symbol
 impl Show for Type
 
 impl Show for Value
+
+impl Show for Width
 
