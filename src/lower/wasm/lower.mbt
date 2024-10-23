@@ -19,6 +19,7 @@ fn type_mangling(ty : @core.Type) -> String {
       let ret_str = type_mangling(ty)
       "fn_\{params_str}->\{ret_str}"
     }
+    Array(..) => "arr"
     _ => "unknown"
   }
 }
@@ -46,6 +47,7 @@ pub struct WasmFnLoweringCtx {
   // locals
   local_reg : MutMap[@core.Value, Name]
   branch_aux_reg : Name
+  this_ptr: Name
   // globals
   closure_ptr : Name
   closure_table : Label
@@ -183,23 +185,40 @@ pub fn WasmFnLoweringCtx::lower_address(
 ) -> Unit {
   match addr {
     Field(~ty, ~val, ~index) => {
+      match self.type_of(val) {
+        ClosureFn(..) =>
+          self.tracer.abort(
+            "Try to get a field inside a closure, this should not happen",
+          )
+        _ => ()
+      }
       // TODO: tuple element size
-      let size = ty.size()
+      let size = match ty_to_wasm_type(ty) {
+        Some(I32) => 4
+        Some(F64) => 8
+        _ => self.tracer.abort("Invalid type size")
+      }
       let offset = index * size
       self.lower_value(val)
       self.emit_wasm(I32Const(val=offset))
       self.emit_wasm(I32Add)
     }
     Offset(~ty, ~val, ~offset) => {
-      let size = ty.size()
+      match self.type_of(val) {
+        ClosureFn(..) =>
+          self.tracer.abort(
+            "Try to get a offset inside a closure, this should not happen",
+          )
+        _ => ()
+      }
       self.lower_value(val)
       self.lower_value(offset)
-      match size {
-        4 => {
+      match ty_to_wasm_type(ty) {
+        Some(I32) => {
           self.emit_wasm(I32Const(val=2))
           self.emit_wasm(I32Sll)
         }
-        8 => {
+        Some(F64) => {
           self.emit_wasm(I32Const(val=3))
           self.emit_wasm(I32Sll)
         }
@@ -515,6 +534,10 @@ pub fn WasmFnLoweringCtx::lower_insn(
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
     @core.Insn::Apply(~f, ~args, ..) => {
+      // save context
+      self.emit_wasm(GetGlobal(name=self.closure_ptr))
+      self.emit_wasm(SetLocal(name=self.this_ptr))
+      // get closure ptr
       self.lower_value(f)
       self.emit_wasm(SetGlobal(name=self.closure_ptr))
       // closure args
@@ -539,6 +562,9 @@ pub fn WasmFnLoweringCtx::lower_insn(
       self.emit_wasm(I32Load)
       self.emit_wasm(CallIndirect(typename=Label(closure_ty_name)))
       self.set_local_variable(@core.Value::Insn(iref=insnref))
+      // restore context
+      self.emit_wasm(GetLocal(name=self.this_ptr))
+      self.emit_wasm(SetGlobal(name=self.closure_ptr))
     }
   }
 }
@@ -709,7 +735,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
     }
   }
   let ret = ty_to_wasm_type(ty)
-  let locals = []
+  let locals = [(self.branch_aux_reg, I32), (self.this_ptr, I32)]
   for vnpair in self.local_reg {
     let (value, name) = vnpair
     self.tracer.println("Local \{value} -> \{name}")
@@ -724,8 +750,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
         ),
       ),
     )
-  }
-  locals.push((self.branch_aux_reg, I32))
+  } 
   MFn::{ name: self.func.name, args, ret, locals, seq: self.buffer }
 }
 
@@ -780,6 +805,7 @@ pub fn WasmLoweringCtx::lower(self : WasmLoweringCtx) -> MCore {
       func_type_ctx,
       local_reg: MutMap::new(),
       branch_aux_reg: Name("branch_aux_reg"),
+      this_ptr: Name("this_ptr"),
       closure_ptr: Name("closure_ptr"),
       closure_table: Label("closure_table"),
       closure_table_index,
