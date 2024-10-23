@@ -41,13 +41,15 @@ pub struct WasmFnLoweringCtx {
   order : @lower.LoweringOrder
   buffer : Array[WasmInsn]
   icache : Array[WasmInsn]
+  // type sections
+  func_type_ctx : MutMap[Label, (Array[Type], Type?)]
   // locals
   local_reg : MutMap[@core.Value, Name]
   branch_aux_reg : Name
   // globals
   closure_ptr : Name
   closure_table : Label
-  closure_table_index: MutMap[@core.FnRef, TableIndex] 
+  closure_table_index : MutMap[@core.FnRef, TableIndex]
   tracer : @util.SubTracer
 }
 
@@ -243,7 +245,7 @@ pub fn WasmFnLoweringCtx::set_none_unit_call_args(
 
 pub fn WasmFnLoweringCtx::set_none_unit_block_args(
   self : WasmFnLoweringCtx,
-  target: @core.BlockRef,
+  target : @core.BlockRef,
   args : Array[@core.Value]
 ) -> Unit {
   for i, arg in args.iter2() {
@@ -516,9 +518,21 @@ pub fn WasmFnLoweringCtx::lower_insn(
       // closure args
       self.set_none_unit_call_args(args)
       // closure value
-      let args_type = args.map(fn(arg) { self.type_of(arg) })
-      let closure_ty = @core.Type::ClosureFn(params=args_type, ~ty)
+      let closure_ty = self.type_of(f)
       let closure_ty_name = type_mangling(closure_ty)
+      // update function type context
+      guard let ClosureFn(~params, ~ty) = closure_ty else {
+        _ => self.tracer.abort("Invalid closure type")
+      }
+      let params_ty = []
+      for param in params {
+        match self.lower_type(param) {
+          None => ()
+          Some(ty) => params_ty.push(ty)
+        }
+      }
+      let ret_ty = self.lower_type(ty)
+      self.func_type_ctx.set(Label(closure_ty_name), (params_ty, ret_ty))
       self.lower_value(f)
       self.emit_wasm(I32Load)
       self.emit_wasm(CallIndirect(typename=Label(closure_ty_name)))
@@ -736,6 +750,7 @@ pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
   }
   // lowering functions.
   let mfuncs = []
+  let func_type_ctx = MutMap::new()
   for fpair in self.core.funcs {
     let (fref, func) = fpair
     let order = @lower.LoweringOrder::new(func)
@@ -745,6 +760,7 @@ pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
       order,
       buffer: [],
       icache: [],
+      func_type_ctx,
       local_reg: MutMap::new(),
       branch_aux_reg: Name("branch_aux_reg"),
       closure_ptr: Name("closure_ptr"),
@@ -786,14 +802,10 @@ pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
     let label = closure_reverse_index.get(TableIndex(i)).unwrap()
     elems.push(label)
   }
-  let table = MTable :: {
+  let table = MTable::{
     name: Label("closure_table"),
     size: self.core.funcs.size(),
-    elems
+    elems,
   }
-  MCore::{
-    table,
-    globals: [(Name("closure_ptr"), I32)],
-    mfuncs,
-  }
+  MCore::{ func_type_ctx, table, globals: [(Name("closure_ptr"), I32)], mfuncs }
 }

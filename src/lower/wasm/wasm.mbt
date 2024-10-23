@@ -121,9 +121,9 @@ pub enum WasmInsn {
 }
 
 pub struct MTable {
-  name: Label
-  size: Int
-  elems: Array[Label]
+  name : Label
+  size : Int
+  elems : Array[Label]
 }
 
 pub struct MFn {
@@ -136,6 +136,7 @@ pub struct MFn {
 }
 
 pub struct MCore {
+  func_type_ctx : MutMap[Label, (Array[Type], Type?)]
   table : MTable
   globals : Array[(Name, Type)]
   mfuncs : Array[MFn]
@@ -183,30 +184,25 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
     #|(import "moonbit" "minimbt_create_float_array" (func $minimbt_create_float_array (param i32) (param f64) (result i32)))
     #|(import "moonbit" "minimbt_create_ptr_array" (func $minimbt_create_ptr_array (param i32) (param i32) (result i32)))
     #|
-  let elems = self.table.elems.map(fn(label) { "(ref.func \{label})" }).join(" ")
-  let table = "(table \{self.table.name} \{self.table.size} funcref)\n" + "(elem (table \{self.table.name}) (offset i32.const 0) funcref \{elems})"
-  let mangled_types = MutMap::new()
-  for func in self.mfuncs {
-    if func.name == "minimbt_main" {
-      continue
-    }
-    let mut func_ty = "func"
-    for arg in func.args {
-      let (name, ty) = arg
-      func_ty = func_ty + " (param \{name} \{ty})"
-    }
-    match func.ret {
-      None => ()
-      Some(ty) => func_ty = func_ty + " (result \{ty})"
-    }
-    mangled_types.set(func.type_str, func_ty)
-  }
-  let types = mangled_types
+  let elems = self.table.elems
+    .map(fn(label) { "(ref.func \{label})" })
+    .join(" ")
+  let table = "(table \{self.table.name} \{self.table.size} funcref)\n" +
+    "(elem (table \{self.table.name}) (offset i32.const 0) funcref \{elems})\n"
+  let types = self.func_type_ctx
     .iter()
     .map(
       fn(ntypair) {
-        let (name, ty_str) = ntypair
-        "(type \{name} (\{ty_str}))"
+        let (label, (params, ret)) = ntypair
+        let mut func_ty = "func"
+        for param in params {
+          func_ty = func_ty + " (param \{param})"
+        }
+        match ret {
+          None => ()
+          Some(ty) => func_ty = func_ty + " (result \{ty})"
+        }
+        "(type \{label} (\{func_ty}))"
       },
     )
     .collect()
