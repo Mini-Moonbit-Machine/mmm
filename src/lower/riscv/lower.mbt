@@ -590,8 +590,7 @@ fn RiscvFnLoweringCtx::lower_address(
   addr : @core.Address
 ) -> @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] {
   match addr {
-    Field(~ty, ~val, ~index) => {
-      let size = ty.size()
+    Field(~val, ~index, ~size, ..) => {
       let base = @generated.constructor_lower_value(self, val)
       let offset = index * size
       let imm = self
@@ -621,8 +620,7 @@ fn RiscvFnLoweringCtx::lower_address(
         ma
       }
     }
-    Offset(~ty, ~val, ~offset) => {
-      let size = ty.size()
+    Offset(~val, ~offset, ~size, ..) => {
       let base = @generated.constructor_lower_value(self, val)
       let index = @generated.constructor_lower_value(self, offset)
       let offset = match size {

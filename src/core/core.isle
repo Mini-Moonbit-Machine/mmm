@@ -277,14 +277,14 @@
 
 (type Address extern
   (enum as `@core.Address`
-    (Field (ty Type) (val Value) (index Int32))
-    (Offset (ty Type) (val Value) (offset Int32))))
+    (Field (ty Type) (val Value) (index Int32) (size Int32))
+    (Offset (ty Type) (val Value) (offset Int32) (size Int32))))
 
-(decl pure addr_field (Type Value Int32) Address)
-(extractor (addr_field ty val index) (Address.Field ty val index))
+(decl pure addr_field (Type Value Int32 Int32) Address)
+(extractor (addr_field ty val index size) (Address.Field ty val index size))
 
-(decl pure addr_offset (Type Value Int32) Address)
-(extractor (addr_offset ty val offset) (Address.Offset ty val offset))
+(decl pure addr_offset (Type Value Int32 Int32) Address)
+(extractor (addr_offset ty val offset size) (Address.Offset ty val offset size))
 
 (type Control extern
   (enum as `@core.Control`

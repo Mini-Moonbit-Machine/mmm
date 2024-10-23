@@ -125,19 +125,19 @@ fn print_mem_access(
   ma : Address
 ) -> Unit {
   match ma {
-    Field(~ty, ~val, ~index) => {
+    Field(~ty, ~val, ~index, ~size) => {
       print_type(logger, ty)
       logger.write_string(" field(")
       print_value(logger, val)
-      logger.write_string(", \{index})")
+      logger.write_string(", \{index} * \{size})")
     }
-    Offset(~ty, ~val, ~offset) => {
+    Offset(~ty, ~val, ~offset, ~size) => {
       print_type(logger, ty)
       logger.write_string(" offset(")
       print_value(logger, val)
       logger.write_string(", ")
       print_value(logger, offset)
-      logger.write_string(")")
+      logger.write_string(" * \{size})")
     }
   }
 }

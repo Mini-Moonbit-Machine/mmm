@@ -683,6 +683,7 @@ fn build_knf_expr(
     }
     LetTuple(fields, x, e) => {
       let (ctx, x_val) = self.build_name!(free_names, ctx, core, func, bb, x)
+      let tuple_ty = self.get_type!(ctx, core, func, bb, x_val)
       let mut ctx = ctx
       for i, field in fields {
         let (name, field_ty) = field
@@ -690,7 +691,15 @@ fn build_knf_expr(
         let field_val = self.add_insn(
           func,
           bb,
-          Insn::Load(~ty, ma=Address::Field(~ty, val=x_val, index=i)),
+          Insn::Load(
+            ~ty,
+            ma=Address::Field(
+              ~ty,
+              val=x_val,
+              index=i,
+              size=tuple_ty.elem_size(),
+            ),
+          ),
         )
         ctx = ctx.add_local_name_value_ty(name, field_val, ty)
       }
@@ -709,7 +718,10 @@ fn build_knf_expr(
       let val = self.add_insn(
         func,
         bb,
-        Insn::Load(~ty, ma=Address::Offset(~ty, val=x_val, offset=idx_val)),
+        Insn::Load(
+          ~ty,
+          ma=Address::Offset(~ty, val=x_val, offset=idx_val, size=ty.size()),
+        ),
       )
       (ctx, bb, val)
     }
@@ -728,7 +740,7 @@ fn build_knf_expr(
         bb,
         Insn::Store(
           ~ty,
-          ma=Address::Offset(~ty, val=x_val, offset=idx_val),
+          ma=Address::Offset(~ty, val=x_val, offset=idx_val, size=ty.size()),
           val=y_val,
         ),
       )

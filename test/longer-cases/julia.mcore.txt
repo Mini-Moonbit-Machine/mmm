@@ -30,6 +30,17 @@ memseti32:
 
   .p2align 2
   .text
+  .globl T$c_re.58
+  .type T$c_re.58, @function
+# leaf true
+T$c_re.58:
+.T$c_re.58_0:
+  fld fa0, _4, t5
+  fneg.d fa0, fa0
+  ret
+
+  .p2align 2
+  .text
   .globl T$iter.34
   .type T$iter.34, @function
 # leaf true
@@ -101,7 +112,7 @@ main_loop30_14:
   call calc_pixel7_12
   mul a1, s3, s0
   add s5, a1, s2
-  call clamp25l0_13
+  call clamp25_13
   slliw a1, s5, 2
   add a1, s4, a1
   sw a0, 0(a1)
@@ -153,58 +164,11 @@ T$_4_6:
 
   .p2align 2
   .text
-  .globl main94l2_16
-  .type main94l2_16, @function
+  .globl print_loop68_15
+  .type print_loop68_15, @function
 # leaf false
-main94l2_16:
-.main94l2_16_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  fmv.d fa0, fa1
-  fmv.d fa0, fa2
-  call minimbt_read_int
-  mv s0, a0
-  li a0, 2
-  mul s1, s0, a0
-  mul a0, s1, s0
-  slliw a1, a0, 2
-  sub a1, s11, a1
-  andi s2, a1, -8
-  mv s11, s2
-  mv a1, a0
-  mv a0, s2
-  mv a2, zero
-  call memseti32
-  mv a0, s1
-  mv a1, s0
-  mv a2, zero
-  mv a3, zero
-  mv a4, s2
-  call main_loop30_14
-  mv a0, s1
-  mv a1, s0
-  mv a2, zero
-  mv a3, zero
-  mv a4, s2
-  call print_loop68l1_15
-  mv a0, zero
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl print_loop68l1_15
-  .type print_loop68l1_15, @function
-# leaf false
-print_loop68l1_15:
-.print_loop68l1_15_7:
+print_loop68_15:
+.print_loop68_15_7:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -212,34 +176,34 @@ print_loop68l1_15:
   sd s2, 24(sp)
   sd s3, 32(sp)
   sd s4, 40(sp)
-  mv s2, a0
-  mv s3, a1
-  mv s4, a2
-  mv s1, a3
-  mv s0, a4
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+  mv s3, a3
+  mv s4, a4
 
-.print_loop68l1_15_0:
-  beq s1, s3, .print_loop68l1_15_1
+.print_loop68_15_0:
+  beq s3, s1, .print_loop68_15_1
 
-.print_loop68l1_15_2:
-  beq s4, s2, .print_loop68l1_15_3
+.print_loop68_15_2:
+  beq s2, s0, .print_loop68_15_3
 
-.print_loop68l1_15_4:
-  mul a0, s1, s2
-  add a0, a0, s4
+.print_loop68_15_4:
+  mul a0, s3, s0
+  add a0, a0, s2
   slliw a0, a0, 2
-  add a0, s0, a0
+  add a0, s4, a0
   lw a0, 0(a0)
   addi a0, a0, 48
   call minimbt_print_char
-  addi a0, s4, 1
-  mv s4, a0
-  j .print_loop68l1_15_0
+  addi a0, s2, 1
+  mv s2, a0
+  j .print_loop68_15_0
 
-.print_loop68l1_15_1:
+.print_loop68_15_1:
   mv a0, zero
 
-.print_loop68l1_15_6:
+.print_loop68_15_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -249,13 +213,13 @@ print_loop68l1_15:
   addi sp, sp, 48
   ret
 
-.print_loop68l1_15_3:
+.print_loop68_15_3:
   li a0, 10
   call minimbt_print_char
-  addi a0, s1, 1
-  mv s4, zero
-  mv s1, a0
-  j .print_loop68l1_15_0
+  addi a0, s3, 1
+  mv s2, zero
+  mv s3, a0
+  j .print_loop68_15_0
 
   .p2align 2
   .text
@@ -270,33 +234,33 @@ T$c_im.610:
 
   .p2align 2
   .text
-  .globl clamp25l0_13
-  .type clamp25l0_13, @function
+  .globl clamp25_13
+  .type clamp25_13, @function
 # leaf true
-clamp25l0_13:
-.clamp25l0_13_0:
+clamp25_13:
+.clamp25_13_0:
   mv a1, a0
-  bge zero, a1, .clamp25l0_13_1
+  bge zero, a1, .clamp25_13_1
 
-.clamp25l0_13_2:
+.clamp25_13_2:
   li a0, 48
-  blt a1, a0, .clamp25l0_13_4
+  blt a1, a0, .clamp25_13_4
 
-.clamp25l0_13_3:
+.clamp25_13_3:
   li a0, 48
 
-.clamp25l0_13_5:
+.clamp25_13_5:
 
-.clamp25l0_13_6:
+.clamp25_13_6:
   ret
 
-.clamp25l0_13_1:
+.clamp25_13_1:
   mv a0, zero
-  j .clamp25l0_13_6
+  j .clamp25_13_6
 
-.clamp25l0_13_4:
+.clamp25_13_4:
   mv a0, a1
-  j .clamp25l0_13_5
+  j .clamp25_13_5
 
   .p2align 2
   .text
@@ -353,11 +317,7 @@ T$start_22:
 .T$start_22_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  call main94l2_16
+  call main94_16
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -404,13 +364,47 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl T$c_re.58
-  .type T$c_re.58, @function
-# leaf true
-T$c_re.58:
-.T$c_re.58_0:
-  fld fa0, _4, t5
-  fneg.d fa0, fa0
+  .globl main94_16
+  .type main94_16, @function
+# leaf false
+main94_16:
+.main94_16_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  call minimbt_read_int
+  mv s0, a0
+  li a0, 2
+  mul s1, s0, a0
+  mul a0, s1, s0
+  slliw a1, a0, 2
+  sub a1, s11, a1
+  andi s2, a1, -8
+  mv s11, s2
+  mv a1, a0
+  mv a0, s2
+  mv a2, zero
+  call memseti32
+  mv a0, s1
+  mv a1, s0
+  mv a2, zero
+  mv a3, zero
+  mv a4, s2
+  call main_loop30_14
+  mv a0, s1
+  mv a1, s0
+  mv a2, zero
+  mv a3, zero
+  mv a4, s2
+  call print_loop68_15
+  mv a0, zero
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
   ret
 
 __end_text:

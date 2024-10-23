@@ -1,4 +1,4 @@
-let rec read_ch_until_newline_or_eof1l0: Int = () {
+let rec read_ch_until_newline_or_eof1: Int = () {
   let c.2: Int = ExtApply(minimbt_read_char, [])
   let _3: Int = Int(10)
   if (c.2 == _3) then {
@@ -12,40 +12,7 @@ let rec read_ch_until_newline_or_eof1l0: Int = () {
     }
   }
 }
-let rec skip21l2: Var({val: Some(Int)}) = (pc22.23: Var({val: Some(Int)}), level24.25: Int, len6.7: Int, prog8.9: Array(Int)) {
-  if (len6.7 <= pc22.23) then {
-    Var(pc22.23)
-  } else {
-    let i.26: Int = Get prog8.9[pc22.23]
-    let _27: Int = Int(91)
-    if (i.26 == _27) then {
-      let _28: Int = Int(1)
-      let _29: Int = Add(pc22.23, _28)
-      let _30: Int = Int(1)
-      let _31: Int = Add(level24.25, _30)
-      Apply(skip21l2, [_29, _31, len6.7, prog8.9, ])
-    } else {
-      let _32: Int = Int(93)
-      if (i.26 == _32) then {
-        let _33: Int = Int(0)
-        if (level24.25 == _33) then {
-          Var(pc22.23)
-        } else {
-          let _34: Int = Int(1)
-          let _35: Int = Add(pc22.23, _34)
-          let _36: Int = Int(1)
-          let _37: Int = Sub(level24.25, _36)
-          Apply(skip21l2, [_35, _37, len6.7, prog8.9, ])
-        }
-      } else {
-        let _38: Int = Int(1)
-        let _39: Int = Add(pc22.23, _38)
-        Apply(skip21l2, [_39, level24.25, len6.7, prog8.9, ])
-      }
-    }
-  }
-}
-let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
+let rec bf5: Unit = (len6.7: Int, prog8.9: Array(Int)) {
   let _10: Int = Int(1)
   let _11: Int = Int(0)
   let ptr.12: Array(Int) = ExtApply(minimbt_create_array, [_10, _11, ])
@@ -57,6 +24,39 @@ let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
   let _18: Int = Int(1)
   let _19: Int = Int(0)
   let next_pc.20: Array(Int) = ExtApply(minimbt_create_array, [_18, _19, ])
+  let rec skip21: Var({val: Some(Int)}) = (pc22.23: Var({val: Some(Int)}), level24.25: Int) {
+    if (len6.7 <= pc22.23) then {
+      Var(pc22.23)
+    } else {
+      let i.26: Int = Get prog8.9[pc22.23]
+      let _27: Int = Int(91)
+      if (i.26 == _27) then {
+        let _28: Int = Int(1)
+        let _29: Int = Add(pc22.23, _28)
+        let _30: Int = Int(1)
+        let _31: Int = Add(level24.25, _30)
+        Apply(skip21, [_29, _31, ])
+      } else {
+        let _32: Int = Int(93)
+        if (i.26 == _32) then {
+          let _33: Int = Int(0)
+          if (level24.25 == _33) then {
+            Var(pc22.23)
+          } else {
+            let _34: Int = Int(1)
+            let _35: Int = Add(pc22.23, _34)
+            let _36: Int = Int(1)
+            let _37: Int = Sub(level24.25, _36)
+            Apply(skip21, [_35, _37, ])
+          }
+        } else {
+          let _38: Int = Int(1)
+          let _39: Int = Add(pc22.23, _38)
+          Apply(skip21, [_39, level24.25, ])
+        }
+      }
+    }
+  }
   let rec aux40: Var({val: Some(Int)}) = (pc41.42: Var({val: Some(Int)})) {
     if (len6.7 <= pc41.42) then {
       Var(pc41.42)
@@ -128,7 +128,7 @@ let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
                 if (i.43 == _96) then {
                   let _97: Int = Int(0)
                   let _98: Int = Get ptr.12[_97]
-                  let _99: Int = Apply(read_ch_until_newline_or_eof1l0, [])
+                  let _99: Int = Apply(read_ch_until_newline_or_eof1, [])
                   let _101: Unit = Put cells.17[_98] = _99
                   let _102: Int = Int(1)
                   let _103: Int = Add(pc41.42, _102)
@@ -148,7 +148,7 @@ let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
                         let _114: Int = Int(1)
                         let _115: Int = Add(pc41.42, _114)
                         let _116: Int = Int(0)
-                        let _117: Var({val: Some(Int)}) = Apply(skip21l2, [_115, _116, len6.7, prog8.9, ])
+                        let _117: Var({val: Some(Int)}) = Apply(skip21, [_115, _116, ])
                         let _119: Unit = Put next_pc.20[_113] = _117
                         Unit
                       } else {
@@ -186,24 +186,24 @@ let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
   let _135: Var({val: Some(Int)}) = Apply(aux40, [_133, ])
   Unit
 }
-let rec read_prog140l3: Var({val: Some(Unit)}) = (i141.142: Var({val: Some(Int)}), prog.139: Array(Int)) {
-  let x.143: Int = Apply(read_ch_until_newline_or_eof1l0, [])
-  let _144: Int = Int(-1)
-  if (x.143 == _144) then {
-    Apply(bf5l1, [i141.142, prog.139, ])
-  } else {
-    let _146: Unit = Put prog.139[i141.142] = x.143
-    let _147: Int = Int(1)
-    let _148: Int = Add(i141.142, _147)
-    Apply(read_prog140l3, [_148, prog.139, ])
-  }
-}
-let rec main136l2: Var({val: Some(Unit)}) = () {
+let rec main136: Var({val: Some(Unit)}) = () {
   let len.137: Int = Int(1024)
   let _138: Int = Int(0)
   let prog.139: Array(Int) = ExtApply(minimbt_create_array, [len.137, _138, ])
+  let rec read_prog140: Var({val: Some(Unit)}) = (i141.142: Var({val: Some(Int)})) {
+    let x.143: Int = Apply(read_ch_until_newline_or_eof1, [])
+    let _144: Int = Int(-1)
+    if (x.143 == _144) then {
+      Apply(bf5, [i141.142, prog.139, ])
+    } else {
+      let _146: Unit = Put prog.139[i141.142] = x.143
+      let _147: Int = Int(1)
+      let _148: Int = Add(i141.142, _147)
+      Apply(read_prog140, [_148, ])
+    }
+  }
   let _149: Int = Int(0)
-  let _151: Var({val: Some(Unit)}) = Apply(read_prog140l3, [_149, prog.139, ])
+  let _151: Var({val: Some(Unit)}) = Apply(read_prog140, [_149, ])
   Unit
 }
-Apply(main136l2, [])
+Apply(main136, [])

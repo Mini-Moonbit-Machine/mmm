@@ -9,8 +9,8 @@ pub fn Offset2Field::new(core : @core.Core) -> Offset2Field {
 pub fn Offset2Field::go(self : Offset2Field) -> Unit {
   fn offset2field(addr : @core.Address) -> @core.Address {
     match addr {
-      Offset(~ty, ~val, offset=@core.Value::Int32(val=imm)) =>
-        @core.Address::Field(~ty, ~val, index=imm)
+      Offset(~ty, ~val, offset=@core.Value::Int32(val=imm), ~size) =>
+        @core.Address::Field(~ty, ~val, index=imm, ~size)
       _ => addr
     }
   }

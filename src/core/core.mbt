@@ -232,8 +232,8 @@ pub enum Mem {
 } derive(Show, Eq)
 
 pub enum Address {
-  Field(~ty : Type, ~val : Value, ~index : Int) // field (constant offset) of memory. Value must be ptr-compatible.
-  Offset(~ty : Type, ~val : Value, ~offset : Value) // offset (variable offset) of memory. Value must be ptr-compatible.
+  Field(~ty : Type, ~val : Value, ~index : Int, ~size : Int) // field (constant offset) of memory. Value must be ptr-compatible.
+  Offset(~ty : Type, ~val : Value, ~offset : Value, ~size : Int) // offset (variable offset) of memory. Value must be ptr-compatible.
 } derive(Show, Eq)
 
 pub enum Control {
@@ -435,9 +435,10 @@ pub fn Value::replace_all_uses_with(
 
   fn replace_addr(addr : Address) -> Address {
     match addr {
-      Field(~ty, ~val, ~index) => Address::Field(~ty, val=replace(val), ~index)
-      Offset(~ty, ~val, ~offset) =>
-        Address::Offset(~ty, val=replace(val), offset=replace(offset))
+      Field(~ty, ~val, ~index, ~size) =>
+        Address::Field(~ty, val=replace(val), ~index, ~size)
+      Offset(~ty, ~val, ~offset, ~size) =>
+        Address::Offset(~ty, val=replace(val), offset=replace(offset), ~size)
     }
   }
 
