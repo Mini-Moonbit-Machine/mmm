@@ -49,33 +49,34 @@ T$start_12:
 # leaf false
 iloop29_9:
 .iloop29_9_7:
-  addi sp, sp, -48
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   fsd fs0, 24(sp)
   fsd fs1, 32(sp)
   fsd fs2, 40(sp)
+  fsd fs3, 48(sp)
   mv a1, s10
   ld s0, 8(a1)
   mv s1, a0
   fmv.d fs0, fa1
   fmv.d fa1, fa2
   fmv.d fa2, fa3
-  fmv.d fa3, fa4
-  fmv.d fs1, fa5
+  fmv.d fs1, fa4
+  fmv.d fs2, fa5
 
 .iloop29_9_0:
   beq s1, zero, .iloop29_9_1
 
 .iloop29_9_2:
   fsub.d fa1, fa1, fa2
-  fadd.d fs2, fa1, fa3
+  fadd.d fs3, fa1, fs1
   mv s10, s0
   ld a0, 0(s0)
   jalr a0
-  fmadd.d fa3, fa0, fs0, fs1
-  fmul.d fa1, fs2, fs2
+  fmadd.d fa3, fa0, fs0, fs2
+  fmul.d fa1, fs3, fs3
   fmul.d fa2, fa3, fa3
   li a0, 4611686018427387904
   fmv.d.x fa0, a0
@@ -99,7 +100,8 @@ iloop29_9:
   fld fs0, 24(sp)
   fld fs1, 32(sp)
   fld fs2, 40(sp)
-  addi sp, sp, 48
+  fld fs3, 48(sp)
+  addi sp, sp, 64
   ret
 
 .iloop29_9_1:
@@ -110,7 +112,7 @@ iloop29_9:
 .iloop29_9_4:
   addi a0, s1, -1
   mv s1, a0
-  fmv.d fa0, fs2
+  fmv.d fa0, fs3
   fmv.d fs0, fa3
   j .iloop29_9_0
 

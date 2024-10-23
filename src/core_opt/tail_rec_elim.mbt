@@ -268,6 +268,9 @@ fn FnTailRecElim::elim_tail_rec(self : FnTailRecElim) -> Unit {
   )
   for iref in tail_rec_calls {
     self.replace_tail_rec_call(iref, old_entry)
+    self.tracer.println(
+      "eliminated tail rec call \{iref}: \{self.func.insns[iref].unwrap()}",
+    )
     self.func.insns.remove(iref)
   }
   self.replace_parameters(self.func.entry, old_entry)
