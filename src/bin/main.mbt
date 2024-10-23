@@ -7,6 +7,7 @@ enum Stages {
   Closure
   Core
   CoreOpt
+  Wasm
   Asm
   Finished
 } derive(Show, Eq, Compare)
@@ -19,6 +20,7 @@ fn Stages::from_string(s : String) -> Stages? {
     "knf-opt" => Some(Stages::KnfOpt)
     "core" => Some(Stages::Core)
     "core-opt" => Some(Stages::CoreOpt)
+    "wasm" => Some(Stages::Wasm)
     "closure" => Some(Stages::Closure)
     "riscv" => Some(Stages::Asm)
     "finished" => Some(Stages::Finished)
@@ -34,7 +36,8 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::KnfOpt => Stages::Closure
     Stages::Closure => Stages::Core
     Stages::Core => Stages::CoreOpt
-    Stages::CoreOpt => Stages::Asm
+    Stages::CoreOpt => Stages::Wasm
+    Stages::Wasm => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
@@ -65,6 +68,7 @@ struct CompileStatus {
   mut opt_knf : @knf.Knf?
   mut core : @core.Core?
   mut opt_core : @core.Core?
+  mut wasm_core : @lower_wasm.MCore?
   mut closure_ir : @closure.Program?
   mut asm : @lower_riscv.MCore?
   mut knf_env : @knf.KnfEnv?
@@ -85,6 +89,7 @@ fn CompileStatus::initialize(
     typechecked: None,
     knf: None,
     opt_knf: None,
+    wasm_core: None,
     closure_ir: None,
     asm: None,
     core: None,
@@ -198,6 +203,17 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.core_env = Some(_core_env)
       self.opt_core = Some(core)
     }
+    Wasm => {
+      let core = self.opt_core.unwrap()
+      let subtracer = tracer.new_subtracer(
+        "Wasm",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let lower_ctx = @lower_wasm.WasmLowringCtx::new(core, subtracer)
+      let wasm = lower_ctx.lower()
+      self.wasm_core = Some(wasm)
+    }
     Closure => {
       let subtracer = tracer.new_subtracer(
         "Closure",
@@ -249,6 +265,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Closure => @json.stringify(self.opt_knf.unwrap().to_json())
       Core => @json.stringify(self.opt_knf.unwrap().to_json())
       CoreOpt => mt.abort("No json output for core IR")
+      Wasm => mt.abort("No json output for wasm")
       Asm => mt.abort("No json output for core IR")
       Finished => Show::to_string(self.asm.unwrap())
     }
@@ -261,7 +278,8 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Closure => self.opt_knf.unwrap().to_string()
       Core => self.closure_ir.unwrap().to_string()
       CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
-      Asm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
+      Wasm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
+      Asm => Show::to_string(self.wasm_core.unwrap())
       Finished => Show::to_string(self.asm.unwrap())
     }
   }
@@ -269,6 +287,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
 
 struct Options {
   mut json : Bool
+  mut wasm : Bool
   mut start_stage : Stages
   mut end_stage : Stages
   mut knf_interpreter : Bool
@@ -284,6 +303,7 @@ struct Options {
 fn Options::new() -> Options {
   Options::{
     json: false,
+    wasm: false,
     start_stage: Stages::Parse,
     end_stage: Stages::Finished,
     knf_interpreter: false,
@@ -378,7 +398,7 @@ fn main {
         @ArgParser.Unit(fn() { opts.json = true }),
         "Print results as JSON",
       ),
-
+      ("--wasm", "", @ArgParser.Unit(fn() { opts.wasm = true }), "Output WAT"),
       // Regular directives
       (
         "--print",
@@ -407,6 +427,9 @@ fn main {
   }
   if opts.core_interpreter {
     opts.end_stage = Stages::CoreOpt
+  }
+  if opts.wasm {
+    opts.end_stage = Stages::Wasm
   }
   let stages_to_print = opts.print.map(
     fn(s) {
