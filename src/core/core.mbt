@@ -231,9 +231,16 @@ pub enum Mem {
   Stack(~ty : Type, ~len : Value) // stack memory with given size. Value must be integer-compatible.
 } derive(Show, Eq)
 
+pub enum Width {
+  WidthPtr
+  Width64
+  Width32
+  Mix(~width : Width, ~other : Width)
+} derive(Eq)
+
 pub enum Address {
-  Field(~ty : Type, ~val : Value, ~index : Int, ~size : Int) // field (constant offset) of memory. Value must be ptr-compatible.
-  Offset(~ty : Type, ~val : Value, ~offset : Value, ~size : Int) // offset (variable offset) of memory. Value must be ptr-compatible.
+  Field(~ty : Type, ~val : Value, ~index : Int, ~width : Width) // field (constant offset) of memory. Value must be ptr-compatible.
+  Offset(~ty : Type, ~val : Value, ~offset : Value, ~width : Width) // offset (variable offset) of memory. Value must be ptr-compatible.
 } derive(Show, Eq)
 
 pub enum Control {
@@ -282,7 +289,55 @@ pub fn Insn::ty(self : Insn) -> Type {
   }
 }
 
-pub fn Type::size(self : Type) -> Int {
+pub fn Width::size_of_lp64(self : Width) -> Int {
+  match self {
+    WidthPtr => 8
+    Width64 => 8
+    Width32 => 4
+    Mix(~width, ~other) =>
+      @math.maximum(width.size_of_lp64(), other.size_of_lp64())
+  }
+}
+
+pub fn Width::size_of_ilp32(self : Width) -> Int {
+  match self {
+    WidthPtr => 4
+    Width64 => 8
+    Width32 => 4
+    Mix(~width, ~other) =>
+      @math.maximum(width.size_of_ilp32(), other.size_of_ilp32())
+  }
+}
+
+pub fn Type::width(self : Type) -> Width {
+  match self {
+    Unit => Width32
+    Bool => Width32
+    Int32 => Width32
+    Int64 => Width64
+    Double => Width64
+    ClosureFn(..) => WidthPtr
+    DirectFn(..) => WidthPtr
+    Tuple(..) => WidthPtr
+    Array(..) => WidthPtr
+    Ptr => WidthPtr
+  }
+}
+
+pub fn Type::elem_width(self : Type) -> Width? {
+  let x = match self {
+    Tuple(~fields) =>
+      fields
+      .map(fn(field) { field.width() })
+      .rev_fold(init=Width32, fn(a, b) { Mix(width=b, other=a) })
+    Array(~elem) => elem.width()
+    ClosureFn(..) => Width64
+    _ => return None
+  }
+  Some(x)
+}
+
+pub fn Type::size_of_lp64(self : Type) -> Int {
   match self {
     Unit => 0
     Bool => 4
@@ -297,19 +352,50 @@ pub fn Type::size(self : Type) -> Int {
   }
 }
 
-pub fn Type::elem_size(self : Type) -> Int {
+pub fn Type::size_of_ilp32(self : Type) -> Int {
   match self {
-    Array(~elem) => elem.size()
+    Unit => 0
+    Bool => 4
+    Int32 => 4
+    Int64 => 8
+    Double => 8
+    ClosureFn(..) => 4
+    DirectFn(..) => 4
+    Tuple(..) => 4
+    Array(..) => 4
+    Ptr => 4
+  }
+}
+
+pub fn Type::elem_size_of_lp64(self : Type) -> Int {
+  match self {
+    Array(~elem) => elem.size_of_lp64()
     Tuple(~fields) => {
       let mut size = 0
       for field in fields {
-        size = @math.maximum(size, field.elem_size())
+        size = @math.maximum(size, field.size_of_lp64())
       }
       size
     }
     ClosureFn(..) => 8
     DirectFn(..) => 8
-    _ => self.size()
+    _ => self.size_of_lp64()
+  }
+}
+
+pub fn Type::elem_size_of_ilp32(self : Type) -> Int {
+  match self {
+    Array(~elem) => elem.size_of_ilp32()
+    Tuple(~fields) => {
+      let mut size = 0
+      for field in fields {
+        size = @math.maximum(size, field.size_of_ilp32())
+      }
+      size
+    }
+    ClosureFn(..) => 8
+    DirectFn(..) => 8
+    _ => self.size_of_ilp32()
   }
 }
 
@@ -435,10 +521,10 @@ pub fn Value::replace_all_uses_with(
 
   fn replace_addr(addr : Address) -> Address {
     match addr {
-      Field(~ty, ~val, ~index, ~size) =>
-        Address::Field(~ty, val=replace(val), ~index, ~size)
-      Offset(~ty, ~val, ~offset, ~size) =>
-        Address::Offset(~ty, val=replace(val), offset=replace(offset), ~size)
+      Field(~ty, ~val, ~index, ~width) =>
+        Address::Field(~ty, val=replace(val), ~index, ~width)
+      Offset(~ty, ~val, ~offset, ~width) =>
+        Address::Offset(~ty, val=replace(val), offset=replace(offset), ~width)
     }
   }
 
@@ -554,5 +640,20 @@ pub impl Show for RoundMode with output(self, logger) {
     Rdn => logger.write_string("rdn")
     Rup => logger.write_string("rup")
     Rmm => logger.write_string("rmm")
+  }
+}
+
+pub impl Show for Width with output(self, logger) {
+  match self {
+    WidthPtr => logger.write_string("@ptr")
+    Width64 => logger.write_string("@64")
+    Width32 => logger.write_string("@32")
+    Mix(~width, ~other) => {
+      logger.write_string("@(")
+      logger.write_object(width)
+      logger.write_string(", ")
+      logger.write_object(other)
+      logger.write_char(')')
+    }
   }
 }

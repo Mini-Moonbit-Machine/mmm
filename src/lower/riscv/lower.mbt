@@ -560,7 +560,7 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
 ) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(c) =>
-      match (ty.size(), c) {
+      match (ty.size_of_lp64(), c) {
         (4, X) =>
           xreg_to(
             @generated.constructor_rv_lwsym(self, self.ref_symbol(sym).name),
@@ -590,9 +590,9 @@ fn RiscvFnLoweringCtx::lower_address(
   addr : @core.Address
 ) -> @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] {
   match addr {
-    Field(~val, ~index, ~size, ..) => {
+    Field(~val, ~index, ~width, ..) => {
       let base = @generated.constructor_lower_value(self, val)
-      let offset = index * size
+      let offset = index * width.size_of_lp64()
       let imm = self
         .i32_generate_imm(offset)
         .or_else(fn() { self.tracer.abort("offset too large") })
@@ -615,15 +615,15 @@ fn RiscvFnLoweringCtx::lower_address(
       } else {
         let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
           base: xreg(base),
-          offset: index * size,
+          offset: index * width.size_of_lp64(),
         }
         ma
       }
     }
-    Offset(~val, ~offset, ~size, ..) => {
+    Offset(~val, ~offset, ~width, ..) => {
       let base = @generated.constructor_lower_value(self, val)
       let index = @generated.constructor_lower_value(self, offset)
-      let offset = match size {
+      let offset = match width.size_of_lp64() {
         4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
         8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
         _ => self.tracer.abort("Invalid type size")
@@ -648,7 +648,7 @@ fn RiscvFnLoweringCtx::lower_store(
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
       let ma = self.lower_address(addr)
-      match (ty.size(), c) {
+      match (ty.size_of_lp64(), c) {
         (4, X) => @generated.constructor_rv_sw(self, xreg(r), ma)
         (8, X) => @generated.constructor_rv_sd(self, xreg(r), ma)
         (8, F) => @generated.constructor_rv_fsd(self, freg(r), ma)
@@ -668,7 +668,7 @@ fn RiscvFnLoweringCtx::lower_load(
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
       let ma = self.lower_address(addr)
-      match (ty.size(), c) {
+      match (ty.size_of_lp64(), c) {
         (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
         (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
         (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
@@ -847,7 +847,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
   match mem {
     Stack(..) => self.tracer.abort("Stack allocation not supported")
     Heap(~len, ~ty) => {
-      let elem_sz = ty.elem_size()
+      let elem_sz = ty.elem_size_of_lp64()
       if elem_sz == 0 {
         self.tracer.abort("Zero size type")
       }
@@ -1302,7 +1302,7 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
       base: xreg(base),
       offset: index * 8, // hard encoded as closure field is always 8 bytes even if there's an i32
     }
-    let size = ty.size()
+    let size = ty.size_of_lp64()
     match (ty_to_reg_class(ty), size) {
       (X, 0) =>
         @generated.constructor_rv_mv_to(
@@ -2038,7 +2038,7 @@ pub fn RiscvLoweringCtx::lower_globals(
   pre_allocate_for_stack(insns)
   for symbol in core.global_names {
     let symbol = core.global_symbols.get(symbol.1).unwrap()
-    let ty_size = symbol.ty.size()
+    let ty_size = symbol.ty.size_of_lp64()
     let rc = ty_to_reg_class(symbol.ty)
     let thunk = core.funcs.get(symbol.thunk).unwrap()
     globals.set(

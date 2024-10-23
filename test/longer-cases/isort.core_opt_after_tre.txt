@@ -37,7 +37,7 @@
     jump b3(())
   }
   .bb #b2 () {
-    let %1: int32 = load int32 offset(^2, $b0.0 * 4)
+    let %1: int32 = load int32 offset(^2, $b0.0 * @32)
     let %2: unit = ext_call minimbt_print_int(%1)
     let %3: unit = ext_call minimbt_print_char(32)
     let %4: int32 = add($b0.0, 1)
@@ -62,8 +62,8 @@
   }
   .bb #b2 () {
     let %1: int32 = sub($b0.1, 1)
-    let %2: int32 = load int32 offset($b0.0, %1 * 4)
-    let %3: int32 = load int32 offset($b0.0, $b0.1 * 4)
+    let %2: int32 = load int32 offset($b0.0, %1 * @32)
+    let %3: int32 = load int32 offset($b0.0, $b0.1 * @32)
     let %4: bool = le(%2, %3)
     br %4 b3() b4()
   }
@@ -71,12 +71,12 @@
     jump b5(())
   }
   .bb #b4 () {
-    let %5: int32 = load int32 offset($b0.0, $b0.1 * 4)
+    let %5: int32 = load int32 offset($b0.0, $b0.1 * @32)
     let %6: int32 = sub($b0.1, 1)
-    let %7: int32 = load int32 offset($b0.0, %6 * 4)
-    let _ = store int32 offset($b0.0, $b0.1 * 4) <- %7
+    let %7: int32 = load int32 offset($b0.0, %6 * @32)
+    let _ = store int32 offset($b0.0, $b0.1 * @32) <- %7
     let %9: int32 = sub($b0.1, 1)
-    let _ = store int32 offset($b0.0, %9 * 4) <- %5
+    let _ = store int32 offset($b0.0, %9 * @32) <- %5
     let %11: int32 = sub($b0.1, 1)
     jump b0($b0.0, %11)
   }
@@ -114,7 +114,7 @@
   .bb #b2 () {
     let %1: int32 = call f0($b0.1)
     let %2: int32 = call f1(%1, 65537)
-    let _ = store int32 offset(^2, $b0.0 * 4) <- %2
+    let _ = store int32 offset(^2, $b0.0 * @32) <- %2
     let %4: int32 = add($b0.0, 1)
     jump b0(%4, %2)
   }

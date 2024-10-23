@@ -697,7 +697,9 @@ fn build_knf_expr(
               ~ty,
               val=x_val,
               index=i,
-              size=tuple_ty.elem_size(),
+              width=tuple_ty
+                .elem_width()
+                .or_else(fn() { self.tracer.abort("not a container") }),
             ),
           ),
         )
@@ -710,17 +712,24 @@ fn build_knf_expr(
       let (ctx, idx_val) = self.build_name!(
         free_names, ctx, core, func, bb, idx,
       )
-      let ty = self.get_type!(ctx, core, func, bb, x_val)
-      let ty = match ty {
+      let array_ty = self.get_type!(ctx, core, func, bb, x_val)
+      let ty = match array_ty {
         Array(~elem) => elem
-        _ => fail!("not an array: \{ty}")
+        _ => fail!("not an array: \{array_ty}")
       }
       let val = self.add_insn(
         func,
         bb,
         Insn::Load(
           ~ty,
-          ma=Address::Offset(~ty, val=x_val, offset=idx_val, size=ty.size()),
+          ma=Address::Offset(
+            ~ty,
+            val=x_val,
+            offset=idx_val,
+            width=array_ty
+              .elem_width()
+              .or_else(fn() { self.tracer.abort("not a container") }),
+          ),
         ),
       )
       (ctx, bb, val)
@@ -731,16 +740,24 @@ fn build_knf_expr(
         free_names, ctx, core, func, bb, idx,
       )
       let (ctx, y_val) = self.build_name!(free_names, ctx, core, func, bb, y)
-      let ty = match self.get_type!(ctx, core, func, bb, x_val) {
+      let array_ty = self.get_type!(ctx, core, func, bb, x_val)
+      let ty = match array_ty {
         Array(~elem) => elem
-        _ => fail!("not an array")
+        _ => fail!("not an array: \{array_ty}")
       }
       let _ = self.add_insn(
         func,
         bb,
         Insn::Store(
           ~ty,
-          ma=Address::Offset(~ty, val=x_val, offset=idx_val, size=ty.size()),
+          ma=Address::Offset(
+            ~ty,
+            val=x_val,
+            offset=idx_val,
+            width=array_ty
+              .elem_width()
+              .or_else(fn() { self.tracer.abort("not a container") }),
+          ),
           val=y_val,
         ),
       )

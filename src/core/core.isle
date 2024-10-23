@@ -7,6 +7,7 @@
 (type LoopRef (primitive `@core.LoopRef`))
 (type MemRef (primitive `@core.MemRef`))
 (type SymbolRef (primitive `@core.SymbolRef`))
+(type Width (primitive `@core.Width`))
 
 (decl ref_fn (Fn) FnRef)
 (extern extractor infallible ref_fn ref_fn)
@@ -277,14 +278,14 @@
 
 (type Address extern
   (enum as `@core.Address`
-    (Field (ty Type) (val Value) (index Int32) (size Int32))
-    (Offset (ty Type) (val Value) (offset Int32) (size Int32))))
+    (Field (ty Type) (val Value) (index Int32) (width Width))
+    (Offset (ty Type) (val Value) (offset Int32) (width Width))))
 
-(decl pure addr_field (Type Value Int32 Int32) Address)
-(extractor (addr_field ty val index size) (Address.Field ty val index size))
+(decl pure addr_field (Type Value Int32 Width) Address)
+(extractor (addr_field ty val index width) (Address.Field ty val index width))
 
-(decl pure addr_offset (Type Value Int32 Int32) Address)
-(extractor (addr_offset ty val offset size) (Address.Offset ty val offset size))
+(decl pure addr_offset (Type Value Int32 Width) Address)
+(extractor (addr_offset ty val offset width) (Address.Offset ty val offset width))
 
 (type Control extern
   (enum as `@core.Control`

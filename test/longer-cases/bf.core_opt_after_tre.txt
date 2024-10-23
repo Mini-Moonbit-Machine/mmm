@@ -11,21 +11,21 @@
 .freevars (array[int32], array[int32], int32, closure(int32, int32) -> int32, array[int32], closure(int32) -> int32)
 .entry b4 {
   .bb #b0 () {
-    let %0: int32 = load int32 field(^1, 0 * 4)
-    let %1: int32 = load int32 offset(^2, %0 * 4)
+    let %0: int32 = load int32 field(^1, 0 * @32)
+    let %1: int32 = load int32 offset(^2, %0 * @32)
     let %2: bool = eq(%1, 0)
     br %2 b1() b2()
   }
   .bb #b1 () {
     let %3: int32 = add(^3, 1)
     let %4: int32 = apply ^4(%3, 0)
-    let _ = store int32 field(^5, 0 * 4) <- %4
+    let _ = store int32 field(^5, 0 * @32) <- %4
     jump b3(())
   }
   .bb #b2 () {
     let %6: int32 = add(^3, 1)
     let %7: int32 = apply ^6(%6)
-    let _ = store int32 field(^5, 0 * 4) <- %7
+    let _ = store int32 field(^5, 0 * @32) <- %7
     jump b0()
   }
   .bb #b3 (unit) {
@@ -88,7 +88,7 @@
     jump b12($b0.0)
   }
   .bb #b2 () {
-    let %1: int32 = load int32 offset(^2, $b0.0 * 4)
+    let %1: int32 = load int32 offset(^2, $b0.0 * @32)
     let %2: bool = eq(%1, 91)
     br %2 b3() b4()
   }
@@ -154,14 +154,14 @@
     jump b27($b0.0)
   }
   .bb #b2 () {
-    let %1: int32 = load int32 offset(^2, $b0.0 * 4)
+    let %1: int32 = load int32 offset(^2, $b0.0 * @32)
     let %2: bool = eq(%1, 62)
     br %2 b3() b4()
   }
   .bb #b3 () {
-    let %3: int32 = load int32 field(^3, 0 * 4)
+    let %3: int32 = load int32 field(^3, 0 * @32)
     let %4: int32 = add(%3, 1)
-    let _ = store int32 field(^3, 0 * 4) <- %4
+    let _ = store int32 field(^3, 0 * @32) <- %4
     let %6: int32 = add($b0.0, 1)
     jump b0(%6)
   }
@@ -170,9 +170,9 @@
     br %8 b5() b6()
   }
   .bb #b5 () {
-    let %9: int32 = load int32 field(^3, 0 * 4)
+    let %9: int32 = load int32 field(^3, 0 * @32)
     let %10: int32 = sub(%9, 1)
-    let _ = store int32 field(^3, 0 * 4) <- %10
+    let _ = store int32 field(^3, 0 * @32) <- %10
     let %12: int32 = add($b0.0, 1)
     jump b0(%12)
   }
@@ -181,11 +181,11 @@
     br %14 b7() b8()
   }
   .bb #b7 () {
-    let %15: int32 = load int32 field(^3, 0 * 4)
-    let %16: int32 = load int32 field(^3, 0 * 4)
-    let %17: int32 = load int32 offset(^4, %16 * 4)
+    let %15: int32 = load int32 field(^3, 0 * @32)
+    let %16: int32 = load int32 field(^3, 0 * @32)
+    let %17: int32 = load int32 offset(^4, %16 * @32)
     let %18: int32 = add(%17, 1)
-    let _ = store int32 offset(^4, %15 * 4) <- %18
+    let _ = store int32 offset(^4, %15 * @32) <- %18
     let %20: int32 = add($b0.0, 1)
     jump b0(%20)
   }
@@ -194,11 +194,11 @@
     br %22 b9() b10()
   }
   .bb #b9 () {
-    let %23: int32 = load int32 field(^3, 0 * 4)
-    let %24: int32 = load int32 field(^3, 0 * 4)
-    let %25: int32 = load int32 offset(^4, %24 * 4)
+    let %23: int32 = load int32 field(^3, 0 * @32)
+    let %24: int32 = load int32 field(^3, 0 * @32)
+    let %25: int32 = load int32 offset(^4, %24 * @32)
     let %26: int32 = sub(%25, 1)
-    let _ = store int32 offset(^4, %23 * 4) <- %26
+    let _ = store int32 offset(^4, %23 * @32) <- %26
     let %28: int32 = add($b0.0, 1)
     jump b0(%28)
   }
@@ -207,8 +207,8 @@
     br %30 b11() b12()
   }
   .bb #b11 () {
-    let %31: int32 = load int32 field(^3, 0 * 4)
-    let %32: int32 = load int32 offset(^4, %31 * 4)
+    let %31: int32 = load int32 field(^3, 0 * @32)
+    let %32: int32 = load int32 offset(^4, %31 * @32)
     let %33: unit = ext_call minimbt_print_char(%32)
     let %34: int32 = add($b0.0, 1)
     jump b0(%34)
@@ -218,9 +218,9 @@
     br %36 b13() b14()
   }
   .bb #b13 () {
-    let %37: int32 = load int32 field(^3, 0 * 4)
+    let %37: int32 = load int32 field(^3, 0 * @32)
     let %38: int32 = call f0()
-    let _ = store int32 offset(^4, %37 * 4) <- %38
+    let _ = store int32 offset(^4, %37 * @32) <- %38
     let %40: int32 = add($b0.0, 1)
     jump b0(%40)
   }
@@ -229,10 +229,10 @@
     br %42 b15() b16()
   }
   .bb #b15 () {
-    let _ = store int32 field(^5, 0 * 4) <- $b0.0
+    let _ = store int32 field(^5, 0 * @32) <- $b0.0
     let _ = alloc <m0: closure() -> unit heap(7)> <- [0] = f9, [1] = ^3, [2] = ^4, [3] = $b0.0, [4] = ^6, [5] = ^5, [6] = self
     let %45: unit = apply f7.m0()
-    let %46: int32 = load int32 field(^5, 0 * 4)
+    let %46: int32 = load int32 field(^5, 0 * @32)
     let %47: int32 = add(%46, 1)
     jump b0(%47)
   }
@@ -290,7 +290,7 @@
     jump b3(%2)
   }
   .bb #b2 () {
-    let _ = store int32 offset(^1, $b0.0 * 4) <- %0
+    let _ = store int32 offset(^1, $b0.0 * @32) <- %0
     let %4: int32 = add($b0.0, 1)
     jump b0(%4)
   }
