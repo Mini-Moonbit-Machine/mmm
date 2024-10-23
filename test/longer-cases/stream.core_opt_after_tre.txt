@@ -1,0 +1,280 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn add102_27 #f27 : closure(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, $f1)
+    return %0
+  }
+}
+.fn aux25_14 #f14 : closure(unit) -> (int32, int32)
+.freevars (closure(unit) -> (int32, int32), closure(int32) -> int32)
+.entry b7 {
+  .bb #b0 (unit) {
+    let %0: (int32, int32) = apply ^1(())
+    let %1: int32 = load int32 field(%0, 0)
+    let %2: int32 = load int32 field(%0, 1)
+    let %3: bool = eq(%1, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
+    jump b6(f14.m0)
+  }
+  .bb #b2 () {
+    let %5: int32 = apply ^2(%2)
+    let %6: bool = eq(%5, 0)
+    br %6 b3() b4()
+  }
+  .bb #b3 () {
+    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %2
+    jump b5(f14.m1)
+  }
+  .bb #b4 () {
+    jump b0(())
+  }
+  .bb #b5 ((int32, int32)) {
+    jump b6($b5.0)
+  }
+  .bb #b6 ((int32, int32)) {
+    return $b6.0
+  }
+  .bb #b7 () {
+    jump b0($f0)
+  }
+}
+.fn aux46_17 #f17 : closure(unit) -> (int32, int32)
+.freevars (closure(unit) -> (int32, int32), closure(unit) -> (int32, int32))
+.entry b0 {
+  .bb #b0 () {
+    let %0: (int32, int32) = apply ^1(())
+    let %1: int32 = load int32 field(%0, 0)
+    let %2: int32 = load int32 field(%0, 1)
+    let %3: bool = eq(%1, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: (int32, int32) = apply ^2(())
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 1, [1] = %2
+    jump b3(f17.m0)
+  }
+  .bb #b3 ((int32, int32)) {
+    return $b3.0
+  }
+}
+.fn main120_9 #f9 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: closure(unit) -> (int32, int32) = call f3(0, 100)
+    let %1: closure(unit) -> (int32, int32) = call f3(0, 1000)
+    let %2: closure(unit) -> (int32, int32) = call f2(%0, %1)
+    let %3: closure(int32) -> int32 = call f4(1)
+    let %4: closure(unit) -> (int32, int32) = call f0(%2, %3)
+    let %5: closure(int32) -> int32 = call f7(50)
+    let %6: closure(unit) -> (int32, int32) = call f1(%4, %5)
+    let %7: closure(int32) -> int32 = call f8(1200)
+    let %8: closure(unit) -> (int32, int32) = call f1(%6, %7)
+    let %9: int32 = call f6(%8)
+    let %10: unit = ext_call minimbt_print_int(%9)
+    let %11: unit = ext_call minimbt_print_char(10)
+    return ()
+  }
+}
+.fn aux6_11 #f11 : closure(unit) -> (int32, int32)
+.freevars (closure(unit) -> (int32, int32), closure(int32) -> int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: (int32, int32) = apply ^1(())
+    let %1: int32 = load int32 field(%0, 0)
+    let %2: int32 = load int32 field(%0, 1)
+    let %3: bool = eq(%1, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
+    jump b3(f11.m0)
+  }
+  .bb #b2 () {
+    let %5: int32 = apply ^2(%2)
+    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %5
+    jump b3(f11.m1)
+  }
+  .bb #b3 ((int32, int32)) {
+    return $b3.0
+  }
+}
+.fn map1_0 #f0 : fn(closure(unit) -> (int32, int32), closure(int32) -> int32) -> closure(unit) -> (int32, int32)
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(unit) -> (int32, int32) heap(3)> <- [0] = f11, [1] = $f0, [2] = $f1
+    return f0.m0
+  }
+}
+.fn addx78_4 #f4 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f23, [1] = $f0
+    return f4.m0
+  }
+}
+.fn le114_8 #f8 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f33, [1] = $f0
+    return f8.m0
+  }
+}
+.fn gt108_7 #f7 : fn(int32) -> closure(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f30, [1] = $f0
+    return f7.m0
+  }
+}
+.fn aux111_30 #f30 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(^1, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    jump b3(1)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn sum99_6 #f6 : fn(closure(unit) -> (int32, int32)) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32, int32) -> int32 heap(1)> <- [0] = f27
+    let %1: int32 = call f5($f0, f6.m0, 0)
+    return %1
+  }
+}
+.fn filter20_1 #f1 : fn(closure(unit) -> (int32, int32), closure(int32) -> int32) -> closure(unit) -> (int32, int32)
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(unit) -> (int32, int32) heap(3)> <- [0] = f14, [1] = $f0, [2] = $f1
+    return f1.m0
+  }
+}
+.fn aux81_23 #f23 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add(^1, $f0)
+    return %0
+  }
+}
+.fn aux117_33 #f33 : closure(int32) -> int32
+.freevars (int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le($f0, ^1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    jump b3(1)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.fn T$start_36 #f36 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f9()
+    return %0
+  }
+}
+.fn range58_3 #f3 : fn(int32, int32) -> closure(unit) -> (int32, int32)
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = $f0
+    let _ = alloc <m1: closure(unit) -> (int32, int32) heap(3)> <- [0] = f20, [1] = f3.m0, [2] = $f1
+    return f3.m1
+  }
+}
+.fn concat41_2 #f2 : fn(closure(unit) -> (int32, int32), closure(unit) -> (int32, int32)) -> closure(unit) -> (int32, int32)
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(unit) -> (int32, int32) heap(3)> <- [0] = f17, [1] = $f0, [2] = $f1
+    return f2.m0
+  }
+}
+.fn fold84_5 #f5 : fn(closure(unit) -> (int32, int32), closure(int32, int32) -> int32, int32) -> int32
+.freevars ()
+.entry b4 {
+  .bb #b0 (closure(unit) -> (int32, int32), closure(int32, int32) -> int32, int32) {
+    let %0: (int32, int32) = apply $f0(())
+    let %1: int32 = load int32 field(%0, 0)
+    let %2: int32 = load int32 field(%0, 1)
+    let %3: bool = eq(%1, 0)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3($b0.2)
+  }
+  .bb #b2 () {
+    let %4: int32 = apply $f1($b0.2, %2)
+    jump b0($b0.0, $b0.1, %4)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+  .bb #b4 () {
+    jump b0($f0, $f1, $f2)
+  }
+}
+.fn aux65_20 #f20 : closure(unit) -> (int32, int32)
+.freevars (array[int32], int32)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 field(^1, 0)
+    let %1: bool = eq(%0, ^2)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
+    jump b3(f20.m0)
+  }
+  .bb #b2 () {
+    let %3: int32 = add(%0, 1)
+    let _ = store int32 field(^1, 0) <- %3
+    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %0
+    jump b3(f20.m1)
+  }
+  .bb #b3 ((int32, int32)) {
+    return $b3.0
+  }
+}
+.thunk ::0 start

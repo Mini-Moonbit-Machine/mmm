@@ -1,0 +1,48 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn f2_2 #f2 : closure() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let %1: bool = eq(%0, -2147483648)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: unit = ext_call minimbt_print_int(%0)
+    jump b3(%2)
+  }
+  .bb #b2 () {
+    let %3: unit = ext_call minimbt_print_int(%0)
+    let %4: unit = apply self()
+    jump b3(%4)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn T$start_4 #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main1_0 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure() -> unit heap(1)> <- [0] = f2
+    let %1: unit = apply f0.m0()
+    return %1
+  }
+}
+.thunk ::0 start

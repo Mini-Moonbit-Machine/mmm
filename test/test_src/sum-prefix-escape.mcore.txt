@@ -46,39 +46,39 @@ T$start_6:
   .text
   .globl sum_nested8_3
   .type sum_nested8_3, @function
-# leaf false
+# leaf true
 sum_nested8_3:
+.sum_nested8_3_4:
+  mv a3, s10
+  mv a2, a0
+  mv a0, a1
+  lw a4, 8(a3)
+  ld a1, 16(a3)
+  ld a5, 24(a3)
+  mv a3, a2
+  mv a2, a0
+
 .sum_nested8_3_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a2, s10
-  lw a3, 8(a2)
-  ld a4, 16(a2)
-  ld a5, 24(a2)
-  addi a3, a3, -1
-  blt a3, a1, .sum_nested8_3_2
+  addi a0, a4, -1
+  blt a0, a2, .sum_nested8_3_2
 
 .sum_nested8_3_1:
-  slliw a3, a1, 2
-  add a3, a4, a3
-  lw a3, 0(a3)
-  add a0, a0, a3
-  slliw a3, a1, 2
+  slliw a0, a2, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  add a0, a3, a0
+  slliw a3, a2, 2
   add a3, a5, a3
   sw a0, 0(a3)
-  addi a1, a1, 1
-  mv s10, a2
-  ld a2, 0(a2)
-  jalr a2
-
-.sum_nested8_3_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  addi a2, a2, 1
+  mv a3, a0
+  j .sum_nested8_3_0
 
 .sum_nested8_3_2:
   mv a0, zero
-  j .sum_nested8_3_3
+
+.sum_nested8_3_3:
+  ret
 
   .p2align 2
   .text

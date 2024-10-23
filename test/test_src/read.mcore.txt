@@ -33,30 +33,27 @@ T$start_4:
   .type f2_2, @function
 # leaf false
 f2_2:
-.f2_2_0:
+.f2_2_4:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, s10
+  mv a0, s10
+
+.f2_2_0:
   call minimbt_read_int
   li a1, -2147483648
-  beq a0, a1, .f2_2_1
-
-.f2_2_2:
-  call minimbt_print_int
-  mv s10, s0
-  ld a0, 0(s0)
-  jalr a0
-
-.f2_2_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
+  bne a0, a1, .f2_2_2
 
 .f2_2_1:
   call minimbt_print_int
-  j .f2_2_3
+
+.f2_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.f2_2_2:
+  call minimbt_print_int
+  j .f2_2_0
 
   .p2align 2
   .text

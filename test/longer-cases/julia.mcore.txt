@@ -67,7 +67,7 @@ T$limit_sq.22:
   .type main_loop30_14, @function
 # leaf false
 main_loop30_14:
-.main_loop30_14_0:
+.main_loop30_14_7:
   addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -81,6 +81,8 @@ main_loop30_14:
   mv s2, a2
   mv s3, a3
   mv s4, a4
+
+.main_loop30_14_0:
   beq s3, s1, .main_loop30_14_1
 
 .main_loop30_14_2:
@@ -114,14 +116,12 @@ main_loop30_14:
   slliw a1, s5, 2
   add a1, s4, a1
   sw a0, 0(a1)
-  addi a2, s2, 1
-  mv a0, s0
-  mv a1, s1
-  mv a3, s3
-  mv a4, s4
-  call main_loop30_14
+  addi a0, s2, 1
+  mv s2, a0
+  j .main_loop30_14_0
 
-.main_loop30_14_5:
+.main_loop30_14_1:
+  mv a0, zero
 
 .main_loop30_14_6:
   ld ra, 0(sp)
@@ -134,18 +134,11 @@ main_loop30_14:
   addi sp, sp, 64
   ret
 
-.main_loop30_14_1:
-  mv a0, zero
-  j .main_loop30_14_6
-
 .main_loop30_14_3:
-  addi a3, s3, 1
-  mv a0, s0
-  mv a1, s1
-  mv a2, zero
-  mv a4, s4
-  call main_loop30_14
-  j .main_loop30_14_5
+  addi a0, s3, 1
+  mv s2, zero
+  mv s3, a0
+  j .main_loop30_14_0
 
   .p2align 2
   .text
@@ -175,7 +168,7 @@ T$_4_6:
   .type print_loop68_15, @function
 # leaf false
 print_loop68_15:
-.print_loop68_15_0:
+.print_loop68_15_7:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -183,32 +176,32 @@ print_loop68_15:
   sd s2, 24(sp)
   sd s3, 32(sp)
   sd s4, 40(sp)
-  mv s4, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
-  mv s1, a3
-  mv s3, a4
-  beq s1, s0, .print_loop68_15_1
+  mv s3, a3
+  mv s4, a4
+
+.print_loop68_15_0:
+  beq s3, s1, .print_loop68_15_1
 
 .print_loop68_15_2:
-  beq s2, s4, .print_loop68_15_3
+  beq s2, s0, .print_loop68_15_3
 
 .print_loop68_15_4:
-  mul a0, s1, s4
+  mul a0, s3, s0
   add a0, a0, s2
   slliw a0, a0, 2
-  add a0, s3, a0
+  add a0, s4, a0
   lw a0, 0(a0)
   addi a0, a0, 48
   call minimbt_print_char
-  addi a2, s2, 1
-  mv a0, s4
-  mv a1, s0
-  mv a3, s1
-  mv a4, s3
-  call print_loop68_15
+  addi a0, s2, 1
+  mv s2, a0
+  j .print_loop68_15_0
 
-.print_loop68_15_5:
+.print_loop68_15_1:
+  mv a0, zero
 
 .print_loop68_15_6:
   ld ra, 0(sp)
@@ -220,20 +213,13 @@ print_loop68_15:
   addi sp, sp, 48
   ret
 
-.print_loop68_15_1:
-  mv a0, zero
-  j .print_loop68_15_6
-
 .print_loop68_15_3:
   li a0, 10
   call minimbt_print_char
-  addi a3, s1, 1
-  mv a0, s4
-  mv a1, s0
-  mv a2, zero
-  mv a4, s3
-  call print_loop68_15
-  j .print_loop68_15_5
+  addi a0, s3, 1
+  mv s2, zero
+  mv s3, a0
+  j .print_loop68_15_0
 
   .p2align 2
   .text
@@ -280,19 +266,18 @@ clamp25_13:
   .text
   .globl calc_pixel7_12
   .type calc_pixel7_12, @function
-# leaf false
+# leaf true
 calc_pixel7_12:
-.calc_pixel7_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  fmv.d fa2, fa0
+.calc_pixel7_12_7:
   mv a1, a0
-  fmul.d fa0, fa2, fa2
+
+.calc_pixel7_12_0:
+  fmul.d fa2, fa0, fa0
   lw a0, iter.3
   beq a1, a0, .calc_pixel7_12_1
 
 .calc_pixel7_12_2:
-  fmadd.d fa3, fa1, fa1, fa0
+  fmadd.d fa3, fa1, fa1, fa2
   fld fa4, limit_sq.2, t5
   fle.d a0, fa4, fa3
   bne a0, zero, .calc_pixel7_12_3
@@ -300,30 +285,28 @@ calc_pixel7_12:
 .calc_pixel7_12_4:
   li a0, 4611686018427387904
   fmv.d.x fa3, a0
-  fmul.d fa2, fa3, fa2
+  fmul.d fa0, fa3, fa0
   fld fa3, c_im.6, t5
-  fmadd.d fa2, fa2, fa1, fa3
-  fnmsub.d fa0, fa1, fa1, fa0
+  fmadd.d fa3, fa0, fa1, fa3
+  fnmsub.d fa0, fa1, fa1, fa2
   fld fa1, c_re.5, t5
   fadd.d fa0, fa0, fa1
   addi a0, a1, 1
-  fmv.d fa1, fa2
-  call calc_pixel7_12
-
-.calc_pixel7_12_5:
-
-.calc_pixel7_12_6:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  fmv.d fa1, fa3
+  mv a1, a0
+  j .calc_pixel7_12_0
 
 .calc_pixel7_12_1:
   lw a0, iter.3
-  j .calc_pixel7_12_6
+
+.calc_pixel7_12_6:
+  ret
 
 .calc_pixel7_12_3:
   mv a0, a1
-  j .calc_pixel7_12_5
+
+.calc_pixel7_12_5:
+  j .calc_pixel7_12_6
 
   .p2align 2
   .text

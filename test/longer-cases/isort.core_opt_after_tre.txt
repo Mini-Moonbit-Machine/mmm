@@ -1,0 +1,186 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn fill_buffer14_2 #f2 : fn(array[int32], int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32, int32) -> unit heap(3)> <- [0] = f9, [1] = $f1, [2] = $f0
+    let %1: unit = apply f2.m0(0, 12345)
+    return %1
+  }
+}
+.fn isort33_3 #f3 : fn(array[int32], int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(array[int32], int32) -> unit heap(1)> <- [0] = f12
+    let _ = alloc <m1: closure(int32) -> unit heap(4)> <- [0] = f14, [1] = $f1, [2] = f3.m0, [3] = $f0
+    let %2: unit = apply f3.m1(1)
+    return %2
+  }
+}
+.fn aux73_17 #f17 : closure(int32) -> unit
+.freevars (int32, array[int32])
+.entry b4 {
+  .bb #b0 (int32) {
+    let %0: bool = eq($b0.0, ^1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %1: int32 = load int32 offset(^2, $b0.0)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    let %3: unit = ext_call minimbt_print_char(32)
+    let %4: int32 = add($b0.0, 1)
+    jump b0(%4)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .bb #b4 () {
+    jump b0($f0)
+  }
+}
+.fn insert38_12 #f12 : closure(array[int32], int32) -> unit
+.freevars ()
+.entry b7 {
+  .bb #b0 (array[int32], int32) {
+    let %0: bool = eq($b0.1, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($b0.1, 1)
+    let %2: int32 = load int32 offset($b0.0, %1)
+    let %3: int32 = load int32 offset($b0.0, $b0.1)
+    let %4: bool = le(%2, %3)
+    br %4 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(())
+  }
+  .bb #b4 () {
+    let %5: int32 = load int32 offset($b0.0, $b0.1)
+    let %6: int32 = sub($b0.1, 1)
+    let %7: int32 = load int32 offset($b0.0, %6)
+    let _ = store int32 offset($b0.0, $b0.1) <- %7
+    let %9: int32 = sub($b0.1, 1)
+    let _ = store int32 offset($b0.0, %9) <- %5
+    let %11: int32 = sub($b0.1, 1)
+    jump b0($b0.0, %11)
+  }
+  .bb #b5 (unit) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (unit) {
+    return $b6.0
+  }
+  .bb #b7 () {
+    jump b0($f0, $f1)
+  }
+}
+.fn main85_5 #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(100)> <- [..] = 0
+    let %1: unit = call f2(f5.m0, 100)
+    let %2: unit = call f3(f5.m0, 100)
+    let %3: unit = call f4(f5.m0, 100)
+    return %3
+  }
+}
+.fn aux19_9 #f9 : closure(int32, int32) -> unit
+.freevars (int32, array[int32])
+.entry b4 {
+  .bb #b0 (int32, int32) {
+    let %0: bool = eq($b0.0, ^1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %1: int32 = call f0($b0.1)
+    let %2: int32 = call f1(%1, 65537)
+    let _ = store int32 offset(^2, $b0.0) <- %2
+    let %4: int32 = add($b0.0, 1)
+    jump b0(%4, %2)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .bb #b4 () {
+    jump b0($f0, $f1)
+  }
+}
+.fn T$start_20 #f20 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn aux60_14 #f14 : closure(int32) -> unit
+.freevars (int32, closure(array[int32], int32) -> unit, array[int32])
+.entry b4 {
+  .bb #b0 (int32) {
+    let %0: bool = eq($b0.0, ^1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %1: unit = apply ^2(^3, $b0.0)
+    let %2: int32 = add($b0.0, 1)
+    jump b0(%2)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .bb #b4 () {
+    jump b0($f0)
+  }
+}
+.fn modulo7_1 #f1 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = div($f0, $f1)
+    let %1: int32 = mul(%0, $f1)
+    let %2: int32 = sub($f0, %1)
+    return %2
+  }
+}
+.fn print_array68_4 #f4 : fn(array[int32], int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> unit heap(3)> <- [0] = f17, [1] = $f1, [2] = $f0
+    let %1: unit = apply f4.m0(0)
+    return %1
+  }
+}
+.fn random1_0 #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = mul($f0, 75)
+    let %1: int32 = add(%0, 74)
+    return %1
+  }
+}
+.thunk ::0 start

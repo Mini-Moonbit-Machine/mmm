@@ -94,8 +94,8 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     LdSym(~rd, ..) | LwSym(~rd, ..) | La(~rd, ..) | Li(~rd, ..) =>
       ([rd.to_any()], [])
     FldSym(~rd, ..) => ([rd.to_any()], [])
-    Neg(~rd, ~rs) | Mv(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
-    FnegD(~rd, ~rs) | FmvD(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
+    Neg(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
+    FnegD(~rd, ~rs) => ([rd.to_any()], [rs.to_any()])
     XRet => ([], xret_use)
     FRet => ([], fret_use)
     Call(~num_xregs, ~num_fregs, ..) =>
@@ -108,6 +108,18 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     SaveCtx1 | RestoreCtx1 => ([], [])
     SaveCtx2 | RestoreCtx2 => ([], [])
     Nop | J(..) | Jr(..) | Tail(..) | Label(_) | Comment(_) => ([], [])
+    FmvD(~rd, ~rs) =>
+      if rd == rs {
+        ([], [rs.to_any()])
+      } else {
+        ([rd.to_any()], [rs.to_any()])
+      }
+    Mv(~rd, ~rs) =>
+      if rd == rs {
+        ([], [rs.to_any()])
+      } else {
+        ([rd.to_any()], [rs.to_any()])
+      }
   }
 }
 

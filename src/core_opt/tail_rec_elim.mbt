@@ -1,0 +1,285 @@
+pub struct TailRecElim {
+  core : @core.Core
+  tracer : @util.SubTracer
+}
+
+pub fn TailRecElim::new(
+  core : @core.Core,
+  tracer : @util.SubTracer
+) -> TailRecElim {
+  { core, tracer }
+}
+
+pub struct FnTailRecElim {
+  func : @core.Fn
+  tracer : @util.SubTracer
+}
+
+pub fn FnTailRecElim::new(
+  func : @core.Fn,
+  tracer : @util.SubTracer
+) -> FnTailRecElim {
+  { func, tracer }
+}
+
+fn FnTailRecElim::find_return(
+  self : FnTailRecElim
+) -> Array[(@core.BlockRef, Array[@core.Value])] {
+  let func = self.func
+  let rets = []
+  for block in func.blocks {
+    let (_, block) = block
+    let bb = block.basic_block(func)
+    match bb.control {
+      Return(~args) => rets.push((bb.id, args))
+      _ => ()
+    }
+  }
+  rets
+}
+
+fn FnTailRecElim::check_insn_after_self_call(
+  self : FnTailRecElim,
+  iref : @core.InsnRef,
+  ret_bb : @core.BasicBlock
+) -> Bool {
+  let start_bb = for block in self.func.blocks {
+    let (_, block) = block
+    let bb = block.basic_block(self.func)
+    match bb.seq.search(iref) {
+      None => ()
+      Some(idx) => break Some((bb, idx))
+    }
+  } else {
+    None
+  }
+  let (start_bb, call_index) = start_bb.unwrap()
+  let mut flag = start_bb.seq.length() - 1 == call_index
+  let mut cur_bb = start_bb
+  while flag {
+    match cur_bb.control {
+      Jump(~target, ..) =>
+        cur_bb = self.func.blocks[target].unwrap().basic_block(self.func)
+      Return(..) => {
+        flag = cur_bb.id == ret_bb.id && cur_bb.seq.is_empty()
+        break
+      }
+      _ => {
+        flag = false
+        break
+      }
+    }
+  }
+  flag
+}
+
+fn FnTailRecElim::insert_entry_block(self : FnTailRecElim) -> Unit {
+  let old_entry = self.func.entry
+  let num_params = match self.func.ty {
+    DirectFn(~params, ..) => params.length()
+    ClosureFn(~params, ..) => params.length()
+    _ => self.tracer.abort("not a function type")
+  }
+  let args = []
+  for i in 0..<num_params {
+    args.push(
+      @core.Value::FnParam(fref=self.func.id, fpref=@core.FnParamRef({ id: i })),
+    )
+  }
+  let control = @core.Control::Jump(target=old_entry, ~args)
+  let bb = @core.BasicBlock::{
+    id: @core.BlockRef(@core.Id::new(self.func.next_block_id())),
+    params: [],
+    seq: [],
+    control,
+  }
+  self.func.blocks.set(bb.id, @core.Block::BasicBlock(~bb))
+  self.func.entry = bb.id
+}
+
+fn FnTailRecElim::find_all_defs_of_value(
+  self : FnTailRecElim,
+  val : @core.Value
+) -> Array[@core.Value] {
+  let res = []
+  let worklist = []
+  fn push_or_pend(val : @core.Value) {
+    match val {
+      BlockParam(~bref, ~bpref) => worklist.push((bref, bpref))
+      _ => res.push(val)
+    }
+  }
+
+  fn handle_jump(
+    target : @core.BlockRef,
+    bref : @core.BlockRef,
+    bpref : @core.BlockParamRef,
+    args : Array[@core.Value]
+  ) {
+    if target == bref {
+      let val = args[bpref.id]
+      push_or_pend(val)
+    }
+  }
+
+  fn find_indirect_defs() {
+    let (bref, bpref) = worklist.pop().unwrap()
+    for block in self.func.blocks {
+      let (_, block) = block
+      let bb = block.basic_block(self.func)
+      match bb.control {
+        Jump(~target, ~args) => handle_jump(target, bref, bpref, args)
+        Branch(~t, ~f, ~t_args, ~f_args, ..) => {
+          handle_jump(t, bref, bpref, t_args)
+          handle_jump(f, bref, bpref, f_args)
+        }
+        Select(~targets, ~args, ..) =>
+          for target in targets {
+            handle_jump(target, bref, bpref, args)
+          }
+        Panic(..) => ()
+        Return(..) => ()
+      }
+    }
+  }
+
+  push_or_pend(val)
+  while worklist.is_empty() == false {
+    find_indirect_defs()
+  }
+  res
+}
+
+pub fn FnTailRecElim::update_old_entry_basic_block(
+  self : FnTailRecElim,
+  old_entry : @core.BasicBlock
+) -> Unit {
+  let params = match self.func.ty {
+    DirectFn(~params, ..) => params
+    ClosureFn(~params, ..) => params
+    _ => self.tracer.abort("not a function type")
+  }
+  if old_entry.params.length() != 0 {
+    self.tracer.abort("old entry block should not have params")
+  }
+  old_entry.params.clear()
+  old_entry.params.append(params)
+}
+
+fn FnTailRecElim::replace_tail_rec_call(
+  self : FnTailRecElim,
+  iref : @core.InsnRef,
+  old_entry : @core.BlockRef
+) -> Unit {
+  let args = match self.func.insns[iref].unwrap() {
+    Call(~args, ..) => args
+    Apply(~args, ..) => args
+    _ => self.tracer.abort("not a call or apply")
+  }
+  for block in self.func.blocks {
+    let (_, block) = block
+    let bb = block.basic_block(self.func)
+    match bb.seq.search(iref) {
+      Some(idx) => {
+        let _ = bb.seq.remove(idx)
+        bb.control = Jump(target=old_entry, ~args)
+      }
+      None => ()
+    }
+  }
+}
+
+fn FnTailRecElim::replace_parameters(
+  self : FnTailRecElim,
+  new_entry : @core.BlockRef,
+  old_entry : @core.BlockRef
+) -> Unit {
+  let num_params = match self.func.ty {
+    DirectFn(~params, ..) => params.length()
+    ClosureFn(~params, ..) => params.length()
+    _ => self.tracer.abort("not a function type")
+  }
+  let params = []
+  for i in 0..<num_params {
+    params.push(
+      (
+        @core.Value::FnParam(
+          fref=self.func.id,
+          fpref=@core.FnParamRef({ id: i }),
+        ),
+        @core.Value::BlockParam(
+          bref=old_entry,
+          bpref=@core.BlockParamRef({ id: i }),
+        ),
+      ),
+    )
+  }
+  for block in self.func.blocks {
+    let (_, block) = block
+    let bb = block.basic_block(self.func)
+    if bb.id != new_entry {
+      params.each(
+        fn(p) {
+          let (fp, bp) = p
+          fp.replace_all_uses_with(self.func, bb, bp)
+        },
+      )
+    }
+  }
+}
+
+fn FnTailRecElim::elim_tail_rec(self : FnTailRecElim) -> Unit {
+  let rets = self.find_return()
+  let tail_rec_calls = []
+  for ret in rets {
+    let (ret_bb, args) = ret
+    let ret_bb = self.func.blocks[ret_bb].unwrap().basic_block(self.func)
+    if args.length() == 1 {
+      let defs = self.find_all_defs_of_value(args[0])
+      for def in defs {
+        match def {
+          Insn(~iref) => {
+            let insn = self.func.insns[iref].unwrap()
+            match insn {
+              Call(~f, ..) =>
+                if f == self.func.id &&
+                  self.check_insn_after_self_call(iref, ret_bb) {
+                  tail_rec_calls.push(iref)
+                }
+              Apply(f=Self(..), ..) =>
+                if self.check_insn_after_self_call(iref, ret_bb) {
+                  tail_rec_calls.push(iref)
+                }
+              _ => ()
+            }
+          }
+          _ => ()
+        }
+      }
+    }
+  }
+  if tail_rec_calls.is_empty() {
+    return
+  }
+  let old_entry = self.func.entry
+  self.insert_entry_block()
+  self.update_old_entry_basic_block(
+    self.func.blocks[old_entry].unwrap().basic_block(self.func),
+  )
+  for iref in tail_rec_calls {
+    self.replace_tail_rec_call(iref, old_entry)
+    self.tracer.println(
+      "eliminated tail rec call \{iref}: \{self.func.insns[iref].unwrap()}",
+    )
+    self.func.insns.remove(iref)
+  }
+  self.replace_parameters(self.func.entry, old_entry)
+}
+
+pub fn go(self : TailRecElim) -> Unit {
+  for func in self.core.funcs {
+    let (_, func) = func
+    let ftre = FnTailRecElim::new(func, self.tracer)
+    ftre.elim_tail_rec()
+  }
+}

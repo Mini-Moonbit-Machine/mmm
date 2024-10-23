@@ -181,38 +181,40 @@ main85_4:
   .type init_arr89_10, @function
 # leaf false
 init_arr89_10:
-.init_arr89_10_0:
+.init_arr89_10_4:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  sd s4, 40(sp)
-  mv s1, s10
-  mv s3, a0
+  mv a3, s10
   mv s0, a1
-  mv s2, a2
-  blt s3, zero, .init_arr89_10_2
+  mv a1, a2
+  mv s1, a0
+  mv s2, a1
+
+.init_arr89_10_0:
+  blt s1, zero, .init_arr89_10_2
 
 .init_arr89_10_1:
   slliw a0, s0, 3
   sub a0, s11, a0
-  andi s4, a0, -8
-  mv s11, s4
+  andi s3, a0, -8
+  mv s11, s3
   fmv.d.x fa0, zero
   mv a1, s0
-  mv a0, s4
+  mv a0, s3
   call memsetf64
-  slliw a0, s3, 3
+  slliw a0, s1, 3
   add a0, s2, a0
-  sd s4, 0(a0)
-  addi a0, s3, -1
-  mv s10, s1
-  ld a3, 0(s1)
-  mv a1, s0
-  mv a2, s2
-  jalr a3
+  sd s3, 0(a0)
+  addi a0, s1, -1
+  mv s1, a0
+  j .init_arr89_10_0
+
+.init_arr89_10_2:
+  mv a0, zero
 
 .init_arr89_10_3:
   ld ra, 0(sp)
@@ -220,13 +222,8 @@ init_arr89_10:
   ld s1, 16(sp)
   ld s2, 24(sp)
   ld s3, 32(sp)
-  ld s4, 40(sp)
   addi sp, sp, 48
   ret
-
-.init_arr89_10_2:
-  mv a0, zero
-  j .init_arr89_10_3
 
   .p2align 2
   .text
@@ -234,7 +231,7 @@ init_arr89_10:
   .type loop228_1, @function
 # leaf false
 loop228_1:
-.loop228_1_0:
+.loop228_1_4:
   addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -249,6 +246,8 @@ loop228_1:
   mv s3, a3
   mv s4, a4
   mv s5, a5
+
+.loop228_1_0:
   blt s2, zero, .loop228_1_2
 
 .loop228_1_1:
@@ -259,13 +258,12 @@ loop228_1:
   mv a4, s4
   mv a5, s5
   call loop31_0
-  addi a2, s2, -1
-  mv a0, s0
-  mv a1, s1
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop228_1
+  addi a0, s2, -1
+  mv s2, a0
+  j .loop228_1_0
+
+.loop228_1_2:
+  mv a0, zero
 
 .loop228_1_3:
   ld ra, 0(sp)
@@ -278,17 +276,13 @@ loop228_1:
   addi sp, sp, 64
   ret
 
-.loop228_1_2:
-  mv a0, zero
-  j .loop228_1_3
-
   .p2align 2
   .text
   .globl loop148_2
   .type loop148_2, @function
 # leaf false
 loop148_2:
-.loop148_2_0:
+.loop148_2_4:
   addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -297,29 +291,30 @@ loop148_2:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
-  mv s3, a3
+  mv s3, a0
+  mv s5, a1
+  mv s1, a2
+  mv s0, a3
   mv s4, a4
-  mv s5, a5
-  blt s0, zero, .loop148_2_2
+  mv s2, a5
+
+.loop148_2_0:
+  blt s3, zero, .loop148_2_2
 
 .loop148_2_1:
-  addi a2, s2, -1
-  mv a0, s0
-  mv a1, s1
-  mv a3, s3
+  addi a2, s1, -1
+  mv a0, s3
+  mv a1, s5
+  mv a3, s0
   mv a4, s4
-  mv a5, s5
+  mv a5, s2
   call loop228_1
-  addi a0, s0, -1
-  mv a1, s1
-  mv a2, s2
-  mv a3, s3
-  mv a4, s4
-  mv a5, s5
-  call loop148_2
+  addi a0, s3, -1
+  mv s3, a0
+  j .loop148_2_0
+
+.loop148_2_2:
+  mv a0, zero
 
 .loop148_2_3:
   ld ra, 0(sp)
@@ -331,10 +326,6 @@ loop148_2:
   ld s5, 48(sp)
   addi sp, sp, 64
   ret
-
-.loop148_2_2:
-  mv a0, zero
-  j .loop148_2_3
 
   .p2align 2
   .text
@@ -409,50 +400,56 @@ make_arr103_12:
   .text
   .globl loop31_0
   .type loop31_0, @function
-# leaf false
+# leaf true
 loop31_0:
+.loop31_0_4:
+  mv a7, a0
+  mv a6, a1
+  mv a1, a3
+  mv a3, a4
+  mv a0, a5
+  mv a4, a7
+  mv a5, a3
+  mv a3, a0
+
 .loop31_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
   blt a2, zero, .loop31_0_2
 
 .loop31_0_1:
-  slliw a6, a0, 3
-  add a6, a5, a6
-  ld a6, 0(a6)
-  slliw a7, a0, 3
-  add a7, a5, a7
+  slliw a0, a4, 3
+  add a0, a3, a0
+  ld a0, 0(a0)
+  slliw a7, a4, 3
+  add a7, a3, a7
   ld a7, 0(a7)
-  slliw t0, a1, 3
+  slliw t0, a6, 3
   add a7, a7, t0
   fld fa0, 0(a7)
-  slliw a7, a0, 3
-  add a7, a3, a7
+  slliw a7, a4, 3
+  add a7, a1, a7
   ld a7, 0(a7)
   slliw t0, a2, 3
   add a7, a7, t0
   fld fa1, 0(a7)
   slliw a7, a2, 3
-  add a7, a4, a7
+  add a7, a5, a7
   ld a7, 0(a7)
-  slliw t0, a1, 3
+  slliw t0, a6, 3
   add a7, a7, t0
   fld fa2, 0(a7)
   fmadd.d fa0, fa1, fa2, fa0
-  slliw a7, a1, 3
-  add a6, a6, a7
-  fsd fa0, 0(a6)
-  addi a2, a2, -1
-  call loop31_0
-
-.loop31_0_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  slliw a7, a6, 3
+  add a0, a0, a7
+  fsd fa0, 0(a0)
+  addi a0, a2, -1
+  mv a2, a0
+  j .loop31_0_0
 
 .loop31_0_2:
   mv a0, zero
-  j .loop31_0_3
+
+.loop31_0_3:
+  ret
 
   .p2align 2
   .text

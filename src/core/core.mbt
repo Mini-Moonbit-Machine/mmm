@@ -125,7 +125,7 @@ pub struct Fn {
   name : String
   ty : Type
   fvars : Array[Type]
-  entry : BlockRef
+  mut entry : BlockRef
   blocks : MutMap[BlockRef, Block]
   insns : MutMap[InsnRef, Insn]
   mems : MutMap[MemRef, Mem]
@@ -387,6 +387,15 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
   }
 }
 
+pub fn Fn::next_block_id(self : Fn) -> Int {
+  let mut id = -1
+  for block in self.blocks {
+    let (_, block) = block
+    id = @math.maximum(id, block.basic_block(self).id.id)
+  }
+  id + 1
+}
+
 pub fn Control::successors(self : Control) -> Array[BlockRef] {
   match self {
     Jump(~target, ..) => [target]
@@ -407,6 +416,80 @@ fn Op::from_knf(knf : @knf.Knf) -> Op? {
     IfEq(_, _, _, _) => Some(Op::Eq)
     IfLe(_, _, _, _) => Some(Op::Le)
     _ => None
+  }
+}
+
+pub fn Value::replace_all_uses_with(
+  self : Value,
+  func : Fn,
+  block : BasicBlock,
+  value : Value
+) -> Unit {
+  fn replace(v : Value) -> Value {
+    if v == self {
+      value
+    } else {
+      v
+    }
+  }
+
+  fn replace_addr(addr : Address) -> Address {
+    match addr {
+      Field(~ty, ~val, ~index) => Address::Field(~ty, val=replace(val), ~index)
+      Offset(~ty, ~val, ~offset) =>
+        Address::Offset(~ty, val=replace(val), offset=replace(offset))
+    }
+  }
+
+  fn replace_fill(fill : Fill) -> Fill {
+    match fill {
+      Zero => Zero
+      Init(~val) => Init(val=replace(val))
+      Field(~index, ~val) => Field(~index, val=replace(val))
+    }
+  }
+
+  // enumerate instructions
+  let insn_updates = []
+  let bb = func.blocks[block.id].unwrap().basic_block(func)
+  for iref in bb.seq {
+    let insn = func.insns[iref].unwrap()
+    // check if old value is a child of the instruction
+    let new_insn = match insn {
+      Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(replace))
+      Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(replace))
+      Apply(~ty, ~f, ~args) => Apply(~ty, ~f, args=args.map(replace))
+      ExtCall(~ty, ~ext_f, ~args) =>
+        ExtCall(~ty, ~ext_f, args=args.map(replace))
+      LoadSymbol(..) => insn
+      Alloc(~ty, ~mref, ~fills) =>
+        Alloc(~ty, ~mref, fills=fills.map(replace_fill))
+      Store(~ty, ~ma, ~val) => Store(~ty, ma=replace_addr(ma), val=replace(val))
+      Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
+    }
+    insn_updates.push((iref, new_insn))
+  }
+  // enumerate controls
+  let bb = bb
+  bb.control = match bb.control {
+    Jump(~target, ~args) => Jump(~target, args=args.map(replace))
+    Return(~args) => Return(args=args.map(replace))
+    Branch(~cond, ~t_args, ~f_args, ~t, ~f) =>
+      Branch(
+        cond=replace(cond),
+        t_args=t_args.map(replace),
+        f_args=f_args.map(replace),
+        ~t,
+        ~f,
+      )
+    Select(~cond, ~targets, ~args) =>
+      Select(cond=replace(cond), ~targets, args=args.map(replace))
+    Panic => Panic
+  }
+  // bulk update
+  for insnpair in insn_updates {
+    let (handle, new_insn) = insnpair
+    func.insns.set(handle, new_insn)
   }
 }
 
