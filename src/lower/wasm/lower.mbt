@@ -23,16 +23,16 @@ fn type_mangling(ty : @core.Type) -> String {
   }
 }
 
-pub struct WasmLowringCtx {
+pub struct WasmLoweringCtx {
   core : @core.Core
   tracer : @util.SubTracer
 }
 
-pub fn WasmLowringCtx::new(
+pub fn WasmLoweringCtx::new(
   core : @core.Core,
   tracer : @util.SubTracer
-) -> WasmLowringCtx {
-  WasmLowringCtx::{ core, tracer }
+) -> WasmLoweringCtx {
+  WasmLoweringCtx::{ core, tracer }
 }
 
 pub struct WasmFnLoweringCtx {
@@ -65,19 +65,11 @@ fn WasmFnLoweringCtx::type_of(
   ty
 }
 
-fn WasmFnLoweringCtx::lower_type(
-  self : WasmFnLoweringCtx,
-  ty : @core.Type
-) -> Type? {
+fn ty_to_wasm_type(ty : @core.Type) -> Type? {
   match ty {
     Unit => None
-    Bool => Some(I32)
-    Int32 => Some(I32)
     Double => Some(F64)
-    ClosureFn(..) => Some(I32)
-    DirectFn(..) => Some(I32)
-    Tuple(..) => Some(I32)
-    _ => self.tracer.abort("Unsupported type")
+    _ => Some(I32)
   }
 }
 
@@ -389,8 +381,13 @@ pub fn WasmFnLoweringCtx::lower_insn(
       self.emit_wasm(Call(target=Label(ext_f)))
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::LoadSymbol(..) =>
-      self.tracer.abort("LoadSymbol is not supported")
+    @core.Insn::LoadSymbol(~sref) => {
+      let symbol = self.core.global_symbols
+        .get(sref)
+        .or_else(fn() { self.tracer.abort("Symbol not found") })
+      self.emit_wasm(GetGlobal(name=Name(symbol.name)))
+      self.set_local_variable(@core.Value::Insn(iref=insnref))
+    }
     @core.Insn::Alloc(~ty, ~mref, ~fills) => {
       let mem = self.func.mems
         .get(mref)
@@ -527,12 +524,12 @@ pub fn WasmFnLoweringCtx::lower_insn(
       }
       let params_ty = []
       for param in params {
-        match self.lower_type(param) {
+        match ty_to_wasm_type(param) {
           None => ()
           Some(ty) => params_ty.push(ty)
         }
       }
-      let ret_ty = self.lower_type(ty)
+      let ret_ty = ty_to_wasm_type(ty)
       self.func_type_ctx.set(Label(closure_ty_name), (params_ty, ret_ty))
       self.lower_value(f)
       self.emit_wasm(I32Load)
@@ -685,7 +682,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   guard let ClosureFn(~params, ~ty) | DirectFn(~params, ~ty) = self.func.ty else {
     _ => self.tracer.abort("Invalid function type")
   }
-  match self.lower_type(ty) {
+  match ty_to_wasm_type(ty) {
     None => ()
     Some(I32) => self.buffer.push(I32Const(val=0))
     Some(F64) => self.buffer.push(F64Const(val=0.0))
@@ -700,9 +697,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
         self.get_local_name(
           @core.Value::FnParam(fref=self.func.id, fpref=FnParamRef({ id: i })),
         ),
-        self
-        .lower_type(param)
-        .or_else(
+        ty_to_wasm_type(param).or_else(
           fn() {
             self.tracer.abort("function params should not have unit type")
           },
@@ -710,7 +705,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
       ),
     )
   }
-  let ret = self.lower_type(ty)
+  let ret = ty_to_wasm_type(ty)
   let locals = []
   for vnpair in self.local_reg {
     let (value, name) = vnpair
@@ -719,9 +714,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
     locals.push(
       (
         name,
-        self
-        .lower_type(ty)
-        .or_else(
+        ty_to_wasm_type(ty).or_else(
           fn() {
             self.tracer.abort("function locals should not have unit type")
           },
@@ -730,17 +723,37 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
     )
   }
   locals.push((self.branch_aux_reg, I32))
-  MFn::{
-    name: self.func.name,
-    args,
-    ret,
-    locals,
-    type_str: type_mangling(self.func.ty),
-    seq: self.buffer,
-  }
+  MFn::{ name: self.func.name, args, ret, locals, seq: self.buffer }
 }
 
-pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
+pub fn WasmLoweringCtx::lower_globals(
+  self : WasmLoweringCtx,
+  globals : MutMap[Name, Type]
+) -> MFn {
+  let name = Label("minimbt_main")
+  let insn = []
+  for symbol in self.core.global_names {
+    let symbol = self.core.global_symbols.get(symbol.1).unwrap()
+    let thunk = self.core.funcs.get(symbol.thunk).unwrap()
+    insn.push(Call(target=Label(thunk.name)))
+    match ty_to_wasm_type(symbol.ty) {
+      None => ()
+      Some(I32) => {
+        globals.set(Name(symbol.name), I32)
+        insn.push(SetGlobal(name=Name(symbol.name)))
+      }
+      Some(F64) => {
+        globals.set(Name(symbol.name), F64)
+        insn.push(SetGlobal(name=Name(symbol.name)))
+      }
+      _ => self.tracer.abort("Invalid global type")
+    }
+  }
+  let start_fn = MFn::{ name, args: [], ret: None, locals: [], seq: insn }
+  start_fn
+}
+
+pub fn WasmLoweringCtx::lower(self : WasmLoweringCtx) -> MCore {
   // closure table
   let closure_table_index = MutMap::new()
   let mut i = 0
@@ -774,23 +787,10 @@ pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
     self.tracer.log("Lowered function \{func.name} to wasm")
   }
 
-  // thunk
-  let name = Label("minimbt_main")
-  let insn = []
-  for symbol in self.core.global_names {
-    let symbol = self.core.global_symbols.get(symbol.1).unwrap()
-    let thunk = self.core.funcs.get(symbol.thunk).unwrap()
-    insn.push(Call(target=Label(thunk.name)))
-  }
-  let start_mfn = MFn::{
-    name,
-    args: [],
-    ret: None,
-    locals: [],
-    type_str: "u",
-    seq: insn,
-  }
-  mfuncs.push(start_mfn)
+  // globals
+  let globals = MutMap::of([(Name("closure_ptr"), I32)])
+  let start_fn = self.lower_globals(globals)
+  mfuncs.push(start_fn)
   // tables
   let closure_reverse_index = MutMap::new()
   for fipair in closure_table_index {
@@ -808,5 +808,5 @@ pub fn WasmLowringCtx::lower(self : WasmLowringCtx) -> MCore {
     size: self.core.funcs.size(),
     elems,
   }
-  MCore::{ func_type_ctx, table, globals: [(Name("closure_ptr"), I32)], mfuncs }
+  MCore::{ func_type_ctx, table, globals, mfuncs }
 }

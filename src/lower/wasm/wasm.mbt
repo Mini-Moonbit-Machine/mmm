@@ -130,7 +130,6 @@ pub struct MFn {
   name : Label
   args : Array[(Name, Type)]
   ret : Type?
-  type_str : Label
   locals : Array[(Name, Type)]
   seq : Array[WasmInsn]
 }
@@ -138,7 +137,7 @@ pub struct MFn {
 pub struct MCore {
   func_type_ctx : MutMap[Label, (Array[Type], Type?)]
   table : MTable
-  globals : Array[(Name, Type)]
+  globals : MutMap[Name, Type]
   mfuncs : Array[MFn]
 }
 
@@ -206,11 +205,14 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
       },
     )
     .collect()
-  let globals = self.globals.map(
-    fn(ntypair) {
-      "(global \{ntypair.0} (mut \{ntypair.1}) (\{ntypair.1}.const 0))"
-    },
-  )
+  let globals = self.globals
+    .iter()
+    .map(
+      fn(ntypair) {
+        "(global \{ntypair.0} (mut \{ntypair.1}) (\{ntypair.1}.const 0))"
+      },
+    )
+    .collect()
   logger.write_string(imports)
   logger.write_string(table)
   logger.write_string(types.join("\n"))

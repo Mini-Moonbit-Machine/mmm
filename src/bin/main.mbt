@@ -210,7 +210,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      let lower_ctx = @lower_wasm.WasmLowringCtx::new(core, subtracer)
+      let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
       let wasm = lower_ctx.lower()
       self.wasm_core = Some(wasm)
     }
