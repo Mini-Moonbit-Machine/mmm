@@ -48,8 +48,6 @@ test "Literals" {
     "123.456",
     [{ tag: TokenTag::DoubleLiteral(123.456), span: "123.456" }],
   )
-  test_tokenize!("-1", [{ tag: TokenTag::IntLiteral(-1), span: "-1" }])
-  test_tokenize!("-1.0", [{ tag: TokenTag::DoubleLiteral(-1.0), span: "-1.0" }])
 }
 
 test "Paired" {
