@@ -537,7 +537,6 @@ pub fn WasmFnLoweringCtx::lower_control(
     @core.Control::Return(~args) => {
       self.set_none_unit_call_args(args)
       self.emit_wasm(Return)
-      self.emit_wasm(End)
     }
     @core.Control::Jump(~target, ~args) => {
       self.set_none_unit_block_args(target, args)
@@ -547,7 +546,6 @@ pub fn WasmFnLoweringCtx::lower_control(
       self.emit_wasm(I32Const(val=target_index._))
       self.emit_wasm(SetLocal(name=self.branch_aux_reg))
       self.emit_wasm(Br(target="loop%\{self.func.name}"))
-      self.emit_wasm(End)
     }
     @core.Control::Branch(~cond, ~t, ~t_args, ~f, ~f_args) => {
       self.lower_value(cond)
@@ -586,6 +584,8 @@ pub fn WasmFnLoweringCtx::lower_block(
   }
   self.lower_control(block.control, branch_table_index)
   // finalize
+  self.emit_wasm(Comment(comment="finalize block \{block.id}"))
+  self.emit_wasm(End)
   self.buffer.append(self.icache)
   self.icache.clear()
 }
@@ -628,7 +628,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
     }
   }
   // set full through branch
-  branch_index.push(LabelIndex(order.length()))
+  // branch_index.push(LabelIndex(order.length()))
 
   // prologue: store free variables
   self.emit_prologue()
@@ -664,6 +664,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
       _ => self.tracer.abort("Critical edge not supported")
     }
   }
+  self.buffer.push(Comment(comment="end loop"))
   self.buffer.push(End)
   // TODO: workaround for wasm validation
   guard let ClosureFn(~params, ~ty) | DirectFn(~params, ~ty) = self.func.ty else {
