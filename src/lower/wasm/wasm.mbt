@@ -243,7 +243,7 @@ pub fn WasmInsn::output(self : WasmInsn, logger : Logger) -> Unit {
     I32Add => logger.write_string("i32.add")
     I32Sub => logger.write_string("i32.sub")
     I32Mul => logger.write_string("i32.mul")
-    I32Div => logger.write_string("i32.div")
+    I32Div => logger.write_string("i32.div_s")
     I32Xor => logger.write_string("i32.xor")
     I32Or => logger.write_string("i32.or")
     I32And => logger.write_string("i32.and")

@@ -120,7 +120,7 @@ fn WasmFnLoweringCtx::get_local_name(
           name
         },
       )
-    FnParam(~fref, ~fpref) => Name("\{fpref}")
+    FnParam(~fpref, ..) => Name("\{fpref}")
     Self(..) => self.closure_ptr
   }
   self.tracer.println("Get Local name \{value} -> \{name}")
@@ -158,7 +158,7 @@ pub fn WasmFnLoweringCtx::lower_value(
       self.emit_wasm(I32Const(val=table_index._))
     }
     @core.Value::Self(..) => self.emit_wasm(GetGlobal(name=self.closure_ptr))
-    @core.Value::Mem(~fref, ~mref) => {
+    @core.Value::Mem(~mref, ..) => {
       let mem = self.func.mems
         .get(mref)
         .or_else(fn() { self.tracer.abort("Memory not found") })
@@ -168,11 +168,11 @@ pub fn WasmFnLoweringCtx::lower_value(
         Heap(..) => self.emit_wasm(GetLocal(name=self.get_local_name(value)))
       }
     }
-    @core.Value::BlockParam(~bref, bpref=BlockParamRef({ id: index })) =>
+    @core.Value::BlockParam(..) =>
       self.emit_wasm(GetLocal(name=self.get_local_name(value)))
-    @core.Value::FnParam(~fref, fpref=FnParamRef({ id: index })) =>
+    @core.Value::FnParam(..) =>
       self.emit_wasm(GetLocal(name=self.get_local_name(value)))
-    @core.Value::FreeVar(fvref=FnFreeVarRef({ id: index })) =>
+    @core.Value::FreeVar(..) =>
       self.emit_wasm(GetLocal(name=self.get_local_name(value)))
   }
 }
@@ -320,7 +320,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
             }
             @core.Op::D2I(..) => {
               self.lower_value(args[0])
-              self.emit_wasm(F64CvtI32)
+              self.emit_wasm(I32TruncF64)
             }
             _ => self.tracer.abort("Unsupported int32 operation")
           }
@@ -352,7 +352,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
             }
             @core.Op::I2D(..) => {
               self.lower_value(args[0])
-              self.emit_wasm(I32TruncF64)
+              self.emit_wasm(F64CvtI32)
             }
             @core.Op::Abs => {
               self.lower_value(args[0])
@@ -368,7 +368,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
       }
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::Call(~ty, ~f, ~args) => {
+    @core.Insn::Call(~f, ~args, ..) => {
       self.set_none_unit_call_args(args)
       let func = self.core.funcs
         .get(f)
@@ -376,19 +376,19 @@ pub fn WasmFnLoweringCtx::lower_insn(
       self.emit_wasm(Call(target=Label(func.name)))
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::ExtCall(~ty, ~ext_f, ~args) => {
+    @core.Insn::ExtCall(~ext_f, ~args, ..) => {
       self.set_none_unit_call_args(args)
       self.emit_wasm(Call(target=Label(ext_f)))
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::LoadSymbol(~sref) => {
+    @core.Insn::LoadSymbol(~sref, ..) => {
       let symbol = self.core.global_symbols
         .get(sref)
         .or_else(fn() { self.tracer.abort("Symbol not found") })
       self.emit_wasm(GetGlobal(name=Name(symbol.name)))
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::Alloc(~ty, ~mref, ~fills) => {
+    @core.Insn::Alloc(~mref, ~fills, ..) => {
       let mem = self.func.mems
         .get(mref)
         .or_else(fn() { self.tracer.abort("Memory not found") })
@@ -420,7 +420,9 @@ pub fn WasmFnLoweringCtx::lower_insn(
                   Double => {
                     self.lower_value(len)
                     self.emit_wasm(F64Const(val=0))
-                    self.emit_wasm(Call(target=Label("minimbt_create_array")))
+                    self.emit_wasm(
+                      Call(target=Label("minimbt_create_float_array")),
+                    )
                     self.set_local_variable(
                       @core.Value::Mem(fref=self.func.id, ~mref),
                     )
@@ -432,12 +434,13 @@ pub fn WasmFnLoweringCtx::lower_insn(
                 guard fills.length() == 1 else {
                   self.tracer.abort("Init fill should be the only fill")
                 }
-                self.lower_value(len)
                 match self.type_of(val) {
                   Double => {
                     self.lower_value(len)
                     self.lower_value(val)
-                    self.emit_wasm(Call(target=Label("minimbt_create_array")))
+                    self.emit_wasm(
+                      Call(target=Label("minimbt_create_float_array")),
+                    )
                     self.set_local_variable(
                       @core.Value::Mem(fref=self.func.id, ~mref),
                     )
@@ -494,23 +497,24 @@ pub fn WasmFnLoweringCtx::lower_insn(
       }
       self.lower_address(ma)
       self.lower_value(val)
-      match ty {
-        Int32 => self.emit_wasm(I32Store)
-        Double => self.emit_wasm(F64Store)
+      match ty_to_wasm_type(ty) {
+        None => self.tracer.abort("Unit value should not be stored")
+        Some(I32) => self.emit_wasm(I32Store)
+        Some(F64) => self.emit_wasm(F64Store)
         _ => self.tracer.abort("Unsupported store type")
       }
     }
     @core.Insn::Load(~ty, ~ma) => {
       self.lower_address(ma)
-      match ty {
-        Int32 => self.emit_wasm(I32Load)
-        Double => self.emit_wasm(F64Load)
-        Unit => self.tracer.abort("Unit value should not be loaded")
-        _ => self.tracer.abort("Unsupported load type")
+      match ty_to_wasm_type(ty) {
+        None => self.tracer.abort("Unit value should not be loaded")
+        Some(I32) => self.emit_wasm(I32Load)
+        Some(F64) => self.emit_wasm(F64Load)
+        _ => self.tracer.abort("Unexpected load type")
       }
       self.set_local_variable(@core.Value::Insn(iref=insnref))
     }
-    @core.Insn::Apply(~ty, ~f, ~args) => {
+    @core.Insn::Apply(~f, ~args, ..) => {
       self.lower_value(f)
       self.emit_wasm(SetGlobal(name=self.closure_ptr))
       // closure args
@@ -614,9 +618,11 @@ pub fn WasmFnLoweringCtx::emit_prologue(self : WasmFnLoweringCtx) -> Unit {
     self.emit_wasm(GetGlobal(name=self.closure_ptr))
     self.emit_wasm(I32Const(val=(i + 1) * elem_size))
     self.emit_wasm(I32Add)
-    match ty {
-      Double => self.emit_wasm(F64Load)
-      _ => self.emit_wasm(I32Load)
+    match ty_to_wasm_type(fvar) {
+      None => self.tracer.abort("Unit type should not appear in free variables")
+      Some(F64) => self.emit_wasm(F64Load)
+      Some(I32) => self.emit_wasm(I32Load)
+      _ => self.tracer.abort("Invalid free variable type")
     }
     self.emit_wasm(SetLocal(~name))
   }
@@ -657,7 +663,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   self.buffer.push(Loop(label="loop%\{self.func.name}"))
   for block in order {
     match block {
-      BasicBlock(~bb) => self.buffer.push(Block)
+      BasicBlock(..) => self.buffer.push(Block)
       _ => self.tracer.abort("Critical edge not supported")
     }
   }
@@ -692,18 +698,15 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   // construct MFn
   let args = []
   for i, param in params.iter2() {
-    args.push(
-      (
-        self.get_local_name(
+    match ty_to_wasm_type(param) {
+      None => ()
+      Some(ty) => {
+        let name = self.get_local_name(
           @core.Value::FnParam(fref=self.func.id, fpref=FnParamRef({ id: i })),
-        ),
-        ty_to_wasm_type(param).or_else(
-          fn() {
-            self.tracer.abort("function params should not have unit type")
-          },
-        ),
-      ),
-    )
+        )
+        args.push((name, ty))
+      }
+    }
   }
   let ret = ty_to_wasm_type(ty)
   let locals = []
@@ -758,7 +761,7 @@ pub fn WasmLoweringCtx::lower(self : WasmLoweringCtx) -> MCore {
   let closure_table_index = MutMap::new()
   let mut i = 0
   for fpair in self.core.funcs {
-    let (fref, func) = fpair
+    let (fref, _) = fpair
     closure_table_index.set(fref, TableIndex(i))
     i = i + 1
   }
@@ -766,7 +769,7 @@ pub fn WasmLoweringCtx::lower(self : WasmLoweringCtx) -> MCore {
   let mfuncs = []
   let func_type_ctx = MutMap::new()
   for fpair in self.core.funcs {
-    let (fref, func) = fpair
+    let (_, func) = fpair
     let order = @lower.LoweringOrder::new(func)
     let ctx = WasmFnLoweringCtx::{
       core: self.core,

@@ -7,5 +7,5 @@ fn make_adder(x: Double) -> (Int) -> Double {
 
 fn main {
   let add = make_adder(2.14);
-  print_float(add2(1))
+  print_int(int_of_float(add(1)))
 };
