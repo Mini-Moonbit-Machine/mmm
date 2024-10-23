@@ -144,33 +144,44 @@ fn LambdaLiftEnv::get_type(self : LambdaLiftEnv, name : Name) -> Type {
   }
 }
 
-fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
+fn LambdaLiftEnv::lift(
+  self : LambdaLiftEnv,
+  knf : Knf,
+  top : Bool
+) -> (LetList, Knf) {
   match knf {
-    Unit | Int(_) | Double(_) => knf
-    Neg(_) | FNeg(_) => knf
+    Unit | Int(_) | Double(_) => ([], knf)
+    Neg(_) | FNeg(_) => ([], knf)
     Add(_, _)
     | Sub(_, _)
     | Mul(_, _) | Div(_, _) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
       // we assume that the names here are non-function, otherwise it tends to be a type error
-      knf
+      ([], knf)
     IfEq(x, y, k1, k2) => {
-      let k1 = self.lift(k1, top)
-      let k2 = self.lift(k2, top)
-      IfEq(x, y, k1, k2)
+      let (l1, k1) = self.lift(k1, top)
+      let (l2, k2) = self.lift(k2, top)
+      let k1 = bind_all((k1, Unit, l1))
+      let k2 = bind_all((k2, Unit, l2))
+      ([], IfEq(x, y, k1, k2))
     }
     IfLe(x, y, k1, k2) => {
-      let k1 = self.lift(k1, top)
-      let k2 = self.lift(k2, top)
-      IfLe(x, y, k1, k2)
+      let (l1, k1) = self.lift(k1, top)
+      let (l2, k2) = self.lift(k2, top)
+      let k1 = bind_all((k1, Unit, l1))
+      let k2 = bind_all((k2, Unit, l2))
+      ([], IfLe(x, y, k1, k2))
     }
     Let((x, ty), e1, e2) => {
-      let e1 = self.lift(e1, false)
+      let (l, e1) = self.lift(e1, false)
+      l.push(Binding::Let(x, ty, e1))
       let self = self.add_name_type(x, ty)
       if top {
-        self.top_bindings.push(Binding::Let(x, ty, e1))
+        self.top_bindings.append(l)
         self.lift(e2, top)
       } else {
-        Let((x, ty), e1, self.lift(e2, top))
+        let (l2, e2) = self.lift(e2, top)
+        l.append(l2)
+        (l, e2)
       }
     }
     LetTuple(xts, y, k) => {
@@ -182,39 +193,41 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
         self.top_bindings.push(Binding::LetTuple(xts, y))
         self.lift(k, top)
       } else {
-        LetTuple(xts, y, self.lift(k, top))
+        let l = [Binding::LetTuple(xts, y)]
+        let (l2, k) = self.lift(k, top)
+        l.append(l2)
+        (l, k)
       }
     }
     ExternalArray(x) => {
-      let (list, x, _) = self.eta_expand(x)
-      bind_all((ExternalArray(x), Unit, list))
+      let (l, x, _) = self.eta_expand(x)
+      (l, ExternalArray(x))
     }
     Tuple(xs) => {
-      let (let_list, ys, _) = self.eta_expand_names(xs)
-      bind_all((Tuple(ys), Unit, let_list)) // type is unused so just put Unit
+      let (l, ys, _) = self.eta_expand_names(xs)
+      (l, Tuple(ys))
     }
-    Get(_, _) => knf
+    Get(_, _) => ([], knf)
     Put(a, b, x) => {
-      let (list, x, _) = self.eta_expand(x)
-      bind_all((Put(a, b, x), Unit, list))
+      let (l, x, _) = self.eta_expand(x)
+      (l, Put(a, b, x))
     }
     Var(x) => {
-      let (list, x, _) = self.eta_expand(x)
-      bind_all((Var(x), Unit, list))
+      let (l, x, _) = self.eta_expand(x)
+      (l, Var(x))
     }
     ExternalFunctionApplication(f, xs) => {
-      let (let_list, ys, _) = self.eta_expand_names(xs)
-      bind_all((ExternalFunctionApplication(f, ys), Unit, let_list))
+      let (l, ys, _) = self.eta_expand_names(xs)
+      (l, ExternalFunctionApplication(f, ys))
     }
     Apply(f, xs) => {
-      let (let_list, ys, self) = self.eta_expand_names(xs)
+      let (l, ys, self) = self.eta_expand_names(xs)
       match self.name_ctx.find(f) {
-        Some((new_name, _, fvars, _)) =>
-          bind_all((Apply(new_name, ys + fvars), Unit, let_list))
+        Some((new_name, _, fvars, _)) => (l, Apply(new_name, ys + fvars))
         None => {
-          let (list, f, _) = self.eta_expand(f)
-          let_list.append(list)
-          bind_all((Apply(f, ys), Unit, let_list))
+          let (l1, f, _) = self.eta_expand(f)
+          l.append(l1)
+          (l, Apply(f, ys))
         }
       }
     }
@@ -233,25 +246,29 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
         fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
         fdef.ty,
       )
-      if new_args_length >= 0 {
-        // we don't want to lift functions with too many arguments
+      // we don't want to lift functions with too many arguments
+      if new_args_length >= 6 {
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
           init=self,
           fn(env, arg) { env.add_name_type(arg.0, arg.1) },
         )
+        let (l, body_e) = body_env.lift(fdef.body, false)
         let fdef = FuncDef::{
           name: fdef.name,
           ty: fdef.ty,
           args: fdef.args,
-          body: body_env.lift(fdef.body, false),
+          body: bind_all((body_e, Unit, l)),
         }
         if top {
           self.top_names.insert(fdef.name)
           self.top_bindings.push(LetRec(fdef))
           self.lift(e, top)
         } else {
-          LetRec(fdef, self.lift(e, top))
+          let l = [Binding::LetRec(fdef)]
+          let (l2, e) = self.lift(e, top)
+          l.append(l2)
+          (l, e)
         }
       } else {
         let fvars_with_type = fvars.map(
@@ -270,11 +287,12 @@ fn LambdaLiftEnv::lift(self : LambdaLiftEnv, knf : Knf, top : Bool) -> Knf {
           init=self,
           fn(env, arg) { env.add_name_type(arg.0, arg.1) },
         )
+        let (l, body_e) = body_env.lift(fdef.body, false)
         let fdef = FuncDef::{
           name: new_name,
           ty: fdef.ty,
           args: new_args,
-          body: body_env.lift(fdef.body, false),
+          body: bind_all((body_e, Unit, l)),
         }
         self.top_bindings.push(LetRec(fdef))
         self.lift(e, top)
@@ -287,6 +305,11 @@ pub fn go(self : LambdaLiftEnv, knf : Knf) -> Knf {
   let fvc = FreeSetClosure::new()
   let (_, ctx) = fvc.compute(knf)
   self.free_set_closure = ctx
-  let knf = self.lift(knf, true)
-  bind_all((knf, Unit, self.top_bindings))
+  let (l, knf) = self.lift(knf, true)
+  if l.length() > 0 {
+    self.tracer.abort("top level let list should be empty")
+  }
+  let knf = bind_all((knf, Unit, self.top_bindings))
+  self.tracer.record("knf_after_lifting", knf.to_pretty_print())
+  knf
 }

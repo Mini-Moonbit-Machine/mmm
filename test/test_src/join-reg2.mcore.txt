@@ -15,32 +15,56 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl f1_0
-  .type f1_0, @function
+  .globl g4l1_1
+  .type g4l1_1, @function
 # leaf true
-f1_0:
-.f1_0_0:
-  li a0, 123
-  ret
-
-  .p2align 2
-  .text
-  .globl h7_2
-  .type h7_2, @function
-# leaf true
-h7_2:
-.h7_2_0:
-  li a0, 789
-  ret
-
-  .p2align 2
-  .text
-  .globl g4_1
-  .type g4_1, @function
-# leaf true
-g4_1:
-.g4_1_0:
+g4l1_1:
+.g4l1_1_0:
   li a0, 456
+  ret
+
+  .p2align 2
+  .text
+  .globl main10l3_3
+  .type main10l3_3, @function
+# leaf false
+main10l3_3:
+.main10l3_3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a0, zero
+  call f1l0_0
+  mv s0, a0
+  bge zero, s0, .main10l3_3_1
+
+.main10l3_3_2:
+  mv a0, zero
+  call h7l2_2
+  sub a0, a0, s0
+  add a0, a0, s0
+
+.main10l3_3_3:
+  call minimbt_print_int
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.main10l3_3_1:
+  mv a0, zero
+  call g4l1_1
+  add a0, a0, s0
+  j .main10l3_3_3
+
+  .p2align 2
+  .text
+  .globl f1l0_0
+  .type f1l0_0, @function
+# leaf true
+f1l0_0:
+.f1l0_0_0:
+  li a0, 123
   ret
 
   .p2align 2
@@ -52,44 +76,10 @@ T$start_8:
 .T$start_8_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main10_3
+  call main10l3_3
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl main10_3
-  .type main10_3, @function
-# leaf false
-main10_3:
-.main10_3_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a0, zero
-  call f1_0
-  mv s0, a0
-  bge zero, s0, .main10_3_1
-
-.main10_3_2:
-  mv a0, zero
-  call h7_2
-  sub a0, a0, s0
-  add a0, a0, s0
-
-.main10_3_3:
-  call minimbt_print_int
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.main10_3_1:
-  mv a0, zero
-  call g4_1
-  add a0, a0, s0
-  j .main10_3_3
 
   .p2align 2
   .text
@@ -111,6 +101,16 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl h7l2_2
+  .type h7l2_2, @function
+# leaf true
+h7l2_2:
+.h7l2_2_0:
+  li a0, 789
   ret
 
 __end_text:

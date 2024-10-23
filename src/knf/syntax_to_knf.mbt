@@ -39,7 +39,9 @@ pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
   let name_env = NameEnv::new()
   let local_env = @typer.externals()
   let r = self.build_knf!(s, let_list, name_env, local_env)
-  bind_all(r)
+  let knf = bind_all(r)
+  self.tracer.record("knf", knf.to_pretty_print())
+  knf
 }
 
 enum Binding {

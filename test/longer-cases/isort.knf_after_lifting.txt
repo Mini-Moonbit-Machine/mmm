@@ -1,0 +1,95 @@
+let rec random1l0: Int = (state2.3: Int) {
+  let _4: Int = Int(75)
+  let _5: Int = Mul(state2.3, _4)
+  let _6: Int = Int(74)
+  Add(_5, _6)
+}
+let rec modulo7l1: Int = (x8.9: Int, y10.11: Int) {
+  let q.12: Int = Div(x8.9, y10.11)
+  let _13: Int = Mul(q.12, y10.11)
+  Sub(x8.9, _13)
+}
+let rec aux19l3: Unit = (i20.21: Int, state22.23: Int, n17.18: Int, arr15.16: Array(Int)) {
+  if (i20.21 == n17.18) then {
+    Unit
+  } else {
+    let new_state.24: Int = Apply(random1l0, [state22.23, ])
+    let _25: Int = Int(65537)
+    let res.26: Int = Apply(modulo7l1, [new_state.24, _25, ])
+    let _28: Unit = Put arr15.16[i20.21] = res.26
+    let _29: Int = Int(1)
+    let _30: Int = Add(i20.21, _29)
+    Apply(aux19l3, [_30, res.26, n17.18, arr15.16, ])
+  }
+}
+let rec fill_buffer14l2: Unit = (arr15.16: Array(Int), n17.18: Int) {
+  let _31: Int = Int(0)
+  let _32: Int = Int(12345)
+  Apply(aux19l3, [_31, _32, n17.18, arr15.16, ])
+}
+let rec insert38l4: Unit = (arr39.40: Array(Int), i41.42: Int) {
+  let _43: Int = Int(0)
+  if (i41.42 == _43) then {
+    Unit
+  } else {
+    let _44: Int = Int(1)
+    let _45: Int = Sub(i41.42, _44)
+    let _46: Int = Get arr39.40[_45]
+    let _47: Int = Get arr39.40[i41.42]
+    if (_46 <= _47) then {
+      Unit
+    } else {
+      let tmp.48: Int = Get arr39.40[i41.42]
+      let _49: Int = Int(1)
+      let _50: Int = Sub(i41.42, _49)
+      let _51: Int = Get arr39.40[_50]
+      let _53: Unit = Put arr39.40[i41.42] = _51
+      let _54: Int = Int(1)
+      let _55: Int = Sub(i41.42, _54)
+      let _57: Unit = Put arr39.40[_55] = tmp.48
+      let _58: Int = Int(1)
+      let _59: Int = Sub(i41.42, _58)
+      Apply(insert38l4, [arr39.40, _59, ])
+    }
+  }
+}
+let rec aux60l5: Unit = (i61.62: Int, n36.37: Int, arr34.35: Array(Int)) {
+  if (i61.62 == n36.37) then {
+    Unit
+  } else {
+    let _64: Unit = Apply(insert38l4, [arr34.35, i61.62, ])
+    let _65: Int = Int(1)
+    let _66: Int = Add(i61.62, _65)
+    Apply(aux60l5, [_66, n36.37, arr34.35, ])
+  }
+}
+let rec isort33l3: Unit = (arr34.35: Array(Int), n36.37: Int) {
+  let _67: Int = Int(1)
+  Apply(aux60l5, [_67, n36.37, arr34.35, ])
+}
+let rec aux73l5: Unit = (i74.75: Int, n71.72: Int, arr69.70: Array(Int)) {
+  if (i74.75 == n71.72) then {
+    Unit
+  } else {
+    let _76: Int = Get arr69.70[i74.75]
+    let _78: Unit = ExtApply(minimbt_print_int, [_76, ])
+    let _79: Int = Int(32)
+    let _81: Unit = ExtApply(minimbt_print_char, [_79, ])
+    let _82: Int = Int(1)
+    let _83: Int = Add(i74.75, _82)
+    Apply(aux73l5, [_83, n71.72, arr69.70, ])
+  }
+}
+let rec print_array68l4: Unit = (arr69.70: Array(Int), n71.72: Int) {
+  let _84: Int = Int(0)
+  Apply(aux73l5, [_84, n71.72, arr69.70, ])
+}
+let rec main85l5: Var({val: Some(Unit)}) = () {
+  let n.86: Int = Int(100)
+  let _87: Int = Int(0)
+  let arr.88: Array(Int) = ExtApply(minimbt_create_array, [n.86, _87, ])
+  let _90: Unit = Apply(fill_buffer14l2, [arr.88, n.86, ])
+  let _92: Unit = Apply(isort33l3, [arr.88, n.86, ])
+  Apply(print_array68l4, [arr.88, n.86, ])
+}
+Apply(main85l5, [])
