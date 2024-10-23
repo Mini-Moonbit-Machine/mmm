@@ -76,6 +76,7 @@ fn WasmFnLoweringCtx::lower_type(
     Double => Some(F64)
     ClosureFn(..) => Some(I32)
     DirectFn(..) => Some(I32)
+    Tuple(..) => Some(I32)
     _ => self.tracer.abort("Unsupported type")
   }
 }
