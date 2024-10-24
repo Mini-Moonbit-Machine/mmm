@@ -23,6 +23,9 @@
   (let ((i64_imm Int64 (i64_sext_u64 (ty_int64) c)))
     (rv_li i64_imm)))
 
+(decl lower_recent_imm (Type UInt64) AnyReg)
+(extern constructor lower_recent_imm lower_recent_imm)
+
 (decl lower_value (Value) AnyReg)
 (convert Value AnyReg lower_value)
 
@@ -45,22 +48,22 @@
 (convert BlockRef Label block_label)
 
 (rule (lower_value (val_unit))
-  (lower_imm (ty_int32) 0))
+  (lower_recent_imm (ty_int32) 0))
 
 (rule (lower_value (val_bool $true))
-  (lower_imm (ty_int32) 1))
+  (lower_recent_imm (ty_int32) 1))
 
 (rule (lower_value (val_bool $false))
-  (lower_imm (ty_int32) 0))
+  (lower_recent_imm (ty_int32) 0))
 
 (rule (lower_value (val_int32 c))
-  (lower_imm (ty_int32) (i32_as_u64 c)))
+  (lower_recent_imm (ty_int32) (i32_as_u64 c)))
 
 (rule (lower_value (val_int64 c))
-  (lower_imm (ty_int64) (i64_as_u64 c)))
+  (lower_recent_imm (ty_int64) (i64_as_u64 c)))
 
 (rule (lower_value (val_double c))
-  (lower_imm (ty_double) (f64_as_u64 c)))
+  (lower_recent_imm (ty_double) (f64_as_u64 c)))
 
 (rule (lower_value (val_fn f))
   (lower_load_fn f))

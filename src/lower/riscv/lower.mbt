@@ -16,6 +16,8 @@ pub struct RiscvFnLoweringCtx {
   mut buffer : Array[MInsn]
   ibuffer : Array[MInsn]
   ialias : Array[AnyReg]
+  iimm : MutMap[UInt64, AnyReg]
+  iimm_life : MutMap[UInt64, Int]
   block_params_assignment : MutMap[@core.BlockRef, Array[AnyReg]]
   used_primitive : MutSet[String]
   mut is_leaf : Bool
@@ -444,6 +446,32 @@ fn RiscvFnLoweringCtx::imm64_to_string(
   "\{i64}"
 }
 
+fn RiscvFnLoweringCtx::lower_recent_imm(
+  self : RiscvFnLoweringCtx,
+  ty : @core.Type,
+  i64 : UInt64
+) -> AnyReg {
+  fn gen() {
+    let reg = @generated.constructor_lower_imm(self, ty, i64)
+    self.iimm.set(i64, reg)
+    self.iimm_life.set(i64, 0)
+    reg
+  }
+
+  match self.iimm[i64] {
+    Some(reg) =>
+      match (ty, reg.class) {
+        (Unit, X) => reg
+        (Bool, X) => reg
+        (Int32, X) => reg
+        (Int64, X) => reg
+        (Double, F) => reg
+        _ => gen()
+      }
+    None => gen()
+  }
+}
+
 fn RiscvFnLoweringCtx::copy_call_arguments(
   self : RiscvFnLoweringCtx,
   args : Array[@core.Value]
@@ -597,8 +625,7 @@ fn RiscvFnLoweringCtx::lower_address(
         .i32_generate_imm(offset)
         .or_else(fn() { self.tracer.abort("offset too large") })
       if imm.0._ != 0 {
-        let imm_in_reg = @generated.constructor_lower_imm(
-          self,
+        let imm_in_reg = self.lower_recent_imm(
           @core.Type::Int32,
           offset.to_int64().to_uint64(),
         )
@@ -1061,10 +1088,18 @@ fn RiscvFnLoweringCtx::finalize_insn_with_reg_aliasing(
   self.finalize_insn()
 }
 
+fn RiscvFnLoweringCtx::invalidate_all_imm_cache(
+  self : RiscvFnLoweringCtx
+) -> Unit {
+  self.iimm.clear()
+  self.iimm_life.clear()
+}
+
 fn RiscvFnLoweringCtx::finalize_insn(self : RiscvFnLoweringCtx) -> Unit {
   self.ibuffer.rev_inplace()
   self.buffer.append(self.ibuffer)
   self.ibuffer.clear()
+  self.invalidate_all_imm_cache()
   if self.ialias.length() > 0 {
     self.tracer.abort("Alias set is not empty")
   }
@@ -1073,6 +1108,7 @@ fn RiscvFnLoweringCtx::finalize_insn(self : RiscvFnLoweringCtx) -> Unit {
 fn RiscvFnLoweringCtx::finalize_basic_block(
   self : RiscvFnLoweringCtx
 ) -> Array[MInsn] {
+  self.invalidate_all_imm_cache()
   self.buffer.rev_inplace()
   let old = self.buffer
   self.buffer = []
@@ -1972,6 +2008,8 @@ pub fn RiscvFnLoweringCtx::new(
     buffer: [],
     ibuffer: [],
     ialias: [],
+    iimm: MutMap::new(),
+    iimm_life: MutMap::new(),
     block_params_assignment: MutMap::new(),
     is_leaf: true,
     mfn: None,
