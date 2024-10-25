@@ -7,34 +7,6 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn read_ch_until_newline_or_eof1l0_0 #f0 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_char()
-    let %1: bool = eq(%0, 10)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    jump b6(-1)
-  }
-  .bb #b2 () {
-    let %2: bool = eq(%0, 13)
-    br %2 b3() b4()
-  }
-  .bb #b3 () {
-    jump b5(-1)
-  }
-  .bb #b4 () {
-    jump b5(%0)
-  }
-  .bb #b5 (int32) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (int32) {
-    return $b6.0
-  }
-}
 .fn lp108_9 #f9 : closure() -> unit
 .freevars (array[int32], array[int32], int32, closure(int32, int32) -> int32, array[int32], closure(int32) -> int32)
 .entry b4 {
@@ -61,6 +33,34 @@
   }
   .bb #b4 () {
     jump b0()
+  }
+}
+.fn read_ch_until_newline_or_eof1_0 #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_char()
+    let %1: bool = eq(%0, 10)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(-1)
+  }
+  .bb #b2 () {
+    let %2: bool = eq(%0, 13)
+    br %2 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(-1)
+  }
+  .bb #b4 () {
+    jump b5(%0)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
   }
 }
 .fn bf5_1 #f1 : fn(int32, array[int32]) -> unit
@@ -133,7 +133,7 @@
     jump b0($f0, $f1)
   }
 }
-.fn main136l1_2 #f2 : fn() -> unit
+.fn main136_2 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {

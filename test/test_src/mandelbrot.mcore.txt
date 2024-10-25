@@ -15,12 +15,17 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl dbl4l1_0
-  .type dbl4l1_0, @function
-# leaf true
-dbl4l1_0:
-.dbl4l1_0_0:
-  fadd.d fa0, fa0, fa0
+  .globl main75_1
+  .type main75_1, @function
+# leaf false
+main75_1:
+.main75_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 40
+  call mandelbrot1_0
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -32,7 +37,7 @@ T$start_12:
 .T$start_12_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main75l1_2
+  call main75_1
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -44,15 +49,17 @@ T$start_12:
 # leaf false
 iloop29_9:
 .iloop29_9_7:
-  addi sp, sp, -48
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
-  fsd fs0, 16(sp)
-  fsd fs1, 24(sp)
-  fsd fs2, 32(sp)
-  fsd fs3, 40(sp)
+  sd s1, 16(sp)
+  fsd fs0, 24(sp)
+  fsd fs1, 32(sp)
+  fsd fs2, 40(sp)
+  fsd fs3, 48(sp)
   mv a1, s10
-  mv s0, a0
+  ld s0, 8(a1)
+  mv s1, a0
   fmv.d fs0, fa1
   fmv.d fa1, fa2
   fmv.d fa2, fa3
@@ -60,12 +67,14 @@ iloop29_9:
   fmv.d fs2, fa5
 
 .iloop29_9_0:
-  beq s0, zero, .iloop29_9_1
+  beq s1, zero, .iloop29_9_1
 
 .iloop29_9_2:
   fsub.d fa1, fa1, fa2
   fadd.d fs3, fa1, fs1
-  call dbl4l1_0
+  mv s10, s0
+  ld a0, 0(s0)
+  jalr a0
   fmadd.d fa3, fa0, fs0, fs2
   fmul.d fa1, fs3, fs3
   fmul.d fa2, fa3, fa3
@@ -85,11 +94,12 @@ iloop29_9:
 .iloop29_9_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
-  fld fs0, 16(sp)
-  fld fs1, 24(sp)
-  fld fs2, 32(sp)
-  fld fs3, 40(sp)
-  addi sp, sp, 48
+  ld s1, 16(sp)
+  fld fs0, 24(sp)
+  fld fs1, 32(sp)
+  fld fs2, 40(sp)
+  fld fs3, 48(sp)
+  addi sp, sp, 64
   ret
 
 .iloop29_9_1:
@@ -98,29 +108,35 @@ iloop29_9:
   j .iloop29_9_6
 
 .iloop29_9_4:
-  addi a0, s0, -1
-  mv s0, a0
+  addi a0, s1, -1
+  mv s1, a0
   fmv.d fa0, fs3
   fmv.d fs0, fa3
   j .iloop29_9_0
 
   .p2align 2
   .text
-  .globl mandelbrot1l0_1
-  .type mandelbrot1l0_1, @function
+  .globl mandelbrot1_0
+  .type mandelbrot1_0, @function
 # leaf false
-mandelbrot1l0_1:
-.mandelbrot1l0_1_0:
+mandelbrot1_0:
+.mandelbrot1_0_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  addi a1, s11, -16
+  addi a1, s11, -8
   andi a1, a1, -8
   mv s11, a1
-  la a2, yloop7_5
+  la a2, dbl4_3
   sd a2, 0(a1)
-  sd a0, 8(a1)
-  mv s10, a1
-  ld a1, 0(a1)
+  addi a2, s11, -24
+  andi a2, a2, -8
+  mv s11, a2
+  la a3, yloop7_5
+  sd a3, 0(a2)
+  sd a0, 8(a2)
+  sd a1, 16(a2)
+  mv s10, a2
+  ld a1, 0(a2)
   mv a0, zero
   jalr a1
   ld ra, 0(sp)
@@ -129,17 +145,13 @@ mandelbrot1l0_1:
 
   .p2align 2
   .text
-  .globl main75l1_2
-  .type main75l1_2, @function
-# leaf false
-main75l1_2:
-.main75l1_2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 40
-  call mandelbrot1l0_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl dbl4_3
+  .type dbl4_3, @function
+# leaf true
+dbl4_3:
+.dbl4_3_0:
+  mv a0, s10
+  fadd.d fa0, fa0, fa0
   ret
 
   .p2align 2
@@ -175,27 +187,30 @@ yloop7_5:
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
+  sd s2, 24(sp)
   mv a1, s10
-  lw s1, 8(a1)
-  mv s0, a0
+  lw s2, 8(a1)
+  ld s0, 16(a1)
+  mv s1, a0
 
 .yloop7_5_0:
-  bge s0, s1, .yloop7_5_1
+  bge s1, s2, .yloop7_5_1
 
 .yloop7_5_2:
-  addi a0, s11, -16
+  addi a0, s11, -24
   andi a0, a0, -8
   mv s11, a0
   la a1, xloop10_7
   sd a1, 0(a0)
-  sd s1, 8(a0)
+  sd s2, 8(a0)
+  sd s0, 16(a0)
   mv s10, a0
   ld a2, 0(a0)
   mv a0, zero
-  mv a1, s0
+  mv a1, s1
   jalr a2
-  addi a0, s0, 1
-  mv s0, a0
+  addi a0, s1, 1
+  mv s1, a0
   j .yloop7_5_0
 
 .yloop7_5_1:
@@ -205,6 +220,7 @@ yloop7_5:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
 
@@ -220,35 +236,42 @@ xloop10_7:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  fsd fs0, 32(sp)
+  sd s3, 32(sp)
+  fsd fs0, 40(sp)
   mv a2, s10
   lw s0, 8(a2)
-  mv s1, a0
-  mv s2, a1
+  ld s1, 16(a2)
+  mv s2, a0
+  mv s3, a1
 
 .xloop10_7_0:
-  bge s1, s0, .xloop10_7_1
+  bge s2, s0, .xloop10_7_1
 
 .xloop10_7_2:
-  fcvt.d.w fa0, s1
-  call dbl4l1_0
+  fcvt.d.w fa0, s2
+  mv s10, s1
+  ld a0, 0(s1)
+  jalr a0
   fcvt.d.w fa1, s0
   fdiv.d fa0, fa0, fa1
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
   fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s2
-  call dbl4l1_0
+  fcvt.d.w fa0, s3
+  mv s10, s1
+  ld a0, 0(s1)
+  jalr a0
   fcvt.d.w fa1, s0
   fdiv.d fa0, fa0, fa1
   li a0, 4607182418800017408
   fmv.d.x fa1, a0
   fsub.d fa5, fa0, fa1
-  addi a0, s11, -8
+  addi a0, s11, -16
   andi a1, a0, -8
   mv s11, a1
   la a0, iloop29_9
   sd a0, 0(a1)
+  sd s1, 8(a1)
   mv s10, a1
   ld a1, 0(a1)
   li a0, 1000
@@ -258,8 +281,8 @@ xloop10_7:
   fmv.d fa3, fa0
   fmv.d fa4, fs0
   jalr a1
-  addi a0, s1, 1
-  mv s1, a0
+  addi a0, s2, 1
+  mv s2, a0
   j .xloop10_7_0
 
 .xloop10_7_1:
@@ -271,7 +294,8 @@ xloop10_7:
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  fld fs0, 32(sp)
+  ld s3, 32(sp)
+  fld fs0, 40(sp)
   addi sp, sp, 48
   ret
 
