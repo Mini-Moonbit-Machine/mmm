@@ -43,24 +43,24 @@ let rec g37l3: Unit = (j38.39: Int, arr31.32: Array(Int), low33.34: Int) {
     Unit
   }
 }
-let rec f54l4: Unit = (i55.56: Int, arr31.32: Array(Int), low33.34: Int, high35.36: Int) {
-  let _57: Int = Int(1)
-  let _58: Int = Sub(high35.36, _57)
-  if (i55.56 <= _58) then {
-    let _60: Unit = Apply(g37l3, [i55.56, arr31.32, low33.34, ])
-    let _61: Int = Int(1)
-    let _62: Int = Add(i55.56, _61)
-    Apply(f54l4, [_62, arr31.32, low33.34, high35.36, ])
-  } else {
-    Unit
-  }
-}
 let rec insertion_sort30l2: Unit = (arr31.32: Array(Int), low33.34: Int, high35.36: Int) {
+  let rec f54: Unit = (i55.56: Int) {
+    let _57: Int = Int(1)
+    let _58: Int = Sub(high35.36, _57)
+    if (i55.56 <= _58) then {
+      let _60: Unit = Apply(g37l3, [i55.56, arr31.32, low33.34, ])
+      let _61: Int = Int(1)
+      let _62: Int = Add(i55.56, _61)
+      Apply(f54, [_62, ])
+    } else {
+      Unit
+    }
+  }
   let _63: Int = Int(1)
   let _64: Int = Add(low33.34, _63)
-  Apply(f54l4, [_64, arr31.32, low33.34, high35.36, ])
+  Apply(f54, [_64, ])
 }
-let rec partition65l3: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.69: Int, low70.71: Int, high72.73: Int) {
+let rec partition65: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.69: Int, low70.71: Int, high72.73: Int) {
   let _74: Int = Int(1)
   let _75: Int = Sub(high72.73, _74)
   let _77: Unit = Apply(swap1l0, [arr66.67, pivot_index68.69, _75, ])
@@ -127,29 +127,7 @@ let rec partition65l3: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68
   }
   Tuple([_124, _128, ])
 }
-let rec sort_2157l5: Var({val: Some(Unit)}) = (a158.159: Int, b160.161: Int, swaps.139: Array(Int), arr130.131: Array(Int)) {
-  let _162: Int = Get arr130.131[b160.161]
-  let _163: Int = Get arr130.131[a158.159]
-  let _164: Int = Int(1)
-  let _165: Int = Sub(_163, _164)
-  if (_162 <= _165) then {
-    let _167: Unit = Apply(swap1l0, [arr130.131, a158.159, b160.161, ])
-    let _168: Int = Int(0)
-    let _169: Int = Int(0)
-    let _170: Int = Get swaps.139[_169]
-    let _171: Int = Int(1)
-    let _172: Int = Add(_170, _171)
-    Put swaps.139[_168] = _172
-  } else {
-    Unit
-  }
-}
-let rec sort_3173l6: Var({val: Some(Unit)}) = (a174.175: Int, b176.177: Int, c178.179: Int, swaps.139: Array(Int), arr130.131: Array(Int)) {
-  let _181: Var({val: Some(Unit)}) = Apply(sort_2157l5, [a174.175, b176.177, swaps.139, arr130.131, ])
-  let _183: Var({val: Some(Unit)}) = Apply(sort_2157l5, [b176.177, c178.179, swaps.139, arr130.131, ])
-  Apply(sort_2157l5, [a174.175, b176.177, swaps.139, arr130.131, ])
-}
-let rec choose_pivot129l4: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.133: Int, high134.135: Int) {
+let rec choose_pivot129l3: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.133: Int, high134.135: Int) {
   let use_median_of_medians.136: Int = Int(50)
   let _137: Int = Int(1)
   let _138: Int = Int(0)
@@ -172,6 +150,28 @@ let rec choose_pivot129l4: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.
     let _154: Int = Int(3)
     let _155: Int = Mul(_153, _154)
     let c.156: Int = Add(low132.133, _155)
+    let rec sort_2157: Var({val: Some(Unit)}) = (a158.159: Int, b160.161: Int) {
+      let _162: Int = Get arr130.131[b160.161]
+      let _163: Int = Get arr130.131[a158.159]
+      let _164: Int = Int(1)
+      let _165: Int = Sub(_163, _164)
+      if (_162 <= _165) then {
+        let _167: Unit = Apply(swap1l0, [arr130.131, a158.159, b160.161, ])
+        let _168: Int = Int(0)
+        let _169: Int = Int(0)
+        let _170: Int = Get swaps.139[_169]
+        let _171: Int = Int(1)
+        let _172: Int = Add(_170, _171)
+        Put swaps.139[_168] = _172
+      } else {
+        Unit
+      }
+    }
+    let rec sort_3173: Var({val: Some(Unit)}) = (a174.175: Int, b176.177: Int, c178.179: Int) {
+      let _181: Var({val: Some(Unit)}) = Apply(sort_2157, [a174.175, b176.177, ])
+      let _183: Var({val: Some(Unit)}) = Apply(sort_2157, [b176.177, c178.179, ])
+      Apply(sort_2157, [a174.175, b176.177, ])
+    }
     let _184: Int = Int(1)
     let _185: Int = Sub(len.140, _184)
     let _203: Var({val: Some(Unit)}) = if (use_median_of_medians.136 <= _185) then {
@@ -179,21 +179,21 @@ let rec choose_pivot129l4: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.
       let _187: Int = Sub(a.151, _186)
       let _188: Int = Int(1)
       let _189: Int = Add(a.151, _188)
-      let _191: Var({val: Some(Unit)}) = Apply(sort_3173l6, [_187, a.151, _189, swaps.139, arr130.131, ])
+      let _191: Var({val: Some(Unit)}) = Apply(sort_3173, [_187, a.151, _189, ])
       let _192: Int = Int(1)
       let _193: Int = Sub(b.145, _192)
       let _194: Int = Int(1)
       let _195: Int = Add(b.145, _194)
-      let _197: Var({val: Some(Unit)}) = Apply(sort_3173l6, [_193, b.145, _195, swaps.139, arr130.131, ])
+      let _197: Var({val: Some(Unit)}) = Apply(sort_3173, [_193, b.145, _195, ])
       let _198: Int = Int(1)
       let _199: Int = Sub(c.156, _198)
       let _200: Int = Int(1)
       let _201: Int = Add(c.156, _200)
-      Apply(sort_3173l6, [_199, c.156, _201, swaps.139, arr130.131, ])
+      Apply(sort_3173, [_199, c.156, _201, ])
     } else {
       Unit
     }
-    Apply(sort_3173l6, [a.151, b.145, c.156, swaps.139, arr130.131, ])
+    Apply(sort_3173, [a.151, b.145, c.156, ])
   } else {
     Unit
   }
@@ -207,25 +207,25 @@ let rec choose_pivot129l4: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.
   }
   Tuple([b.145, _209, ])
 }
-let rec quick_sort210l5: Unit = (arr211.212: Array(Int), low213.214: Int, high215.216: Int) {
+let rec quick_sort210l4: Unit = (arr211.212: Array(Int), low213.214: Int, high215.216: Int) {
   let len.217: Int = Sub(high215.216, low213.214)
   let _218: Int = Int(16)
   if (len.217 <= _218) then {
     Apply(insertion_sort30l2, [arr211.212, low213.214, high215.216, ])
   } else {
-    let _219: Tuple([Int, Bool]) = Apply(choose_pivot129l4, [arr211.212, low213.214, high215.216, ])
-    let (, pivot_index220.221: Var({val: Some(Int)})likely_sorted222.223: Var({val: Some(Bool)})) = _219let _224: Tuple([Int, Bool]) = Apply(partition65l3, [arr211.212, pivot_index220.221, low213.214, high215.216, ])
-    let (, pivot225.226: Var({val: Some(Int)})partitioned227.228: Var({val: Some(Bool)})) = _224let _230: Unit = Apply(quick_sort210l5, [arr211.212, low213.214, pivot225.226, ])
+    let _219: Tuple([Int, Bool]) = Apply(choose_pivot129l3, [arr211.212, low213.214, high215.216, ])
+    let (, pivot_index220.221: Var({val: Some(Int)})likely_sorted222.223: Var({val: Some(Bool)})) = _219let _224: Tuple([Int, Bool]) = Apply(partition65, [arr211.212, pivot_index220.221, low213.214, high215.216, ])
+    let (, pivot225.226: Var({val: Some(Int)})partitioned227.228: Var({val: Some(Bool)})) = _224let _230: Unit = Apply(quick_sort210l4, [arr211.212, low213.214, pivot225.226, ])
     let _231: Int = Int(1)
     let _232: Int = Add(pivot225.226, _231)
-    Apply(quick_sort210l5, [arr211.212, _232, high215.216, ])
+    Apply(quick_sort210l4, [arr211.212, _232, high215.216, ])
   }
 }
-let rec sort233l6: Unit = (x234.235: Array(Int), len236.237: Int) {
+let rec sort233l5: Unit = (x234.235: Array(Int), len236.237: Int) {
   let _238: Int = Int(0)
-  Apply(quick_sort210l5, [x234.235, _238, len236.237, ])
+  Apply(quick_sort210l4, [x234.235, _238, len236.237, ])
 }
-let rec input243l8: Var({val: Some(Unit)}) = (i244.245: Int, arr.242: Array(Int), len.240: Int) {
+let rec input243l7: Var({val: Some(Unit)}) = (i244.245: Int, arr.242: Array(Int), len.240: Int) {
   let _246: Int = Int(1)
   let _247: Int = Sub(len.240, _246)
   if (i244.245 <= _247) then {
@@ -233,19 +233,19 @@ let rec input243l8: Var({val: Some(Unit)}) = (i244.245: Int, arr.242: Array(Int)
     let _250: Unit = Put arr.242[i244.245] = _248
     let _251: Int = Int(1)
     let _252: Int = Add(i244.245, _251)
-    Apply(input243l8, [_252, arr.242, len.240, ])
+    Apply(input243l7, [_252, arr.242, len.240, ])
   } else {
     Unit
   }
 }
-let rec main239l7: Var({val: Some(Unit)}) = () {
+let rec main239l6: Var({val: Some(Unit)}) = () {
   let len.240: Int = ExtApply(minimbt_read_int, [])
   let _241: Int = Int(0)
   let arr.242: Array(Int) = ExtApply(minimbt_create_array, [len.240, _241, ])
   let _253: Int = Int(0)
-  let _255: Var({val: Some(Unit)}) = Apply(input243l8, [_253, arr.242, len.240, ])
-  let _257: Unit = Apply(sort233l6, [arr.242, len.240, ])
+  let _255: Var({val: Some(Unit)}) = Apply(input243l7, [_253, arr.242, len.240, ])
+  let _257: Unit = Apply(sort233l5, [arr.242, len.240, ])
   let _258: Int = Int(0)
   Apply(output14l1, [arr.242, _258, len.240, ])
 }
-Apply(main239l7, [])
+Apply(main239l6, [])

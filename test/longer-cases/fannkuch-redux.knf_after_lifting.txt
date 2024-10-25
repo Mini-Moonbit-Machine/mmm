@@ -17,20 +17,7 @@ let rec gen_perm14l1: Array(Int) = (len5.6: Int) {
   let _20: Unit = Apply(init_arr9l2, [_18, arr.8, len5.6, ])
   Var(arr.8)
 }
-let rec copy_perm46l2: Unit = (i47.48: Int, n2.3: Int, perm.23: Array(Int), perm1.21: Array(Int)) {
-  let _49: Int = Int(1)
-  let _50: Int = Sub(n2.3, _49)
-  if (i47.48 <= _50) then {
-    let _51: Int = Get perm1.21[i47.48]
-    let _53: Unit = Put perm.23[i47.48] = _51
-    let _54: Int = Int(1)
-    let _55: Int = Add(i47.48, _54)
-    Apply(copy_perm46l2, [_55, n2.3, perm.23, perm1.21, ])
-  } else {
-    Unit
-  }
-}
-let rec init_count59l3: Unit = (r41.42: Array(Int), count.25: Array(Int)) {
+let rec init_count59l2: Unit = (r41.42: Array(Int), count.25: Array(Int)) {
   let _60: Int = Int(0)
   let _61: Int = Get r41.42[_60]
   let _62: Int = Int(1)
@@ -50,38 +37,11 @@ let rec init_count59l3: Unit = (r41.42: Array(Int), count.25: Array(Int)) {
     let _74: Int = Int(1)
     let _75: Int = Sub(_73, _74)
     let _77: Unit = Put r41.42[_71] = _75
-    Apply(init_count59l3, [r41.42, count.25, ])
+    Apply(init_count59l2, [r41.42, count.25, ])
   }
   Unit
 }
-let rec flip_loop99l5: Unit = (i100.101: Int, t.98: Array(Int), k91.92: Array(Int), perm.23: Array(Int)) {
-  let _102: Int = Int(0)
-  let _103: Int = Get k91.92[_102]
-  let _104: Int = Int(2)
-  let _105: Int = Div(_103, _104)
-  if (i100.101 <= _105) then {
-    let _106: Int = Int(0)
-    let _107: Int = Get perm.23[i100.101]
-    let _109: Unit = Put t.98[_106] = _107
-    let _110: Int = Int(0)
-    let _111: Int = Get k91.92[_110]
-    let _112: Int = Sub(_111, i100.101)
-    let _113: Int = Get perm.23[_112]
-    let _115: Unit = Put perm.23[i100.101] = _113
-    let _116: Int = Int(0)
-    let _117: Int = Get k91.92[_116]
-    let _118: Int = Sub(_117, i100.101)
-    let _119: Int = Int(0)
-    let _120: Int = Get t.98[_119]
-    let _122: Unit = Put perm.23[_118] = _120
-    let _123: Int = Int(1)
-    let _124: Int = Add(i100.101, _123)
-    Apply(flip_loop99l5, [_124, t.98, k91.92, perm.23, ])
-  } else {
-    Unit
-  }
-}
-let rec do_flip90l4: Unit = (k91.92: Array(Int), perm.23: Array(Int), flips.28: Array(Int)) {
+let rec do_flip90l3: Unit = (k91.92: Array(Int), perm.23: Array(Int), flips.28: Array(Int)) {
   let _93: Int = Int(0)
   let _94: Int = Get k91.92[_93]
   let _95: Int = Int(0)
@@ -91,8 +51,35 @@ let rec do_flip90l4: Unit = (k91.92: Array(Int), perm.23: Array(Int), flips.28: 
     let _96: Int = Int(1)
     let _97: Int = Int(0)
     let t.98: Array(Int) = ExtApply(minimbt_create_array, [_96, _97, ])
+    let rec flip_loop99: Unit = (i100.101: Int) {
+      let _102: Int = Int(0)
+      let _103: Int = Get k91.92[_102]
+      let _104: Int = Int(2)
+      let _105: Int = Div(_103, _104)
+      if (i100.101 <= _105) then {
+        let _106: Int = Int(0)
+        let _107: Int = Get perm.23[i100.101]
+        let _109: Unit = Put t.98[_106] = _107
+        let _110: Int = Int(0)
+        let _111: Int = Get k91.92[_110]
+        let _112: Int = Sub(_111, i100.101)
+        let _113: Int = Get perm.23[_112]
+        let _115: Unit = Put perm.23[i100.101] = _113
+        let _116: Int = Int(0)
+        let _117: Int = Get k91.92[_116]
+        let _118: Int = Sub(_117, i100.101)
+        let _119: Int = Int(0)
+        let _120: Int = Get t.98[_119]
+        let _122: Unit = Put perm.23[_118] = _120
+        let _123: Int = Int(1)
+        let _124: Int = Add(i100.101, _123)
+        Apply(flip_loop99, [_124, ])
+      } else {
+        Unit
+      }
+    }
     let _125: Int = Int(0)
-    let _127: Unit = Apply(flip_loop99l5, [_125, t.98, k91.92, perm.23, ])
+    let _127: Unit = Apply(flip_loop99, [_125, ])
     let _128: Int = Int(0)
     let _129: Int = Int(0)
     let _130: Int = Get perm.23[_129]
@@ -103,10 +90,10 @@ let rec do_flip90l4: Unit = (k91.92: Array(Int), perm.23: Array(Int), flips.28: 
     let _136: Int = Int(1)
     let _137: Int = Add(_135, _136)
     let _139: Unit = Put flips.28[_133] = _137
-    Apply(do_flip90l4, [k91.92, perm.23, flips.28, ])
+    Apply(do_flip90l3, [k91.92, perm.23, flips.28, ])
   }
 }
-let rec move_perm1_forward197l5: Unit = (i198.199: Int, r41.42: Array(Int), perm1.21: Array(Int)) {
+let rec move_perm1_forward197l4: Unit = (i198.199: Int, r41.42: Array(Int), perm1.21: Array(Int)) {
   let _200: Int = Int(0)
   let _201: Int = Get r41.42[_200]
   let _202: Int = Int(1)
@@ -118,7 +105,7 @@ let rec move_perm1_forward197l5: Unit = (i198.199: Int, r41.42: Array(Int), perm
     let _208: Unit = Put perm1.21[i198.199] = _206
     let _209: Int = Int(1)
     let _210: Int = Add(i198.199, _209)
-    let _212: Unit = Apply(move_perm1_forward197l5, [_210, r41.42, perm1.21, ])
+    let _212: Unit = Apply(move_perm1_forward197l4, [_210, r41.42, perm1.21, ])
     Unit
   } else {
     Unit
@@ -149,9 +136,22 @@ let rec fannkuch1l0: Tuple([Int, Int]) = (n2.3: Int) {
     let _44: Int = Int(0)
     let _45: Int = Get r41.42[_44]
     if (_43 <= _45) then {
+      let rec copy_perm46: Unit = (i47.48: Int) {
+        let _49: Int = Int(1)
+        let _50: Int = Sub(n2.3, _49)
+        if (i47.48 <= _50) then {
+          let _51: Int = Get perm1.21[i47.48]
+          let _53: Unit = Put perm.23[i47.48] = _51
+          let _54: Int = Int(1)
+          let _55: Int = Add(i47.48, _54)
+          Apply(copy_perm46, [_55, ])
+        } else {
+          Unit
+        }
+      }
       let _56: Int = Int(0)
-      let _58: Unit = Apply(copy_perm46l2, [_56, n2.3, perm.23, perm1.21, ])
-      let _81: Unit = Apply(init_count59l3, [r41.42, count.25, ])
+      let _58: Unit = Apply(copy_perm46, [_56, ])
+      let _81: Unit = Apply(init_count59l2, [r41.42, count.25, ])
       let _82: Int = Int(0)
       let _83: Int = Int(0)
       let _85: Unit = Put flips.28[_82] = _83
@@ -159,7 +159,7 @@ let rec fannkuch1l0: Tuple([Int, Int]) = (n2.3: Int) {
       let _87: Int = Int(0)
       let _88: Int = Get perm.23[_87]
       let k.89: Array(Int) = ExtApply(minimbt_create_array, [_86, _88, ])
-      let _141: Unit = Apply(do_flip90l4, [k.89, perm.23, flips.28, ])
+      let _141: Unit = Apply(do_flip90l3, [k.89, perm.23, flips.28, ])
       let _142: Int = Int(0)
       let _143: Int = Get max_flips.31[_142]
       let _144: Int = Int(0)
@@ -220,7 +220,7 @@ let rec fannkuch1l0: Tuple([Int, Int]) = (n2.3: Int) {
             let _194: Int = Get perm1.21[_193]
             let _196: Unit = Put t.178[_192] = _194
             let _213: Int = Int(0)
-            let _215: Unit = Apply(move_perm1_forward197l5, [_213, r41.42, perm1.21, ])
+            let _215: Unit = Apply(move_perm1_forward197l4, [_213, r41.42, perm1.21, ])
             let _216: Int = Int(0)
             let _217: Int = Get r41.42[_216]
             let _218: Int = Int(0)

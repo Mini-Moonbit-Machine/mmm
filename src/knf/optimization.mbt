@@ -247,7 +247,7 @@ fn LambdaLiftEnv::lift(
         fdef.ty,
       )
       // we don't want to lift functions with too many arguments
-      if new_args_length >= 6 {
+      if new_args_length >= 4 {
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
           init=self,
