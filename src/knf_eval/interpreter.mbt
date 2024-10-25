@@ -61,6 +61,7 @@ pub fn KnfInterpreter::eval(
 ) -> Value!Failure {
   match expr {
     Unit => Unit
+    Bool(b) => Int(if b { 1 } else { 0 })
     Int(i) => Int(i.to_int())
     Double(d) => Double(d)
     Var(v) => find!(env, v)

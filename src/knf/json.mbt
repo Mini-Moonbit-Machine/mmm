@@ -1,6 +1,7 @@
 pub fn Knf::to_json(self : Knf) -> Json {
   match self {
     Unit => ["Unit"]
+    Bool(b) => ["Int", Number(if b { 1 } else { 0 })]
     Int(i) => ["Int", Number(i.to_double())]
     Double(d) => ["Double", Number(d)]
     Neg(n) => ["Neg", n.to_json()]

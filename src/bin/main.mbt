@@ -383,6 +383,18 @@ fn main {
         "",
       ),
       (
+        "--output-to-console",
+        "-otc",
+        @ArgParser.Unit(fn() { opts.output_to_console = true }),
+        "",
+      ),
+      (
+        "--no-redirect-to-log",
+        "-nrtl",
+        @ArgParser.Unit(fn() { opts.redirect_to_log = false }),
+        "",
+      ),
+      (
         "--redirect-to-log",
         "-rtl",
         @ArgParser.Unit(fn() { opts.redirect_to_log = true }),

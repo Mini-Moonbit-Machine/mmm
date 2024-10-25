@@ -98,6 +98,7 @@ fn build_closure(
 ) -> ClosureResult!Failure {
   match knf {
     Unit => (Unit, func_def_list, let_list)
+    Bool(b) => (Int(if b { 1 } else { 0 }), func_def_list, let_list)
     Int(i) => (Int(i.to_int()), func_def_list, let_list)
     Double(d) => (Double(d), func_def_list, let_list)
     Neg(x) => (Neg(x), func_def_list, let_list)

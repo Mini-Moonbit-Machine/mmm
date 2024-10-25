@@ -150,12 +150,12 @@ fn LambdaLiftEnv::lift(
   top : Bool
 ) -> (LetList, Knf) {
   match knf {
-    Unit | Int(_) | Double(_) => ([], knf)
+    // we assume that the names here are non-function, otherwise it tends to be a type error
+    Unit | Bool(_) | Int(_) | Double(_) => ([], knf)
     Neg(_) | FNeg(_) => ([], knf)
     Add(_, _)
     | Sub(_, _)
     | Mul(_, _) | Div(_, _) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
-      // we assume that the names here are non-function, otherwise it tends to be a type error
       ([], knf)
     IfEq(x, y, k1, k2) => {
       let (l1, k1) = self.lift(k1, top)

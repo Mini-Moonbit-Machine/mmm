@@ -1,6 +1,7 @@
 pub fn knf_max_counter(knf : Knf) -> Int {
   match knf {
     Unit => 0
+    Bool(_) => 0
     Int(_) => 0
     Double(_) => 0
     Neg(x) => x.slot

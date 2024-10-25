@@ -1,0 +1,128 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn yield25_9 #f9 : closure(int32) -> bool
+.freevars (closure(int32) -> unit)
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = apply ^1($f0)
+    return true
+  }
+}
+.fn T$start_16 #f16 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn iter1_0 #f0 : fn(array[int32], int32) -> closure(closure(int32) -> bool) -> bool
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(closure(int32) -> bool) -> bool heap(3)> <- [0] = f4, [1] = $f1, [2] = $f0
+    return f0.m0
+  }
+}
+.fn each20_1 #f1 : fn(closure(closure(int32) -> bool) -> bool, closure(int32) -> unit) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> bool heap(2)> <- [0] = f9, [1] = $f1
+    let _ = alloc <m1: closure() -> unit heap(3)> <- [0] = f11, [1] = $f0, [2] = f1.m0
+    let %2: unit = apply f1.m1()
+    return %2
+  }
+}
+.fn next9_6 #f6 : closure(int32) -> bool
+.freevars (int32, array[int32], closure(int32) -> bool)
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = sub(^1, 1)
+    let %1: bool = le($f0, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = load int32 offset(^2, $f0 * @32)
+    let %3: bool = apply ^3(%2)
+    let %4: bool = eq(%3, true)
+    br %4 b3() b4()
+  }
+  .bb #b2 () {
+    jump b6(false)
+  }
+  .bb #b3 () {
+    let %5: int32 = add($f0, 1)
+    let %6: bool = apply self(%5)
+    jump b5(%6)
+  }
+  .bb #b4 () {
+    jump b5(false)
+  }
+  .bb #b5 (bool) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (bool) {
+    return $b6.0
+  }
+}
+.fn do6_4 #f4 : closure(closure(int32) -> bool) -> bool
+.freevars (int32, array[int32])
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: closure(int32) -> bool heap(4)> <- [0] = f6, [1] = ^1, [2] = ^2, [3] = $f0
+    let %1: bool = apply f4.m0(0)
+    return %1
+  }
+}
+.fn print59_14 #f14 : closure(int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = ext_call minimbt_print_int($f0)
+    return %0
+  }
+}
+.fn do30_11 #f11 : closure() -> unit
+.freevars (closure(closure(int32) -> bool) -> bool, closure(int32) -> bool)
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = apply ^1(^2)
+    let %1: bool = eq(%0, true)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: unit = apply self()
+    jump b3(%2)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn main33_2 #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(5)> <- [..] = 1
+    let _ = store int32 offset(f2.m0, 0 * @32) <- 1
+    let _ = store int32 offset(f2.m0, 1 * @32) <- 2
+    let _ = store int32 offset(f2.m0, 2 * @32) <- 3
+    let _ = store int32 offset(f2.m0, 3 * @32) <- 4
+    let _ = store int32 offset(f2.m0, 4 * @32) <- 5
+    let %6: closure(closure(int32) -> bool) -> bool = call f0(f2.m0, 5)
+    let _ = alloc <m1: closure(int32) -> unit heap(1)> <- [0] = f14
+    let %8: unit = call f1(%6, f2.m1)
+    return %8
+  }
+}
+.thunk ::0 start

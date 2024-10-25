@@ -9,7 +9,7 @@ pub fn knf_fdef_free_vars(f : FuncDef) -> FreeSet {
 
 pub fn knf_free_vars(k : Knf) -> FreeSet {
   match k {
-    Unit | Int(_) | Double(_) => FreeSet::new()
+    Unit | Bool(_) | Int(_) | Double(_) => FreeSet::new()
     Neg(x) | FNeg(x) => FreeSet::of([x])
     Add(x, y)
     | Sub(x, y)
@@ -108,7 +108,7 @@ pub fn knf_fdef_free_vars_closure(
 
 pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {
   match k {
-    Unit | Int(_) | Double(_) => FreeSet::new()
+    Unit | Bool(_) | Int(_) | Double(_) => FreeSet::new()
     Neg(x) | FNeg(x) => FreeSet::of([x])
     Add(x, y)
     | Sub(x, y)

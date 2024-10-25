@@ -288,6 +288,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
               self.lower_value(args[1])
               let ty = self.type_of(args[0])
               match ty {
+                @core.Type::Bool => self.emit_wasm(I32Eq)
                 @core.Type::Int32 => self.emit_wasm(I32Eq)
                 @core.Type::Double => self.emit_wasm(F64Eq)
                 _ => self.tracer.abort("Unsupported type operand of Eq")

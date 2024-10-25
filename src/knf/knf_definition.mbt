@@ -4,6 +4,7 @@ pub typealias Type = @types.Type
 
 pub enum Knf {
   Unit
+  Bool(Bool)
   Int(Int64)
   Double(Double)
   Neg(Name)

@@ -13,6 +13,7 @@ fn PrettyKnf::print_one_level(
 ) -> Unit {
   match val {
     Unit => logger.write_string("Unit")
+    Bool(b) => logger.write_string("Bool(\{b})")
     Int(i) => logger.write_string("Int(\{i})")
     Double(d) => logger.write_string("Double(\{d})")
     Neg(e) => logger.write_string("Neg(\{e})")

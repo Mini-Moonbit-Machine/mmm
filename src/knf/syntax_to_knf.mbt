@@ -131,7 +131,7 @@ fn build_knf(
     Unit => (Unit, Unit, let_list)
     Int(i) => (Int(i), Int, let_list)
     Neg(Int(i), ..) => (Int(-i), Int, let_list)
-    Bool(b) => (Int(if b { 1 } else { 0 }), Int, let_list)
+    Bool(b) => (Bool(b), Bool, let_list)
     Double(d) => (Double(d), Double, let_list)
     Var(x) =>
       match (env.find(x), ty_env.find(x)) {
@@ -152,9 +152,9 @@ fn build_knf(
     Not(xs) => {
       let r1 = self.build_knf!(xs, let_list, env, ty_env)
       let tmp = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(Int(1), let_list, env, ty_env)
+      let r2 = self.build_knf!(Bool(true), let_list, env, ty_env)
       let const_1 = self.materialize_knf(r2, let_list)
-      (IfEq(tmp, const_1, Int(0), Int(1)), Int, let_list)
+      (IfEq(tmp, const_1, Bool(false), Bool(true)), Int, let_list)
     }
     Array(len, elem) => {
       let r1 = self.build_knf!(len, let_list, env, ty_env)
@@ -162,7 +162,8 @@ fn build_knf(
       let r2 = self.build_knf!(elem, let_list, env, ty_env)
       let elem = self.materialize_knf(r2, let_list)
       let call = match r2.1.repr() {
-        Int => ExternalFunctionApplication("minimbt_create_array", [len, elem])
+        Int | Bool =>
+          ExternalFunctionApplication("minimbt_create_array", [len, elem])
         Double =>
           ExternalFunctionApplication("minimbt_create_float_array", [len, elem])
         t =>
@@ -290,7 +291,7 @@ fn build_knf(
       let r1 = self.build_knf!(y, ll1, env, ty_env)
       let ll2 = []
       let r2 = self.build_knf!(z, ll2, env, ty_env)
-      let r3 = self.build_knf!(Int(1), let_list, env, ty_env)
+      let r3 = self.build_knf!(Bool(true), let_list, env, ty_env)
       let const_1 = self.materialize_knf(r3, let_list)
       (IfEq(x, const_1, bind_all(r1), bind_all(r2)), r1.1, let_list)
     }
@@ -332,14 +333,14 @@ fn build_knf(
       let x = self.materialize_knf(r1, let_list)
       let r2 = self.build_knf!(o2, let_list, env, ty_env)
       let y = self.materialize_knf(r2, let_list)
-      (IfEq(x, y, Int(1), Int(0)), Int, let_list)
+      (IfEq(x, y, Bool(true), Bool(false)), Int, let_list)
     }
     LE(o1, o2) => {
       let r1 = self.build_knf!(o1, let_list, env, ty_env)
       let x = self.materialize_knf(r1, let_list)
       let r2 = self.build_knf!(o2, let_list, env, ty_env)
       let y = self.materialize_knf(r2, let_list)
-      (IfLe(x, y, Int(1), Int(0)), Int, let_list)
+      (IfLe(x, y, Bool(true), Bool(false)), Int, let_list)
     }
     Let((x, ty), e1, e2) => {
       let r1 = self.build_knf!(e1, let_list, env, ty_env)

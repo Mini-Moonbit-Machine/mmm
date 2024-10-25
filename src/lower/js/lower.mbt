@@ -65,6 +65,7 @@ fn JsLoweringCtx::lower_expr(
 ) -> JsExpr {
   match knf {
     Knf::Unit => Lit("null") |> kont
+    Bool(b) => Lit(b.to_string()) |> kont
     Int(i) => Lit(i.to_string()) |> kont
     Double(d) => Lit(d.to_string()) |> kont
     Neg(n) => UnOp("-", self.to_js_name(n)) |> kont
