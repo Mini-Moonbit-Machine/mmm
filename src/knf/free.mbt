@@ -87,23 +87,33 @@ pub fn knf_fdef_free_vars_closure(
   self : FreeSetClosure,
   f : FuncDef
 ) -> FreeSet {
-  let fv = self.knf_free_vars_closure(f.body)
-  f.args.each(fn(argt) { fv.remove(argt.0) })
-  fv.remove(f.name)
+  let fvs = self.knf_free_vars_closure(f.body)
+  f.args.each(fn(argt) { fvs.remove(argt.0) })
+  fvs.remove(f.name)
+  let new_fvs = []
+  fvs.each(
+    fn(fv) {
+      match self.ctx.get(fv) {
+        Some(fv2) => new_fvs.push_iter(fv2.iter())
+        _ => ()
+      }
+    },
+  )
+  new_fvs.each(fn(fv) { fvs.insert(fv) })
   match self.ctx.get(f.name) {
     Some(fv2) => {
-      let fv3 = fv.union(fv2)
+      let fv3 = fvs.union(fv2)
       self.changed = self.changed || fv3.size() != fv2.size()
       self.ctx.set(f.name, fv3)
     }
     None => {
-      if fv.size() != 0 {
+      if fvs.size() != 0 {
         self.changed = true
       }
-      self.ctx.set(f.name, fv)
+      self.ctx.set(f.name, fvs)
     }
   }
-  fv
+  fvs
 }
 
 pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {

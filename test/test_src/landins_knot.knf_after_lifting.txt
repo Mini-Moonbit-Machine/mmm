@@ -1,51 +1,63 @@
-let rec dummy1: Int = (i2.3: Int) {
+let rec dummy1l0: Int = (i2.3: Int) {
   Var(i2.3)
 }
-let rec landins_knot4: Fun([Int], Int) = (f5.6: Fun([Fun([Int], Int)], Fun([Int], Int))) {
+let rec aux9l2: Var({val: Some(Int)}) = (x10.11: Var({val: Some(Int)}), arr.8: Array(Fun([Int], Int))) {
+  let _12: Int = Int(0)
+  let _13: Fun([Int], Int) = Get arr.8[_12]
+  Apply(_13, [x10.11, ])
+}
+let rec landins_knot4l1: Fun([Int], Int) = (f5.6: Fun([Fun([Int], Int)], Fun([Int], Int))) {
   let _7: Int = Int(1)
-  let arr.8: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_7, dummy1, ])
-  let rec aux9: Var({val: Some(Int)}) = (x10.11: Var({val: Some(Int)})) {
-    let _12: Int = Int(0)
-    let _13: Fun([Int], Int) = Get arr.8[_12]
-    Apply(_13, [x10.11, ])
+  let rec dummy1l0c0: Int = (i2.3: Int) {
+    Apply(dummy1l0, [i2.3, ])
   }
-  let fixedpoint.14: Fun([Int], Int) = Apply(f5.6, [aux9, ])
+  let arr.8: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_7, dummy1l0c0, ])
+  let rec aux9l2c0: Var({val: Some(Int)}) = (x10.11: Var({val: Some(Int)})) {
+    Apply(aux9l2, [x10.11, arr.8, ])
+  }
+  let fixedpoint.14: Fun([Int], Int) = Apply(f5.6, [aux9l2c0, ])
   let _15: Int = Int(0)
   let _17: Unit = Put arr.8[_15] = fixedpoint.14
   Var(fixedpoint.14)
 }
-let rec g18: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f19.20: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
-  let rec h21: Var({val: Some(Int)}) = (x22.23: Var({val: Some(Int)})) {
-    let _24: Int = Int(0)
-    if (x22.23 == _24) then {
-      Int(1)
-    } else {
-      let _25: Int = Int(1)
-      let _26: Int = Sub(x22.23, _25)
-      let _27: Var({val: Some(Int)}) = Apply(f19.20, [_26, ])
-      Mul(x22.23, _27)
-    }
+let rec h21l3: Var({val: Some(Int)}) = (x22.23: Var({val: Some(Int)}), f19.20: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  let _24: Int = Int(0)
+  if (x22.23 == _24) then {
+    Int(1)
+  } else {
+    let _25: Int = Int(1)
+    let _26: Int = Sub(x22.23, _25)
+    let _27: Var({val: Some(Int)}) = Apply(f19.20, [_26, ])
+    Mul(x22.23, _27)
   }
-  Var(h21)
 }
-let factorial.28: Fun([Int], Int) = Apply(landins_knot4, [g18, ])
-let rec f129: Unit = () {
+let rec g18l2: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f19.20: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  let rec h21l3c0: Var({val: Some(Int)}) = (x22.23: Var({val: Some(Int)})) {
+    Apply(h21l3, [x22.23, f19.20, ])
+  }
+  Var(h21l3c0)
+}
+let rec g18l2c0: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f19.20: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  Apply(g18l2, [f19.20, ])
+}
+let factorial.28: Fun([Int], Int) = Apply(landins_knot4l1, [g18l2c0, ])
+let rec f129l3: Unit = (factorial.28: Fun([Int], Int)) {
   let _30: Int = Int(5)
   let _31: Int = Apply(factorial.28, [_30, ])
   ExtApply(minimbt_print_int, [_31, ])
 }
 let _32: Int = Int(5)
 let a.33: Int = Apply(factorial.28, [_32, ])
-let rec g34: Var({val: Some(Int)}) = (x35.36: Var({val: Some(Int)})) {
+let rec g34l4: Var({val: Some(Int)}) = (x35.36: Var({val: Some(Int)}), a.33: Int) {
   Add(x35.36, a.33)
 }
-let rec main37: Var({val: Some(Unit)}) = () {
-  let _39: Unit = Apply(f129, [])
+let rec main37l5: Var({val: Some(Unit)}) = (a.33: Int, factorial.28: Fun([Int], Int)) {
+  let _39: Unit = Apply(f129l3, [factorial.28, ])
   let _40: Int = Int(10)
-  let _41: Int = Apply(g34, [_40, ])
+  let _41: Int = Apply(g34l4, [_40, a.33, ])
   let _43: Unit = ExtApply(minimbt_print_int, [_41, ])
   let _44: Int = Int(31)
-  let _45: Int = Apply(g34, [_44, ])
+  let _45: Int = Apply(g34l4, [_44, a.33, ])
   ExtApply(minimbt_print_int, [_45, ])
 }
-Apply(main37, [])
+Apply(main37l5, [a.33, factorial.28, ])
