@@ -15,32 +15,14 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl f9l2_3
-  .type f9l2_3, @function
-# leaf false
-f9l2_3:
-.f9l2_3_4:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, a0
-
-.f9l2_3_0:
-  li a0, 1
-  beq a0, a0, .f9l2_3_1
-
-.f9l2_3_2:
-  li a0, 2
-  call g12l3_2
-
-.f9l2_3_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl g12_7
+  .type g12_7, @function
+# leaf true
+g12_7:
+.g12_7_0:
+  mv a1, s10
+  lw a0, 8(a1)
   ret
-
-.f9l2_3_1:
-  li a0, 1
-  mv a1, a0
-  j .f9l2_3_0
 
   .p2align 2
   .text
@@ -51,9 +33,19 @@ T$start_10:
 .T$start_10_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main19l3_4
+  call main19l3_3
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main19l3_3
+  .type main19l3_3, @function
+# leaf true
+main19l3_3:
+.main19l3_3_0:
+  mv a0, zero
   ret
 
   .p2align 2
@@ -69,23 +61,40 @@ useless1l0_0:
 
   .p2align 2
   .text
-  .globl g12l3_2
-  .type g12l3_2, @function
-# leaf true
-g12l3_2:
-.g12l3_2_0:
-  mv a0, a1
+  .globl f9l2_2
+  .type f9l2_2, @function
+# leaf false
+f9l2_2:
+.f9l2_2_4:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, a0
+
+.f9l2_2_0:
+  addi a0, s11, -16
+  andi a0, a0, -8
+  mv s11, a0
+  la a2, g12_7
+  sd a2, 0(a0)
+  sd a1, 8(a0)
+  li a1, 1
+  beq a1, a1, .f9l2_2_1
+
+.f9l2_2_2:
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 2
+  jalr a1
+
+.f9l2_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
-  .p2align 2
-  .text
-  .globl main19l3_4
-  .type main19l3_4, @function
-# leaf true
-main19l3_4:
-.main19l3_4_0:
-  mv a0, zero
-  ret
+.f9l2_2_1:
+  li a0, 1
+  mv a1, a0
+  j .f9l2_2_0
 
   .p2align 2
   .text

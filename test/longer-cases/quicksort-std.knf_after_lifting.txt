@@ -1,11 +1,11 @@
-let rec swap1l0: Unit = (arr2.3: Array(Int), i4.5: Int, j6.7: Int) {
+let rec swap1: Unit = (arr2.3: Array(Int), i4.5: Int, j6.7: Int) {
   let tmp.8: Int = Get arr2.3[i4.5]
   let _9: Int = Get arr2.3[j6.7]
   let _11: Unit = Put arr2.3[i4.5] = _9
   let _13: Unit = Put arr2.3[j6.7] = tmp.8
   Unit
 }
-let rec output14l1: Unit = (arr15.16: Array(Int), i17.18: Int, len19.20: Int) {
+let rec output14: Unit = (arr15.16: Array(Int), i17.18: Int, len19.20: Int) {
   let _21: Int = Int(1)
   let _22: Int = Sub(len19.20, _21)
   if (i17.18 <= _22) then {
@@ -14,41 +14,41 @@ let rec output14l1: Unit = (arr15.16: Array(Int), i17.18: Int, len19.20: Int) {
     let _27: Unit = ExtApply(minimbt_print_endline, [])
     let _28: Int = Int(1)
     let _29: Int = Add(i17.18, _28)
-    Apply(output14l1, [arr15.16, _29, len19.20, ])
+    Apply(output14, [arr15.16, _29, len19.20, ])
   } else {
     Unit
   }
 }
-let rec g37l3: Unit = (j38.39: Int, arr31.32: Array(Int), low33.34: Int) {
-  let _40: Int = Int(1)
-  let _41: Int = Add(_40, low33.34)
-  if (_41 <= j38.39) then {
-    let _42: Int = Get arr31.32[j38.39]
-    let _43: Int = Int(1)
-    let _44: Int = Sub(j38.39, _43)
-    let _45: Int = Get arr31.32[_44]
-    let _46: Int = Int(1)
-    let _47: Int = Sub(_45, _46)
-    if (_42 <= _47) then {
-      let _48: Int = Int(1)
-      let _49: Int = Sub(j38.39, _48)
-      let _51: Unit = Apply(swap1l0, [arr31.32, j38.39, _49, ])
-      let _52: Int = Int(1)
-      let _53: Int = Sub(j38.39, _52)
-      Apply(g37l3, [_53, arr31.32, low33.34, ])
+let rec insertion_sort30: Unit = (arr31.32: Array(Int), low33.34: Int, high35.36: Int) {
+  let rec g37: Unit = (j38.39: Int) {
+    let _40: Int = Int(1)
+    let _41: Int = Add(_40, low33.34)
+    if (_41 <= j38.39) then {
+      let _42: Int = Get arr31.32[j38.39]
+      let _43: Int = Int(1)
+      let _44: Int = Sub(j38.39, _43)
+      let _45: Int = Get arr31.32[_44]
+      let _46: Int = Int(1)
+      let _47: Int = Sub(_45, _46)
+      if (_42 <= _47) then {
+        let _48: Int = Int(1)
+        let _49: Int = Sub(j38.39, _48)
+        let _51: Unit = Apply(swap1, [arr31.32, j38.39, _49, ])
+        let _52: Int = Int(1)
+        let _53: Int = Sub(j38.39, _52)
+        Apply(g37, [_53, ])
+      } else {
+        Unit
+      }
     } else {
       Unit
     }
-  } else {
-    Unit
   }
-}
-let rec insertion_sort30l2: Unit = (arr31.32: Array(Int), low33.34: Int, high35.36: Int) {
   let rec f54: Unit = (i55.56: Int) {
     let _57: Int = Int(1)
     let _58: Int = Sub(high35.36, _57)
     if (i55.56 <= _58) then {
-      let _60: Unit = Apply(g37l3, [i55.56, arr31.32, low33.34, ])
+      let _60: Unit = Apply(g37, [i55.56, ])
       let _61: Int = Int(1)
       let _62: Int = Add(i55.56, _61)
       Apply(f54, [_62, ])
@@ -63,7 +63,7 @@ let rec insertion_sort30l2: Unit = (arr31.32: Array(Int), low33.34: Int, high35.
 let rec partition65: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.69: Int, low70.71: Int, high72.73: Int) {
   let _74: Int = Int(1)
   let _75: Int = Sub(high72.73, _74)
-  let _77: Unit = Apply(swap1l0, [arr66.67, pivot_index68.69, _75, ])
+  let _77: Unit = Apply(swap1, [arr66.67, pivot_index68.69, _75, ])
   let _78: Int = Int(1)
   let _79: Int = Sub(high72.73, _78)
   let pivot.80: Int = Get arr66.67[_79]
@@ -87,7 +87,7 @@ let rec partition65: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.6
         } else {
           let _96: Int = Int(0)
           let _97: Int = Get i.82[_96]
-          let _99: Unit = Apply(swap1l0, [arr66.67, _97, j87.88, ])
+          let _99: Unit = Apply(swap1, [arr66.67, _97, j87.88, ])
           let _100: Int = Int(0)
           let _101: Int = Int(0)
           Put partitioned.85[_100] = _101
@@ -114,7 +114,7 @@ let rec partition65: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.6
   let _118: Int = Get i.82[_117]
   let _119: Int = Int(1)
   let _120: Int = Sub(high72.73, _119)
-  let _122: Unit = Apply(swap1l0, [arr66.67, _118, _120, ])
+  let _122: Unit = Apply(swap1, [arr66.67, _118, _120, ])
   let _123: Int = Int(0)
   let _124: Int = Get i.82[_123]
   let _125: Int = Int(0)
@@ -127,7 +127,7 @@ let rec partition65: Tuple([Int, Bool]) = (arr66.67: Array(Int), pivot_index68.6
   }
   Tuple([_124, _128, ])
 }
-let rec choose_pivot129l3: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.133: Int, high134.135: Int) {
+let rec choose_pivot129: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.133: Int, high134.135: Int) {
   let use_median_of_medians.136: Int = Int(50)
   let _137: Int = Int(1)
   let _138: Int = Int(0)
@@ -156,7 +156,7 @@ let rec choose_pivot129l3: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.
       let _164: Int = Int(1)
       let _165: Int = Sub(_163, _164)
       if (_162 <= _165) then {
-        let _167: Unit = Apply(swap1l0, [arr130.131, a158.159, b160.161, ])
+        let _167: Unit = Apply(swap1, [arr130.131, a158.159, b160.161, ])
         let _168: Int = Int(0)
         let _169: Int = Int(0)
         let _170: Int = Get swaps.139[_169]
@@ -207,45 +207,45 @@ let rec choose_pivot129l3: Tuple([Int, Bool]) = (arr130.131: Array(Int), low132.
   }
   Tuple([b.145, _209, ])
 }
-let rec quick_sort210l4: Unit = (arr211.212: Array(Int), low213.214: Int, high215.216: Int) {
+let rec quick_sort210: Unit = (arr211.212: Array(Int), low213.214: Int, high215.216: Int) {
   let len.217: Int = Sub(high215.216, low213.214)
   let _218: Int = Int(16)
   if (len.217 <= _218) then {
-    Apply(insertion_sort30l2, [arr211.212, low213.214, high215.216, ])
+    Apply(insertion_sort30, [arr211.212, low213.214, high215.216, ])
   } else {
-    let _219: Tuple([Int, Bool]) = Apply(choose_pivot129l3, [arr211.212, low213.214, high215.216, ])
+    let _219: Tuple([Int, Bool]) = Apply(choose_pivot129, [arr211.212, low213.214, high215.216, ])
     let (, pivot_index220.221: Var({val: Some(Int)})likely_sorted222.223: Var({val: Some(Bool)})) = _219let _224: Tuple([Int, Bool]) = Apply(partition65, [arr211.212, pivot_index220.221, low213.214, high215.216, ])
-    let (, pivot225.226: Var({val: Some(Int)})partitioned227.228: Var({val: Some(Bool)})) = _224let _230: Unit = Apply(quick_sort210l4, [arr211.212, low213.214, pivot225.226, ])
+    let (, pivot225.226: Var({val: Some(Int)})partitioned227.228: Var({val: Some(Bool)})) = _224let _230: Unit = Apply(quick_sort210, [arr211.212, low213.214, pivot225.226, ])
     let _231: Int = Int(1)
     let _232: Int = Add(pivot225.226, _231)
-    Apply(quick_sort210l4, [arr211.212, _232, high215.216, ])
+    Apply(quick_sort210, [arr211.212, _232, high215.216, ])
   }
 }
-let rec sort233l5: Unit = (x234.235: Array(Int), len236.237: Int) {
+let rec sort233: Unit = (x234.235: Array(Int), len236.237: Int) {
   let _238: Int = Int(0)
-  Apply(quick_sort210l4, [x234.235, _238, len236.237, ])
+  Apply(quick_sort210, [x234.235, _238, len236.237, ])
 }
-let rec input243l7: Var({val: Some(Unit)}) = (i244.245: Int, arr.242: Array(Int), len.240: Int) {
-  let _246: Int = Int(1)
-  let _247: Int = Sub(len.240, _246)
-  if (i244.245 <= _247) then {
-    let _248: Int = ExtApply(minimbt_read_int, [])
-    let _250: Unit = Put arr.242[i244.245] = _248
-    let _251: Int = Int(1)
-    let _252: Int = Add(i244.245, _251)
-    Apply(input243l7, [_252, arr.242, len.240, ])
-  } else {
-    Unit
-  }
-}
-let rec main239l6: Var({val: Some(Unit)}) = () {
+let rec main239l0: Var({val: Some(Unit)}) = () {
   let len.240: Int = ExtApply(minimbt_read_int, [])
   let _241: Int = Int(0)
   let arr.242: Array(Int) = ExtApply(minimbt_create_array, [len.240, _241, ])
+  let rec input243: Var({val: Some(Unit)}) = (i244.245: Int) {
+    let _246: Int = Int(1)
+    let _247: Int = Sub(len.240, _246)
+    if (i244.245 <= _247) then {
+      let _248: Int = ExtApply(minimbt_read_int, [])
+      let _250: Unit = Put arr.242[i244.245] = _248
+      let _251: Int = Int(1)
+      let _252: Int = Add(i244.245, _251)
+      Apply(input243, [_252, ])
+    } else {
+      Unit
+    }
+  }
   let _253: Int = Int(0)
-  let _255: Var({val: Some(Unit)}) = Apply(input243l7, [_253, arr.242, len.240, ])
-  let _257: Unit = Apply(sort233l5, [arr.242, len.240, ])
+  let _255: Var({val: Some(Unit)}) = Apply(input243, [_253, ])
+  let _257: Unit = Apply(sort233, [arr.242, len.240, ])
   let _258: Int = Int(0)
-  Apply(output14l1, [arr.242, _258, len.240, ])
+  Apply(output14, [arr.242, _258, len.240, ])
 }
-Apply(main239l6, [])
+Apply(main239l0, [])

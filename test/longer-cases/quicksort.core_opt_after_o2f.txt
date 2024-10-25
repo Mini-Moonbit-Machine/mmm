@@ -7,20 +7,21 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn input79l4_3 #f3 : fn(int32, array[int32], int32) -> unit
-.freevars ()
+.fn output97_12 #f12 : closure(int32) -> unit
+.freevars (int32, array[int32])
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = sub($f2, 1)
+    let %0: int32 = sub(^1, 1)
     let %1: bool = le($f0, %0)
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = ext_call minimbt_read_int()
-    let _ = store int32 offset($f1, $f0 * @32) <- %2
-    let %4: int32 = add($f0, 1)
-    let %5: unit = call f3(%4, $f1, $f2)
-    jump b3(%5)
+    let %2: int32 = load int32 offset(^2, $f0 * @32)
+    let %3: unit = ext_call minimbt_print_int(%2)
+    let %4: unit = ext_call minimbt_print_endline()
+    let %5: int32 = add($f0, 1)
+    let %6: unit = apply self(%5)
+    jump b3(%6)
   }
   .bb #b2 () {
     jump b3(())
@@ -29,49 +30,7 @@
     return $b3.0
   }
 }
-.fn partition14l1_1 #f1 : fn(array[int32], int32, int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f0, $f2 * @32)
-    let %1: int32 = sub($f1, 1)
-    let _ = alloc <m0: array[int32] heap(1)> <- [..] = %1
-    let _ = alloc <m1: closure(int32) -> unit heap(5)> <- [0] = f8, [1] = $f2, [2] = $f0, [3] = %0, [4] = f1.m0
-    let %4: unit = apply f1.m1($f1)
-    let %5: int32 = load int32 field(f1.m0, 0 * @32)
-    let %6: int32 = add(%5, 1)
-    let _ = store int32 field(f1.m0, 0 * @32) <- %6
-    let %8: int32 = load int32 field(f1.m0, 0 * @32)
-    let %9: unit = call f0($f0, %8, $f2)
-    let %10: int32 = load int32 field(f1.m0, 0 * @32)
-    return %10
-  }
-}
-.fn main75l3_5 #f5 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
-    let %2: unit = call f3(0, f5.m0, %0)
-    let %3: int32 = sub(%0, 1)
-    let %4: unit = call f2(f5.m0, 0, %3)
-    let %5: unit = call f4(0, f5.m0, %0)
-    return %5
-  }
-}
-.fn swap1l0_0 #f0 : fn(array[int32], int32, int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f0, $f1 * @32)
-    let %1: int32 = load int32 offset($f0, $f2 * @32)
-    let _ = store int32 offset($f0, $f1 * @32) <- %1
-    let _ = store int32 offset($f0, $f2 * @32) <- %0
-    return ()
-  }
-}
-.fn quicksort59l2_2 #f2 : fn(array[int32], int32, int32) -> unit
+.fn quicksort59_2 #f2 : fn(array[int32], int32, int32) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -94,21 +53,49 @@
     return $b3.0
   }
 }
-.fn output97l5_4 #f4 : fn(int32, array[int32], int32) -> unit
+.fn partition14_1 #f1 : fn(array[int32], int32, int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = sub($f2, 1)
+    let %0: int32 = load int32 offset($f0, $f2 * @32)
+    let %1: int32 = sub($f1, 1)
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = %1
+    let _ = alloc <m1: closure(int32) -> unit heap(5)> <- [0] = f6, [1] = $f2, [2] = $f0, [3] = %0, [4] = f1.m0
+    let %4: unit = apply f1.m1($f1)
+    let %5: int32 = load int32 field(f1.m0, 0 * @32)
+    let %6: int32 = add(%5, 1)
+    let _ = store int32 field(f1.m0, 0 * @32) <- %6
+    let %8: int32 = load int32 field(f1.m0, 0 * @32)
+    let %9: unit = call f0($f0, %8, $f2)
+    let %10: int32 = load int32 field(f1.m0, 0 * @32)
+    return %10
+  }
+}
+.fn swap1_0 #f0 : fn(array[int32], int32, int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f0, $f1 * @32)
+    let %1: int32 = load int32 offset($f0, $f2 * @32)
+    let _ = store int32 offset($f0, $f1 * @32) <- %1
+    let _ = store int32 offset($f0, $f2 * @32) <- %0
+    return ()
+  }
+}
+.fn input79_10 #f10 : closure(int32) -> unit
+.freevars (int32, array[int32])
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = sub(^1, 1)
     let %1: bool = le($f0, %0)
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset($f1, $f0 * @32)
-    let %3: unit = ext_call minimbt_print_int(%2)
-    let %4: unit = ext_call minimbt_print_endline()
-    let %5: int32 = add($f0, 1)
-    let %6: unit = call f4(%5, $f1, $f2)
-    jump b3(%6)
+    let %2: int32 = ext_call minimbt_read_int()
+    let _ = store int32 offset(^2, $f0 * @32) <- %2
+    let %4: int32 = add($f0, 1)
+    let %5: unit = apply self(%4)
+    jump b3(%5)
   }
   .bb #b2 () {
     jump b3(())
@@ -117,15 +104,7 @@
     return $b3.0
   }
 }
-.fn T$start_14 #f14 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn l26_8 #f8 : closure(int32) -> unit
+.fn l26_6 #f6 : closure(int32) -> unit
 .freevars (int32, array[int32], int32, array[int32])
 .entry b0 {
   .bb #b0 () {
@@ -159,6 +138,29 @@
   }
   .bb #b6 (unit) {
     return $b6.0
+  }
+}
+.fn main75l0_3 #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
+    let _ = alloc <m1: closure(int32) -> unit heap(3)> <- [0] = f10, [1] = %0, [2] = f3.m0
+    let %3: unit = apply f3.m1(0)
+    let %4: int32 = sub(%0, 1)
+    let %5: unit = call f2(f3.m0, 0, %4)
+    let _ = alloc <m2: closure(int32) -> unit heap(3)> <- [0] = f12, [1] = %0, [2] = f3.m0
+    let %7: unit = apply f3.m2(0)
+    return %7
+  }
+}
+.fn T$start_14 #f14 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
   }
 }
 .thunk ::0 start

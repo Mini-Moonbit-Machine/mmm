@@ -12,7 +12,7 @@ let rec read_ch_until_newline_or_eof1l0: Int = () {
     }
   }
 }
-let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
+let rec bf5: Unit = (len6.7: Int, prog8.9: Array(Int)) {
   let _10: Int = Int(1)
   let _11: Int = Int(0)
   let ptr.12: Array(Int) = ExtApply(minimbt_create_array, [_10, _11, ])
@@ -186,24 +186,24 @@ let rec bf5l1: Unit = (len6.7: Int, prog8.9: Array(Int)) {
   let _135: Var({val: Some(Int)}) = Apply(aux40, [_133, ])
   Unit
 }
-let rec read_prog140l3: Var({val: Some(Unit)}) = (i141.142: Var({val: Some(Int)}), prog.139: Array(Int)) {
-  let x.143: Int = Apply(read_ch_until_newline_or_eof1l0, [])
-  let _144: Int = Int(-1)
-  if (x.143 == _144) then {
-    Apply(bf5l1, [i141.142, prog.139, ])
-  } else {
-    let _146: Unit = Put prog.139[i141.142] = x.143
-    let _147: Int = Int(1)
-    let _148: Int = Add(i141.142, _147)
-    Apply(read_prog140l3, [_148, prog.139, ])
-  }
-}
-let rec main136l2: Var({val: Some(Unit)}) = () {
+let rec main136l1: Var({val: Some(Unit)}) = () {
   let len.137: Int = Int(1024)
   let _138: Int = Int(0)
   let prog.139: Array(Int) = ExtApply(minimbt_create_array, [len.137, _138, ])
+  let rec read_prog140: Var({val: Some(Unit)}) = (i141.142: Var({val: Some(Int)})) {
+    let x.143: Int = Apply(read_ch_until_newline_or_eof1l0, [])
+    let _144: Int = Int(-1)
+    if (x.143 == _144) then {
+      Apply(bf5, [i141.142, prog.139, ])
+    } else {
+      let _146: Unit = Put prog.139[i141.142] = x.143
+      let _147: Int = Int(1)
+      let _148: Int = Add(i141.142, _147)
+      Apply(read_prog140, [_148, ])
+    }
+  }
   let _149: Int = Int(0)
-  let _151: Var({val: Some(Unit)}) = Apply(read_prog140l3, [_149, prog.139, ])
+  let _151: Var({val: Some(Unit)}) = Apply(read_prog140, [_149, ])
   Unit
 }
-Apply(main136l2, [])
+Apply(main136l1, [])

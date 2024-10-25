@@ -49,39 +49,39 @@ let rec matmul1: Unit = (l2.3: Int, m4.5: Int, n6.7: Int, a8.9: Array(Array(Doub
   let _52: Int = Sub(l2.3, _51)
   Apply(loop114, [_52, ])
 }
-let rec init_arr63l2: Unit = (i64.65: Int, mat.62: Array(Var({val: Some(Array(Double))})), n60.61: Int) {
-  let _66: Int = Int(0)
-  if (_66 <= i64.65) then {
-    let _67: Double = Double(0)
-    let _68: Array(Double) = ExtApply(minimbt_create_float_array, [n60.61, _67, ])
-    let _70: Unit = Put mat.62[i64.65] = _68
-    let _71: Int = Int(1)
-    let _72: Int = Sub(i64.65, _71)
-    Apply(init_arr63l2, [_72, mat.62, n60.61, ])
-  } else {
-    Unit
-  }
-}
-let rec gen_arr57l1: Array(Array(Double)) = (m58.59: Int, n60.61: Int, dummy.56: Array(Double)) {
-  let mat.62: Array(Var({val: Some(Array(Double))})) = ExtApply(minimbt_create_ptr_array, [m58.59, dummy.56, ])
-  let _73: Int = Int(1)
-  let _74: Int = Sub(m58.59, _73)
-  let _76: Unit = Apply(init_arr63l2, [_74, mat.62, n60.61, ])
-  Var(mat.62)
-}
 let rec main53l0: Var({val: Some(Unit)}) = () {
   let _54: Int = Int(0)
   let _55: Double = Double(0)
   let dummy.56: Array(Double) = ExtApply(minimbt_create_float_array, [_54, _55, ])
+  let rec gen_arr57: Array(Array(Double)) = (m58.59: Int, n60.61: Int) {
+    let mat.62: Array(Var({val: Some(Array(Double))})) = ExtApply(minimbt_create_ptr_array, [m58.59, dummy.56, ])
+    let rec init_arr63: Unit = (i64.65: Int) {
+      let _66: Int = Int(0)
+      if (_66 <= i64.65) then {
+        let _67: Double = Double(0)
+        let _68: Array(Double) = ExtApply(minimbt_create_float_array, [n60.61, _67, ])
+        let _70: Unit = Put mat.62[i64.65] = _68
+        let _71: Int = Int(1)
+        let _72: Int = Sub(i64.65, _71)
+        Apply(init_arr63, [_72, ])
+      } else {
+        Unit
+      }
+    }
+    let _73: Int = Int(1)
+    let _74: Int = Sub(m58.59, _73)
+    let _76: Unit = Apply(init_arr63, [_74, ])
+    Var(mat.62)
+  }
   let _77: Int = Int(2)
   let _78: Int = Int(3)
-  let a.79: Array(Array(Double)) = Apply(gen_arr57l1, [_77, _78, dummy.56, ])
+  let a.79: Array(Array(Double)) = Apply(gen_arr57, [_77, _78, ])
   let _80: Int = Int(3)
   let _81: Int = Int(2)
-  let b.82: Array(Array(Double)) = Apply(gen_arr57l1, [_80, _81, dummy.56, ])
+  let b.82: Array(Array(Double)) = Apply(gen_arr57, [_80, _81, ])
   let _83: Int = Int(2)
   let _84: Int = Int(2)
-  let c.85: Array(Array(Double)) = Apply(gen_arr57l1, [_83, _84, dummy.56, ])
+  let c.85: Array(Array(Double)) = Apply(gen_arr57, [_83, _84, ])
   let _86: Int = Int(0)
   let _87: Array(Double) = Get a.79[_86]
   let _88: Int = Int(0)

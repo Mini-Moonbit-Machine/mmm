@@ -30,100 +30,15 @@ memseti32:
 
   .p2align 2
   .text
-  .globl mem_fib15l1_3
-  .type mem_fib15l1_3, @function
+  .globl T$start_12
+  .type T$start_12, @function
 # leaf false
-mem_fib15l1_3:
-.mem_fib15l1_3_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  li a0, 1
-  bge a0, s1, .mem_fib15l1_3_1
-
-.mem_fib15l1_3_2:
-  addi a0, s1, -1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  mv s2, a0
-  addi a0, s1, -2
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  add a0, s2, a0
-
-.mem_fib15l1_3_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-.mem_fib15l1_3_1:
-  mv a0, s1
-  j .mem_fib15l1_3_3
-
-  .p2align 2
-  .text
-  .globl fib27l2_4
-  .type fib27l2_4, @function
-# leaf false
-fib27l2_4:
-.fib27l2_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  mv a0, a1
-  addi a1, s0, 1
-  addi a0, s11, -8
-  andi a0, a0, -8
-  mv s11, a0
-  la a2, mem_fib15l1c0_11
-  sd a2, 0(a0)
-  lw a2, unmem_magic.1
-  call mem2l0_2
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, s0
-  jalr a1
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl mem_fib15l1c0_11
-  .type mem_fib15l1c0_11, @function
-# leaf false
-mem_fib15l1c0_11:
-.mem_fib15l1c0_11_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a2, s10
-  call mem_fib15l1_3
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
+T$start_12:
+.T$start_12_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   lw a0, unmem_magic.1
-  call main33l3_5
+  call main33l0_5
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -140,21 +55,81 @@ T$unmem_magic.10:
 
   .p2align 2
   .text
-  .globl main33l3_5
-  .type main33l3_5, @function
+  .globl main33l0_5
+  .type main33l0_5, @function
 # leaf false
-main33l3_5:
-.main33l3_5_0:
+main33l0_5:
+.main33l0_5_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   call minimbt_read_int
-  lw a1, unmem_magic.1
-  call fib27l2_4
+  call fib27_4
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
   mv a0, zero
   ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl mem2_2
+  .type mem2_2, @function
+# leaf false
+mem2_2:
+.mem2_2_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, a0
+  mv a0, a1
+  lw a2, unmem_magic.1
+  slliw a1, a0, 2
+  sub a1, s11, a1
+  andi s1, a1, -8
+  mv s11, s1
+  mv a1, a0
+  mv a0, s1
+  call memseti32
+  addi a0, s11, -24
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, memed8_7
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s0, 16(a0)
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl fib27_4
+  .type fib27_4, @function
+# leaf false
+fib27_4:
+.fib27_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, a0
+  addi a1, s0, 1
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a2, mem_fib15_3
+  sd a2, 0(a0)
+  call mem2_2
+  mv s10, a0
+  ld a1, 0(a0)
+  mv a0, s0
+  jalr a1
+  ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -175,7 +150,7 @@ minimbt_main:
   call T$unmem_magic.10
   la t5, unmem_magic.1
   sw a0, 0(t5)
-  call T$start_14
+  call T$start_12
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -229,38 +204,44 @@ memed8_7:
 
   .p2align 2
   .text
-  .globl mem2l0_2
-  .type mem2l0_2, @function
+  .globl mem_fib15_3
+  .type mem_fib15_3, @function
 # leaf false
-mem2l0_2:
-.mem2l0_2_0:
+mem_fib15_3:
+.mem_fib15_3_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
+  sd s2, 24(sp)
   mv s0, a0
-  mv a0, a1
-  mv a1, a2
-  lw a2, unmem_magic.1
-  slliw a1, a0, 2
-  sub a1, s11, a1
-  andi s1, a1, -8
-  mv s11, s1
-  mv a1, a0
-  mv a0, s1
-  call memseti32
-  addi a0, s11, -24
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, memed8_7
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s0, 16(a0)
+  mv s1, a1
+  li a0, 1
+  bge a0, s1, .mem_fib15_3_1
+
+.mem_fib15_3_2:
+  addi a0, s1, -1
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  mv s2, a0
+  addi a0, s1, -2
+  mv s10, s0
+  ld a1, 0(s0)
+  jalr a1
+  add a0, s2, a0
+
+.mem_fib15_3_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
+
+.mem_fib15_3_1:
+  mv a0, s1
+  j .mem_fib15_3_3
 
 __end_text:
   .p2align 2

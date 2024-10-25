@@ -15,47 +15,15 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl make_adder1l0_1
-  .type make_adder1l0_1, @function
-# leaf true
-make_adder1l0_1:
-.make_adder1l0_1_0:
-  addi a1, s11, -16
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, adder4l1c0_5
-  sd a2, 0(a1)
-  sd a0, 8(a1)
-  mv a0, a1
-  ret
-
-  .p2align 2
-  .text
-  .globl adder4l1c0_5
-  .type adder4l1c0_5, @function
+  .globl main7l1_1
+  .type main7l1_1, @function
 # leaf false
-adder4l1c0_5:
-.adder4l1c0_5_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, s10
-  lw a1, 8(a1)
-  call adder4l1_0
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main7l1_2
-  .type main7l1_2, @function
-# leaf false
-main7l1_2:
-.main7l1_2_0:
+main7l1_1:
+.main7l1_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 3
-  call make_adder1l0_1
+  call make_adder1l0_0
   mv s10, a0
   ld a1, 0(a0)
   li a0, 7
@@ -67,16 +35,44 @@ main7l1_2:
 
   .p2align 2
   .text
-  .globl T$start_8
-  .type T$start_8, @function
+  .globl adder4_3
+  .type adder4_3, @function
+# leaf true
+adder4_3:
+.adder4_3_0:
+  mv a1, s10
+  lw a1, 8(a1)
+  add a0, a1, a0
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_6
+  .type T$start_6, @function
 # leaf false
-T$start_8:
-.T$start_8_0:
+T$start_6:
+.T$start_6_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main7l1_2
+  call main7l1_1
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl make_adder1l0_0
+  .type make_adder1l0_0, @function
+# leaf true
+make_adder1l0_0:
+.make_adder1l0_0_0:
+  addi a1, s11, -16
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, adder4_3
+  sd a2, 0(a1)
+  sd a0, 8(a1)
+  mv a0, a1
   ret
 
   .p2align 2
@@ -93,22 +89,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_8
+  call T$start_6
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl adder4l1_0
-  .type adder4l1_0, @function
-# leaf true
-adder4l1_0:
-.adder4l1_0_0:
-  add a0, a1, a0
   ret
 
 __end_text:

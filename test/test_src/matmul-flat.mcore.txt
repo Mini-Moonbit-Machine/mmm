@@ -45,6 +45,56 @@ memsetf64:
 
   .p2align 2
   .text
+  .globl init_arr89_10
+  .type init_arr89_10, @function
+# leaf false
+init_arr89_10:
+.init_arr89_10_4:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv a3, s10
+  mv s0, a1
+  mv a1, a2
+  mv s1, a0
+  mv s2, a1
+
+.init_arr89_10_0:
+  blt s1, zero, .init_arr89_10_2
+
+.init_arr89_10_1:
+  slliw a0, s0, 3
+  sub a0, s11, a0
+  andi s3, a0, -8
+  mv s11, s3
+  fmv.d.x fa0, zero
+  mv a1, s0
+  mv a0, s3
+  call memsetf64
+  slliw a0, s1, 3
+  add a0, s2, a0
+  sd s3, 0(a0)
+  addi a0, s1, -1
+  mv s1, a0
+  j .init_arr89_10_0
+
+.init_arr89_10_2:
+  mv a0, zero
+
+.init_arr89_10_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 2
+  .text
   .globl loop228_1
   .type loop228_1, @function
 # leaf false
@@ -92,39 +142,6 @@ loop228_1:
   ld s4, 40(sp)
   ld s5, 48(sp)
   addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl make_arr103l2_5
-  .type make_arr103l2_5, @function
-# leaf false
-make_arr103l2_5:
-.make_arr103l2_5_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  slliw a0, s0, 3
-  sub a0, s11, a0
-  andi s2, a0, -8
-  mv s11, s2
-  mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s0, -1
-  mv a1, s1
-  mv a2, s2
-  call init_arr89l1_4
-  mv a0, s2
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -187,7 +204,7 @@ T$start_14:
 .T$start_14_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main85l0_6
+  call main85l0_4
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -210,137 +227,106 @@ mul68_3:
 
   .p2align 2
   .text
-  .globl init_arr89l1_4
-  .type init_arr89l1_4, @function
+  .globl main85l0_4
+  .type main85l0_4, @function
 # leaf false
-init_arr89l1_4:
-.init_arr89l1_4_4:
+main85l0_4:
+.main85l0_4_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s0, a1
-  mv a1, a2
-  mv s2, a0
-  mv s1, a1
-
-.init_arr89l1_4_0:
-  blt s2, zero, .init_arr89l1_4_2
-
-.init_arr89l1_4_1:
-  slliw a0, s0, 3
-  sub a0, s11, a0
-  andi s3, a0, -8
-  mv s11, s3
-  fmv.d.x fa0, zero
-  mv a1, s0
-  mv a0, s3
-  call memsetf64
-  slliw a0, s2, 3
-  add a0, s1, a0
-  sd s3, 0(a0)
-  addi a0, s2, -1
-  mv s2, a0
-  j .init_arr89l1_4_0
-
-.init_arr89l1_4_2:
-  mv a0, zero
-
-.init_arr89l1_4_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  addi sp, sp, 48
-  ret
-
-  .p2align 2
-  .text
-  .globl main85l0_6
-  .type main85l0_6, @function
-# leaf false
-main85l0_6:
-.main85l0_6_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
   addi a0, s11, 0
   andi s0, a0, -8
   mv s11, s0
   fmv.d.x fa0, zero
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, init_arr89_10
+  sd a1, 0(a0)
+  addi a1, s11, -16
+  andi s1, a1, -8
+  mv s11, s1
+  la a1, make_arr103_12
+  sd a1, 0(s1)
+  sd a0, 8(s1)
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 2
   li a1, 3
   mv a2, s0
-  call make_arr103l2_5
-  mv s1, a0
+  jalr a3
+  mv s2, a0
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 3
   li a1, 2
   mv a2, s0
-  call make_arr103l2_5
-  mv s2, a0
+  jalr a3
+  mv s3, a0
+  mv s10, s1
+  ld a3, 0(s1)
   li a0, 2
   mv a1, a0
   mv a2, s0
-  call make_arr103l2_5
+  jalr a3
   mv s0, a0
-  ld a0, 0(s1)
+  ld a0, 0(s2)
   li a1, 4607182418800017408
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 0(s1)
+  ld a0, 0(s2)
   li a1, 4611686018427387904
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 0(s1)
+  ld a0, 0(s2)
   li a1, 4613937818241073152
   fmv.d.x fa0, a1
   fsd fa0, 16(a0)
-  ld a0, 8(s1)
+  ld a0, 8(s2)
   li a1, 4616189618054758400
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 8(s1)
+  ld a0, 8(s2)
   li a1, 4617315517961601024
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 8(s1)
+  ld a0, 8(s2)
   li a1, 4618441417868443648
   fmv.d.x fa0, a1
   fsd fa0, 16(a0)
-  ld a0, 0(s2)
+  ld a0, 0(s3)
   li a1, 4619567317775286272
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 0(s2)
+  ld a0, 0(s3)
   li a1, 4620693217682128896
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 8(s2)
+  ld a0, 8(s3)
   li a1, 4621256167635550208
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 8(s2)
+  ld a0, 8(s3)
   li a1, 4621819117588971520
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 16(s2)
+  ld a0, 16(s3)
   li a1, 4622382067542392832
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 16(s2)
+  ld a0, 16(s3)
   li a1, 4622945017495814144
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
   li a0, 2
   li a1, 3
   mv a2, a0
-  mv a3, s1
-  mv a4, s2
+  mv a3, s2
+  mv a4, s3
   mv a5, s0
   call mul68_3
   ld a0, 0(s0)
@@ -367,7 +353,47 @@ main85l0_6:
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
+
+  .p2align 2
+  .text
+  .globl make_arr103_12
+  .type make_arr103_12, @function
+# leaf false
+make_arr103_12:
+.make_arr103_12_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv a3, s10
+  mv s0, a0
+  mv s1, a1
+  ld s2, 8(a3)
+  slliw a0, s0, 3
+  sub a0, s11, a0
+  andi s3, a0, -8
+  mv s11, s3
+  mv a1, s0
+  mv a0, s3
+  call memseti64
+  addi a0, s0, -1
+  mv s10, s2
+  ld a3, 0(s2)
+  mv a1, s1
+  mv a2, s3
+  jalr a3
+  mv a0, s3
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
   ret
 
   .p2align 2
