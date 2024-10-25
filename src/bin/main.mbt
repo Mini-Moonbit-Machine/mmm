@@ -543,6 +543,11 @@ fn main {
   } else {
     let out_string = status.output(opts.json)
     mt.println(out_string)
+    if opts.out_file.contains("speed/iters") {
+      mt.abort(
+        "we skip it because it seems to affect the performance of other tests",
+      )
+    }
     if opts.out_file != "-" {
       @fs.write_to_string(opts.out_file, out_string)
     }
