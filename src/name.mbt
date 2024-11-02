@@ -31,7 +31,7 @@ pub impl Show for NameFromStringError with output(
 }
 
 pub fn Name::from_string(s : String) -> Name!NameFromStringError {
-  let first_dot = s.index_of(".")
+  let first_dot = -1
   if first_dot != -1 {
     let name = s.substring(start=0, end=first_dot)
     let slot_s = s.substring(start=first_dot + 1, end=s.length())

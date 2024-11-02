@@ -15,66 +15,47 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_6
-  .type T$start_6, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-T$start_6:
-.T$start_6_0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main39l1_1
+  call main39l0_0
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl g24_3
-  .type g24_3, @function
-# leaf true
-g24_3:
-.g24_3_5:
-  mv a1, s10
-  lw a2, 8(a1)
-  lw a3, 16(a1)
-  lw a4, 24(a1)
-  lw a5, 32(a1)
-  lw a6, 40(a1)
-  lw a7, 48(a1)
-  lw t0, 56(a1)
-  lw t1, 64(a1)
-  lw t2, 72(a1)
-  lw a1, 80(a1)
-
-.g24_3_0:
-  add t3, a2, a3
-  add t3, t3, a4
-  add t3, t3, a5
-  add t3, t3, a6
-  add t3, t3, a7
-  add t3, t3, t0
-  add t3, t3, t1
-  add t3, t3, t2
-  add t3, t3, a1
-  blt zero, a0, .g24_3_2
-
-.g24_3_1:
-  neg a0, a0
-  j .g24_3_0
-
-.g24_3_2:
-  mv a0, t3
-
-.g24_3_3:
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start_4
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
   .text
-  .globl main39l1_1
-  .type main39l1_1, @function
+  .globl main39l0_0
+  .type main39l0_0, @function
 # leaf false
-main39l1_1:
-.main39l1_1_0:
+main39l0_0:
+.main39l0_0_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -40
@@ -99,44 +80,6 @@ main39l1_1:
   sw a1, 32(a0)
   li a1, 10
   sw a1, 36(a0)
-  call h1l0_0
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s11, 16(sp)
-  la s11, large_heap_end
-  mv s0, sp
-  la sp, large_stack_end
-  call T$start_6
-  mv sp, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s11, 16(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl h1l0_0
-  .type h1l0_0, @function
-# leaf false
-h1l0_0:
-.h1l0_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
   lw a1, 0(a0)
   lw a2, 4(a0)
   lw a3, 8(a0)
@@ -149,7 +92,7 @@ h1l0_0:
   lw a0, 36(a0)
   addi t2, s11, -88
   andi s11, t2, -8
-  la t3, g24_3
+  la t3, g24.63_2
   sd t3, 0(t2)
   sd a1, 8(t2)
   sd a2, 16(t2)
@@ -165,8 +108,51 @@ h1l0_0:
   ld a1, 0(t2)
   li a0, 1
   jalr a1
+  call minimbt_print_int
+  mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl g24.63_2
+  .type g24.63_2, @function
+# leaf true
+g24.63_2:
+.g24.63_2_5:
+  mv t0, s10
+  lw t2, 8(t0)
+  lw a6, 16(t0)
+  lw a2, 24(t0)
+  lw a7, 32(t0)
+  lw a4, 40(t0)
+  lw a5, 48(t0)
+  lw t1, 56(t0)
+  lw a3, 64(t0)
+  lw a1, 72(t0)
+  lw t0, 80(t0)
+
+.g24.63_2_0:
+  add t3, t2, a6
+  add t3, t3, a2
+  add t3, t3, a7
+  add t3, t3, a4
+  add t3, t3, a5
+  add t3, t3, t1
+  add t3, t3, a3
+  add t3, t3, a1
+  add t3, t3, t0
+  blt zero, a0, .g24.63_2_2
+
+.g24.63_2_1:
+  neg a0, a0
+  j .g24.63_2_0
+
+.g24.63_2_2:
+  mv a0, t3
+
+.g24.63_2_3:
   ret
 
 __end_text:

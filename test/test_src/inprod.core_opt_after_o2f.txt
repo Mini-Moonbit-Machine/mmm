@@ -27,25 +27,35 @@
     return %2
   }
 }
-.fn T$start_10 #f10 : fn() -> unit
+.fn T$start_8 #f8 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f4()
+    let %0: unit = call f3()
     return %0
   }
 }
-.fn main43l4_4 #f4 : fn() -> unit
+.fn main43l3_3 #f3 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: (double, double, double) heap(3)> <- [0] = 1, [1] = 2, [2] = 3
     let _ = alloc <m1: (double, double, double) heap(3)> <- [0] = 4, [1] = 5, [2] = 6
-    let %2: double = call f3(f4.m0, f4.m1)
-    let %3: double = mul(1000000, %2)
-    let %4: int32 = conv.d2i.rtz(%3)
-    let %5: unit = ext_call minimbt_print_int(%4)
-    return %5
+    let %2: double = call f0(f3.m0)
+    let %3: double = call f0(f3.m1)
+    let %4: double = mul(%2, %3)
+    let %5: double = call f1(f3.m0)
+    let %6: double = call f1(f3.m1)
+    let %7: double = mul(%5, %6)
+    let %8: double = add(%4, %7)
+    let %9: double = call f2(f3.m0)
+    let %10: double = call f2(f3.m1)
+    let %11: double = mul(%9, %10)
+    let %12: double = add(%8, %11)
+    let %13: double = mul(1000000, %12)
+    let %14: int32 = conv.d2i.rtz(%13)
+    let %15: unit = ext_call minimbt_print_int(%14)
+    return %15
   }
 }
 .fn gety10l1_1 #f1 : fn((double, double, double)) -> double
@@ -56,24 +66,6 @@
     let %1: double = load double field($f0, 1 * @(@64, @(@64, @(@64, @32))))
     let %2: double = load double field($f0, 2 * @(@64, @(@64, @(@64, @32))))
     return %1
-  }
-}
-.fn inprod28l3_3 #f3 : fn((double, double, double), (double, double, double)) -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = call f0($f0)
-    let %1: double = call f0($f1)
-    let %2: double = mul(%0, %1)
-    let %3: double = call f1($f0)
-    let %4: double = call f1($f1)
-    let %5: double = mul(%3, %4)
-    let %6: double = add(%2, %5)
-    let %7: double = call f2($f0)
-    let %8: double = call f2($f1)
-    let %9: double = mul(%7, %8)
-    let %10: double = add(%6, %9)
-    return %10
   }
 }
 .thunk ::0 start

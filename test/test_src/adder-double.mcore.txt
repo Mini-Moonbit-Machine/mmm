@@ -15,66 +15,27 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl make_adder1l0_1
-  .type make_adder1l0_1, @function
+  .globl adder4.14_2
+  .type adder4.14_2, @function
 # leaf true
-make_adder1l0_1:
-.make_adder1l0_1_0:
-  addi a0, s11, -16
-  andi s11, a0, -8
-  la a1, adder4l1c0_5
-  sd a1, 0(a0)
-  fsd fa0, 8(a0)
-  ret
-
-  .p2align 2
-  .text
-  .globl adder4l1c0_5
-  .type adder4l1c0_5, @function
-# leaf false
-adder4l1c0_5:
-.adder4l1c0_5_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
+adder4.14_2:
+.adder4.14_2_0:
   mv a1, s10
   fld fa0, 8(a1)
-  call adder4l1_0
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  fcvt.d.w fa1, a0
+  fadd.d fa0, fa0, fa1
   ret
 
   .p2align 2
   .text
-  .globl T$start_8
-  .type T$start_8, @function
+  .globl T$start_4
+  .type T$start_4, @function
 # leaf false
-T$start_8:
-.T$start_8_0:
+T$start_4:
+.T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main8l1_2
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main8l1_2
-  .type main8l1_2, @function
-# leaf false
-main8l1_2:
-.main8l1_2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 4612001270401303839
-  fmv.d.x fa0, a0
-  call make_adder1l0_1
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 1
-  jalr a1
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
+  call main8_0
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -93,7 +54,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_8
+  call T$start_4
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -103,13 +64,28 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl adder4l1_0
-  .type adder4l1_0, @function
-# leaf true
-adder4l1_0:
-.adder4l1_0_0:
-  fcvt.d.w fa1, a0
-  fadd.d fa0, fa0, fa1
+  .globl main8_0
+  .type main8_0, @function
+# leaf false
+main8_0:
+.main8_0_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -16
+  andi s11, a0, -8
+  la a1, adder4.14_2
+  sd a1, 0(a0)
+  li a1, 4612001270401303839
+  fmv.d.x fa0, a1
+  fsd fa0, 8(a0)
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 1
+  jalr a1
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

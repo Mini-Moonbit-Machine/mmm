@@ -1,14 +1,14 @@
-let rec next9l2: Bool = (i10.11: Var({val: Some(Int)}), arr2.3: Array(Int), len4.5: Int, yield7.8: Var({val: Some(Fun([Int], Bool))})) {
-  let _12: Int = Int(1)
-  let _13: Int = Sub(len4.5, _12)
-  if (i10.11 <= _13) then {
-    let _14: Int = Get arr2.3[i10.11]
-    let _15: Bool = Apply(yield7.8, [_14, ])
-    let _18: Bool = Bool(true)
-    if (_15 == _18) then {
-      let _16: Int = Int(1)
-      let _17: Int = Add(i10.11, _16)
-      Apply(next9l2, [_17, arr2.3, len4.5, yield7.8, ])
+let rec next9.64l2: Bool = (i10.65: Var({val: Some(Int)}), _57: Int, arr.36: Array(Int), yield7.63: Var({val: Some(Fun([Int], Bool))})) {
+  let _66: Int = Int(1)
+  let _67: Int = Sub(_57, _66)
+  if (i10.65 <= _67) then {
+    let _68: Int = Get arr.36[i10.65]
+    let _69: Bool = Apply(yield7.63, [_68, ])
+    let _70: Bool = Bool(true)
+    if (_69 == _70) then {
+      let _71: Int = Int(1)
+      let _72: Int = Add(i10.65, _71)
+      Apply(next9.64l2, [_72, _57, arr.36, yield7.63, ])
     } else {
       Bool(false)
     }
@@ -16,39 +16,30 @@ let rec next9l2: Bool = (i10.11: Var({val: Some(Int)}), arr2.3: Array(Int), len4
     Bool(false)
   }
 }
-let rec do6l1: Bool = (yield7.8: Var({val: Some(Fun([Int], Bool))}), arr2.3: Array(Int), len4.5: Int) {
-  let _19: Int = Int(0)
-  Apply(next9l2, [_19, arr2.3, len4.5, yield7.8, ])
+let rec do6.62l1: Bool = (yield7.63: Var({val: Some(Fun([Int], Bool))}), _57: Int, arr.36: Array(Int)) {
+  let _73: Int = Int(0)
+  Apply(next9.64l2, [_73, _57, arr.36, yield7.63, ])
 }
-let rec iter1l0: Fun([Fun([Int], Bool)], Bool) = (arr2.3: Array(Int), len4.5: Int) {
-  let rec do6l1c0: Bool = (yield7.8: Var({val: Some(Fun([Int], Bool))})) {
-    Apply(do6l1, [yield7.8, arr2.3, len4.5, ])
-  }
-  Var(do6l1c0)
+let rec print59l1: Unit = (x60.61: Var({val: Some(Int)})) {
+  ExtApply(minimbt_print_int, [x60.61, ])
 }
-let rec yield25l2: Bool = (x26.27: Var({val: Some(Int)}), f23.24: Fun([Int], Unit)) {
-  let _29: Unit = Apply(f23.24, [x26.27, ])
+let rec yield25.74l2: Bool = (x26.75: Var({val: Some(Int)})) {
+  let _76: Unit = Apply(print59l1, [x26.75, ])
   Bool(true)
 }
-let rec do30l3: Var({val: Some(Unit)}) = (f23.24: Fun([Int], Unit), iter21.22: Fun([Fun([Int], Bool)], Bool)) {
-  let rec yield25l2c0: Bool = (x26.27: Var({val: Some(Int)})) {
-    Apply(yield25l2, [x26.27, f23.24, ])
+let rec do30.77l3: Var({val: Some(Unit)}) = (f.58: Fun([Fun([Int], Bool)], Bool)) {
+  let rec yield25.74l2c0: Bool = (x26.75: Var({val: Some(Int)})) {
+    Apply(yield25.74l2, [x26.75, ])
   }
-  let _31: Bool = Apply(iter21.22, [yield25l2c0, ])
-  let _32: Bool = Bool(true)
-  if (_31 == _32) then {
-    Apply(do30l3, [f23.24, iter21.22, ])
+  let _78: Bool = Apply(f.58, [yield25.74l2c0, ])
+  let _79: Bool = Bool(true)
+  if (_78 == _79) then {
+    Apply(do30.77l3, [f.58, ])
   } else {
     Unit
   }
 }
-let rec each20l1: Unit = (iter21.22: Fun([Fun([Int], Bool)], Bool), f23.24: Fun([Int], Unit)) {
-  Apply(do30l3, [f23.24, iter21.22, ])
-}
-let rec print59l3: Unit = (x60.61: Var({val: Some(Int)})) {
-  ExtApply(minimbt_print_int, [x60.61, ])
-}
-let rec main33l2: Var({val: Some(Unit)}) = () {
+let rec main33l0: Var({val: Some(Unit)}) = () {
   let _34: Int = Int(5)
   let _35: Int = Int(1)
   let arr.36: Array(Int) = ExtApply(minimbt_create_array, [_34, _35, ])
@@ -68,10 +59,10 @@ let rec main33l2: Var({val: Some(Unit)}) = () {
   let _54: Int = Int(5)
   let _56: Unit = Put arr.36[_53] = _54
   let _57: Int = Int(5)
-  let f.58: Fun([Fun([Int], Bool)], Bool) = Apply(iter1l0, [arr.36, _57, ])
-  let rec print59l3c0: Unit = (x60.61: Var({val: Some(Int)})) {
-    Apply(print59l3, [x60.61, ])
+  let rec do6.62l1c0: Bool = (yield7.63: Var({val: Some(Fun([Int], Bool))})) {
+    Apply(do6.62l1, [yield7.63, _57, arr.36, ])
   }
-  Apply(each20l1, [f.58, print59l3c0, ])
+  let f.58: Fun([Fun([Int], Bool)], Bool) = Var(do6.62l1c0)
+  Apply(do30.77l3, [f.58, ])
 }
-Apply(main33l2, [])
+Apply(main33l0, [])

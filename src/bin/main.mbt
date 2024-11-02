@@ -175,6 +175,10 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let knf = self.knf.unwrap()
+      let knf_env = @knf.KnfEnv::new(@typer.externals(), tracer)
+      knf_env.init_counter_from_existing(knf)
+      let inline = @knf.InlineEnv::new(knf_env, tracer)
+      let knf = inline.go(knf, 0)
       let lamlift = @knf.LambdaLiftEnv::new(tracer)
       let knf = lamlift.go(knf)
       self.opt_knf = Some(knf)

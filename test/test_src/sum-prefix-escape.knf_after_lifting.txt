@@ -1,33 +1,30 @@
-let rec sum_nested8l1: Unit = (acc9.10: Int, x11.12: Int, res.7: Array(Int), arr2.3: Array(Int), len4.5: Int) {
-  let _13: Int = Int(1)
-  let _14: Int = Sub(len4.5, _13)
-  if (x11.12 <= _14) then {
-    let _15: Int = Get arr2.3[x11.12]
-    let s.16: Int = Add(acc9.10, _15)
-    let _18: Unit = Put res.7[x11.12] = s.16
-    let _19: Int = Int(1)
-    let _20: Int = Add(x11.12, _19)
-    Apply(sum_nested8l1, [s.16, _20, res.7, arr2.3, len4.5, ])
+let rec sum_nested8.35l1: Unit = (acc9.36: Int, x11.37: Int, _29: Int, arr.28: Array(Int), res.34: Array(Int)) {
+  let _38: Int = Int(1)
+  let _39: Int = Sub(_29, _38)
+  if (x11.37 <= _39) then {
+    let _40: Int = Get arr.28[x11.37]
+    let s.41: Int = Add(acc9.36, _40)
+    let _42: Unit = Put res.34[x11.37] = s.41
+    let _43: Int = Int(1)
+    let _44: Int = Add(x11.37, _43)
+    Apply(sum_nested8.35l1, [s.41, _44, _29, arr.28, res.34, ])
   } else {
     Unit
   }
 }
-let rec sum_prefix1l0: Array(Int) = (arr2.3: Array(Int), len4.5: Int) {
-  let _6: Int = Int(0)
-  let res.7: Array(Int) = ExtApply(minimbt_create_array, [len4.5, _6, ])
-  let _21: Int = Int(0)
-  let _22: Int = Int(0)
-  let _24: Unit = Apply(sum_nested8l1, [_21, _22, res.7, arr2.3, len4.5, ])
-  Var(res.7)
-}
-let rec main25l1: Var({val: Some(Unit)}) = () {
+let rec main25l0: Var({val: Some(Unit)}) = () {
   let _26: Int = Int(10)
   let _27: Int = Int(4)
   let arr.28: Array(Int) = ExtApply(minimbt_create_array, [_26, _27, ])
   let _29: Int = Int(10)
-  let _30: Array(Int) = Apply(sum_prefix1l0, [arr.28, _29, ])
+  let _33: Int = Int(0)
+  let res.34: Array(Int) = ExtApply(minimbt_create_array, [_29, _33, ])
+  let _45: Int = Int(0)
+  let _46: Int = Int(0)
+  let _47: Unit = Apply(sum_nested8.35l1, [_45, _46, _29, arr.28, res.34, ])
+  let _30: Array(Int) = Var(res.34)
   let _31: Int = Int(0)
   let _32: Int = Get _30[_31]
   ExtApply(minimbt_print_int, [_32, ])
 }
-Apply(main25l1, [])
+Apply(main25l0, [])

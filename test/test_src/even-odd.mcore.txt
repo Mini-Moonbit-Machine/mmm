@@ -15,16 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$t.10
-  .type T$t.10, @function
-# leaf true
-T$t.10:
-.T$t.10_0:
-  li a0, 123
-  ret
-
-  .p2align 2
-  .text
   .globl main21l1_6
   .type main21l1_6, @function
 # leaf false
@@ -40,6 +30,16 @@ main21l1_6:
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$t.1_0
+  .type T$t.1_0, @function
+# leaf true
+T$t.1_0:
+.T$t.1_0_0:
+  li a0, 123
   ret
 
   .p2align 2
@@ -111,10 +111,10 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$t.10
+  call T$t.1_0
   la t5, t.1
   sw a0, 0(t5)
-  call T$f.22
+  call T$f.2_2
   la t5, f.2
   sw a0, 0(t5)
   call T$start_10
@@ -123,16 +123,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl T$f.22
-  .type T$f.22, @function
-# leaf true
-T$f.22:
-.T$f.22_0:
-  li a0, 456
   ret
 
   .p2align 2
@@ -173,6 +163,16 @@ even3l0_5:
 .even3l0_5_3:
   lw a0, t.1
   j .even3l0_5_5
+
+  .p2align 2
+  .text
+  .globl T$f.2_2
+  .type T$f.2_2, @function
+# leaf true
+T$f.2_2:
+.T$f.2_2_0:
+  li a0, 456
+  ret
 
 __end_text:
   .p2align 2
