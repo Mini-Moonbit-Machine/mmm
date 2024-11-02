@@ -41,7 +41,7 @@
 }
 .fn next9l2_0 #f0 : fn(int32, array[int32], int32, closure(int32) -> bool) -> bool
 .freevars ()
-.entry b7 {
+.entry b8 {
   .bb #b0 (int32, array[int32], int32, closure(int32) -> bool) {
     let %0: int32 = sub($b0.2, 1)
     let %1: bool = le($b0.0, %0)
@@ -69,8 +69,16 @@
   .bb #b6 (bool) {
     return $b6.0
   }
-  .bb #b7 () {
-    jump b0($f0, $f1, $f2, $f3)
+  .loop #b7 header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2, $f3)
   }
 }
 .fn yield25l2_3 #f3 : fn(int32, closure(int32) -> unit) -> bool
@@ -91,7 +99,7 @@
 }
 .fn do30l3_4 #f4 : fn(closure(int32) -> unit, closure(closure(int32) -> bool) -> bool) -> unit
 .freevars ()
-.entry b4 {
+.entry b5 {
   .bb #b0 (closure(int32) -> unit, closure(closure(int32) -> bool) -> bool) {
     let _ = alloc <m0: closure(int32) -> bool heap(2)> <- [0] = f15, [1] = $b0.0
     let %1: bool = apply $f1(f4.m0)
@@ -107,8 +115,13 @@
   .bb #b3 (unit) {
     return $b3.0
   }
-  .bb #b4 () {
-    jump b0($f0, $f1)
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1)
   }
 }
 .fn T$start_22 #f22 : fn() -> unit

@@ -255,6 +255,7 @@ pub fn WasmFnLoweringCtx::set_none_unit_block_args(
   target : @core.BlockRef,
   args : Array[@core.Value]
 ) -> Unit {
+  let target = self.target_bb(target)
   for i, arg in args.iter2() {
     match self.type_of(arg) {
       Unit => ()
@@ -565,6 +566,15 @@ pub fn WasmFnLoweringCtx::lower_insn(
   }
 }
 
+pub fn WasmFnLoweringCtx::target_bb(
+  self : WasmFnLoweringCtx,
+  target : @core.BlockRef
+) -> @core.BlockRef {
+  let target = self.func.blocks.get(target).unwrap()
+  let target = target.bb_or_header_bb(self.func).id
+  target
+}
+
 pub fn WasmFnLoweringCtx::lower_control(
   self : WasmFnLoweringCtx,
   control : @core.Control,
@@ -577,6 +587,7 @@ pub fn WasmFnLoweringCtx::lower_control(
       self.emit_wasm(Return)
     }
     @core.Control::Jump(~target, ~args) => {
+      let target = self.target_bb(target)
       self.set_none_unit_block_args(target, args)
       let target_index = branch_table_index
         .get(target)
@@ -586,6 +597,8 @@ pub fn WasmFnLoweringCtx::lower_control(
       self.emit_wasm(Br(target="loop%\{self.func.name}"))
     }
     @core.Control::Branch(~cond, ~t, ~t_args, ~f, ~f_args) => {
+      let t = self.target_bb(t)
+      let f = self.target_bb(f)
       self.lower_value(cond)
       self.emit_wasm(If)
       let t_index = branch_table_index
@@ -791,7 +804,7 @@ pub fn WasmLoweringCtx::lower(self : WasmLoweringCtx) -> MCore {
   let func_type_ctx = MutMap::new()
   for fpair in self.core.funcs {
     let (_, func) = fpair
-    let order = @lower.LoweringOrder::new(func)
+    let order = @lower.LoweringOrder::new(func, self.tracer)
     let ctx = WasmFnLoweringCtx::{
       core: self.core,
       func,

@@ -87,7 +87,7 @@ fn Returns::length[T, C : Context](self : Returns[T, C]) -> Int {
 
 let _MAX_ISLE_RETURNS = 64
 
-/// Internal type Args: defined at src/core/core.isle line 329.
+/// Internal type Args: defined at src/core/core.isle line 328.
 pub enum Args {
   Args2(~arg1 : @core.Value, ~arg2 : @core.Value)
   Args1(~arg1 : @core.Value)
@@ -96,31 +96,31 @@ pub enum Args {
 
 // Generated as internal constructor for term ty_unit.
 pub fn constructor_ty_unit[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 53.
+  // Rule at src/core/core.isle line 52.
   return @core.Type::Unit
 }
 
 // Generated as internal constructor for term ty_bool.
 pub fn constructor_ty_bool[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 57.
+  // Rule at src/core/core.isle line 56.
   return @core.Type::Bool
 }
 
 // Generated as internal constructor for term ty_int32.
 pub fn constructor_ty_int32[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 61.
+  // Rule at src/core/core.isle line 60.
   return @core.Type::Int32
 }
 
 // Generated as internal constructor for term ty_int64.
 pub fn constructor_ty_int64[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 65.
+  // Rule at src/core/core.isle line 64.
   return @core.Type::Int64
 }
 
 // Generated as internal constructor for term ty_double.
 pub fn constructor_ty_double[C : Context](ctx : C) -> @core.Type {
-  // Rule at src/core/core.isle line 69.
+  // Rule at src/core/core.isle line 68.
   return @core.Type::Double
 }
 
@@ -131,7 +131,7 @@ pub fn constructor_ty_closure_fn[C : Context](
   arg1 : @core.Type
 ) -> @core.Type {
   let v2 = @core.Type::ClosureFn(params=arg0, ty=arg1)
-  // Rule at src/core/core.isle line 73.
+  // Rule at src/core/core.isle line 72.
   return v2
 }
 
@@ -142,7 +142,7 @@ pub fn constructor_ty_direct_fn[C : Context](
   arg1 : @core.Type
 ) -> @core.Type {
   let v2 = @core.Type::DirectFn(params=arg0, ty=arg1)
-  // Rule at src/core/core.isle line 77.
+  // Rule at src/core/core.isle line 76.
   return v2
 }
 
@@ -152,7 +152,7 @@ pub fn constructor_ty_tuple[C : Context](
   arg0 : @core.Types
 ) -> @core.Type {
   let v1 = @core.Type::Tuple(fields=arg0)
-  // Rule at src/core/core.isle line 81.
+  // Rule at src/core/core.isle line 80.
   return v1
 }
 
@@ -162,31 +162,31 @@ pub fn constructor_ty_array[C : Context](
   arg0 : @core.Type
 ) -> @core.Type {
   let v1 = @core.Type::Array(elem=arg0)
-  // Rule at src/core/core.isle line 85.
+  // Rule at src/core/core.isle line 84.
   return v1
 }
 
 // Generated as internal constructor for term round_rne.
 pub fn constructor_round_rne[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 148.
+  // Rule at src/core/core.isle line 147.
   return @core.RoundMode::Rne
 }
 
 // Generated as internal constructor for term round_rtz.
 pub fn constructor_round_rtz[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 152.
+  // Rule at src/core/core.isle line 151.
   return @core.RoundMode::Rtz
 }
 
 // Generated as internal constructor for term round_rdn.
 pub fn constructor_round_rdn[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 156.
+  // Rule at src/core/core.isle line 155.
   return @core.RoundMode::Rdn
 }
 
 // Generated as internal constructor for term round_rup.
 pub fn constructor_round_rup[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 160.
+  // Rule at src/core/core.isle line 159.
   return @core.RoundMode::Rup
 }
 
@@ -197,20 +197,20 @@ pub fn constructor_arg2[C : Context](
   arg1 : @core.Value
 ) -> Args {
   let v2 = Args::Args2(arg1=arg0, arg2=arg1)
-  // Rule at src/core/core.isle line 336.
+  // Rule at src/core/core.isle line 335.
   return v2
 }
 
 // Generated as internal constructor for term arg1.
 pub fn constructor_arg1[C : Context](ctx : C, arg0 : @core.Value) -> Args {
   let v1 = Args::Args1(arg1=arg0)
-  // Rule at src/core/core.isle line 340.
+  // Rule at src/core/core.isle line 339.
   return v1
 }
 
 // Generated as internal constructor for term arg0.
 pub fn constructor_arg0[C : Context](ctx : C) -> Args {
-  // Rule at src/core/core.isle line 344.
+  // Rule at src/core/core.isle line 343.
   return Args::Args0
 }
 

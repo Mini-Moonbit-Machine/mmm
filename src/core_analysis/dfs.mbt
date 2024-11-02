@@ -6,25 +6,18 @@ pub type OrderedBlockRefs (@core.Fn, Array[@core.BlockRef])
 
 pub type OrderedBasicBlocks Array[@core.BasicBlock]
 
-pub fn Ordering::dfs(func : @core.Fn) -> Ordering {
+pub fn Ordering::dfs(func : @core.Fn, _tracer : @util.SubTracer) -> Ordering {
   let visited = @hashset.T::new()
-  let stack = [(true, func.entry)]
+  let entry_block = func.blocks[func.entry].unwrap()
+  let entry = entry_block.bb_or_header_bb(func)
+  let stack = [(true, entry.id)]
   let result = []
-  fn dfs_block(block : @core.Block) {
-    match block {
-      @core.Block::BasicBlock(~bb) => {
-        let succs = bb.control.successors()
-        succs.rev_inplace()
-        for succ in succs {
-          if visited.contains(succ) == false {
-            stack.push((true, succ))
-          }
-        }
-      }
-      @core.Block::Loop(~l) => {
-        let hbref = l.header
-        let hblock = func.blocks[hbref].unwrap()
-        dfs_block(hblock)
+  fn dfs_block(bb : @core.BasicBlock) {
+    let succs = bb.control.successors()
+    succs.rev_inplace()
+    for succ in succs {
+      if visited.contains(succ) == false {
+        stack.push((true, succ))
       }
     }
   }
@@ -34,11 +27,12 @@ pub fn Ordering::dfs(func : @core.Fn) -> Ordering {
       Some(x) => x
       None => break
     }
-    if is_enter && visited.contains(bref) == false {
-      visited.insert(bref)
-      stack.push((false, bref))
-      let block = func.blocks[bref].unwrap()
-      dfs_block(block)
+    let block = func.blocks[bref].unwrap()
+    let bb = block.bb_or_header_bb(func)
+    if is_enter && visited.contains(bb.id) == false {
+      visited.insert(bb.id)
+      stack.push((false, bb.id))
+      dfs_block(bb)
     }
     result.push(Occurence(item))
   }
@@ -66,14 +60,15 @@ pub fn Ordering::rev_postorder(self : Ordering) -> OrderedBlockRefs {
 }
 
 pub fn OrderedBlockRefs::to_basic_blocks(
-  self : OrderedBlockRefs
+  self : OrderedBlockRefs,
+  tracer : @util.SubTracer
 ) -> OrderedBasicBlocks {
   let f = self._.0
   self._.1.map(
     fn(bref) {
       match f.blocks[bref] {
         Some(@core.Block::BasicBlock(~bb)) => bb
-        _ => abort("not a basic block")
+        _ => tracer.abort("not a basic block")
       }
     },
   )

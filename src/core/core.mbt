@@ -20,8 +20,6 @@ pub type FnParamRef Id derive(Eq, Hash)
 
 pub type FnFreeVarRef Id derive(Eq, Hash)
 
-pub type LoopRef Id derive(Eq, Hash)
-
 pub type MemRef Id derive(Eq, Hash)
 
 pub type SymbolRef Id derive(Eq, Hash)
@@ -95,15 +93,6 @@ pub fn to_string(self : FnFreeVarRef) -> String {
   Show::to_string(self)
 }
 
-pub fn output(self : LoopRef, logger : Logger) -> Unit {
-  logger.write_char('l')
-  logger.write_object(self.id)
-}
-
-pub fn to_string(self : LoopRef) -> String {
-  Show::to_string(self)
-}
-
 pub fn output(self : SymbolRef, logger : Logger) -> Unit {
   logger.write_string("::")
   logger.write_object(self.id)
@@ -139,8 +128,8 @@ pub struct BasicBlock {
 } derive(Show)
 
 pub struct Loop {
-  id : LoopRef
-  mut parent : LoopRef
+  id : BlockRef
+  mut parent : BlockRef?
   mut header : BlockRef // must be a basic block
   blocks : Array[BlockRef]
 } derive(Show, Eq)
@@ -271,10 +260,17 @@ pub fn Block::all_basic_blocks(self : Block, func : Fn) -> Array[BasicBlock] {
   result
 }
 
-pub fn Block::basic_block(self : Block, func : Fn) -> BasicBlock {
+pub fn Block::is_basic_block(self : Block) -> Bool {
+  match self {
+    BasicBlock(_) => true
+    _ => false
+  }
+}
+
+pub fn Block::bb_or_header_bb(self : Block, func : Fn) -> BasicBlock {
   match self {
     BasicBlock(~bb) => bb
-    Loop(~l) => func.blocks[l.header].unwrap().basic_block(func)
+    Loop(~l) => func.blocks[l.header].unwrap().bb_or_header_bb(func)
   }
 }
 
@@ -422,7 +418,8 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
       }
       match block {
         BasicBlock(~bb) => bb.params[bpref.id]
-        Loop(_) => fail!("loop not supported")
+        Loop(_) =>
+          fail!("block parameters of loop not supported: \{bref}, \{bpref}")
       }
     }
     FnParam(~fref, ~fpref) => {
@@ -473,13 +470,13 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
   }
 }
 
-pub fn Fn::next_block_id(self : Fn) -> Int {
+pub fn Fn::next_block_id(self : Fn) -> Id {
   let mut id = -1
   for block in self.blocks {
-    let (_, block) = block
-    id = @math.maximum(id, block.basic_block(self).id.id)
+    let (id_used, _) = block
+    id = @math.maximum(id, id_used.id)
   }
-  id + 1
+  Id::new(id + 1)
 }
 
 pub fn Control::successors(self : Control) -> Array[BlockRef] {
@@ -538,7 +535,7 @@ pub fn Value::replace_all_uses_with(
 
   // enumerate instructions
   let insn_updates = []
-  let bb = func.blocks[block.id].unwrap().basic_block(func)
+  let bb = func.blocks[block.id].unwrap().bb_or_header_bb(func)
   for iref in bb.seq {
     let insn = func.insns[iref].unwrap()
     // check if old value is a child of the instruction

@@ -187,7 +187,7 @@
 }
 .fn fold84l5_10 #f10 : fn(closure(unit) -> (int32, int32), closure(int32, int32) -> int32, int32) -> int32
 .freevars ()
-.entry b4 {
+.entry b5 {
   .bb #b0 (closure(unit) -> (int32, int32), closure(int32, int32) -> int32, int32) {
     let %0: (int32, int32) = apply $f0(())
     let %1: int32 = load int32 field(%0, 0 * @(@32, @(@32, @32)))
@@ -205,8 +205,13 @@
   .bb #b3 (int32) {
     return $b3.0
   }
-  .bb #b4 () {
-    jump b0($f0, $f1, $f2)
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2)
   }
 }
 .fn aux81l5c0_36 #f36 : closure(int32) -> int32
@@ -290,7 +295,7 @@
 }
 .fn aux25l2_2 #f2 : fn(unit, closure(int32) -> int32, closure(unit) -> (int32, int32)) -> (int32, int32)
 .freevars ()
-.entry b7 {
+.entry b8 {
   .bb #b0 (unit, closure(int32) -> int32, closure(unit) -> (int32, int32)) {
     let %0: (int32, int32) = apply $f2(())
     let %1: int32 = load int32 field(%0, 0 * @(@32, @(@32, @32)))
@@ -320,8 +325,16 @@
   .bb #b6 ((int32, int32)) {
     return $b6.0
   }
-  .bb #b7 () {
-    jump b0($f0, $f1, $f2)
+  .loop #b7 header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2)
   }
 }
 .fn aux111l8_13 #f13 : fn(int32, int32) -> int32

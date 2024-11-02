@@ -1179,7 +1179,7 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
   target : @core.BlockRef,
   args : Array[@core.Value]
 ) -> Unit {
-  let target = self.ref_block(target).basic_block(self.func)
+  let target = self.ref_block(target).bb_or_header_bb(self.func)
   for id, arg in args {
     let ty = target.params[id]
     match ty_to_reg_class(ty) {
@@ -1367,10 +1367,19 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
   self.finalize_insn()
 }
 
+fn RiscvFnLoweringCtx::target_bb(
+  self : RiscvFnLoweringCtx,
+  target : @core.BlockRef
+) -> @core.BlockRef {
+  let bb = self.ref_block(target)
+  bb.bb_or_header_bb(self.func).id
+}
+
 fn RiscvFnLoweringCtx::target_color(
   self : RiscvFnLoweringCtx,
   target : @core.BlockRef
 ) -> (@lower.ColorSeq, @core.BlockRef) {
+  let target = self.target_bb(target)
   let color = self.order.color[target].unwrap()
   let n = self.order.color_seq[target].unwrap()
   ((color, n), target)
@@ -1440,7 +1449,7 @@ fn RiscvFnLoweringCtx::lower(
   let entry = self.block_label(self.func.entry)
   let seq = self.order.seq.map(fn(bref) { self.block_label(bref) })
   let mfn = { name: self.func.name, entry, blocks, leaf: self.is_leaf, seq }
-  let liveness = Liveness::new(Some(self.func), mfn)
+  let liveness = Liveness::new(Some(self.func), mfn, self.tracer)
   liveness.compute_block_liveness()
   self.mfn = Some(mfn)
   (mfn, liveness)
@@ -1995,7 +2004,7 @@ pub fn RiscvFnLoweringCtx::new(
   let reg_classes = [RegClass::X, X]
   let closure_reg = @riscv.any_xreg(0)
   let alloc_reg = @riscv.reg_alloc.to_any() // s11 is reserved for the allocator
-  let order = @lower.LoweringOrder::new(func)
+  let order = @lower.LoweringOrder::new(func, tracer)
   let lower_ctx = RiscvFnLoweringCtx::{
     core,
     func,
@@ -2151,7 +2160,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     let init = self.lower_globals(globals)
     before_colored.funcs.set(init.name, init)
     after_colored.funcs.set(init.name, init)
-    let l = Liveness::new(None, init)
+    let l = Liveness::new(None, init, self.tracer)
     l.compute_block_liveness()
     before_colored.liveness.set(init.name, l)
   }

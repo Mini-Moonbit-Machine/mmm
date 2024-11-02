@@ -9,12 +9,15 @@ pub struct DominatorTree {
   mut ready : Bool
 }
 
-pub fn DominatorTree::new(func : @core.Fn) -> DominatorTree {
+pub fn DominatorTree::new(
+  func : @core.Fn,
+  tracer : @util.SubTracer
+) -> DominatorTree {
   let dom = @hashmap.T::new()
   let bref_id_map = @hashmap.T::new()
   let id_bref_map = @hashmap.T::new()
   let preds = Predcessors::new(func)
-  let rpo = Ordering::dfs(func).rev_postorder()
+  let rpo = Ordering::dfs(func, tracer).rev_postorder()
   { func, rpo, preds, dom, bref_id_map, id_bref_map, ready: false, id_dom: [] }
 }
 

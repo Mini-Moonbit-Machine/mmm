@@ -61,6 +61,6 @@ test "order" {
   let bb5 = bb(5, panic())
   let bb6 = bb(6, panic())
   let func = func([bb0, bb1, bb2, bb3, bb4, bb5, bb6])
-  let order = @lower.LoweringOrder::new(func)
+  let order = @lower.LoweringOrder::new(func, @util.t)
   println(order)
 }

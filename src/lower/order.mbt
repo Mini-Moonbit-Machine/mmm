@@ -52,9 +52,12 @@ pub struct LoweringOrder {
   color_seq : MutMap[BlockRef, Int]
 } derive(Show)
 
-pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
-  let ordered_refs = @core_analysis.Ordering::dfs(func).rev_postorder()
-  let ordered_blocks = ordered_refs.to_basic_blocks()
+pub fn LoweringOrder::new(
+  func : @core.Fn,
+  tracer : @util.SubTracer
+) -> LoweringOrder {
+  let ordered_refs = @core_analysis.Ordering::dfs(func, tracer).rev_postorder()
+  let ordered_blocks = ordered_refs.to_basic_blocks(tracer)
   let order = []
   let block_in_count = MutMap::from_iter(
     ordered_refs._.1.iter().map(fn(bref) { (bref, 0) }),
@@ -66,7 +69,9 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
   fn f_bb(bb : @core.BasicBlock) -> Unit {
     let succs = bb.control.successors()
     let succs = succs.map(
-      fn(bref) { BasicBlock(bb=func.blocks[bref].unwrap().basic_block(func)) },
+      fn(bref) {
+        BasicBlock(bb=func.blocks[bref].unwrap().bb_or_header_bb(func))
+      },
     )
     for succ in succs {
       let succ = succ.basic_block().unwrap()
@@ -127,7 +132,7 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
     color_seq.set(bb.id, n)
     let succs = bb.control.successors()
     let succs = succs.map(
-      fn(bref) { func.blocks[bref].unwrap().basic_block(func) },
+      fn(bref) { func.blocks[bref].unwrap().bb_or_header_bb(func) },
     )
     let mut value = -1
     let mut selected_bb = None
@@ -156,7 +161,7 @@ pub fn LoweringOrder::new(func : @core.Fn) -> LoweringOrder {
     }
   }
 
-  worklist.push(func.blocks[func.entry].unwrap().basic_block(func))
+  worklist.push(func.blocks[func.entry].unwrap().bb_or_header_bb(func))
   let mut used_color = 0
   while worklist.is_empty() == false {
     let bb = worklist.pop().unwrap()

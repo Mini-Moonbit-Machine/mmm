@@ -29,7 +29,10 @@ fn FnTailRecElim::find_return(
   let rets = []
   for block in func.blocks {
     let (_, block) = block
-    let bb = block.basic_block(func)
+    if not(block.is_basic_block()) {
+      continue
+    }
+    let bb = block.bb_or_header_bb(func)
     match bb.control {
       Return(~args) => rets.push((bb.id, args))
       _ => ()
@@ -45,7 +48,10 @@ fn FnTailRecElim::check_insn_after_self_call(
 ) -> Bool {
   let start_bb = for block in self.func.blocks {
     let (_, block) = block
-    let bb = block.basic_block(self.func)
+    if not(block.is_basic_block()) {
+      continue
+    }
+    let bb = block.bb_or_header_bb(self.func)
     match bb.seq.search(iref) {
       None => ()
       Some(idx) => break Some((bb, idx))
@@ -59,7 +65,7 @@ fn FnTailRecElim::check_insn_after_self_call(
   while flag {
     match cur_bb.control {
       Jump(~target, ..) =>
-        cur_bb = self.func.blocks[target].unwrap().basic_block(self.func)
+        cur_bb = self.func.blocks[target].unwrap().bb_or_header_bb(self.func)
       Return(..) => {
         flag = cur_bb.id == ret_bb.id && cur_bb.seq.is_empty()
         break
@@ -73,7 +79,29 @@ fn FnTailRecElim::check_insn_after_self_call(
   flag
 }
 
-fn FnTailRecElim::insert_entry_block(self : FnTailRecElim) -> Unit {
+fn FnTailRecElim::make_loop(self : FnTailRecElim) -> @core.BlockRef {
+  let loop_body = self.func.blocks
+    .iter()
+    .map(fn(bpair) { bpair.0 })
+    .filter(fn(bref) { bref != self.func.entry })
+    .collect()
+
+  // there is not any loop before we do tail rec elimination
+  let id = @core.BlockRef(self.func.next_block_id())
+  let l = @core.Loop::{
+    id,
+    parent: None,
+    header: self.func.entry,
+    blocks: loop_body,
+  }
+  self.func.blocks.set(id, @core.Block::Loop(~l))
+  id
+}
+
+fn FnTailRecElim::insert_entry_block(
+  self : FnTailRecElim,
+  loop_bref : @core.BlockRef?
+) -> Unit {
   let old_entry = self.func.entry
   let num_params = match self.func.ty {
     DirectFn(~params, ..) => params.length()
@@ -86,9 +114,9 @@ fn FnTailRecElim::insert_entry_block(self : FnTailRecElim) -> Unit {
       @core.Value::FnParam(fref=self.func.id, fpref=@core.FnParamRef({ id: i })),
     )
   }
-  let control = @core.Control::Jump(target=old_entry, ~args)
+  let control = @core.Control::Jump(target=loop_bref.or(old_entry), ~args)
   let bb = @core.BasicBlock::{
-    id: @core.BlockRef(@core.Id::new(self.func.next_block_id())),
+    id: @core.BlockRef(self.func.next_block_id()),
     params: [],
     seq: [],
     control,
@@ -126,7 +154,10 @@ fn FnTailRecElim::find_all_defs_of_value(
     let (bref, bpref) = worklist.pop().unwrap()
     for block in self.func.blocks {
       let (_, block) = block
-      let bb = block.basic_block(self.func)
+      if not(block.is_basic_block()) {
+        continue
+      }
+      let bb = block.bb_or_header_bb(self.func)
       match bb.control {
         Jump(~target, ~args) => handle_jump(target, bref, bpref, args)
         Branch(~t, ~f, ~t_args, ~f_args, ..) => {
@@ -178,7 +209,10 @@ fn FnTailRecElim::replace_tail_rec_call(
   }
   for block in self.func.blocks {
     let (_, block) = block
-    let bb = block.basic_block(self.func)
+    if not(block.is_basic_block()) {
+      continue
+    }
+    let bb = block.bb_or_header_bb(self.func)
     match bb.seq.search(iref) {
       Some(idx) => {
         let _ = bb.seq.remove(idx)
@@ -216,7 +250,10 @@ fn FnTailRecElim::replace_parameters(
   }
   for block in self.func.blocks {
     let (_, block) = block
-    let bb = block.basic_block(self.func)
+    if not(block.is_basic_block()) {
+      continue
+    }
+    let bb = block.bb_or_header_bb(self.func)
     if bb.id != new_entry {
       params.each(
         fn(p) {
@@ -233,7 +270,7 @@ fn FnTailRecElim::elim_tail_rec(self : FnTailRecElim) -> Unit {
   let tail_rec_calls = []
   for ret in rets {
     let (ret_bb, args) = ret
-    let ret_bb = self.func.blocks[ret_bb].unwrap().basic_block(self.func)
+    let ret_bb = self.func.blocks[ret_bb].unwrap().bb_or_header_bb(self.func)
     if args.length() == 1 {
       let defs = self.find_all_defs_of_value(args[0])
       for def in defs {
@@ -262,9 +299,10 @@ fn FnTailRecElim::elim_tail_rec(self : FnTailRecElim) -> Unit {
     return
   }
   let old_entry = self.func.entry
-  self.insert_entry_block()
+  let bref = self.make_loop()
+  self.insert_entry_block(Some(bref))
   self.update_old_entry_basic_block(
-    self.func.blocks[old_entry].unwrap().basic_block(self.func),
+    self.func.blocks[old_entry].unwrap().bb_or_header_bb(self.func),
   )
   for iref in tail_rec_calls {
     self.replace_tail_rec_call(iref, old_entry)

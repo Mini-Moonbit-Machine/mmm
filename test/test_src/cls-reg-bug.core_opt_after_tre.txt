@@ -9,7 +9,7 @@
 .core
 .fn g24_3 #f3 : closure(int32) -> int32
 .freevars (int32, int32, int32, int32, int32, int32, int32, int32, int32, int32)
-.entry b4 {
+.entry b5 {
   .bb #b0 (int32) {
     let %0: int32 = add(^1, ^2)
     let %1: int32 = add(%0, ^3)
@@ -33,8 +33,13 @@
   .bb #b3 (int32) {
     return $b3.0
   }
-  .bb #b4 () {
-    jump b0($f0)
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0)
   }
 }
 .fn T$start_6 #f6 : fn() -> unit

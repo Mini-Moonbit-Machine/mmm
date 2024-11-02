@@ -9,7 +9,7 @@
 .core
 .fn sum1l0_0 #f0 : fn(int32, int32) -> int32
 .freevars ()
-.entry b4 {
+.entry b5 {
   .bb #b0 (int32, int32) {
     let %0: bool = le($b0.1, 0)
     br %0 b1() b2()
@@ -25,8 +25,13 @@
   .bb #b3 (int32) {
     return $b3.0
   }
-  .bb #b4 () {
-    jump b0($f0, $f1)
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1)
   }
 }
 .fn main10l1_1 #f1 : fn() -> unit

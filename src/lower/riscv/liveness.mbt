@@ -247,12 +247,17 @@ pub struct Liveness {
   mfunc : MFn
   block_info : MutMap[String, BlockInfo]
   iter_block_info : MutMap[String, IteratedBlockInfo]
+  tracer : @util.SubTracer
 }
 
-pub fn Liveness::new(func : @core.Fn?, mfunc : MFn) -> Liveness {
+pub fn Liveness::new(
+  func : @core.Fn?,
+  mfunc : MFn,
+  tracer : @util.SubTracer
+) -> Liveness {
   let block_info = MutMap::new()
   let iter_block_info = MutMap::new()
-  Liveness::{ func, mfunc, iter_block_info, block_info }
+  Liveness::{ func, mfunc, iter_block_info, block_info, tracer }
 }
 
 pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
@@ -282,9 +287,9 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
       }
     Some(func) => {
       // PO doesn't work perfect when encountering loops
-      let order = @core_analysis.Ordering::dfs(func)
+      let order = @core_analysis.Ordering::dfs(func, self.tracer)
         .postorder()
-        .to_basic_blocks()
+        .to_basic_blocks(self.tracer)
       let mut changed = true
       while changed {
         changed = false
@@ -292,7 +297,8 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
           let cur_info = self.iter_block_info[fn_block_name(func, bb.id)].unwrap()
           let succs = []
           for succ in bb.control.successors() {
-            let succ_info = self.iter_block_info[fn_block_name(func, succ)].unwrap()
+            let succ = func.blocks[succ].unwrap().bb_or_header_bb(func)
+            let succ_info = self.iter_block_info[fn_block_name(func, succ.id)].unwrap()
             succs.push(succ_info)
           }
           changed = cur_info.compute_live_in_out(succs) || changed

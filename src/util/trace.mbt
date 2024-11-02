@@ -84,11 +84,11 @@ pub fn SubTracer::record[T : Show](
 }
 
 pub fn SubTracer::abort[T](self : SubTracer, msg : String) -> T {
-  self.println(msg)
   self.tracer.done(
     fn(name, s) { println("// [log::\{name}]\n\{s}") },
     fn(name, s) { println("// [record::\{name}]\n\{s}") },
   )
+  self.println(msg)
   panic()
 }
 

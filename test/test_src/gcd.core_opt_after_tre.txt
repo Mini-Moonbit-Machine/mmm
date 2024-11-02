@@ -17,7 +17,7 @@
 }
 .fn gcd1l0_0 #f0 : fn(int32, int32) -> int32
 .freevars ()
-.entry b7 {
+.entry b8 {
   .bb #b0 (int32, int32) {
     let %0: bool = eq($b0.0, 0)
     br %0 b1() b2()
@@ -43,8 +43,16 @@
   .bb #b6 (int32) {
     return $b6.0
   }
-  .bb #b7 () {
-    jump b0($f0, $f1)
+  .loop #b7 header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1)
   }
 }
 .fn main9l1_1 #f1 : fn() -> unit

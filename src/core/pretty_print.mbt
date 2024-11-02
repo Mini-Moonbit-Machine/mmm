@@ -262,6 +262,10 @@ fn print_insn(
   }
 }
 
+fn print_block_short(logger : @util.IndentLogger, bref : BlockRef) -> Unit {
+  logger.write_string(".block #\{bref}")
+}
+
 fn print_bb(logger : @util.IndentLogger, func : Fn, bb : BasicBlock) -> Unit {
   logger.write_string(".bb #\{bb.id} (")
   print_types(logger, bb.params)
@@ -276,17 +280,12 @@ fn print_bb(logger : @util.IndentLogger, func : Fn, bb : BasicBlock) -> Unit {
   logger.write_string("}\n")
 }
 
-fn print_loop(logger : @util.IndentLogger, func : Fn, lp : Loop) -> Unit {
-  logger.write_string(".loop #\{lp.id} header #\{lp.header} {")
+fn print_loop(logger : @util.IndentLogger, _func : Fn, lp : Loop) -> Unit {
+  logger.write_string(".loop #\{lp.id} header #\{lp.header} {\n")
   logger.indent()
-  let header = match func.blocks.get(lp.header).unwrap() {
-    BasicBlock(~bb) => bb
-    _ => abort("header is not a basic block")
-  }
-  print_bb(logger, func, header)
   for block in lp.blocks {
-    let block = func.blocks.get(block).unwrap()
-    print_block(logger, func, block)
+    print_block_short(logger, block)
+    logger.write_string("\n")
   }
   logger.outdent()
   logger.write_string("}\n")

@@ -17,7 +17,7 @@
 }
 .fn inprod1l0_0 #f0 : fn(array[double], array[double], double, int32) -> double
 .freevars ()
-.entry b4 {
+.entry b5 {
   .bb #b0 (array[double], array[double], double, int32) {
     let %0: bool = le(0, $b0.3)
     br %0 b1() b2()
@@ -36,8 +36,13 @@
   .bb #b3 (double) {
     return $b3.0
   }
-  .bb #b4 () {
-    jump b0($f0, $f1, $f2, $f3)
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2, $f3)
   }
 }
 .fn main17l1_1 #f1 : fn() -> unit
