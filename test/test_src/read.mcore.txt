@@ -22,10 +22,38 @@ T$start_4:
 .T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main1l0_1
+  call main1_0
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl f2_2
+  .type f2_2, @function
+# leaf false
+f2_2:
+.f2_2_5:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, s10
+
+.f2_2_0:
+  call minimbt_read_int
+  li a1, -2147483648
+  bne a0, a1, .f2_2_2
+
+.f2_2_1:
+  call minimbt_print_int
+
+.f2_2_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.f2_2_2:
+  call minimbt_print_int
+  j .f2_2_0
 
   .p2align 2
   .text
@@ -51,44 +79,24 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl main1l0_1
-  .type main1l0_1, @function
+  .globl main1_0
+  .type main1_0, @function
 # leaf false
-main1l0_1:
-.main1l0_1_0:
+main1_0:
+.main1_0_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call f2l1_0
+  addi a0, s11, -8
+  andi a0, a0, -8
+  mv s11, a0
+  la a1, f2_2
+  sd a1, 0(a0)
+  mv s10, a0
+  ld a0, 0(a0)
+  jalr a0
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl f2l1_0
-  .type f2l1_0, @function
-# leaf false
-f2l1_0:
-.f2l1_0_5:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-
-.f2l1_0_0:
-  call minimbt_read_int
-  li a1, -2147483648
-  bne a0, a1, .f2l1_0_2
-
-.f2l1_0_1:
-  call minimbt_print_int
-
-.f2l1_0_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.f2l1_0_2:
-  call minimbt_print_int
-  j .f2l1_0_0
 
 __end_text:
   .p2align 2

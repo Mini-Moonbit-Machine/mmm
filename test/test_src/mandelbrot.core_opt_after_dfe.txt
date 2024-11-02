@@ -7,42 +7,144 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
+.fn main75_1 #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0(40)
+    return %0
+  }
+}
 .fn T$start_12 #f12 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f5()
+    let %0: unit = call f1()
     return %0
   }
 }
-.fn mandelbrot1l0_4 #f4 : fn(int32) -> unit
+.fn iloop29_9 #f9 : closure(int32, double, double, double, double, double, double) -> unit
+.freevars (closure(double) -> double)
+.entry b8 {
+  .bb #b0 (int32, double, double, double, double, double, double) {
+    let %0: bool = eq($b0.0, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: unit = ext_call minimbt_print_int(1)
+    jump b6(%1)
+  }
+  .bb #b2 () {
+    let %2: double = sub($b0.3, $b0.4)
+    let %3: double = add(%2, $b0.5)
+    let %4: double = apply ^1($b0.1)
+    let %5: double = mul(%4, $b0.2)
+    let %6: double = add(%5, $b0.6)
+    let %7: double = mul(%3, %3)
+    let %8: double = mul(%6, %6)
+    let %9: double = mul(2, 2)
+    let %10: double = add(%7, %8)
+    let %11: bool = le(%9, %10)
+    br %11 b3() b4()
+  }
+  .bb #b3 () {
+    let %12: unit = ext_call minimbt_print_int(0)
+    jump b5(%12)
+  }
+  .bb #b4 () {
+    let %13: int32 = sub($b0.0, 1)
+    jump b0(%13, %3, %6, %7, %8, $b0.5, $b0.6)
+  }
+  .bb #b5 (unit) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (unit) {
+    return $b6.0
+  }
+  .loop #b7 header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2, $f3, $f4, $f5, $f6)
+  }
+}
+.fn mandelbrot1_0 #f0 : fn(int32) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f3(0, $f0)
-    return %0
+    let _ = alloc <m0: closure(double) -> double heap(1)> <- [0] = f3
+    let _ = alloc <m1: closure(int32) -> unit heap(3)> <- [0] = f5, [1] = $f0, [2] = f0.m0
+    let %2: unit = apply f0.m1(0)
+    return %2
   }
 }
-.fn main75l1_5 #f5 : fn() -> unit
+.fn dbl4_3 #f3 : closure(double) -> double
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f4(40)
+    let %0: double = add($f0, $f0)
     return %0
   }
 }
-.fn yloop7l2_3 #f3 : fn(int32, int32) -> unit
-.freevars ()
+.fn yloop7_5 #f5 : closure(int32) -> unit
+.freevars (int32, closure(double) -> double)
 .entry b5 {
-  .bb #b0 (int32, int32) {
-    let %0: bool = le($b0.1, $b0.0)
+  .bb #b0 (int32) {
+    let %0: bool = le(^1, $b0.0)
     br %0 b1() b2()
   }
   .bb #b1 () {
     jump b3(())
   }
   .bb #b2 () {
-    jump b12(0, $b0.0, $b0.1)
+    let _ = alloc <m0: closure(int32, int32) -> unit heap(3)> <- [0] = f7, [1] = ^1, [2] = ^2
+    let %2: unit = apply f5.m0(0, $b0.0)
+    let %3: int32 = add($b0.0, 1)
+    jump b0(%3)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0)
+  }
+}
+.fn xloop10_7 #f7 : closure(int32, int32) -> unit
+.freevars (int32, closure(double) -> double)
+.entry b5 {
+  .bb #b0 (int32, int32) {
+    let %0: bool = le(^1, $b0.0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: unit = ext_call minimbt_print_endline()
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %2: double = conv.i2d($b0.0)
+    let %3: double = apply ^2(%2)
+    let %4: double = conv.i2d(^1)
+    let %5: double = div(%3, %4)
+    let %6: double = sub(%5, 1.5)
+    let %7: double = conv.i2d($b0.1)
+    let %8: double = apply ^2(%7)
+    let %9: double = conv.i2d(^1)
+    let %10: double = div(%8, %9)
+    let %11: double = sub(%10, 1)
+    let _ = alloc <m0: closure(int32, double, double, double, double, double, double) -> unit heap(2)> <- [0] = f9, [1] = ^2
+    let %13: unit = apply f7.m0(1000, 0, 0, 0, 0, %6, %11)
+    let %14: int32 = add($b0.0, 1)
+    jump b0(%14, $b0.1)
   }
   .bb #b3 (unit) {
     return $b3.0
@@ -54,100 +156,6 @@
   }
   .bb #b5 () {
     jump b4($f0, $f1)
-  }
-  .bb #b6 (unit) {
-    let %2: int32 = add($b0.0, 1)
-    jump b0(%2, $b0.1)
-  }
-  .bb #b7 (int32, int32, int32) {
-    let %3: bool = le($b7.2, $b7.0)
-    br %3 b8() b9()
-  }
-  .bb #b8 () {
-    let %4: unit = ext_call minimbt_print_endline()
-    jump b10(())
-  }
-  .bb #b9 () {
-    let %5: double = conv.i2d($b7.0)
-    let %6: double = call f0(%5)
-    let %7: double = conv.i2d($b7.2)
-    let %8: double = div(%6, %7)
-    let %9: double = sub(%8, 1.5)
-    let %10: double = conv.i2d($b7.1)
-    let %11: double = call f0(%10)
-    let %12: double = conv.i2d($b7.2)
-    let %13: double = div(%11, %12)
-    let %14: double = sub(%13, 1)
-    jump b29(1000, 0, 0, 0, 0, %9, %14)
-  }
-  .bb #b10 (unit) {
-    jump b6($b10.0)
-  }
-  .loop #b11 header #b7 {
-    .block #b8
-    .block #b9
-    .block #b10
-  }
-  .bb #b12 (int32, int32, int32) {
-    jump b11(0, $b0.0, $b0.1)
-  }
-  .bb #b13 (unit) {
-    let %16: int32 = add($b7.0, 1)
-    jump b7(%16, $b7.1, $b7.2)
-  }
-  .bb #b21 (int32, double, double, double, double, double, double) {
-    let %17: bool = eq($b21.0, 0)
-    br %17 b22() b23()
-  }
-  .bb #b22 () {
-    let %18: unit = ext_call minimbt_print_int(1)
-    jump b27(%18)
-  }
-  .bb #b23 () {
-    let %19: double = sub($b21.3, $b21.4)
-    let %20: double = add(%19, $b21.5)
-    let %21: double = call f0($b21.1)
-    let %22: double = mul(%21, $b21.2)
-    let %23: double = add(%22, $b21.6)
-    let %24: double = mul(%20, %20)
-    let %25: double = mul(%23, %23)
-    let %26: double = mul(2, 2)
-    let %27: double = add(%24, %25)
-    let %28: bool = le(%26, %27)
-    br %28 b24() b25()
-  }
-  .bb #b24 () {
-    let %29: unit = ext_call minimbt_print_int(0)
-    jump b26(%29)
-  }
-  .bb #b25 () {
-    let %30: int32 = sub($b21.0, 1)
-    jump b21(%30, %20, %23, %24, %25, $b21.5, $b21.6)
-  }
-  .bb #b26 (unit) {
-    jump b27($b26.0)
-  }
-  .bb #b27 (unit) {
-    jump b13($b27.0)
-  }
-  .loop #b28 header #b21 {
-    .block #b27
-    .block #b25
-    .block #b22
-    .block #b26
-    .block #b23
-    .block #b24
-  }
-  .bb #b29 (int32, double, double, double, double, double, double) {
-    jump b28(1000, 0, 0, 0, 0, %9, %14)
-  }
-}
-.fn dbl4l1_0 #f0 : fn(double) -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = add($f0, $f0)
-    return %0
   }
 }
 .thunk ::0 start

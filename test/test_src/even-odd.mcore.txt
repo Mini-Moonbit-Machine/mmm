@@ -25,22 +25,81 @@ T$t.10:
 
   .p2align 2
   .text
-  .globl main21l1_6
-  .type main21l1_6, @function
+  .globl odd6_7
+  .type odd6_7, @function
 # leaf false
-main21l1_6:
-.main21l1_6_0:
+odd6_7:
+.odd6_7_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a0, a1
-  lw a1, f.2
-  lw a2, t.1
-  li a0, 789
-  call even3l0_5
-  call minimbt_print_int
+  mv a1, s10
+  blt a0, zero, .odd6_7_2
+
+.odd6_7_1:
+  beq a0, zero, .odd6_7_3
+
+.odd6_7_4:
+  addi a0, a0, -1
+  call even3_4
+
+.odd6_7_5:
+
+.odd6_7_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+.odd6_7_2:
+  addi a0, a0, 1
+  call even3_4
+  j .odd6_7_6
+
+.odd6_7_3:
+  lw a0, f.2
+  j .odd6_7_5
+
+  .p2align 2
+  .text
+  .globl even3_4
+  .type even3_4, @function
+# leaf false
+even3_4:
+.even3_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a1, s11, -8
+  andi a1, a1, -8
+  mv s11, a1
+  la a2, odd6_7
+  sd a2, 0(a1)
+  blt a0, zero, .even3_4_2
+
+.even3_4_1:
+  beq a0, zero, .even3_4_3
+
+.even3_4_4:
+  addi a0, a0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+
+.even3_4_5:
+
+.even3_4_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.even3_4_2:
+  addi a0, a0, 1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  j .even3_4_6
+
+.even3_4_3:
+  lw a0, t.1
+  j .even3_4_5
 
   .p2align 2
   .text
@@ -51,51 +110,10 @@ T$start_10:
 .T$start_10_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  lw a0, f.2
-  lw a1, t.1
-  call main21l1_6
+  call main21_5
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl odd6l1_4
-  .type odd6l1_4, @function
-# leaf false
-odd6l1_4:
-.odd6l1_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, a2
-  blt a0, zero, .odd6l1_4_2
-
-.odd6l1_4_1:
-  beq a0, zero, .odd6l1_4_3
-
-.odd6l1_4_4:
-  addi a0, a0, -1
-  lw a1, f.2
-  lw a2, t.1
-  call even3l0_5
-
-.odd6l1_4_5:
-
-.odd6l1_4_6:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.odd6l1_4_2:
-  addi a0, a0, 1
-  lw a1, f.2
-  lw a2, t.1
-  call even3l0_5
-  j .odd6l1_4_6
-
-.odd6l1_4_3:
-  lw a0, f.2
-  j .odd6l1_4_5
 
   .p2align 2
   .text
@@ -137,42 +155,19 @@ T$f.22:
 
   .p2align 2
   .text
-  .globl even3l0_5
-  .type even3l0_5, @function
+  .globl main21_5
+  .type main21_5, @function
 # leaf false
-even3l0_5:
-.even3l0_5_0:
+main21_5:
+.main21_5_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a1, a2
-  blt a0, zero, .even3l0_5_2
-
-.even3l0_5_1:
-  beq a0, zero, .even3l0_5_3
-
-.even3l0_5_4:
-  addi a0, a0, -1
-  lw a1, f.2
-  lw a2, t.1
-  call odd6l1_4
-
-.even3l0_5_5:
-
-.even3l0_5_6:
+  li a0, 789
+  call even3_4
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-.even3l0_5_2:
-  addi a0, a0, 1
-  lw a1, f.2
-  lw a2, t.1
-  call odd6l1_4
-  j .even3l0_5_6
-
-.even3l0_5_3:
-  lw a0, t.1
-  j .even3l0_5_5
 
 __end_text:
   .p2align 2
