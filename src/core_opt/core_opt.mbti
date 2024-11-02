@@ -1,6 +1,7 @@
 package moonbitlang/minimbt/core_opt
 
 alias @moonbitlang/minimbt/core as @core
+alias @moonbitlang/minimbt/core_analysis as @core_analysis
 alias @moonbitlang/minimbt/util as @util
 
 // Values
@@ -15,6 +16,28 @@ impl CoreOpt {
   new(@core.Core, @util.SubTracer) -> Self
 }
 
+pub struct FnCounter {
+  pub fvar_counter : Int
+  pub insn_counter : Int
+  pub block_counter : Int
+  pub mem_counter : Int
+}
+impl FnCounter {
+  new() -> Self
+  new_from_existing(@core.Fn) -> Self
+}
+
+pub struct FnInliner {
+  pub core : @core.Core
+  pub func : @core.Fn
+  pub fcf : @core_analysis.FnCallFreq
+  pub tracer : @util.SubTracer
+}
+impl FnInliner {
+  new(@core.Core, @core.Fn, @core_analysis.FnCallFreq, @util.SubTracer) -> Self
+  split_bb_at_call(Self, @core.BasicBlock, @core.InsnRef, Int) -> @core.BlockRef?
+}
+
 pub struct FnTailRecElim {
   pub func : @core.Fn
   pub tracer : @util.SubTracer
@@ -24,12 +47,32 @@ impl FnTailRecElim {
   update_old_entry_basic_block(Self, @core.BasicBlock) -> Unit
 }
 
+pub struct Inliner {
+  pub core : @core.Core
+  pub fcf : @core_analysis.FnCallFreq
+  pub tracer : @util.SubTracer
+}
+impl Inliner {
+  go(Self) -> Unit
+  new(@core.Core, @core_analysis.FnCallFreq, @util.SubTracer) -> Self
+}
+
 pub struct Offset2Field {
   pub core : @core.Core
 }
 impl Offset2Field {
   go(Self) -> Unit
   new(@core.Core) -> Self
+}
+
+pub struct Renamer {
+  pub func : @core.Fn
+  pub counter : FnCounter
+  pub tracer : @util.SubTracer
+}
+impl Renamer {
+  new(@core.Fn, FnCounter, @util.SubTracer) -> Self
+  shift(Self) -> @core.Fn
 }
 
 pub struct TailRecElim {

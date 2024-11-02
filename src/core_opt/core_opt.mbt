@@ -21,4 +21,16 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let inliner = Inliner::new(core, fcf, self.tracer)
   inliner.go()
   self.tracer.record("core_opt_after_inline", core.to_pretty_print())
+  let calls = @core_analysis.CallAnalysis::new(core, self.tracer)
+  let fcf = calls.compute()
+  let old_funcs = core.funcs.iter().collect()
+  for func in old_funcs {
+    let (fref, func) = func
+    if fcf._.get(fref).unwrap() == @core_analysis.CallFrequncy::Never {
+      self.tracer.println("Remove dead function: \{fref}")
+      core.funcs.remove(fref)
+      core.names.remove(func.name)
+    }
+  }
+  self.tracer.record("core_opt_after_dfe", core.to_pretty_print())
 }

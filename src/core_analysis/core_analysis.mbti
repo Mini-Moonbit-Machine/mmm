@@ -2,10 +2,31 @@ package moonbitlang/minimbt/core_analysis
 
 alias @moonbitlang/core/hashmap as @hashmap
 alias @moonbitlang/minimbt/core as @core
+alias @moonbitlang/minimbt/util as @util
 
 // Values
 
 // Types and methods
+pub struct CallAnalysis {
+  pub core : @core.Core
+  pub tracer : @util.SubTracer
+}
+impl CallAnalysis {
+  compute(Self) -> FnCallFreq
+  new(@core.Core, @util.SubTracer) -> Self
+}
+
+pub enum CallFrequncy {
+  Never
+  Once
+  Multiple
+  MaybeInClosure
+}
+impl CallFrequncy {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
 pub struct DominatorTree {
   pub func : @core.Fn
   pub dom : @hashmap.T[@core.BlockRef, @core.BlockRef]
@@ -19,7 +40,12 @@ pub struct DominatorTree {
 impl DominatorTree {
   compute_idom(Self) -> Unit!Failure
   dominates(Self, @core.BlockRef, @core.BlockRef) -> Bool!Failure
-  new(@core.Fn) -> Self
+  new(@core.Fn, @util.SubTracer) -> Self
+}
+
+pub type FnCallFreq Map[@core.FnRef, CallFrequncy]
+impl FnCallFreq {
+  to_string(Self) -> String
 }
 
 pub type Occurence (Bool, @core.BlockRef)
@@ -28,12 +54,12 @@ pub type OrderedBasicBlocks Array[@core.BasicBlock]
 
 pub type OrderedBlockRefs (@core.Fn, Array[@core.BlockRef])
 impl OrderedBlockRefs {
-  to_basic_blocks(Self) -> OrderedBasicBlocks
+  to_basic_blocks(Self, @util.SubTracer) -> OrderedBasicBlocks
 }
 
 pub type Ordering (@core.Fn, Array[Occurence])
 impl Ordering {
-  dfs(@core.Fn) -> Self
+  dfs(@core.Fn, @util.SubTracer) -> Self
   postorder(Self) -> OrderedBlockRefs
   preorder(Self) -> OrderedBlockRefs
   rev_postorder(Self) -> OrderedBlockRefs
@@ -52,5 +78,9 @@ impl Predcessors {
 // Traits
 
 // Extension Methods
+impl Show for CallFrequncy
+
+impl Show for FnCallFreq
+
 impl Show for Predcessors
 

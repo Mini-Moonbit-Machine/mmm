@@ -35,19 +35,38 @@ memseti32:
 # leaf false
 fib27l2_5:
 .fib27l2_5_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
   mv s0, a0
   mv a0, a1
-  addi a1, s0, 1
-  addi a0, s11, -8
+  addi a0, s0, 1
+  addi a1, s11, -8
+  andi s1, a1, -8
+  mv s11, s1
+  la a1, mem_fib15l1c0_15
+  sd a1, 0(s1)
+  lw a1, unmem_magic.1
+  mv a2, s1
+
+.fib27l2_5_5:
+  lw a2, unmem_magic.1
+  slliw a1, a0, 2
+  sub a1, s11, a1
+  andi s2, a1, -8
+  mv s11, s2
+  mv a1, a0
+  mv a0, s2
+  call memseti32
+  addi a0, s11, -24
   andi a0, a0, -8
   mv s11, a0
-  la a2, mem_fib15l1c0_15
-  sd a2, 0(a0)
-  lw a2, unmem_magic.1
-  call mem2l0_3
+  la a1, memed8l1c0_11
+  sd a1, 0(a0)
+  sd s2, 8(a0)
+  sd s1, 16(a0)
 
 .fib27l2_5_1:
   mv s10, a0
@@ -56,7 +75,9 @@ fib27l2_5:
   jalr a1
   ld ra, 0(sp)
   ld s0, 8(sp)
-  addi sp, sp, 16
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -209,49 +230,12 @@ main33l3_6:
   call minimbt_read_int
   lw a1, unmem_magic.1
   call fib27l2_5
-
-.main33l3_6_1:
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
   mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl mem2l0_3
-  .type mem2l0_3, @function
-# leaf false
-mem2l0_3:
-.mem2l0_3_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  mv s0, a0
-  mv a0, a1
-  mv a1, a2
-  lw a2, unmem_magic.1
-  slliw a1, a0, 2
-  sub a1, s11, a1
-  andi s1, a1, -8
-  mv s11, s1
-  mv a1, a0
-  mv a0, s1
-  call memseti32
-  addi a0, s11, -24
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, memed8l1c0_11
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s0, 16(a0)
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 2

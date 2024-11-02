@@ -3,7 +3,7 @@ pub struct CallAnalysis {
   tracer : @util.SubTracer
 }
 
-pub type FnCallFreq Map[@core.FnRef, CallFrequnce] derive(Show)
+pub type FnCallFreq Map[@core.FnRef, CallFrequncy] derive(Show)
 
 pub fn CallAnalysis::new(
   core : @core.Core,
@@ -12,7 +12,7 @@ pub fn CallAnalysis::new(
   { core, tracer }
 }
 
-pub enum CallFrequnce {
+pub enum CallFrequncy {
   Never
   Once
   Multiple

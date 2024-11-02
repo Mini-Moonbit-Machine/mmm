@@ -14,12 +14,17 @@
     let %0: int32 = add($f0, 1)
     let _ = alloc <m0: closure(closure(int32) -> int32, int32) -> int32 heap(1)> <- [0] = f15
     let %2: int32 = load_symbol ::0
-    let %3: closure(int32) -> int32 = call f3(f5.m0, %0, %2)
-    jump b1(%3)
+    jump b5(f5.m0, %0, %2)
   }
   .bb #b1 (closure(int32) -> int32) {
-    let %4: int32 = apply %3($f0)
+    let %4: int32 = apply $b1.0($f0)
     return %4
+  }
+  .bb #b5 (closure(closure(int32) -> int32, int32) -> int32, int32, int32) {
+    let %5: int32 = load_symbol ::0
+    let _ = alloc <m5: array[int32] heap(%0)> <- [..] = %5
+    let _ = alloc <m6: closure(int32) -> int32 heap(3)> <- [0] = f11, [1] = f5.m5, [2] = f5.m0
+    jump b1(f5.m6)
   }
 }
 .fn memed8l1_2 #f2 : fn(int32, array[int32], closure(closure(int32) -> int32, int32) -> int32, int32) -> int32
@@ -99,10 +104,7 @@
     let %0: int32 = ext_call minimbt_read_int()
     let %1: int32 = load_symbol ::0
     let %2: int32 = call f5(%0, %1)
-    jump b1(%2)
-  }
-  .bb #b1 (int32) {
-    let %3: unit = ext_call minimbt_print_int($b1.0)
+    let %3: unit = ext_call minimbt_print_int(%2)
     let %4: unit = ext_call minimbt_print_char(10)
     return ()
   }

@@ -5,6 +5,7 @@ alias @moonbitlang/minimbt/knf as @knf
 alias @moonbitlang/minimbt/util as @util
 
 // Values
+fn replace_all(Fn, BasicBlock, ~map : (Value) -> Value) -> Unit
 
 // Types and methods
 pub enum Address {
@@ -13,6 +14,7 @@ pub enum Address {
 }
 impl Address {
   op_equal(Self, Self) -> Bool
+  replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
 }
 
@@ -32,7 +34,8 @@ pub enum Block {
 }
 impl Block {
   all_basic_blocks(Self, Fn) -> Array[BasicBlock]
-  basic_block(Self, Fn) -> BasicBlock
+  bb_or_header_bb(Self, Fn) -> BasicBlock
+  is_basic_block(Self) -> Bool
   to_string(Self) -> String
 }
 
@@ -61,6 +64,7 @@ pub enum Control {
 }
 impl Control {
   op_equal(Self, Self) -> Bool
+  replace(Self, (Value) -> Value) -> Self
   successors(Self) -> Array[BlockRef]
   to_string(Self) -> String
 }
@@ -110,6 +114,7 @@ pub enum Fill {
 }
 impl Fill {
   op_equal(Self, Self) -> Bool
+  replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
 }
 
@@ -124,7 +129,8 @@ pub struct Fn {
   pub mems : @moonbitlang/core/hashmap.T[MemRef, Mem]
 }
 impl Fn {
-  next_block_id(Self) -> Int
+  next_block_id(Self) -> Id
+  to_pretty_print(Self) -> PrettyFn
   to_string(Self) -> String
 }
 
@@ -161,6 +167,7 @@ impl Id {
   hash_combine(Self, Hasher) -> Unit
   new(Int) -> Self
   op_equal(Self, Self) -> Bool
+  shift(Self, Int) -> Self
   to_string(Self) -> String
 }
 
@@ -176,6 +183,7 @@ pub enum Insn {
 }
 impl Insn {
   op_equal(Self, Self) -> Bool
+  replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
   ty(Self) -> Type
 }
@@ -189,21 +197,13 @@ impl InsnRef {
 }
 
 pub struct Loop {
-  pub id : LoopRef
-  pub parent : LoopRef
+  pub id : BlockRef
+  pub parent : BlockRef?
   pub header : BlockRef
   pub blocks : Array[BlockRef]
 }
 impl Loop {
   op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
-
-pub type LoopRef Id
-impl LoopRef {
-  hash_combine(Self, Hasher) -> Unit
-  op_equal(Self, Self) -> Bool
-  output(Self, Logger) -> Unit
   to_string(Self) -> String
 }
 
@@ -213,6 +213,7 @@ pub enum Mem {
 }
 impl Mem {
   op_equal(Self, Self) -> Bool
+  replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
 }
 
@@ -247,6 +248,14 @@ pub struct PrettyCore {
   pub core : Core
 }
 impl PrettyCore {
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct PrettyFn {
+  pub func : Fn
+}
+impl PrettyFn {
   output(Self, Logger) -> Unit
   to_string(Self) -> String
 }

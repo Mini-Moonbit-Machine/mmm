@@ -25,7 +25,7 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    let _ = alloc <m0: array[double] heap($f2)> <- [..] = 0
+    let _ = alloc <m0: array[double] heap($b0.2)> <- [..] = 0
     let _ = store array[double] offset($b0.1, $b0.0 * @ptr) <- f4.m0
     let %3: int32 = sub($b0.0, 1)
     jump b0(%3, $b0.1, $b0.2)
@@ -54,8 +54,7 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.3, 1)
-    let %2: unit = call f1(%1, $b0.1, $b0.2, $b0.4, $b0.5, $b0.0)
-    jump b6(%2)
+    jump b12(%1, $b0.1, $b0.2, $b0.4, $b0.5, $b0.0)
   }
   .bb #b2 () {
     jump b3(())
@@ -74,6 +73,64 @@
   .bb #b6 (unit) {
     let %3: int32 = sub($b0.0, 1)
     jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b7 (int32, array[array[double]], int32, array[array[double]], array[array[double]], int32) {
+    let %4: bool = le(0, $b7.0)
+    br %4 b8() b9()
+  }
+  .bb #b8 () {
+    let %5: int32 = sub($b7.2, 1)
+    jump b19(%5, $b7.1, $b7.3, $b7.4, $b7.5, $b7.0)
+  }
+  .bb #b9 () {
+    jump b10(())
+  }
+  .bb #b10 (unit) {
+    jump b6($b10.0)
+  }
+  .loop #b11 header #b7 {
+    .block #b8
+    .block #b9
+    .block #b10
+  }
+  .bb #b12 (int32, array[array[double]], int32, array[array[double]], array[array[double]], int32) {
+    jump b11(%1, $b0.1, $b0.2, $b0.4, $b0.5, $b0.0)
+  }
+  .bb #b13 (unit) {
+    let %7: int32 = sub($b7.0, 1)
+    jump b7(%7, $b7.1, $b7.2, $b7.3, $b7.4, $b7.5)
+  }
+  .bb #b14 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+    let %8: bool = le(0, $b14.0)
+    br %8 b15() b16()
+  }
+  .bb #b15 () {
+    let %9: array[double] = load array[double] offset($b14.3, $b14.4 * @ptr)
+    let %10: array[double] = load array[double] offset($b14.3, $b14.4 * @ptr)
+    let %11: double = load double offset(%10, $b14.5 * @64)
+    let %12: array[double] = load array[double] offset($b14.1, $b14.4 * @ptr)
+    let %13: double = load double offset(%12, $b14.0 * @64)
+    let %14: array[double] = load array[double] offset($b14.2, $b14.0 * @ptr)
+    let %15: double = load double offset(%14, $b14.5 * @64)
+    let %16: double = mul(%13, %15)
+    let %17: double = add(%11, %16)
+    let _ = store double offset(%9, $b14.5 * @64) <- %17
+    let %19: int32 = sub($b14.0, 1)
+    jump b14(%19, $b14.1, $b14.2, $b14.3, $b14.4, $b14.5)
+  }
+  .bb #b16 () {
+    jump b17(())
+  }
+  .bb #b17 (unit) {
+    jump b13($b17.0)
+  }
+  .loop #b18 header #b14 {
+    .block #b15
+    .block #b16
+    .block #b17
+  }
+  .bb #b19 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+    jump b18(%5, $b7.1, $b7.3, $b7.4, $b7.5, $b7.0)
   }
 }
 .fn loop322l3_0 #f0 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) -> unit
@@ -121,8 +178,7 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.2, 1)
-    let %2: unit = call f0(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0)
-    jump b6(%2)
+    jump b12(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0)
   }
   .bb #b2 () {
     jump b3(())
@@ -141,6 +197,38 @@
   .bb #b6 (unit) {
     let %3: int32 = sub($b0.0, 1)
     jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b7 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+    let %4: bool = le(0, $b7.0)
+    br %4 b8() b9()
+  }
+  .bb #b8 () {
+    let %5: array[double] = load array[double] offset($b7.3, $b7.4 * @ptr)
+    let %6: array[double] = load array[double] offset($b7.3, $b7.4 * @ptr)
+    let %7: double = load double offset(%6, $b7.5 * @64)
+    let %8: array[double] = load array[double] offset($b7.1, $b7.4 * @ptr)
+    let %9: double = load double offset(%8, $b7.0 * @64)
+    let %10: array[double] = load array[double] offset($b7.2, $b7.0 * @ptr)
+    let %11: double = load double offset(%10, $b7.5 * @64)
+    let %12: double = mul(%9, %11)
+    let %13: double = add(%7, %12)
+    let _ = store double offset(%5, $b7.5 * @64) <- %13
+    let %15: int32 = sub($b7.0, 1)
+    jump b7(%15, $b7.1, $b7.2, $b7.3, $b7.4, $b7.5)
+  }
+  .bb #b9 () {
+    jump b10(())
+  }
+  .bb #b10 (unit) {
+    jump b6($b10.0)
+  }
+  .loop #b11 header #b7 {
+    .block #b8
+    .block #b9
+    .block #b10
+  }
+  .bb #b12 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+    jump b11(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0)
   }
 }
 .fn matmul1l0_3 #f3 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
@@ -185,9 +273,6 @@
     let %26: array[double] = load array[double] field(%2, 2 * @ptr)
     let _ = store double field(%26, 1 * @64) <- 12
     let %28: unit = call f3(2, 3, 2, %1, %2, %3)
-    jump b1(%28)
-  }
-  .bb #b1 (unit) {
     let %29: array[double] = load array[double] field(%3, 0 * @ptr)
     let %30: double = load double field(%29, 0 * @64)
     let %31: int32 = conv.d2i.rtz(%30)

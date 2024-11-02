@@ -89,9 +89,9 @@ init_arr63l3_4:
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s1, a2
   mv s2, a0
   mv s0, a1
+  mv s1, a2
 
 .init_arr63l3_4_0:
   blt s2, zero, .init_arr63l3_4_2
@@ -126,56 +126,108 @@ init_arr63l3_4:
 
   .p2align 2
   .text
-  .globl loop218l2_1
-  .type loop218l2_1, @function
-# leaf false
-loop218l2_1:
-.loop218l2_1_5:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
-  mv s3, a3
-  mv s4, a4
-  mv s5, a5
+  .globl loop114l1_2
+  .type loop114l1_2, @function
+# leaf true
+loop114l1_2:
+.loop114l1_2_5:
+  addi sp, sp, -16
+  sd s0, 0(sp)
+  sd s1, 8(sp)
+  mv a7, a0
+  mv a6, a1
+  mv a1, a3
+  mv a3, a4
+  mv a0, a5
+  mv a4, a7
+  mv a5, a3
+  mv a3, a0
 
-.loop218l2_1_0:
-  blt s0, zero, .loop218l2_1_2
+.loop114l1_2_0:
+  blt a4, zero, .loop114l1_2_2
 
-.loop218l2_1_1:
-  addi a0, s2, -1
-  mv a1, s1
-  mv a2, s3
-  mv a3, s4
-  mv a4, s5
-  mv a5, s0
-  call loop322l3_0
+.loop114l1_2_1:
+  addi a0, a1, -1
 
-.loop218l2_1_6:
-  addi a0, s0, -1
-  mv s0, a0
-  j .loop218l2_1_0
+.loop114l1_2_12:
 
-.loop218l2_1_2:
+.loop114l1_2_7:
+  blt a0, zero, .loop114l1_2_9
+
+.loop114l1_2_8:
+  addi a7, a2, -1
+  mv t0, a6
+  mv t1, a5
+  mv t2, a3
+  mv t3, a4
+
+.loop114l1_2_19:
+  mv t0, a7
+  mv t2, a6
+  mv t1, a5
+  mv t3, a3
+  mv t4, a4
+
+.loop114l1_2_14:
+  blt t0, zero, .loop114l1_2_16
+
+.loop114l1_2_15:
+  slliw a7, t4, 3
+  add a7, t3, a7
+  ld a7, 0(a7)
+  slliw s0, t4, 3
+  add s0, t3, s0
+  ld s0, 0(s0)
+  slliw s1, a0, 3
+  add s0, s0, s1
+  fld fa0, 0(s0)
+  slliw s0, t4, 3
+  add s0, t2, s0
+  ld s0, 0(s0)
+  slliw s1, t0, 3
+  add s0, s0, s1
+  fld fa1, 0(s0)
+  slliw s0, t0, 3
+  add s0, t1, s0
+  ld s0, 0(s0)
+  slliw s1, a0, 3
+  add s0, s0, s1
+  fld fa2, 0(s0)
+  fmadd.d fa0, fa1, fa2, fa0
+  slliw s0, a0, 3
+  add a7, a7, s0
+  fsd fa0, 0(a7)
+  addi a7, t0, -1
+  mv t0, a7
+  j .loop114l1_2_14
+
+.loop114l1_2_2:
   mv a0, zero
 
-.loop218l2_1_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  addi sp, sp, 64
+.loop114l1_2_3:
+  ld s0, 0(sp)
+  ld s1, 8(sp)
+  addi sp, sp, 16
   ret
+
+.loop114l1_2_9:
+  mv a0, zero
+
+.loop114l1_2_10:
+
+.loop114l1_2_6:
+  addi a0, a4, -1
+  mv a4, a0
+  j .loop114l1_2_0
+
+.loop114l1_2_16:
+  mv a7, zero
+
+.loop114l1_2_17:
+
+.loop114l1_2_13:
+  addi a0, a0, -1
+  j .loop114l1_2_7
 
   .p2align 2
   .text
@@ -283,8 +335,6 @@ main53l1_6:
   mv a4, s2
   mv a5, s0
   call matmul1l0_3
-
-.main53l1_6_1:
   ld a0, 0(s0)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
@@ -310,128 +360,6 @@ main53l1_6:
   ld s1, 16(sp)
   ld s2, 24(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_14
-  .type T$start_14, @function
-# leaf false
-T$start_14:
-.T$start_14_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main53l1_6
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl loop114l1_2
-  .type loop114l1_2, @function
-# leaf false
-loop114l1_2:
-.loop114l1_2_5:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  mv s5, a0
-  mv s4, a1
-  mv s1, a2
-  mv s0, a3
-  mv s3, a4
-  mv s2, a5
-
-.loop114l1_2_0:
-  blt s5, zero, .loop114l1_2_2
-
-.loop114l1_2_1:
-  addi a0, s0, -1
-  mv a1, s4
-  mv a2, s1
-  mv a3, s3
-  mv a4, s2
-  mv a5, s5
-  call loop218l2_1
-
-.loop114l1_2_6:
-  addi a0, s5, -1
-  mv s5, a0
-  j .loop114l1_2_0
-
-.loop114l1_2_2:
-  mv a0, zero
-
-.loop114l1_2_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl loop322l3_0
-  .type loop322l3_0, @function
-# leaf true
-loop322l3_0:
-.loop322l3_0_5:
-  mv a7, a0
-  mv a6, a1
-  mv a1, a3
-  mv a3, a4
-  mv a0, a5
-  mv a4, a7
-  mv a5, a3
-  mv a3, a0
-
-.loop322l3_0_0:
-  blt a4, zero, .loop322l3_0_2
-
-.loop322l3_0_1:
-  slliw a0, a5, 3
-  add a0, a1, a0
-  ld a0, 0(a0)
-  slliw a7, a5, 3
-  add a7, a1, a7
-  ld a7, 0(a7)
-  slliw t0, a3, 3
-  add a7, a7, t0
-  fld fa0, 0(a7)
-  slliw a7, a5, 3
-  add a7, a6, a7
-  ld a7, 0(a7)
-  slliw t0, a4, 3
-  add a7, a7, t0
-  fld fa1, 0(a7)
-  slliw a7, a4, 3
-  add a7, a2, a7
-  ld a7, 0(a7)
-  slliw t0, a3, 3
-  add a7, a7, t0
-  fld fa2, 0(a7)
-  fmadd.d fa0, fa1, fa2, fa0
-  slliw a7, a3, 3
-  add a0, a0, a7
-  fsd fa0, 0(a0)
-  addi a0, a4, -1
-  mv a4, a0
-  j .loop322l3_0_0
-
-.loop322l3_0_2:
-  mv a0, zero
-
-.loop322l3_0_3:
   ret
 
   .p2align 2
@@ -454,6 +382,20 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_14
+  .type T$start_14, @function
+# leaf false
+T$start_14:
+.T$start_14_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main53l1_6
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

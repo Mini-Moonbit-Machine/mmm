@@ -45,8 +45,20 @@ fannkuch1l0_8:
   sd s5, 48(sp)
   mv s1, a0
   mv a0, s1
-  call gen_perm14l1_1
-  mv s0, a0
+
+.fannkuch1l0_8_13:
+  slliw a0, s1, 2
+  sub a0, s11, a0
+  andi s0, a0, -8
+  mv s11, s0
+  mv a1, s1
+  mv a0, s0
+  mv a2, zero
+  call memseti32
+  mv a0, zero
+  mv a1, s0
+  mv a2, s1
+  call init_arr9l2_0
 
 .fannkuch1l0_8_1:
   slliw a0, s1, 2
@@ -132,8 +144,6 @@ main262l1_9:
   sd s0, 8(sp)
   li a0, 9
   call fannkuch1l0_8
-
-.main262l1_9_1:
   lw s0, 0(a0)
   lw a0, 4(a0)
   call minimbt_print_int
@@ -183,40 +193,12 @@ init_count59l3_3:
 
   .p2align 2
   .text
-  .globl copy_perm46l2_2
-  .type copy_perm46l2_2, @function
-# leaf true
-copy_perm46l2_2:
-.copy_perm46l2_2_5:
-
-.copy_perm46l2_2_0:
-  addi a4, a1, -1
-  blt a4, a0, .copy_perm46l2_2_2
-
-.copy_perm46l2_2_1:
-  slliw a4, a0, 2
-  add a4, a3, a4
-  lw a4, 0(a4)
-  slliw a5, a0, 2
-  add a5, a2, a5
-  sw a4, 0(a5)
-  addi a0, a0, 1
-  j .copy_perm46l2_2_0
-
-.copy_perm46l2_2_2:
-  mv a0, zero
-
-.copy_perm46l2_2_3:
-  ret
-
-  .p2align 2
-  .text
   .globl compute40_19
   .type compute40_19, @function
 # leaf false
 compute40_19:
 .compute40_19_8:
-  addi sp, sp, -80
+  addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -227,91 +209,50 @@ compute40_19:
   sd s6, 56(sp)
   sd s7, 64(sp)
   sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
   mv a1, s10
   lw s8, 8(a1)
-  ld s5, 16(a1)
-  ld s1, 24(a1)
-  ld s6, 32(a1)
-  ld s4, 40(a1)
-  ld s3, 48(a1)
+  ld s4, 16(a1)
+  ld s0, 24(a1)
+  ld s5, 32(a1)
+  ld s3, 40(a1)
+  ld s2, 48(a1)
   ld s7, 56(a1)
-  ld s2, 64(a1)
-  mv s0, a0
+  ld s1, 64(a1)
+  mv s6, a0
 
 .compute40_19_0:
-  lw a0, 0(s0)
+  lw a0, 0(s6)
   li a1, 1
   blt a0, a1, .compute40_19_2
 
 .compute40_19_1:
   mv a0, zero
   mv a1, s8
-  mv a2, s5
-  mv a3, s1
-  call copy_perm46l2_2
-
-.compute40_19_9:
-  mv a0, s0
-  mv a1, s6
-  call init_count59l3_3
-  sw zero, 0(s4)
-  lw a0, 0(s5)
-  addi a1, s11, -4
-  andi a1, a1, -8
-  mv s11, a1
-  sw a0, 0(a1)
-  mv a0, a1
-  mv a1, s5
   mv a2, s4
-  call do_flip90l4_5
-
-.compute40_19_10:
-  lw a0, 0(s3)
-  lw a1, 0(s4)
-  blt a1, a0, .compute40_19_4
-
-.compute40_19_3:
-  lw a0, 0(s4)
-  sw a0, 0(s3)
-  mv a0, zero
-
-.compute40_19_5:
-  lw a0, 0(s7)
-  lw a1, 0(s4)
-  lw a2, 0(s2)
-  lw a3, 0(s2)
-  li a4, 2
-  div a3, a3, a4
-  li a4, 2
-  mul a3, a3, a4
-  sub a2, a2, a3
-  li a3, 2
-  mul a2, a2, a3
-  li a3, 1
-  sub a2, a3, a2
-  mul a1, a1, a2
-  add a0, a0, a1
-  sw a0, 0(s7)
-  addi a0, s11, -4
-  andi a1, a0, -8
-  mv s11, a1
-  li a0, 1
-  sw a0, 0(a1)
-  addi a0, s11, -4
-  andi a0, a0, -8
-  mv s11, a0
-  sw zero, 0(a0)
-  mv a2, s8
   mv a3, s0
-  mv a4, s6
-  mv a5, s1
-  call go_loop179l5_7
 
-.compute40_19_11:
-  lw a0, 0(s2)
-  addi a0, a0, 1
-  sw a0, 0(s2)
-  j .compute40_19_0
+.compute40_19_45:
+  mv a1, zero
+  mv a4, s8
+  mv a2, s4
+  mv a3, s0
+
+.compute40_19_40:
+  addi a0, a4, -1
+  blt a0, a1, .compute40_19_42
+
+.compute40_19_41:
+  slliw a0, a1, 2
+  add a0, a3, a0
+  lw a0, 0(a0)
+  slliw a5, a1, 2
+  add a5, a2, a5
+  sw a0, 0(a5)
+  addi a0, a1, 1
+  mv a1, a0
+  j .compute40_19_40
 
 .compute40_19_2:
   mv a0, zero
@@ -327,12 +268,179 @@ compute40_19:
   ld s6, 56(sp)
   ld s7, 64(sp)
   ld s8, 72(sp)
-  addi sp, sp, 80
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  addi sp, sp, 96
   ret
+
+.compute40_19_42:
+  mv a0, zero
+
+.compute40_19_43:
+
+.compute40_19_9:
+  mv a0, s6
+  mv a1, s5
+  call init_count59l3_3
+  sw zero, 0(s3)
+  lw a0, 0(s4)
+  addi a1, s11, -4
+  andi a1, a1, -8
+  mv s11, a1
+  sw a0, 0(a1)
+  mv a0, a1
+  mv a2, s4
+  mv a3, s3
+
+.compute40_19_36:
+  mv s9, a1
+
+.compute40_19_31:
+  lw a0, 0(s9)
+  beq a0, zero, .compute40_19_32
+
+.compute40_19_33:
+  addi a0, s11, -4
+  andi a1, a0, -8
+  mv s11, a1
+  sw zero, 0(a1)
+  mv a0, zero
+  mv a2, s9
+  mv a3, s4
+  call flip_loop99l5_4
+
+.compute40_19_37:
+  lw a0, 0(s4)
+  sw a0, 0(s9)
+  lw a0, 0(s3)
+  addi a0, a0, 1
+  sw a0, 0(s3)
+  j .compute40_19_31
+
+.compute40_19_32:
+  mv a0, zero
+
+.compute40_19_34:
+
+.compute40_19_10:
+  lw a0, 0(s2)
+  lw a1, 0(s3)
+  blt a1, a0, .compute40_19_4
+
+.compute40_19_3:
+  lw a0, 0(s3)
+  sw a0, 0(s2)
+  mv a0, zero
+
+.compute40_19_5:
+  lw a0, 0(s7)
+  lw a1, 0(s3)
+  lw a2, 0(s1)
+  lw a3, 0(s1)
+  li a4, 2
+  div a3, a3, a4
+  li a4, 2
+  mul a3, a3, a4
+  sub a2, a2, a3
+  li a3, 2
+  mul a2, a2, a3
+  li a3, 1
+  sub a2, a3, a2
+  mul a1, a1, a2
+  add a0, a0, a1
+  sw a0, 0(s7)
+  addi a0, s11, -4
+  andi a0, a0, -8
+  mv s11, a0
+  li a1, 1
+  sw a1, 0(a0)
+  addi a1, s11, -4
+  andi a1, a1, -8
+  mv s11, a1
+  sw zero, 0(a1)
+  mv a2, s8
+  mv a3, s6
+  mv a4, s5
+  mv a5, s0
+
+.compute40_19_57:
+  mv s9, a1
+  mv s10, a0
+
+.compute40_19_46:
+  lw a0, 0(s10)
+  li a1, 1
+  bne a0, a1, .compute40_19_48
+
+.compute40_19_47:
+  lw a0, 0(s6)
+  beq a0, s8, .compute40_19_49
+
+.compute40_19_50:
+  lw a0, 0(s0)
+  sw a0, 0(s9)
+  mv a0, zero
+  mv a1, s6
+  mv a2, s0
+  call move_perm1_forward197l6_6
+  lw a0, 0(s6)
+  lw a1, 0(s9)
+  slliw a0, a0, 2
+  add a0, s0, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  lw a1, 0(s6)
+  slliw a1, a1, 2
+  add a1, s5, a1
+  lw a1, 0(a1)
+  addi a1, a1, -1
+  slliw a0, a0, 2
+  add a0, s5, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  slliw a0, a0, 2
+  add a0, s5, a0
+  lw a0, 0(a0)
+  li a1, 1
+  bge a0, a1, .compute40_19_51
+
+.compute40_19_52:
+  lw a0, 0(s6)
+  addi a0, a0, 1
+  sw a0, 0(s6)
+  mv a0, zero
+
+.compute40_19_53:
+  mv a0, zero
+
+.compute40_19_54:
+  j .compute40_19_46
 
 .compute40_19_4:
   mv a0, zero
   j .compute40_19_5
+
+.compute40_19_48:
+  mv a0, zero
+
+.compute40_19_55:
+
+.compute40_19_11:
+  lw a0, 0(s1)
+  addi a0, a0, 1
+  sw a0, 0(s1)
+  j .compute40_19_0
+
+.compute40_19_49:
+  sw zero, 0(s10)
+  sw zero, 0(s6)
+  mv a0, zero
+  j .compute40_19_54
+
+.compute40_19_51:
+  sw zero, 0(s10)
+  mv a0, zero
+  j .compute40_19_53
 
   .p2align 2
   .text
@@ -363,182 +471,6 @@ init_arr9l2_0:
 
 .init_arr9l2_0_3:
   ret
-
-  .p2align 2
-  .text
-  .globl gen_perm14l1_1
-  .type gen_perm14l1_1, @function
-# leaf false
-gen_perm14l1_1:
-.gen_perm14l1_1_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  mv s0, a0
-  slliw a0, s0, 2
-  sub a0, s11, a0
-  andi s1, a0, -8
-  mv s11, s1
-  mv a1, s0
-  mv a0, s1
-  mv a2, zero
-  call memseti32
-  mv a0, zero
-  mv a1, s1
-  mv a2, s0
-  call init_arr9l2_0
-  mv a0, s1
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl do_flip90l4_5
-  .type do_flip90l4_5, @function
-# leaf false
-do_flip90l4_5:
-.do_flip90l4_5_5:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
-
-.do_flip90l4_5_0:
-  lw a0, 0(s2)
-  beq a0, zero, .do_flip90l4_5_1
-
-.do_flip90l4_5_2:
-  addi a0, s11, -4
-  andi a1, a0, -8
-  mv s11, a1
-  sw zero, 0(a1)
-  mv a0, zero
-  mv a2, s2
-  mv a3, s0
-  call flip_loop99l5_4
-
-.do_flip90l4_5_6:
-  lw a0, 0(s0)
-  sw a0, 0(s2)
-  lw a0, 0(s1)
-  addi a0, a0, 1
-  sw a0, 0(s1)
-  j .do_flip90l4_5_0
-
-.do_flip90l4_5_1:
-  mv a0, zero
-
-.do_flip90l4_5_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl go_loop179l5_7
-  .type go_loop179l5_7, @function
-# leaf false
-go_loop179l5_7:
-.go_loop179l5_7_11:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  mv s3, a0
-  mv s5, a1
-  mv s1, a2
-  mv s0, a3
-  mv s4, a4
-  mv s2, a5
-
-.go_loop179l5_7_0:
-  lw a0, 0(s5)
-  li a1, 1
-  bne a0, a1, .go_loop179l5_7_2
-
-.go_loop179l5_7_1:
-  lw a0, 0(s0)
-  beq a0, s1, .go_loop179l5_7_3
-
-.go_loop179l5_7_4:
-  lw a0, 0(s2)
-  sw a0, 0(s3)
-  mv a0, zero
-  mv a1, s0
-  mv a2, s2
-  call move_perm1_forward197l6_6
-  lw a0, 0(s0)
-  lw a1, 0(s3)
-  slliw a0, a0, 2
-  add a0, s2, a0
-  sw a1, 0(a0)
-  lw a0, 0(s0)
-  lw a1, 0(s0)
-  slliw a1, a1, 2
-  add a1, s4, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slliw a0, a0, 2
-  add a0, s4, a0
-  sw a1, 0(a0)
-  lw a0, 0(s0)
-  slliw a0, a0, 2
-  add a0, s4, a0
-  lw a0, 0(a0)
-  li a1, 1
-  bge a0, a1, .go_loop179l5_7_5
-
-.go_loop179l5_7_6:
-  lw a0, 0(s0)
-  addi a0, a0, 1
-  sw a0, 0(s0)
-  mv a0, zero
-
-.go_loop179l5_7_7:
-  mv a0, zero
-
-.go_loop179l5_7_8:
-  j .go_loop179l5_7_0
-
-.go_loop179l5_7_2:
-  mv a0, zero
-
-.go_loop179l5_7_9:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  addi sp, sp, 64
-  ret
-
-.go_loop179l5_7_3:
-  sw zero, 0(s5)
-  sw zero, 0(s0)
-  mv a0, zero
-  j .go_loop179l5_7_8
-
-.go_loop179l5_7_5:
-  sw zero, 0(s5)
-  mv a0, zero
-  j .go_loop179l5_7_7
 
   .p2align 2
   .text

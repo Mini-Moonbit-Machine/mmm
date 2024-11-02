@@ -6,6 +6,14 @@ pub fn Core::to_pretty_print(self : Core) -> PrettyCore {
   { core: self }
 }
 
+pub struct PrettyFn {
+  func : Fn
+}
+
+pub fn Fn::to_pretty_print(self : Fn) -> PrettyFn {
+  { func: self }
+}
+
 fn print_op(logger : @util.IndentLogger, op : Op) -> Unit {
   match op {
     Add => logger.write_string("add")
@@ -346,5 +354,14 @@ pub fn output(self : PrettyCore, logger : Logger) -> Unit {
 }
 
 pub fn to_string(self : PrettyCore) -> String {
+  Show::to_string(self)
+}
+
+pub fn output(self : PrettyFn, logger : Logger) -> Unit {
+  let indent_logger = @util.IndentLogger::new(logger)
+  print_func(indent_logger, self.func)
+}
+
+pub fn to_string(self : PrettyFn) -> String {
   Show::to_string(self)
 }

@@ -203,7 +203,7 @@ fn CoreInterpreter::eval_block(
 ) -> Object!Failure {
   match block {
     BasicBlock(~bb) => self.eval_bb!(ctx, func, bb)
-    Loop(_) => fail!("Not implemented")
+    Loop(~l) => self.eval_block!(ctx, func, func.blocks[l.header].unwrap())
   }
 }
 
@@ -612,6 +612,7 @@ fn CoreInterpreter::eval_control(
         None => return fail!("block not found: \{target}")
       }
       let args2 = CoreInterpreter::eval_values!(ctx, args)
+      let target = block.bb_or_header_bb(func).id
       let ctx = ctx.set_block_args(target, args2)
       self.eval_block!(ctx, func, block)
     }
@@ -700,7 +701,7 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
     BlockParam(~bref, bpref=BlockParamRef({ id })) => {
       let blkargs = match ctx.blkargs.find(bref) {
         Some(args) => args
-        None => fail!("block args not found")
+        None => fail!("block args not found: \{bref}")
       }
       if id < blkargs.length() {
         blkargs[id]

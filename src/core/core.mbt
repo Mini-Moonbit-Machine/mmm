@@ -8,6 +8,10 @@ pub fn Id::new(id : Int) -> Id {
   { id, }
 }
 
+pub fn Id::shift(self : Id, shift : Int) -> Id {
+  Id::new(self.id + shift)
+}
+
 pub type FnRef Id derive(Eq, Hash)
 
 pub type BlockRef Id derive(Eq, Hash)
@@ -122,7 +126,7 @@ pub struct Fn {
 
 pub struct BasicBlock {
   id : BlockRef
-  params : Array[Type]
+  mut params : Array[Type]
   seq : Array[InsnRef]
   mut control : Control
 } derive(Show)
@@ -502,79 +506,103 @@ fn Op::from_knf(knf : @knf.Knf) -> Op? {
   }
 }
 
+pub fn replace(self : Address, map : (Value) -> Value) -> Address {
+  match self {
+    Field(~ty, ~val, ~index, ~width) =>
+      Address::Field(~ty, val=map(val), ~index, ~width)
+    Offset(~ty, ~val, ~offset, ~width) =>
+      Address::Offset(~ty, val=map(val), offset=map(offset), ~width)
+  }
+}
+
+pub fn replace(self : Mem, map : (Value) -> Value) -> Mem {
+  match self {
+    Heap(~ty, ~len) => Heap(~ty, len=map(len))
+    Stack(~ty, ~len) => Stack(~ty, len=map(len))
+  }
+}
+
+pub fn replace(self : Fill, map : (Value) -> Value) -> Fill {
+  match self {
+    Zero => Zero
+    Init(~val) => Init(val=map(val))
+    Field(~index, ~val) => Field(~index, val=map(val))
+  }
+}
+
+pub fn replace(self : Insn, map : (Value) -> Value) -> Insn {
+  match self {
+    Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(map))
+    Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(map))
+    Apply(~ty, ~f, ~args) => Apply(~ty, f=map(f), args=args.map(map))
+    ExtCall(~ty, ~ext_f, ~args) => ExtCall(~ty, ~ext_f, args=args.map(map))
+    LoadSymbol(..) => self
+    Alloc(~ty, ~mref, ~fills) =>
+      Alloc(~ty, ~mref, fills=fills.map(fn(rf) { rf.replace(map) }))
+    Store(~ty, ~ma, ~val) => Store(~ty, ma=ma.replace(map), val=map(val))
+    Load(~ty, ~ma) => Load(~ty, ma=ma.replace(map))
+  }
+}
+
+pub fn replace(self : Control, map : (Value) -> Value) -> Control {
+  match self {
+    Jump(~target, ~args) => Jump(~target, args=args.map(map))
+    Return(~args) => Return(args=args.map(map))
+    Branch(~cond, ~t_args, ~f_args, ~t, ~f) =>
+      Branch(
+        cond=map(cond),
+        t_args=t_args.map(map),
+        f_args=f_args.map(map),
+        ~t,
+        ~f,
+      )
+    Select(~cond, ~targets, ~args) =>
+      Select(cond=map(cond), ~targets, args=args.map(map))
+    Panic => Panic
+  }
+}
+
+pub fn replace_all(
+  func : Fn,
+  block : BasicBlock,
+  ~map : (Value) -> Value
+) -> Unit {
+  // enumerate instructions
+  let insn_updates = []
+  let bb = func.blocks[block.id].unwrap().bb_or_header_bb(func)
+  for iref in bb.seq {
+    let insn = func.insns[iref].unwrap()
+    let new_insn = insn.replace(map)
+    insn_updates.push((iref, new_insn))
+  }
+
+  // enumerate controls
+  let bb = bb
+  bb.control = bb.control.replace(map)
+  // bulk update
+  for insnpair in insn_updates {
+    let (handle, new_insn) = insnpair
+    func.insns.set(handle, new_insn)
+  }
+  let mem_updates = []
+  for mem in func.mems {
+    let (mref, mem) = mem
+    let new_mem = mem.replace(map)
+    mem_updates.push((mref, new_mem))
+  }
+  for mempair in mem_updates {
+    let (handle, new_mem) = mempair
+    func.mems.set(handle, new_mem)
+  }
+}
+
 pub fn Value::replace_all_uses_with(
   self : Value,
   func : Fn,
   block : BasicBlock,
   value : Value
 ) -> Unit {
-  fn replace(v : Value) -> Value {
-    if v == self {
-      value
-    } else {
-      v
-    }
-  }
-
-  fn replace_addr(addr : Address) -> Address {
-    match addr {
-      Field(~ty, ~val, ~index, ~width) =>
-        Address::Field(~ty, val=replace(val), ~index, ~width)
-      Offset(~ty, ~val, ~offset, ~width) =>
-        Address::Offset(~ty, val=replace(val), offset=replace(offset), ~width)
-    }
-  }
-
-  fn replace_fill(fill : Fill) -> Fill {
-    match fill {
-      Zero => Zero
-      Init(~val) => Init(val=replace(val))
-      Field(~index, ~val) => Field(~index, val=replace(val))
-    }
-  }
-
-  // enumerate instructions
-  let insn_updates = []
-  let bb = func.blocks[block.id].unwrap().bb_or_header_bb(func)
-  for iref in bb.seq {
-    let insn = func.insns[iref].unwrap()
-    // check if old value is a child of the instruction
-    let new_insn = match insn {
-      Op(~ty, ~op, ~args) => Op(~ty, ~op, args=args.map(replace))
-      Call(~ty, ~f, ~args) => Call(~ty, ~f, args=args.map(replace))
-      Apply(~ty, ~f, ~args) => Apply(~ty, ~f, args=args.map(replace))
-      ExtCall(~ty, ~ext_f, ~args) =>
-        ExtCall(~ty, ~ext_f, args=args.map(replace))
-      LoadSymbol(..) => insn
-      Alloc(~ty, ~mref, ~fills) =>
-        Alloc(~ty, ~mref, fills=fills.map(replace_fill))
-      Store(~ty, ~ma, ~val) => Store(~ty, ma=replace_addr(ma), val=replace(val))
-      Load(~ty, ~ma) => Load(~ty, ma=replace_addr(ma))
-    }
-    insn_updates.push((iref, new_insn))
-  }
-  // enumerate controls
-  let bb = bb
-  bb.control = match bb.control {
-    Jump(~target, ~args) => Jump(~target, args=args.map(replace))
-    Return(~args) => Return(args=args.map(replace))
-    Branch(~cond, ~t_args, ~f_args, ~t, ~f) =>
-      Branch(
-        cond=replace(cond),
-        t_args=t_args.map(replace),
-        f_args=f_args.map(replace),
-        ~t,
-        ~f,
-      )
-    Select(~cond, ~targets, ~args) =>
-      Select(cond=replace(cond), ~targets, args=args.map(replace))
-    Panic => Panic
-  }
-  // bulk update
-  for insnpair in insn_updates {
-    let (handle, new_insn) = insnpair
-    func.insns.set(handle, new_insn)
-  }
+  replace_all(func, block, map=fn(v) { if v == self { value } else { v } })
 }
 
 pub impl Hash for Value with hash_combine(self, hasher) {

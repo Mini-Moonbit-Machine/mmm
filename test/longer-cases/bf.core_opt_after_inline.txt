@@ -134,8 +134,7 @@
   }
   .bb #b15 () {
     let _ = store int32 field($b0.5, 0 * @32) <- $b0.0
-    let %44: unit = call f2($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
-    jump b30(%44)
+    jump b54($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
   }
   .bb #b16 () {
     let %48: bool = eq(%1, 93)
@@ -210,6 +209,103 @@
     let %45: int32 = load int32 field($b0.5, 0 * @32)
     let %46: int32 = add(%45, 1)
     jump b0(%46, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b49 (array[int32], int32, int32, array[int32], array[int32], array[int32]) {
+    let %49: int32 = load int32 field($b49.0, 0 * @32)
+    let %50: int32 = load int32 offset($b49.3, %49 * @32)
+    let %51: bool = eq(%50, 0)
+    br %51 b50() b51()
+  }
+  .bb #b50 () {
+    let %52: int32 = add($b49.2, 1)
+    jump b72(%52, 0, $b49.1, $b49.4)
+  }
+  .bb #b51 () {
+    let %55: int32 = add($b49.2, 1)
+    let %56: int32 = call f3(%55, $b49.0, $b49.1, $b49.3, $b49.4, $b49.5)
+    let _ = store int32 field($b49.5, 0 * @32) <- %56
+    jump b49($b49.0, $b49.1, $b49.2, $b49.3, $b49.4, $b49.5)
+  }
+  .bb #b52 (unit) {
+    jump b30($b52.0)
+  }
+  .loop #b53 header #b49 {
+    .block #b50
+    .block #b51
+    .block #b52
+  }
+  .bb #b54 (array[int32], int32, int32, array[int32], array[int32], array[int32]) {
+    jump b53($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b55 (int32) {
+    let _ = store int32 field($b49.5, 0 * @32) <- $b55.0
+    jump b52(())
+  }
+  .bb #b58 (int32, int32, int32, array[int32]) {
+    let %58: bool = le($b58.2, $b58.0)
+    br %58 b59() b60()
+  }
+  .bb #b59 () {
+    jump b70($b58.0)
+  }
+  .bb #b60 () {
+    let %59: int32 = load int32 offset($b58.3, $b58.0 * @32)
+    let %60: bool = eq(%59, 91)
+    br %60 b61() b62()
+  }
+  .bb #b61 () {
+    let %61: int32 = add($b58.0, 1)
+    let %62: int32 = add($b58.1, 1)
+    jump b58(%61, %62, $b58.2, $b58.3)
+  }
+  .bb #b62 () {
+    let %64: bool = eq(%59, 93)
+    br %64 b63() b64()
+  }
+  .bb #b63 () {
+    let %65: bool = eq($b58.1, 0)
+    br %65 b65() b66()
+  }
+  .bb #b64 () {
+    let %69: int32 = add($b58.0, 1)
+    jump b58(%69, $b58.1, $b58.2, $b58.3)
+  }
+  .bb #b65 () {
+    jump b67($b58.0)
+  }
+  .bb #b66 () {
+    let %66: int32 = add($b58.0, 1)
+    let %67: int32 = sub($b58.1, 1)
+    jump b58(%66, %67, $b58.2, $b58.3)
+  }
+  .bb #b67 (int32) {
+    jump b68($b67.0)
+  }
+  .bb #b68 (int32) {
+    jump b69($b68.0)
+  }
+  .bb #b69 (int32) {
+    jump b70($b69.0)
+  }
+  .bb #b70 (int32) {
+    jump b55($b70.0)
+  }
+  .loop #b71 header #b58 {
+    .block #b64
+    .block #b70
+    .block #b62
+    .block #b66
+    .block #b67
+    .block #b59
+    .block #b68
+    .block #b69
+    .block #b63
+    .block #b60
+    .block #b61
+    .block #b65
+  }
+  .bb #b72 (int32, int32, int32, array[int32]) {
+    jump b71(%52, 0, $b49.1, $b49.4)
   }
 }
 .fn skip21l2_1 #f1 : fn(int32, int32, int32, array[int32]) -> int32
@@ -339,8 +435,7 @@
   }
   .bb #b1 () {
     let %3: int32 = add($b0.2, 1)
-    let %4: int32 = call f1(%3, 0, $b0.1, $b0.4)
-    jump b6(%4)
+    jump b23(%3, 0, $b0.1, $b0.4)
   }
   .bb #b2 () {
     let %6: int32 = add($b0.2, 1)
@@ -362,6 +457,72 @@
   .bb #b6 (int32) {
     let _ = store int32 field($b0.5, 0 * @32) <- $b6.0
     jump b3(())
+  }
+  .bb #b9 (int32, int32, int32, array[int32]) {
+    let %9: bool = le($b9.2, $b9.0)
+    br %9 b10() b11()
+  }
+  .bb #b10 () {
+    jump b21($b9.0)
+  }
+  .bb #b11 () {
+    let %10: int32 = load int32 offset($b9.3, $b9.0 * @32)
+    let %11: bool = eq(%10, 91)
+    br %11 b12() b13()
+  }
+  .bb #b12 () {
+    let %12: int32 = add($b9.0, 1)
+    let %13: int32 = add($b9.1, 1)
+    jump b9(%12, %13, $b9.2, $b9.3)
+  }
+  .bb #b13 () {
+    let %15: bool = eq(%10, 93)
+    br %15 b14() b15()
+  }
+  .bb #b14 () {
+    let %16: bool = eq($b9.1, 0)
+    br %16 b16() b17()
+  }
+  .bb #b15 () {
+    let %20: int32 = add($b9.0, 1)
+    jump b9(%20, $b9.1, $b9.2, $b9.3)
+  }
+  .bb #b16 () {
+    jump b18($b9.0)
+  }
+  .bb #b17 () {
+    let %17: int32 = add($b9.0, 1)
+    let %18: int32 = sub($b9.1, 1)
+    jump b9(%17, %18, $b9.2, $b9.3)
+  }
+  .bb #b18 (int32) {
+    jump b19($b18.0)
+  }
+  .bb #b19 (int32) {
+    jump b20($b19.0)
+  }
+  .bb #b20 (int32) {
+    jump b21($b20.0)
+  }
+  .bb #b21 (int32) {
+    jump b6($b21.0)
+  }
+  .loop #b22 header #b9 {
+    .block #b15
+    .block #b21
+    .block #b13
+    .block #b17
+    .block #b18
+    .block #b10
+    .block #b19
+    .block #b20
+    .block #b14
+    .block #b11
+    .block #b12
+    .block #b16
+  }
+  .bb #b23 (int32, int32, int32, array[int32]) {
+    jump b22(%3, 0, $b0.1, $b0.4)
   }
 }
 .thunk ::0 start

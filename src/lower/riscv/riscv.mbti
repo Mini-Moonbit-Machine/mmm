@@ -46,10 +46,11 @@ pub struct Liveness {
   pub mfunc : MFn
   pub block_info : @hashmap.T[String, BlockInfo]
   pub iter_block_info : @hashmap.T[String, IteratedBlockInfo]
+  pub tracer : @util.SubTracer
 }
 impl Liveness {
   compute_block_liveness(Self) -> Unit
-  new(@core.Fn?, MFn) -> Self
+  new(@core.Fn?, MFn, @util.SubTracer) -> Self
 }
 
 pub struct MBasicBlock {
@@ -112,6 +113,8 @@ pub struct RiscvFnLoweringCtx {
   pub buffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ibuffer : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
+  pub iimm : @hashmap.T[UInt64, @moonbitlang/minimbt/riscv.AnyReg]
+  pub iimm_life : @hashmap.T[UInt64, Int]
   pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.AnyReg]]
   pub used_primitive : @hashset.T[String]
   pub is_leaf : Bool

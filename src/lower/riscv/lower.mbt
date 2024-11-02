@@ -1181,6 +1181,9 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
 ) -> Unit {
   let target = self.ref_block(target).bb_or_header_bb(self.func)
   for id, arg in args {
+    if id >= target.params.length() {
+      self.tracer.abort("Invalid block parameter for \{target}")
+    }
     let ty = target.params[id]
     match ty_to_reg_class(ty) {
       X => {
