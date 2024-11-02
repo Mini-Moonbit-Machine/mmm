@@ -302,7 +302,36 @@ fn LambdaLiftEnv::lift(
   }
 }
 
+fn count_let_rec(knf : Knf) -> Int {
+  match knf {
+    Unit
+    | Bool(_)
+    | Int(_)
+    | Double(_)
+    | Neg(_)
+    | Add(_, _)
+    | Sub(_, _)
+    | Mul(_, _)
+    | Div(_, _) | FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
+      0
+    IfEq(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
+    IfLe(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
+    Let((_, _), c, d) => count_let_rec(c) + count_let_rec(d)
+    Var(_) => 0
+    LetRec(f, e) => 1 + count_let_rec(e) + count_let_rec(f.body)
+    Apply(_, _) => 0
+    Tuple(_) => 0
+    LetTuple(_, _, e) => count_let_rec(e)
+    Get(_, _) => 0
+    Put(_, _, _) => 0
+    ExternalArray(_) => 0
+    ExternalFunctionApplication(_, _) => 0
+  }
+}
+
 pub fn go(self : LambdaLiftEnv, knf : Knf) -> Knf {
+  let n1 = count_let_rec(knf)
+  let old_knf = knf
   let fvc = FreeSetClosure::new()
   let (_, ctx) = fvc.compute(knf)
   self.tracer.record("free_set_closure", ctx)
@@ -312,6 +341,17 @@ pub fn go(self : LambdaLiftEnv, knf : Knf) -> Knf {
     self.tracer.abort("top level let list should be empty")
   }
   let knf = bind_all((knf, Unit, self.top_bindings))
+  let n2 = count_let_rec(knf)
+  let diff = n2 - n1
+  self.tracer.println("Numbers of let rec: \{n1} \{n2} \{diff}")
   self.tracer.record("knf_after_lifting", knf.to_pretty_print())
+  let knf = if diff > 0 && diff.to_double() / n1.to_double() >= 0.2 {
+    self.tracer.println(
+      "Give up lambda lifting because of too many let rec produced",
+    )
+    old_knf
+  } else {
+    knf
+  }
   knf
 }
