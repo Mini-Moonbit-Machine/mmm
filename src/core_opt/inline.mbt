@@ -238,8 +238,8 @@ fn FnInliner::replace_call(
     self.tracer.abort("expected one argument in jump instruction")
   }
   bb.seq.pop() |> ignore // remove the call instruction
-  bb.control = @core.Control::Jump(target=callee.entry, args=call_args)
-  self.fix_entry(callee)
+  bb.control = @core.Control::Jump(target=callee.entry, args=[])
+  // self.fix_entry(callee)
   self.fix_return_to_jump(callee, kont=target)
   self.fix_fn_parameters_and_mems(callee, call_args)
   callee.blocks.each(fn(bref, blk) { self.func.blocks.set(bref, blk) })

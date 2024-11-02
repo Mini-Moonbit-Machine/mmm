@@ -83,59 +83,52 @@ quicksort59l2_3:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv s0, a0
-  mv s5, a1
+  mv s4, a0
+  mv s2, a1
   mv s3, a2
 
 .quicksort59l2_3_0:
   addi a0, s3, -1
-  blt a0, s5, .quicksort59l2_3_2
+  blt a0, s2, .quicksort59l2_3_2
 
 .quicksort59l2_3_1:
-  mv a0, s0
-  mv a1, s5
-  mv a2, s3
 
 .quicksort59l2_3_7:
   slliw a0, s3, 2
-  add a0, s0, a0
+  add a0, s4, a0
   lw a0, 0(a0)
-  addi a1, s5, -1
+  addi a1, s2, -1
   addi a2, s11, -4
-  andi s1, a2, -8
-  mv s11, s1
-  sw a1, 0(s1)
-  mv a1, s5
-  mv a2, s1
-  mv a3, s0
-  mv a4, s3
+  andi s0, a2, -8
+  mv s11, s0
+  sw a1, 0(s0)
 
 .quicksort59l2_3_25:
-  mv s4, s5
-  mv s2, a0
+  mv s5, s2
+  mv s1, a0
 
 .quicksort59l2_3_17:
   addi a0, s3, -1
-  blt a0, s4, .quicksort59l2_3_19
+  blt a0, s5, .quicksort59l2_3_19
 
 .quicksort59l2_3_18:
-  slliw a0, s4, 2
-  add a0, s0, a0
+  slliw a0, s5, 2
+  add a0, s4, a0
   lw a0, 0(a0)
-  blt s2, a0, .quicksort59l2_3_21
+  blt s1, a0, .quicksort59l2_3_21
 
 .quicksort59l2_3_20:
-  lw a0, 0(s1)
+  lw a0, 0(s0)
   addi a0, a0, 1
-  sw a0, 0(s1)
-  lw a1, 0(s1)
-  mv a0, s0
-  mv a2, s4
+  sw a0, 0(s0)
+  lw a1, 0(s0)
+  mv a0, s4
+  mv a2, s5
   call swap1l0_0
 
 .quicksort59l2_3_22:
-  addi a0, s4, 1
-  mv s4, a0
+  addi a0, s5, 1
+  mv s5, a0
   j .quicksort59l2_3_17
 
 .quicksort59l2_3_2:
@@ -158,23 +151,23 @@ quicksort59l2_3:
 .quicksort59l2_3_23:
 
 .quicksort59l2_3_8:
-  lw a0, 0(s1)
+  lw a0, 0(s0)
   addi a0, a0, 1
-  sw a0, 0(s1)
-  lw a1, 0(s1)
-  mv a0, s0
+  sw a0, 0(s0)
+  lw a1, 0(s0)
+  mv a0, s4
   mv a2, s3
   call swap1l0_0
-  lw a0, 0(s1)
-  mv s1, a0
+  lw a0, 0(s0)
+  mv s0, a0
 
 .quicksort59l2_3_6:
-  addi a2, s1, -1
-  mv a0, s0
-  mv a1, s5
+  addi a2, s0, -1
+  mv a0, s4
+  mv a1, s2
   call quicksort59l2_3
-  addi a0, s1, 1
-  mv s5, a0
+  addi a0, s0, 1
+  mv s2, a0
   j .quicksort59l2_3_0
 
 .quicksort59l2_3_21:
