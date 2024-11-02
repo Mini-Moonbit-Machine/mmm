@@ -241,13 +241,18 @@ fn LambdaLiftEnv::lift(
       fvars.remove(fdef.name)
       let fvars = fvars.iter().collect()
       fvars.sort()
-      let new_args_length = fdef.args.length() + fvars.length()
       let old_fun_type = Type::Fun(
         fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
         fdef.ty,
       )
+      let fvars_with_type = fvars.map(fn(name) { (name, self.get_type(name)) })
+      let new_args = fdef.args + fvars_with_type
+      let new_float_args_length = new_args
+        .filter(fn(arg) { arg.1.is_float_like() })
+        .length()
+      let new_integer_args_length = new_args.length() - new_float_args_length
       // we don't want to lift functions with too many arguments
-      if new_args_length >= 0 {
+      if new_integer_args_length > 8 || new_float_args_length > 8 {
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
           init=self,
@@ -271,9 +276,6 @@ fn LambdaLiftEnv::lift(
           (l, e)
         }
       } else {
-        let fvars_with_type = fvars.map(
-          fn(name) { (name, self.get_type(name)) },
-        )
         self.top_names.insert(fdef.name)
         let (new_name, self) = self.add_lifted_name(
           fdef.name,
@@ -282,7 +284,6 @@ fn LambdaLiftEnv::lift(
           Fun(fdef.args.iter().map(fn(arg) { arg.1 }).collect(), fdef.ty),
         )
         let self = self.add_name_type(new_name, old_fun_type)
-        let new_args = fdef.args + fvars_with_type
         let body_env = new_args.fold(
           init=self,
           fn(env, arg) { env.add_name_type(arg.0, arg.1) },

@@ -30,68 +30,67 @@ memseti32:
 
   .p2align 2
   .text
-  .globl skip21_5
-  .type skip21_5, @function
+  .globl skip21l2_1
+  .type skip21l2_1, @function
 # leaf true
-skip21_5:
-.skip21_5_13:
-  mv a2, s10
-  mv a3, a1
-  lw a1, 8(a2)
-  ld a2, 16(a2)
+skip21l2_1:
+.skip21l2_1_13:
+  mv a4, a2
+  mv a2, a3
+  mv a3, a4
 
-.skip21_5_0:
-  bge a0, a1, .skip21_5_1
+.skip21l2_1_0:
+  bge a0, a3, .skip21l2_1_1
 
-.skip21_5_2:
+.skip21l2_1_2:
   slliw a4, a0, 2
   add a4, a2, a4
-  lw a5, 0(a4)
-  li a4, 91
-  beq a5, a4, .skip21_5_3
+  lw a4, 0(a4)
+  li a5, 91
+  beq a4, a5, .skip21l2_1_3
 
-.skip21_5_4:
-  li a4, 93
-  bne a5, a4, .skip21_5_6
+.skip21l2_1_4:
+  li a5, 93
+  bne a4, a5, .skip21l2_1_6
 
-.skip21_5_5:
-  beq a3, zero, .skip21_5_7
+.skip21l2_1_5:
+  beq a1, zero, .skip21l2_1_7
 
-.skip21_5_8:
+.skip21l2_1_8:
   addi a0, a0, 1
-  addi a3, a3, -1
-  j .skip21_5_0
+  addi a1, a1, -1
+  j .skip21l2_1_0
 
-.skip21_5_1:
+.skip21l2_1_1:
 
-.skip21_5_12:
+.skip21l2_1_12:
   ret
 
-.skip21_5_3:
+.skip21l2_1_3:
   addi a0, a0, 1
-  addi a3, a3, 1
-  j .skip21_5_0
+  addi a1, a1, 1
+  j .skip21l2_1_0
 
-.skip21_5_6:
+.skip21l2_1_6:
   addi a0, a0, 1
-  j .skip21_5_0
+  j .skip21l2_1_0
 
-.skip21_5_7:
+.skip21l2_1_7:
 
-.skip21_5_9:
+.skip21l2_1_9:
 
-.skip21_5_10:
+.skip21l2_1_10:
 
-.skip21_5_11:
-  j .skip21_5_12
+.skip21l2_1_11:
+  j .skip21l2_1_12
 
   .p2align 2
   .text
-  .globl main136_2
-  .type main136_2, @function
+  .globl main136l2_6
+  .type main136l2_6, @function
 # leaf false
-main136_2:
-.main136_2_0:
+main136l2_6:
+.main136l2_6_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -104,16 +103,9 @@ main136_2:
   mv a0, s0
   mv a2, zero
   call memseti32
-  addi a0, s11, -16
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, read_prog140_12
-  sd a1, 0(a0)
-  sd s0, 8(a0)
-  mv s10, a0
-  ld a1, 0(a0)
   mv a0, zero
-  jalr a1
+  mv a1, s0
+  call read_prog140l3_5
   mv a0, zero
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -129,18 +121,18 @@ T$start_14:
 .T$start_14_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main136_2
+  call main136l2_6
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl lp108_9
-  .type lp108_9, @function
+  .globl lp108l4_2
+  .type lp108l4_2, @function
 # leaf false
-lp108_9:
-.lp108_9_4:
+lp108l4_2:
+.lp108l4_2_4:
   addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -149,31 +141,30 @@ lp108_9:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv a0, s10
-  ld s5, 8(a0)
-  ld s0, 16(a0)
-  lw s3, 24(a0)
-  ld s1, 32(a0)
-  ld s4, 40(a0)
-  ld s2, 48(a0)
+  mv s3, a0
+  mv s5, a1
+  mv s1, a2
+  mv s0, a3
+  mv s4, a4
+  mv s2, a5
 
-.lp108_9_0:
-  lw a0, 0(s5)
+.lp108l4_2_0:
+  lw a0, 0(s3)
   slliw a0, a0, 2
   add a0, s0, a0
   lw a0, 0(a0)
-  bne a0, zero, .lp108_9_2
+  bne a0, zero, .lp108l4_2_2
 
-.lp108_9_1:
-  addi a0, s3, 1
-  mv s10, s1
-  ld a2, 0(s1)
+.lp108l4_2_1:
+  addi a0, s1, 1
   mv a1, zero
-  jalr a2
-  sw a0, 0(s4)
+  mv a2, s5
+  mv a3, s4
+  call skip21l2_1
+  sw a0, 0(s2)
   mv a0, zero
 
-.lp108_9_3:
+.lp108l4_2_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -184,55 +175,24 @@ lp108_9:
   addi sp, sp, 64
   ret
 
-.lp108_9_2:
-  addi a0, s3, 1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  sw a0, 0(s4)
-  j .lp108_9_0
+.lp108l4_2_2:
+  addi a0, s1, 1
+  mv a1, s3
+  mv a2, s5
+  mv a3, s0
+  mv a4, s4
+  mv a5, s2
+  call aux40l3_3
+  sw a0, 0(s2)
+  j .lp108l4_2_0
 
   .p2align 2
   .text
-  .globl read_ch_until_newline_or_eof1_0
-  .type read_ch_until_newline_or_eof1_0, @function
+  .globl bf5l1_4
+  .type bf5l1_4, @function
 # leaf false
-read_ch_until_newline_or_eof1_0:
-.read_ch_until_newline_or_eof1_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call minimbt_read_char
-  li a1, 10
-  beq a0, a1, .read_ch_until_newline_or_eof1_0_1
-
-.read_ch_until_newline_or_eof1_0_2:
-  li a1, 13
-  bne a0, a1, .read_ch_until_newline_or_eof1_0_4
-
-.read_ch_until_newline_or_eof1_0_3:
-  li a0, -1
-
-.read_ch_until_newline_or_eof1_0_5:
-
-.read_ch_until_newline_or_eof1_0_6:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.read_ch_until_newline_or_eof1_0_1:
-  li a0, -1
-  j .read_ch_until_newline_or_eof1_0_6
-
-.read_ch_until_newline_or_eof1_0_4:
-  j .read_ch_until_newline_or_eof1_0_5
-
-  .p2align 2
-  .text
-  .globl bf5_1
-  .type bf5_1, @function
-# leaf false
-bf5_1:
-.bf5_1_0:
+bf5l1_4:
+.bf5l1_4_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -256,31 +216,15 @@ bf5_1:
   mv a2, zero
   call memseti32
   addi a0, s11, -4
-  andi a0, a0, -8
-  mv s11, a0
-  sw zero, 0(a0)
-  addi a1, s11, -24
-  andi a1, a1, -8
-  mv s11, a1
-  la a2, skip21_5
-  sd a2, 0(a1)
-  sd s0, 8(a1)
-  sd s1, 16(a1)
-  addi a2, s11, -56
-  andi a2, a2, -8
-  mv s11, a2
-  la a3, aux40_7
-  sd a3, 0(a2)
-  sd s0, 8(a2)
-  sd s1, 16(a2)
-  sd s2, 24(a2)
-  sd s3, 32(a2)
-  sd a0, 40(a2)
-  sd a1, 48(a2)
-  mv s10, a2
-  ld a1, 0(a2)
+  andi a5, a0, -8
+  mv s11, a5
+  sw zero, 0(a5)
   mv a0, zero
-  jalr a1
+  mv a1, s2
+  mv a2, s0
+  mv a3, s3
+  mv a4, s1
+  call aux40l3_3
   mv a0, zero
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -292,52 +236,12 @@ bf5_1:
 
   .p2align 2
   .text
-  .globl read_prog140_12
-  .type read_prog140_12, @function
+  .globl aux40l3_3
+  .type aux40l3_3, @function
 # leaf false
-read_prog140_12:
-.read_prog140_12_4:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  mv a1, s10
-  ld s1, 8(a1)
-  mv s0, a0
-
-.read_prog140_12_0:
-  call read_ch_until_newline_or_eof1_0
-  li a1, -1
-  beq a0, a1, .read_prog140_12_1
-
-.read_prog140_12_2:
-  slliw a1, s0, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s0, a0
-  j .read_prog140_12_0
-
-.read_prog140_12_1:
-  mv a0, s0
-  mv a1, s1
-  call bf5_1
-
-.read_prog140_12_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl aux40_7
-  .type aux40_7, @function
-# leaf false
-aux40_7:
-.aux40_7_28:
-  addi sp, sp, -80
+aux40l3_3:
+.aux40l3_3_28:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -346,75 +250,71 @@ aux40_7:
   sd s4, 40(sp)
   sd s5, 48(sp)
   sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  mv s4, s10
-  lw s7, 8(s4)
-  ld s5, 16(s4)
-  ld s0, 24(s4)
-  ld s6, 32(s4)
-  ld s2, 40(s4)
-  ld s3, 48(s4)
-  mv s1, a0
+  mv s3, a0
+  mv s5, a1
+  mv s1, a2
+  mv s0, a3
+  mv s4, a4
+  mv s2, a5
 
-.aux40_7_0:
-  bge s1, s7, .aux40_7_1
+.aux40l3_3_0:
+  bge s3, s1, .aux40l3_3_1
 
-.aux40_7_2:
-  slliw a0, s1, 2
-  add a0, s5, a0
+.aux40l3_3_2:
+  slliw a0, s3, 2
+  add a0, s4, a0
   lw a1, 0(a0)
   li a0, 62
-  beq a1, a0, .aux40_7_3
+  beq a1, a0, .aux40l3_3_3
 
-.aux40_7_4:
+.aux40l3_3_4:
   li a0, 60
-  beq a1, a0, .aux40_7_5
+  beq a1, a0, .aux40l3_3_5
 
-.aux40_7_6:
+.aux40l3_3_6:
   li a0, 43
-  beq a1, a0, .aux40_7_7
+  beq a1, a0, .aux40l3_3_7
 
-.aux40_7_8:
+.aux40l3_3_8:
   li a0, 45
-  beq a1, a0, .aux40_7_9
+  beq a1, a0, .aux40l3_3_9
 
-.aux40_7_10:
+.aux40l3_3_10:
   li a0, 46
-  beq a1, a0, .aux40_7_11
+  beq a1, a0, .aux40l3_3_11
 
-.aux40_7_12:
+.aux40l3_3_12:
   li a0, 44
-  beq a1, a0, .aux40_7_13
+  beq a1, a0, .aux40l3_3_13
 
-.aux40_7_14:
+.aux40l3_3_14:
   li a0, 91
-  beq a1, a0, .aux40_7_15
+  beq a1, a0, .aux40l3_3_15
 
-.aux40_7_16:
+.aux40l3_3_16:
   li a0, 93
-  bne a1, a0, .aux40_7_18
+  bne a1, a0, .aux40l3_3_18
 
-.aux40_7_17:
-  mv a0, s1
+.aux40l3_3_17:
+  mv a0, s3
 
-.aux40_7_19:
+.aux40l3_3_19:
 
-.aux40_7_20:
+.aux40l3_3_20:
 
-.aux40_7_21:
+.aux40l3_3_21:
 
-.aux40_7_22:
+.aux40l3_3_22:
 
-.aux40_7_23:
+.aux40l3_3_23:
 
-.aux40_7_24:
+.aux40l3_3_24:
 
-.aux40_7_25:
+.aux40l3_3_25:
 
-.aux40_7_26:
+.aux40l3_3_26:
 
-.aux40_7_27:
+.aux40l3_3_27:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -423,103 +323,168 @@ aux40_7:
   ld s4, 40(sp)
   ld s5, 48(sp)
   ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  addi sp, sp, 80
+  addi sp, sp, 64
   ret
 
-.aux40_7_1:
-  mv a0, s1
-  j .aux40_7_27
+.aux40l3_3_1:
+  mv a0, s3
+  j .aux40l3_3_27
 
-.aux40_7_3:
-  lw a0, 0(s0)
+.aux40l3_3_3:
+  lw a0, 0(s5)
   addi a0, a0, 1
-  sw a0, 0(s0)
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux40_7_0
+  sw a0, 0(s5)
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
 
-.aux40_7_5:
-  lw a0, 0(s0)
+.aux40l3_3_5:
+  lw a0, 0(s5)
   addi a0, a0, -1
-  sw a0, 0(s0)
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux40_7_0
+  sw a0, 0(s5)
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
 
-.aux40_7_7:
-  lw a0, 0(s0)
-  lw a1, 0(s0)
+.aux40l3_3_7:
+  lw a0, 0(s5)
+  lw a1, 0(s5)
   slliw a1, a1, 2
-  add a1, s6, a1
+  add a1, s0, a1
   lw a1, 0(a1)
   addi a1, a1, 1
   slliw a0, a0, 2
-  add a0, s6, a0
+  add a0, s0, a0
   sw a1, 0(a0)
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux40_7_0
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
 
-.aux40_7_9:
-  lw a0, 0(s0)
-  lw a1, 0(s0)
+.aux40l3_3_9:
+  lw a0, 0(s5)
+  lw a1, 0(s5)
   slliw a1, a1, 2
-  add a1, s6, a1
+  add a1, s0, a1
   lw a1, 0(a1)
   addi a1, a1, -1
   slliw a0, a0, 2
-  add a0, s6, a0
+  add a0, s0, a0
+  sw a1, 0(a0)
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
+
+.aux40l3_3_11:
+  lw a0, 0(s5)
+  slliw a0, a0, 2
+  add a0, s0, a0
+  lw a0, 0(a0)
+  call minimbt_print_char
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
+
+.aux40l3_3_13:
+  lw s6, 0(s5)
+  call read_ch_until_newline_or_eof1l0_0
+  slliw a1, s6, 2
+  add a1, s0, a1
+  sw a0, 0(a1)
+  addi a0, s3, 1
+  mv s3, a0
+  j .aux40l3_3_0
+
+.aux40l3_3_15:
+  sw s3, 0(s2)
+  mv a0, s5
+  mv a1, s1
+  mv a2, s3
+  mv a3, s0
+  mv a4, s4
+  mv a5, s2
+  call lp108l4_2
+  lw a0, 0(s2)
+  addi a0, a0, 1
+  mv s3, a0
+  j .aux40l3_3_0
+
+.aux40l3_3_18:
+  mv a0, s3
+  j .aux40l3_3_19
+
+  .p2align 2
+  .text
+  .globl read_ch_until_newline_or_eof1l0_0
+  .type read_ch_until_newline_or_eof1l0_0, @function
+# leaf false
+read_ch_until_newline_or_eof1l0_0:
+.read_ch_until_newline_or_eof1l0_0_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call minimbt_read_char
+  li a1, 10
+  beq a0, a1, .read_ch_until_newline_or_eof1l0_0_1
+
+.read_ch_until_newline_or_eof1l0_0_2:
+  li a1, 13
+  bne a0, a1, .read_ch_until_newline_or_eof1l0_0_4
+
+.read_ch_until_newline_or_eof1l0_0_3:
+  li a0, -1
+
+.read_ch_until_newline_or_eof1l0_0_5:
+
+.read_ch_until_newline_or_eof1l0_0_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.read_ch_until_newline_or_eof1l0_0_1:
+  li a0, -1
+  j .read_ch_until_newline_or_eof1l0_0_6
+
+.read_ch_until_newline_or_eof1l0_0_4:
+  j .read_ch_until_newline_or_eof1l0_0_5
+
+  .p2align 2
+  .text
+  .globl read_prog140l3_5
+  .type read_prog140l3_5, @function
+# leaf false
+read_prog140l3_5:
+.read_prog140l3_5_4:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s1, a0
+  mv s0, a1
+
+.read_prog140l3_5_0:
+  call read_ch_until_newline_or_eof1l0_0
+  mv a1, a0
+  li a0, -1
+  beq a1, a0, .read_prog140l3_5_1
+
+.read_prog140l3_5_2:
+  slliw a0, s1, 2
+  add a0, s0, a0
   sw a1, 0(a0)
   addi a0, s1, 1
   mv s1, a0
-  j .aux40_7_0
+  j .read_prog140l3_5_0
 
-.aux40_7_11:
-  lw a0, 0(s0)
-  slliw a0, a0, 2
-  add a0, s6, a0
-  lw a0, 0(a0)
-  call minimbt_print_char
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux40_7_0
-
-.aux40_7_13:
-  lw s8, 0(s0)
-  call read_ch_until_newline_or_eof1_0
-  slliw a1, s8, 2
-  add a1, s6, a1
-  sw a0, 0(a1)
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux40_7_0
-
-.aux40_7_15:
-  sw s1, 0(s2)
-  addi a0, s11, -56
-  andi a1, a0, -8
-  mv s11, a1
-  la a0, lp108_9
-  sd a0, 0(a1)
-  sd s0, 8(a1)
-  sd s6, 16(a1)
-  sd s1, 24(a1)
-  sd s3, 32(a1)
-  sd s2, 40(a1)
-  sd s4, 48(a1)
-  mv s10, a1
-  ld a0, 0(a1)
-  jalr a0
-  lw a0, 0(s2)
-  addi a0, a0, 1
-  mv s1, a0
-  j .aux40_7_0
-
-.aux40_7_18:
+.read_prog140l3_5_1:
   mv a0, s1
-  j .aux40_7_19
+  mv a1, s0
+  call bf5l1_4
+
+.read_prog140l3_5_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
 
   .p2align 2
   .text

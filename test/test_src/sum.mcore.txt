@@ -15,19 +15,31 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main8_1
-  .type main8_1, @function
+  .globl sum1l0_0
+  .type sum1l0_0, @function
 # leaf false
-main8_1:
-.main8_1_0:
+sum1l0_0:
+.sum1l0_0_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 10000
-  call sum1_0
-  call minimbt_print_int
+  sd s0, 8(sp)
+  mv s0, a0
+  bge zero, s0, .sum1l0_0_1
+
+.sum1l0_0_2:
+  addi a0, s0, -1
+  call sum1l0_0
+  add a0, a0, s0
+
+.sum1l0_0_3:
   ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
+
+.sum1l0_0_1:
+  mv a0, zero
+  j .sum1l0_0_3
 
   .p2align 2
   .text
@@ -38,7 +50,23 @@ T$start_4:
 .T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main8_1
+  call main8l1_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main8l1_1
+  .type main8l1_1, @function
+# leaf false
+main8l1_1:
+.main8l1_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 10000
+  call sum1l0_0
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -64,34 +92,6 @@ minimbt_main:
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
-
-  .p2align 2
-  .text
-  .globl sum1_0
-  .type sum1_0, @function
-# leaf false
-sum1_0:
-.sum1_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  bge zero, s0, .sum1_0_1
-
-.sum1_0_2:
-  addi a0, s0, -1
-  call sum1_0
-  add a0, a0, s0
-
-.sum1_0_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.sum1_0_1:
-  mv a0, zero
-  j .sum1_0_3
 
 __end_text:
   .p2align 2

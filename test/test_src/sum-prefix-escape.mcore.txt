@@ -30,106 +30,11 @@ memseti32:
 
   .p2align 2
   .text
-  .globl T$start_6
-  .type T$start_6, @function
+  .globl main25l1_2
+  .type main25l1_2, @function
 # leaf false
-T$start_6:
-.T$start_6_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main25_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl sum_nested8_3
-  .type sum_nested8_3, @function
-# leaf true
-sum_nested8_3:
-.sum_nested8_3_4:
-  mv a3, s10
-  mv a2, a0
-  mv a0, a1
-  lw a4, 8(a3)
-  ld a1, 16(a3)
-  ld a5, 24(a3)
-  mv a3, a2
-  mv a2, a0
-
-.sum_nested8_3_0:
-  addi a0, a4, -1
-  blt a0, a2, .sum_nested8_3_2
-
-.sum_nested8_3_1:
-  slliw a0, a2, 2
-  add a0, a1, a0
-  lw a0, 0(a0)
-  add a0, a3, a0
-  slliw a3, a2, 2
-  add a3, a5, a3
-  sw a0, 0(a3)
-  addi a2, a2, 1
-  mv a3, a0
-  j .sum_nested8_3_0
-
-.sum_nested8_3_2:
-  mv a0, zero
-
-.sum_nested8_3_3:
-  ret
-
-  .p2align 2
-  .text
-  .globl sum_prefix1_0
-  .type sum_prefix1_0, @function
-# leaf false
-sum_prefix1_0:
-.sum_prefix1_0_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  slliw a0, s1, 2
-  sub a0, s11, a0
-  andi s2, a0, -8
-  mv s11, s2
-  mv a1, s1
-  mv a0, s2
-  mv a2, zero
-  call memseti32
-  addi a0, s11, -32
-  andi a0, a0, -8
-  mv s11, a0
-  la a1, sum_nested8_3
-  sd a1, 0(a0)
-  sd s1, 8(a0)
-  sd s0, 16(a0)
-  sd s2, 24(a0)
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, zero
-  mv a1, zero
-  jalr a2
-  mv a0, s2
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main25_1
-  .type main25_1, @function
-# leaf false
-main25_1:
-.main25_1_0:
+main25l1_2:
+.main25l1_2_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -40
@@ -147,11 +52,61 @@ main25_1:
   sw a1, 32(a0)
   sw a1, 36(a0)
   li a1, 10
-  call sum_prefix1_0
+  call sum_prefix1l0_1
   lw a0, 0(a0)
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_6
+  .type T$start_6, @function
+# leaf false
+T$start_6:
+.T$start_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main25l1_2
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl sum_prefix1l0_1
+  .type sum_prefix1l0_1, @function
+# leaf false
+sum_prefix1l0_1:
+.sum_prefix1l0_1_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  slliw a0, s1, 2
+  sub a0, s11, a0
+  andi s2, a0, -8
+  mv s11, s2
+  mv a1, s1
+  mv a0, s2
+  mv a2, zero
+  call memseti32
+  mv a0, zero
+  mv a1, zero
+  mv a2, s2
+  mv a3, s0
+  mv a4, s1
+  call sum_nested8l1_0
+  mv a0, s2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -174,6 +129,45 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl sum_nested8l1_0
+  .type sum_nested8l1_0, @function
+# leaf true
+sum_nested8l1_0:
+.sum_nested8l1_0_4:
+  mv a6, a0
+  mv a5, a1
+  mv a1, a3
+  mv a0, a4
+  mv a4, a6
+  mv a3, a5
+  mv a5, a2
+  mv a2, a1
+  mv a1, a0
+
+.sum_nested8l1_0_0:
+  addi a0, a1, -1
+  blt a0, a3, .sum_nested8l1_0_2
+
+.sum_nested8l1_0_1:
+  slliw a0, a3, 2
+  add a0, a2, a0
+  lw a0, 0(a0)
+  add a0, a4, a0
+  slliw a4, a3, 2
+  add a4, a5, a4
+  sw a0, 0(a4)
+  addi a3, a3, 1
+  mv a4, a0
+  j .sum_nested8l1_0_0
+
+.sum_nested8l1_0_2:
+  mv a0, zero
+
+.sum_nested8l1_0_3:
   ret
 
 __end_text:

@@ -7,12 +7,12 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main25_1 #f1 : fn() -> unit
+.fn main25l1_2 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(10)> <- [..] = 4
-    let %1: array[int32] = call f0(f1.m0, 10)
+    let %1: array[int32] = call f1(f2.m0, 10)
     let %2: int32 = load int32 field(%1, 0 * @32)
     let %3: unit = ext_call minimbt_print_int(%2)
     return %3
@@ -22,24 +22,33 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f1()
+    let %0: unit = call f2()
     return %0
   }
 }
-.fn sum_nested8_3 #f3 : closure(int32, int32) -> unit
-.freevars (int32, array[int32], array[int32])
+.fn sum_prefix1l0_1 #f1 : fn(array[int32], int32) -> array[int32]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap($f1)> <- [..] = 0
+    let %1: unit = call f0(0, 0, f1.m0, $f0, $f1)
+    return f1.m0
+  }
+}
+.fn sum_nested8l1_0 #f0 : fn(int32, int32, array[int32], array[int32], int32) -> unit
+.freevars ()
 .entry b4 {
-  .bb #b0 (int32, int32) {
-    let %0: int32 = sub(^1, 1)
+  .bb #b0 (int32, int32, array[int32], array[int32], int32) {
+    let %0: int32 = sub($b0.4, 1)
     let %1: bool = le($b0.1, %0)
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset(^2, $b0.1 * @32)
+    let %2: int32 = load int32 offset($b0.3, $b0.1 * @32)
     let %3: int32 = add($b0.0, %2)
-    let _ = store int32 offset(^3, $b0.1 * @32) <- %3
+    let _ = store int32 offset($b0.2, $b0.1 * @32) <- %3
     let %5: int32 = add($b0.1, 1)
-    jump b0(%3, %5)
+    jump b0(%3, %5, $b0.2, $b0.3, $b0.4)
   }
   .bb #b2 () {
     jump b3(())
@@ -48,17 +57,7 @@
     return $b3.0
   }
   .bb #b4 () {
-    jump b0($f0, $f1)
-  }
-}
-.fn sum_prefix1_0 #f0 : fn(array[int32], int32) -> array[int32]
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: array[int32] heap($f1)> <- [..] = 0
-    let _ = alloc <m1: closure(int32, int32) -> unit heap(4)> <- [0] = f3, [1] = $f1, [2] = $f0, [3] = f0.m0
-    let %2: unit = apply f0.m1(0, 0)
-    return f0.m0
+    jump b0($f0, $f1, $f2, $f3, $f4)
   }
 }
 .thunk ::0 start
