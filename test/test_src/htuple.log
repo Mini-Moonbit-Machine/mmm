@@ -1079,40 +1079,36 @@
 // [Asm] defs: []
 // [Asm] live_set: [s11]
 // [Asm] move_origin: []
-// [Asm] defs: [v4]
-// [Asm] live_set: [v4]
-// [Asm] move_origin: []
-// [Asm] defined: v4 is X
 // [Asm] defs: [v2]
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
 // [Asm] defined: v2 is X
 // [Asm] defs: [s11]
 // [Asm] live_set: [v2]
-// [Asm] move_origin: [v2]
+// [Asm] move_origin: []
 // [Asm] defined: s11 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5, v2]
+// [Asm] move_origin: []
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] move_origin: []
 // [Asm] defs: [v6]
 // [Asm] live_set: [v6, v2]
 // [Asm] move_origin: []
 // [Asm] defined: v6 is X
+// [Asm] defs: [fv7]
+// [Asm] live_set: [fv7, v2]
+// [Asm] move_origin: []
+// [Asm] defined: fv7 is F
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
-// [Asm] defs: [v7]
-// [Asm] live_set: [v7, v2]
+// [Asm] defs: [v8]
+// [Asm] live_set: [v8, v2]
 // [Asm] move_origin: []
-// [Asm] defined: v7 is X
-// [Asm] defs: [fv8]
-// [Asm] live_set: [fv8, v2]
-// [Asm] move_origin: []
-// [Asm] defined: fv8 is F
-// [Asm] defs: []
-// [Asm] live_set: [v2]
-// [Asm] move_origin: []
-// [Asm] defs: [v9]
-// [Asm] live_set: [v9, v2]
-// [Asm] move_origin: []
-// [Asm] defined: v9 is X
+// [Asm] defined: v8 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
@@ -1128,37 +1124,36 @@
 // [Asm] move_origin: []
 // [Asm] graph G {
 // [Asm]   graph [label="integer interference graph of return_i_d_i4l1_1"];
-// [Asm]   r0 [label="v4 ← a0", color=green];
-// [Asm]   r5 [label="v9 ← a1", color=green];
-// [Asm]   r6 [label="a0", color=blue];
-// [Asm]   r4 [label="v7 ← a1", color=green];
-// [Asm]   r1 [label="v2 ← a0", color=green];
+// [Asm]   r0 [label="v2 ← a0", color=green];
+// [Asm]   r5 [label="a0", color=blue];
+// [Asm]   r4 [label="v8 ← a1", color=green];
+// [Asm]   r1 [label="s11", color=blue];
 // [Asm]   r3 [label="v6 ← a1", color=green];
-// [Asm]   r2 [label="s11", color=blue];
-// [Asm]   r1 -- r3;
-// [Asm]   r1 -- r4;
-// [Asm]   r1 -- r5;
-// [Asm]   comment = "0:v4-> 1:v2-> 3:v6-> 4:v7-> 5:v9-> 2:s11-> 6:a0"
-// [Asm]   comment = "v4<-a0;v9<-a1;v7<-a1;v2<-a0;v6<-a1;"
+// [Asm]   r2 [label="v5 ← a1", color=green];
+// [Asm]   r0 -- r3;
+// [Asm]   r0 -- r4;
+// [Asm]   r0 -- r1;
+// [Asm]   r0 -- r2;
+// [Asm]   comment = "0:v2-> 1:s11-> 2:v5-> 3:v6-> 4:v8-> 5:a0"
+// [Asm]   comment = "v2<-a0;v8<-a1;v6<-a1;v5<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
 // [Asm]   graph [label="float interference graph of return_i_d_i4l1_1"];
-// [Asm]   r0 [label="fv8 ← fa0", color=green];
-// [Asm]   comment = "0:fv8"
-// [Asm]   comment = "fv8<-fa0;"
+// [Asm]   r0 [label="fv7 ← fa0", color=green];
+// [Asm]   comment = "0:fv7"
+// [Asm]   comment = "fv7<-fa0;"
 // [Asm] }
 // [Asm] 
-// [Asm] subst   addi v4, s11, -24 ->   addi a0, s11, -24
-// [Asm] subst   andi v2, v4, -8 ->   andi a0, a0, -8
-// [Asm] subst   mv s11, v2 ->   mv s11, a0
-// [Asm] subst   li v6, 1 ->   li a1, 1
-// [Asm] subst   sd v6, 0(v2) ->   sd a1, 0(a0)
-// [Asm] subst   li v7, 4611686018427387904 ->   li a1, 4611686018427387904
-// [Asm] subst   fmv.d.x fv8, v7 ->   fmv.d.x fa0, a1
-// [Asm] subst   fsd fv8, 8(v2) ->   fsd fa0, 8(a0)
-// [Asm] subst   li v9, 3 ->   li a1, 3
-// [Asm] subst   sd v9, 16(v2) ->   sd a1, 16(a0)
+// [Asm] subst   addi v2, s11, -24 ->   addi a0, s11, -24
+// [Asm] subst   andi s11, v2, -8 ->   andi s11, a0, -8
+// [Asm] subst   li v5, 1 ->   li a1, 1
+// [Asm] subst   sd v5, 0(v2) ->   sd a1, 0(a0)
+// [Asm] subst   li v6, 4611686018427387904 ->   li a1, 4611686018427387904
+// [Asm] subst   fmv.d.x fv7, v6 ->   fmv.d.x fa0, a1
+// [Asm] subst   fsd fv7, 8(v2) ->   fsd fa0, 8(a0)
+// [Asm] subst   li v8, 3 ->   li a1, 3
+// [Asm] subst   sd v8, 16(v2) ->   sd a1, 16(a0)
 // [Asm] subst   ret ->   ret
 // [Asm] pre_assigned_registers: Self(fref=f10) -> v0, Insn(iref=%0) -> v2
 // [Asm] defs: []
@@ -1282,26 +1277,29 @@
 // [Asm] defs: []
 // [Asm] live_set: [s11]
 // [Asm] move_origin: []
-// [Asm] defs: [v4]
-// [Asm] live_set: [v4]
-// [Asm] move_origin: []
-// [Asm] defined: v4 is X
 // [Asm] defs: [v2]
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
 // [Asm] defined: v2 is X
 // [Asm] defs: [s11]
 // [Asm] live_set: [v2]
-// [Asm] move_origin: [v2]
+// [Asm] move_origin: []
 // [Asm] defined: s11 is X
-// [Asm] defs: [v6]
-// [Asm] live_set: [v6, v2]
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5, v2]
 // [Asm] move_origin: []
-// [Asm] defined: v6 is X
-// [Asm] defs: [fv7]
-// [Asm] live_set: [fv7, v2]
+// [Asm] defined: v5 is X
+// [Asm] defs: [fv6]
+// [Asm] live_set: [fv6, v2]
 // [Asm] move_origin: []
-// [Asm] defined: fv7 is F
+// [Asm] defined: fv6 is F
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] move_origin: []
+// [Asm] defs: [v7]
+// [Asm] live_set: [v7, v2]
+// [Asm] move_origin: []
+// [Asm] defined: v7 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
@@ -1309,13 +1307,6 @@
 // [Asm] live_set: [v8, v2]
 // [Asm] move_origin: []
 // [Asm] defined: v8 is X
-// [Asm] defs: []
-// [Asm] live_set: [v2]
-// [Asm] move_origin: []
-// [Asm] defs: [v9]
-// [Asm] live_set: [v9, v2]
-// [Asm] move_origin: []
-// [Asm] defined: v9 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
@@ -1331,54 +1322,56 @@
 // [Asm] move_origin: []
 // [Asm] graph G {
 // [Asm]   graph [label="integer interference graph of return_d_i_i8l2_2"];
-// [Asm]   r0 [label="v4 ← a0", color=green];
-// [Asm]   r5 [label="v9 ← a1", color=green];
-// [Asm]   r6 [label="a0", color=blue];
+// [Asm]   r0 [label="v2 ← a0", color=green];
+// [Asm]   r5 [label="a0", color=blue];
 // [Asm]   r4 [label="v8 ← a1", color=green];
-// [Asm]   r1 [label="v2 ← a0", color=green];
-// [Asm]   r3 [label="v6 ← a1", color=green];
-// [Asm]   r2 [label="s11", color=blue];
-// [Asm]   r1 -- r3;
-// [Asm]   r1 -- r4;
-// [Asm]   r1 -- r5;
-// [Asm]   comment = "0:v4-> 1:v2-> 3:v6-> 4:v8-> 5:v9-> 2:s11-> 6:a0"
-// [Asm]   comment = "v4<-a0;v9<-a1;v8<-a1;v2<-a0;v6<-a1;"
+// [Asm]   r1 [label="s11", color=blue];
+// [Asm]   r3 [label="v7 ← a1", color=green];
+// [Asm]   r2 [label="v5 ← a1", color=green];
+// [Asm]   r0 -- r3;
+// [Asm]   r0 -- r4;
+// [Asm]   r0 -- r1;
+// [Asm]   r0 -- r2;
+// [Asm]   comment = "0:v2-> 1:s11-> 2:v5-> 3:v7-> 4:v8-> 5:a0"
+// [Asm]   comment = "v2<-a0;v8<-a1;v7<-a1;v5<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
 // [Asm]   graph [label="float interference graph of return_d_i_i8l2_2"];
-// [Asm]   r0 [label="fv7 ← fa0", color=green];
-// [Asm]   comment = "0:fv7"
-// [Asm]   comment = "fv7<-fa0;"
+// [Asm]   r0 [label="fv6 ← fa0", color=green];
+// [Asm]   comment = "0:fv6"
+// [Asm]   comment = "fv6<-fa0;"
 // [Asm] }
 // [Asm] 
-// [Asm] subst   addi v4, s11, -24 ->   addi a0, s11, -24
-// [Asm] subst   andi v2, v4, -8 ->   andi a0, a0, -8
-// [Asm] subst   mv s11, v2 ->   mv s11, a0
-// [Asm] subst   li v6, 4611686018427387904 ->   li a1, 4611686018427387904
-// [Asm] subst   fmv.d.x fv7, v6 ->   fmv.d.x fa0, a1
-// [Asm] subst   fsd fv7, 0(v2) ->   fsd fa0, 0(a0)
-// [Asm] subst   li v8, 3 ->   li a1, 3
-// [Asm] subst   sd v8, 8(v2) ->   sd a1, 8(a0)
-// [Asm] subst   li v9, 4 ->   li a1, 4
-// [Asm] subst   sd v9, 16(v2) ->   sd a1, 16(a0)
+// [Asm] subst   addi v2, s11, -24 ->   addi a0, s11, -24
+// [Asm] subst   andi s11, v2, -8 ->   andi s11, a0, -8
+// [Asm] subst   li v5, 4611686018427387904 ->   li a1, 4611686018427387904
+// [Asm] subst   fmv.d.x fv6, v5 ->   fmv.d.x fa0, a1
+// [Asm] subst   fsd fv6, 0(v2) ->   fsd fa0, 0(a0)
+// [Asm] subst   li v7, 3 ->   li a1, 3
+// [Asm] subst   sd v7, 8(v2) ->   sd a1, 8(a0)
+// [Asm] subst   li v8, 4 ->   li a1, 4
+// [Asm] subst   sd v8, 16(v2) ->   sd a1, 16(a0)
 // [Asm] subst   ret ->   ret
 // [Asm] pre_assigned_registers: Insn(iref=%0) -> v3, Self(fref=f3) -> v0, Mem(fref=f3, mref=m0) -> v2
 // [Asm] defs: []
 // [Asm] live_set: [s11]
 // [Asm] move_origin: []
-// [Asm] defs: [v4]
-// [Asm] live_set: [v4]
-// [Asm] move_origin: []
-// [Asm] defined: v4 is X
 // [Asm] defs: [v2]
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
 // [Asm] defined: v2 is X
 // [Asm] defs: [s11]
 // [Asm] live_set: [v2]
-// [Asm] move_origin: [v2]
+// [Asm] move_origin: []
 // [Asm] defined: s11 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5, v2]
+// [Asm] move_origin: []
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] move_origin: []
 // [Asm] defs: [v6]
 // [Asm] live_set: [v6, v2]
 // [Asm] move_origin: []
@@ -1390,13 +1383,6 @@
 // [Asm] live_set: [v7, v2]
 // [Asm] move_origin: []
 // [Asm] defined: v7 is X
-// [Asm] defs: []
-// [Asm] live_set: [v2]
-// [Asm] move_origin: []
-// [Asm] defs: [v8]
-// [Asm] live_set: [v8, v2]
-// [Asm] move_origin: []
-// [Asm] defined: v8 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
@@ -1412,18 +1398,18 @@
 // [Asm] move_origin: []
 // [Asm] graph G {
 // [Asm]   graph [label="integer interference graph of return_i_i_i12l3_3"];
-// [Asm]   r0 [label="v4 ← a0", color=green];
-// [Asm]   r5 [label="v8 ← a1", color=green];
-// [Asm]   r6 [label="a0", color=blue];
+// [Asm]   r0 [label="v2 ← a0", color=green];
+// [Asm]   r5 [label="a0", color=blue];
 // [Asm]   r4 [label="v7 ← a1", color=green];
-// [Asm]   r1 [label="v2 ← a0", color=green];
+// [Asm]   r1 [label="s11", color=blue];
 // [Asm]   r3 [label="v6 ← a1", color=green];
-// [Asm]   r2 [label="s11", color=blue];
-// [Asm]   r1 -- r3;
-// [Asm]   r1 -- r4;
-// [Asm]   r1 -- r5;
-// [Asm]   comment = "0:v4-> 1:v2-> 3:v6-> 4:v7-> 5:v8-> 2:s11-> 6:a0"
-// [Asm]   comment = "v4<-a0;v8<-a1;v7<-a1;v2<-a0;v6<-a1;"
+// [Asm]   r2 [label="v5 ← a1", color=green];
+// [Asm]   r0 -- r3;
+// [Asm]   r0 -- r4;
+// [Asm]   r0 -- r1;
+// [Asm]   r0 -- r2;
+// [Asm]   comment = "0:v2-> 1:s11-> 2:v5-> 3:v6-> 4:v7-> 5:a0"
+// [Asm]   comment = "v2<-a0;v7<-a1;v6<-a1;v5<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
@@ -1432,47 +1418,42 @@
 // [Asm]   comment = ""
 // [Asm] }
 // [Asm] 
-// [Asm] subst   addi v4, s11, -12 ->   addi a0, s11, -12
-// [Asm] subst   andi v2, v4, -8 ->   andi a0, a0, -8
-// [Asm] subst   mv s11, v2 ->   mv s11, a0
-// [Asm] subst   li v6, 1 ->   li a1, 1
-// [Asm] subst   sw v6, 0(v2) ->   sw a1, 0(a0)
-// [Asm] subst   li v7, 2 ->   li a1, 2
-// [Asm] subst   sw v7, 4(v2) ->   sw a1, 4(a0)
-// [Asm] subst   li v8, 3 ->   li a1, 3
-// [Asm] subst   sw v8, 8(v2) ->   sw a1, 8(a0)
+// [Asm] subst   addi v2, s11, -12 ->   addi a0, s11, -12
+// [Asm] subst   andi s11, v2, -8 ->   andi s11, a0, -8
+// [Asm] subst   li v5, 1 ->   li a1, 1
+// [Asm] subst   sw v5, 0(v2) ->   sw a1, 0(a0)
+// [Asm] subst   li v6, 2 ->   li a1, 2
+// [Asm] subst   sw v6, 4(v2) ->   sw a1, 4(a0)
+// [Asm] subst   li v7, 3 ->   li a1, 3
+// [Asm] subst   sw v7, 8(v2) ->   sw a1, 8(a0)
 // [Asm] subst   ret ->   ret
 // [Asm] pre_assigned_registers: Self(fref=f0) -> v0, Insn(iref=%0) -> v3, Mem(fref=f0, mref=m0) -> v2
 // [Asm] defs: []
 // [Asm] live_set: [s11]
 // [Asm] move_origin: []
-// [Asm] defs: [v4]
-// [Asm] live_set: [v4]
-// [Asm] move_origin: []
-// [Asm] defined: v4 is X
 // [Asm] defs: [v2]
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
 // [Asm] defined: v2 is X
 // [Asm] defs: [s11]
 // [Asm] live_set: [v2]
-// [Asm] move_origin: [v2]
+// [Asm] move_origin: []
 // [Asm] defined: s11 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5, v2]
+// [Asm] move_origin: []
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] move_origin: []
 // [Asm] defs: [v6]
 // [Asm] live_set: [v6, v2]
 // [Asm] move_origin: []
 // [Asm] defined: v6 is X
-// [Asm] defs: []
-// [Asm] live_set: [v2]
+// [Asm] defs: [fv7]
+// [Asm] live_set: [fv7, v2]
 // [Asm] move_origin: []
-// [Asm] defs: [v7]
-// [Asm] live_set: [v7, v2]
-// [Asm] move_origin: []
-// [Asm] defined: v7 is X
-// [Asm] defs: [fv8]
-// [Asm] live_set: [fv8, v2]
-// [Asm] move_origin: []
-// [Asm] defined: fv8 is F
+// [Asm] defined: fv7 is F
 // [Asm] defs: []
 // [Asm] live_set: [v2]
 // [Asm] move_origin: []
@@ -1488,49 +1469,47 @@
 // [Asm] move_origin: []
 // [Asm] graph G {
 // [Asm]   graph [label="integer interference graph of return_i_d1l0_0"];
-// [Asm]   r0 [label="v4 ← a0", color=green];
-// [Asm]   r5 [label="a0", color=blue];
-// [Asm]   r4 [label="v7 ← a1", color=green];
-// [Asm]   r1 [label="v2 ← a0", color=green];
+// [Asm]   r0 [label="v2 ← a0", color=green];
+// [Asm]   r4 [label="a0", color=blue];
+// [Asm]   r1 [label="s11", color=blue];
 // [Asm]   r3 [label="v6 ← a1", color=green];
-// [Asm]   r2 [label="s11", color=blue];
-// [Asm]   r1 -- r3;
-// [Asm]   r1 -- r4;
-// [Asm]   comment = "0:v4-> 1:v2-> 3:v6-> 4:v7-> 2:s11-> 5:a0"
-// [Asm]   comment = "v4<-a0;v7<-a1;v2<-a0;v6<-a1;"
+// [Asm]   r2 [label="v5 ← a1", color=green];
+// [Asm]   r0 -- r3;
+// [Asm]   r0 -- r1;
+// [Asm]   r0 -- r2;
+// [Asm]   comment = "0:v2-> 1:s11-> 2:v5-> 3:v6-> 4:a0"
+// [Asm]   comment = "v2<-a0;v6<-a1;v5<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
 // [Asm]   graph [label="float interference graph of return_i_d1l0_0"];
-// [Asm]   r0 [label="fv8 ← fa0", color=green];
-// [Asm]   comment = "0:fv8"
-// [Asm]   comment = "fv8<-fa0;"
+// [Asm]   r0 [label="fv7 ← fa0", color=green];
+// [Asm]   comment = "0:fv7"
+// [Asm]   comment = "fv7<-fa0;"
 // [Asm] }
 // [Asm] 
-// [Asm] subst   addi v4, s11, -16 ->   addi a0, s11, -16
-// [Asm] subst   andi v2, v4, -8 ->   andi a0, a0, -8
-// [Asm] subst   mv s11, v2 ->   mv s11, a0
-// [Asm] subst   li v6, 1 ->   li a1, 1
-// [Asm] subst   sd v6, 0(v2) ->   sd a1, 0(a0)
-// [Asm] subst   li v7, 4611686018427387904 ->   li a1, 4611686018427387904
-// [Asm] subst   fmv.d.x fv8, v7 ->   fmv.d.x fa0, a1
-// [Asm] subst   fsd fv8, 8(v2) ->   fsd fa0, 8(a0)
+// [Asm] subst   addi v2, s11, -16 ->   addi a0, s11, -16
+// [Asm] subst   andi s11, v2, -8 ->   andi s11, a0, -8
+// [Asm] subst   li v5, 1 ->   li a1, 1
+// [Asm] subst   sd v5, 0(v2) ->   sd a1, 0(a0)
+// [Asm] subst   li v6, 4611686018427387904 ->   li a1, 4611686018427387904
+// [Asm] subst   fmv.d.x fv7, v6 ->   fmv.d.x fa0, a1
+// [Asm] subst   fsd fv7, 8(v2) ->   fsd fa0, 8(a0)
 // [Asm] subst   ret ->   ret
 // [Asm] before colored: # leaf true
 // [Asm] return_i_d1l0_0:
-// [Asm] # block info: defs: [a0, v7, fv8, v4, v6, s11, v2], uses: [a0, v7, fv8, v4, v6, s11, v2], upward_exposed: [s11], params_defs: []
+// [Asm] # block info: defs: [v5, v6, s11, a0, fv7, v2], uses: [v5, v6, s11, a0, fv7, v2], upward_exposed: [s11], params_defs: []
 // [Asm] # live_in: [s11], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .return_i_d1l0_0_0:
 // [Asm]   # save_ctx1  # live: [s11]
-// [Asm]   addi v4, s11, -16  # live: [v4]
-// [Asm]   andi v2, v4, -8  # live: [v2]
-// [Asm]   mv s11, v2  # live: [v2]
-// [Asm]   li v6, 1  # live: [v6, v2]
-// [Asm]   sd v6, 0(v2)  # live: [v2]
-// [Asm]   li v7, 4611686018427387904  # live: [v7, v2]
-// [Asm]   fmv.d.x fv8, v7  # live: [fv8, v2]
-// [Asm]   fsd fv8, 8(v2)  # live: [v2]
+// [Asm]   addi v2, s11, -16  # live: [v2]
+// [Asm]   andi s11, v2, -8  # live: [v2]
+// [Asm]   li v5, 1  # live: [v5, v2]
+// [Asm]   sd v5, 0(v2)  # live: [v2]
+// [Asm]   li v6, 4611686018427387904  # live: [v6, v2]
+// [Asm]   fmv.d.x fv7, v6  # live: [fv7, v2]
+// [Asm]   fsd fv7, 8(v2)  # live: [v2]
 // [Asm] # control
 // [Asm]   mv a0, v2  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -1651,21 +1630,20 @@
 // [Asm] 
 // [Asm] # leaf true
 // [Asm] return_i_d_i4l1_1:
-// [Asm] # block info: defs: [a0, v7, fv8, v4, v6, s11, v9, v2], uses: [a0, v7, fv8, v4, v6, s11, v9, v2], upward_exposed: [s11], params_defs: []
+// [Asm] # block info: defs: [v5, a0, v8, v6, s11, fv7, v2], uses: [v5, a0, v8, v6, s11, fv7, v2], upward_exposed: [s11], params_defs: []
 // [Asm] # live_in: [s11], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .return_i_d_i4l1_1_0:
 // [Asm]   # save_ctx1  # live: [s11]
-// [Asm]   addi v4, s11, -24  # live: [v4]
-// [Asm]   andi v2, v4, -8  # live: [v2]
-// [Asm]   mv s11, v2  # live: [v2]
-// [Asm]   li v6, 1  # live: [v6, v2]
-// [Asm]   sd v6, 0(v2)  # live: [v2]
-// [Asm]   li v7, 4611686018427387904  # live: [v7, v2]
-// [Asm]   fmv.d.x fv8, v7  # live: [fv8, v2]
-// [Asm]   fsd fv8, 8(v2)  # live: [v2]
-// [Asm]   li v9, 3  # live: [v9, v2]
-// [Asm]   sd v9, 16(v2)  # live: [v2]
+// [Asm]   addi v2, s11, -24  # live: [v2]
+// [Asm]   andi s11, v2, -8  # live: [v2]
+// [Asm]   li v5, 1  # live: [v5, v2]
+// [Asm]   sd v5, 0(v2)  # live: [v2]
+// [Asm]   li v6, 4611686018427387904  # live: [v6, v2]
+// [Asm]   fmv.d.x fv7, v6  # live: [fv7, v2]
+// [Asm]   fsd fv7, 8(v2)  # live: [v2]
+// [Asm]   li v8, 3  # live: [v8, v2]
+// [Asm]   sd v8, 16(v2)  # live: [v2]
 // [Asm] # control
 // [Asm]   mv a0, v2  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -1695,20 +1673,19 @@
 // [Asm] 
 // [Asm] # leaf true
 // [Asm] return_i_i_i12l3_3:
-// [Asm] # block info: defs: [a0, v7, v8, v4, v6, s11, v2], uses: [a0, v7, v8, v4, v6, s11, v2], upward_exposed: [s11], params_defs: []
+// [Asm] # block info: defs: [v7, v5, v6, s11, a0, v2], uses: [v7, v5, v6, s11, a0, v2], upward_exposed: [s11], params_defs: []
 // [Asm] # live_in: [s11], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .return_i_i_i12l3_3_0:
 // [Asm]   # save_ctx1  # live: [s11]
-// [Asm]   addi v4, s11, -12  # live: [v4]
-// [Asm]   andi v2, v4, -8  # live: [v2]
-// [Asm]   mv s11, v2  # live: [v2]
-// [Asm]   li v6, 1  # live: [v6, v2]
-// [Asm]   sw v6, 0(v2)  # live: [v2]
-// [Asm]   li v7, 2  # live: [v7, v2]
-// [Asm]   sw v7, 4(v2)  # live: [v2]
-// [Asm]   li v8, 3  # live: [v8, v2]
-// [Asm]   sw v8, 8(v2)  # live: [v2]
+// [Asm]   addi v2, s11, -12  # live: [v2]
+// [Asm]   andi s11, v2, -8  # live: [v2]
+// [Asm]   li v5, 1  # live: [v5, v2]
+// [Asm]   sw v5, 0(v2)  # live: [v2]
+// [Asm]   li v6, 2  # live: [v6, v2]
+// [Asm]   sw v6, 4(v2)  # live: [v2]
+// [Asm]   li v7, 3  # live: [v7, v2]
+// [Asm]   sw v7, 8(v2)  # live: [v2]
 // [Asm] # control
 // [Asm]   mv a0, v2  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -1716,21 +1693,20 @@
 // [Asm] 
 // [Asm] # leaf true
 // [Asm] return_d_i_i8l2_2:
-// [Asm] # block info: defs: [a0, v8, v4, v6, s11, v9, fv7, v2], uses: [a0, v8, v4, v6, s11, v9, fv7, v2], upward_exposed: [s11], params_defs: []
+// [Asm] # block info: defs: [v5, a0, v7, v8, s11, fv6, v2], uses: [v5, a0, v7, v8, s11, fv6, v2], upward_exposed: [s11], params_defs: []
 // [Asm] # live_in: [s11], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .return_d_i_i8l2_2_0:
 // [Asm]   # save_ctx1  # live: [s11]
-// [Asm]   addi v4, s11, -24  # live: [v4]
-// [Asm]   andi v2, v4, -8  # live: [v2]
-// [Asm]   mv s11, v2  # live: [v2]
-// [Asm]   li v6, 4611686018427387904  # live: [v6, v2]
-// [Asm]   fmv.d.x fv7, v6  # live: [fv7, v2]
-// [Asm]   fsd fv7, 0(v2)  # live: [v2]
-// [Asm]   li v8, 3  # live: [v8, v2]
-// [Asm]   sd v8, 8(v2)  # live: [v2]
-// [Asm]   li v9, 4  # live: [v9, v2]
-// [Asm]   sd v9, 16(v2)  # live: [v2]
+// [Asm]   addi v2, s11, -24  # live: [v2]
+// [Asm]   andi s11, v2, -8  # live: [v2]
+// [Asm]   li v5, 4611686018427387904  # live: [v5, v2]
+// [Asm]   fmv.d.x fv6, v5  # live: [fv6, v2]
+// [Asm]   fsd fv6, 0(v2)  # live: [v2]
+// [Asm]   li v7, 3  # live: [v7, v2]
+// [Asm]   sd v7, 8(v2)  # live: [v2]
+// [Asm]   li v8, 4  # live: [v8, v2]
+// [Asm]   sd v8, 16(v2)  # live: [v2]
 // [Asm] # control
 // [Asm]   mv a0, v2  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -1833,8 +1809,7 @@
 // [Main] return_i_d1l0_0:
 // [Main] .return_i_d1l0_0_0:
 // [Main]   addi a0, s11, -16
-// [Main]   andi a0, a0, -8
-// [Main]   mv s11, a0
+// [Main]   andi s11, a0, -8
 // [Main]   li a1, 1
 // [Main]   sd a1, 0(a0)
 // [Main]   li a1, 4611686018427387904
@@ -1921,8 +1896,7 @@
 // [Main] return_i_d_i4l1_1:
 // [Main] .return_i_d_i4l1_1_0:
 // [Main]   addi a0, s11, -24
-// [Main]   andi a0, a0, -8
-// [Main]   mv s11, a0
+// [Main]   andi s11, a0, -8
 // [Main]   li a1, 1
 // [Main]   sd a1, 0(a0)
 // [Main]   li a1, 4611686018427387904
@@ -1962,8 +1936,7 @@
 // [Main] return_i_i_i12l3_3:
 // [Main] .return_i_i_i12l3_3_0:
 // [Main]   addi a0, s11, -12
-// [Main]   andi a0, a0, -8
-// [Main]   mv s11, a0
+// [Main]   andi s11, a0, -8
 // [Main]   li a1, 1
 // [Main]   sw a1, 0(a0)
 // [Main]   li a1, 2
@@ -1980,8 +1953,7 @@
 // [Main] return_d_i_i8l2_2:
 // [Main] .return_d_i_i8l2_2_0:
 // [Main]   addi a0, s11, -24
-// [Main]   andi a0, a0, -8
-// [Main]   mv s11, a0
+// [Main]   andi s11, a0, -8
 // [Main]   li a1, 4611686018427387904
 // [Main]   fmv.d.x fa0, a1
 // [Main]   fsd fa0, 0(a0)

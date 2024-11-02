@@ -1211,11 +1211,24 @@ pub fn constructor_rv_fmv_to[C : Context](
   return v3
 }
 
+// Generated as internal constructor for term rv_andi_to.
+pub fn constructor_rv_andi_to[C : Context](
+  ctx : C,
+  arg0 : @riscv.Reg,
+  arg1 : @riscv.Reg,
+  arg2 : Int
+) -> Unit {
+  let v3 = @riscv.RvAsm::Andi(rd=arg0, rs1=arg1, imm=arg2)
+  let v4 = C::emit_risc_v(ctx, v3)
+  // Rule at src/riscv/riscv.isle line 549.
+  return v4
+}
+
 // Generated as internal constructor for term rv_j.
 pub fn constructor_rv_j[C : Context](ctx : C, arg0 : @riscv.Label) -> Unit {
   let v1 = @riscv.RvAsm::J(target=arg0)
   let v2 = C::emit_risc_v(ctx, v1)
-  // Rule at src/riscv/riscv.isle line 549.
+  // Rule at src/riscv/riscv.isle line 552.
   return v2
 }
 
@@ -1228,7 +1241,7 @@ pub fn constructor_rv_jalr[C : Context](
 ) -> Unit {
   let v3 = @riscv.RvAsm::Jalr(target=arg0, num_xregs=arg1, num_fregs=arg2)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 552.
+  // Rule at src/riscv/riscv.isle line 555.
   return v4
 }
 
@@ -1236,7 +1249,7 @@ pub fn constructor_rv_jalr[C : Context](
 pub fn constructor_rv_jr[C : Context](ctx : C, arg0 : @riscv.Reg) -> Unit {
   let v1 = @riscv.RvAsm::Jr(target=arg0)
   let v2 = C::emit_risc_v(ctx, v1)
-  // Rule at src/riscv/riscv.isle line 555.
+  // Rule at src/riscv/riscv.isle line 558.
   return v2
 }
 
@@ -1249,49 +1262,49 @@ pub fn constructor_rv_call[C : Context](
 ) -> Unit {
   let v3 = @riscv.RvAsm::Call(target=arg0, num_xregs=arg1, num_fregs=arg2)
   let v4 = C::emit_risc_v(ctx, v3)
-  // Rule at src/riscv/riscv.isle line 558.
+  // Rule at src/riscv/riscv.isle line 561.
   return v4
 }
 
 // Generated as internal constructor for term rv_xret.
 pub fn constructor_rv_xret[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::XRet)
-  // Rule at src/riscv/riscv.isle line 561.
+  // Rule at src/riscv/riscv.isle line 564.
   return v1
 }
 
 // Generated as internal constructor for term rv_fret.
 pub fn constructor_rv_fret[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::FRet)
-  // Rule at src/riscv/riscv.isle line 564.
+  // Rule at src/riscv/riscv.isle line 567.
   return v1
 }
 
 // Generated as internal constructor for term rv_save_ctx1.
 pub fn constructor_rv_save_ctx1[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::SaveCtx1)
-  // Rule at src/riscv/riscv.isle line 567.
+  // Rule at src/riscv/riscv.isle line 570.
   return v1
 }
 
 // Generated as internal constructor for term rv_restore_ctx1.
 pub fn constructor_rv_restore_ctx1[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::RestoreCtx1)
-  // Rule at src/riscv/riscv.isle line 570.
+  // Rule at src/riscv/riscv.isle line 573.
   return v1
 }
 
 // Generated as internal constructor for term rv_save_ctx2.
 pub fn constructor_rv_save_ctx2[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::SaveCtx2)
-  // Rule at src/riscv/riscv.isle line 573.
+  // Rule at src/riscv/riscv.isle line 576.
   return v1
 }
 
 // Generated as internal constructor for term rv_restore_ctx2.
 pub fn constructor_rv_restore_ctx2[C : Context](ctx : C) -> Unit {
   let v1 = C::emit_risc_v(ctx, @riscv.RvAsm::RestoreCtx2)
-  // Rule at src/riscv/riscv.isle line 576.
+  // Rule at src/riscv/riscv.isle line 579.
   return v1
 }
 

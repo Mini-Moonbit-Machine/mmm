@@ -882,7 +882,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
         Some(len) => {
           let size = elem_sz * len
           let imm = self.i32_generate_imm12(size)
-          let unaligned_ptr = match imm {
+          let aligned_ptr = match imm {
             Some(imm12) =>
               @generated.constructor_rv_addi(
                 self,
@@ -894,13 +894,11 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
               @generated.constructor_rv_sub(self, self.alloc_reg |> xreg, imm)
             }
           }
-          let aligned_ptr = @generated.constructor_rv_andi(
-            self, unaligned_ptr, -8,
-          )
-          @generated.constructor_rv_mv_to(
+          @generated.constructor_rv_andi_to(
             self,
             self.alloc_reg |> xreg,
             aligned_ptr,
+            -8,
           )
           for fill in fills {
             self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, Some(len), None)
@@ -918,18 +916,16 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
               _ => self.tracer.abort("Invalid type size")
             },
           )
-          let unaligned_ptr = @generated.constructor_rv_sub(
+          let aligned_ptr = @generated.constructor_rv_sub(
             self,
             xreg(self.alloc_reg),
             size,
           )
-          let aligned_ptr = @generated.constructor_rv_andi(
-            self, unaligned_ptr, -8,
-          )
-          @generated.constructor_rv_mv_to(
+          @generated.constructor_rv_andi_to(
             self,
             self.alloc_reg |> xreg,
             aligned_ptr,
+            -8,
           )
           for fill in fills {
             self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, None, Some(len))
