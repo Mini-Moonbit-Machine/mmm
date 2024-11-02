@@ -18,10 +18,23 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let %1: int32 = call f2(12, %0)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    return %2
+    let %0: bool = eq(12, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub(12, 1)
+    let %2: int32 = load_symbol ::0
+    let %3: int32 = call f2(%1, %2)
+    let %4: int32 = load_symbol ::0
+    let %5: int32 = add(%4, %3)
+    jump b3(%5)
+  }
+  .bb #b3 (int32) {
+    let %6: unit = ext_call minimbt_print_int($b3.0)
+    return %6
   }
 }
 .fn f2l0_2 #f2 : fn(int32, int32) -> int32
@@ -32,18 +45,31 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b3(0)
+    jump b6(0)
   }
   .bb #b2 () {
     let %1: int32 = sub($f0, 1)
-    let %2: int32 = load_symbol ::0
-    let %3: int32 = call f2(%1, %2)
-    let %4: int32 = load_symbol ::0
-    let %5: int32 = add(%4, %3)
-    jump b3(%5)
+    let %2: bool = eq(%1, 0)
+    br %2 b3() b4()
   }
-  .bb #b3 (int32) {
-    return $b3.0
+  .bb #b3 () {
+    jump b5(0)
+  }
+  .bb #b4 () {
+    let %3: int32 = sub(%1, 1)
+    let %4: int32 = load_symbol ::0
+    let %5: int32 = call f2(%3, %4)
+    let %6: int32 = load_symbol ::0
+    let %7: int32 = add(%6, %5)
+    jump b5(%7)
+  }
+  .bb #b5 (int32) {
+    let %8: int32 = load_symbol ::0
+    let %9: int32 = add(%8, $b5.0)
+    jump b6(%9)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
   }
 }
 .fn T$start_6 #f6 : fn() -> unit

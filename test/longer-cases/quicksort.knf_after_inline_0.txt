@@ -5,6 +5,59 @@ let rec swap1: Unit = (arr2.3: Array(Int), i4.5: Int, j6.7: Int) {
   let _13: Unit = Put arr2.3[j6.7] = tmp.8
   Unit
 }
+let rec partition14: Int = (arr15.16: Array(Int), low17.18: Int, high19.20: Int) {
+  let pivot.21: Int = Get arr15.16[high19.20]
+  let _22: Int = Int(1)
+  let _23: Int = Int(1)
+  let _24: Int = Sub(low17.18, _23)
+  let i.25: Array(Int) = ExtApply(minimbt_create_array, [_22, _24, ])
+  let rec l26: Var({val: Some(Unit)}) = (j27.28: Var({val: Some(Int)})) {
+    let _29: Int = Int(1)
+    let _30: Int = Sub(high19.20, _29)
+    if (j27.28 <= _30) then {
+      let _31: Int = Get arr15.16[j27.28]
+      let _42: Unit = if (_31 <= pivot.21) then {
+        let _32: Int = Int(0)
+        let _33: Int = Int(0)
+        let _34: Int = Get i.25[_33]
+        let _35: Int = Int(1)
+        let _36: Int = Add(_34, _35)
+        let _38: Unit = Put i.25[_32] = _36
+        let _39: Int = Int(0)
+        let _40: Int = Get i.25[_39]
+        let tmp.110: Int = Get arr15.16[_40]
+        let _111: Int = Get arr15.16[j27.28]
+        let _112: Unit = Put arr15.16[_40] = _111
+        let _113: Unit = Put arr15.16[j27.28] = tmp.110
+        Unit
+      } else {
+        Unit
+      }
+      let _43: Int = Int(1)
+      let _44: Int = Add(j27.28, _43)
+      Apply(l26, [_44, ])
+    } else {
+      Unit
+    }
+  }
+  let _46: Var({val: Some(Unit)}) = Apply(l26, [low17.18, ])
+  let _47: Int = Int(0)
+  let _48: Int = Int(0)
+  let _49: Int = Get i.25[_48]
+  let _50: Int = Int(1)
+  let _51: Int = Add(_49, _50)
+  let _53: Unit = Put i.25[_47] = _51
+  let _54: Int = Int(0)
+  let _55: Int = Get i.25[_54]
+  let _57: Unit = 
+    let tmp.114: Int = Get arr15.16[_55]
+    let _115: Int = Get arr15.16[high19.20]
+    let _116: Unit = Put arr15.16[_55] = _115
+    let _117: Unit = Put arr15.16[high19.20] = tmp.114
+    Unit
+  let _58: Int = Int(0)
+  Get i.25[_58]
+}
 let rec quicksort59: Unit = (arr60.61: Array(Int), low62.63: Int, high64.65: Int) {
   let _66: Int = Int(1)
   let _67: Int = Sub(high64.65, _66)
@@ -54,10 +107,35 @@ let rec quicksort59: Unit = (arr60.61: Array(Int), low62.63: Int, high64.65: Int
       Get i.122[_149]
     let _69: Int = Int(1)
     let _70: Int = Sub(pi.68, _69)
-    let _72: Unit = Apply(quicksort59, [arr60.61, low62.63, _70, ])
+    let _72: Unit = 
+      let _150: Int = Int(1)
+      let _151: Int = Sub(_70, _150)
+      if (low62.63 <= _151) then {
+        let pi.152: Int = Apply(partition14, [arr60.61, low62.63, _70, ])
+        let _153: Int = Int(1)
+        let _154: Int = Sub(pi.152, _153)
+        let _155: Unit = Apply(quicksort59, [arr60.61, low62.63, _154, ])
+        let _156: Int = Int(1)
+        let _157: Int = Add(pi.152, _156)
+        Apply(quicksort59, [arr60.61, _157, _70, ])
+      } else {
+        Unit
+      }
     let _73: Int = Int(1)
     let _74: Int = Add(pi.68, _73)
-    Apply(quicksort59, [arr60.61, _74, high64.65, ])
+    let _158: Int = Int(1)
+    let _159: Int = Sub(high64.65, _158)
+    if (_74 <= _159) then {
+      let pi.160: Int = Apply(partition14, [arr60.61, _74, high64.65, ])
+      let _161: Int = Int(1)
+      let _162: Int = Sub(pi.160, _161)
+      let _163: Unit = Apply(quicksort59, [arr60.61, _74, _162, ])
+      let _164: Int = Int(1)
+      let _165: Int = Add(pi.160, _164)
+      Apply(quicksort59, [arr60.61, _165, high64.65, ])
+    } else {
+      Unit
+    }
   } else {
     Unit
   }
@@ -74,17 +152,51 @@ let rec main75: Var({val: Some(Unit)}) = () {
       let _86: Unit = Put arr.78[i80.81] = _84
       let _87: Int = Int(1)
       let _88: Int = Add(i80.81, _87)
-      Apply(input79, [_88, ])
+      let _166: Int = Int(1)
+      let _167: Int = Sub(len.76, _166)
+      if (_88 <= _167) then {
+        let _168: Int = ExtApply(minimbt_read_int, [])
+        let _169: Unit = Put arr.78[_88] = _168
+        let _170: Int = Int(1)
+        let _171: Int = Add(_88, _170)
+        Apply(input79, [_171, ])
+      } else {
+        Unit
+      }
     } else {
       Unit
     }
   }
   let _89: Int = Int(0)
-  let _91: Var({val: Some(Unit)}) = Apply(input79, [_89, ])
+  let _91: Var({val: Some(Unit)}) = 
+    let _172: Int = Int(1)
+    let _173: Int = Sub(len.76, _172)
+    if (_89 <= _173) then {
+      let _174: Int = ExtApply(minimbt_read_int, [])
+      let _175: Unit = Put arr.78[_89] = _174
+      let _176: Int = Int(1)
+      let _177: Int = Add(_89, _176)
+      Apply(input79, [_177, ])
+    } else {
+      Unit
+    }
   let _92: Int = Int(0)
   let _93: Int = Int(1)
   let _94: Int = Sub(len.76, _93)
-  let _96: Unit = Apply(quicksort59, [arr.78, _92, _94, ])
+  let _96: Unit = 
+    let _178: Int = Int(1)
+    let _179: Int = Sub(_94, _178)
+    if (_92 <= _179) then {
+      let pi.180: Int = Apply(partition14, [arr.78, _92, _94, ])
+      let _181: Int = Int(1)
+      let _182: Int = Sub(pi.180, _181)
+      let _183: Unit = Apply(quicksort59, [arr.78, _92, _182, ])
+      let _184: Int = Int(1)
+      let _185: Int = Add(pi.180, _184)
+      Apply(quicksort59, [arr.78, _185, _94, ])
+    } else {
+      Unit
+    }
   let rec output97: Var({val: Some(Unit)}) = (i98.99: Int) {
     let _100: Int = Int(1)
     let _101: Int = Sub(len.76, _100)
@@ -94,12 +206,34 @@ let rec main75: Var({val: Some(Unit)}) = () {
       let _106: Unit = ExtApply(minimbt_print_endline, [])
       let _107: Int = Int(1)
       let _108: Int = Add(i98.99, _107)
-      Apply(output97, [_108, ])
+      let _186: Int = Int(1)
+      let _187: Int = Sub(len.76, _186)
+      if (_108 <= _187) then {
+        let _188: Int = Get arr.78[_108]
+        let _189: Unit = ExtApply(minimbt_print_int, [_188, ])
+        let _190: Unit = ExtApply(minimbt_print_endline, [])
+        let _191: Int = Int(1)
+        let _192: Int = Add(_108, _191)
+        Apply(output97, [_192, ])
+      } else {
+        Unit
+      }
     } else {
       Unit
     }
   }
   let _109: Int = Int(0)
-  Apply(output97, [_109, ])
+  let _193: Int = Int(1)
+  let _194: Int = Sub(len.76, _193)
+  if (_109 <= _194) then {
+    let _195: Int = Get arr.78[_109]
+    let _196: Unit = ExtApply(minimbt_print_int, [_195, ])
+    let _197: Unit = ExtApply(minimbt_print_endline, [])
+    let _198: Int = Int(1)
+    let _199: Int = Add(_109, _198)
+    Apply(output97, [_199, ])
+  } else {
+    Unit
+  }
 }
 Apply(main75, [])

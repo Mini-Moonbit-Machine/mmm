@@ -45,6 +45,52 @@ memsetf64:
 
   .p2align 2
   .text
+  .globl loop322.241l4_2
+  .type loop322.241l4_2, @function
+# leaf true
+loop322.241l4_2:
+.loop322.241l4_2_5:
+
+.loop322.241l4_2_0:
+  blt a0, zero, .loop322.241l4_2_2
+
+.loop322.241l4_2_1:
+  slliw a6, a4, 3
+  add a6, a3, a6
+  ld a6, 0(a6)
+  slliw a7, a4, 3
+  add a7, a3, a7
+  ld a7, 0(a7)
+  slliw t0, a5, 3
+  add a7, a7, t0
+  fld fa0, 0(a7)
+  slliw a7, a4, 3
+  add a7, a1, a7
+  ld a7, 0(a7)
+  slliw t0, a0, 3
+  add a7, a7, t0
+  fld fa1, 0(a7)
+  slliw a7, a0, 3
+  add a7, a2, a7
+  ld a7, 0(a7)
+  slliw t0, a5, 3
+  add a7, a7, t0
+  fld fa2, 0(a7)
+  fmadd.d fa0, fa1, fa2, fa0
+  slliw a7, a5, 3
+  add a6, a6, a7
+  fsd fa0, 0(a6)
+  addi a0, a0, -1
+  j .loop322.241l4_2_0
+
+.loop322.241l4_2_2:
+  mv a0, zero
+
+.loop322.241l4_2_3:
+  ret
+
+  .p2align 2
+  .text
   .globl T$start_12
   .type T$start_12, @function
 # leaf false
@@ -56,80 +102,6 @@ T$start_12:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl loop114.197l2_4
-  .type loop114.197l2_4, @function
-# leaf false
-loop114.197l2_4:
-.loop114.197l2_4_5:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  mv s3, a0
-  mv s5, a1
-  mv s1, a2
-  mv s0, a3
-  mv s4, a4
-  mv s2, a5
-
-.loop114.197l2_4_0:
-  blt s3, zero, .loop114.197l2_4_2
-
-.loop114.197l2_4_1:
-  addi a0, s1, -1
-
-.loop114.197l2_4_12:
-  mv s6, a0
-
-.loop114.197l2_4_7:
-  blt s6, zero, .loop114.197l2_4_9
-
-.loop114.197l2_4_8:
-  addi a0, s5, -1
-  mv a1, s0
-  mv a2, s4
-  mv a3, s2
-  mv a4, s3
-  mv a5, s6
-  call loop322.203l4_2
-
-.loop114.197l2_4_13:
-  addi a0, s6, -1
-  mv s6, a0
-  j .loop114.197l2_4_7
-
-.loop114.197l2_4_2:
-  mv a0, zero
-
-.loop114.197l2_4_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  addi sp, sp, 64
-  ret
-
-.loop114.197l2_4_9:
-  mv a0, zero
-
-.loop114.197l2_4_10:
-
-.loop114.197l2_4_6:
-  addi a0, s3, -1
-  mv s3, a0
-  j .loop114.197l2_4_0
 
   .p2align 2
   .text
@@ -216,7 +188,7 @@ main53l0_5:
   mv a3, s1
   mv a4, s2
   mv a5, s0
-  call loop114.197l2_4
+  call loop114.235l2_4
   ld a0, 0(s0)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
@@ -250,7 +222,7 @@ main53l0_5:
   .type init_arr63l2_0, @function
 # leaf false
 init_arr63l2_0:
-.init_arr63l2_0_5:
+.init_arr63l2_0_8:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -275,6 +247,20 @@ init_arr63l2_0:
   slliw a0, s0, 3
   add a0, s1, a0
   sd s3, 0(a0)
+  addi s0, s0, -1
+  blt s0, zero, .init_arr63l2_0_4
+
+.init_arr63l2_0_3:
+  slliw a0, s2, 3
+  sub s3, s11, a0
+  andi s11, s3, -8
+  fmv.d.x fa0, zero
+  mv a1, s2
+  mv a0, s3
+  call memsetf64
+  slliw a0, s0, 3
+  add a0, s1, a0
+  sd s3, 0(a0)
   addi a0, s0, -1
   mv s0, a0
   j .init_arr63l2_0_0
@@ -282,7 +268,7 @@ init_arr63l2_0:
 .init_arr63l2_0_2:
   mv a0, zero
 
-.init_arr63l2_0_3:
+.init_arr63l2_0_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -291,6 +277,12 @@ init_arr63l2_0:
   addi sp, sp, 48
   ret
 
+.init_arr63l2_0_4:
+  mv a0, zero
+
+.init_arr63l2_0_5:
+  j .init_arr63l2_0_6
+
   .p2align 2
   .text
   .globl gen_arr57l1_1
@@ -298,11 +290,12 @@ init_arr63l2_0:
 # leaf false
 gen_arr57l1_1:
 .gen_arr57l1_1_0:
-  addi sp, sp, -32
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
+  sd s3, 32(sp)
   mv s0, a0
   mv s1, a1
   slliw a0, s0, 3
@@ -311,63 +304,38 @@ gen_arr57l1_1:
   mv a1, s0
   mv a0, s2
   call memseti64
+  addi s0, s0, -1
+  blt s0, zero, .gen_arr57l1_1_2
+
+.gen_arr57l1_1_1:
+  slliw a0, s1, 3
+  sub s3, s11, a0
+  andi s11, s3, -8
+  fmv.d.x fa0, zero
+  mv a1, s1
+  mv a0, s3
+  call memsetf64
+  slliw a0, s0, 3
+  add a0, s2, a0
+  sd s3, 0(a0)
   addi a0, s0, -1
   mv a1, s2
   mv a2, s1
   call init_arr63l2_0
+
+.gen_arr57l1_1_3:
   mv a0, s2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  addi sp, sp, 48
   ret
 
-  .p2align 2
-  .text
-  .globl loop322.203l4_2
-  .type loop322.203l4_2, @function
-# leaf true
-loop322.203l4_2:
-.loop322.203l4_2_5:
-
-.loop322.203l4_2_0:
-  blt a0, zero, .loop322.203l4_2_2
-
-.loop322.203l4_2_1:
-  slliw a6, a4, 3
-  add a6, a3, a6
-  ld a6, 0(a6)
-  slliw a7, a4, 3
-  add a7, a3, a7
-  ld a7, 0(a7)
-  slliw t0, a5, 3
-  add a7, a7, t0
-  fld fa0, 0(a7)
-  slliw a7, a4, 3
-  add a7, a1, a7
-  ld a7, 0(a7)
-  slliw t0, a0, 3
-  add a7, a7, t0
-  fld fa1, 0(a7)
-  slliw a7, a0, 3
-  add a7, a2, a7
-  ld a7, 0(a7)
-  slliw t0, a5, 3
-  add a7, a7, t0
-  fld fa2, 0(a7)
-  fmadd.d fa0, fa1, fa2, fa0
-  slliw a7, a5, 3
-  add a6, a6, a7
-  fsd fa0, 0(a6)
-  addi a0, a0, -1
-  j .loop322.203l4_2_0
-
-.loop322.203l4_2_2:
+.gen_arr57l1_1_2:
   mv a0, zero
-
-.loop322.203l4_2_3:
-  ret
+  j .gen_arr57l1_1_3
 
   .p2align 2
   .text
@@ -390,6 +358,80 @@ minimbt_main:
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
+
+  .p2align 2
+  .text
+  .globl loop114.235l2_4
+  .type loop114.235l2_4, @function
+# leaf false
+loop114.235l2_4:
+.loop114.235l2_4_5:
+  addi sp, sp, -64
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  sd s6, 56(sp)
+  mv s3, a0
+  mv s6, a1
+  mv s2, a2
+  mv s0, a3
+  mv s5, a4
+  mv s1, a5
+
+.loop114.235l2_4_0:
+  blt s3, zero, .loop114.235l2_4_2
+
+.loop114.235l2_4_1:
+  addi a0, s2, -1
+
+.loop114.235l2_4_12:
+  mv s4, a0
+
+.loop114.235l2_4_7:
+  blt s4, zero, .loop114.235l2_4_9
+
+.loop114.235l2_4_8:
+  addi a0, s6, -1
+  mv a1, s0
+  mv a2, s5
+  mv a3, s1
+  mv a4, s3
+  mv a5, s4
+  call loop322.241l4_2
+
+.loop114.235l2_4_13:
+  addi a0, s4, -1
+  mv s4, a0
+  j .loop114.235l2_4_7
+
+.loop114.235l2_4_2:
+  mv a0, zero
+
+.loop114.235l2_4_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  addi sp, sp, 64
+  ret
+
+.loop114.235l2_4_9:
+  mv a0, zero
+
+.loop114.235l2_4_10:
+
+.loop114.235l2_4_6:
+  addi a0, s3, -1
+  mv s3, a0
+  j .loop114.235l2_4_0
 
 __end_text:
   .p2align 2

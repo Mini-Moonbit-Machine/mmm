@@ -22,7 +22,26 @@ let rec calc_pixel7: Int = (zr8.9: Double, zi10.11: Double, it12.13: Int) {
       let new_zr.22: Double = FAdd(_21, c_re.5)
       let _23: Int = Int(1)
       let _24: Int = Add(it12.13, _23)
-      Apply(calc_pixel7, [new_zr.22, new_zi.20, _24, ])
+      let zr2.109: Double = FMul(new_zr.22, new_zr.22)
+      let zi2.110: Double = FMul(new_zi.20, new_zi.20)
+      if (_24 == iter.3) then {
+        Var(iter.3)
+      } else {
+        let _111: Double = FAdd(zr2.109, zi2.110)
+        if (limit_sq.2 <= _111) then {
+          Var(_24)
+        } else {
+          let _112: Double = Double(2)
+          let _113: Double = FMul(_112, new_zr.22)
+          let _114: Double = FMul(_113, new_zi.20)
+          let new_zi.115: Double = FAdd(_114, c_im.6)
+          let _116: Double = FSub(zr2.109, zi2.110)
+          let new_zr.117: Double = FAdd(_116, c_re.5)
+          let _118: Int = Int(1)
+          let _119: Int = Add(_24, _118)
+          Apply(calc_pixel7, [new_zr.117, new_zi.115, _119, ])
+        }
+      }
     }
   }
 }
@@ -52,16 +71,36 @@ let rec main_loop30: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: Int,
       let _57: Double = Double(1.5)
       let ci.58: Double = FSub(_56, _57)
       let _59: Int = Int(0)
-      let res.60: Int = Apply(calc_pixel7, [cr.51, ci.58, _59, ])
+      let res.60: Int = 
+        let zr2.120: Double = FMul(cr.51, cr.51)
+        let zi2.121: Double = FMul(ci.58, ci.58)
+        if (_59 == iter.3) then {
+          Var(iter.3)
+        } else {
+          let _122: Double = FAdd(zr2.120, zi2.121)
+          if (limit_sq.2 <= _122) then {
+            Var(_59)
+          } else {
+            let _123: Double = Double(2)
+            let _124: Double = FMul(_123, cr.51)
+            let _125: Double = FMul(_124, ci.58)
+            let new_zi.126: Double = FAdd(_125, c_im.6)
+            let _127: Double = FSub(zr2.120, zi2.121)
+            let new_zr.128: Double = FAdd(_127, c_re.5)
+            let _129: Int = Int(1)
+            let _130: Int = Add(_59, _129)
+            Apply(calc_pixel7, [new_zr.128, new_zi.126, _130, ])
+          }
+        }
       let _61: Int = Mul(y37.38, w31.32)
       let _62: Int = Add(_61, x35.36)
       let _63: Int = 
-        let _109: Int = Int(0)
-        if (res.60 <= _109) then {
+        let _131: Int = Int(0)
+        if (res.60 <= _131) then {
           Int(0)
         } else {
-          let _110: Int = Int(48)
-          if (_110 <= res.60) then {
+          let _132: Int = Int(48)
+          if (_132 <= res.60) then {
             Int(48)
           } else {
             Var(res.60)

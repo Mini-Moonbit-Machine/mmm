@@ -15,25 +15,49 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b3($f0)
+    jump b6($f0)
   }
   .bb #b2 () {
     let %1: int32 = add($f0, $f1)
     let %2: int32 = sub($f1, 1)
-    let %3: int32 = call f0(%1, %2)
-    jump b3(%3)
+    let %3: bool = le(%2, 0)
+    br %3 b3() b4()
   }
-  .bb #b3 (int32) {
-    return $b3.0
+  .bb #b3 () {
+    jump b5(%1)
+  }
+  .bb #b4 () {
+    let %4: int32 = add(%1, %2)
+    let %5: int32 = sub(%2, 1)
+    let %6: int32 = call f0(%4, %5)
+    jump b5(%6)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
   }
 }
 .fn main10l1_1 #f1 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = call f0(0, 10000)
-    let %1: unit = ext_call minimbt_print_int(%0)
-    return %1
+    let %0: bool = le(10000, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(0)
+  }
+  .bb #b2 () {
+    let %1: int32 = add(0, 10000)
+    let %2: int32 = sub(10000, 1)
+    let %3: int32 = call f0(%1, %2)
+    jump b3(%3)
+  }
+  .bb #b3 (int32) {
+    let %4: unit = ext_call minimbt_print_int($b3.0)
+    return %4
   }
 }
 .fn T$start_4 #f4 : fn() -> unit
