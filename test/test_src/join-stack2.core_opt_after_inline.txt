@@ -1,0 +1,60 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn g4l1_1 #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
+  }
+}
+.fn f1l0_0 #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn T$start_6 #f6 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn main7l2_2 #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(())
+    jump b4(%0)
+  }
+  .bb #b1 () {
+    let %2: int32 = call f1(())
+    jump b5(%2)
+  }
+  .bb #b2 () {
+    let %4: int32 = add($b4.0, $b4.0)
+    jump b3(%4)
+  }
+  .bb #b3 (int32) {
+    let %5: unit = ext_call minimbt_print_int($b3.0)
+    return %5
+  }
+  .bb #b4 (int32) {
+    let %1: bool = le($b4.0, 0)
+    br %1 b1() b2()
+  }
+  .bb #b5 (int32) {
+    let %3: int32 = add($b5.0, $b4.0)
+    jump b3(%3)
+  }
+}
+.thunk ::0 start

@@ -176,33 +176,35 @@ main94l4_16:
   fmv.d fa0, fa1
   fmv.d fa0, fa2
   call minimbt_read_int
-  mv s0, a0
+  mv s1, a0
   li a0, 2
-  mul s1, s0, a0
-  mul a0, s1, s0
+  mul s2, s1, a0
+  mul a0, s2, s1
   slliw a1, a0, 2
   sub a1, s11, a1
-  andi s2, a1, -8
-  mv s11, s2
+  andi s0, a1, -8
+  mv s11, s0
   mv a1, a0
-  mv a0, s2
+  mv a0, s0
   mv a2, zero
   call memseti32
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a5, iter.3
   fld fa2, limit_sq.2, t5
-  mv a0, s1
-  mv a1, s0
+  mv a0, s2
+  mv a1, s1
   mv a2, zero
   mv a3, zero
-  mv a4, s2
+  mv a4, s0
   call main_loop30l2_14
-  mv a0, s1
-  mv a1, s0
+
+.main94l4_16_1:
+  mv a0, s2
+  mv a1, s1
   mv a2, zero
   mv a3, zero
-  mv a4, s2
+  mv a4, s0
   call print_loop68l3_15
   mv a0, zero
   ld ra, 0(sp)
@@ -294,19 +296,19 @@ main_loop30l2_14:
   sd s5, 48(sp)
   mv s0, a0
   mv s1, a1
-  mv s3, a2
-  mv s4, a3
-  mv s2, a4
+  mv s2, a2
+  mv s3, a3
+  mv s4, a4
   mv a0, a5
 
 .main_loop30l2_14_0:
-  beq s4, s1, .main_loop30l2_14_1
+  beq s3, s1, .main_loop30l2_14_1
 
 .main_loop30l2_14_2:
-  beq s3, s0, .main_loop30l2_14_3
+  beq s2, s0, .main_loop30l2_14_3
 
 .main_loop30l2_14_4:
-  fcvt.d.w fa0, s3
+  fcvt.d.w fa0, s2
   li a0, 4613937818241073152
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
@@ -316,7 +318,7 @@ main_loop30l2_14:
   fmv.d.x fa1, a0
   fsub.d fa0, fa0, fa1
   fneg.d fa0, fa0
-  fcvt.d.w fa1, s4
+  fcvt.d.w fa1, s3
   li a0, 4613937818241073152
   fmv.d.x fa2, a0
   fmul.d fa1, fa2, fa1
@@ -331,18 +333,22 @@ main_loop30l2_14:
   fld fa4, limit_sq.2, t5
   mv a0, zero
   call calc_pixel7l0_12
-  mul a1, s4, s0
-  add s5, a1, s3
+
+.main_loop30l2_14_9:
+  mul a1, s3, s0
+  add s5, a1, s2
   call clamp25l1_13
+
+.main_loop30l2_14_10:
   slliw a1, s5, 2
-  add a1, s2, a1
+  add a1, s4, a1
   sw a0, 0(a1)
-  addi a1, s3, 1
+  addi a1, s2, 1
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  mv s3, a1
+  mv s2, a1
   j .main_loop30l2_14_0
 
 .main_loop30l2_14_1:
@@ -360,13 +366,13 @@ main_loop30l2_14:
   ret
 
 .main_loop30l2_14_3:
-  addi a1, s4, 1
+  addi a1, s3, 1
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  mv s3, zero
-  mv s4, a1
+  mv s2, zero
+  mv s3, a1
   j .main_loop30l2_14_0
 
   .p2align 2

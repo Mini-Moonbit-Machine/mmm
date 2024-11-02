@@ -17,7 +17,7 @@ pub enum CallFrequnce {
   Once
   Multiple
   MaybeInClosure
-} derive(Show)
+} derive(Show, Eq)
 
 fn add_call(fcf : FnCallFreq, f : @core.FnRef) -> Unit {
   let freq = fcf._.get(f).or(Never)

@@ -1,0 +1,54 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main15l1_1 #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[double] heap(3)> <- [..] = 1.23
+    let _ = alloc <m1: array[double] heap(3)> <- [..] = 4.56
+    let %2: double = call f0(f1.m0, f1.m1, 2)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = conv.d2i.rtz(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.fn T$start_4 #f4 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f1()
+    return %0
+  }
+}
+.fn inprod1l0_0 #f0 : fn(array[double], array[double], int32) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: double = load double offset($f0, $f2 * @64)
+    let %2: double = load double offset($f1, $f2 * @64)
+    let %3: double = mul(%1, %2)
+    let %4: int32 = sub($f2, 1)
+    let %5: double = call f0($f0, $f1, %4)
+    let %6: double = add(%3, %5)
+    jump b3(%6)
+  }
+  .bb #b2 () {
+    jump b3(0)
+  }
+  .bb #b3 (double) {
+    return $b3.0
+  }
+}
+.thunk ::0 start

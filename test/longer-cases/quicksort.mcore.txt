@@ -40,29 +40,31 @@ partition14l1_2:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
+  mv s2, a0
   mv a0, a1
-  mv s1, a2
-  slliw a1, s1, 2
-  add a1, s0, a1
+  mv s0, a2
+  slliw a1, s0, 2
+  add a1, s2, a1
   lw a3, 0(a1)
   addi a1, a0, -1
   addi a2, s11, -4
-  andi s2, a2, -8
-  mv s11, s2
-  sw a1, 0(s2)
-  mv a1, s2
-  mv a2, s0
-  mv a4, s1
+  andi s1, a2, -8
+  mv s11, s1
+  sw a1, 0(s1)
+  mv a1, s1
+  mv a2, s2
+  mv a4, s0
   call l26l2_1
-  lw a0, 0(s2)
+
+.partition14l1_2_1:
+  lw a0, 0(s1)
   addi a0, a0, 1
-  sw a0, 0(s2)
-  lw a1, 0(s2)
-  mv a0, s0
-  mv a2, s1
+  sw a0, 0(s1)
+  lw a1, 0(s1)
+  mv a0, s2
+  mv a2, s0
   call swap1l0_0
-  lw a0, 0(s2)
+  lw a0, 0(s1)
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -184,26 +186,28 @@ main75l3_6:
   sd s0, 8(sp)
   sd s1, 16(sp)
   call minimbt_read_int
-  mv s0, a0
-  slliw a0, s0, 2
+  mv s1, a0
+  slliw a0, s1, 2
   sub a0, s11, a0
-  andi s1, a0, -8
-  mv s11, s1
-  mv a1, s0
-  mv a0, s1
+  andi s0, a0, -8
+  mv s11, s0
+  mv a1, s1
+  mv a0, s0
   mv a2, zero
   call memseti32
   mv a0, zero
-  mv a1, s1
-  mv a2, s0
+  mv a1, s0
+  mv a2, s1
   call input79l4_4
-  addi a2, s0, -1
-  mv a0, s1
+
+.main75l3_6_1:
+  addi a2, s1, -1
+  mv a0, s0
   mv a1, zero
   call quicksort59l2_3
   mv a0, zero
-  mv a1, s1
-  mv a2, s0
+  mv a1, s0
+  mv a2, s1
   call output97l5_5
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -292,6 +296,8 @@ quicksort59l2_3:
   mv a2, s2
   call partition14l1_2
   mv s3, a0
+
+.quicksort59l2_3_6:
   addi a2, s3, -1
   mv a0, s0
   mv a1, s1

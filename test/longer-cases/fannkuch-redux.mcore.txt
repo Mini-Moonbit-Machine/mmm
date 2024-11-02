@@ -43,23 +43,25 @@ fannkuch1l0_8:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv s0, a0
-  mv a0, s0
-  call gen_perm14l1_1
   mv s1, a0
-  slliw a0, s0, 2
+  mv a0, s1
+  call gen_perm14l1_1
+  mv s0, a0
+
+.fannkuch1l0_8_1:
+  slliw a0, s1, 2
   sub a0, s11, a0
   andi s2, a0, -8
   mv s11, s2
-  mv a1, s0
+  mv a1, s1
   mv a0, s2
   mv a2, zero
   call memseti32
-  slliw a0, s0, 2
+  slliw a0, s1, 2
   sub a0, s11, a0
   andi s3, a0, -8
   mv s11, s3
-  mv a1, s0
+  mv a1, s1
   mv a0, s3
   mv a2, zero
   call memseti32
@@ -82,15 +84,15 @@ fannkuch1l0_8:
   addi a2, s11, -4
   andi a2, a2, -8
   mv s11, a2
-  sw s0, 0(a2)
+  sw s1, 0(a2)
   addi a3, s11, -72
   andi a4, a3, -8
   mv s11, a4
   la a3, compute40_19
   sd a3, 0(a4)
-  sd s0, 8(a4)
+  sd s1, 8(a4)
   sd s2, 16(a4)
-  sd s1, 24(a4)
+  sd s0, 24(a4)
   sd s3, 32(a4)
   sd a0, 40(a4)
   sd s4, 48(a4)
@@ -130,6 +132,8 @@ main262l1_9:
   sd s0, 8(sp)
   li a0, 9
   call fannkuch1l0_8
+
+.main262l1_9_1:
   lw s0, 0(a0)
   lw a0, 4(a0)
   call minimbt_print_int
@@ -228,8 +232,8 @@ compute40_19:
   ld s5, 16(a1)
   ld s1, 24(a1)
   ld s6, 32(a1)
-  ld s3, 40(a1)
-  ld s4, 48(a1)
+  ld s4, 40(a1)
+  ld s3, 48(a1)
   ld s7, 56(a1)
   ld s2, 64(a1)
   mv s0, a0
@@ -245,10 +249,12 @@ compute40_19:
   mv a2, s5
   mv a3, s1
   call copy_perm46l2_2
+
+.compute40_19_9:
   mv a0, s0
   mv a1, s6
   call init_count59l3_3
-  sw zero, 0(s3)
+  sw zero, 0(s4)
   lw a0, 0(s5)
   addi a1, s11, -4
   andi a1, a1, -8
@@ -256,20 +262,22 @@ compute40_19:
   sw a0, 0(a1)
   mv a0, a1
   mv a1, s5
-  mv a2, s3
+  mv a2, s4
   call do_flip90l4_5
-  lw a0, 0(s4)
-  lw a1, 0(s3)
+
+.compute40_19_10:
+  lw a0, 0(s3)
+  lw a1, 0(s4)
   blt a1, a0, .compute40_19_4
 
 .compute40_19_3:
-  lw a0, 0(s3)
-  sw a0, 0(s4)
+  lw a0, 0(s4)
+  sw a0, 0(s3)
   mv a0, zero
 
 .compute40_19_5:
   lw a0, 0(s7)
-  lw a1, 0(s3)
+  lw a1, 0(s4)
   lw a2, 0(s2)
   lw a3, 0(s2)
   li a4, 2
@@ -298,6 +306,8 @@ compute40_19:
   mv a4, s6
   mv a5, s1
   call go_loop179l5_7
+
+.compute40_19_11:
   lw a0, 0(s2)
   addi a0, a0, 1
   sw a0, 0(s2)
@@ -414,6 +424,8 @@ do_flip90l4_5:
   mv a2, s2
   mv a3, s0
   call flip_loop99l5_4
+
+.do_flip90l4_5_6:
   lw a0, 0(s0)
   sw a0, 0(s2)
   lw a0, 0(s1)

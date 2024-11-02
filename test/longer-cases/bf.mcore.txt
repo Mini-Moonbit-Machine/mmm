@@ -153,7 +153,18 @@ lp108l4_2:
   slliw a0, a0, 2
   add a0, s0, a0
   lw a0, 0(a0)
-  bne a0, zero, .lp108l4_2_2
+  beq a0, zero, .lp108l4_2_1
+
+.lp108l4_2_2:
+  addi a0, s1, 1
+  mv a1, s3
+  mv a2, s5
+  mv a3, s0
+  mv a4, s4
+  mv a5, s2
+  call aux40l3_3
+  sw a0, 0(s2)
+  j .lp108l4_2_0
 
 .lp108l4_2_1:
   addi a0, s1, 1
@@ -161,6 +172,8 @@ lp108l4_2:
   mv a2, s5
   mv a3, s4
   call skip21l2_1
+
+.lp108l4_2_6:
   sw a0, 0(s2)
   mv a0, zero
 
@@ -174,17 +187,6 @@ lp108l4_2:
   ld s5, 48(sp)
   addi sp, sp, 64
   ret
-
-.lp108l4_2_2:
-  addi a0, s1, 1
-  mv a1, s3
-  mv a2, s5
-  mv a3, s0
-  mv a4, s4
-  mv a5, s2
-  call aux40l3_3
-  sw a0, 0(s2)
-  j .lp108l4_2_0
 
   .p2align 2
   .text
@@ -403,6 +405,8 @@ aux40l3_3:
   mv a4, s4
   mv a5, s2
   call lp108l4_2
+
+.aux40l3_3_30:
   lw a0, 0(s2)
   addi a0, a0, 1
   mv s3, a0

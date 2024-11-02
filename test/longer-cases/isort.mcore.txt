@@ -40,19 +40,21 @@ aux60l5_5:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
 
 .aux60l5_5_0:
-  beq s1, s0, .aux60l5_5_1
+  beq s0, s1, .aux60l5_5_1
 
 .aux60l5_5_2:
   mv a0, s2
-  mv a1, s1
+  mv a1, s0
   call insert38l4_4
-  addi a0, s1, 1
-  mv s1, a0
+
+.aux60l5_5_6:
+  addi a0, s0, 1
+  mv s0, a0
   j .aux60l5_5_0
 
 .aux60l5_5_1:
@@ -136,21 +138,27 @@ aux19l3_2:
   sd s2, 24(sp)
   mv s0, a0
   mv a0, a1
-  mv s1, a2
-  mv s2, a3
+  mv s2, a2
+  mv s1, a3
 
 .aux19l3_2_0:
-  beq s0, s1, .aux19l3_2_1
+  beq s0, s2, .aux19l3_2_1
 
 .aux19l3_2_2:
   call random1l0_0
+
+.aux19l3_2_6:
   li a1, 65537
   call modulo7l1_1
-  slliw a1, s0, 2
-  add a1, s2, a1
-  sw a0, 0(a1)
-  addi a1, s0, 1
-  mv s0, a1
+  mv a1, a0
+
+.aux19l3_2_7:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  sw a1, 0(a0)
+  addi a0, s0, 1
+  mv s0, a0
+  mv a0, a1
   j .aux19l3_2_0
 
 .aux19l3_2_1:
@@ -268,9 +276,13 @@ main85l5_9:
   mv a0, s0
   li a1, 100
   call fill_buffer14l2_3
+
+.main85l5_9_1:
   mv a0, s0
   li a1, 100
   call isort33l3_6
+
+.main85l5_9_2:
   mv a0, s0
   li a1, 100
   call print_array68l4_8

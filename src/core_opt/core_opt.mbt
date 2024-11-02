@@ -18,4 +18,7 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let calls = @core_analysis.CallAnalysis::new(core, self.tracer)
   let fcf = calls.compute()
   self.tracer.println("Call frequnce: \{fcf}")
+  let inliner = Inliner::new(core, fcf, self.tracer)
+  inliner.go()
+  self.tracer.record("core_opt_after_inline", core.to_pretty_print())
 }
