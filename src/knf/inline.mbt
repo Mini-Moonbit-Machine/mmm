@@ -25,6 +25,28 @@ pub fn next(self : CallFreq) -> CallFreq {
   }
 }
 
+fn assoc(knf : Knf) -> Knf {
+  match knf {
+    IfEq(x, y, e1, e2) => IfEq(x, y, assoc(e1), assoc(e2))
+    IfLe(x, y, e1, e2) => IfLe(x, y, assoc(e1), assoc(e2))
+    Let(xt, e1, e2) => {
+      fn insert(knf : Knf) -> Knf {
+        match knf {
+          Let(yt, e3, e4) => Let(yt, e3, insert(e4))
+          LetRec(fundefs, e) => LetRec(fundefs, insert(e))
+          LetTuple(yts, z, e) => LetTuple(yts, z, insert(e))
+          e => Let(xt, e, assoc(e2))
+        }
+      }
+
+      insert(assoc(e1))
+    }
+    LetRec(fundef, e) => LetRec(fundef, assoc(e))
+    LetTuple(xts, y, e) => LetTuple(xts, y, assoc(e))
+    _ => knf
+  }
+}
+
 fn call_freq(knf : Knf, env : Env[Unit], freq : Map[Name, CallFreq]) -> Unit {
   fn deal_closure(xs : Array[Name]) -> Unit {
     for x in xs {
@@ -301,6 +323,7 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   let freq = Map::new()
   call_freq(knf, env, freq)
   let knf = self.dfe(freq, Env::new(), knf)
+  let knf = assoc(knf)
   self.tracer.record("knf_after_inline_\{n}", knf.to_pretty_print())
   knf
 }
