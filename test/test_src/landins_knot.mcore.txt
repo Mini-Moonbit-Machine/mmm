@@ -15,6 +15,20 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl T$start_16
+  .type T$start_16, @function
+# leaf false
+T$start_16:
+.T$start_16_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main37_14
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
   .globl aux9.48_8
   .type aux9.48_8, @function
 # leaf false
@@ -34,23 +48,37 @@ aux9.48_8:
 
   .p2align 2
   .text
+  .globl main37_14
+  .type main37_14, @function
+# leaf false
+main37_14:
+.main37_14_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  ld a0, factorial.28
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 5
+  jalr a1
+  call minimbt_print_int
+  lw a0, a.33
+  addi a0, a0, 10
+  call minimbt_print_int
+  lw a0, a.33
+  addi a0, a0, 31
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
   .globl T$_32_10
   .type T$_32_10, @function
 # leaf true
 T$_32_10:
 .T$_32_10_0:
   li a0, 5
-  ret
-
-  .p2align 2
-  .text
-  .globl g34_14
-  .type g34_14, @function
-# leaf true
-g34_14:
-.g34_14_0:
-  lw a1, a.33
-  add a0, a0, a1
   ret
 
   .p2align 2
@@ -106,20 +134,6 @@ T$a.33_12:
 
   .p2align 2
   .text
-  .globl T$start_18
-  .type T$start_18, @function
-# leaf false
-T$start_18:
-.T$start_18_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main37_15
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl h21_4
   .type h21_4, @function
 # leaf false
@@ -152,31 +166,6 @@ h21_4:
 
   .p2align 2
   .text
-  .globl main37_15
-  .type main37_15, @function
-# leaf false
-main37_15:
-.main37_15_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  ld a0, factorial.28
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 5
-  jalr a1
-  call minimbt_print_int
-  li a0, 10
-  call g34_14
-  call minimbt_print_int
-  li a0, 31
-  call g34_14
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -198,7 +187,7 @@ minimbt_main:
   call T$a.33_12
   la t5, a.33
   sw a0, 0(t5)
-  call T$start_18
+  call T$start_16
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)

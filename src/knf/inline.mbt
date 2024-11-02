@@ -12,15 +12,15 @@ typealias Env[T] = @immut/hashmap.T[Name, T]
 pub enum CallFreq {
   Zero
   Once
-  Many
+  Many(Int)
   AsClosure
 } derive(Show)
 
 pub fn next(self : CallFreq) -> CallFreq {
   match self {
     Zero => Once
-    Once => Many
-    Many => Many
+    Once => Many(2)
+    Many(n) => Many(n + 1)
     AsClosure => AsClosure
   }
 }
@@ -70,6 +70,17 @@ fn call_freq(knf : Knf, env : Env[Unit], freq : Map[Name, CallFreq]) -> Unit {
     Tuple(xs) => deal_closure(xs)
     ExternalFunctionApplication(_, xs) => deal_closure(xs)
     _ => ()
+  }
+}
+
+fn size(knf : Knf) -> Int {
+  match knf {
+    IfEq(_, _, e1, e2) => 1 + size(e1) + size(e2)
+    IfLe(_, _, e1, e2) => 1 + size(e1) + size(e2)
+    Let(_, e1, e2) => 1 + size(e1) + size(e2)
+    LetRec(fundef, e) => 1 + size(fundef.body) + size(e)
+    LetTuple(_, _, e) => 1 + size(e)
+    _ => 1
   }
 }
 
@@ -198,25 +209,40 @@ pub fn InlineEnv::inline(
       let e = self.inline(freq, env, e)
       LetRec(fundef, e)
     }
-    Apply(f, xs) =>
+    Apply(f, xs) => {
+      fn replace() {
+        match env.find(f) {
+          Some((params, body)) =>
+            if f.name.to_string().contains("main") {
+              knf
+            } else {
+              self.tracer.println("Knf inline \{f.name}")
+              let mut env = Env::new()
+              for i, param in params {
+                env = env.add(param.0, xs[i])
+              }
+              alpha_rename(self.knf_env, env, body)
+            }
+          None => knf
+        }
+      }
+
       match freq.get(f) {
-        Some(Once) =>
+        Some(Once) => replace()
+        Some(Many(n)) =>
           match env.find(f) {
-            Some((params, body)) =>
-              if f.name.to_string().contains("main") {
-                knf
+            Some((_, body)) =>
+              if n * size(body) < 20 {
+                self.tracer.println("Inline threshold \{n} \{size(body)}")
+                replace()
               } else {
-                self.tracer.println("Knf inline \{f.name}")
-                let mut env = Env::new()
-                for i, param in params {
-                  env = env.add(param.0, xs[i])
-                }
-                alpha_rename(self.knf_env, env, body)
+                knf
               }
             None => knf
           }
         _ => knf
       }
+    }
     _ => knf
   }
 }
