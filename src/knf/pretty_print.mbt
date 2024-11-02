@@ -75,6 +75,7 @@ fn PrettyKnf::print_one_level(
       for nt in name_types {
         if first {
           first = false
+        } else {
           logger.write_string(", ")
         }
         let (name, ty) = nt
