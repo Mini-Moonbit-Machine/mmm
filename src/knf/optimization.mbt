@@ -252,7 +252,7 @@ fn LambdaLiftEnv::lift(
         .length()
       let new_integer_args_length = new_args.length() - new_float_args_length
       // we don't want to lift functions with too many arguments
-      if new_integer_args_length >= 0 || new_float_args_length >= 0 {
+      if new_integer_args_length >= 9 || new_float_args_length >= 9 {
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
           init=self,

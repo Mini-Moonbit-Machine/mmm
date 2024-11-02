@@ -22,24 +22,7 @@ T$start_4:
 .T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main9_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main9_1
-  .type main9_1, @function
-# leaf false
-main9_1:
-.main9_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 21600
-  li a1, 337500
-  call gcd1_0
-  call minimbt_print_int
+  call main9l1_1
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -68,37 +51,52 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl gcd1_0
-  .type gcd1_0, @function
+  .globl gcd1l0_0
+  .type gcd1l0_0, @function
 # leaf true
-gcd1_0:
-.gcd1_0_8:
+gcd1l0_0:
+.gcd1l0_0_8:
   mv a2, a0
   mv a0, a1
-  mv a1, a0
+  mv a1, a2
 
-.gcd1_0_0:
-  beq a2, zero, .gcd1_0_1
+.gcd1l0_0_0:
+  beq a1, zero, .gcd1l0_0_1
 
-.gcd1_0_2:
-  blt a1, a2, .gcd1_0_4
+.gcd1l0_0_2:
+  blt a0, a1, .gcd1l0_0_4
 
-.gcd1_0_3:
-  sub a0, a1, a2
-  mv a1, a0
-  j .gcd1_0_0
+.gcd1l0_0_3:
+  sub a0, a0, a1
+  j .gcd1l0_0_0
 
-.gcd1_0_1:
-  mv a0, a1
+.gcd1l0_0_1:
 
-.gcd1_0_6:
+.gcd1l0_0_6:
   ret
 
-.gcd1_0_4:
-  sub a0, a2, a1
-  mv a2, a1
+.gcd1l0_0_4:
+  sub a2, a1, a0
   mv a1, a0
-  j .gcd1_0_0
+  mv a0, a2
+  j .gcd1l0_0_0
+
+  .p2align 2
+  .text
+  .globl main9l1_1
+  .type main9l1_1, @function
+# leaf false
+main9l1_1:
+.main9l1_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 21600
+  li a1, 337500
+  call gcd1l0_0
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
 
 __end_text:
   .p2align 2
