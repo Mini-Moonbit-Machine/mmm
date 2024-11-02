@@ -255,7 +255,7 @@ pub fn InlineEnv::inline(
           match env.find(f) {
             Some((_, body)) => {
               self.tracer.println("Inline threshold \{n} \{size(body)}")
-              if n * size(body) < 60 {
+              if n * size(body) < 30 {
                 replace()
               } else {
                 knf
