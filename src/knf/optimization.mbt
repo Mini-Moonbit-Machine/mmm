@@ -345,7 +345,7 @@ pub fn go(self : LambdaLiftEnv, knf : Knf) -> Knf {
   let diff = n2 - n1
   self.tracer.println("Numbers of let rec: \{n1} \{n2} \{diff}")
   self.tracer.record("knf_after_lifting", knf.to_pretty_print())
-  let knf = if diff > 0 && diff.to_double() / n1.to_double() >= 0.2 {
+  let knf = if diff > 0 && diff.to_double() / n1.to_double() >= 0.4 {
     self.tracer.println(
       "Give up lambda lifting because of too many let rec produced",
     )
