@@ -184,7 +184,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.opt_knf = Some(knf)
     }
     Js => {
-      let knf = self.opt_knf.unwrap()
+      let knf = self.knf.unwrap()
       let tracer = tracer.new_subtracer(
         "Js",
         opts.output_to_console,
