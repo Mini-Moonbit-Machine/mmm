@@ -119,7 +119,7 @@ pub fn LoweringOrder::new(
     bb.seq.length() + x
   }
 
-  let worklist = @queue.new()
+  let worklist = []
   let colored = MutMap::new()
   let seq = []
   let color_seq = MutMap::new()

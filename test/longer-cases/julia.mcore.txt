@@ -77,14 +77,6 @@ print_loop68l2_14:
   mv s4, a0
   j .print_loop68l2_14_0
 
-.print_loop68l2_14_3:
-  li a0, 10
-  call minimbt_print_char
-  addi a0, s1, 1
-  mv s4, zero
-  mv s1, a0
-  j .print_loop68l2_14_0
-
 .print_loop68l2_14_1:
   mv a0, zero
 
@@ -97,6 +89,14 @@ print_loop68l2_14:
   ld s4, 40(sp)
   addi sp, sp, 48
   ret
+
+.print_loop68l2_14_3:
+  li a0, 10
+  call minimbt_print_char
+  addi a0, s1, 1
+  mv s4, zero
+  mv s1, a0
+  j .print_loop68l2_14_0
 
   .p2align 2
   .text
@@ -248,23 +248,6 @@ main_loop30l1_13:
   mv s2, a1
   j .main_loop30l1_13_0
 
-.main_loop30l1_13_8:
-  j .main_loop30l1_13_9
-
-.main_loop30l1_13_5:
-  mv a0, zero
-  j .main_loop30l1_13_10
-
-.main_loop30l1_13_3:
-  addi a1, s1, 1
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  mv s2, zero
-  mv s1, a1
-  j .main_loop30l1_13_0
-
 .main_loop30l1_13_1:
   mv a0, zero
 
@@ -277,6 +260,23 @@ main_loop30l1_13:
   ld s4, 40(sp)
   addi sp, sp, 48
   ret
+
+.main_loop30l1_13_3:
+  addi a1, s1, 1
+  fld fa0, c_im.6, t5
+  fld fa1, c_re.5, t5
+  lw a0, iter.3
+  fld fa2, limit_sq.2, t5
+  mv s2, zero
+  mv s1, a1
+  j .main_loop30l1_13_0
+
+.main_loop30l1_13_5:
+  mv a0, zero
+  j .main_loop30l1_13_10
+
+.main_loop30l1_13_8:
+  j .main_loop30l1_13_9
 
   .p2align 2
   .text
@@ -349,15 +349,15 @@ calc_pixel7l0_12:
   fmv.d fa4, fa5
   j .calc_pixel7l0_12_0
 
-.calc_pixel7l0_12_3:
-
-.calc_pixel7l0_12_5:
+.calc_pixel7l0_12_1:
+  lw a0, iter.3
 
 .calc_pixel7l0_12_6:
   ret
 
-.calc_pixel7l0_12_1:
-  lw a0, iter.3
+.calc_pixel7l0_12_3:
+
+.calc_pixel7l0_12_5:
   j .calc_pixel7l0_12_6
 
   .p2align 2
