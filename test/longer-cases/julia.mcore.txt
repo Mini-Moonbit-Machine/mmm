@@ -300,35 +300,35 @@ calc_pixel7l0_12:
   fmv.d fa6, fa1
   fmv.d fa5, fa2
   fmv.d fa0, fa3
+  fmv.d fa3, fa4
   fmv.d fa1, fa7
   fmv.d fa2, fa6
-  fmv.d fa3, fa5
+  fmv.d fa4, fa5
 
 .calc_pixel7l0_12_0:
   fmul.d fa0, fa1, fa1
+  fmul.d fa3, fa2, fa2
   lw a1, iter.3
   beq a0, a1, .calc_pixel7l0_12_1
 
 .calc_pixel7l0_12_2:
-  fmadd.d fa3, fa2, fa2, fa0
-  fld fa4, limit_sq.2, t5
-  fle.d a1, fa4, fa3
+  fadd.d fa4, fa0, fa3
+  fld fa5, limit_sq.2, t5
+  fle.d a1, fa5, fa4
   bne a1, zero, .calc_pixel7l0_12_3
 
 .calc_pixel7l0_12_4:
   li a1, 4611686018427387904
-  fmv.d.x fa3, a1
-  fmul.d fa1, fa3, fa1
-  fld fa3, c_im.6, t5
-  fmadd.d fa4, fa1, fa2, fa3
-  fnmsub.d fa1, fa2, fa2, fa0
+  fmv.d.x fa4, a1
+  fmul.d fa1, fa4, fa1
+  fld fa4, c_im.6, t5
+  fmadd.d fa2, fa1, fa2, fa4
+  fsub.d fa1, fa0, fa3
   fld fa0, c_re.5, t5
   fadd.d fa1, fa1, fa0
   addi a0, a0, 1
   lw a1, iter.3
-  fld fa5, limit_sq.2, t5
-  fmv.d fa2, fa4
-  fmv.d fa4, fa5
+  fld fa3, limit_sq.2, t5
   j .calc_pixel7l0_12_0
 
 .calc_pixel7l0_12_1:
