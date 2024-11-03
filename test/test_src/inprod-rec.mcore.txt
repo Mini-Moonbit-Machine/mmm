@@ -34,8 +34,10 @@ T$start_4:
 # leaf false
 main15l1_1:
 .main15l1_1_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
+  fsd fs0, 8(sp)
+  fsd fs1, 16(sp)
   addi a0, s11, -24
   andi s11, a0, -8
   li a1, 4608218246714312622
@@ -51,15 +53,31 @@ main15l1_1:
   fsd fa0, 8(a1)
   fsd fa0, 16(a1)
   li a2, 2
+  blt a2, zero, .main15l1_1_2
+
+.main15l1_1_1:
+  fld fs0, 16(a0)
+  fld fs1, 16(a1)
+  li a2, 2
+  addi a2, a2, -1
   call inprod1l0_0
+  fmadd.d fa0, fs0, fs1, fa0
+
+.main15l1_1_3:
   li a0, 4696837146684686336
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   ld ra, 0(sp)
-  addi sp, sp, 16
+  fld fs0, 8(sp)
+  fld fs1, 16(sp)
+  addi sp, sp, 32
   ret
+
+.main15l1_1_2:
+  fmv.d.x fa0, zero
+  j .main15l1_1_3
 
   .p2align 2
   .text
@@ -68,38 +86,56 @@ main15l1_1:
 # leaf false
 inprod1l0_0:
 .inprod1l0_0_0:
-  addi sp, sp, -32
+  addi sp, sp, -48
   sd ra, 0(sp)
   fsd fs0, 8(sp)
   fsd fs1, 16(sp)
+  fsd fs2, 24(sp)
+  fsd fs3, 32(sp)
   mv a3, a0
-  mv a4, a1
-  mv a1, a2
-  blt a1, zero, .inprod1l0_0_2
+  blt a2, zero, .inprod1l0_0_2
 
 .inprod1l0_0_1:
-  slliw a0, a1, 3
+  slliw a0, a2, 3
   add a0, a3, a0
   fld fs0, 0(a0)
-  slliw a0, a1, 3
-  add a0, a4, a0
+  slliw a0, a2, 3
+  add a0, a1, a0
   fld fs1, 0(a0)
-  addi a2, a1, -1
-  mv a0, a3
-  mv a1, a4
-  call inprod1l0_0
-  fmadd.d fa0, fs0, fs1, fa0
+  addi a2, a2, -1
+  blt a2, zero, .inprod1l0_0_4
 
 .inprod1l0_0_3:
+  slliw a0, a2, 3
+  add a0, a3, a0
+  fld fs2, 0(a0)
+  slliw a0, a2, 3
+  add a0, a1, a0
+  fld fs3, 0(a0)
+  addi a2, a2, -1
+  mv a0, a3
+  call inprod1l0_0
+  fmadd.d fa0, fs2, fs3, fa0
+
+.inprod1l0_0_5:
+  fmadd.d fa0, fs0, fs1, fa0
+
+.inprod1l0_0_6:
   ld ra, 0(sp)
   fld fs0, 8(sp)
   fld fs1, 16(sp)
-  addi sp, sp, 32
+  fld fs2, 24(sp)
+  fld fs3, 32(sp)
+  addi sp, sp, 48
   ret
 
 .inprod1l0_0_2:
   fmv.d.x fa0, zero
-  j .inprod1l0_0_3
+  j .inprod1l0_0_6
+
+.inprod1l0_0_4:
+  fmv.d.x fa0, zero
+  j .inprod1l0_0_5
 
   .p2align 2
   .text

@@ -15,33 +15,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main8_1
-  .type main8_1, @function
-# leaf false
-main8_1:
-.main8_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, f1_0
-  sd a1, 0(a0)
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 789
-  jalr a1
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl f1_0
-  .type f1_0, @function
+  .globl f1l0_0
+  .type f1l0_0, @function
 # leaf true
-f1_0:
-.f1_0_0:
+f1l0_0:
+.f1l0_0_0:
   addi a0, a0, 123
   ret
 
@@ -54,7 +32,23 @@ T$start_4:
 .T$start_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main8_1
+  call main8l1_1
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main8l1_1
+  .type main8l1_1, @function
+# leaf false
+main8l1_1:
+.main8l1_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 789
+  call f1l0_0
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret

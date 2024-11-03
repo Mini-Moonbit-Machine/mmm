@@ -52,12 +52,20 @@ f2l0_2:
 
 .f2l0_2_2:
   addi a0, a0, -1
+  beq a0, zero, .f2l0_2_3
+
+.f2l0_2_4:
+  addi a0, a0, -1
   lw s0, x.1
   mv a1, s0
   call f2l0_2
   add a0, s0, a0
 
-.f2l0_2_3:
+.f2l0_2_5:
+  lw a1, x.1
+  add a0, a1, a0
+
+.f2l0_2_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   addi sp, sp, 16
@@ -65,7 +73,11 @@ f2l0_2:
 
 .f2l0_2_1:
   mv a0, zero
-  j .f2l0_2_3
+  j .f2l0_2_6
+
+.f2l0_2_3:
+  mv a0, zero
+  j .f2l0_2_5
 
   .p2align 2
   .text
@@ -76,13 +88,28 @@ main9l1_3:
 .main9l1_3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  lw a1, x.1
+  sd s0, 8(sp)
   li a0, 12
+  beq a0, zero, .main9l1_3_1
+
+.main9l1_3_2:
+  li a0, 12
+  addi a0, a0, -1
+  lw s0, x.1
+  mv a1, s0
   call f2l0_2
+  add a0, s0, a0
+
+.main9l1_3_3:
   call minimbt_print_int
   ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
+
+.main9l1_3_1:
+  mv a0, zero
+  j .main9l1_3_3
 
   .p2align 2
   .text

@@ -64,16 +64,6 @@ aux9.48_10:
 
   .p2align 2
   .text
-  .globl T$_32_20
-  .type T$_32_20, @function
-# leaf true
-T$_32_20:
-.T$_32_20_0:
-  li a0, 5
-  ret
-
-  .p2align 2
-  .text
   .globl T$fixedpoint.52_12
   .type T$fixedpoint.52_12, @function
 # leaf false
@@ -92,31 +82,38 @@ T$fixedpoint.52_12:
 
   .p2align 2
   .text
-  .globl T$a.33_22
-  .type T$a.33_22, @function
-# leaf false
-T$a.33_22:
-.T$a.33_22_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  ld a0, factorial.28
-  lw a1, _32
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  jalr a2
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl T$_46_6
   .type T$_46_6, @function
 # leaf true
 T$_46_6:
 .T$_46_6_0:
   li a0, 1
+  ret
+
+  .p2align 2
+  .text
+  .globl main37_22
+  .type main37_22, @function
+# leaf false
+main37_22:
+.main37_22_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  ld a0, fixedpoint.52
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 5
+  jalr a1
+  call minimbt_print_int
+  lw s0, a.33
+  addi a0, s0, 10
+  call minimbt_print_int
+  addi a0, s0, 31
+  call minimbt_print_int
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -148,30 +145,6 @@ T$arr.47_8:
 
   .p2align 2
   .text
-  .globl T$factorial.28_18
-  .type T$factorial.28_18, @function
-# leaf true
-T$factorial.28_18:
-.T$factorial.28_18_0:
-  ld a0, fixedpoint.52
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_26
-  .type T$start_26, @function
-# leaf false
-T$start_26:
-.T$start_26_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main37_24
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl g18_1
   .type g18_1, @function
 # leaf true
@@ -187,27 +160,44 @@ g18_1:
 
   .p2align 2
   .text
-  .globl main37_24
-  .type main37_24, @function
+  .globl T$a.33_20
+  .type T$a.33_20, @function
 # leaf false
-main37_24:
-.main37_24_0:
+T$a.33_20:
+.T$a.33_20_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  ld a0, factorial.28
+  ld a0, fixedpoint.52
+  lw a1, _32
   mv s10, a0
-  ld a1, 0(a0)
-  li a0, 5
-  jalr a1
-  call minimbt_print_int
-  lw s0, a.33
-  addi a0, s0, 10
-  call minimbt_print_int
-  addi a0, s0, 31
-  call minimbt_print_int
+  ld a2, 0(a0)
+  mv a0, a1
+  jalr a2
   ld ra, 0(sp)
-  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_32_18
+  .type T$_32_18, @function
+# leaf true
+T$_32_18:
+.T$_32_18_0:
+  li a0, 5
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start_24
+  .type T$start_24, @function
+# leaf false
+T$start_24:
+.T$start_24_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main37_22
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
@@ -280,16 +270,13 @@ minimbt_main:
   la t5, _53
   sw a0, 0(t5)
   call T$_54_16
-  call T$factorial.28_18
-  la t5, factorial.28
-  sd a0, 0(t5)
-  call T$_32_20
+  call T$_32_18
   la t5, _32
   sw a0, 0(t5)
-  call T$a.33_22
+  call T$a.33_20
   la t5, a.33
   sw a0, 0(t5)
-  call T$start_26
+  call T$start_24
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -313,12 +300,6 @@ __end_text:
   .type arr.47, @object
 arr.47:
   .zero 8
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
   .p2align 2
   .bss
   .globl _53
@@ -345,10 +326,10 @@ a.33:
   .zero 4
   .p2align 2
   .bss
-  .globl factorial.28
-  .type factorial.28, @object
-factorial.28:
-  .zero 8
+  .globl start
+  .type start, @object
+start:
+  .zero 4
   .p2align 2
   .bss
   .globl _46

@@ -1351,6 +1351,9 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
       params
     _ => self.tracer.abort("Invalid function type")
   }
+  if params.length() >= @riscv.reg_arg_list.length() {
+    self.tracer.abort("Too many parameters: \{params.length()}")
+  }
   for i, ty in params {
     let val = @core.Value::FnParam(fref=self.func.id, fpref={ id: i })
     let pre_assigned_reg = self.value_regs[val].unwrap()

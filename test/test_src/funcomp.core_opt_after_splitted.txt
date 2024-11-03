@@ -7,15 +7,24 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn dbl10_1 #f1 : fn(int32) -> int32
+.fn main21l3_5 #f5 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = add($f0, $f0)
+    let %0: int32 = call f4(123)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.fn T$start_12 #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
     return %0
   }
 }
-.fn dec17_3 #f3 : fn(int32) -> int32
+.fn dec17l2_2 #f2 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -23,24 +32,27 @@
     return %0
   }
 }
-.fn T$start_12 #f12 : fn() -> unit
+.fn composed6.29l5_4 #f4 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f4()
-    return %0
+    let %0: int32 = call f1($f0)
+    jump b1(%0)
   }
-}
-.fn composed6_6 #f6 : closure(int32) -> int32
-.freevars (closure(int32) -> int32, closure(int32) -> int32)
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = apply ^1($f0)
-    let %1: int32 = apply ^2(%0)
+  .bb #b1 (int32) {
+    let %1: int32 = call f3($b1.0)
     return %1
   }
 }
-.fn inc13_2 #f2 : fn(int32) -> int32
+.fn dbl10l0_0 #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, $f0)
+    return %0
+  }
+}
+.fn inc13l1_1 #f1 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -48,26 +60,16 @@
     return %0
   }
 }
-.fn main21_4 #f4 : fn() -> unit
+.fn composed6.26l4_3 #f3 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f1
-    let _ = alloc <m1: closure(int32) -> int32 heap(1)> <- [0] = f3
-    let %2: closure(int32) -> int32 = call f0(f4.m0, f4.m1)
-    let _ = alloc <m2: closure(int32) -> int32 heap(1)> <- [0] = f2
-    let %4: closure(int32) -> int32 = call f0(f4.m2, %2)
-    let %5: int32 = apply %4(123)
-    let %6: unit = ext_call minimbt_print_int(%5)
-    return %6
+    let %0: int32 = call f0($f0)
+    jump b1(%0)
   }
-}
-.fn compose1_0 #f0 : fn(closure(int32) -> int32, closure(int32) -> int32) -> closure(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(3)> <- [0] = f6, [1] = $f0, [2] = $f1
-    return f0.m0
+  .bb #b1 (int32) {
+    let %1: int32 = call f2($b1.0)
+    return %1
   }
 }
 .thunk ::0 start
