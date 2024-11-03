@@ -113,6 +113,7 @@ pub enum Fill {
   Field(Int, Value)
 }
 impl Fill {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
@@ -182,6 +183,7 @@ pub enum Insn {
   Load(Type, Address)
 }
 impl Insn {
+  effectful(Self) -> Bool
   op_equal(Self, Self) -> Bool
   replace(Self, (Value) -> Value) -> Self
   to_string(Self) -> String
@@ -240,6 +242,7 @@ pub enum Op {
   Sqrt
 }
 impl Op {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
@@ -268,6 +271,7 @@ pub enum RoundMode {
   Rmm
 }
 impl RoundMode {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
 }
 
@@ -340,6 +344,7 @@ pub enum Width {
   Mix(Width, Width)
 }
 impl Width {
+  hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
   size_of_ilp32(Self) -> Int
   size_of_lp64(Self) -> Int
@@ -357,6 +362,10 @@ pub typealias Values = Array[Value]
 // Traits
 
 // Extension Methods
+impl Hash for Address
+
+impl Hash for Insn
+
 impl Hash for Value
 
 impl Show for Address

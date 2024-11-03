@@ -184,7 +184,7 @@ pub enum RoundMode {
   Rdn
   Rup
   Rmm
-} derive(Eq)
+} derive(Eq, Hash)
 
 pub enum Op {
   Add
@@ -199,7 +199,7 @@ pub enum Op {
   D2I(~rm : RoundMode)
   Abs
   Sqrt
-} derive(Show, Eq)
+} derive(Show, Eq, Hash)
 
 pub enum Insn {
   Op(~ty : Type, ~op : Op, ~args : Values)
@@ -216,7 +216,7 @@ pub enum Fill {
   Zero
   Init(~val : Value)
   Field(~index : Int, ~val : Value)
-} derive(Show, Eq)
+} derive(Show, Eq, Hash)
 
 // Mem is used to identify a memory region
 pub enum Mem {
@@ -229,7 +229,7 @@ pub enum Width {
   Width64
   Width32
   Mix(~width : Width, ~other : Width)
-} derive(Eq)
+} derive(Eq, Hash)
 
 pub enum Address {
   Field(~ty : Type, ~val : Value, ~index : Int, ~width : Width) // field (constant offset) of memory. Value must be ptr-compatible.
@@ -506,6 +506,17 @@ fn Op::from_knf(knf : @knf.Knf) -> Op? {
   }
 }
 
+pub fn effectful(self : Insn) -> Bool {
+  match self {
+    Call(..) => true
+    ExtCall(..) => true
+    Apply(..) => true
+    Store(..) => true
+    Alloc(..) => true
+    _ => false
+  }
+}
+
 pub fn replace(self : Address, map : (Value) -> Value) -> Address {
   match self {
     Field(~ty, ~val, ~index, ~width) =>
@@ -654,6 +665,81 @@ pub impl Hash for Value with hash_combine(self, hasher) {
     Self(~fref) => {
       hasher.combine_int(12)
       hasher.combine(fref)
+    }
+  }
+}
+
+pub impl Hash for Address with hash_combine(self, hasher) {
+  match self {
+    Field(~val, ~index, ~width, ..) => {
+      hasher.combine_int(1)
+      hasher.combine(val)
+      hasher.combine(index)
+      hasher.combine(width)
+    }
+    Offset(~val, ~offset, ~width, ..) => {
+      hasher.combine_int(2)
+      hasher.combine(val)
+      hasher.combine(offset)
+      hasher.combine(width)
+    }
+  }
+}
+
+pub impl Hash for Insn with hash_combine(self, hasher) {
+  match self {
+    Op(~op, ~args, ..) => {
+      hasher.combine_int(1)
+      hasher.combine(op)
+      hasher.combine(args.length())
+      for arg in args {
+        hasher.combine(arg)
+      }
+    }
+    Call(~f, ~args, ..) => {
+      hasher.combine_int(2)
+      hasher.combine(f)
+      hasher.combine(args.length())
+      for arg in args {
+        hasher.combine(arg)
+      }
+    }
+    Apply(~f, ~args, ..) => {
+      hasher.combine_int(3)
+      hasher.combine(f)
+      hasher.combine(args.length())
+      for arg in args {
+        hasher.combine(arg)
+      }
+    }
+    ExtCall(~ext_f, ~args, ..) => {
+      hasher.combine_int(4)
+      hasher.combine(ext_f)
+      hasher.combine(args.length())
+      for arg in args {
+        hasher.combine(arg)
+      }
+    }
+    LoadSymbol(~sref, ..) => {
+      hasher.combine_int(5)
+      hasher.combine(sref)
+    }
+    Alloc(~mref, ~fills, ..) => {
+      hasher.combine_int(6)
+      hasher.combine(mref)
+      hasher.combine(fills.length())
+      for fill in fills {
+        hasher.combine(fill)
+      }
+    }
+    Store(~ma, ~val, ..) => {
+      hasher.combine_int(7)
+      hasher.combine(ma)
+      hasher.combine(val)
+    }
+    Load(~ma, ..) => {
+      hasher.combine_int(8)
+      hasher.combine(ma)
     }
   }
 }

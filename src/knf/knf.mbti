@@ -15,6 +15,17 @@ fn knf_max_counter(Knf) -> Int
 // Types and methods
 type Binding
 
+pub enum CallFreq {
+  Zero
+  Once
+  Many(Int)
+  AsClosure
+}
+impl CallFreq {
+  next(Self) -> Self
+  to_string(Self) -> String
+}
+
 pub struct FreeSetClosure {
   pub ctx : Map[@minimbt.Name, @hashset.T[@minimbt.Name]]
   pub changed : Bool
@@ -37,6 +48,17 @@ impl FuncDef {
   op_equal(Self, Self) -> Bool
   to_json(Self) -> Json
   to_string(Self) -> String
+}
+
+pub struct InlineEnv {
+  pub knf_env : KnfEnv
+  pub tracer : @util.SubTracer
+}
+impl InlineEnv {
+  dfe(Self, Map[@minimbt.Name, CallFreq], @hashmap.T[@minimbt.Name, (Array[(@minimbt.Name, @minimbt.Type)], Knf)], Knf) -> Knf
+  go(Self, Knf, Int) -> Knf
+  inline(Self, Map[@minimbt.Name, CallFreq], @hashmap.T[@minimbt.Name, (Array[(@minimbt.Name, @minimbt.Type)], Knf)], Knf) -> Knf
+  new(KnfEnv, @util.SubTracer) -> Self
 }
 
 pub enum Knf {
@@ -113,6 +135,8 @@ pub typealias Type = @minimbt.Type
 // Traits
 
 // Extension Methods
+impl Show for CallFreq
+
 impl Show for FuncDef
 
 impl Show for Knf

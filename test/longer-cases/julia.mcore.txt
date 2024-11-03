@@ -314,11 +314,13 @@ T$start_20:
 # leaf true
 calc_pixel7l0_12:
 .calc_pixel7l0_12_8:
-  fmv.d fa6, fa0
-  fmv.d fa5, fa1
-  fmv.d fa0, fa2
-  fmv.d fa1, fa6
-  fmv.d fa2, fa5
+  fmv.d fa7, fa0
+  fmv.d fa6, fa1
+  fmv.d fa5, fa2
+  fmv.d fa0, fa3
+  fmv.d fa1, fa7
+  fmv.d fa2, fa6
+  fmv.d fa3, fa5
 
 .calc_pixel7l0_12_0:
   fmul.d fa0, fa1, fa1
@@ -336,17 +338,14 @@ calc_pixel7l0_12:
   fmv.d.x fa3, a1
   fmul.d fa1, fa3, fa1
   fld fa3, c_im.6, t5
-  fmadd.d fa3, fa1, fa2, fa3
-  fnmsub.d fa0, fa2, fa2, fa0
-  fld fa1, c_re.5, t5
-  fadd.d fa1, fa0, fa1
+  fmadd.d fa4, fa1, fa2, fa3
+  fnmsub.d fa1, fa2, fa2, fa0
+  fld fa0, c_re.5, t5
+  fadd.d fa1, fa1, fa0
   addi a0, a0, 1
-  fld fa0, c_im.6, t5
-  fld fa4, c_re.5, t5
   lw a1, iter.3
   fld fa5, limit_sq.2, t5
-  fmv.d fa2, fa3
-  fmv.d fa3, fa4
+  fmv.d fa2, fa4
   fmv.d fa4, fa5
   j .calc_pixel7l0_12_0
 
@@ -379,8 +378,7 @@ T$iter.3_4:
 T$limit_sq.2_2:
 .T$limit_sq.2_2_0:
   fld fa0, limit.1, t5
-  fld fa1, limit.1, t5
-  fmul.d fa0, fa0, fa1
+  fmul.d fa0, fa0, fa0
   ret
 
   .p2align 2

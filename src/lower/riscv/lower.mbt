@@ -1241,14 +1241,7 @@ fn RiscvFnLoweringCtx::effectful(
   insn : @core.Insn
 ) -> Bool {
   let _ = self
-  match insn {
-    @core.Insn::Call(..) => true
-    @core.Insn::ExtCall(..) => true
-    @core.Insn::Apply(..) => true
-    @core.Insn::Store(..) => true
-    @core.Insn::Alloc(..) => true
-    _ => false
-  }
+  insn.effectful()
 }
 
 fn RiscvFnLoweringCtx::has_result(
