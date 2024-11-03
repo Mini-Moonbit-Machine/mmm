@@ -796,9 +796,6 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
   init_reg : AnyReg
 ) -> Unit {
   self.is_leaf = false
-  if false {
-    return
-  }
   match fill {
     Init(..) =>
       match (elem_sz, init_rc) {
@@ -826,6 +823,9 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
         _ => self.tracer.abort("Invalid fill")
       }
     Zero => {
+      if true {
+        return
+      }
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
       @generated.constructor_rv_call(self, Label("memset0e\{elem_sz}"), 2, 0)
       self.used_primitive.insert("memset0e\{elem_sz}")

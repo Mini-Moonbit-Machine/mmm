@@ -15,21 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl aux40.180l4_3
   .type aux40.180l4_3, @function
 # leaf false
@@ -333,12 +318,10 @@ T$start_12:
 # leaf false
 read_prog140l2_4:
 .read_prog140l2_4_5:
-  addi sp, sp, -48
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
   mv s0, a0
   mv s1, a1
 
@@ -348,26 +331,22 @@ read_prog140l2_4:
   bne a0, a1, .read_prog140l2_4_2
 
 .read_prog140l2_4_1:
-  addi s2, s11, -4
-  andi s11, s2, -8
-  sw zero, 0(s2)
+  addi a2, s11, -4
+  andi s11, a2, -8
+  sw zero, 0(a2)
   li a0, 1024
   mul a0, a0, a0
   slliw a1, a0, 2
-  sub s3, s11, a1
-  andi s11, s3, -8
+  sub a4, s11, a1
+  andi s11, a4, -8
   mv a1, a0
-  mv a0, s3
-  mv a2, zero
-  call memseti32
   addi a5, s11, -4
   andi s11, a5, -8
   sw zero, 0(a5)
   mv a0, zero
-  mv a1, s2
+  mv a1, a2
   mv a2, s0
   mv a3, s1
-  mv a4, s3
   call aux40.180l4_3
   mv a0, zero
 
@@ -375,9 +354,7 @@ read_prog140l2_4:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  addi sp, sp, 48
+  addi sp, sp, 32
   ret
 
 .read_prog140l2_4_2:
@@ -419,21 +396,16 @@ main136l1_5:
 .main136l1_5_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   li a0, 4096
-  sub s0, s11, a0
-  andi s11, s0, -8
+  sub a2, s11, a0
+  andi s11, a2, -8
   li a0, 1024
   mv a1, a0
-  mv a0, s0
-  mv a2, zero
-  call memseti32
   mv a0, zero
-  mv a1, s0
+  mv a1, a2
   call read_prog140l2_4
   mv a0, zero
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 

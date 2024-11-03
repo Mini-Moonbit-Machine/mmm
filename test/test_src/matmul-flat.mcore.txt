@@ -30,21 +30,6 @@ memseti64:
 
   .p2align 2
   .text
-  .globl memsetf64
-  .type memsetf64, @function
-memsetf64:
-  blez a1, .memsetf64_b1
-  slli a1, a1, 3
-  add a1, a1, a0
-.memsetf64_b0:
-  fsd fa0, 0(a0)
-  addi a0, a0, 8
-  bne a0, a1, .memsetf64_b0
-.memsetf64_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl main85l3_5
   .type main85l3_5, @function
 # leaf false
@@ -57,7 +42,6 @@ main85l3_5:
   sd s2, 24(sp)
   addi s0, s11, 0
   andi s11, s0, -8
-  fmv.d.x fa0, zero
   li a0, 2
   li a1, 3
   mv a2, s0
@@ -231,32 +215,24 @@ minimbt_main:
 # leaf false
 init_arr89l4_3:
 .init_arr89l4_3_5:
-  addi sp, sp, -48
+  addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  mv s2, a0
-  mv s0, a1
-  mv s1, a2
+  mv a3, a0
+  mv a0, a2
+  mv a2, a0
 
 .init_arr89l4_3_0:
-  blt s2, zero, .init_arr89l4_3_2
+  blt a3, zero, .init_arr89l4_3_2
 
 .init_arr89l4_3_1:
-  slliw a0, s0, 3
-  sub s3, s11, a0
-  andi s11, s3, -8
-  fmv.d.x fa0, zero
-  mv a1, s0
-  mv a0, s3
-  call memsetf64
-  slliw a0, s2, 3
-  add a0, s1, a0
-  sd s3, 0(a0)
-  addi a0, s2, -1
-  mv s2, a0
+  slliw a0, a1, 3
+  sub a0, s11, a0
+  andi s11, a0, -8
+  slliw a4, a3, 3
+  add a4, a2, a4
+  sd a0, 0(a4)
+  addi a0, a3, -1
+  mv a3, a0
   j .init_arr89l4_3_0
 
 .init_arr89l4_3_2:
@@ -264,11 +240,7 @@ init_arr89l4_3:
 
 .init_arr89l4_3_3:
   ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  addi sp, sp, 48
+  addi sp, sp, 16
   ret
 
   .p2align 2

@@ -15,21 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl T$start_12
   .type T$start_12, @function
 # leaf false
@@ -99,9 +84,6 @@ main75l2_5:
   sub s1, s11, a0
   andi s11, s1, -8
   mv a1, s0
-  mv a0, s1
-  mv a2, zero
-  call memseti32
   mv a0, zero
   mv a1, s1
   mv a2, s0

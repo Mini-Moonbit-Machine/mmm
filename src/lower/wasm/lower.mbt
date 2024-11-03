@@ -424,8 +424,8 @@ pub fn WasmFnLoweringCtx::lower_insn(
                 guard fills.length() == 1 else {
                   self.tracer.abort("Zero fill should be the only fill")
                 }
-                match ty {
-                  Int32 => {
+                match ty.size_of_ilp32() {
+                  4 => {
                     self.lower_value(len)
                     self.emit_wasm(I32Const(val=0))
                     self.emit_wasm(Call(target=Label("minimbt_create_array")))
@@ -433,7 +433,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
                       @core.Value::Mem(fref=self.func.id, ~mref),
                     )
                   }
-                  Double => {
+                  8 => {
                     self.lower_value(len)
                     self.emit_wasm(F64Const(val=0))
                     self.emit_wasm(
@@ -443,7 +443,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
                       @core.Value::Mem(fref=self.func.id, ~mref),
                     )
                   }
-                  _ => self.tracer.abort("Uncompatible zero fill")
+                  _ => self.tracer.abort("Uncompatible zero fill \{ty}")
                 }
               }
               Init(~val) => {

@@ -691,54 +691,9 @@
 // [Asm] move_origin: []
 // [Asm] defined: s11 is X
 // [Asm] defs: [a1]
-// [Asm] live_set: [v2, a1, zero, v3]
+// [Asm] live_set: [v2, zero, v3]
 // [Asm] move_origin: [v3]
 // [Asm] defined: a1 is X
-// [Asm] defs: [a0]
-// [Asm] live_set: [v2, a1, zero, a0, v3]
-// [Asm] move_origin: [v2]
-// [Asm] defined: a0 is X
-// [Asm] defs: [a2]
-// [Asm] live_set: [v2, a2, a1, zero, a0, v3]
-// [Asm] move_origin: [zero]
-// [Asm] defined: a2 is X
-// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
-// [Asm] live_set: [v2, zero, v3]
-// [Asm] move_origin: []
-// [Asm] defined: t0 is X
-// [Asm] defined: t1 is X
-// [Asm] defined: t2 is X
-// [Asm] defined: t3 is X
-// [Asm] defined: t4 is X
-// [Asm] defined: a0 is X
-// [Asm] defined: a1 is X
-// [Asm] defined: a2 is X
-// [Asm] defined: a3 is X
-// [Asm] defined: a4 is X
-// [Asm] defined: a5 is X
-// [Asm] defined: a6 is X
-// [Asm] defined: a7 is X
-// [Asm] defined: t0 is X
-// [Asm] defined: t1 is X
-// [Asm] defined: ft0 is F
-// [Asm] defined: ft1 is F
-// [Asm] defined: ft2 is F
-// [Asm] defined: ft3 is F
-// [Asm] defined: ft4 is F
-// [Asm] defined: ft5 is F
-// [Asm] defined: ft6 is F
-// [Asm] defined: ft7 is F
-// [Asm] defined: ft8 is F
-// [Asm] defined: ft9 is F
-// [Asm] defined: ft10 is F
-// [Asm] defined: fa0 is F
-// [Asm] defined: fa1 is F
-// [Asm] defined: fa2 is F
-// [Asm] defined: fa3 is F
-// [Asm] defined: fa4 is F
-// [Asm] defined: fa5 is F
-// [Asm] defined: fa6 is F
-// [Asm] defined: fa7 is F
 // [Asm] defs: []
 // [Asm] live_set: [v2, zero, v3]
 // [Asm] move_origin: []
@@ -979,8 +934,8 @@
 // [Asm]   r1 -- r17;
 // [Asm]   r2 -- r16;
 // [Asm]   r9 -- r17;
-// [Asm]   r2 -- r7;
 // [Asm]   r2 -- r11;
+// [Asm]   r2 -- r7;
 // [Asm]   r1 -- r16;
 // [Asm]   r3 -- r5;
 // [Asm]   r17 -- r19;
@@ -1011,8 +966,8 @@
 // [Asm]   r3 -- r14;
 // [Asm]   r0 -- r1;
 // [Asm]   r2 -- r17;
-// [Asm]   r1 -- r11;
 // [Asm]   r3 -- r17;
+// [Asm]   r1 -- r11;
 // [Asm]   r11 -- r15;
 // [Asm]   r4 -- r17;
 // [Asm]   r3 -- r7;
@@ -1064,9 +1019,6 @@
 // [Asm] subst   sub v2, s11, v11 ->   sub s1, s11, a0
 // [Asm] subst   andi s11, v2, -8 ->   andi s11, s1, -8
 // [Asm] subst   mv a1, v3 ->   mv a1, s0
-// [Asm] subst   mv a0, v2 ->   mv a0, s1
-// [Asm] subst   mv a2, zero ->   mv a2, zero
-// [Asm] subst   call memseti32 ->   call memseti32
 // [Asm] subst   mv a0, zero ->   mv a0, zero
 // [Asm] subst   mv a1, v2 ->   mv a1, s1
 // [Asm] subst   mv a2, v3 ->   mv a2, s0
@@ -5699,10 +5651,7 @@
 // [Asm]   slliw v11, v3, 2  # live: [v11, s11, zero, v3]
 // [Asm]   sub v2, s11, v11  # live: [v2, zero, v3]
 // [Asm]   andi s11, v2, -8  # live: [v2, zero, v3]
-// [Asm]   mv a1, v3  # live: [v2, a1, zero, v3]
-// [Asm]   mv a0, v2  # live: [v2, a1, zero, a0, v3]
-// [Asm]   mv a2, zero  # live: [v2, a2, a1, zero, a0, v3]
-// [Asm]   call memseti32  # live: [v2, zero, v3]
+// [Asm]   mv a1, v3  # live: [v2, zero, v3]
 // [Asm]   # save_ctx2  # live: [v2, zero, v3]
 // [Asm]   mv a0, zero  # live: [v2, zero, a0, v3]
 // [Asm]   mv a1, v2  # live: [v2, a1, zero, a0, v3]
@@ -6255,21 +6204,6 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl memseti32
-// [Main]   .type memseti32, @function
-// [Main] memseti32:
-// [Main]   blez a1, .memseti32_b1
-// [Main]   slli a1, a1, 2
-// [Main]   add a1, a1, a0
-// [Main] .memseti32_b0:
-// [Main]   sw a2, 0(a0)
-// [Main]   addi a0, a0, 4
-// [Main]   bne a0, a1, .memseti32_b0
-// [Main] .memseti32_b1:
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
 // [Main]   .globl sort_3173.318l4_5
 // [Main]   .type sort_3173.318l4_5, @function
 // [Main] # leaf false
@@ -6723,9 +6657,6 @@
 // [Main]   sub s1, s11, a0
 // [Main]   andi s11, s1, -8
 // [Main]   mv a1, s0
-// [Main]   mv a0, s1
-// [Main]   mv a2, zero
-// [Main]   call memseti32
 // [Main]   mv a0, zero
 // [Main]   mv a1, s1
 // [Main]   mv a2, s0
@@ -6930,7 +6861,7 @@
 // [Wasm] Lowering function main239l3_9
 // [Wasm] Lowering insn ExtCall(ty=Int32, ext_f="minimbt_read_int", args=[])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
-// [Wasm] Lowering insn Alloc(ty=Array(elem=Int32), mref=m0, fills=[Init(val=Int32(val=0))])
+// [Wasm] Lowering insn Alloc(ty=Array(elem=Int32), mref=m0, fills=[Zero])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Get Local name Mem(fref=f9, mref=m0) -> $f9.m0
 // [Wasm] Lowering insn Call(ty=Unit, f=f8, args=[Int32(val=0), Mem(fref=f9, mref=m0), Insn(iref=%0)])
@@ -7409,7 +7340,7 @@
 // [Wasm] Lowering control Branch(cond=Insn(iref=%17), t=b5, t_args=[], f=b6, f_args=[])
 // [Wasm] Get Local name Insn(iref=%17) -> $%17
 // [Wasm] Lowering control Jump(target=b8, args=[Unit])
-// [Wasm] Lowering insn Alloc(ty=Array(elem=Int32), mref=m0, fills=[Init(val=Int32(val=0))])
+// [Wasm] Lowering insn Alloc(ty=Array(elem=Int32), mref=m0, fills=[Zero])
 // [Wasm] Get Local name Mem(fref=f7, mref=m0) -> $f7.m0
 // [Wasm] Lowering insn Op(ty=Int32, op=Sub, args=[BlockParam(bref=b0, bpref=$b.2), BlockParam(bref=b0, bpref=$b.1)])
 // [Wasm] Get Local name BlockParam(bref=b0, bpref=$b.2) -> $b0.$b.2

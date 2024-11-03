@@ -781,10 +781,17 @@ fn build_knf_expr(
           let len = arg_vals[0]
           let init = arg_vals[1]
           let mem = self.add_mem(func, bb, Mem::Heap(~ty, ~len))
+          let fill = match init {
+            Value::Double(val=0.0)
+            | Value::Int32(val=0)
+            | Value::Int64(val=0) | Value::Bool(val=false) | Value::Unit =>
+              Fill::Zero
+            _ => Fill::Init(val=init)
+          }
           let _ = self.add_insn(
             func,
             bb,
-            Insn::Alloc(~ty, mref=mem, fills=[Fill::Init(val=init)]),
+            Insn::Alloc(~ty, mref=mem, fills=[fill]),
           )
           (ctx, bb, Value::Mem(fref=func.id, mref=mem))
         }
