@@ -257,7 +257,7 @@ fn build_func_def(
     let (name, ty) = arg
     let ty = self.lower_type!(ty, false)
     tys.push(ty)
-    let val = Value::FnParam(~fref, fpref=FnParamRef(Id::new(i)))
+    let val = fn_param(fref, i)
     ctx = ctx.add_local_name_value(name, val)
     ctx = ctx.add_name_ty(name, ty)
   }
@@ -603,11 +603,7 @@ fn build_knf_expr(
         f=else_bb_s.id,
         f_args=[],
       )
-      (
-        ctx,
-        res_bb,
-        Value::BlockParam(bref=res_bb.id, bpref=BlockParamRef(Id::new(0))),
-      )
+      (ctx, res_bb, block_param(res_bb.id, 0))
     }
     Let((name, ty), e1, e2) => {
       let e1_free_names = FreeNames::new()

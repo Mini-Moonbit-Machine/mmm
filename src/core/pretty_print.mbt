@@ -303,7 +303,9 @@ fn print_bb(logger : @util.IndentLogger, func : Fn, bb : BasicBlock) -> Unit {
 }
 
 fn print_loop(logger : @util.IndentLogger, _func : Fn, lp : Loop) -> Unit {
-  logger.write_string(".loop #\{lp.id} header #\{lp.header} {\n")
+  logger.write_string(
+    ".loop #\{lp.id} pre #\{lp.pre_header} header #\{lp.header} {\n",
+  )
   logger.indent()
   for block in lp.blocks {
     print_block_short(logger, block)

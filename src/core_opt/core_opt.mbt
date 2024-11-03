@@ -56,4 +56,7 @@ pub fn CoreOpt2::go(self : CoreOpt2) -> Unit {
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()
   self.tracer.record("core_opt2_after_lvn", core.to_pretty_print())
+  let dlp = DropLoopParams::new(core, self.tracer)
+  dlp.go()
+  self.tracer.record("core_opt2_after_dlp", core.to_pretty_print())
 }

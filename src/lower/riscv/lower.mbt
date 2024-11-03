@@ -1195,7 +1195,7 @@ fn RiscvFnLoweringCtx::assign_regs_for_block_params_and_instrs(
     let assignment = []
     for id, param in bb.params {
       let reg = self.next_reg(ty_to_reg_class(param))
-      let val = @core.Value::BlockParam(bref=bb.id, bpref={ id, })
+      let val = @core.block_param(bb.id, id)
       self.assign_reg(val, reg)
       assignment.push(reg)
     }
@@ -1260,13 +1260,13 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
     match ty_to_reg_class(ty) {
       X => {
         let reg = @generated.constructor_lower_x_value(self, arg)
-        let param = @core.Value::BlockParam(bref=target.id, bpref={ id, })
+        let param = @core.block_param(target.id, id)
         let param_reg = self.value_regs[param].unwrap()
         @generated.constructor_rv_mv_to(self, xreg(param_reg), reg)
       }
       F => {
         let reg = @generated.constructor_lower_f_value(self, arg)
-        let param = @core.Value::BlockParam(bref=target.id, bpref={ id, })
+        let param = @core.block_param(target.id, id)
         let param_reg = self.value_regs[param].unwrap()
         @generated.constructor_rv_fmv_to(self, freg(param_reg), reg)
       }

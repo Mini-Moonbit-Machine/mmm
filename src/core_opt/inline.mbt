@@ -73,10 +73,7 @@ pub fn FnInliner::split_bb_at_call(
     params: [ty],
   }
   let call_value = @core.Value::Insn(iref=call_iref)
-  let block_param_0 = @core.Value::BlockParam(
-    bref=post_bb.id,
-    bpref=@core.BlockParamRef(@core.Id::new(0)),
-  )
+  let block_param_0 = @core.block_param(post_bb.id, 0)
   bb.control = @core.Control::Jump(target=id, args=[call_value])
   self.func.blocks.set(id, @core.Block::BasicBlock(bb=post_bb))
   for block in self.func.blocks {

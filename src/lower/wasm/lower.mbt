@@ -263,9 +263,7 @@ pub fn WasmFnLoweringCtx::set_none_unit_block_args(
       Unit => ()
       _ => {
         self.lower_value(arg)
-        self.set_local_variable(
-          @core.Value::BlockParam(bref=target, bpref=BlockParamRef({ id: i })),
-        )
+        self.set_local_variable(@core.block_param(target, i))
       }
     }
   }
@@ -740,9 +738,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
     match ty_to_wasm_type(param) {
       None => ()
       Some(ty) => {
-        let name = self.get_local_name(
-          @core.Value::FnParam(fref=self.func.id, fpref=FnParamRef({ id: i })),
-        )
+        let name = self.get_local_name(@core.fn_param(self.func.id, i))
         args.push((name, ty))
       }
     }

@@ -133,7 +133,7 @@ pub struct BasicBlock {
 
 pub struct Loop {
   id : BlockRef
-  mut parent : BlockRef?
+  mut pre_header : BlockRef?
   mut header : BlockRef // must be a basic block
   blocks : Array[BlockRef]
 } derive(Show, Eq)
@@ -781,4 +781,12 @@ pub impl Show for Width with output(self, logger) {
       logger.write_char(')')
     }
   }
+}
+
+pub fn block_param(bb : BlockRef, index : Int) -> Value {
+  BlockParam(bref=bb, bpref=BlockParamRef({ id: index }))
+}
+
+pub fn fn_param(f : FnRef, index : Int) -> Value {
+  FnParam(fref=f, fpref=FnParamRef({ id: index }))
 }

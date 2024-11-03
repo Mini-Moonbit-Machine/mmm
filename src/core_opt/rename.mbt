@@ -118,7 +118,9 @@ fn shift_basic_block(self : Renamer, bb : @core.BasicBlock) -> @core.BasicBlock 
 fn shift_loop(self : Renamer, lp : @core.Loop) -> @core.Loop {
   {
     id: lp.id._.shift(self.counter.block_counter),
-    parent: lp.parent.map(fn(p) { p._.shift(self.counter.block_counter) }),
+    pre_header: lp.pre_header.map(
+      fn(p) { p._.shift(self.counter.block_counter) },
+    ),
     header: lp.header._.shift(self.counter.block_counter),
     blocks: lp.blocks.map(fn(b) { b._.shift(self.counter.block_counter) }),
   }
