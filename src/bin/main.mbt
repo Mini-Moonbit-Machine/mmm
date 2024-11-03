@@ -460,7 +460,7 @@ fn main {
         @ArgParser.String(
           fn(s) {
             opts.out_file = s
-            if s.contains("speed") || s.contains("size") {
+            if s.contains("speed") {
               opts.use_xtheadba = true
             }
           },
