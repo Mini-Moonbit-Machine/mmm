@@ -50,8 +50,8 @@ pub fn CoreOpt2::new(core : @core.Core, tracer : @util.SubTracer) -> CoreOpt2 {
 
 pub fn CoreOpt2::go(self : CoreOpt2) -> Unit {
   let core = self.core
-  let float_offset = FloatOffset::new(core, self.tracer)
-  float_offset.go()
+  let _float_offset = FloatOffset::new(core, self.tracer)
+  // float_offset.go()
   self.tracer.record("core_opt2_after_fo", core.to_pretty_print())
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()

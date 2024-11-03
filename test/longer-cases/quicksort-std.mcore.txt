@@ -339,28 +339,28 @@ quick_sort210l2_7:
   sw a1, 0(s4)
 
 .quick_sort210l2_7_62:
-  mv s5, s0
-  mv s6, a0
+  mv s6, s0
+  mv s5, a0
 
 .quick_sort210l2_7_51:
   addi a0, s3, -2
-  blt a0, s5, .quick_sort210l2_7_53
+  blt a0, s6, .quick_sort210l2_7_53
 
 .quick_sort210l2_7_52:
-  slliw a0, s5, 2
+  slliw a0, s6, 2
   add a0, s1, a0
   lw a0, 0(a0)
-  addi a1, s6, -1
+  addi a1, s5, -1
   blt a1, a0, .quick_sort210l2_7_55
 
 .quick_sort210l2_7_54:
   lw a0, 0(s2)
-  beq a0, s5, .quick_sort210l2_7_56
+  beq a0, s6, .quick_sort210l2_7_56
 
 .quick_sort210l2_7_57:
   lw a1, 0(s2)
   mv a0, s1
-  mv a2, s5
+  mv a2, s6
   call swap1l0_0
   sw zero, 0(s4)
   mv a0, zero
@@ -372,8 +372,8 @@ quick_sort210l2_7:
   mv a0, zero
 
 .quick_sort210l2_7_59:
-  addi a0, s5, 1
-  mv s5, a0
+  addi a0, s6, 1
+  mv s6, a0
   j .quick_sort210l2_7_51
 
 .quick_sort210l2_7_1:
@@ -493,15 +493,17 @@ main239l3_9:
 # leaf true
 swap1l0_0:
 .swap1l0_0_0:
-  slliw a1, a1, 2
-  add a3, a0, a1
+  slliw a3, a1, 2
+  add a3, a0, a3
   lw a3, 0(a3)
-  slliw a2, a2, 2
-  add a4, a0, a2
+  slliw a4, a2, 2
+  add a4, a0, a4
   lw a4, 0(a4)
+  slliw a1, a1, 2
   add a1, a0, a1
   sw a4, 0(a1)
-  add a0, a0, a2
+  slliw a1, a2, 2
+  add a0, a0, a1
   sw a3, 0(a0)
   mv a0, zero
   ret

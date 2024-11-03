@@ -43,21 +43,18 @@
 .freevars (array[int32], closure(closure(int32) -> int32, int32) -> int32)
 .entry b0 {
   .bb #b0 () {
-    let %6: ptr = compute_address unit offset(0, $f0 * @32)
-    let %0: int32 = load int32 raw(^1, %6)
+    let %0: int32 = load int32 offset(^1, $f0 * @32)
     let %1: int32 = load_symbol ::0
     let %2: bool = eq(%0, %1)
     br %2 b1() b2()
   }
   .bb #b1 () {
     let %3: int32 = apply ^2(self, $f0)
-    let %7: ptr = compute_address unit offset(0, $f0 * @32)
-    let _ = store int32 raw(^1, %7) <- %3
+    let _ = store int32 offset(^1, $f0 * @32) <- %3
     jump b3(%3)
   }
   .bb #b2 () {
-    let %8: ptr = compute_address unit offset(0, $f0 * @32)
-    let %5: int32 = load int32 raw(^1, %8)
+    let %5: int32 = load int32 offset(^1, $f0 * @32)
     jump b3(%5)
   }
   .bb #b3 (int32) {
