@@ -662,6 +662,11 @@ fn RiscvFnLoweringCtx::lower_address(
       }
       ma
     }
+    Raw(~val, ..) => {
+      let base = @generated.constructor_lower_value(self, val) |> xreg
+      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = { base, offset: 0 }
+      ma
+    }
   }
 }
 
@@ -948,6 +953,14 @@ fn RiscvFnLoweringCtx::lower_alloc(
   let _ = self.mark_maybe_aliased(ptr)
   self.alias_reg(pre_assigned, ptr)
   self.zero_reg() |> xreg_to
+}
+
+fn RiscvFnLoweringCtx::lower_compute_address(
+  self : RiscvFnLoweringCtx,
+  addr : @core.Address
+) -> AnyReg {
+  let ma = self.lower_address(addr)
+  xreg_to(@generated.constructor_rv_addi(self, ma.base, ma.offset._))
 }
 
 fn RiscvFnLoweringCtx::imm32_from_val(

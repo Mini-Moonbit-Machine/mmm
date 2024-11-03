@@ -263,6 +263,7 @@ fn CoreInterpreter::eval_insn(
   insn : Insn
 ) -> (Ctx, Object)!Failure {
   match insn {
+    ComputeAddress(..) => fail!("ComputeAddress not implemented")
     Op(~op, ~args, ..) => {
       let args = CoreInterpreter::eval_values!(ctx, args)
       let r = match op {
@@ -556,6 +557,7 @@ fn CoreInterpreter::eval_insn(
             _ => fail!("eval \{st}: not a mem object: \{val}, \{offset}")
           }
         }
+        Raw(..) => fail!("raw store not implemented")
       }
       (ctx, Object::Unit)
     }
@@ -593,6 +595,7 @@ fn CoreInterpreter::eval_insn(
               )
           }
         }
+        Raw(..) => fail!("raw load not implemented")
       }
       (ctx, obj)
     }

@@ -219,7 +219,8 @@
     (LoadSymbol (ty Type) (sref SymbolRef))
     (Alloc (ty Type) (mref MemRef) (fills Fills))
     (Store (ty Type) (ma Address) (val Value))
-    (Load (ty Type) (ma Address))))
+    (Load (ty Type) (ma Address))
+    (ComputeAddress (ma Address))))
 
 (decl pure insn_op (Type Op Values) Insn)
 (extractor (insn_op ty op vals) (Insn.Op ty op vals))
@@ -244,6 +245,9 @@
 
 (decl pure insn_load (Type Address) Insn)
 (extractor (insn_load ty ma) (Insn.Load ty ma))
+
+(decl pure insn_compute_address (Address) Insn)
+(extractor (insn_compute_address ma) (Insn.ComputeAddress ma))
 
 (type Fill extern
   (enum as `@core.Fill`
@@ -278,13 +282,17 @@
 (type Address extern
   (enum as `@core.Address`
     (Field (ty Type) (val Value) (index Int32) (width Width))
-    (Offset (ty Type) (val Value) (offset Int32) (width Width))))
+    (Offset (ty Type) (val Value) (offset Value) (width Width))
+    (Raw (ty Type) (offset Value))))
 
 (decl pure addr_field (Type Value Int32 Width) Address)
 (extractor (addr_field ty val index width) (Address.Field ty val index width))
 
-(decl pure addr_offset (Type Value Int32 Width) Address)
+(decl pure addr_offset (Type Value Value Width) Address)
 (extractor (addr_offset ty val offset width) (Address.Offset ty val offset width))
+
+(decl pure addr_raw (Type Value) Address)
+(extractor (addr_raw ty offset) (Address.Raw ty offset))
 
 (type Control extern
   (enum as `@core.Control`

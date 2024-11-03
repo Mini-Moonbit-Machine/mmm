@@ -210,6 +210,7 @@ pub enum Insn {
   Alloc(~ty : Type, ~mref : MemRef, ~fills : Fills)
   Store(~ty : Type, ~ma : Address, ~val : Value)
   Load(~ty : Type, ~ma : Address)
+  ComputeAddress(~ma : Address)
 } derive(Show, Eq)
 
 pub enum Fill {
@@ -234,6 +235,7 @@ pub enum Width {
 pub enum Address {
   Field(~ty : Type, ~val : Value, ~index : Int, ~width : Width) // field (constant offset) of memory. Value must be ptr-compatible.
   Offset(~ty : Type, ~val : Value, ~offset : Value, ~width : Width) // offset (variable offset) of memory. Value must be ptr-compatible.
+  Raw(~ty : Type, ~val : Value) // raw address. Value must be ptr-compatible.
 } derive(Show, Eq)
 
 pub enum Control {
@@ -286,6 +288,7 @@ pub fn Insn::ty(self : Insn) -> Type {
     | ExtCall(~ty, ..) | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Load(~ty, ..) =>
       ty
     Store(..) => Type::Unit
+    ComputeAddress(..) => Type::Ptr
   }
 }
 
@@ -523,6 +526,7 @@ pub fn replace(self : Address, map : (Value) -> Value) -> Address {
       Address::Field(~ty, val=map(val), ~index, ~width)
     Offset(~ty, ~val, ~offset, ~width) =>
       Address::Offset(~ty, val=map(val), offset=map(offset), ~width)
+    Raw(~ty, ~val) => Address::Raw(~ty, val=map(val))
   }
 }
 
@@ -552,6 +556,7 @@ pub fn replace(self : Insn, map : (Value) -> Value) -> Insn {
       Alloc(~ty, ~mref, fills=fills.map(fn(rf) { rf.replace(map) }))
     Store(~ty, ~ma, ~val) => Store(~ty, ma=ma.replace(map), val=map(val))
     Load(~ty, ~ma) => Load(~ty, ma=ma.replace(map))
+    ComputeAddress(~ma) => ComputeAddress(ma=ma.replace(map))
   }
 }
 
@@ -683,6 +688,10 @@ pub impl Hash for Address with hash_combine(self, hasher) {
       hasher.combine(offset)
       hasher.combine(width)
     }
+    Raw(~val, ..) => {
+      hasher.combine_int(3)
+      hasher.combine(val)
+    }
   }
 }
 
@@ -739,6 +748,10 @@ pub impl Hash for Insn with hash_combine(self, hasher) {
     }
     Load(~ma, ..) => {
       hasher.combine_int(8)
+      hasher.combine(ma)
+    }
+    ComputeAddress(~ma, ..) => {
+      hasher.combine_int(9)
       hasher.combine(ma)
     }
   }

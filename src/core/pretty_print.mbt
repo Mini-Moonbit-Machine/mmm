@@ -147,6 +147,12 @@ fn print_mem_access(
       print_value(logger, offset)
       logger.write_string(" * \{Show::to_string(width)})")
     }
+    Raw(~ty, ~val) => {
+      print_type(logger, ty)
+      logger.write_string(" raw(")
+      print_value(logger, val)
+      logger.write_string(")")
+    }
   }
 }
 
@@ -266,6 +272,11 @@ fn print_insn(
       logger.write_string(" = load ")
       print_mem_access(logger, func, ma)
       logger.write_string("\n")
+    }
+    ComputeAddress(~ma) => {
+      logger.write_string("let \{ir}: ptr")
+      logger.write_string(" = compute_address ")
+      print_mem_access(logger, func, ma)
     }
   }
 }

@@ -11,6 +11,7 @@ fn replace_all(Fn, BasicBlock, ~map : (Value) -> Value) -> Unit
 pub enum Address {
   Field(Type, Value, Int, Width)
   Offset(Type, Value, Value, Width)
+  Raw(Type, Value)
 }
 impl Address {
   op_equal(Self, Self) -> Bool
@@ -181,6 +182,7 @@ pub enum Insn {
   Alloc(Type, MemRef, Array[Fill])
   Store(Type, Address, Value)
   Load(Type, Address)
+  ComputeAddress(Address)
 }
 impl Insn {
   effectful(Self) -> Bool

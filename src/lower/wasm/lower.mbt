@@ -184,6 +184,8 @@ pub fn WasmFnLoweringCtx::lower_address(
   addr : @core.Address
 ) -> Unit {
   match addr {
+    Raw(..) =>
+      self.tracer.abort("Raw address should not appear in wasm backend")
     Field(~val, ~index, ~width, ..) => {
       match self.type_of(val) {
         ClosureFn(..) =>
@@ -563,6 +565,8 @@ pub fn WasmFnLoweringCtx::lower_insn(
       self.emit_wasm(GetLocal(name=self.this_ptr))
       self.emit_wasm(SetGlobal(name=self.closure_ptr))
     }
+    ComputeAddress(..) =>
+      self.tracer.abort("ComputeAddress should not appear in wasm backend")
   }
 }
 

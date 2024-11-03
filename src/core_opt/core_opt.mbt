@@ -37,3 +37,17 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   lvn.go()
   self.tracer.record("core_opt_after_lvn", core.to_pretty_print())
 }
+
+pub struct CoreOpt2 {
+  core : @core.Core
+  tracer : @util.SubTracer
+}
+
+pub fn CoreOpt2::new(core : @core.Core, tracer : @util.SubTracer) -> CoreOpt2 {
+  { core, tracer }
+}
+
+pub fn CoreOpt2::go(self : CoreOpt2) -> Unit {
+  let _ = self
+
+}

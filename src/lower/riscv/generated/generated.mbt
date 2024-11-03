@@ -62,6 +62,7 @@ pub trait Context {
   lower_store(Self, @core.Type, @core.Address, @core.Value) -> @riscv.AnyReg
   lower_load(Self, @core.Type, @core.Address) -> @riscv.AnyReg
   lower_alloc(Self, @core.Type, @core.MemRef, @core.Fills) -> @riscv.AnyReg
+  lower_compute_address(Self, @core.Address) -> @riscv.AnyReg
 }
 
 struct Returns[T, C] {
@@ -87,7 +88,7 @@ fn Returns::length[T, C : Context](self : Returns[T, C]) -> Int {
 
 let _MAX_ISLE_RETURNS = 64
 
-/// Internal type Args: defined at src/core/core.isle line 328.
+/// Internal type Args: defined at src/core/core.isle line 336.
 pub enum Args {
   Args2(~arg1 : @core.Value, ~arg2 : @core.Value)
   Args1(~arg1 : @core.Value)
@@ -197,20 +198,20 @@ pub fn constructor_arg2[C : Context](
   arg1 : @core.Value
 ) -> Args {
   let v2 = Args::Args2(arg1=arg0, arg2=arg1)
-  // Rule at src/core/core.isle line 335.
+  // Rule at src/core/core.isle line 343.
   return v2
 }
 
 // Generated as internal constructor for term arg1.
 pub fn constructor_arg1[C : Context](ctx : C, arg0 : @core.Value) -> Args {
   let v1 = Args::Args1(arg1=arg0)
-  // Rule at src/core/core.isle line 339.
+  // Rule at src/core/core.isle line 347.
   return v1
 }
 
 // Generated as internal constructor for term arg0.
 pub fn constructor_arg0[C : Context](ctx : C) -> Args {
-  // Rule at src/core/core.isle line 343.
+  // Rule at src/core/core.isle line 351.
   return Args::Args0
 }
 
@@ -2816,50 +2817,57 @@ pub fn constructor_lower[C : Context](
       let v200 = C::lower_call(ctx, v196, v199, v198)
       let v201 = C::mark_maybe_aliased(ctx, v200)
       let v202 = Some(v201)
-      // Rule at src/lower/riscv/lower.isle line 398.
+      // Rule at src/lower/riscv/lower.isle line 401.
       return v202
     }
     @core.Insn::Apply(ty=v203, f=v204, args=v205) => {
       let v206 = C::lower_apply(ctx, v203, v204, v205)
       let v207 = C::mark_maybe_aliased(ctx, v206)
       let v208 = Some(v207)
-      // Rule at src/lower/riscv/lower.isle line 401.
+      // Rule at src/lower/riscv/lower.isle line 404.
       return v208
     }
     @core.Insn::ExtCall(ty=v190, ext_f=v191, args=v192) => {
       let v193 = C::lower_ext_call(ctx, v190, v191, v192)
       let v194 = C::mark_maybe_aliased(ctx, v193)
       let v195 = Some(v194)
-      // Rule at src/lower/riscv/lower.isle line 395.
+      // Rule at src/lower/riscv/lower.isle line 398.
       return v195
     }
     @core.Insn::LoadSymbol(ty=v209, sref=v210) => {
       let v211 = C::lower_load_symbol(ctx, v209, v210)
       let v212 = C::mark_maybe_aliased(ctx, v211)
       let v213 = Some(v212)
-      // Rule at src/lower/riscv/lower.isle line 404.
+      // Rule at src/lower/riscv/lower.isle line 407.
       return v213
     }
     @core.Insn::Alloc(ty=v225, mref=v226, fills=v227) => {
       let v228 = C::lower_alloc(ctx, v225, v226, v227)
       let v229 = C::mark_maybe_aliased(ctx, v228)
       let v230 = Some(v229)
-      // Rule at src/lower/riscv/lower.isle line 413.
+      // Rule at src/lower/riscv/lower.isle line 416.
       return v230
     }
     @core.Insn::Store(ty=v214, ma=v215, val=v216) => {
       let v217 = C::lower_store(ctx, v214, v215, v216)
       let v218 = C::mark_maybe_aliased(ctx, v217)
       let v219 = Some(v218)
-      // Rule at src/lower/riscv/lower.isle line 407.
+      // Rule at src/lower/riscv/lower.isle line 410.
       return v219
     }
     @core.Insn::Load(ty=v220, ma=v221) => {
       let v222 = C::lower_load(ctx, v220, v221)
       let v223 = C::mark_maybe_aliased(ctx, v222)
       let v224 = Some(v223)
-      // Rule at src/lower/riscv/lower.isle line 410.
+      // Rule at src/lower/riscv/lower.isle line 413.
       return v224
+    }
+    @core.Insn::ComputeAddress(ma=v231) => {
+      let v232 = C::lower_compute_address(ctx, v231)
+      let v233 = C::mark_maybe_aliased(ctx, v232)
+      let v234 = Some(v233)
+      // Rule at src/lower/riscv/lower.isle line 419.
+      return v234
     }
     _ => ()
   }

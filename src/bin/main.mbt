@@ -9,6 +9,7 @@ enum Stages {
   Core
   CoreOpt
   Wasm
+  CoreOpt2
   Asm
   Finished
 } derive(Show, Eq, Compare)
@@ -24,6 +25,7 @@ fn Stages::from_string(s : String) -> Stages? {
     "core-opt" => Some(Stages::CoreOpt)
     "wasm" => Some(Stages::Wasm)
     "closure" => Some(Stages::Closure)
+    "core-opt-2" => Some(Stages::CoreOpt2)
     "riscv" => Some(Stages::Asm)
     "finished" => Some(Stages::Finished)
     _ => None
@@ -40,7 +42,8 @@ fn Stages::next(self : Stages) -> Stages {
     Stages::Closure => Stages::Core
     Stages::Core => Stages::CoreOpt
     Stages::CoreOpt => Stages::Wasm
-    Stages::Wasm => Stages::Asm
+    Stages::Wasm => Stages::CoreOpt2
+    Stages::CoreOpt2 => Stages::Asm
     Stages::Asm => Stages::Finished
     Stages::Finished => Stages::Finished
   }
@@ -72,6 +75,7 @@ struct CompileStatus {
   mut js : @lower_js.JsCore?
   mut core : @core.Core?
   mut opt_core : @core.Core?
+  mut opt_core_2 : @core.Core?
   mut wasm : @lower_wasm.MCore?
   mut closure_ir : @closure.Program?
   mut asm : @lower_riscv.MCore?
@@ -99,6 +103,7 @@ fn CompileStatus::initialize(
     asm: None,
     core: None,
     opt_core: None,
+    opt_core_2: None,
     knf_env: None,
     core_env: None,
   }
@@ -234,6 +239,19 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let wasm = lower_ctx.lower()
       self.wasm = Some(wasm)
     }
+    CoreOpt2 => {
+      let _core_env = self.core_env.unwrap()
+      let subtracer = tracer.new_subtracer(
+        "CoreOpt2",
+        opts.output_to_console,
+        opts.redirect_to_log,
+      )
+      let core = self.opt_core.unwrap()
+      let opt = @core_opt.CoreOpt2::new(core, subtracer)
+      opt.go()
+      self.core_env = Some(_core_env)
+      self.opt_core_2 = Some(core)
+    }
     Closure => {
       let subtracer = tracer.new_subtracer(
         "Closure",
@@ -255,7 +273,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.closure_ir = Some(closure_ir)
     }
     Asm => {
-      let core = self.core.unwrap()
+      let core = self.opt_core_2.unwrap()
       let subtracer = tracer.new_subtracer(
         "Asm",
         opts.output_to_console,
@@ -287,6 +305,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Core => @json.stringify(self.opt_knf.unwrap().to_json())
       CoreOpt => mt.abort("No json output for core IR")
       Wasm => mt.abort("No json output for wasm")
+      CoreOpt2 => mt.abort("No json output for core IR")
       Asm => mt.abort("No json output for core IR")
       Finished => Show::to_string(self.asm.unwrap())
     }
@@ -301,7 +320,8 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       Core => self.closure_ir.unwrap().to_string()
       CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
       Wasm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
-      Asm => Show::to_string(self.wasm.unwrap())
+      CoreOpt2 => Show::to_string(self.wasm.unwrap())
+      Asm => Show::to_string(self.opt_core_2.unwrap())
       Finished => Show::to_string(self.asm.unwrap())
     }
   }

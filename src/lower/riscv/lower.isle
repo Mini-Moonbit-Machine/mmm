@@ -393,6 +393,9 @@
 (decl lower_alloc (Type MemRef Fills) AnyReg)
 (extern constructor lower_alloc lower_alloc)
 
+(decl lower_compute_address (Address) AnyReg)
+(extern constructor lower_compute_address lower_compute_address)
+
 (rule (lower (insn_ext_call ty f args))
   (mr (lower_ext_call ty f args)))
 
@@ -413,3 +416,6 @@
 
 (rule (lower (insn_alloc ty mref fills))
   (mr (lower_alloc ty mref fills)))
+
+(rule (lower (insn_compute_address ma))
+  (mr (lower_compute_address ma)))
