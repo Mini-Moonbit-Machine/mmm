@@ -680,15 +680,29 @@ fn RiscvFnLoweringCtx::lower_address(
       ma
     }
     Raw(~val, ~raw_offset, ..) => {
-      let base = @generated.constructor_lower_value(self, val) |> xreg
-      let raw_offset = @generated.constructor_lower_value(self, raw_offset)
-        |> xreg
-      let addr = @generated.constructor_rv_add(self, base, raw_offset)
-      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
-        base: addr,
-        offset: 0,
+      fn fallback() {
+        let base = @generated.constructor_lower_value(self, val) |> xreg
+        let raw_offset = @generated.constructor_lower_value(self, raw_offset)
+          |> xreg
+        let addr = @generated.constructor_rv_add(self, base, raw_offset)
+        let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
+          base: addr,
+          offset: 0,
+        }
+        ma
       }
-      ma
+
+      match self.insn_once(raw_offset).map(fn(iref) { self.ref_insn(iref) }) {
+        Some(@core.Insn::ComputeAddress(~ma)) =>
+          match ma {
+            Offset(val=@core.Value::Int64(val=0), ~ty, ~offset, ~width) =>
+              self.lower_address(Offset(~val, ~width, ~offset, ~ty))
+            Field(val=@core.Value::Int64(val=0), ~ty, ~index, ~width) =>
+              self.lower_address(Field(~val, ~width, ~index, ~ty))
+            _ => fallback()
+          }
+        _ => fallback()
+      }
     }
   }
 }

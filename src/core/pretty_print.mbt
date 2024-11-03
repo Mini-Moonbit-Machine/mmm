@@ -279,6 +279,7 @@ fn print_insn(
       logger.write_string("let \{ir}: ptr")
       logger.write_string(" = compute_address ")
       print_mem_access(logger, func, ma)
+      logger.write_string("\n")
     }
   }
 }

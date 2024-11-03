@@ -526,7 +526,8 @@ pub fn replace(self : Address, map : (Value) -> Value) -> Address {
       Address::Field(~ty, val=map(val), ~index, ~width)
     Offset(~ty, ~val, ~offset, ~width) =>
       Address::Offset(~ty, val=map(val), offset=map(offset), ~width)
-    Raw(~ty, ~val, ~raw_offset) => Address::Raw(~ty, val=map(val), ~raw_offset)
+    Raw(~ty, ~val, ~raw_offset) =>
+      Address::Raw(~ty, val=map(val), raw_offset=map(raw_offset))
   }
 }
 
