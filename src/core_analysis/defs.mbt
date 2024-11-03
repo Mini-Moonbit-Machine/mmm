@@ -24,7 +24,11 @@ pub fn find_all_defs_of_value(
     bpref : @core.BlockParamRef,
     args : Array[@core.Value]
   ) {
-    let target = func.blocks[target].unwrap().bb_or_header_bb(func).id
+    let target = func.blocks[target]
+      .or_else(
+        fn() { @util.t.abort("unable to find \{target} in \{func.blocks}") },
+      )
+      .bb_or_header_bb(func).id
     if target == bref {
       let val = args[bpref.id]
       push_or_pend(val)
