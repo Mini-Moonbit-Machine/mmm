@@ -147,10 +147,12 @@ fn print_mem_access(
       print_value(logger, offset)
       logger.write_string(" * \{Show::to_string(width)})")
     }
-    Raw(~ty, ~val) => {
+    Raw(~ty, ~val, ~raw_offset) => {
       print_type(logger, ty)
       logger.write_string(" raw(")
       print_value(logger, val)
+      logger.write_string(", ")
+      print_value(logger, raw_offset)
       logger.write_string(")")
     }
   }

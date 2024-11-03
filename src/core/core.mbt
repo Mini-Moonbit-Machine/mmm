@@ -235,7 +235,7 @@ pub enum Width {
 pub enum Address {
   Field(~ty : Type, ~val : Value, ~index : Int, ~width : Width) // field (constant offset) of memory. Value must be ptr-compatible.
   Offset(~ty : Type, ~val : Value, ~offset : Value, ~width : Width) // offset (variable offset) of memory. Value must be ptr-compatible.
-  Raw(~ty : Type, ~val : Value) // raw address. Value must be ptr-compatible.
+  Raw(~ty : Type, ~val : Value, ~raw_offset : Value) // raw address. Value must be ptr-compatible.
 } derive(Show, Eq)
 
 pub enum Control {
@@ -526,7 +526,7 @@ pub fn replace(self : Address, map : (Value) -> Value) -> Address {
       Address::Field(~ty, val=map(val), ~index, ~width)
     Offset(~ty, ~val, ~offset, ~width) =>
       Address::Offset(~ty, val=map(val), offset=map(offset), ~width)
-    Raw(~ty, ~val) => Address::Raw(~ty, val=map(val))
+    Raw(~ty, ~val, ~raw_offset) => Address::Raw(~ty, val=map(val), ~raw_offset)
   }
 }
 

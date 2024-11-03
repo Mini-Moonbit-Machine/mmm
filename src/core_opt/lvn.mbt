@@ -51,9 +51,24 @@ pub fn Numbering::go(self : Numbering) -> Unit {
     for i, iref in bb.seq {
       let insn = self.func.insns.get(iref).unwrap()
       if insn.effectful() {
-        vnum.clear()
-        numv.clear()
-        shape.clear()
+        let old_shapes = shape.to_array()
+        match insn {
+          @core.Insn::Call(..) | ExtCall(..) | Apply(..) =>
+            // keep value across calls may use extra instructions to save/restore
+            // shape.clear()
+            ()
+          _ => ()
+        }
+        for s in old_shapes {
+          match s.0 {
+            @core.Insn::Load(..) => shape.remove(s.0)
+            _ =>
+              if s.0.effectful() {
+                self.tracer.abort("LVN: effectful insn in shape")
+              }
+          }
+        }
+        continue
       }
       let v_of_insn = @core.Value::Insn(~iref)
       match shape.get(insn) {

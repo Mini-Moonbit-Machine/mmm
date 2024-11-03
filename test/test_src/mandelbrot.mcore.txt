@@ -103,15 +103,14 @@ yloop7.79l2_3:
 .yloop7.79l2_3_9:
   fcvt.d.w fa0, s2
   call dbl4.77l1_0
-  fcvt.d.w fa1, s1
-  fdiv.d fa0, fa0, fa1
+  fcvt.d.w fs1, s1
+  fdiv.d fa0, fa0, fs1
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
-  fsub.d fs1, fa0, fa1
+  fsub.d fs0, fa0, fa1
   fcvt.d.w fa0, s0
   call dbl4.77l1_0
-  fcvt.d.w fa1, s1
-  fdiv.d fa0, fa0, fa1
+  fdiv.d fa0, fa0, fs1
   li a0, 4607182418800017408
   fmv.d.x fa1, a0
   fsub.d fa3, fa0, fa1
@@ -120,19 +119,20 @@ yloop7.79l2_3:
   li a0, 1000
   mv s3, a0
   fmv.d.x fa0, zero
-  fmv.d fs0, fa0
+  fmv.d fs1, fa0
   fmv.d fa1, fa0
   fmv.d fa2, fa0
-  fmv.d fs2, fa3
+  fmv.d fs2, fs0
+  fmv.d fs0, fa3
 
 .yloop7.79l2_3_21:
   beq s3, zero, .yloop7.79l2_3_22
 
 .yloop7.79l2_3_23:
   fsub.d fa1, fa1, fa2
-  fadd.d fs3, fa1, fs1
+  fadd.d fs3, fa1, fs2
   call dbl4.77l1_0
-  fmadd.d fa3, fa0, fs0, fs2
+  fmadd.d fa3, fa0, fs1, fs0
   fmul.d fa1, fs3, fs3
   fmul.d fa2, fa3, fa3
   li a0, 4611686018427387904
@@ -175,7 +175,7 @@ yloop7.79l2_3:
   addi a0, s3, -1
   mv s3, a0
   fmv.d fa0, fs3
-  fmv.d fs0, fa3
+  fmv.d fs1, fa3
   j .yloop7.79l2_3_21
 
   .p2align 2
