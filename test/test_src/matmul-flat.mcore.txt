@@ -15,21 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl memsetf64
   .type memsetf64, @function
 memsetf64:
@@ -45,34 +30,48 @@ memsetf64:
 
   .p2align 2
   .text
-  .globl main85l3_5
-  .type main85l3_5, @function
+  .globl main85l3_4
+  .type main85l3_4, @function
 # leaf false
-main85l3_5:
-.main85l3_5_0:
-  addi sp, sp, -32
+main85l3_4:
+.main85l3_4_0:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
+  sd s3, 32(sp)
   addi s0, s11, 0
   andi s11, s0, -8
   fmv.d.x fa0, zero
+  addi s1, s11, -16
+  andi s11, s1, -8
+  sd s0, 0(s1)
+  sd s0, 8(s1)
   li a0, 2
+  addi a0, a0, -1
   li a1, 3
-  mv a2, s0
-  call make_arr103l5_4
-  mv s1, a0
+  mv a2, s1
+  call init_arr89l4_3
+  addi s2, s11, -24
+  andi s11, s2, -8
+  sd s0, 0(s2)
+  sd s0, 8(s2)
+  sd s0, 16(s2)
   li a0, 3
+  addi a0, a0, -1
   li a1, 2
-  mv a2, s0
-  call make_arr103l5_4
-  mv s2, a0
+  mv a2, s2
+  call init_arr89l4_3
+  addi s3, s11, -16
+  andi s11, s3, -8
+  sd s0, 0(s3)
+  sd s0, 8(s3)
   li a0, 2
-  mv a1, a0
-  mv a2, s0
-  call make_arr103l5_4
-  mv s0, a0
+  addi a0, a0, -1
+  li a1, 2
+  mv a2, s3
+  call init_arr89l4_3
   ld a0, 0(s1)
   li a1, 4607182418800017408
   fmv.d.x fa0, a1
@@ -127,24 +126,24 @@ main85l3_5:
   li a2, 2
   mv a3, s1
   mv a4, s2
-  mv a5, s0
+  mv a5, s3
   call loop148l2_2
-  ld a0, 0(s0)
+  ld a0, 0(s3)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 0(s0)
+  ld a0, 0(s3)
   fld fa0, 8(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 8(s0)
+  ld a0, 8(s3)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 8(s0)
+  ld a0, 8(s3)
   fld fa0, 8(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
@@ -153,53 +152,22 @@ main85l3_5:
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  addi sp, sp, 48
   ret
 
   .p2align 2
   .text
-  .globl T$start_12
-  .type T$start_12, @function
+  .globl T$start_10
+  .type T$start_10, @function
 # leaf false
-T$start_12:
-.T$start_12_0:
+T$start_10:
+.T$start_10_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main85l3_5
+  call main85l3_4
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl make_arr103l5_4
-  .type make_arr103l5_4, @function
-# leaf false
-make_arr103l5_4:
-.make_arr103l5_4_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  slliw a0, s0, 3
-  sub s2, s11, a0
-  andi s11, s2, -8
-  mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s0, -1
-  mv a1, s1
-  mv a2, s2
-  call init_arr89l4_3
-  mv a0, s2
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -216,7 +184,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_12
+  call T$start_10
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)

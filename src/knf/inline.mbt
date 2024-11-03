@@ -253,13 +253,16 @@ pub fn InlineEnv::inline(
         Some(Once) => replace()
         Some(Many(n)) =>
           match env.find(f) {
-            Some((_, body)) =>
-              if n * size(body) < 20 {
-                self.tracer.println("Inline threshold \{n} \{size(body)}")
+            Some((_, body)) => {
+              self.tracer.println("Inline threshold \{n} \{size(body)}")
+              if size(body) < 10 && n < 4 {
+                self.tracer.println("Inline decision accepted")
                 replace()
               } else {
+                self.tracer.println("Inline decision rejected")
                 knf
               }
+            }
             None => knf
           }
         _ => knf
