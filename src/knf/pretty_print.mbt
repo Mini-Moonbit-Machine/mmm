@@ -81,7 +81,7 @@ fn PrettyKnf::print_one_level(
         let (name, ty) = nt
         logger.write_string("\{name}: \{ty}")
       }
-      logger.write_string(") = \{y}")
+      logger.write_string(") = \{y}\n")
       self.print_one_level(logger, e)
     }
     LetRec(fundef, e) => {
