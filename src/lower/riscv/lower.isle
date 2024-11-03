@@ -303,28 +303,28 @@
 
 ;;; a * b + c -> fmadd.d a b c
 (rule 1 (lower (insn_op (ty_double) (op_add) 
-  (arg2 (val_insn (ref_insn 
+  (arg2 (insn_once (ref_insn 
     (insn_op (ty_double) (op_mul) 
       (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))) (has_type c (ty_double)))))
   (mr (rv_fmadd_d a b c)))
 
 ;;; a + (b * c) -> fmadd.d b c a
 (rule 2 (lower (insn_op (ty_double) (op_add) 
-  (arg2 (has_type a (ty_double)) (val_insn (ref_insn 
+  (arg2 (has_type a (ty_double)) (insn_once (ref_insn 
     (insn_op (ty_double) (op_mul) 
       (arg2 (has_type b (ty_double)) (has_type c (ty_double)))))))))
   (mr (rv_fmadd_d b c a)))
 
 ;;; a * b - c -> fmsub.d a b c
 (rule 3 (lower (insn_op (ty_double) (op_sub) 
-  (arg2 (val_insn (ref_insn 
+  (arg2 (insn_once (ref_insn 
     (insn_op (ty_double) (op_mul) 
       (arg2 (has_type a (ty_double)) (has_type b (ty_double)))))) (has_type c (ty_double)))))
   (mr (rv_fmsub_d a b c)))
 
 ;;; a - (b * c) -> fnmsub.d b c a
 (rule 4 (lower (insn_op (ty_double) (op_sub) 
-  (arg2 (has_type a (ty_double)) (val_insn (ref_insn 
+  (arg2 (has_type a (ty_double)) (insn_once (ref_insn 
     (insn_op (ty_double) (op_mul) 
       (arg2 (has_type b (ty_double)) (has_type c (ty_double)))))))))
   (mr (rv_fnmsub_d b c a)))

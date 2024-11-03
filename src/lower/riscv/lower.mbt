@@ -8,6 +8,7 @@ pub struct RiscvFnLoweringCtx {
   core : @core.Core
   func : @core.Fn
   reg_classes : Array[RegClass]
+  uses : Map[@core.InsnRef, Int]
   value_ref_count : MutMap[@core.Value, Int]
   value_regs : MutMap[@core.Value, AnyReg]
   closure_reg : AnyReg
@@ -147,6 +148,22 @@ fn RiscvFnLoweringCtx::arg1(
   let _ = self
   match args {
     [a] => Some(a)
+    _ => None
+  }
+}
+
+fn RiscvFnLoweringCtx::insn_once(
+  self : RiscvFnLoweringCtx,
+  val : @core.Value
+) -> @core.InsnRef? {
+  let _ = self
+  match val {
+    @core.Value::Insn(~iref) =>
+      if self.uses[iref].or(0) == 1 {
+        Some(iref)
+      } else {
+        None
+      }
     _ => None
   }
 }
@@ -662,9 +679,15 @@ fn RiscvFnLoweringCtx::lower_address(
       }
       ma
     }
-    Raw(~val, ..) => {
+    Raw(~val, ~raw_offset, ..) => {
       let base = @generated.constructor_lower_value(self, val) |> xreg
-      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = { base, offset: 0 }
+      let raw_offset = @generated.constructor_lower_value(self, raw_offset)
+        |> xreg
+      let addr = @generated.constructor_rv_add(self, base, raw_offset)
+      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
+        base: addr,
+        offset: 0,
+      }
       ma
     }
   }
@@ -2010,10 +2033,12 @@ pub fn RiscvFnLoweringCtx::new(
   let closure_reg = @riscv.any_xreg(0)
   let alloc_reg = @riscv.reg_alloc.to_any() // s11 is reserved for the allocator
   let order = @lower.LoweringOrder::new(func, tracer)
+  let uses = @core_analysis.InsnUseAnalysis::new(func, tracer).go()
   let lower_ctx = RiscvFnLoweringCtx::{
     core,
     func,
     reg_classes,
+    uses,
     value_ref_count,
     value_regs,
     closure_reg,

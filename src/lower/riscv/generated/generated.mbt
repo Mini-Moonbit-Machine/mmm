@@ -15,6 +15,7 @@ pub trait Context {
   ref_mem(Self, @core.MemRef) -> @core.Mem
   ref_free_v(Self, @core.FnFreeVarRef) -> UInt
   ref_symbol(Self, @core.SymbolRef) -> @core.Symbol
+  insn_once(Self, @core.Value) -> @core.InsnRef?
   i64_sext_u64(Self, @core.Type, UInt64) -> Int64
   i32_as_u64(Self, Int) -> UInt64
   i64_as_u64(Self, Int64) -> UInt64
@@ -88,7 +89,7 @@ fn Returns::length[T, C : Context](self : Returns[T, C]) -> Int {
 
 let _MAX_ISLE_RETURNS = 64
 
-/// Internal type Args: defined at src/core/core.isle line 336.
+/// Internal type Args: defined at src/core/core.isle line 339.
 pub enum Args {
   Args2(~arg1 : @core.Value, ~arg2 : @core.Value)
   Args1(~arg1 : @core.Value)
@@ -169,25 +170,25 @@ pub fn constructor_ty_array[C : Context](
 
 // Generated as internal constructor for term round_rne.
 pub fn constructor_round_rne[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 147.
+  // Rule at src/core/core.isle line 150.
   return @core.RoundMode::Rne
 }
 
 // Generated as internal constructor for term round_rtz.
 pub fn constructor_round_rtz[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 151.
+  // Rule at src/core/core.isle line 154.
   return @core.RoundMode::Rtz
 }
 
 // Generated as internal constructor for term round_rdn.
 pub fn constructor_round_rdn[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 155.
+  // Rule at src/core/core.isle line 158.
   return @core.RoundMode::Rdn
 }
 
 // Generated as internal constructor for term round_rup.
 pub fn constructor_round_rup[C : Context](ctx : C) -> @core.RoundMode {
-  // Rule at src/core/core.isle line 159.
+  // Rule at src/core/core.isle line 162.
   return @core.RoundMode::Rup
 }
 
@@ -198,20 +199,20 @@ pub fn constructor_arg2[C : Context](
   arg1 : @core.Value
 ) -> Args {
   let v2 = Args::Args2(arg1=arg0, arg2=arg1)
-  // Rule at src/core/core.isle line 343.
+  // Rule at src/core/core.isle line 346.
   return v2
 }
 
 // Generated as internal constructor for term arg1.
 pub fn constructor_arg1[C : Context](ctx : C, arg0 : @core.Value) -> Args {
   let v1 = Args::Args1(arg1=arg0)
-  // Rule at src/core/core.isle line 347.
+  // Rule at src/core/core.isle line 350.
   return v1
 }
 
 // Generated as internal constructor for term arg0.
 pub fn constructor_arg0[C : Context](ctx : C) -> Args {
-  // Rule at src/core/core.isle line 351.
+  // Rule at src/core/core.isle line 354.
   return Args::Args0
 }
 
