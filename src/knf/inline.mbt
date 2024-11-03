@@ -249,23 +249,27 @@ pub fn InlineEnv::inline(
         }
       }
 
-      match freq.get(f) {
-        Some(Once) => replace()
-        Some(Many(n)) =>
-          match env.find(f) {
-            Some((_, body)) => {
-              self.tracer.println("Inline threshold \{n} \{size(body)}")
-              if size(body) < 10 && n < 4 {
-                self.tracer.println("Inline decision accepted")
-                replace()
-              } else {
-                self.tracer.println("Inline decision rejected")
-                knf
+      if f.name.to_string().contains("main") {
+        knf
+      } else {
+        match freq.get(f) {
+          Some(Once) => replace()
+          Some(Many(n)) =>
+            match env.find(f) {
+              Some((_, body)) => {
+                self.tracer.println("Inline threshold \{n} \{size(body)}")
+                if size(body) < 5 && n < 5 {
+                  self.tracer.println("Inline decision accepted")
+                  replace()
+                } else {
+                  self.tracer.println("Inline decision rejected")
+                  knf
+                }
               }
+              None => knf
             }
-            None => knf
-          }
-        _ => knf
+          _ => knf
+        }
       }
     }
     _ => knf

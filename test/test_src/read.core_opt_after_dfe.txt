@@ -19,6 +19,14 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn f2l1_0 #f0 : fn() -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 () {
     let %0: int32 = ext_call minimbt_read_int()
     let %1: bool = eq(%0, -2147483648)
     br %1 b1() b2()
@@ -29,55 +37,18 @@
   }
   .bb #b2 () {
     let %3: unit = ext_call minimbt_print_int(%0)
-    let %4: unit = call f0()
-    jump b3(%4)
+    jump b0()
   }
   .bb #b3 (unit) {
     return $b3.0
   }
-}
-.fn f2l1_0 #f0 : fn() -> unit
-.freevars ()
-.entry b8 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let %1: bool = eq(%0, -2147483648)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    let %2: unit = ext_call minimbt_print_int(%0)
-    jump b6(%2)
-  }
-  .bb #b2 () {
-    let %3: unit = ext_call minimbt_print_int(%0)
-    let %4: int32 = ext_call minimbt_read_int()
-    let %5: bool = eq(%4, -2147483648)
-    br %5 b3() b4()
-  }
-  .bb #b3 () {
-    let %6: unit = ext_call minimbt_print_int(%4)
-    jump b5(%6)
-  }
-  .bb #b4 () {
-    let %7: unit = ext_call minimbt_print_int(%4)
-    jump b0()
-  }
-  .bb #b5 (unit) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (unit) {
-    return $b6.0
-  }
-  .loop #b7 header #b0 {
-    .block #b6
-    .block #b4
+  .loop #b4 header #b0 {
     .block #b1
-    .block #b5
     .block #b2
     .block #b3
   }
-  .bb #b8 () {
-    jump b7()
+  .bb #b5 () {
+    jump b4()
   }
 }
 .thunk ::0 start
