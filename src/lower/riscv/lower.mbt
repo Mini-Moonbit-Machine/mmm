@@ -796,6 +796,9 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
   init_reg : AnyReg
 ) -> Unit {
   self.is_leaf = false
+  if false {
+    return
+  }
   match fill {
     Init(..) =>
       match (elem_sz, init_rc) {

@@ -92,7 +92,14 @@ pub fn Numbering::go(self : Numbering) -> Unit {
         self.tracer.println("LVN subst \{orig} with \{subst}")
         bb.seq.remove(i) |> ignore
         self.func.insns.remove(iref)
-        orig.replace_all_uses_with(self.func, bb, subst)
+        for block in self.func.blocks {
+          let (_, block) = block
+          orig.replace_all_uses_with(
+            self.func,
+            block.bb_or_header_bb(self.func),
+            subst,
+          )
+        }
       }
       None => changed = false
     }

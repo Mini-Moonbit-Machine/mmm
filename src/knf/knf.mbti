@@ -1,16 +1,27 @@
 package moonbitlang/minimbt/knf
 
-alias @moonbitlang/core/hashset as @hashset
 alias @moonbitlang/core/immut/hashmap as @hashmap
 alias @moonbitlang/minimbt as @minimbt
 alias @moonbitlang/minimbt/util as @util
 
 // Values
-fn knf_fdef_free_vars(FuncDef) -> @hashset.T[@minimbt.Name]
+fn has_self_rec(Knf, @minimbt.Name) -> Bool
 
-fn knf_free_vars(Knf) -> @hashset.T[@minimbt.Name]
+fn hoist_inv_from_def(FuncDef, @util.SubTracer) -> (FuncDef, Array[Binding])
+
+fn is_loop(FuncDef) -> Bool
+
+fn knf_fdef_free_vars(FuncDef) -> @moonbitlang/core/hashset.T[@minimbt.Name]
+
+fn knf_free_vars(Knf) -> @moonbitlang/core/hashset.T[@minimbt.Name]
 
 fn knf_max_counter(Knf) -> Int
+
+fn loop_inv(Knf, @moonbitlang/core/immut/hashset.T[@minimbt.Name]) -> Bool
+
+fn loop_inv_args(Knf, @minimbt.Name, Array[@minimbt.Name]) -> @moonbitlang/core/hashset.T[@minimbt.Name]
+
+fn tail_rec_or_trivial(Knf, @minimbt.Name) -> Bool
 
 // Types and methods
 type Binding
@@ -27,13 +38,13 @@ impl CallFreq {
 }
 
 pub struct FreeSetClosure {
-  pub ctx : Map[@minimbt.Name, @hashset.T[@minimbt.Name]]
+  pub ctx : Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]]
   pub changed : Bool
 }
 impl FreeSetClosure {
-  compute(Self, Knf) -> (@hashset.T[@minimbt.Name], Map[@minimbt.Name, @hashset.T[@minimbt.Name]])
-  knf_fdef_free_vars_closure(Self, FuncDef) -> @hashset.T[@minimbt.Name]
-  knf_free_vars_closure(Self, Knf) -> @hashset.T[@minimbt.Name]
+  compute(Self, Knf) -> (@moonbitlang/core/hashset.T[@minimbt.Name], Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]])
+  knf_fdef_free_vars_closure(Self, FuncDef) -> @moonbitlang/core/hashset.T[@minimbt.Name]
+  knf_free_vars_closure(Self, Knf) -> @moonbitlang/core/hashset.T[@minimbt.Name]
   new() -> Self
 }
 
@@ -105,12 +116,21 @@ impl KnfEnv {
   to_knf(Self, @minimbt.Syntax) -> Knf!Failure
 }
 
+pub struct LICM {
+  pub tracer : @util.SubTracer
+  pub knf : Knf
+}
+impl LICM {
+  go(Self) -> Knf
+  new(@util.SubTracer, Knf) -> Self
+}
+
 pub struct LambdaLiftEnv {
   pub name_ctx : @hashmap.T[@minimbt.Name, (@minimbt.Name, Array[@minimbt.Name], Array[@minimbt.Name], @minimbt.Type)]
   pub type_ctx : @hashmap.T[@minimbt.Name, @minimbt.Type]
-  pub free_set_closure : Map[@minimbt.Name, @hashset.T[@minimbt.Name]]
+  pub free_set_closure : Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]]
   pub top_bindings : Array[Binding]
-  pub top_names : @hashset.T[@minimbt.Name]
+  pub top_names : @moonbitlang/core/hashset.T[@minimbt.Name]
   pub lifted_counter : UInt
   pub closure_counter : UInt
   pub tracer : @util.SubTracer

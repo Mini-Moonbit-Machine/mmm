@@ -41,7 +41,11 @@ fn assoc(knf : Knf) -> Knf {
 
       insert(assoc(e1))
     }
-    LetRec(fundef, e) => LetRec(fundef, assoc(e))
+    LetRec(fundef, e) => {
+      let { name, ty, args, body } = fundef
+      let fundef = { name, ty, args, body: assoc(body) }
+      LetRec(fundef, assoc(e))
+    }
     LetTuple(xts, y, e) => LetTuple(xts, y, assoc(e))
     _ => knf
   }

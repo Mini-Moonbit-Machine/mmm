@@ -119,6 +119,10 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.2, 1)
+    let %37: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %2: array[double] = load array[double] raw($b0.5, %37)
+    let %36: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %4: array[double] = load array[double] raw($b0.3, %36)
     jump b12()
   }
   .bb #b2 () {
@@ -136,15 +140,15 @@
     jump b4($f0, $f1, $f2, $f3, $f4, $f5)
   }
   .bb #b6 (unit) {
-    let %3: int32 = sub($b0.0, 1)
-    jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    let %6: int32 = sub($b0.0, 1)
+    jump b0(%6, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
-  .bb #b7 (int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) {
-    let %4: bool = le(0, $b7.2)
-    br %4 b8() b9()
+  .bb #b7 (int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) {
+    let %7: bool = le(0, $b7.2)
+    br %7 b8() b9()
   }
   .bb #b8 () {
-    let %5: int32 = sub($b7.1, 1)
+    let %8: int32 = sub($b7.1, 1)
     jump b19()
   }
   .bb #b9 () {
@@ -159,35 +163,31 @@
     .block #b10
   }
   .bb #b12 () {
-    jump b11($b0.0, $b0.1, %1, $b0.3, $b0.4, $b0.5)
+    jump b11($b0.0, $b0.1, %1, $b0.3, $b0.4, $b0.5, %2, %2, %4)
   }
   .bb #b13 (unit) {
-    let %7: int32 = sub($b7.2, 1)
-    jump b7($b7.0, $b7.1, %7, $b7.3, $b7.4, $b7.5)
+    let %10: int32 = sub($b7.2, 1)
+    jump b7($b7.0, $b7.1, %10, $b7.3, $b7.4, $b7.5, $b7.6, $b7.7, $b7.8)
   }
-  .bb #b14 (int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) {
-    let %8: bool = le(0, $b14.2)
-    br %8 b15() b16()
+  .bb #b14 (int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) {
+    let %11: bool = le(0, $b14.2)
+    br %11 b15() b16()
   }
   .bb #b15 () {
-    let %47: ptr = compute_address unit offset(0, $b14.0 * @64)
-    let %9: array[double] = load array[double] raw($b14.5, %47)
-    let %46: ptr = compute_address unit offset(0, $b14.1 * @64)
-    let %11: double = load double raw(%9, %46)
-    let %44: ptr = compute_address unit offset(0, $b14.0 * @64)
-    let %12: array[double] = load array[double] raw($b14.3, %44)
-    let %41: ptr = compute_address unit offset(0, $b14.2 * @64)
-    let %13: double = load double raw(%12, %41)
-    let %37: ptr = compute_address unit offset(0, $b14.2 * @64)
-    let %14: array[double] = load array[double] raw($b14.4, %37)
-    let %32: ptr = compute_address unit offset(0, $b14.1 * @64)
-    let %15: double = load double raw(%14, %32)
+    let %34: ptr = compute_address unit offset(0, $b14.1 * @64)
+    let %12: double = load double raw($b14.7, %34)
+    let %33: ptr = compute_address unit offset(0, $b14.2 * @64)
+    let %13: double = load double raw($b14.8, %33)
+    let %31: ptr = compute_address unit offset(0, $b14.2 * @64)
+    let %14: array[double] = load array[double] raw($b14.4, %31)
+    let %28: ptr = compute_address unit offset(0, $b14.1 * @64)
+    let %15: double = load double raw(%14, %28)
     let %16: double = mul(%13, %15)
-    let %17: double = add(%11, %16)
-    let %26: ptr = compute_address unit offset(0, $b14.1 * @64)
-    let _ = store double raw(%9, %26) <- %17
+    let %17: double = add(%12, %16)
+    let %24: ptr = compute_address unit offset(0, $b14.1 * @64)
+    let _ = store double raw($b14.6, %24) <- %17
     let %19: int32 = sub($b14.2, 1)
-    jump b14($b14.0, $b14.1, %19, $b14.3, $b14.4, $b14.5)
+    jump b14($b14.0, $b14.1, %19, $b14.3, $b14.4, $b14.5, $b14.6, $b14.7, $b14.8)
   }
   .bb #b16 () {
     jump b17(())
@@ -201,7 +201,7 @@
     .block #b17
   }
   .bb #b19 () {
-    jump b18($b7.0, $b7.2, %5, $b7.3, $b7.4, $b7.5)
+    jump b18($b7.0, $b7.2, %8, $b7.3, $b7.4, $b7.5, $b7.6, $b7.7, $b7.8)
   }
 }
 .thunk ::0 start

@@ -64,7 +64,7 @@ T$start_12:
 # leaf false
 loop114.197l2_4:
 .loop114.197l2_4_5:
-  addi sp, sp, -64
+  addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -73,6 +73,9 @@ loop114.197l2_4:
   sd s4, 40(sp)
   sd s5, 48(sp)
   sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
   mv s3, a0
   mv s5, a1
   mv s1, a2
@@ -84,10 +87,18 @@ loop114.197l2_4:
   blt s3, zero, .loop114.197l2_4_2
 
 .loop114.197l2_4_1:
-  addi a0, s1, -1
+  addi a2, s1, -1
+  slliw a0, s3, 3
+  add a1, s2, a0
+  ld a1, 0(a1)
+  add a0, s0, a0
+  ld a0, 0(a0)
 
 .loop114.197l2_4_12:
-  mv s6, a0
+  mv s6, a2
+  mv s7, a1
+  mv s8, a1
+  mv s9, a0
 
 .loop114.197l2_4_7:
   blt s6, zero, .loop114.197l2_4_9
@@ -99,6 +110,9 @@ loop114.197l2_4:
   mv a3, s2
   mv a4, s3
   mv a5, s6
+  mv a6, s7
+  mv a7, s8
+  mv t0, s9
   call loop322.203l4_2
 
 .loop114.197l2_4_13:
@@ -118,7 +132,10 @@ loop114.197l2_4:
   ld s4, 40(sp)
   ld s5, 48(sp)
   ld s6, 56(sp)
-  addi sp, sp, 64
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  addi sp, sp, 96
   ret
 
 .loop114.197l2_4_9:
@@ -335,24 +352,19 @@ loop322.203l4_2:
   blt a0, zero, .loop322.203l4_2_2
 
 .loop322.203l4_2_1:
-  slliw a6, a4, 3
-  add a7, a3, a6
-  ld a7, 0(a7)
-  slliw t0, a5, 3
-  add t1, a7, t0
-  fld fa0, 0(t1)
-  add a6, a1, a6
-  ld a6, 0(a6)
-  slliw t1, a0, 3
-  add a6, a6, t1
-  fld fa1, 0(a6)
-  add a6, a2, t1
-  ld a6, 0(a6)
-  add a6, a6, t0
-  fld fa2, 0(a6)
+  slliw t1, a5, 3
+  add t2, a7, t1
+  fld fa0, 0(t2)
+  slliw t2, a0, 3
+  add t3, t0, t2
+  fld fa1, 0(t3)
+  add t2, a2, t2
+  ld t2, 0(t2)
+  add t2, t2, t1
+  fld fa2, 0(t2)
   fmadd.d fa0, fa1, fa2, fa0
-  add a6, a7, t0
-  fsd fa0, 0(a6)
+  add t1, a6, t1
+  fsd fa0, 0(t1)
   addi a0, a0, -1
   j .loop322.203l4_2_0
 

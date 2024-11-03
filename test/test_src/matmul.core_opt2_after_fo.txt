@@ -24,6 +24,10 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.2, 1)
+    let %13: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %2: array[double] = load array[double] raw($b0.5, %13)
+    let %12: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %4: array[double] = load array[double] raw($b0.3, %12)
     jump b12()
   }
   .bb #b2 () {
@@ -41,17 +45,17 @@
     jump b4($f0, $f1, $f2, $f3, $f4, $f5)
   }
   .bb #b6 (unit) {
-    let %3: int32 = sub($b0.0, 1)
-    jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    let %6: int32 = sub($b0.0, 1)
+    jump b0(%6, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
-  .bb #b7 (int32, int32, array[array[double]], array[array[double]], array[array[double]], int32) {
-    let %4: bool = le(0, $b7.0)
-    br %4 b8() b9()
+  .bb #b7 (int32, int32, array[array[double]], array[array[double]], array[array[double]], int32, array[double], array[double], array[double]) {
+    let %7: bool = le(0, $b7.0)
+    br %7 b8() b9()
   }
   .bb #b8 () {
-    let %5: int32 = sub($b7.1, 1)
-    let %6: unit = call f2(%5, $b7.2, $b7.3, $b7.4, $b7.5, $b7.0)
-    jump b13(%6)
+    let %8: int32 = sub($b7.1, 1)
+    let %9: unit = call f2(%8, $b7.2, $b7.3, $b7.4, $b7.5, $b7.0, $b7.6, $b7.7, $b7.8)
+    jump b13(%9)
   }
   .bb #b9 () {
     jump b10(())
@@ -65,11 +69,11 @@
     .block #b10
   }
   .bb #b12 () {
-    jump b11(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0)
+    jump b11(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0, %2, %2, %4)
   }
   .bb #b13 (unit) {
-    let %7: int32 = sub($b7.0, 1)
-    jump b7(%7, $b7.1, $b7.2, $b7.3, $b7.4, $b7.5)
+    let %10: int32 = sub($b7.0, 1)
+    jump b7(%10, $b7.1, $b7.2, $b7.3, $b7.4, $b7.5, $b7.6, $b7.7, $b7.8)
   }
 }
 .fn main53l0_5 #f5 : fn() -> unit
@@ -167,32 +171,28 @@
     return f1.m0
   }
 }
-.fn loop322.203l4_2 #f2 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) -> unit
+.fn loop322.203l4_2 #f2 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+  .bb #b0 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) {
     let %0: bool = le(0, $b0.0)
     br %0 b1() b2()
   }
   .bb #b1 () {
-    let %39: ptr = compute_address unit offset(0, $b0.4 * @64)
-    let %1: array[double] = load array[double] raw($b0.3, %39)
-    let %38: ptr = compute_address unit offset(0, $b0.5 * @64)
-    let %3: double = load double raw(%1, %38)
-    let %36: ptr = compute_address unit offset(0, $b0.4 * @64)
-    let %4: array[double] = load array[double] raw($b0.1, %36)
-    let %33: ptr = compute_address unit offset(0, $b0.0 * @64)
-    let %5: double = load double raw(%4, %33)
-    let %29: ptr = compute_address unit offset(0, $b0.0 * @64)
-    let %6: array[double] = load array[double] raw($b0.2, %29)
-    let %24: ptr = compute_address unit offset(0, $b0.5 * @64)
-    let %7: double = load double raw(%6, %24)
-    let %8: double = mul(%5, %7)
-    let %9: double = add(%3, %8)
-    let %18: ptr = compute_address unit offset(0, $b0.5 * @64)
-    let _ = store double raw(%1, %18) <- %9
-    let %11: int32 = sub($b0.0, 1)
-    jump b0(%11, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    let %23: ptr = compute_address unit offset(0, $b0.5 * @64)
+    let %1: double = load double raw($b0.7, %23)
+    let %22: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %2: double = load double raw($b0.8, %22)
+    let %20: ptr = compute_address unit offset(0, $b0.0 * @64)
+    let %3: array[double] = load array[double] raw($b0.2, %20)
+    let %17: ptr = compute_address unit offset(0, $b0.5 * @64)
+    let %4: double = load double raw(%3, %17)
+    let %5: double = mul(%2, %4)
+    let %6: double = add(%1, %5)
+    let %13: ptr = compute_address unit offset(0, $b0.5 * @64)
+    let _ = store double raw($b0.6, %13) <- %6
+    let %8: int32 = sub($b0.0, 1)
+    jump b0(%8, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5, $b0.6, $b0.7, $b0.8)
   }
   .bb #b2 () {
     jump b3(())
@@ -206,7 +206,7 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
   }
 }
 .thunk ::0 start

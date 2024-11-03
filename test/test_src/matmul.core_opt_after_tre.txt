@@ -24,9 +24,12 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.2, 1)
-    let %2: unit = call f3(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0)
-    let %3: int32 = sub($b0.0, 1)
-    jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    let %2: array[double] = load array[double] offset($b0.5, $b0.0 * @ptr)
+    let %3: array[double] = load array[double] offset($b0.5, $b0.0 * @ptr)
+    let %4: array[double] = load array[double] offset($b0.3, $b0.0 * @ptr)
+    let %5: unit = call f3(%1, $b0.1, $b0.3, $b0.4, $b0.5, $b0.0, %2, %3, %4)
+    let %6: int32 = sub($b0.0, 1)
+    jump b0(%6, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
   .bb #b2 () {
     jump b3(())
@@ -137,26 +140,23 @@
     return f1.m0
   }
 }
-.fn loop322.203l4_2 #f2 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) -> unit
+.fn loop322.203l4_2 #f2 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) {
+  .bb #b0 (int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) {
     let %0: bool = le(0, $b0.0)
     br %0 b1() b2()
   }
   .bb #b1 () {
-    let %1: array[double] = load array[double] offset($b0.3, $b0.4 * @ptr)
-    let %2: array[double] = load array[double] offset($b0.3, $b0.4 * @ptr)
-    let %3: double = load double offset(%2, $b0.5 * @64)
-    let %4: array[double] = load array[double] offset($b0.1, $b0.4 * @ptr)
-    let %5: double = load double offset(%4, $b0.0 * @64)
-    let %6: array[double] = load array[double] offset($b0.2, $b0.0 * @ptr)
-    let %7: double = load double offset(%6, $b0.5 * @64)
-    let %8: double = mul(%5, %7)
-    let %9: double = add(%3, %8)
-    let _ = store double offset(%1, $b0.5 * @64) <- %9
-    let %11: int32 = sub($b0.0, 1)
-    jump b0(%11, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    let %1: double = load double offset($b0.7, $b0.5 * @64)
+    let %2: double = load double offset($b0.8, $b0.0 * @64)
+    let %3: array[double] = load array[double] offset($b0.2, $b0.0 * @ptr)
+    let %4: double = load double offset(%3, $b0.5 * @64)
+    let %5: double = mul(%2, %4)
+    let %6: double = add(%1, %5)
+    let _ = store double offset($b0.6, $b0.5 * @64) <- %6
+    let %8: int32 = sub($b0.0, 1)
+    jump b0(%8, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5, $b0.6, $b0.7, $b0.8)
   }
   .bb #b2 () {
     jump b3(())
@@ -170,21 +170,21 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
   }
 }
-.fn loop218.200l3_3 #f3 : fn(int32, int32, array[array[double]], array[array[double]], array[array[double]], int32) -> unit
+.fn loop218.200l3_3 #f3 : fn(int32, int32, array[array[double]], array[array[double]], array[array[double]], int32, array[double], array[double], array[double]) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, int32, array[array[double]], array[array[double]], array[array[double]], int32) {
+  .bb #b0 (int32, int32, array[array[double]], array[array[double]], array[array[double]], int32, array[double], array[double], array[double]) {
     let %0: bool = le(0, $b0.0)
     br %0 b1() b2()
   }
   .bb #b1 () {
     let %1: int32 = sub($b0.1, 1)
-    let %2: unit = call f2(%1, $b0.2, $b0.3, $b0.4, $b0.5, $b0.0)
+    let %2: unit = call f2(%1, $b0.2, $b0.3, $b0.4, $b0.5, $b0.0, $b0.6, $b0.7, $b0.8)
     let %3: int32 = sub($b0.0, 1)
-    jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+    jump b0(%3, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5, $b0.6, $b0.7, $b0.8)
   }
   .bb #b2 () {
     jump b3(())
@@ -198,7 +198,7 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
   }
 }
 .thunk ::0 start

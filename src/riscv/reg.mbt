@@ -224,7 +224,7 @@ pub let reg_saved_list : Array[Reg] = [
   S11, // S11 is used for allocation
 ]
 
-pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7]
+pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7, T0, T1]
 
 pub let reg_caller_saved_list : Array[Reg] = reg_temp_list + reg_arg_list
 

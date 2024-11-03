@@ -217,7 +217,7 @@ let raw_memset0e8 =
   #|  slli a1, a1, 3
   #|  add a1, a1, a0
   #|.memset0e8_b0:
-  #|  fsd zero, 0(a0)
+  #|  sd zero, 0(a0)
   #|  addi a0, a0, 8
   #|  bne a0, a1, .memset0e8_b0
   #|.memset0e8_b1:
