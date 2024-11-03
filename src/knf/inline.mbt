@@ -312,11 +312,9 @@ pub fn InlineEnv::inline(
           Some(Once) => replace()
           Some(Many(n)) =>
             match env.find(f) {
-              Some({ body, .. } as fundef) => {
+              Some({ body, .. }) => {
                 self.tracer.println("Inline threshold \{n} \{size(body)}")
-                if size(body) * n < 100 &&
-                  in_loop != Some(f) &&
-                  is_loop(fundef) == false {
+                if size(body) * n < 100 {
                   self.tracer.println("Inline decision accepted")
                   replace()
                 } else {
@@ -461,8 +459,6 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   call_freq(knf, Env::new(), freq)
   let knf = self.dfe(freq, Env::new(), knf)
   self.tracer.record("knf_after_inline_\{n}", knf.to_pretty_print())
-  let knf = beta_reduce(Env::new(), knf)
-  let knf = assoc(knf)
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
   let knf = beta_reduce(Env::new(), knf)

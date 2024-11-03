@@ -19,7 +19,7 @@ __begin_text:
   .type sum1l0_0, @function
 # leaf true
 sum1l0_0:
-.sum1l0_0_5:
+.sum1l0_0_8:
 
 .sum1l0_0_0:
   bge zero, a1, .sum1l0_0_1
@@ -27,12 +27,22 @@ sum1l0_0:
 .sum1l0_0_2:
   add a0, a0, a1
   addi a1, a1, -1
+  bge zero, a1, .sum1l0_0_3
+
+.sum1l0_0_4:
+  add a0, a0, a1
+  addi a1, a1, -1
   j .sum1l0_0_0
 
 .sum1l0_0_1:
 
-.sum1l0_0_3:
+.sum1l0_0_6:
   ret
+
+.sum1l0_0_3:
+
+.sum1l0_0_5:
+  j .sum1l0_0_6
 
   .p2align 2
   .text
@@ -43,13 +53,25 @@ main10l1_1:
 .main10l1_1_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a0, zero
+  li a0, 10000
+  bge zero, a0, .main10l1_1_1
+
+.main10l1_1_2:
+  li a0, 10000
+  addi a0, a0, 0
   li a1, 10000
+  addi a1, a1, -1
   call sum1l0_0
+
+.main10l1_1_3:
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+.main10l1_1_1:
+  mv a0, zero
+  j .main10l1_1_3
 
   .p2align 2
   .text

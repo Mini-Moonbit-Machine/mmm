@@ -22,7 +22,26 @@ let rec calc_pixel7l0: Int = (zr8.9: Double, zi10.11: Double, it12.13: Int, c_im
       let new_zr.22: Double = FAdd(_21, c_re.5)
       let _23: Int = Int(1)
       let _24: Int = Add(it12.13, _23)
-      Apply(calc_pixel7l0, [new_zr.22, new_zi.20, _24, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      let zr2.109: Double = FMul(new_zr.22, new_zr.22)
+      let zi2.110: Double = FMul(new_zi.20, new_zi.20)
+      if (_24 == iter.3) then {
+        Var(iter.3)
+      } else {
+        let _111: Double = FAdd(zr2.109, zi2.110)
+        if (limit_sq.2 <= _111) then {
+          Var(_24)
+        } else {
+          let _112: Double = Double(2)
+          let _113: Double = FMul(_112, new_zr.22)
+          let _114: Double = FMul(_113, new_zi.20)
+          let new_zi.115: Double = FAdd(_114, c_im.6)
+          let _116: Double = FSub(zr2.109, zi2.110)
+          let new_zr.117: Double = FAdd(_116, c_re.5)
+          let _118: Int = Int(1)
+          let _119: Int = Add(_24, _118)
+          Apply(calc_pixel7l0, [new_zr.117, new_zi.115, _119, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+        }
+      }
     }
   }
 }
@@ -52,15 +71,34 @@ let rec main_loop30l1: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: In
       let _57: Double = Double(1.5)
       let ci.58: Double = FSub(_56, _57)
       let _59: Int = Int(0)
-      let res.60: Int = Apply(calc_pixel7l0, [cr.51, ci.58, _59, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      let zr2.120: Double = FMul(cr.51, cr.51)
+      let zi2.121: Double = FMul(ci.58, ci.58)
+      let res.60: Int = if (_59 == iter.3) then {
+        Var(iter.3)
+      } else {
+        let _122: Double = FAdd(zr2.120, zi2.121)
+        if (limit_sq.2 <= _122) then {
+          Var(_59)
+        } else {
+          let _123: Double = Double(2)
+          let _124: Double = FMul(_123, cr.51)
+          let _125: Double = FMul(_124, ci.58)
+          let new_zi.126: Double = FAdd(_125, c_im.6)
+          let _127: Double = FSub(zr2.120, zi2.121)
+          let new_zr.128: Double = FAdd(_127, c_re.5)
+          let _129: Int = Int(1)
+          let _130: Int = Add(_59, _129)
+          Apply(calc_pixel7l0, [new_zr.128, new_zi.126, _130, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+        }
+      }
       let _61: Int = Mul(y37.38, w31.32)
       let _62: Int = Add(_61, x35.36)
-      let _109: Int = Int(0)
-      let _63: Int = if (res.60 <= _109) then {
+      let _131: Int = Int(0)
+      let _63: Int = if (res.60 <= _131) then {
         Int(0)
       } else {
-        let _110: Int = Int(48)
-        if (_110 <= res.60) then {
+        let _132: Int = Int(48)
+        if (_132 <= res.60) then {
           Int(48)
         } else {
           Var(res.60)
@@ -83,7 +121,28 @@ let rec print_loop68l2: Unit = (w69.70: Int, h71.72: Int, x73.74: Int, y75.76: I
       let _82: Int = Int(0)
       let _83: Int = Int(1)
       let _84: Int = Add(y75.76, _83)
-      Apply(print_loop68l2, [w69.70, h71.72, _82, _84, ret77.78, ])
+      if (_84 == h71.72) then {
+        Unit
+      } else {
+        if (_82 == w69.70) then {
+          let _133: Int = Int(10)
+          let _134: Unit = ExtApply(minimbt_print_char, [_133, ])
+          let _135: Int = Int(0)
+          let _136: Int = Int(1)
+          let _137: Int = Add(_84, _136)
+          Apply(print_loop68l2, [w69.70, h71.72, _135, _137, ret77.78, ])
+        } else {
+          let _138: Int = Int(48)
+          let _139: Int = Mul(_84, w69.70)
+          let _140: Int = Add(_139, _82)
+          let _141: Int = Get ret77.78[_140]
+          let _142: Int = Add(_138, _141)
+          let _143: Unit = ExtApply(minimbt_print_char, [_142, ])
+          let _144: Int = Int(1)
+          let _145: Int = Add(_82, _144)
+          Apply(print_loop68l2, [w69.70, h71.72, _145, _84, ret77.78, ])
+        }
+      }
     } else {
       let _85: Int = Int(48)
       let _86: Int = Mul(y75.76, w69.70)
@@ -93,7 +152,28 @@ let rec print_loop68l2: Unit = (w69.70: Int, h71.72: Int, x73.74: Int, y75.76: I
       let _91: Unit = ExtApply(minimbt_print_char, [_89, ])
       let _92: Int = Int(1)
       let _93: Int = Add(x73.74, _92)
-      Apply(print_loop68l2, [w69.70, h71.72, _93, y75.76, ret77.78, ])
+      if (y75.76 == h71.72) then {
+        Unit
+      } else {
+        if (_93 == w69.70) then {
+          let _146: Int = Int(10)
+          let _147: Unit = ExtApply(minimbt_print_char, [_146, ])
+          let _148: Int = Int(0)
+          let _149: Int = Int(1)
+          let _150: Int = Add(y75.76, _149)
+          Apply(print_loop68l2, [w69.70, h71.72, _148, _150, ret77.78, ])
+        } else {
+          let _151: Int = Int(48)
+          let _152: Int = Mul(y75.76, w69.70)
+          let _153: Int = Add(_152, _93)
+          let _154: Int = Get ret77.78[_153]
+          let _155: Int = Add(_151, _154)
+          let _156: Unit = ExtApply(minimbt_print_char, [_155, ])
+          let _157: Int = Int(1)
+          let _158: Int = Add(_93, _157)
+          Apply(print_loop68l2, [w69.70, h71.72, _158, y75.76, ret77.78, ])
+        }
+      }
     }
   }
 }
@@ -109,7 +189,28 @@ let rec main94l3: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, iter
   let _104: Unit = Apply(main_loop30l1, [w.97, h.95, _101, _102, ret.100, c_im.6, c_re.5, iter.3, limit_sq.2, ])
   let _105: Int = Int(0)
   let _106: Int = Int(0)
-  let _108: Unit = Apply(print_loop68l2, [w.97, h.95, _105, _106, ret.100, ])
+  let _108: Unit = if (_106 == h.95) then {
+    Unit
+  } else {
+    if (_105 == w.97) then {
+      let _159: Int = Int(10)
+      let _160: Unit = ExtApply(minimbt_print_char, [_159, ])
+      let _161: Int = Int(0)
+      let _162: Int = Int(1)
+      let _163: Int = Add(_106, _162)
+      Apply(print_loop68l2, [w.97, h.95, _161, _163, ret.100, ])
+    } else {
+      let _164: Int = Int(48)
+      let _165: Int = Mul(_106, w.97)
+      let _166: Int = Add(_165, _105)
+      let _167: Int = Get ret.100[_166]
+      let _168: Int = Add(_164, _167)
+      let _169: Unit = ExtApply(minimbt_print_char, [_168, ])
+      let _170: Int = Int(1)
+      let _171: Int = Add(_105, _170)
+      Apply(print_loop68l2, [w.97, h.95, _171, _106, ret.100, ])
+    }
+  }
   Unit
 }
 Apply(main94l3, [c_im.6, c_re.5, iter.3, limit_sq.2, ])
