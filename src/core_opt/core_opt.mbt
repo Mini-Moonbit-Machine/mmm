@@ -38,6 +38,7 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   self.tracer.record("core_opt_after_lvn", core.to_pretty_print())
 }
 
+// WARNING: CoreOpt2 assumes that it targets to riscv64.
 pub struct CoreOpt2 {
   core : @core.Core
   tracer : @util.SubTracer
@@ -52,4 +53,7 @@ pub fn CoreOpt2::go(self : CoreOpt2) -> Unit {
   let float_offset = FloatOffset::new(core, self.tracer)
   float_offset.go()
   self.tracer.record("core_opt2_after_fo", core.to_pretty_print())
+  let lvn = LocalValueNumbering::new(core, self.tracer)
+  lvn.go()
+  self.tracer.record("core_opt2_after_lvn", core.to_pretty_print())
 }

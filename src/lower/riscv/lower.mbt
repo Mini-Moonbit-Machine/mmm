@@ -665,19 +665,41 @@ fn RiscvFnLoweringCtx::lower_address(
       }
     }
     Offset(~val, ~offset, ~width, ..) => {
-      let base = @generated.constructor_lower_value(self, val)
-      let index = @generated.constructor_lower_value(self, offset)
-      let offset = match width.size_of_lp64() {
-        4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
-        8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
-        _ => self.tracer.abort("Invalid type size")
+      fn fallback() {
+        let base = @generated.constructor_lower_value(self, val)
+        let index = @generated.constructor_lower_value(self, offset)
+        let offset = match width.size_of_lp64() {
+          4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
+          8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
+          _ => self.tracer.abort("Invalid type size")
+        }
+        let addr = @generated.constructor_rv_add(self, xreg(base), offset)
+        let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
+          base: addr,
+          offset: 0,
+        }
+        ma
       }
-      let addr = @generated.constructor_rv_add(self, xreg(base), offset)
-      let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
-        base: addr,
-        offset: 0,
+
+      fn ignore_base() {
+        let index = @generated.constructor_lower_value(self, offset)
+        let offset = match width.size_of_lp64() {
+          4 => @generated.constructor_rv_slliw(self, xreg(index), 2)
+          8 => @generated.constructor_rv_slliw(self, xreg(index), 3)
+          _ => self.tracer.abort("Invalid type size")
+        }
+        let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
+          base: offset,
+          offset: 0,
+        }
+        ma
       }
-      ma
+
+      match val {
+        // special pattern for ComputeAddress
+        Int64(val=0) => ignore_base()
+        _ => fallback()
+      }
     }
     Raw(~val, ~raw_offset, ..) => {
       fn fallback() {
@@ -997,7 +1019,11 @@ fn RiscvFnLoweringCtx::lower_compute_address(
   addr : @core.Address
 ) -> AnyReg {
   let ma = self.lower_address(addr)
-  xreg_to(@generated.constructor_rv_addi(self, ma.base, ma.offset._))
+  if ma.offset._ == 0 {
+    xreg_to(ma.base)
+  } else {
+    xreg_to(@generated.constructor_rv_addi(self, ma.base, ma.offset._))
+  }
 }
 
 fn RiscvFnLoweringCtx::imm32_from_val(

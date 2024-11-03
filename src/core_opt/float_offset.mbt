@@ -58,13 +58,17 @@ pub fn BasicBlockFloatOffset::go(self : BasicBlockFloatOffset) -> Unit {
         match ma {
           @core.Address::Offset(~val, ~offset, ~ty, ~width) => {
             let iref = next_iref()
+            let width = match width {
+              WidthPtr => @core.Width::Width64
+              _ => width
+            }
             Some(
               (
                 iref,
                 @core.Address::Offset(
                   val=@core.Value::Int64(val=0),
                   ~offset,
-                  ~ty,
+                  ty=@core.Type::Unit, // we don't really care about the type. need to merge them into this to maximize the chance of cse,
                   ~width,
                 ),
                 @core.Address::Raw(

@@ -1,0 +1,71 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main6l0_0 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(10)> <- [..] = 1
+    let %1: int32 = load int32 field(f0.m0, 0 * @32)
+    let %2: int32 = add(%1, %1)
+    let %3: int32 = add(%2, %2)
+    let %4: int32 = add(%3, %3)
+    let %5: int32 = add(%4, %4)
+    let %6: int32 = add(%5, %5)
+    let %7: int32 = add(%6, %6)
+    let %8: int32 = add(%7, %7)
+    let %9: int32 = add(%8, %8)
+    let %10: int32 = add(%9, %9)
+    let %11: int32 = add(%10, %10)
+    let %12: int32 = add(%11, %11)
+    let %13: int32 = add(%12, %12)
+    let %14: int32 = add(%13, %13)
+    let %15: int32 = add(%14, %14)
+    let %16: int32 = add(%15, %15)
+    let %17: int32 = load int32 field(f0.m0, 1 * @32)
+    let %18: bool = eq(%17, 0)
+    br %18 b1() b2()
+  }
+  .bb #b1 () {
+    let %19: int32 = add(67890, 1)
+    jump b3(%19)
+  }
+  .bb #b2 () {
+    let %20: int32 = add(%1, %2)
+    let %21: int32 = add(%20, %3)
+    let %22: int32 = add(%21, %4)
+    let %23: int32 = add(%22, %5)
+    let %24: int32 = add(%23, %6)
+    let %25: int32 = add(%24, %7)
+    let %26: int32 = add(%25, %8)
+    let %27: int32 = add(%26, %9)
+    let %28: int32 = add(%27, %10)
+    let %29: int32 = add(%28, %11)
+    let %30: int32 = add(%29, %12)
+    let %31: int32 = add(%30, %13)
+    let %32: int32 = add(%31, %14)
+    let %33: int32 = add(%32, %15)
+    let %34: int32 = add(%33, %16)
+    let %35: int32 = add(%34, 12345)
+    jump b3(%35)
+  }
+  .bb #b3 (int32) {
+    let %36: unit = ext_call minimbt_print_int($b3.0)
+    return %36
+  }
+}
+.fn T$start_2 #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.thunk ::0 start

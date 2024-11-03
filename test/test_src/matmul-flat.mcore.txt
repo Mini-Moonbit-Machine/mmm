@@ -278,9 +278,10 @@ init_arr89l4_3:
 # leaf true
 loop148l2_2:
 .loop148l2_2_5:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd s0, 0(sp)
   sd s1, 8(sp)
+  sd s2, 16(sp)
   mv t0, a0
   mv a6, a1
   mv a7, a2
@@ -307,35 +308,31 @@ loop148l2_2:
 
 .loop148l2_2_19:
   mv t0, a5
-  mv t2, a1
-  mv t3, a2
-  mv t4, a4
+  mv t3, a1
+  mv t4, a2
+  mv s0, a4
 
 .loop148l2_2_14:
   blt a7, zero, .loop148l2_2_16
 
 .loop148l2_2_15:
   slliw t1, t0, 3
-  add t1, t4, t1
-  ld t1, 0(t1)
-  slliw s0, a0, 3
-  add s0, t1, s0
-  fld fa0, 0(s0)
-  slliw s0, t0, 3
-  add s0, t2, s0
-  ld s0, 0(s0)
-  slliw s1, a7, 3
-  add s0, s0, s1
-  fld fa1, 0(s0)
-  slliw s0, a7, 3
-  add s0, t3, s0
-  ld s0, 0(s0)
+  add t2, s0, t1
+  ld t2, 0(t2)
   slliw s1, a0, 3
-  add s0, s0, s1
-  fld fa2, 0(s0)
+  add s2, t2, s1
+  fld fa0, 0(s2)
+  add t1, t3, t1
+  ld t1, 0(t1)
+  slliw s2, a7, 3
+  add t1, t1, s2
+  fld fa1, 0(t1)
+  add t1, t4, s2
+  ld t1, 0(t1)
+  add t1, t1, s1
+  fld fa2, 0(t1)
   fmadd.d fa0, fa1, fa2, fa0
-  slliw s0, a0, 3
-  add t1, t1, s0
+  add t1, t2, s1
   fsd fa0, 0(t1)
   addi a7, a7, -1
   j .loop148l2_2_14
@@ -346,7 +343,8 @@ loop148l2_2:
 .loop148l2_2_3:
   ld s0, 0(sp)
   ld s1, 8(sp)
-  addi sp, sp, 16
+  ld s2, 16(sp)
+  addi sp, sp, 32
   ret
 
 .loop148l2_2_9:
