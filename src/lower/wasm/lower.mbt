@@ -424,7 +424,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
                 guard fills.length() == 1 else {
                   self.tracer.abort("Zero fill should be the only fill")
                 }
-                match ty.size_of_ilp32() {
+                match ty.elem_size_of_ilp32() {
                   4 => {
                     self.lower_value(len)
                     self.emit_wasm(I32Const(val=0))

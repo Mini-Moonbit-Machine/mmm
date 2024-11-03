@@ -546,9 +546,23 @@ fn build_knf_expr(
       let val = self.add_insn(func, bb, insn)
       (ctx, bb, val)
     }
-    Add(n1, n2)
-    | FAdd(n1, n2)
-    | Sub(n1, n2)
+    Add(n1, n2) | FAdd(n1, n2) => {
+      let (ctx, n1_val) = self.build_name!(free_names, ctx, core, func, bb, n1)
+      let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)
+      let n1_ty = self.get_type!(ctx, core, func, bb, n1_val)
+      let n2_ty = self.get_type!(ctx, core, func, bb, n2_val)
+      guard n1_ty == n2_ty else {
+        fail!("type mismatch \{n1_ty} != \{n2_ty} of \{knf}")
+      }
+      let insn = Insn::Op(
+        ty=n1_ty,
+        op=Op::from_knf(knf).unwrap(),
+        args=[n1_val, n2_val],
+      )
+      let val = self.add_insn(func, bb, insn)
+      (ctx, bb, val)
+    }
+    Sub(n1, n2)
     | FSub(n1, n2) | Mul(n1, n2) | FMul(n1, n2) | Div(n1, n2) | FDiv(n1, n2) => {
       let (ctx, n1_val) = self.build_name!(free_names, ctx, core, func, bb, n1)
       let (ctx, n2_val) = self.build_name!(free_names, ctx, core, func, bb, n2)

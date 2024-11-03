@@ -573,7 +573,7 @@ fn main {
   } else {
     let out_string = status.output(opts.json)
     mt.println(out_string)
-    if true &&
+    if false &&
       (
         opts.out_file.contains("speed/matmul-flat-big") ||
         opts.out_file.contains("speed/iters")
