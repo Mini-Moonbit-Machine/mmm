@@ -120,20 +120,22 @@ pub struct RiscvFnLoweringCtx {
   pub used_primitive : @hashset.T[String]
   pub is_leaf : Bool
   pub mfn : MFn?
+  pub use_xtheadba : Bool
   pub tracer : @util.SubTracer
 }
 impl RiscvFnLoweringCtx {
-  new(@core.Core, @core.Fn, @util.SubTracer) -> Self
+  new(@core.Core, @core.Fn, @util.SubTracer, ~use_xtheadba : Bool = ..) -> Self
 }
 
 pub struct RiscvLoweringCtx {
   pub core : @core.Core
+  pub use_xtheadba : Bool
   pub tracer : @util.SubTracer
 }
 impl RiscvLoweringCtx {
   lower(Self) -> MCore!Failure
   lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]) -> MFn
-  new(@core.Core, @util.SubTracer) -> Self
+  new(@core.Core, @util.SubTracer, ~use_xtheadba : Bool = ..) -> Self
 }
 
 // Type aliases

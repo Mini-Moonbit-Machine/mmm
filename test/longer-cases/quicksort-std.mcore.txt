@@ -1,3 +1,4 @@
+  .option arch, +xtheadba
   .p2align 4
   .bss
   .type large_heap, @object
@@ -77,8 +78,7 @@ output14l1_1:
   blt a0, s1, .output14l1_1_2
 
 .output14l1_1_1:
-  slliw a0, s1, 2
-  add a0, s0, a0
+  th.addsl a0, s0, s1, 2
   lw a0, 0(a0)
   call minimbt_print_int
   call minimbt_print_endline
@@ -130,12 +130,10 @@ f54.274l4_3:
   blt a1, a0, .f54.274l4_3_9
 
 .f54.274l4_3_8:
-  slliw a0, a1, 2
-  add a0, s1, a0
+  th.addsl a0, s1, a1, 2
   lw a0, 0(a0)
   addi a2, a1, -1
-  slliw a2, a2, 2
-  add a2, s1, a2
+  th.addsl a2, s1, a2, 2
   lw a2, 0(a2)
   addi a2, a2, -1
   blt a2, a0, .f54.274l4_3_11
@@ -203,21 +201,20 @@ input243l4_8:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
+  mv s1, a0
+  mv s0, a1
   mv s2, a2
 
 .input243l4_8_0:
   addi a0, s2, -1
-  blt a0, s0, .input243l4_8_2
+  blt a0, s1, .input243l4_8_2
 
 .input243l4_8_1:
   call minimbt_read_int
-  slliw a1, s0, 2
-  add a1, s1, a1
+  th.addsl a1, s0, s1, 2
   sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s0, a0
+  addi a0, s1, 1
+  mv s1, a0
   j .input243l4_8_0
 
 .input243l4_8_2:
@@ -327,8 +324,7 @@ quick_sort210l2_7:
   mv a0, s1
   mv a2, s2
   call swap1l0_0
-  slliw a0, s2, 2
-  add a0, s1, a0
+  th.addsl a0, s1, s2, 2
   lw a0, 0(a0)
   addi s2, s11, -4
   andi s11, s2, -8
@@ -347,8 +343,7 @@ quick_sort210l2_7:
   blt a0, s5, .quick_sort210l2_7_53
 
 .quick_sort210l2_7_52:
-  slliw a0, s5, 2
-  add a0, s1, a0
+  th.addsl a0, s1, s5, 2
   lw a0, 0(a0)
   addi a1, s6, -1
   blt a1, a0, .quick_sort210l2_7_55
@@ -493,15 +488,13 @@ main239l3_9:
 # leaf true
 swap1l0_0:
 .swap1l0_0_0:
-  slliw a1, a1, 2
-  add a3, a0, a1
+  th.addsl a3, a0, a1, 2
   lw a3, 0(a3)
-  slliw a2, a2, 2
-  add a4, a0, a2
+  th.addsl a4, a0, a2, 2
   lw a4, 0(a4)
-  add a1, a0, a1
+  th.addsl a1, a0, a1, 2
   sw a4, 0(a1)
-  add a0, a0, a2
+  th.addsl a0, a0, a2, 2
   sw a3, 0(a0)
   mv a0, zero
   ret
@@ -542,11 +535,9 @@ sort_2157.305l3_4:
   mv a5, a1
   mv s0, a2
   mv a0, a3
-  slliw a1, a5, 2
-  add a1, a0, a1
+  th.addsl a1, a0, a5, 2
   lw a1, 0(a1)
-  slliw a2, a4, 2
-  add a2, a0, a2
+  th.addsl a2, a0, a4, 2
   lw a2, 0(a2)
   addi a2, a2, -1
   blt a2, a1, .sort_2157.305l3_4_2

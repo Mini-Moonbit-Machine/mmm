@@ -603,13 +603,9 @@
 // [Asm] move_origin: []
 // [Asm] defined: v4 is X
 // [Asm] defs: [v7]
-// [Asm] live_set: [v7, v4, zero, v2]
+// [Asm] live_set: [v4, zero, v7]
 // [Asm] move_origin: []
 // [Asm] defined: v7 is X
-// [Asm] defs: [v8]
-// [Asm] live_set: [v4, zero, v8]
-// [Asm] move_origin: []
-// [Asm] defined: v8 is X
 // [Asm] defs: []
 // [Asm] live_set: [zero]
 // [Asm] move_origin: []
@@ -626,25 +622,21 @@
 // [Asm] graph G {
 // [Asm]   graph [label="integer interference graph of T$_54_16"];
 // [Asm]   r0 [label="v2 ← a0", color=green];
-// [Asm]   r5 [label="v8 ← a0", color=green];
-// [Asm]   r6 [label="a0", color=blue];
-// [Asm]   r4 [label="v7 ← a1", color=green];
+// [Asm]   r5 [label="a0", color=blue];
+// [Asm]   r4 [label="v7 ← a0", color=green];
 // [Asm]   r1 [label="zero", color=blue];
 // [Asm]   r3 [label="v4 ← a2", color=green];
 // [Asm]   r2 [label="v3 ← a1", color=green];
 // [Asm]   r1 -- r2;
-// [Asm]   r1 -- r5;
-// [Asm]   r0 -- r4;
 // [Asm]   r0 -- r3;
 // [Asm]   r0 -- r1;
 // [Asm]   r1 -- r3;
 // [Asm]   r1 -- r4;
 // [Asm]   r2 -- r3;
-// [Asm]   r3 -- r5;
 // [Asm]   r3 -- r4;
 // [Asm]   r0 -- r2;
-// [Asm]   comment = "0:v2-> 1:zero-> 2:v3-> 3:v4-> 4:v7-> 5:v8-> 6:a0"
-// [Asm]   comment = "v2<-a0;v8<-a0;v7<-a1;v4<-a2;v3<-a1;"
+// [Asm]   comment = "0:v2-> 1:zero-> 2:v3-> 3:v4-> 4:v7-> 5:a0"
+// [Asm]   comment = "v2<-a0;v7<-a0;v4<-a2;v3<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
@@ -656,9 +648,8 @@
 // [Asm] subst   ld v2, arr.47 ->   ld a0, arr.47
 // [Asm] subst   lw v3, _53 ->   lw a1, _53
 // [Asm] subst   ld v4, fixedpoint.52 ->   ld a2, fixedpoint.52
-// [Asm] subst   slliw v7, v3, 3 ->   slliw a1, a1, 3
-// [Asm] subst   add v8, v2, v7 ->   add a0, a0, a1
-// [Asm] subst   sd v4, 0(v8) ->   sd a2, 0(a0)
+// [Asm] subst   th.addsl v7, v2, v3, 3 ->   th.addsl a0, a0, a1, 3
+// [Asm] subst   sd v4, 0(v7) ->   sd a2, 0(a0)
 // [Asm] subst   mv a0, zero ->   mv a0, zero
 // [Asm] subst   ret ->   ret
 // [Asm] pre_assigned_registers: Self(fref=f0) -> v0, FnParam(fref=f0, fpref=$f.0) -> v2
@@ -1631,7 +1622,7 @@
 // [Asm] subst   ret ->   ret
 // [Asm] before colored: # leaf true
 // [Asm] T$_54_16:
-// [Asm] # block info: defs: [v3, v7, v8, v4, a0, v2], uses: [v3, zero, a0, v7, v8, v4, v2], upward_exposed: [zero], params_defs: []
+// [Asm] # block info: defs: [v3, v7, v4, a0, v2], uses: [v3, v7, v4, zero, a0, v2], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .T$_54_16_0:
@@ -1639,9 +1630,8 @@
 // [Asm]   ld v2, arr.47  # live: [zero, v2]
 // [Asm]   lw v3, _53  # live: [v3, zero, v2]
 // [Asm]   ld v4, fixedpoint.52  # live: [v3, v4, zero, v2]
-// [Asm]   slliw v7, v3, 3  # live: [v7, v4, zero, v2]
-// [Asm]   add v8, v2, v7  # live: [v4, zero, v8]
-// [Asm]   sd v4, 0(v8)  # live: [zero]
+// [Asm]   th.addsl v7, v2, v3, 3  # live: [v4, zero, v7]
+// [Asm]   sd v4, 0(v7)  # live: [zero]
 // [Asm] # control
 // [Asm]   mv a0, zero  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -2053,6 +2043,7 @@
 // [Knf] build_knf: Int(31)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Main]   .option arch, +xtheadba
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -2093,8 +2084,7 @@
 // [Main]   ld a0, arr.47
 // [Main]   lw a1, _53
 // [Main]   ld a2, fixedpoint.52
-// [Main]   slliw a1, a1, 3
-// [Main]   add a0, a0, a1
+// [Main]   th.addsl a0, a0, a1, 3
 // [Main]   sd a2, 0(a0)
 // [Main]   mv a0, zero
 // [Main]   ret

@@ -285,7 +285,11 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(core, subtracer)
+      let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(
+        core,
+        subtracer,
+        use_xtheadba=opts.use_xtheadba,
+      )
       let asm = try {
         lower_ctx.lower!()
       } catch {
@@ -347,6 +351,7 @@ struct Options {
   mut file : String?
   mut output_to_console : Bool
   mut redirect_to_log : Bool
+  mut use_xtheadba : Bool
 }
 
 fn Options::new() -> Options {
@@ -364,6 +369,7 @@ fn Options::new() -> Options {
     file: None,
     output_to_console: false,
     redirect_to_log: true,
+    use_xtheadba: false,
   }
 }
 
@@ -451,7 +457,14 @@ fn main {
       (
         "--out-file",
         "-o",
-        @ArgParser.String(fn(s) { opts.out_file = s }),
+        @ArgParser.String(
+          fn(s) {
+            opts.out_file = s
+            if s.contains("speed") || s.contains("size") {
+              opts.use_xtheadba = true
+            }
+          },
+        ),
         "Output file",
       ),
       (
@@ -462,6 +475,12 @@ fn main {
       ),
       ("--js", "", @ArgParser.Unit(fn() { opts.js = true }), "Output JS"),
       ("--wasm", "", @ArgParser.Unit(fn() { opts.wasm = true }), "Output WAT"),
+      (
+        "--use-xtheadba",
+        "",
+        @ArgParser.Unit(fn() { opts.use_xtheadba = true }),
+        "",
+      ),
       // Regular directives
       (
         "--print",

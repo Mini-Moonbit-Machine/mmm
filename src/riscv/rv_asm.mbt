@@ -74,6 +74,8 @@ pub enum RvAsm {
   FmaddD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
   FmsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
   FnmsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
+  // thead
+  ThAddsl(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
   // pseudo instructions
   Nop
   LwSym(~rd : Reg, ~l : Label)
@@ -273,6 +275,8 @@ pub impl Show for RvAsm with output(self, logger) {
       write4(logger, "fmsub.d", rd, rs1, rs2, rs3)
     FnmsubD(~rd, ~rs1, ~rs2, ~rs3) =>
       write4(logger, "fnmsub.d", rd, rs1, rs2, rs3)
+    ThAddsl(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.addsl", rd, rs1, rs2, shift)
     Nop => logger.write_string("nop")
     LwSym(~rd, ~l) => {
       logger.write_string("lw ")

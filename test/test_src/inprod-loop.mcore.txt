@@ -1,3 +1,4 @@
+  .option arch, +xtheadba
   .p2align 4
   .bss
   .type large_heap, @object
@@ -39,10 +40,9 @@ inprod1l0_0:
   blt a2, zero, .inprod1l0_0_2
 
 .inprod1l0_0_1:
-  slliw a3, a2, 3
-  add a4, a0, a3
-  fld fa1, 0(a4)
-  add a3, a1, a3
+  th.addsl a3, a0, a2, 3
+  fld fa1, 0(a3)
+  th.addsl a3, a1, a2, 3
   fld fa2, 0(a3)
   fmadd.d fa0, fa1, fa2, fa0
   addi a2, a2, -1

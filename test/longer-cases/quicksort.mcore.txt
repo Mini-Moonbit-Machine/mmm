@@ -1,3 +1,4 @@
+  .option arch, +xtheadba
   .p2align 4
   .bss
   .type large_heap, @object
@@ -49,8 +50,7 @@ input79l3_3:
 
 .input79l3_3_1:
   call minimbt_read_int
-  slliw a1, s0, 2
-  add a1, s1, a1
+  th.addsl a1, s1, s0, 2
   sw a0, 0(a1)
   addi a0, s0, 1
   mv s0, a0
@@ -114,22 +114,21 @@ output97l4_4:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
+  mv s1, a0
+  mv s0, a1
   mv s2, a2
 
 .output97l4_4_0:
   addi a0, s2, -1
-  blt a0, s0, .output97l4_4_2
+  blt a0, s1, .output97l4_4_2
 
 .output97l4_4_1:
-  slliw a0, s0, 2
-  add a0, s1, a0
+  th.addsl a0, s0, s1, 2
   lw a0, 0(a0)
   call minimbt_print_int
   call minimbt_print_endline
-  addi a0, s0, 1
-  mv s0, a0
+  addi a0, s1, 1
+  mv s1, a0
   j .output97l4_4_0
 
 .output97l4_4_2:
@@ -167,8 +166,7 @@ quicksort59l1_2:
   blt a0, s1, .quicksort59l1_2_2
 
 .quicksort59l1_2_1:
-  slliw a0, s0, 2
-  add a0, s2, a0
+  th.addsl a0, s2, s0, 2
   lw a0, 0(a0)
   addi a1, s1, -1
   addi s4, s11, -4
@@ -184,8 +182,7 @@ quicksort59l1_2:
   blt a0, s3, .quicksort59l1_2_17
 
 .quicksort59l1_2_16:
-  slliw a0, s3, 2
-  add a0, s2, a0
+  th.addsl a0, s2, s3, 2
   lw a0, 0(a0)
   blt s5, a0, .quicksort59l1_2_19
 
@@ -250,15 +247,13 @@ quicksort59l1_2:
 # leaf true
 swap1l0_0:
 .swap1l0_0_0:
-  slliw a1, a1, 2
-  add a3, a0, a1
+  th.addsl a3, a0, a1, 2
   lw a3, 0(a3)
-  slliw a2, a2, 2
-  add a4, a0, a2
+  th.addsl a4, a0, a2, 2
   lw a4, 0(a4)
-  add a1, a0, a1
+  th.addsl a1, a0, a1, 2
   sw a4, 0(a1)
-  add a0, a0, a2
+  th.addsl a0, a0, a2, 2
   sw a3, 0(a0)
   mv a0, zero
   ret

@@ -1,3 +1,4 @@
+  .option arch, +xtheadba
   .p2align 4
   .bss
   .type large_heap, @object
@@ -46,26 +47,23 @@ aux60.127l5_4:
 
 .aux60.127l5_4_9:
   addi a0, a4, -1
-  slliw a0, a0, 2
-  add a0, a3, a0
+  th.addsl a0, a3, a0, 2
   lw a0, 0(a0)
-  slliw a5, a4, 2
-  add a5, a3, a5
+  th.addsl a5, a3, a4, 2
   lw a5, 0(a5)
   bge a5, a0, .aux60.127l5_4_10
 
 .aux60.127l5_4_11:
-  slliw a0, a4, 2
-  add a5, a3, a0
-  lw a5, 0(a5)
-  addi a4, a4, -1
-  slliw a6, a4, 2
-  add a7, a3, a6
-  lw a7, 0(a7)
-  add a0, a3, a0
-  sw a7, 0(a0)
-  add a0, a3, a6
-  sw a5, 0(a0)
+  th.addsl a0, a3, a4, 2
+  lw a0, 0(a0)
+  addi a5, a4, -1
+  th.addsl a6, a3, a5, 2
+  lw a6, 0(a6)
+  th.addsl a4, a3, a4, 2
+  sw a6, 0(a4)
+  th.addsl a4, a3, a5, 2
+  sw a0, 0(a4)
+  mv a4, a5
   j .aux60.127l5_4_7
 
 .aux60.127l5_4_8:
@@ -91,14 +89,13 @@ aux60.127l5_4:
 # leaf true
 aux19.98l3_2:
 .aux19.98l3_2_5:
-  mv a5, a0
-  mv a4, a2
+  mv a4, a0
   mv a0, a3
-  mv a2, a5
-  mv a3, a0
+  mv a3, a4
+  mv a4, a0
 
 .aux19.98l3_2_0:
-  bne a2, a4, .aux19.98l3_2_2
+  bne a3, a2, .aux19.98l3_2_2
 
 .aux19.98l3_2_1:
   mv a0, zero
@@ -124,11 +121,10 @@ aux19.98l3_2:
   mv a1, a0
 
 .aux19.98l3_2_7:
-  slliw a0, a2, 2
-  add a0, a3, a0
+  th.addsl a0, a4, a3, 2
   sw a1, 0(a0)
-  addi a0, a2, 1
-  mv a2, a0
+  addi a0, a3, 1
+  mv a3, a0
   j .aux19.98l3_2_0
 
   .p2align 2
@@ -183,8 +179,7 @@ aux73.133l6_5:
   beq s1, s0, .aux73.133l6_5_1
 
 .aux73.133l6_5_2:
-  slliw a0, s1, 2
-  add a0, s2, a0
+  th.addsl a0, s2, s1, 2
   lw a0, 0(a0)
   call minimbt_print_int
   li a0, 32

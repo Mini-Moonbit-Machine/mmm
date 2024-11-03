@@ -97,6 +97,7 @@ pub fn MFn::print_with_info(
 }
 
 pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
+  logger.write_string("  .option arch, +xtheadba\n")
   logger.write_string(large_stack)
   logger.write_string("__begin_text:\n")
   for primitive in self.primitives {
