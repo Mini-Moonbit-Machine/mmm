@@ -15,6 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
   .globl mem_fib15_3
   .type mem_fib15_3, @function
 # leaf false
@@ -75,21 +90,29 @@ T$start_10:
 # leaf false
 mem2_2:
 .mem2_2_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
-  lw a2, unmem_magic.1
-  slliw a2, a1, 2
-  sub a2, s11, a2
-  andi s11, a2, -8
-  addi a1, s11, -24
-  andi s11, a1, -8
-  la a3, memed8_6
-  sd a3, 0(a1)
-  sd a2, 8(a1)
-  sd a0, 16(a1)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  mv s0, a0
   mv a0, a1
+  lw a2, unmem_magic.1
+  slliw a1, a0, 2
+  sub s1, s11, a1
+  andi s11, s1, -8
+  mv a1, a0
+  mv a0, s1
+  call memseti32
+  addi a0, s11, -24
+  andi s11, a0, -8
+  la a1, memed8_6
+  sd a1, 0(a0)
+  sd s1, 8(a0)
+  sd s0, 16(a0)
   ld ra, 0(sp)
-  addi sp, sp, 16
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2

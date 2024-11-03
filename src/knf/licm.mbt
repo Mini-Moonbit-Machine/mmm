@@ -165,7 +165,7 @@ pub fn LICM::new(tracer : @util.SubTracer, knf : Knf) -> LICM {
   { tracer, knf }
 }
 
-pub fn LICM::go(self : LICM) -> Knf {
+pub fn LICM::go(self : LICM, id : Int) -> Knf {
   let knf_env = KnfEnv::new(@typer.externals(), self.tracer)
   knf_env.init_counter_from_existing(self.knf)
   fn hoist(knf : Knf, env : Env[(FuncDef, Array[Binding])]) -> Knf {
@@ -205,6 +205,6 @@ pub fn LICM::go(self : LICM) -> Knf {
 
   let knf = hoist(self.knf, Env::new())
   let knf = assoc(knf)
-  self.tracer.record("knf_after_licm", knf.to_pretty_print())
+  self.tracer.record("knf_after_licm_\{id}", knf.to_pretty_print())
   knf
 }

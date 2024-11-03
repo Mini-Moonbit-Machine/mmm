@@ -15,6 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
   .globl init_arr9.286l2_0
   .type init_arr9.286l2_0, @function
 # leaf true
@@ -50,21 +65,27 @@ init_arr9.286l2_0:
 # leaf false
 gen_perm14.282l1_1:
 .gen_perm14.282l1_1_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
-  mv a2, a0
-  slliw a0, a2, 2
-  sub s0, s11, a0
-  andi s11, s0, -8
-  mv a1, a2
-  mv a0, zero
+  sd s1, 16(sp)
+  mv s0, a0
+  slliw a0, s0, 2
+  sub s1, s11, a0
+  andi s11, s1, -8
   mv a1, s0
+  mv a0, s1
+  mv a2, zero
+  call memseti32
+  mv a0, zero
+  mv a1, s1
+  mv a2, s0
   call init_arr9.286l2_0
-  mv a0, s0
+  mv a0, s1
   ld ra, 0(sp)
   ld s0, 8(sp)
-  addi sp, sp, 16
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2

@@ -15,6 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
   .globl T$limit.1_0
   .type T$limit.1_0, @function
 # leaf true
@@ -117,6 +132,9 @@ main94l3_15:
   sub s2, s11, a1
   andi s11, s2, -8
   mv a1, a0
+  mv a0, s2
+  mv a2, zero
+  call memseti32
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a5, iter.3

@@ -15,6 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
   .globl aux60.127l5_4
   .type aux60.127l5_4, @function
 # leaf true
@@ -145,6 +160,9 @@ main85l2_6:
   andi s11, s0, -8
   li a0, 100
   mv a1, a0
+  mv a0, s0
+  mv a2, zero
+  call memseti32
   mv a0, zero
   li a1, 12345
   li a2, 100
