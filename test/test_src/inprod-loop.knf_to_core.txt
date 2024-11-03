@@ -28,29 +28,14 @@
     let %3: double = mul(%1, %2)
     let %4: double = add($f2, %3)
     let %5: int32 = sub($f3, 1)
-    let %6: bool = le(0, %5)
-    br %6 b3() b4()
+    let %6: double = call f0($f0, $f1, %4, %5)
+    jump b3(%6)
   }
   .bb #b2 () {
-    jump b6($f2)
+    jump b3($f2)
   }
-  .bb #b3 () {
-    let %7: double = load double offset($f0, %5 * @64)
-    let %8: double = load double offset($f1, %5 * @64)
-    let %9: double = mul(%7, %8)
-    let %10: double = add(%4, %9)
-    let %11: int32 = sub(%5, 1)
-    let %12: double = call f0($f0, $f1, %10, %11)
-    jump b5(%12)
-  }
-  .bb #b4 () {
-    jump b5(%4)
-  }
-  .bb #b5 (double) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (double) {
-    return $b6.0
+  .bb #b3 (double) {
+    return $b3.0
   }
 }
 .fn main17l1_1 #f1 : fn() -> unit
@@ -59,26 +44,11 @@
   .bb #b0 () {
     let _ = alloc <m0: array[double] heap(3)> <- [..] = 1.23
     let _ = alloc <m1: array[double] heap(3)> <- [..] = 4.56
-    let %2: bool = le(0, 2)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let %3: double = load double offset(f1.m0, 2 * @64)
-    let %4: double = load double offset(f1.m1, 2 * @64)
-    let %5: double = mul(%3, %4)
-    let %6: double = add(0, %5)
-    let %7: int32 = sub(2, 1)
-    let %8: double = call f0(f1.m0, f1.m1, %6, %7)
-    jump b3(%8)
-  }
-  .bb #b2 () {
-    jump b3(0)
-  }
-  .bb #b3 (double) {
-    let %9: double = mul(1000000, $b3.0)
-    let %10: int32 = conv.d2i.rtz(%9)
-    let %11: unit = ext_call minimbt_print_int(%10)
-    return %11
+    let %2: double = call f0(f1.m0, f1.m1, 0, 2)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = conv.d2i.rtz(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
   }
 }
 .thunk ::0 start

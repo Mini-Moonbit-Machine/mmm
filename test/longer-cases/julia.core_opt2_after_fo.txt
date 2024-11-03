@@ -16,13 +16,13 @@
 }
 .fn print_loop68l2_14 #f14 : fn(int32, int32, int32, int32, array[int32]) -> unit
 .freevars ()
-.entry b20 {
+.entry b8 {
   .bb #b0 (int32, int32, int32, int32, array[int32]) {
     let %0: bool = eq($b0.3, $b0.1)
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b18(())
+    jump b6(())
   }
   .bb #b2 () {
     let %1: bool = eq($b0.2, $b0.0)
@@ -31,101 +31,33 @@
   .bb #b3 () {
     let %2: unit = ext_call minimbt_print_char(10)
     let %3: int32 = add($b0.3, 1)
-    let %4: bool = eq(%3, $b0.1)
-    br %4 b5() b6()
+    jump b0($b0.0, $b0.1, 0, %3, $b0.4)
   }
   .bb #b4 () {
-    let %16: int32 = mul($b0.3, $b0.0)
-    let %17: int32 = add(%16, $b0.2)
-    let %18: int32 = load int32 offset($b0.4, %17 * @32)
-    let %19: int32 = add(48, %18)
-    let %20: unit = ext_call minimbt_print_char(%19)
-    let %21: int32 = add($b0.2, 1)
-    let %22: bool = eq($b0.3, $b0.1)
-    br %22 b11() b12()
+    let %5: int32 = mul($b0.3, $b0.0)
+    let %6: int32 = add(%5, $b0.2)
+    let %7: int32 = load int32 offset($b0.4, %6 * @32)
+    let %8: int32 = add(48, %7)
+    let %9: unit = ext_call minimbt_print_char(%8)
+    let %10: int32 = add($b0.2, 1)
+    jump b0($b0.0, $b0.1, %10, $b0.3, $b0.4)
   }
-  .bb #b5 () {
-    jump b10(())
+  .bb #b5 (unit) {
+    jump b6($b5.0)
   }
-  .bb #b6 () {
-    let %5: bool = eq(0, $b0.0)
-    br %5 b7() b8()
+  .bb #b6 (unit) {
+    return $b6.0
   }
-  .bb #b7 () {
-    let %6: unit = ext_call minimbt_print_char(10)
-    let %7: int32 = add(%3, 1)
-    jump b0($b0.0, $b0.1, 0, %7, $b0.4)
+  .loop #b7 pre #Some(b8) header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
   }
   .bb #b8 () {
-    let %9: int32 = mul(%3, $b0.0)
-    let %10: int32 = add(%9, 0)
-    let %11: int32 = load int32 offset($b0.4, %10 * @32)
-    let %12: int32 = add(48, %11)
-    let %13: unit = ext_call minimbt_print_char(%12)
-    let %14: int32 = add(0, 1)
-    jump b0($b0.0, $b0.1, %14, %3, $b0.4)
-  }
-  .bb #b9 (unit) {
-    jump b10($b9.0)
-  }
-  .bb #b10 (unit) {
-    jump b17($b10.0)
-  }
-  .bb #b11 () {
-    jump b16(())
-  }
-  .bb #b12 () {
-    let %23: bool = eq(%21, $b0.0)
-    br %23 b13() b14()
-  }
-  .bb #b13 () {
-    let %24: unit = ext_call minimbt_print_char(10)
-    let %25: int32 = add($b0.3, 1)
-    jump b0($b0.0, $b0.1, 0, %25, $b0.4)
-  }
-  .bb #b14 () {
-    let %27: int32 = mul($b0.3, $b0.0)
-    let %28: int32 = add(%27, %21)
-    let %29: int32 = load int32 offset($b0.4, %28 * @32)
-    let %30: int32 = add(48, %29)
-    let %31: unit = ext_call minimbt_print_char(%30)
-    let %32: int32 = add(%21, 1)
-    jump b0($b0.0, $b0.1, %32, $b0.3, $b0.4)
-  }
-  .bb #b15 (unit) {
-    jump b16($b15.0)
-  }
-  .bb #b16 (unit) {
-    jump b17($b16.0)
-  }
-  .bb #b17 (unit) {
-    jump b18($b17.0)
-  }
-  .bb #b18 (unit) {
-    return $b18.0
-  }
-  .loop #b19 pre #Some(b20) header #b0 {
-    .block #b8
-    .block #b9
-    .block #b16
-    .block #b13
-    .block #b15
-    .block #b1
-    .block #b11
-    .block #b2
-    .block #b18
-    .block #b6
-    .block #b12
-    .block #b4
-    .block #b17
-    .block #b10
-    .block #b5
-    .block #b3
-    .block #b14
-    .block #b7
-  }
-  .bb #b20 () {
-    jump b19($f0, $f1, $f2, $f3, $f4)
+    jump b7($f0, $f1, $f2, $f3, $f4)
   }
 }
 .fn T$_4_6 #f6 : fn() -> double
@@ -148,36 +80,7 @@
     let %6: int32 = load_symbol ::2
     let %7: double = load_symbol ::1
     let %8: unit = call f13(%1, %0, 0, 0, f15.m0, %4, %5, %6, %7)
-    let %9: bool = eq(0, %0)
-    br %9 b1() b2()
-  }
-  .bb #b1 () {
-    jump b6(())
-  }
-  .bb #b2 () {
-    let %10: bool = eq(0, %1)
-    br %10 b3() b4()
-  }
-  .bb #b3 () {
-    let %11: unit = ext_call minimbt_print_char(10)
-    let %12: int32 = add(0, 1)
-    let %13: unit = call f14(%1, %0, 0, %12, f15.m0)
-    jump b5(%13)
-  }
-  .bb #b4 () {
-    let %14: int32 = mul(0, %1)
-    let %15: int32 = add(%14, 0)
-    let %16: int32 = load int32 offset(f15.m0, %15 * @32)
-    let %17: int32 = add(48, %16)
-    let %18: unit = ext_call minimbt_print_char(%17)
-    let %19: int32 = add(0, 1)
-    let %20: unit = call f14(%1, %0, %19, 0, f15.m0)
-    jump b5(%20)
-  }
-  .bb #b5 (unit) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (unit) {
+    let %9: unit = call f14(%1, %0, 0, 0, f15.m0)
     return ()
   }
 }
@@ -190,13 +93,13 @@
 }
 .fn main_loop30l1_13 #f13 : fn(int32, int32, int32, int32, array[int32], double, double, int32, double) -> unit
 .freevars ()
-.entry b20 {
+.entry b14 {
   .bb #b0 (int32, int32, int32, int32, array[int32], double, double, int32, double) {
     let %0: bool = eq($b0.3, $b0.1)
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b18(())
+    jump b12(())
   }
   .bb #b2 () {
     let %1: bool = eq($b0.2, $b0.0)
@@ -222,101 +125,63 @@
     let %16: double = conv.i2d($b0.1)
     let %17: double = div(%15, %16)
     let %18: double = sub(%17, 1.5)
-    let %19: double = mul(%13, %13)
-    let %20: double = mul(%18, %18)
+    let %19: double = load_symbol ::5
+    let %20: double = load_symbol ::4
     let %21: int32 = load_symbol ::2
-    let %22: bool = eq(0, %21)
-    br %22 b5() b6()
+    let %22: double = load_symbol ::1
+    let %23: int32 = call f12(%13, %18, 0, %19, %20, %21, %22)
+    let %24: int32 = mul($b0.3, $b0.0)
+    let %25: int32 = add(%24, $b0.2)
+    let %26: bool = le(%23, 0)
+    br %26 b5() b6()
   }
   .bb #b5 () {
-    let %23: int32 = load_symbol ::2
-    jump b10(%23)
+    jump b10(0)
   }
   .bb #b6 () {
-    let %24: double = add(%19, %20)
-    let %25: double = load_symbol ::1
-    let %26: bool = le(%25, %24)
-    br %26 b7() b8()
+    let %27: bool = le(48, %23)
+    br %27 b7() b8()
   }
   .bb #b7 () {
-    jump b9(0)
+    jump b9(48)
   }
   .bb #b8 () {
-    let %27: double = mul(2, %13)
-    let %28: double = mul(%27, %18)
-    let %29: double = load_symbol ::5
-    let %30: double = add(%28, %29)
-    let %31: double = sub(%19, %20)
-    let %32: double = load_symbol ::4
-    let %33: double = add(%31, %32)
-    let %34: int32 = add(0, 1)
-    let %37: int32 = load_symbol ::2
-    let %38: double = load_symbol ::1
-    let %39: int32 = call f12(%33, %30, %34, %29, %32, %37, %38)
-    jump b9(%39)
+    jump b9(%23)
   }
   .bb #b9 (int32) {
     jump b10($b9.0)
   }
   .bb #b10 (int32) {
-    let %40: int32 = mul($b0.3, $b0.0)
-    let %41: int32 = add(%40, $b0.2)
-    let %42: bool = le($b10.0, 0)
-    br %42 b11() b12()
+    let _ = store int32 offset($b0.4, %25 * @32) <- $b10.0
+    let %29: int32 = add($b0.2, 1)
+    let %30: double = load_symbol ::5
+    let %31: double = load_symbol ::4
+    let %32: int32 = load_symbol ::2
+    let %33: double = load_symbol ::1
+    jump b0($b0.0, $b0.1, %29, $b0.3, $b0.4, %30, %31, %32, %33)
   }
-  .bb #b11 () {
-    jump b16(0)
+  .bb #b11 (unit) {
+    jump b12($b11.0)
   }
-  .bb #b12 () {
-    let %43: bool = le(48, $b10.0)
-    br %43 b13() b14()
+  .bb #b12 (unit) {
+    return $b12.0
   }
-  .bb #b13 () {
-    jump b15(48)
-  }
-  .bb #b14 () {
-    jump b15($b10.0)
-  }
-  .bb #b15 (int32) {
-    jump b16($b15.0)
-  }
-  .bb #b16 (int32) {
-    let _ = store int32 offset($b0.4, %41 * @32) <- $b16.0
-    let %45: int32 = add($b0.2, 1)
-    let %46: double = load_symbol ::5
-    let %47: double = load_symbol ::4
-    let %48: int32 = load_symbol ::2
-    let %49: double = load_symbol ::1
-    jump b0($b0.0, $b0.1, %45, $b0.3, $b0.4, %46, %47, %48, %49)
-  }
-  .bb #b17 (unit) {
-    jump b18($b17.0)
-  }
-  .bb #b18 (unit) {
-    return $b18.0
-  }
-  .loop #b19 pre #Some(b20) header #b0 {
-    .block #b8
-    .block #b9
-    .block #b16
-    .block #b13
-    .block #b15
-    .block #b1
-    .block #b11
-    .block #b2
-    .block #b18
+  .loop #b13 pre #Some(b14) header #b0 {
     .block #b6
     .block #b12
     .block #b4
-    .block #b17
+    .block #b8
+    .block #b9
+    .block #b1
     .block #b10
+    .block #b11
     .block #b5
+    .block #b2
     .block #b3
-    .block #b14
     .block #b7
   }
-  .bb #b20 () {
-    jump b19($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
+  .bb #b14 () {
+    jump b13($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
   }
 }
 .fn T$c_re.5_8 #f8 : fn() -> double
@@ -342,7 +207,7 @@
 }
 .fn calc_pixel7l0_12 #f12 : fn(double, double, int32, double, double, int32, double) -> int32
 .freevars ()
-.entry b14 {
+.entry b8 {
   .bb #b0 (double, double, int32, double, double, int32, double) {
     let %0: double = mul($b0.0, $b0.0)
     let %1: double = mul($b0.1, $b0.1)
@@ -352,7 +217,7 @@
   }
   .bb #b1 () {
     let %4: int32 = load_symbol ::2
-    jump b12(%4)
+    jump b6(%4)
   }
   .bb #b2 () {
     let %5: double = add(%0, %1)
@@ -361,7 +226,7 @@
     br %7 b3() b4()
   }
   .bb #b3 () {
-    jump b11($b0.2)
+    jump b5($b0.2)
   }
   .bb #b4 () {
     let %8: double = mul(2, $b0.0)
@@ -372,66 +237,26 @@
     let %13: double = load_symbol ::4
     let %14: double = add(%12, %13)
     let %15: int32 = add($b0.2, 1)
-    let %16: double = mul(%14, %14)
-    let %17: double = mul(%11, %11)
     let %18: int32 = load_symbol ::2
-    let %19: bool = eq(%15, %18)
-    br %19 b5() b6()
+    let %19: double = load_symbol ::1
+    jump b0(%14, %11, %15, %10, %13, %18, %19)
   }
-  .bb #b5 () {
-    let %20: int32 = load_symbol ::2
-    jump b10(%20)
+  .bb #b5 (int32) {
+    jump b6($b5.0)
   }
-  .bb #b6 () {
-    let %21: double = add(%16, %17)
-    let %22: double = load_symbol ::1
-    let %23: bool = le(%22, %21)
-    br %23 b7() b8()
+  .bb #b6 (int32) {
+    return $b6.0
   }
-  .bb #b7 () {
-    jump b9(%15)
-  }
-  .bb #b8 () {
-    let %24: double = mul(2, %14)
-    let %25: double = mul(%24, %11)
-    let %26: double = load_symbol ::5
-    let %27: double = add(%25, %26)
-    let %28: double = sub(%16, %17)
-    let %29: double = load_symbol ::4
-    let %30: double = add(%28, %29)
-    let %31: int32 = add(%15, 1)
-    let %34: int32 = load_symbol ::2
-    let %35: double = load_symbol ::1
-    jump b0(%30, %27, %31, %26, %29, %34, %35)
-  }
-  .bb #b9 (int32) {
-    jump b10($b9.0)
-  }
-  .bb #b10 (int32) {
-    jump b11($b10.0)
-  }
-  .bb #b11 (int32) {
-    jump b12($b11.0)
-  }
-  .bb #b12 (int32) {
-    return $b12.0
-  }
-  .loop #b13 pre #Some(b14) header #b0 {
+  .loop #b7 pre #Some(b8) header #b0 {
     .block #b6
-    .block #b12
     .block #b4
-    .block #b8
-    .block #b9
     .block #b1
-    .block #b10
-    .block #b11
     .block #b5
     .block #b2
     .block #b3
-    .block #b7
   }
-  .bb #b14 () {
-    jump b13($f0, $f1, $f2, $f3, $f4, $f5, $f6)
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2, $f3, $f4, $f5, $f6)
   }
 }
 .fn T$limit_sq.2_2 #f2 : fn() -> double

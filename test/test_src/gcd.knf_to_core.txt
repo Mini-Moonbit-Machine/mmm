@@ -23,7 +23,7 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b18($f1)
+    jump b6($f1)
   }
   .bb #b2 () {
     let %1: bool = le($f0, $f1)
@@ -31,97 +31,28 @@
   }
   .bb #b3 () {
     let %2: int32 = sub($f1, $f0)
-    let %3: bool = eq($f0, 0)
-    br %3 b5() b6()
-  }
-  .bb #b4 () {
-    let %9: int32 = sub($f0, $f1)
-    let %10: bool = eq($f1, 0)
-    br %10 b11() b12()
-  }
-  .bb #b5 () {
-    jump b10(%2)
-  }
-  .bb #b6 () {
-    let %4: bool = le($f0, %2)
-    br %4 b7() b8()
-  }
-  .bb #b7 () {
-    let %5: int32 = sub(%2, $f0)
-    let %6: int32 = call f0($f0, %5)
-    jump b9(%6)
-  }
-  .bb #b8 () {
-    let %7: int32 = sub($f0, %2)
-    let %8: int32 = call f0(%2, %7)
-    jump b9(%8)
-  }
-  .bb #b9 (int32) {
-    jump b10($b9.0)
-  }
-  .bb #b10 (int32) {
-    jump b17($b10.0)
-  }
-  .bb #b11 () {
-    jump b16(%9)
-  }
-  .bb #b12 () {
-    let %11: bool = le($f1, %9)
-    br %11 b13() b14()
-  }
-  .bb #b13 () {
-    let %12: int32 = sub(%9, $f1)
-    let %13: int32 = call f0($f1, %12)
-    jump b15(%13)
-  }
-  .bb #b14 () {
-    let %14: int32 = sub($f1, %9)
-    let %15: int32 = call f0(%9, %14)
-    jump b15(%15)
-  }
-  .bb #b15 (int32) {
-    jump b16($b15.0)
-  }
-  .bb #b16 (int32) {
-    jump b17($b16.0)
-  }
-  .bb #b17 (int32) {
-    jump b18($b17.0)
-  }
-  .bb #b18 (int32) {
-    return $b18.0
-  }
-}
-.fn main9l1_1 #f1 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = eq(21600, 0)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b6(337500)
-  }
-  .bb #b2 () {
-    let %1: bool = le(21600, 337500)
-    br %1 b3() b4()
-  }
-  .bb #b3 () {
-    let %2: int32 = sub(337500, 21600)
-    let %3: int32 = call f0(21600, %2)
+    let %3: int32 = call f0($f0, %2)
     jump b5(%3)
   }
   .bb #b4 () {
-    let %4: int32 = sub(21600, 337500)
-    let %5: int32 = call f0(337500, %4)
+    let %4: int32 = sub($f0, $f1)
+    let %5: int32 = call f0($f1, %4)
     jump b5(%5)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)
   }
   .bb #b6 (int32) {
-    let %6: unit = ext_call minimbt_print_int($b6.0)
-    return %6
+    return $b6.0
+  }
+}
+.fn main9l1_1 #f1 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f0(21600, 337500)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
   }
 }
 .thunk ::0 start

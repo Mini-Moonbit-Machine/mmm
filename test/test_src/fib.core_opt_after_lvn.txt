@@ -15,46 +15,18 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b9($f0)
+    jump b3($f0)
   }
   .bb #b2 () {
     let %1: int32 = sub($f0, 1)
-    let %2: bool = le(%1, 1)
-    br %2 b3() b4()
-  }
-  .bb #b3 () {
-    jump b5(%1)
-  }
-  .bb #b4 () {
-    let %3: int32 = sub(%1, 1)
+    let %2: int32 = call f0(%1)
+    let %3: int32 = sub($f0, 2)
     let %4: int32 = call f0(%3)
-    let %5: int32 = sub(%1, 2)
-    let %6: int32 = call f0(%5)
-    let %7: int32 = add(%4, %6)
-    jump b5(%7)
+    let %5: int32 = add(%2, %4)
+    jump b3(%5)
   }
-  .bb #b5 (int32) {
-    let %8: int32 = sub($f0, 2)
-    let %9: bool = le(%8, 1)
-    br %9 b6() b7()
-  }
-  .bb #b6 () {
-    jump b8(%8)
-  }
-  .bb #b7 () {
-    let %10: int32 = sub(%8, 1)
-    let %11: int32 = call f0(%10)
-    let %12: int32 = sub(%8, 2)
-    let %13: int32 = call f0(%12)
-    let %14: int32 = add(%11, %13)
-    jump b8(%14)
-  }
-  .bb #b8 (int32) {
-    let %15: int32 = add($b5.0, $b8.0)
-    jump b9(%15)
-  }
-  .bb #b9 (int32) {
-    return $b9.0
+  .bb #b3 (int32) {
+    return $b3.0
   }
 }
 .fn T$start_4 #f4 : fn() -> unit
@@ -69,23 +41,9 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: bool = le(30, 1)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(30)
-  }
-  .bb #b2 () {
-    let %1: int32 = sub(30, 1)
-    let %2: int32 = call f0(%1)
-    let %3: int32 = sub(30, 2)
-    let %4: int32 = call f0(%3)
-    let %5: int32 = add(%2, %4)
-    jump b3(%5)
-  }
-  .bb #b3 (int32) {
-    let %6: unit = ext_call minimbt_print_int($b3.0)
-    return %6
+    let %0: int32 = call f0(30)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
   }
 }
 .thunk ::0 start

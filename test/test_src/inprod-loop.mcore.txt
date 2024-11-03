@@ -33,45 +33,26 @@ T$start_4:
   .type inprod1l0_0, @function
 # leaf true
 inprod1l0_0:
-.inprod1l0_0_8:
-  mv a3, a0
-  mv a0, a2
-  mv a2, a3
+.inprod1l0_0_5:
 
 .inprod1l0_0_0:
-  blt a0, zero, .inprod1l0_0_2
+  blt a2, zero, .inprod1l0_0_2
 
 .inprod1l0_0_1:
-  slliw a3, a0, 3
-  add a3, a2, a3
+  slliw a3, a2, 3
+  add a3, a0, a3
   fld fa1, 0(a3)
-  slliw a3, a0, 3
+  slliw a3, a2, 3
   add a3, a1, a3
   fld fa2, 0(a3)
   fmadd.d fa0, fa1, fa2, fa0
-  addi a3, a0, -1
-  blt a3, zero, .inprod1l0_0_4
-
-.inprod1l0_0_3:
-  slliw a0, a3, 3
-  add a0, a2, a0
-  fld fa1, 0(a0)
-  slliw a0, a3, 3
-  add a0, a1, a0
-  fld fa2, 0(a0)
-  fmadd.d fa0, fa1, fa2, fa0
-  addi a0, a3, -1
+  addi a2, a2, -1
   j .inprod1l0_0_0
 
 .inprod1l0_0_2:
 
-.inprod1l0_0_6:
+.inprod1l0_0_3:
   ret
-
-.inprod1l0_0_4:
-
-.inprod1l0_0_5:
-  j .inprod1l0_0_6
 
   .p2align 2
   .text
@@ -118,19 +99,9 @@ main17l1_1:
   fsd fa0, 0(a1)
   fsd fa0, 8(a1)
   fsd fa0, 16(a1)
+  fmv.d.x fa0, zero
   li a2, 2
-  blt a2, zero, .main17l1_1_2
-
-.main17l1_1_1:
-  fld fa0, 16(a0)
-  fld fa1, 16(a1)
-  fmv.d.x fa2, zero
-  fmadd.d fa0, fa0, fa1, fa2
-  li a2, 2
-  addi a2, a2, -1
   call inprod1l0_0
-
-.main17l1_1_3:
   li a0, 4696837146684686336
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
@@ -139,10 +110,6 @@ main17l1_1:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-.main17l1_1_2:
-  fmv.d.x fa0, zero
-  j .main17l1_1_3
 
 __end_text:
   .p2align 2

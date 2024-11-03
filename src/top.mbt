@@ -62,6 +62,13 @@ pub fn Type::is_ptr_like(self : Type) -> Bool {
   }
 }
 
+pub fn Type::is_fn_like(self : Type) -> Bool {
+  match self {
+    Fun(_) => true
+    _ => false
+  }
+}
+
 pub fn Type::is_float_like(self : Type) -> Bool {
   match self {
     Double => true

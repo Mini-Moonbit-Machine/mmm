@@ -15,12 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$f.2_2
-  .type T$f.2_2, @function
-# leaf true
-T$f.2_2:
-.T$f.2_2_0:
-  li a0, 456
+  .globl main21l1_6
+  .type main21l1_6, @function
+# leaf false
+main21l1_6:
+.main21l1_6_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, a1
+  lw a1, f.2
+  lw a2, t.1
+  li a0, 789
+  call even3l0_5
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -35,19 +44,58 @@ T$t.1_0:
 
   .p2align 2
   .text
-  .globl T$start_8
-  .type T$start_8, @function
+  .globl T$start_10
+  .type T$start_10, @function
 # leaf false
-T$start_8:
-.T$start_8_0:
+T$start_10:
+.T$start_10_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   lw a0, f.2
   lw a1, t.1
-  call main21l1_5
+  call main21l1_6
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl odd6l1_4
+  .type odd6l1_4, @function
+# leaf false
+odd6l1_4:
+.odd6l1_4_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, a2
+  blt a0, zero, .odd6l1_4_2
+
+.odd6l1_4_1:
+  beq a0, zero, .odd6l1_4_3
+
+.odd6l1_4_4:
+  addi a0, a0, -1
+  lw a1, f.2
+  lw a2, t.1
+  call even3l0_5
+
+.odd6l1_4_5:
+
+.odd6l1_4_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.odd6l1_4_2:
+  addi a0, a0, 1
+  lw a1, f.2
+  lw a2, t.1
+  call even3l0_5
+  j .odd6l1_4_6
+
+.odd6l1_4_3:
+  lw a0, f.2
+  j .odd6l1_4_5
 
   .p2align 2
   .text
@@ -69,7 +117,7 @@ minimbt_main:
   call T$f.2_2
   la t5, f.2
   sw a0, 0(t5)
-  call T$start_8
+  call T$start_10
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -79,97 +127,51 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl even3l0_4
-  .type even3l0_4, @function
-# leaf true
-even3l0_4:
-.even3l0_4_20:
+  .globl even3l0_5
+  .type even3l0_5, @function
+# leaf false
+even3l0_5:
+.even3l0_5_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, a2
+  blt a0, zero, .even3l0_5_2
 
-.even3l0_4_0:
-  bge a0, zero, .even3l0_4_1
+.even3l0_5_1:
+  beq a0, zero, .even3l0_5_3
 
-.even3l0_4_2:
-  addi a0, a0, 1
-  blt a0, zero, .even3l0_4_13
-
-.even3l0_4_12:
-  beq a0, zero, .even3l0_4_14
-
-.even3l0_4_15:
+.even3l0_5_4:
   addi a0, a0, -1
   lw a1, f.2
   lw a2, t.1
-  j .even3l0_4_0
+  call odd6l1_4
 
-.even3l0_4_1:
-  beq a0, zero, .even3l0_4_3
+.even3l0_5_5:
 
-.even3l0_4_4:
-  addi a0, a0, -1
-  blt a0, zero, .even3l0_4_6
-
-.even3l0_4_5:
-  beq a0, zero, .even3l0_4_7
-
-.even3l0_4_8:
-  addi a0, a0, -1
-  lw a1, f.2
-  lw a2, t.1
-  j .even3l0_4_0
-
-.even3l0_4_3:
-  lw a0, t.1
-
-.even3l0_4_11:
-
-.even3l0_4_18:
+.even3l0_5_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
-.even3l0_4_6:
+.even3l0_5_2:
   addi a0, a0, 1
   lw a1, f.2
   lw a2, t.1
-  j .even3l0_4_0
+  call odd6l1_4
+  j .even3l0_5_6
 
-.even3l0_4_7:
-  lw a0, f.2
-
-.even3l0_4_9:
-
-.even3l0_4_10:
-  j .even3l0_4_11
-
-.even3l0_4_13:
-  addi a0, a0, 1
-  lw a1, f.2
-  lw a2, t.1
-  j .even3l0_4_0
-
-.even3l0_4_14:
-  lw a0, f.2
-
-.even3l0_4_16:
-
-.even3l0_4_17:
-  j .even3l0_4_18
+.even3l0_5_3:
+  lw a0, t.1
+  j .even3l0_5_5
 
   .p2align 2
   .text
-  .globl main21l1_5
-  .type main21l1_5, @function
-# leaf false
-main21l1_5:
-.main21l1_5_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, a1
-  lw a1, f.2
-  lw a2, t.1
-  li a0, 789
-  call even3l0_4
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl T$f.2_2
+  .type T$f.2_2, @function
+# leaf true
+T$f.2_2:
+.T$f.2_2_0:
+  li a0, 456
   ret
 
 __end_text:

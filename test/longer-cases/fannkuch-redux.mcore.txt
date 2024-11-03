@@ -15,6 +15,60 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl init_arr9.286l2_0
+  .type init_arr9.286l2_0, @function
+# leaf true
+init_arr9.286l2_0:
+.init_arr9.286l2_0_5:
+  mv a3, a0
+  mv a0, a2
+  mv a2, a3
+  mv a3, a0
+
+.init_arr9.286l2_0_0:
+  addi a0, a3, -1
+  blt a0, a2, .init_arr9.286l2_0_2
+
+.init_arr9.286l2_0_1:
+  slliw a0, a2, 2
+  add a0, a1, a0
+  sw a2, 0(a0)
+  addi a0, a2, 1
+  mv a2, a0
+  j .init_arr9.286l2_0_0
+
+.init_arr9.286l2_0_2:
+  mv a0, zero
+
+.init_arr9.286l2_0_3:
+  ret
+
+  .p2align 2
+  .text
+  .globl gen_perm14.282l1_1
+  .type gen_perm14.282l1_1, @function
+# leaf false
+gen_perm14.282l1_1:
+.gen_perm14.282l1_1_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a2, a0
+  slliw a0, a2, 2
+  sub s0, s11, a0
+  andi s11, s0, -8
+  mv a1, a2
+  mv a0, zero
+  mv a1, s0
+  call init_arr9.286l2_0
+  mv a0, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
   .globl T$start_20
   .type T$start_20, @function
 # leaf false
@@ -29,6 +83,42 @@ T$start_20:
 
   .p2align 2
   .text
+  .globl init_count59.329l3_3
+  .type init_count59.329l3_3, @function
+# leaf false
+init_count59.329l3_3:
+.init_count59.329l3_3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a2, a0
+  lw a0, 0(a2)
+  li a3, 1
+  beq a0, a3, .init_count59.329l3_3_1
+
+.init_count59.329l3_3_2:
+  lw a0, 0(a2)
+  addi a3, a0, -1
+  slliw a3, a3, 2
+  add a3, a1, a3
+  sw a0, 0(a3)
+  lw a0, 0(a2)
+  addi a0, a0, -1
+  sw a0, 0(a2)
+  mv a0, a2
+  call init_count59.329l3_3
+
+.init_count59.329l3_3_3:
+  mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.init_count59.329l3_3_1:
+  mv a0, zero
+  j .init_count59.329l3_3_3
+
+  .p2align 2
+  .text
   .globl main262l0_8
   .type main262l0_8, @function
 # leaf false
@@ -39,7 +129,7 @@ main262l0_8:
   sd s0, 8(sp)
   sd s1, 16(sp)
   li a0, 9
-  call gen_perm14.400l1_1
+  call gen_perm14.282l1_1
   addi a1, s11, -36
   andi s11, a1, -8
   sw zero, 0(a1)
@@ -80,7 +170,7 @@ main262l0_8:
   sw a6, 0(a5)
   addi a6, s11, -72
   andi s11, a6, -8
-  la a7, compute40.432_18
+  la a7, compute40.314_18
   sd a7, 0(a6)
   li a7, 9
   sd a7, 8(a6)
@@ -114,91 +204,37 @@ main262l0_8:
 
   .p2align 2
   .text
-  .globl gen_perm14.400l1_1
-  .type gen_perm14.400l1_1, @function
+  .globl move_perm1_forward197.450l6_6
+  .type move_perm1_forward197.450l6_6, @function
 # leaf false
-gen_perm14.400l1_1:
-.gen_perm14.400l1_1_0:
+move_perm1_forward197.450l6_6:
+.move_perm1_forward197.450l6_6_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a2, a0
-  slliw a0, a2, 2
-  sub s0, s11, a0
-  andi s11, s0, -8
-  mv a1, a2
-  mv a0, zero
-  mv a1, s0
-  call init_arr9.404l2_0
-  mv a0, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
+  lw a3, 0(a1)
+  addi a3, a3, -1
+  blt a3, a0, .move_perm1_forward197.450l6_6_2
 
-  .p2align 2
-  .text
-  .globl init_arr9.404l2_0
-  .type init_arr9.404l2_0, @function
-# leaf true
-init_arr9.404l2_0:
-.init_arr9.404l2_0_5:
-  mv a3, a0
-  mv a0, a2
-  mv a2, a3
-  mv a3, a0
-
-.init_arr9.404l2_0_0:
-  addi a0, a3, -1
-  blt a0, a2, .init_arr9.404l2_0_2
-
-.init_arr9.404l2_0_1:
-  slliw a0, a2, 2
-  add a0, a1, a0
-  sw a2, 0(a0)
-  addi a0, a2, 1
-  mv a2, a0
-  j .init_arr9.404l2_0_0
-
-.init_arr9.404l2_0_2:
+.move_perm1_forward197.450l6_6_1:
+  addi a3, a0, 1
+  slliw a4, a3, 2
+  add a4, a2, a4
+  lw a4, 0(a4)
+  slliw a0, a0, 2
+  add a0, a2, a0
+  sw a4, 0(a0)
+  mv a0, a3
+  call move_perm1_forward197.450l6_6
   mv a0, zero
 
-.init_arr9.404l2_0_3:
-  ret
-
-  .p2align 2
-  .text
-  .globl init_count59.447l3_3
-  .type init_count59.447l3_3, @function
-# leaf false
-init_count59.447l3_3:
-.init_count59.447l3_3_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  lw a2, 0(a0)
-  li a3, 1
-  beq a2, a3, .init_count59.447l3_3_1
-
-.init_count59.447l3_3_2:
-  lw a2, 0(a0)
-  addi a3, a2, -1
-  slliw a3, a3, 2
-  add a3, a1, a3
-  sw a2, 0(a3)
-  lw a2, 0(a0)
-  addi a2, a2, -1
-  sw a2, 0(a0)
-  call init_count59.447l3_3
-
-.init_count59.447l3_3_3:
-  mv a0, zero
+.move_perm1_forward197.450l6_6_3:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.init_count59.447l3_3_1:
+.move_perm1_forward197.450l6_6_2:
   mv a0, zero
-  j .init_count59.447l3_3_3
+  j .move_perm1_forward197.450l6_6_3
 
   .p2align 2
   .text
@@ -224,45 +260,11 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl move_perm1_forward197.568l6_6
-  .type move_perm1_forward197.568l6_6, @function
+  .globl compute40.314_18
+  .type compute40.314_18, @function
 # leaf false
-move_perm1_forward197.568l6_6:
-.move_perm1_forward197.568l6_6_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  lw a3, 0(a1)
-  addi a3, a3, -1
-  blt a3, a0, .move_perm1_forward197.568l6_6_2
-
-.move_perm1_forward197.568l6_6_1:
-  addi a3, a0, 1
-  slliw a4, a3, 2
-  add a4, a2, a4
-  lw a4, 0(a4)
-  slliw a0, a0, 2
-  add a0, a2, a0
-  sw a4, 0(a0)
-  mv a0, a3
-  call move_perm1_forward197.568l6_6
-  mv a0, zero
-
-.move_perm1_forward197.568l6_6_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.move_perm1_forward197.568l6_6_2:
-  mv a0, zero
-  j .move_perm1_forward197.568l6_6_3
-
-  .p2align 2
-  .text
-  .globl compute40.432_18
-  .type compute40.432_18, @function
-# leaf false
-compute40.432_18:
-.compute40.432_18_8:
+compute40.314_18:
+.compute40.314_18_8:
   addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -278,33 +280,33 @@ compute40.432_18:
   sd s10, 88(sp)
   mv a1, s10
   lw s8, 8(a1)
-  ld s4, 16(a1)
+  ld s5, 16(a1)
   ld s0, 24(a1)
-  ld s5, 32(a1)
-  ld s3, 40(a1)
-  ld s2, 48(a1)
-  ld s7, 56(a1)
+  ld s6, 32(a1)
+  ld s2, 40(a1)
+  ld s4, 48(a1)
+  ld s3, 56(a1)
   ld s1, 64(a1)
-  mv s6, a0
+  mv s7, a0
 
-.compute40.432_18_0:
-  lw a0, 0(s6)
+.compute40.314_18_0:
+  lw a0, 0(s7)
   li a1, 1
-  blt a0, a1, .compute40.432_18_2
+  blt a0, a1, .compute40.314_18_2
 
-.compute40.432_18_1:
+.compute40.314_18_1:
 
-.compute40.432_18_59:
+.compute40.314_18_59:
   mv a0, zero
   mv a2, s8
-  mv a3, s4
+  mv a3, s5
   mv a4, s0
 
-.compute40.432_18_54:
+.compute40.314_18_54:
   addi a1, a2, -1
-  blt a1, a0, .compute40.432_18_56
+  blt a1, a0, .compute40.314_18_56
 
-.compute40.432_18_55:
+.compute40.314_18_55:
   slliw a1, a0, 2
   add a1, a4, a1
   lw a1, 0(a1)
@@ -312,12 +314,12 @@ compute40.432_18:
   add a5, a3, a5
   sw a1, 0(a5)
   addi a0, a0, 1
-  j .compute40.432_18_54
+  j .compute40.314_18_54
 
-.compute40.432_18_2:
+.compute40.314_18_2:
   mv a0, zero
 
-.compute40.432_18_6:
+.compute40.314_18_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -333,86 +335,83 @@ compute40.432_18:
   addi sp, sp, 96
   ret
 
-.compute40.432_18_56:
+.compute40.314_18_56:
   mv a0, zero
 
-.compute40.432_18_57:
+.compute40.314_18_57:
 
-.compute40.432_18_9:
-  mv a0, s6
-  mv a1, s5
-  call init_count59.447l3_3
-  sw zero, 0(s3)
-  lw a0, 0(s4)
+.compute40.314_18_9:
+  mv a0, s7
+  mv a1, s6
+  call init_count59.329l3_3
+  sw zero, 0(s2)
+  lw a0, 0(s5)
   addi a1, s11, -4
   andi s11, a1, -8
   sw a0, 0(a1)
 
-.compute40.432_18_36:
-  mv a3, a1
-  mv a1, s4
-  mv a6, s3
+.compute40.314_18_36:
+  mv a3, s5
+  mv a4, s2
 
-.compute40.432_18_31:
-  lw a0, 0(a3)
-  beq a0, zero, .compute40.432_18_32
+.compute40.314_18_31:
+  lw a0, 0(a1)
+  beq a0, zero, .compute40.314_18_32
 
-.compute40.432_18_33:
+.compute40.314_18_33:
   addi a0, s11, -4
   andi s11, a0, -8
   sw zero, 0(a0)
 
-.compute40.432_18_45:
+.compute40.314_18_45:
   mv a2, zero
-  mv a4, a0
 
-.compute40.432_18_40:
-  lw a0, 0(a3)
-  li a5, 2
-  div a0, a0, a5
-  blt a0, a2, .compute40.432_18_42
+.compute40.314_18_40:
+  lw a5, 0(a1)
+  li a6, 2
+  div a5, a5, a6
+  blt a5, a2, .compute40.314_18_42
 
-.compute40.432_18_41:
-  slliw a0, a2, 2
-  add a0, a1, a0
-  lw a0, 0(a0)
-  sw a0, 0(a4)
-  lw a0, 0(a3)
-  sub a0, a0, a2
-  slliw a0, a0, 2
-  add a0, a1, a0
-  lw a0, 0(a0)
+.compute40.314_18_41:
   slliw a5, a2, 2
-  add a5, a1, a5
-  sw a0, 0(a5)
-  lw a0, 0(a3)
-  sub a0, a0, a2
-  lw a5, 0(a4)
-  slliw a0, a0, 2
-  add a0, a1, a0
+  add a5, a3, a5
+  lw a5, 0(a5)
   sw a5, 0(a0)
-  addi a0, a2, 1
-  mv a2, a0
-  j .compute40.432_18_40
+  lw a5, 0(a1)
+  sub a5, a5, a2
+  slliw a5, a5, 2
+  add a5, a3, a5
+  lw a5, 0(a5)
+  slliw a6, a2, 2
+  add a6, a3, a6
+  sw a5, 0(a6)
+  lw a5, 0(a1)
+  sub a5, a5, a2
+  lw a6, 0(a0)
+  slliw a5, a5, 2
+  add a5, a3, a5
+  sw a6, 0(a5)
+  addi a2, a2, 1
+  j .compute40.314_18_40
 
-.compute40.432_18_32:
+.compute40.314_18_32:
   mv a0, zero
 
-.compute40.432_18_34:
+.compute40.314_18_34:
 
-.compute40.432_18_10:
+.compute40.314_18_10:
+  lw a0, 0(s4)
+  lw a1, 0(s2)
+  blt a1, a0, .compute40.314_18_4
+
+.compute40.314_18_3:
   lw a0, 0(s2)
-  lw a1, 0(s3)
-  blt a1, a0, .compute40.432_18_4
-
-.compute40.432_18_3:
-  lw a0, 0(s3)
-  sw a0, 0(s2)
+  sw a0, 0(s4)
   mv a0, zero
 
-.compute40.432_18_5:
-  lw a0, 0(s7)
-  lw a1, 0(s3)
+.compute40.314_18_5:
+  lw a0, 0(s3)
+  lw a1, 0(s2)
   lw a2, 0(s1)
   li a3, 2
   div a3, a2, a3
@@ -425,7 +424,7 @@ compute40.432_18:
   sub a2, a3, a2
   mul a1, a1, a2
   add a0, a0, a1
-  sw a0, 0(s7)
+  sw a0, 0(s3)
   addi a0, s11, -4
   andi s11, a0, -8
   li a1, 1
@@ -434,96 +433,96 @@ compute40.432_18:
   andi s11, a1, -8
   sw zero, 0(a1)
 
-.compute40.432_18_71:
-  mv s9, a1
-  mv s10, a0
+.compute40.314_18_71:
+  mv s10, a1
+  mv s9, a0
 
-.compute40.432_18_60:
-  lw a0, 0(s10)
+.compute40.314_18_60:
+  lw a0, 0(s9)
   li a1, 1
-  bne a0, a1, .compute40.432_18_62
+  bne a0, a1, .compute40.314_18_62
 
-.compute40.432_18_61:
-  lw a0, 0(s6)
-  beq a0, s8, .compute40.432_18_63
+.compute40.314_18_61:
+  lw a0, 0(s7)
+  beq a0, s8, .compute40.314_18_63
 
-.compute40.432_18_64:
+.compute40.314_18_64:
   lw a0, 0(s0)
-  sw a0, 0(s9)
+  sw a0, 0(s10)
   mv a0, zero
-  mv a1, s6
+  mv a1, s7
   mv a2, s0
-  call move_perm1_forward197.568l6_6
-  lw a0, 0(s6)
-  lw a1, 0(s9)
+  call move_perm1_forward197.450l6_6
+  lw a0, 0(s7)
+  lw a1, 0(s10)
   slliw a0, a0, 2
   add a0, s0, a0
   sw a1, 0(a0)
-  lw a0, 0(s6)
+  lw a0, 0(s7)
   slliw a1, a0, 2
-  add a1, s5, a1
+  add a1, s6, a1
   lw a1, 0(a1)
   addi a1, a1, -1
   slliw a0, a0, 2
-  add a0, s5, a0
+  add a0, s6, a0
   sw a1, 0(a0)
-  lw a0, 0(s6)
+  lw a0, 0(s7)
   slliw a0, a0, 2
-  add a0, s5, a0
+  add a0, s6, a0
   lw a0, 0(a0)
   li a1, 1
-  bge a0, a1, .compute40.432_18_65
+  bge a0, a1, .compute40.314_18_65
 
-.compute40.432_18_66:
-  lw a0, 0(s6)
+.compute40.314_18_66:
+  lw a0, 0(s7)
   addi a0, a0, 1
-  sw a0, 0(s6)
+  sw a0, 0(s7)
   mv a0, zero
 
-.compute40.432_18_67:
+.compute40.314_18_67:
   mv a0, zero
 
-.compute40.432_18_68:
-  j .compute40.432_18_60
+.compute40.314_18_68:
+  j .compute40.314_18_60
 
-.compute40.432_18_4:
+.compute40.314_18_4:
   mv a0, zero
-  j .compute40.432_18_5
+  j .compute40.314_18_5
 
-.compute40.432_18_62:
+.compute40.314_18_62:
   mv a0, zero
 
-.compute40.432_18_69:
+.compute40.314_18_69:
 
-.compute40.432_18_11:
+.compute40.314_18_11:
   lw a0, 0(s1)
   addi a0, a0, 1
   sw a0, 0(s1)
-  j .compute40.432_18_0
+  j .compute40.314_18_0
 
-.compute40.432_18_63:
-  sw zero, 0(s10)
-  sw zero, 0(s6)
+.compute40.314_18_63:
+  sw zero, 0(s9)
+  sw zero, 0(s7)
   mv a0, zero
-  j .compute40.432_18_68
+  j .compute40.314_18_68
 
-.compute40.432_18_65:
-  sw zero, 0(s10)
+.compute40.314_18_65:
+  sw zero, 0(s9)
   mv a0, zero
-  j .compute40.432_18_67
+  j .compute40.314_18_67
 
-.compute40.432_18_42:
+.compute40.314_18_42:
   mv a0, zero
 
-.compute40.432_18_43:
+.compute40.314_18_43:
 
-.compute40.432_18_37:
-  lw a0, 0(a1)
-  sw a0, 0(a3)
-  lw a0, 0(a6)
+.compute40.314_18_37:
+  lw a0, 0(a3)
+  sw a0, 0(a1)
+  lw a0, 0(a4)
   addi a0, a0, 1
-  sw a0, 0(a6)
-  j .compute40.432_18_31
+  sw a0, 0(a4)
+  j .compute40.314_18_31
 
 __end_text:
   .p2align 2

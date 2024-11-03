@@ -305,27 +305,28 @@ pub fn InlineEnv::inline(
         }
       }
 
-      if f.name.to_string().contains("main") {
-        knf
-      } else {
-        match freq.get(f) {
-          Some(Once) => replace()
-          Some(Many(n)) =>
-            match env.find(f) {
-              Some({ body, .. }) => {
-                self.tracer.println("Inline threshold \{n} \{size(body)}")
-                if size(body) * n < 100 {
-                  self.tracer.println("Inline decision accepted")
-                  replace()
-                } else {
-                  self.tracer.println("Inline decision rejected")
-                  knf
-                }
+      match freq.get(f) {
+        Some(Once) => replace()
+        Some(Many(n)) =>
+          match env.find(f) {
+            Some({ body, args, ty, .. }) => {
+              self.tracer.println("Inline threshold \{n} \{size(body)}")
+              let fn_like_args = args
+                .filter(fn(x) { x.1.is_fn_like() })
+                .length() +
+                ty.is_fn_like().to_int()
+              self.tracer.println("Fn like \{fn_like_args}")
+              if size(body) * n < 20 || fn_like_args > 0 {
+                self.tracer.println("Inline decision \{f} accepted")
+                replace()
+              } else {
+                self.tracer.println("Inline decision \{f} rejected")
+                knf
               }
-              None => knf
             }
-          _ => knf
-        }
+            None => knf
+          }
+        _ => knf
       }
     }
     _ => knf
@@ -459,6 +460,8 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   call_freq(knf, Env::new(), freq)
   let knf = self.dfe(freq, Env::new(), knf)
   self.tracer.record("knf_after_inline_\{n}", knf.to_pretty_print())
+  let knf = beta_reduce(Env::new(), knf)
+  let knf = assoc(knf)
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
   let knf = beta_reduce(Env::new(), knf)
