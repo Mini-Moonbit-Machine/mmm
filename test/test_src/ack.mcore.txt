@@ -16,56 +16,73 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl ack1l0_0
-  .type ack1l0_0, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-ack1l0_0:
-.ack1l0_0_8:
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main17.22
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main17.22
+  .type main17.22, @function
+# leaf false
+main17.22:
+.main17.22_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 3
+  li a1, 8
+  call ack1.21
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl ack1.21
+  .type ack1.21, @function
+# leaf false
+ack1.21:
+.ack1.21_8:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
 
-.ack1l0_0_0:
-  bge zero, a0, .ack1l0_0_1
+.ack1.21_0:
+  bge zero, a0, .ack1.21_1
 
-.ack1l0_0_2:
-  bge zero, a1, .ack1l0_0_3
+.ack1.21_2:
+  bge zero, a1, .ack1.21_3
 
-.ack1l0_0_4:
+.ack1.21_4:
   addi s0, a0, -1
   addi a1, a1, -1
-  call ack1l0_0
+  call ack1.21
   mv a1, a0
   mv a0, s0
-  j .ack1l0_0_0
+  j .ack1.21_0
 
-.ack1l0_0_1:
+.ack1.21_1:
   addi a0, a1, 1
 
-.ack1l0_0_6:
+.ack1.21_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
-.ack1l0_0_3:
+.ack1.21_3:
   addi a0, a0, -1
   li a1, 1
-  j .ack1l0_0_0
-
-  .p2align 2
-  .text
-  .globl T$start_4
-  .type T$start_4, @function
-# leaf false
-T$start_4:
-.T$start_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main17l1_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+  j .ack1.21_0
 
   .p2align 2
   .text
@@ -81,29 +98,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main17l1_1
-  .type main17l1_1, @function
-# leaf false
-main17l1_1:
-.main17l1_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 3
-  li a1, 8
-  call ack1l0_0
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

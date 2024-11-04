@@ -16,72 +16,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl main17.31
+  .type main17.31, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main17l1_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl inprod1l0_0
-  .type inprod1l0_0, @function
-# leaf true
-inprod1l0_0:
-.inprod1l0_0_5:
-
-.inprod1l0_0_0:
-  blt a2, zero, .inprod1l0_0_2
-
-.inprod1l0_0_1:
-  th.addsl a3, a0, a2, 3
-  fld fa1, 0(a3)
-  th.addsl a3, a1, a2, 3
-  fld fa2, 0(a3)
-  fmadd.d fa0, fa1, fa2, fa0
-  addi a2, a2, -1
-  j .inprod1l0_0_0
-
-.inprod1l0_0_2:
-
-.inprod1l0_0_3:
-  ret
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s11, 16(sp)
-  la s11, large_heap_end
-  mv s0, sp
-  la sp, large_stack_end
-  call T$start_4
-  mv sp, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s11, 16(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main17l1_1
-  .type main17l1_1, @function
-# leaf false
-main17l1_1:
-.main17l1_1_0:
+main17.31:
+.main17.31_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -100,7 +39,7 @@ main17l1_1:
   fsd fa0, 16(a1)
   fmv.d.x fa0, zero
   li a2, 2
-  call inprod1l0_0
+  call inprod1.30
   li a0, 4696837146684686336
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
@@ -108,6 +47,72 @@ main17l1_1:
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main17.31
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call T$start
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl inprod1.30
+  .type inprod1.30, @function
+# leaf true
+inprod1.30:
+.inprod1.30_5:
+  mv a3, a0
+  mv a0, a2
+  mv a2, a3
+  mv a3, a0
+
+.inprod1.30_0:
+  blt a3, zero, .inprod1.30_2
+
+.inprod1.30_1:
+  th.addsl a0, a2, a3, 3
+  fld fa1, 0(a0)
+  th.addsl a0, a1, a3, 3
+  fld fa2, 0(a0)
+  fmadd.d fa0, fa1, fa2, fa0
+  addi a0, a3, -1
+  mv a3, a0
+  j .inprod1.30_0
+
+.inprod1.30_2:
+
+.inprod1.30_3:
   ret
 
 __end_text:

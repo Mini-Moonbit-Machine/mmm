@@ -7,14 +7,127 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$limit.1_0 #f0 : fn() -> double
+.fn T$iter.3 #f4 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 300
+  }
+}
+.fn T$c_re.5 #f8 : fn() -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load_symbol ::3
+    let %1: double = neg(%0)
+    return %1
+  }
+}
+.fn T$limit.1 #f0 : fn() -> double
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     return 2
   }
 }
-.fn print_loop68l2_14 #f14 : fn(int32, int32, int32, int32, array[int32]) -> unit
+.fn calc_pixel7.111 #f12 : fn(double, double, int32, double, double, int32, double) -> int32
+.freevars ()
+.entry b8 {
+  .bb #b0 (double, double, int32, double, double, int32, double) {
+    let %0: double = mul($b0.0, $b0.0)
+    let %1: double = mul($b0.1, $b0.1)
+    let %2: int32 = load_symbol ::2
+    let %3: bool = eq($b0.2, %2)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: int32 = load_symbol ::2
+    jump b6(%4)
+  }
+  .bb #b2 () {
+    let %5: double = add(%0, %1)
+    let %6: double = load_symbol ::1
+    let %7: bool = le(%6, %5)
+    br %7 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5($b0.2)
+  }
+  .bb #b4 () {
+    let %8: double = mul(2, $b0.0)
+    let %9: double = mul(%8, $b0.1)
+    let %10: double = load_symbol ::5
+    let %11: double = add(%9, %10)
+    let %12: double = sub(%0, %1)
+    let %13: double = load_symbol ::4
+    let %14: double = add(%12, %13)
+    let %15: int32 = add($b0.2, 1)
+    let %16: double = load_symbol ::5
+    let %17: double = load_symbol ::4
+    let %18: int32 = load_symbol ::2
+    let %19: double = load_symbol ::1
+    jump b0(%14, %11, %15, %16, %17, %18, %19)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .loop #b7 pre #Some(b8) header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2, $f3, $f4, $f5, $f6)
+  }
+}
+.fn T$_4 #f6 : fn() -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 0.123
+  }
+}
+.fn T$c_im.6 #f10 : fn() -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 0.745
+  }
+}
+.fn main94.114 #f15 : fn(double, double, int32, double) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let %1: int32 = mul(%0, 2)
+    let %2: int32 = mul(%1, %0)
+    let _ = alloc <m0: array[int32] heap(%2)> <- [..] = 0
+    let %4: double = load_symbol ::5
+    let %5: double = load_symbol ::4
+    let %6: int32 = load_symbol ::2
+    let %7: double = load_symbol ::1
+    let %8: unit = call f13(%1, %0, 0, 0, f15.m0, %4, %5, %6, %7)
+    let %9: unit = call f14(%1, %0, 0, 0, f15.m0)
+    return ()
+  }
+}
+.fn T$limit_sq.2 #f2 : fn() -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load_symbol ::0
+    let %1: double = load_symbol ::0
+    let %2: double = mul(%0, %1)
+    return %2
+  }
+}
+.fn print_loop68.113 #f14 : fn(int32, int32, int32, int32, array[int32]) -> unit
 .freevars ()
 .entry b8 {
   .bb #b0 (int32, int32, int32, int32, array[int32]) {
@@ -60,38 +173,19 @@
     jump b7($f0, $f1, $f2, $f3, $f4)
   }
 }
-.fn T$_4_6 #f6 : fn() -> double
+.fn T$start #f20 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    return 0.123
+    let %0: double = load_symbol ::5
+    let %1: double = load_symbol ::4
+    let %2: int32 = load_symbol ::2
+    let %3: double = load_symbol ::1
+    let %4: unit = call f15(%0, %1, %2, %3)
+    return %4
   }
 }
-.fn main94l3_15 #f15 : fn(double, double, int32, double) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let %1: int32 = mul(%0, 2)
-    let %2: int32 = mul(%1, %0)
-    let _ = alloc <m0: array[int32] heap(%2)> <- [..] = 0
-    let %4: double = load_symbol ::5
-    let %5: double = load_symbol ::4
-    let %6: int32 = load_symbol ::2
-    let %7: double = load_symbol ::1
-    let %8: unit = call f13(%1, %0, 0, 0, f15.m0, %4, %5, %6, %7)
-    let %9: unit = call f14(%1, %0, 0, 0, f15.m0)
-    return ()
-  }
-}
-.fn T$c_im.6_10 #f10 : fn() -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return 0.745
-  }
-}
-.fn main_loop30l1_13 #f13 : fn(int32, int32, int32, int32, array[int32], double, double, int32, double) -> unit
+.fn main_loop30.112 #f13 : fn(int32, int32, int32, int32, array[int32], double, double, int32, double) -> unit
 .freevars ()
 .entry b14 {
   .bb #b0 (int32, int32, int32, int32, array[int32], double, double, int32, double) {
@@ -182,100 +276,6 @@
   }
   .bb #b14 () {
     jump b13($f0, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
-  }
-}
-.fn T$c_re.5_8 #f8 : fn() -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = load_symbol ::3
-    let %1: double = neg(%0)
-    return %1
-  }
-}
-.fn T$start_20 #f20 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = load_symbol ::5
-    let %1: double = load_symbol ::4
-    let %2: int32 = load_symbol ::2
-    let %3: double = load_symbol ::1
-    let %4: unit = call f15(%0, %1, %2, %3)
-    return %4
-  }
-}
-.fn calc_pixel7l0_12 #f12 : fn(double, double, int32, double, double, int32, double) -> int32
-.freevars ()
-.entry b8 {
-  .bb #b0 (double, double, int32, double, double, int32, double) {
-    let %0: double = mul($b0.0, $b0.0)
-    let %1: double = mul($b0.1, $b0.1)
-    let %2: int32 = load_symbol ::2
-    let %3: bool = eq($b0.2, %2)
-    br %3 b1() b2()
-  }
-  .bb #b1 () {
-    let %4: int32 = load_symbol ::2
-    jump b6(%4)
-  }
-  .bb #b2 () {
-    let %5: double = add(%0, %1)
-    let %6: double = load_symbol ::1
-    let %7: bool = le(%6, %5)
-    br %7 b3() b4()
-  }
-  .bb #b3 () {
-    jump b5($b0.2)
-  }
-  .bb #b4 () {
-    let %8: double = mul(2, $b0.0)
-    let %9: double = mul(%8, $b0.1)
-    let %10: double = load_symbol ::5
-    let %11: double = add(%9, %10)
-    let %12: double = sub(%0, %1)
-    let %13: double = load_symbol ::4
-    let %14: double = add(%12, %13)
-    let %15: int32 = add($b0.2, 1)
-    let %16: double = load_symbol ::5
-    let %17: double = load_symbol ::4
-    let %18: int32 = load_symbol ::2
-    let %19: double = load_symbol ::1
-    jump b0(%14, %11, %15, %16, %17, %18, %19)
-  }
-  .bb #b5 (int32) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (int32) {
-    return $b6.0
-  }
-  .loop #b7 pre #Some(b8) header #b0 {
-    .block #b6
-    .block #b4
-    .block #b1
-    .block #b5
-    .block #b2
-    .block #b3
-  }
-  .bb #b8 () {
-    jump b7($f0, $f1, $f2, $f3, $f4, $f5, $f6)
-  }
-}
-.fn T$limit_sq.2_2 #f2 : fn() -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = load_symbol ::0
-    let %1: double = load_symbol ::0
-    let %2: double = mul(%0, %1)
-    return %2
-  }
-}
-.fn T$iter.3_4 #f4 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return 300
   }
 }
 .thunk ::0 limit.1

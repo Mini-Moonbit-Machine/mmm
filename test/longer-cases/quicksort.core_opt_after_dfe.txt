@@ -7,15 +7,31 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$start_12 #f12 : fn() -> unit
+.fn main75.145 #f5 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
+    let %0: int32 = ext_call minimbt_read_int()
+    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
+    let %2: unit = call f3(0, f5.m0, %0)
+    let %3: int32 = sub(%0, 1)
+    let %4: unit = call f2(f5.m0, 0, %3)
+    let %5: unit = call f4(0, f5.m0, %0)
+    return %5
   }
 }
-.fn input79l3_3 #f3 : fn(int32, array[int32], int32) -> unit
+.fn swap1.142 #f0 : fn(array[int32], int32, int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f0, $f1 * @32)
+    let %1: int32 = load int32 offset($f0, $f2 * @32)
+    let _ = store int32 offset($f0, $f1 * @32) <- %1
+    let _ = store int32 offset($f0, $f2 * @32) <- %0
+    return ()
+  }
+}
+.fn input79.146 #f3 : fn(int32, array[int32], int32) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, array[int32], int32) {
@@ -44,20 +60,15 @@
     jump b4($f0, $f1, $f2)
   }
 }
-.fn main75l2_5 #f5 : fn() -> unit
+.fn T$start #f12 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
-    let %2: unit = call f3(0, f5.m0, %0)
-    let %3: int32 = sub(%0, 1)
-    let %4: unit = call f2(f5.m0, 0, %3)
-    let %5: unit = call f4(0, f5.m0, %0)
-    return %5
+    let %0: unit = call f5()
+    return %0
   }
 }
-.fn output97l4_4 #f4 : fn(int32, array[int32], int32) -> unit
+.fn output97.147 #f4 : fn(int32, array[int32], int32) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, array[int32], int32) {
@@ -87,7 +98,7 @@
     jump b4($f0, $f1, $f2)
   }
 }
-.fn quicksort59l1_2 #f2 : fn(array[int32], int32, int32) -> unit
+.fn quicksort59.143 #f2 : fn(array[int32], int32, int32) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (array[int32], int32, int32) {
@@ -168,17 +179,6 @@
   }
   .bb #b23 () {
     jump b22($b0.1, f2.m0, $b0.0, %2, $b0.2)
-  }
-}
-.fn swap1l0_0 #f0 : fn(array[int32], int32, int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f0, $f1 * @32)
-    let %1: int32 = load int32 offset($f0, $f2 * @32)
-    let _ = store int32 offset($f0, $f1 * @32) <- %1
-    let _ = store int32 offset($f0, $f2 * @32) <- %0
-    return ()
   }
 }
 .thunk ::0 start

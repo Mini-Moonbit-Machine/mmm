@@ -7,23 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$start_16 #f16 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn do6.62l1c0_14 #f14 : closure(closure(int32) -> bool) -> bool
-.freevars (int32, array[int32])
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = call f1($f0, ^1, ^2)
-    return %0
-  }
-}
-.fn do6.62l1_1 #f1 : fn(closure(int32) -> bool, int32, array[int32]) -> bool
+.fn do6.81 #f1 : fn(closure(int32) -> bool, int32, array[int32]) -> bool
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -31,7 +15,15 @@
     return %0
   }
 }
-.fn yield25.74l3_3 #f3 : fn(int32) -> bool
+.fn do6.83 #f14 : closure(closure(int32) -> bool) -> bool
+.freevars (int32, array[int32])
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = call f1($f0, ^1, ^2)
+    return %0
+  }
+}
+.fn yield25.85 #f3 : fn(int32) -> bool
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -39,7 +31,15 @@
     return true
   }
 }
-.fn main33l0_5 #f5 : fn() -> unit
+.fn print59.84 #f2 : fn(int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = ext_call minimbt_print_int($f0)
+    return %0
+  }
+}
+.fn main33.80 #f5 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -54,15 +54,27 @@
     return %7
   }
 }
-.fn yield25.74l3c0_11 #f11 : closure(int32) -> bool
+.fn do30.86 #f4 : fn(closure(closure(int32) -> bool) -> bool) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: bool = call f3($f0)
-    return %0
+    let _ = alloc <m0: closure(int32) -> bool heap(1)> <- [0] = f11
+    let %1: bool = apply $f0(f4.m0)
+    let %2: bool = eq(%1, true)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    let %3: unit = call f4($f0)
+    jump b3(%3)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
   }
 }
-.fn next9.64l2_0 #f0 : fn(int32, int32, array[int32], closure(int32) -> bool) -> bool
+.fn next9.82 #f0 : fn(int32, int32, array[int32], closure(int32) -> bool) -> bool
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -94,32 +106,20 @@
     return $b6.0
   }
 }
-.fn print59l2_2 #f2 : fn(int32) -> unit
+.fn T$start #f16 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = ext_call minimbt_print_int($f0)
+    let %0: unit = call f5()
     return %0
   }
 }
-.fn do30.77l4_4 #f4 : fn(closure(closure(int32) -> bool) -> bool) -> unit
+.fn yield25.87 #f11 : closure(int32) -> bool
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> bool heap(1)> <- [0] = f11
-    let %1: bool = apply $f0(f4.m0)
-    let %2: bool = eq(%1, true)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let %3: unit = call f4($f0)
-    jump b3(%3)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
+    let %0: bool = call f3($f0)
+    return %0
   }
 }
 .thunk ::0 start

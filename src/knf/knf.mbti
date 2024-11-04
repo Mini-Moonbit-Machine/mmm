@@ -128,17 +128,25 @@ impl LICM {
 pub struct LambdaLiftEnv {
   pub name_ctx : @hashmap.T[@minimbt.Name, (@minimbt.Name, Array[@minimbt.Name], Array[@minimbt.Name], @minimbt.Type)]
   pub type_ctx : @hashmap.T[@minimbt.Name, @minimbt.Type]
-  pub free_set_closure : Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]]
-  pub top_bindings : Array[Binding]
-  pub top_names : @moonbitlang/core/hashset.T[@minimbt.Name]
-  pub lifted_counter : UInt
-  pub closure_counter : UInt
+  pub knf_env : KnfEnv
   pub tracer : @util.SubTracer
 }
 impl LambdaLiftEnv {
   eta_expand(Self, @minimbt.Name) -> (Array[Binding], @minimbt.Name, Self)
-  go(Self, Knf) -> Knf
-  new(@util.SubTracer) -> Self
+  new(KnfEnv, @util.SubTracer) -> Self
+}
+
+pub struct LambdaLifter {
+  pub knf : Knf
+  pub free_set_closure : Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]]
+  pub knf_env : KnfEnv
+  pub top_bindings : Array[Binding]
+  pub top_names : @moonbitlang/core/hashset.T[@minimbt.Name]
+  pub tracer : @util.SubTracer
+}
+impl LambdaLifter {
+  go(Self) -> Knf
+  new(@util.SubTracer, Knf) -> Self
 }
 
 type PrettyKnf

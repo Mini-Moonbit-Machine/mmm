@@ -16,45 +16,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl dbl10_1
-  .type dbl10_1, @function
-# leaf true
-dbl10_1:
-.dbl10_1_0:
-  add a0, a0, a0
-  ret
-
-  .p2align 2
-  .text
-  .globl dec17_3
-  .type dec17_3, @function
-# leaf true
-dec17_3:
-.dec17_3_0:
-  addi a0, a0, -1
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_12
-  .type T$start_12, @function
+  .globl composed6
+  .type composed6, @function
 # leaf false
-T$start_12:
-.T$start_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main21_4
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl composed6_6
-  .type composed6_6, @function
-# leaf false
-composed6_6:
-.composed6_6_0:
+composed6:
+.composed6_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -74,61 +40,52 @@ composed6_6:
 
   .p2align 2
   .text
-  .globl inc13_2
-  .type inc13_2, @function
+  .globl compose1
+  .type compose1, @function
 # leaf true
-inc13_2:
-.inc13_2_0:
+compose1:
+.compose1_0:
+  addi a2, s11, -24
+  andi s11, a2, -8
+  la a3, composed6
+  sd a3, 0(a2)
+  sd a0, 8(a2)
+  sd a1, 16(a2)
+  mv a0, a2
+  ret
+
+  .p2align 2
+  .text
+  .globl inc13
+  .type inc13, @function
+# leaf true
+inc13:
+.inc13_0:
   addi a0, a0, 1
   ret
 
   .p2align 2
   .text
-  .globl main21_4
-  .type main21_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-main21_4:
-.main21_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, dbl10_1
-  sd a1, 0(a0)
-  addi a1, s11, -8
-  andi s11, a1, -8
-  la a2, dec17_3
-  sd a2, 0(a1)
-  call compose1_0
-  mv a1, a0
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a2, inc13_2
-  sd a2, 0(a0)
-  call compose1_0
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 123
-  jalr a1
-  call minimbt_print_int
+  call main21
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl compose1_0
-  .type compose1_0, @function
+  .globl dbl10
+  .type dbl10, @function
 # leaf true
-compose1_0:
-.compose1_0_0:
-  addi a2, s11, -24
-  andi s11, a2, -8
-  la a3, composed6_6
-  sd a3, 0(a2)
-  sd a0, 8(a2)
-  sd a1, 16(a2)
-  mv a0, a2
+dbl10:
+.dbl10_0:
+  add a0, a0, a0
   ret
 
   .p2align 2
@@ -145,12 +102,55 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_12
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main21
+  .type main21, @function
+# leaf false
+main21:
+.main21_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -8
+  andi s11, a0, -8
+  la a1, dbl10
+  sd a1, 0(a0)
+  addi a1, s11, -8
+  andi s11, a1, -8
+  la a2, dec17
+  sd a2, 0(a1)
+  call compose1
+  mv a1, a0
+  addi a0, s11, -8
+  andi s11, a0, -8
+  la a2, inc13
+  sd a2, 0(a0)
+  call compose1
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 123
+  jalr a1
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl dec17
+  .type dec17, @function
+# leaf true
+dec17:
+.dec17_0:
+  addi a0, a0, -1
   ret
 
 __end_text:

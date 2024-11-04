@@ -16,11 +16,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main1l0_0
-  .type main1l0_0, @function
+  .globl main1.36
+  .type main1.36, @function
 # leaf false
-main1l0_0:
-.main1l0_0_0:
+main1.36:
+.main1.36_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 4607182418800017408
@@ -56,36 +56,50 @@ main1l0_0:
   li a0, 4611686018427387904
   fmv.d.x fa1, a0
   fle.d a0, fa0, fa1
-  beq a0, zero, .main1l0_0_2
+  beq a0, zero, .main1.36_2
 
-.main1l0_0_1:
+.main1.36_1:
   li a0, 1
   call minimbt_print_int
 
-.main1l0_0_3:
+.main1.36_3:
   li a0, 4607182418800017408
   fmv.d.x fa0, a0
   feq.d a0, fa0, fa0
-  beq a0, zero, .main1l0_0_5
+  beq a0, zero, .main1.36_5
 
-.main1l0_0_4:
+.main1.36_4:
   li a0, 1
   call minimbt_print_int
 
-.main1l0_0_6:
+.main1.36_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.main1l0_0_2:
+.main1.36_2:
   mv a0, zero
   call minimbt_print_int
-  j .main1l0_0_3
+  j .main1.36_3
 
-.main1l0_0_5:
+.main1.36_5:
   mv a0, zero
   call minimbt_print_int
-  j .main1l0_0_6
+  j .main1.36_6
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main1.36
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
 
   .p2align 2
   .text
@@ -101,26 +115,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_2
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_2
-  .type T$start_2, @function
-# leaf false
-T$start_2:
-.T$start_2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main1l0_0
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

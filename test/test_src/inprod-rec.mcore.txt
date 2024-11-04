@@ -16,25 +16,25 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main15l1_1
+  call main15.28
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main15l1_1
-  .type main15l1_1, @function
+  .globl main15.28
+  .type main15.28, @function
 # leaf false
-main15l1_1:
-.main15l1_1_0:
+main15.28:
+.main15.28_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -52,7 +52,7 @@ main15l1_1:
   fsd fa0, 8(a1)
   fsd fa0, 16(a1)
   li a2, 2
-  call inprod1l0_0
+  call inprod1.27
   li a0, 4696837146684686336
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
@@ -61,44 +61,6 @@ main15l1_1:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl inprod1l0_0
-  .type inprod1l0_0, @function
-# leaf false
-inprod1l0_0:
-.inprod1l0_0_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  fsd fs0, 8(sp)
-  fsd fs1, 16(sp)
-  mv a3, a0
-  mv a4, a1
-  mv a1, a2
-  blt a1, zero, .inprod1l0_0_2
-
-.inprod1l0_0_1:
-  th.addsl a0, a3, a1, 3
-  fld fs0, 0(a0)
-  th.addsl a0, a4, a1, 3
-  fld fs1, 0(a0)
-  addi a2, a1, -1
-  mv a0, a3
-  mv a1, a4
-  call inprod1l0_0
-  fmadd.d fa0, fs0, fs1, fa0
-
-.inprod1l0_0_3:
-  ld ra, 0(sp)
-  fld fs0, 8(sp)
-  fld fs1, 16(sp)
-  addi sp, sp, 32
-  ret
-
-.inprod1l0_0_2:
-  fmv.d.x fa0, zero
-  j .inprod1l0_0_3
 
   .p2align 2
   .text
@@ -114,13 +76,46 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
+
+  .p2align 2
+  .text
+  .globl inprod1.27
+  .type inprod1.27, @function
+# leaf false
+inprod1.27:
+.inprod1.27_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  fsd fs0, 8(sp)
+  fsd fs1, 16(sp)
+  blt a2, zero, .inprod1.27_2
+
+.inprod1.27_1:
+  th.addsl a3, a0, a2, 3
+  fld fs0, 0(a3)
+  th.addsl a3, a1, a2, 3
+  fld fs1, 0(a3)
+  addi a2, a2, -1
+  call inprod1.27
+  fmadd.d fa0, fs0, fs1, fa0
+
+.inprod1.27_3:
+  ld ra, 0(sp)
+  fld fs0, 8(sp)
+  fld fs1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+.inprod1.27_2:
+  fmv.d.x fa0, zero
+  j .inprod1.27_3
 
 __end_text:
   .p2align 2

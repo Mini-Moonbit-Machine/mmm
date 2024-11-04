@@ -7,7 +7,117 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main85l3_5 #f5 : fn() -> unit
+.fn loop148.240 #f2 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: int32 = sub($f2, 1)
+    let %2: array[double] = load array[double] offset($f5, $f0 * @ptr)
+    let %3: array[double] = load array[double] offset($f5, $f0 * @ptr)
+    let %4: array[double] = load array[double] offset($f3, $f0 * @ptr)
+    let %5: unit = call f1($f0, $f1, %1, $f3, $f4, $f5, %2, %3, %4)
+    let %6: int32 = sub($f0, 1)
+    let %7: unit = call f2(%6, $f1, $f2, $f3, $f4, $f5)
+    jump b3(%7)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn make_arr103.243 #f4 : fn(int32, int32, array[double]) -> array[array[double]]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[array[double]] heap($f0)> <- [..] = $f2
+    let %1: int32 = sub($f0, 1)
+    let %2: unit = call f3(%1, $f1, f4.m0)
+    return f4.m0
+  }
+}
+.fn init_arr89.242 #f3 : fn(int32, int32, array[array[double]]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = alloc <m0: array[double] heap($f1)> <- [..] = 0
+    let _ = store array[double] offset($f2, $f0 * @ptr) <- f3.m0
+    let %3: int32 = sub($f0, 1)
+    let %4: unit = call f3(%3, $f1, $f2)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn loop228.239 #f1 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: int32 = sub($f1, 1)
+    let %2: unit = call f0($f0, $f2, %1, $f3, $f4, $f5, $f6, $f7, $f8)
+    let %3: int32 = sub($f2, 1)
+    let %4: unit = call f1($f0, $f1, %3, $f3, $f4, $f5, $f6, $f7, $f8)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn loop31.238 #f0 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f2)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: double = load double offset($f7, $f1 * @64)
+    let %2: double = load double offset($f8, $f2 * @64)
+    let %3: array[double] = load array[double] offset($f4, $f2 * @ptr)
+    let %4: double = load double offset(%3, $f1 * @64)
+    let %5: double = mul(%2, %4)
+    let %6: double = add(%1, %5)
+    let _ = store double offset($f6, $f1 * @64) <- %6
+    let %8: int32 = sub($f2, 1)
+    let %9: unit = call f0($f0, $f1, %8, $f3, $f4, $f5, $f6, $f7, $f8)
+    jump b3(%9)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn T$start #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn main85.241 #f5 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -61,116 +171,6 @@
     let %47: int32 = conv.d2i.rtz(%46)
     let %48: unit = ext_call minimbt_print_int(%47)
     return ()
-  }
-}
-.fn loop31l0_0 #f0 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le(0, $f2)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    let %1: double = load double offset($f7, $f1 * @64)
-    let %2: double = load double offset($f8, $f2 * @64)
-    let %3: array[double] = load array[double] offset($f4, $f2 * @ptr)
-    let %4: double = load double offset(%3, $f1 * @64)
-    let %5: double = mul(%2, %4)
-    let %6: double = add(%1, %5)
-    let _ = store double offset($f6, $f1 * @64) <- %6
-    let %8: int32 = sub($f2, 1)
-    let %9: unit = call f0($f0, $f1, %8, $f3, $f4, $f5, $f6, $f7, $f8)
-    jump b3(%9)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn T$start_12 #f12 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn loop228l1_1 #f1 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]], array[double], array[double], array[double]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le(0, $f2)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    let %1: int32 = sub($f1, 1)
-    let %2: unit = call f0($f0, $f2, %1, $f3, $f4, $f5, $f6, $f7, $f8)
-    let %3: int32 = sub($f2, 1)
-    let %4: unit = call f1($f0, $f1, %3, $f3, $f4, $f5, $f6, $f7, $f8)
-    jump b3(%4)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn make_arr103l5_4 #f4 : fn(int32, int32, array[double]) -> array[array[double]]
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: array[array[double]] heap($f0)> <- [..] = $f2
-    let %1: int32 = sub($f0, 1)
-    let %2: unit = call f3(%1, $f1, f4.m0)
-    return f4.m0
-  }
-}
-.fn init_arr89l4_3 #f3 : fn(int32, int32, array[array[double]]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le(0, $f0)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    let _ = alloc <m0: array[double] heap($f1)> <- [..] = 0
-    let _ = store array[double] offset($f2, $f0 * @ptr) <- f3.m0
-    let %3: int32 = sub($f0, 1)
-    let %4: unit = call f3(%3, $f1, $f2)
-    jump b3(%4)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn loop148l2_2 #f2 : fn(int32, int32, int32, array[array[double]], array[array[double]], array[array[double]]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le(0, $f0)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    let %1: int32 = sub($f2, 1)
-    let %2: array[double] = load array[double] offset($f5, $f0 * @ptr)
-    let %3: array[double] = load array[double] offset($f5, $f0 * @ptr)
-    let %4: array[double] = load array[double] offset($f3, $f0 * @ptr)
-    let %5: unit = call f1($f0, $f1, %1, $f3, $f4, $f5, %2, %3, %4)
-    let %6: int32 = sub($f0, 1)
-    let %7: unit = call f2(%6, $f1, $f2, $f3, $f4, $f5)
-    jump b3(%7)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
   }
 }
 .thunk ::0 start

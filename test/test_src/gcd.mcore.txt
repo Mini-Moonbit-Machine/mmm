@@ -16,14 +16,48 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl gcd1.13
+  .type gcd1.13, @function
+# leaf true
+gcd1.13:
+.gcd1.13_8:
+  mv a2, a0
+  mv a0, a1
+  mv a1, a0
+
+.gcd1.13_0:
+  beq a2, zero, .gcd1.13_1
+
+.gcd1.13_2:
+  blt a1, a2, .gcd1.13_4
+
+.gcd1.13_3:
+  sub a0, a1, a2
+  mv a1, a0
+  j .gcd1.13_0
+
+.gcd1.13_1:
+  mv a0, a1
+
+.gcd1.13_6:
+  ret
+
+.gcd1.13_4:
+  sub a0, a2, a1
+  mv a2, a1
+  mv a1, a0
+  j .gcd1.13_0
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main9l1_1
+  call main9.14
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -42,7 +76,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -52,48 +86,16 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl gcd1l0_0
-  .type gcd1l0_0, @function
-# leaf true
-gcd1l0_0:
-.gcd1l0_0_8:
-  mv a2, a0
-  mv a0, a1
-  mv a1, a2
-
-.gcd1l0_0_0:
-  beq a1, zero, .gcd1l0_0_1
-
-.gcd1l0_0_2:
-  blt a0, a1, .gcd1l0_0_4
-
-.gcd1l0_0_3:
-  sub a0, a0, a1
-  j .gcd1l0_0_0
-
-.gcd1l0_0_1:
-
-.gcd1l0_0_6:
-  ret
-
-.gcd1l0_0_4:
-  sub a2, a1, a0
-  mv a1, a0
-  mv a0, a2
-  j .gcd1l0_0_0
-
-  .p2align 2
-  .text
-  .globl main9l1_1
-  .type main9l1_1, @function
+  .globl main9.14
+  .type main9.14, @function
 # leaf false
-main9l1_1:
-.main9l1_1_0:
+main9.14:
+.main9.14_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 21600
   li a1, 337500
-  call gcd1l0_0
+  call gcd1.13
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
