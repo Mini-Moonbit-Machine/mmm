@@ -26,19 +26,6 @@ let rec calc_pixel.7: Int = (zr.8: Double, zi.9: Double, it.10: Int) {
     }
   }
 }
-let rec clamp.22: Int = (i.23: Int) {
-  let _24: Int = Int(0)
-  if (i.23 <= _24) then {
-    Int(0)
-  } else {
-    let _25: Int = Int(48)
-    if (_25 <= i.23) then {
-      Int(48)
-    } else {
-      Var(i.23)
-    }
-  }
-}
 let rec main_loop.26: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31: Array(Int)) {
   if (y.30 == h.28) then {
     Unit
@@ -68,11 +55,28 @@ let rec main_loop.26: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31
       let res.51: Int = Apply(calc_pixel.7, [cr.42, ci.49, _50, ])
       let _52: Int = Mul(y.30, w.27)
       let _53: Int = Add(_52, x.29)
-      let _54: Int = Apply(clamp.22, [res.51, ])
-      let _55: Unit = Put ret.31[_53] = _54
-      let _56: Int = Int(1)
-      let _57: Int = Add(x.29, _56)
-      Apply(main_loop.26, [w.27, h.28, _57, y.30, ret.31, ])
+      let _90: Int = Int(0)
+      if (res.51 <= _90) then {
+        let _54: Int = Int(0)
+        let _55: Unit = Put ret.31[_53] = _54
+        let _56: Int = Int(1)
+        let _57: Int = Add(x.29, _56)
+        Apply(main_loop.26, [w.27, h.28, _57, y.30, ret.31, ])
+      } else {
+        let _91: Int = Int(48)
+        if (_91 <= res.51) then {
+          let _54: Int = Int(48)
+          let _55: Unit = Put ret.31[_53] = _54
+          let _56: Int = Int(1)
+          let _57: Int = Add(x.29, _56)
+          Apply(main_loop.26, [w.27, h.28, _57, y.30, ret.31, ])
+        } else {
+          let _55: Unit = Put ret.31[_53] = res.51
+          let _56: Int = Int(1)
+          let _57: Int = Add(x.29, _56)
+          Apply(main_loop.26, [w.27, h.28, _57, y.30, ret.31, ])
+        }
+      }
     }
   }
 }

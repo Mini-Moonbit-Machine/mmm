@@ -15,92 +15,155 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl input.272
-  .type input.272, @function
+  .globl sort_3.211
+  .type sort_3.211, @function
 # leaf false
-input.272:
-.input.272_5:
-  addi sp, sp, -32
+sort_3.211:
+.sort_3.211_0:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
   mv s0, a0
   mv s1, a1
   mv s2, a2
-
-.input.272_0:
-  addi a0, s2, -1
-  blt a0, s0, .input.272_2
-
-.input.272_1:
-  call minimbt_read_int
-  slliw a1, s0, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s0, a0
-  j .input.272_0
-
-.input.272_2:
-  mv a0, zero
-
-.input.272_3:
+  mv s3, a3
+  mv s4, a4
+  mv a0, s0
+  mv a1, s1
+  mv a2, s3
+  mv a3, s4
+  call sort_2.210
+  mv a0, s1
+  mv a1, s2
+  mv a2, s3
+  mv a3, s4
+  call sort_2.210
+  mv a0, s0
+  mv a1, s1
+  mv a2, s3
+  mv a3, s4
+  call sort_2.210
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  addi sp, sp, 48
   ret
 
   .p2align 2
   .text
-  .globl sort_2.269
-  .type sort_2.269, @function
-# leaf true
-sort_2.269:
-.sort_2.269_0:
-  mv a4, a1
-  mv a1, a3
-  slliw a3, a4, 2
-  add a3, a2, a3
-  lw a3, 0(a3)
-  slliw a5, a0, 2
-  add a5, a2, a5
-  lw a5, 0(a5)
-  addi a5, a5, -1
-  blt a5, a3, .sort_2.269_2
-
-.sort_2.269_1:
-  slliw a0, a0, 2
-  add a3, a2, a0
-  lw a3, 0(a3)
-  slliw a4, a4, 2
-  add a5, a2, a4
-  lw a5, 0(a5)
-  add a0, a2, a0
-  sw a5, 0(a0)
-  add a0, a2, a4
-  sw a3, 0(a0)
-  lw a0, 0(a1)
-  addi a0, a0, 1
-  sw a0, 0(a1)
-  mv a0, zero
-
-.sort_2.269_3:
-  ret
-
-.sort_2.269_2:
-  mv a0, zero
-  j .sort_2.269_3
-
-  .p2align 2
-  .text
-  .globl main.271
-  .type main.271, @function
+  .globl f.206
+  .type f.206, @function
 # leaf false
-main.271:
-.main.271_0:
+f.206:
+.f.206_5:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+  mv s3, a3
+
+.f.206_0:
+  addi a0, s3, -1
+  blt a0, s0, .f.206_2
+
+.f.206_1:
+
+.f.206_15:
+  mv a1, s0
+
+.f.206_7:
+  addi a0, s2, 1
+  blt a1, a0, .f.206_9
+
+.f.206_8:
+  slliw a0, a1, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  addi a2, a1, -1
+  slliw a2, a2, 2
+  add a2, s1, a2
+  lw a2, 0(a2)
+  addi a2, a2, -1
+  blt a2, a0, .f.206_11
+
+.f.206_10:
+  addi s4, a1, -1
+  mv a0, s1
+  mv a2, s4
+  call swap.202
+  mv a1, s4
+  j .f.206_7
+
+.f.206_2:
+  mv a0, zero
+
+.f.206_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  addi sp, sp, 48
+  ret
+
+.f.206_9:
+  mv a0, zero
+
+.f.206_13:
+
+.f.206_6:
+  addi a0, s0, 1
+  mv s0, a0
+  j .f.206_0
+
+.f.206_11:
+  mv a0, zero
+
+.f.206_12:
+  j .f.206_13
+
+  .p2align 2
+  .text
+  .globl insertion_sort.204
+  .type insertion_sort.204, @function
+# leaf false
+insertion_sort.204:
+.insertion_sort.204_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a3, a0
+  mv a4, a1
+  mv a5, a2
+  addi a0, a4, 1
+  mv a1, a3
+  mv a2, a4
+  mv a3, a5
+  call f.206
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.213
+  .type main.213, @function
+# leaf false
+main.213:
+.main.213_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -114,15 +177,15 @@ main.271:
   mv a0, zero
   mv a1, s1
   mv a2, s0
-  call input.272
+  call input.214
   mv a0, s1
   mv a1, zero
   mv a2, s0
-  call quick_sort.270
+  call quick_sort.212
   mv a0, s1
   mv a1, zero
   mv a2, s0
-  call output.262
+  call output.203
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -131,12 +194,53 @@ main.271:
 
   .p2align 2
   .text
-  .globl quick_sort.270
-  .type quick_sort.270, @function
+  .globl output.203
+  .type output.203, @function
 # leaf false
-quick_sort.270:
-.quick_sort.270_5:
-  addi sp, sp, -80
+output.203:
+.output.203_5:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s1, a0
+  mv s0, a1
+  mv s2, a2
+
+.output.203_0:
+  addi a0, s2, -1
+  blt a0, s0, .output.203_2
+
+.output.203_1:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  call minimbt_print_int
+  call minimbt_print_endline
+  addi a0, s0, 1
+  mv s0, a0
+  j .output.203_0
+
+.output.203_2:
+  mv a0, zero
+
+.output.203_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl quick_sort.212
+  .type quick_sort.212, @function
+# leaf false
+quick_sort.212:
+.quick_sort.212_5:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -145,24 +249,22 @@ quick_sort.270:
   sd s4, 40(sp)
   sd s5, 48(sp)
   sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  mv s1, a0
-  mv s4, a1
+  mv s0, a0
+  mv s3, a1
   mv s2, a2
 
-.quick_sort.270_0:
-  sub a0, s2, s4
+.quick_sort.212_0:
+  sub a0, s2, s3
   li a1, 16
-  blt a1, a0, .quick_sort.270_2
+  blt a1, a0, .quick_sort.212_2
 
-.quick_sort.270_1:
-  mv a0, s1
-  mv a1, s4
+.quick_sort.212_1:
+  mv a0, s0
+  mv a1, s3
   mv a2, s2
-  call insertion_sort.263
+  call insertion_sort.204
 
-.quick_sort.270_3:
+.quick_sort.212_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -171,172 +273,200 @@ quick_sort.270:
   ld s4, 40(sp)
   ld s5, 48(sp)
   ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  addi sp, sp, 80
+  addi sp, sp, 64
   ret
 
-.quick_sort.270_2:
+.quick_sort.212_2:
 
-.quick_sort.270_32:
-  addi s5, s11, -4
-  andi s11, s5, -8
-  sw zero, 0(s5)
-  sub a0, s2, s4
+.quick_sort.212_47:
+  addi s4, s11, -4
+  andi s11, s4, -8
+  sw zero, 0(s4)
+  sub a0, s2, s3
   li a1, 4
   div a1, a0, a1
   li a2, 2
   mul a1, a1, a2
-  add s0, s4, a1
+  add s1, s3, a1
   li a1, 8
-  blt a0, a1, .quick_sort.270_34
+  blt a0, a1, .quick_sort.212_49
 
-.quick_sort.270_33:
+.quick_sort.212_48:
   li a1, 4
   div a1, a0, a1
   li a2, 1
   mul a2, a1, a2
-  add s6, s4, a2
+  add s6, s3, a2
   li a2, 3
   mul a1, a1, a2
-  add s3, s4, a1
+  add s5, s3, a1
   addi a0, a0, -1
   li a1, 50
-  blt a0, a1, .quick_sort.270_36
+  blt a0, a1, .quick_sort.212_51
 
-.quick_sort.270_35:
-  addi s7, s6, -1
-  addi s8, s6, 1
-  mv a0, s7
+.quick_sort.212_50:
+  addi a0, s6, -1
+  addi a2, s6, 1
   mv a1, s6
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
+  mv a3, s0
+  mv a4, s4
+  call sort_3.211
+  addi a0, s1, -1
+  addi a2, s1, 1
+  mv a1, s1
+  mv a3, s0
+  mv a4, s4
+  call sort_3.211
+  addi a0, s5, -1
+  addi a2, s5, 1
+  mv a1, s5
+  mv a3, s0
+  mv a4, s4
+  call sort_3.211
   mv a0, s6
-  mv a1, s8
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s7
-  mv a1, s6
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  addi s7, s0, -1
-  addi s8, s0, 1
-  mv a0, s7
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s0
-  mv a1, s8
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s7
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  addi s7, s3, -1
-  addi s8, s3, 1
-  mv a0, s7
-  mv a1, s3
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s3
-  mv a1, s8
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s7
-  mv a1, s3
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s6
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s0
-  mv a1, s3
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s6
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  lw a0, 0(s5)
-  bne a0, zero, .quick_sort.270_38
+  mv a1, s1
+  mv a2, s5
+  mv a3, s0
+  mv a4, s4
+  call sort_3.211
+  lw a0, 0(s4)
+  bne a0, zero, .quick_sort.212_53
 
-.quick_sort.270_37:
+.quick_sort.212_52:
   addi a0, s11, -8
   andi s11, a0, -8
-  sw s0, 0(a0)
+  sw s1, 0(a0)
   li a1, 1
   sw a1, 4(a0)
 
-.quick_sort.270_39:
+.quick_sort.212_54:
 
-.quick_sort.270_43:
+.quick_sort.212_58:
 
-.quick_sort.270_47:
+.quick_sort.212_62:
 
-.quick_sort.270_6:
+.quick_sort.212_6:
   lw a1, 0(a0)
 
-.quick_sort.270_11:
-  addi a0, s2, -1
-  slliw a1, a1, 2
-  add a2, s1, a1
-  lw a2, 0(a2)
-  slliw a0, a0, 2
-  add a3, s1, a0
-  lw a3, 0(a3)
-  add a1, s1, a1
-  sw a3, 0(a1)
-  add a1, s1, a0
-  sw a2, 0(a1)
-  add a0, s1, a0
-  lw a4, 0(a0)
-  addi s0, s11, -4
-  andi s11, s0, -8
-  sw s4, 0(s0)
-  addi s3, s11, -4
-  andi s11, s3, -8
-  li a0, 1
-  sw a0, 0(s3)
-  mv a0, s4
-  mv a1, s0
+.quick_sort.212_11:
+  addi s1, s2, -1
+  mv a0, s0
   mv a2, s1
-  mv a3, s2
-  mv a5, s3
-  call aux.267
+  call swap.202
+  slliw a0, s1, 2
+  add a0, s0, a0
+  lw a0, 0(a0)
+  addi s4, s11, -4
+  andi s11, s4, -8
+  sw s3, 0(s4)
+  addi s1, s11, -4
+  andi s11, s1, -8
+  li a1, 1
+  sw a1, 0(s1)
 
-.quick_sort.270_15:
-  lw a0, 0(s0)
-  addi a1, s2, -1
-  slliw a0, a0, 2
-  add a2, s1, a0
-  lw a2, 0(a2)
-  slliw a1, a1, 2
-  add a3, s1, a1
-  lw a3, 0(a3)
-  add a0, s1, a0
-  sw a3, 0(a0)
-  add a0, s1, a1
-  sw a2, 0(a0)
-  lw a0, 0(s0)
-  lw a1, 0(s3)
+.quick_sort.212_37:
+  mv s5, s3
+  mv s6, a0
+
+.quick_sort.212_26:
+  addi a0, s2, -2
+  blt a0, s5, .quick_sort.212_28
+
+.quick_sort.212_27:
+  slliw a0, s5, 2
+  add a0, s0, a0
+  lw a0, 0(a0)
+  addi a1, s6, -1
+  blt a1, a0, .quick_sort.212_30
+
+.quick_sort.212_29:
+  lw a0, 0(s4)
+  beq a0, s5, .quick_sort.212_31
+
+.quick_sort.212_32:
+  lw a1, 0(s4)
+  mv a0, s0
+  mv a2, s5
+  call swap.202
+  sw zero, 0(s1)
+  lw a0, 0(s4)
+  addi a0, a0, 1
+  sw a0, 0(s4)
+  addi a0, s5, 1
+  mv s5, a0
+  j .quick_sort.212_26
+
+.quick_sort.212_49:
+  lw a0, 0(s4)
+  bne a0, zero, .quick_sort.212_60
+
+.quick_sort.212_59:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw s1, 0(a0)
+  li a1, 1
+  sw a1, 4(a0)
+
+.quick_sort.212_61:
+  j .quick_sort.212_62
+
+.quick_sort.212_60:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw s1, 0(a0)
+  sw zero, 4(a0)
+  j .quick_sort.212_61
+
+.quick_sort.212_51:
+  mv a0, s6
+  mv a1, s1
+  mv a2, s5
+  mv a3, s0
+  mv a4, s4
+  call sort_3.211
+  lw a0, 0(s4)
+  bne a0, zero, .quick_sort.212_56
+
+.quick_sort.212_55:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw s1, 0(a0)
+  li a1, 1
+  sw a1, 4(a0)
+
+.quick_sort.212_57:
+  j .quick_sort.212_58
+
+.quick_sort.212_56:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw s1, 0(a0)
+  sw zero, 4(a0)
+  j .quick_sort.212_57
+
+.quick_sort.212_53:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw s1, 0(a0)
+  sw zero, 4(a0)
+  j .quick_sort.212_54
+
+.quick_sort.212_28:
+  mv a0, zero
+
+.quick_sort.212_35:
+
+.quick_sort.212_15:
+  lw a1, 0(s4)
+  addi a2, s2, -1
+  mv a0, s0
+  call swap.202
+  lw a0, 0(s4)
+  lw a1, 0(s1)
   li a2, 1
-  bne a1, a2, .quick_sort.270_13
+  bne a1, a2, .quick_sort.212_13
 
-.quick_sort.270_12:
+.quick_sort.212_12:
   addi a1, s11, -8
   andi s11, a1, -8
   sw a0, 0(a1)
@@ -344,223 +474,77 @@ quick_sort.270:
   sw a0, 4(a1)
   mv a0, a1
 
-.quick_sort.270_14:
+.quick_sort.212_14:
 
-.quick_sort.270_7:
-  lw s0, 0(a0)
-  mv a0, s1
-  mv a1, s4
-  mv a2, s0
-  call quick_sort.270
-  addi a0, s0, 1
-  mv s4, a0
-  j .quick_sort.270_0
-
-.quick_sort.270_34:
-  lw a0, 0(s5)
-  bne a0, zero, .quick_sort.270_45
-
-.quick_sort.270_44:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s0, 0(a0)
-  li a1, 1
-  sw a1, 4(a0)
-
-.quick_sort.270_46:
-  j .quick_sort.270_47
-
-.quick_sort.270_45:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s0, 0(a0)
-  sw zero, 4(a0)
-  j .quick_sort.270_46
-
-.quick_sort.270_36:
-  mv a0, s6
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
+.quick_sort.212_7:
+  lw s1, 0(a0)
   mv a0, s0
   mv a1, s3
   mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  mv a0, s6
-  mv a1, s0
-  mv a2, s1
-  mv a3, s5
-  call sort_2.269
-  lw a0, 0(s5)
-  bne a0, zero, .quick_sort.270_41
+  call quick_sort.212
+  addi a0, s1, 1
+  mv s3, a0
+  j .quick_sort.212_0
 
-.quick_sort.270_40:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s0, 0(a0)
-  li a1, 1
-  sw a1, 4(a0)
-
-.quick_sort.270_42:
-  j .quick_sort.270_43
-
-.quick_sort.270_41:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s0, 0(a0)
-  sw zero, 4(a0)
-  j .quick_sort.270_42
-
-.quick_sort.270_38:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s0, 0(a0)
-  sw zero, 4(a0)
-  j .quick_sort.270_39
-
-.quick_sort.270_13:
+.quick_sort.212_13:
   addi a1, s11, -8
   andi s11, a1, -8
   sw a0, 0(a1)
   sw zero, 4(a1)
   mv a0, a1
-  j .quick_sort.270_14
+  j .quick_sort.212_14
+
+.quick_sort.212_30:
+  addi a0, s5, 1
+  mv s5, a0
+  j .quick_sort.212_26
+
+.quick_sort.212_31:
+  lw a0, 0(s4)
+  addi a0, a0, 1
+  sw a0, 0(s4)
+  addi a0, s5, 1
+  mv s5, a0
+  j .quick_sort.212_26
 
   .p2align 2
   .text
-  .globl f.265
-  .type f.265, @function
-# leaf true
-f.265:
-.f.265_5:
-  mv a4, a0
-  mv a0, a3
-  mv a3, a4
-  mv a4, a0
-
-.f.265_0:
-  addi a0, a4, -1
-  blt a0, a3, .f.265_2
-
-.f.265_1:
-
-.f.265_15:
-  mv a5, a3
-
-.f.265_7:
-  addi a0, a2, 1
-  blt a5, a0, .f.265_9
-
-.f.265_8:
-  slliw a0, a5, 2
-  add a0, a1, a0
-  lw a0, 0(a0)
-  addi a6, a5, -1
-  slliw a6, a6, 2
-  add a6, a1, a6
-  lw a6, 0(a6)
-  addi a6, a6, -1
-  blt a6, a0, .f.265_11
-
-.f.265_10:
-  addi a0, a5, -1
-  slliw a5, a5, 2
-  add a6, a1, a5
-  lw a6, 0(a6)
-  slliw a7, a0, 2
-  add t0, a1, a7
-  lw t0, 0(t0)
-  add a5, a1, a5
-  sw t0, 0(a5)
-  add a5, a1, a7
-  sw a6, 0(a5)
-  mv a5, a0
-  j .f.265_7
-
-.f.265_2:
-  mv a0, zero
-
-.f.265_3:
-  ret
-
-.f.265_9:
-  mv a0, zero
-
-.f.265_13:
-
-.f.265_6:
-  addi a0, a3, 1
-  mv a3, a0
-  j .f.265_0
-
-.f.265_11:
-  mv a0, zero
-
-.f.265_12:
-  j .f.265_13
-
-  .p2align 2
-  .text
-  .globl output.262
-  .type output.262, @function
+  .globl input.214
+  .type input.214, @function
 # leaf false
-output.262:
-.output.262_5:
+input.214:
+.input.214_5:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
+  mv s1, a0
+  mv s0, a1
   mv s2, a2
 
-.output.262_0:
+.input.214_0:
   addi a0, s2, -1
-  blt a0, s1, .output.262_2
+  blt a0, s1, .input.214_2
 
-.output.262_1:
-  slliw a0, s1, 2
-  add a0, s0, a0
-  lw a0, 0(a0)
-  call minimbt_print_int
-  call minimbt_print_endline
+.input.214_1:
+  call minimbt_read_int
+  slliw a1, s1, 2
+  add a1, s0, a1
+  sw a0, 0(a1)
   addi a0, s1, 1
   mv s1, a0
-  j .output.262_0
+  j .input.214_0
 
-.output.262_2:
+.input.214_2:
   mv a0, zero
 
-.output.262_3:
+.input.214_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl insertion_sort.263
-  .type insertion_sort.263, @function
-# leaf false
-insertion_sort.263:
-.insertion_sort.263_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a3, a0
-  mv a4, a1
-  mv a5, a2
-  addi a0, a4, 1
-  mv a1, a3
-  mv a2, a4
-  mv a3, a5
-  call f.265
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -572,10 +556,52 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.271
+  call main.213
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl sort_2.210
+  .type sort_2.210, @function
+# leaf false
+sort_2.210:
+.sort_2.210_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a4, a0
+  mv a5, a1
+  mv a0, a2
+  mv s0, a3
+  slliw a1, a5, 2
+  add a1, a0, a1
+  lw a1, 0(a1)
+  slliw a2, a4, 2
+  add a2, a0, a2
+  lw a2, 0(a2)
+  addi a2, a2, -1
+  blt a2, a1, .sort_2.210_2
+
+.sort_2.210_1:
+  mv a1, a4
+  mv a2, a5
+  call swap.202
+  lw a0, 0(s0)
+  addi a0, a0, 1
+  sw a0, 0(s0)
+  mv a0, zero
+
+.sort_2.210_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.sort_2.210_2:
+  mv a0, zero
+  j .sort_2.210_3
 
   .p2align 2
   .text
@@ -601,73 +627,23 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl aux.267
-  .type aux.267, @function
+  .globl swap.202
+  .type swap.202, @function
 # leaf true
-aux.267:
-.aux.267_11:
-  mv a7, a0
-  mv a6, a1
-  mv a1, a3
-  mv a3, a4
-  mv a0, a5
-  mv a4, a7
-  mv a5, a3
-  mv a3, a0
-
-.aux.267_0:
-  addi a0, a1, -2
-  blt a0, a4, .aux.267_2
-
-.aux.267_1:
-  slliw a0, a4, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  addi a7, a5, -1
-  blt a7, a0, .aux.267_4
-
-.aux.267_3:
-  lw a0, 0(a6)
-  beq a0, a4, .aux.267_5
-
-.aux.267_6:
-  lw a0, 0(a6)
-  slliw a0, a0, 2
-  add a7, a2, a0
-  lw a7, 0(a7)
-  slliw t0, a4, 2
-  add t1, a2, t0
-  lw t1, 0(t1)
-  add a0, a2, a0
-  sw t1, 0(a0)
-  add a0, a2, t0
-  sw a7, 0(a0)
-  sw zero, 0(a3)
-  lw a0, 0(a6)
-  addi a0, a0, 1
-  sw a0, 0(a6)
-  addi a0, a4, 1
-  mv a4, a0
-  j .aux.267_0
-
-.aux.267_2:
+swap.202:
+.swap.202_0:
+  slliw a1, a1, 2
+  add a3, a0, a1
+  lw a3, 0(a3)
+  slliw a2, a2, 2
+  add a4, a0, a2
+  lw a4, 0(a4)
+  add a1, a0, a1
+  sw a4, 0(a1)
+  add a0, a0, a2
+  sw a3, 0(a0)
   mv a0, zero
-
-.aux.267_9:
   ret
-
-.aux.267_4:
-  addi a0, a4, 1
-  mv a4, a0
-  j .aux.267_0
-
-.aux.267_5:
-  lw a0, 0(a6)
-  addi a0, a0, 1
-  sw a0, 0(a6)
-  addi a0, a4, 1
-  mv a4, a0
-  j .aux.267_0
 
 __end_text:
   .p2align 2

@@ -4,7 +4,7 @@ let iter.3: Int = Int(300)
 let _4: Double = Double(0.123)
 let c_re.5: Double = FNeg(_4)
 let c_im.6: Double = Double(0.745)
-let rec calc_pixel.90: Int = (zr.8: Double, zi.9: Double, it.10: Int, c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
+let rec calc_pixel.92: Int = (zr.8: Double, zi.9: Double, it.10: Int, c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
   let zr2.11: Double = FMul(zr.8, zr.8)
   let zi2.12: Double = FMul(zi.9, zi.9)
   if (it.10 == iter.3) then {
@@ -22,24 +22,11 @@ let rec calc_pixel.90: Int = (zr.8: Double, zi.9: Double, it.10: Int, c_im.6: Do
       let new_zr.19: Double = FAdd(_18, c_re.5)
       let _20: Int = Int(1)
       let _21: Int = Add(it.10, _20)
-      Apply(calc_pixel.90, [new_zr.19, new_zi.17, _21, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      Apply(calc_pixel.92, [new_zr.19, new_zi.17, _21, c_im.6, c_re.5, iter.3, limit_sq.2, ])
     }
   }
 }
-let rec clamp.91: Int = (i.23: Int) {
-  let _24: Int = Int(0)
-  if (i.23 <= _24) then {
-    Int(0)
-  } else {
-    let _25: Int = Int(48)
-    if (_25 <= i.23) then {
-      Int(48)
-    } else {
-      Var(i.23)
-    }
-  }
-}
-let rec main_loop.92: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31: Array(Int), c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
+let rec main_loop.93: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31: Array(Int), c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
   if (y.30 == h.28) then {
     Unit
   } else {
@@ -47,7 +34,7 @@ let rec main_loop.92: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31
       let _32: Int = Int(0)
       let _33: Int = Int(1)
       let _34: Int = Add(y.30, _33)
-      Apply(main_loop.92, [w.27, h.28, _32, _34, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      Apply(main_loop.93, [w.27, h.28, _32, _34, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
     } else {
       let _35: Double = Double(3)
       let _36: Double = ExtApply(minimbt_float_of_int, [x.29, ])
@@ -65,18 +52,35 @@ let rec main_loop.92: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31
       let _48: Double = Double(1.5)
       let ci.49: Double = FSub(_47, _48)
       let _50: Int = Int(0)
-      let res.51: Int = Apply(calc_pixel.90, [cr.42, ci.49, _50, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      let res.51: Int = Apply(calc_pixel.92, [cr.42, ci.49, _50, c_im.6, c_re.5, iter.3, limit_sq.2, ])
       let _52: Int = Mul(y.30, w.27)
       let _53: Int = Add(_52, x.29)
-      let _54: Int = Apply(clamp.91, [res.51, ])
-      let _55: Unit = Put ret.31[_53] = _54
-      let _56: Int = Int(1)
-      let _57: Int = Add(x.29, _56)
-      Apply(main_loop.92, [w.27, h.28, _57, y.30, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      let _90: Int = Int(0)
+      if (res.51 <= _90) then {
+        let _54: Int = Int(0)
+        let _55: Unit = Put ret.31[_53] = _54
+        let _56: Int = Int(1)
+        let _57: Int = Add(x.29, _56)
+        Apply(main_loop.93, [w.27, h.28, _57, y.30, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      } else {
+        let _91: Int = Int(48)
+        if (_91 <= res.51) then {
+          let _54: Int = Int(48)
+          let _55: Unit = Put ret.31[_53] = _54
+          let _56: Int = Int(1)
+          let _57: Int = Add(x.29, _56)
+          Apply(main_loop.93, [w.27, h.28, _57, y.30, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+        } else {
+          let _55: Unit = Put ret.31[_53] = res.51
+          let _56: Int = Int(1)
+          let _57: Int = Add(x.29, _56)
+          Apply(main_loop.93, [w.27, h.28, _57, y.30, ret.31, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+        }
+      }
     }
   }
 }
-let rec print_loop.93: Unit = (w.59: Int, h.60: Int, x.61: Int, y.62: Int, ret.63: Array(Int)) {
+let rec print_loop.94: Unit = (w.59: Int, h.60: Int, x.61: Int, y.62: Int, ret.63: Array(Int)) {
   if (y.62 == h.60) then {
     Unit
   } else {
@@ -86,7 +90,7 @@ let rec print_loop.93: Unit = (w.59: Int, h.60: Int, x.61: Int, y.62: Int, ret.6
       let _66: Int = Int(0)
       let _67: Int = Int(1)
       let _68: Int = Add(y.62, _67)
-      Apply(print_loop.93, [w.59, h.60, _66, _68, ret.63, ])
+      Apply(print_loop.94, [w.59, h.60, _66, _68, ret.63, ])
     } else {
       let _69: Int = Int(48)
       let _70: Int = Mul(y.62, w.59)
@@ -96,11 +100,11 @@ let rec print_loop.93: Unit = (w.59: Int, h.60: Int, x.61: Int, y.62: Int, ret.6
       let _74: Unit = ExtApply(minimbt_print_char, [_73, ])
       let _75: Int = Int(1)
       let _76: Int = Add(x.61, _75)
-      Apply(print_loop.93, [w.59, h.60, _76, y.62, ret.63, ])
+      Apply(print_loop.94, [w.59, h.60, _76, y.62, ret.63, ])
     }
   }
 }
-let rec main.94: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
+let rec main.95: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
   let h.78: Int = ExtApply(minimbt_read_int, [])
   let _79: Int = Int(2)
   let w.80: Int = Mul(h.78, _79)
@@ -109,10 +113,10 @@ let rec main.94: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, iter.
   let ret.83: Array(Int) = ExtApply(minimbt_create_array, [_81, _82, ])
   let _84: Int = Int(0)
   let _85: Int = Int(0)
-  let _86: Unit = Apply(main_loop.92, [w.80, h.78, _84, _85, ret.83, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+  let _86: Unit = Apply(main_loop.93, [w.80, h.78, _84, _85, ret.83, c_im.6, c_re.5, iter.3, limit_sq.2, ])
   let _87: Int = Int(0)
   let _88: Int = Int(0)
-  let _89: Unit = Apply(print_loop.93, [w.80, h.78, _87, _88, ret.83, ])
+  let _89: Unit = Apply(print_loop.94, [w.80, h.78, _87, _88, ret.83, ])
   Unit
 }
-Apply(main.94, [c_im.6, c_re.5, iter.3, limit_sq.2, ])
+Apply(main.95, [c_im.6, c_re.5, iter.3, limit_sq.2, ])

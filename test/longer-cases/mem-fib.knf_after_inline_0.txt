@@ -1,4 +1,18 @@
 let unmem_magic.1: Int = Int(-1919810)
+let rec mem.2: Fun([Int], Int) = (func.3: Fun([Fun([Int], Int), Int], Int), max_n.4: Int) {
+  let cache.5: Array(Int) = ExtApply(minimbt_create_array, [max_n.4, unmem_magic.1, ])
+  let rec memed.6: Int = (n.7: Int) {
+    let _8: Int = Get cache.5[n.7]
+    if (_8 == unmem_magic.1) then {
+      let res.9: Int = Apply(func.3, [memed.6, n.7, ])
+      let _10: Unit = Put cache.5[n.7] = res.9
+      Var(res.9)
+    } else {
+      Get cache.5[n.7]
+    }
+  }
+  Var(memed.6)
+}
 let rec mem_fib.11: Int = (f.12: Fun([Int], Int), n.13: Int) {
   let _14: Int = Int(1)
   if (n.13 <= _14) then {
@@ -13,26 +27,12 @@ let rec mem_fib.11: Int = (f.12: Fun([Int], Int), n.13: Int) {
     Add(_17, _20)
   }
 }
-let rec fib.21: Int = (n.22: Int) {
-  let _23: Int = Int(1)
-  let _24: Int = Add(n.22, _23)
-  let cache.32: Array(Int) = ExtApply(minimbt_create_array, [_24, unmem_magic.1, ])
-  let rec memed.33: Int = (n.34: Int) {
-    let _35: Int = Get cache.32[n.34]
-    if (_35 == unmem_magic.1) then {
-      let res.36: Int = Apply(mem_fib.11, [memed.33, n.34, ])
-      let _37: Unit = Put cache.32[n.34] = res.36
-      Var(res.36)
-    } else {
-      Get cache.32[n.34]
-    }
-  }
-  let f.25: Fun([Int], Int) = Var(memed.33)
-  Apply(f.25, [n.22, ])
-}
 let rec main.26: Var({val: Some(Unit)}) = () {
   let n.27: Int = ExtApply(minimbt_read_int, [])
-  let _28: Int = Apply(fib.21, [n.27, ])
+  let _38: Int = Int(1)
+  let _39: Int = Add(n.27, _38)
+  let f.40: Fun([Int], Int) = Apply(mem.2, [mem_fib.11, _39, ])
+  let _28: Int = Apply(f.40, [n.27, ])
   let _29: Unit = ExtApply(minimbt_print_int, [_28, ])
   let _30: Int = Int(10)
   let _31: Unit = ExtApply(minimbt_print_char, [_30, ])
