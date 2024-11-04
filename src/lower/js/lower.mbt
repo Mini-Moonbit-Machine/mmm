@@ -92,6 +92,7 @@ fn JsLoweringCtx::lower_expr(
       )
     Var(n) => self.to_js_var(n) |> kont
     LetRec(f, b) => LetRec(self.lower_fn(f), self.lower_expr(b, kont))
+    LetJoin(_, _) => self.tracer.abort("LetJoin not supported")
     Let((n, _), Apply(f, args), b) => {
       let f = self.to_js_name(f)
       let args = args.map(fn(n) { self.to_js_var(n) })
@@ -121,6 +122,7 @@ fn JsLoweringCtx::lower_expr(
       args.push(Var("k"))
       Call(f, args) |> thunk
     }
+    Jump(_, _) => self.tracer.abort("Jump not supported")
     Tuple(elems) => Tuple(elems.map(fn(n) { self.to_js_name(n) })) |> kont
     ExternalArray(_) => self.tracer.abort("ExternalArray not supported")
     ExternalFunctionApplication(f, args) =>

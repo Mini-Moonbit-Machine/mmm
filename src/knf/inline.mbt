@@ -74,7 +74,7 @@ fn call_freq(knf : Knf, env : Env[Unit], freq : Map[Name, CallFreq]) -> Unit {
       call_freq(e1, env, freq)
       call_freq(e2, env, freq)
     }
-    LetRec(fundef, e) => {
+    LetRec(fundef, e) | LetJoin(fundef, e) => {
       let env = env.add(fundef.name, ())
       freq.set(fundef.name, Zero)
       call_freq(fundef.body, env, freq)
@@ -86,7 +86,7 @@ fn call_freq(knf : Knf, env : Env[Unit], freq : Map[Name, CallFreq]) -> Unit {
     }
     Put(_, _, z) => deal_closure([z])
     Var(x) => deal_closure([x])
-    Apply(f, xs) => {
+    Apply(f, xs) | Jump(f, xs) => {
       match freq.get(f) {
         Some(fq) => freq.set(f, fq.next())
         None => ()
@@ -105,6 +105,7 @@ fn size(knf : Knf) -> Int {
     IfLe(_, _, e1, e2) => 1 + size(e1) + size(e2)
     Let(_, e1, e2) => 1 + size(e1) + size(e2)
     LetRec(fundef, e) => 1 + size(fundef.body) + size(e)
+    LetJoin(fundef, e) => 1 + size(fundef.body) + size(e)
     LetTuple(_, _, e) => 1 + size(e)
     _ => 1
   }
@@ -148,12 +149,18 @@ fn beta_reduce(env : Env[Name], knf : Knf) -> Knf {
       let env = env.add(name, name)
       LetRec(fundef, beta_reduce(env, e))
     }
+    LetJoin(fundef, e) => {
+      let { name, ty, args, body } = fundef
+      let fundef = { name, ty, args, body: beta_reduce(env, body) }
+      LetJoin(fundef, beta_reduce(env, e))
+    }
     Var(x) => Var(f(x))
     Tuple(xs) => Tuple(xs.map(f))
     LetTuple(xts, y, e) => LetTuple(xts, f(y), beta_reduce(env, e))
     Get(x, y) => Get(f(x), f(y))
     Put(x, y, z) => Put(f(x), f(y), f(z))
     Apply(func, xs) => Apply(f(func), xs.map(f))
+    Jump(func, xs) => Jump(f(func), xs.map(f))
     ExternalArray(x) => ExternalArray(f(x))
     ExternalFunctionApplication(name, xs) =>
       ExternalFunctionApplication(name, xs.map(f))
@@ -227,7 +234,28 @@ fn alpha_rename(knf_env : KnfEnv, env : Env[Name], knf : Knf) -> Knf {
         alpha_rename(knf_env, env, e),
       )
     }
+    LetJoin(fundef, e) => {
+      let new_fundef_name = knf_env.new_named_temp(fundef.name)
+      let env = env.add(fundef.name, new_fundef_name)
+      let args = []
+      let mut env2 = env
+      for arg in fundef.args {
+        let na = (knf_env.new_named_temp(arg.0), arg.1)
+        args.push(na)
+        env2 = env2.add(arg.0, na.0)
+      }
+      LetJoin(
+        {
+          name: new_fundef_name,
+          ty: fundef.ty,
+          args,
+          body: alpha_rename(knf_env, env2, fundef.body),
+        },
+        alpha_rename(knf_env, env, e),
+      )
+    }
     Apply(func, xs) => Apply(f(func), xs.map(f))
+    Jump(func, xs) => Jump(f(func), xs.map(f))
     Tuple(xs) => Tuple(xs.map(f))
     LetTuple(xts, y, e) => {
       let new_xts = []
@@ -275,41 +303,38 @@ pub fn InlineEnv::inline(
       let e = self.inline(freq, env, in_loop, e)
       LetTuple(xts, y, e)
     }
-    LetRec(fundef, e) => {
-      let env = env.add(fundef.name, fundef)
-      let in_loop = if is_loop(fundef) { Some(fundef.name) } else { None }
-      let fundef = {
-        name: fundef.name,
-        ty: fundef.ty,
-        args: fundef.args,
-        body: self.inline(freq, env, in_loop, fundef.body),
-      }
-      let e = self.inline(freq, env, in_loop, e)
-      LetRec(fundef, e)
+    LetRec({ name, ty, args, body } as fundef, e) => {
+      let env = env.add(name, fundef)
+      let in_loop = if is_loop(fundef) { Some(name) } else { None }
+      LetRec(
+        { name, ty, args, body: self.inline(freq, env, in_loop, body) },
+        self.inline(freq, env, in_loop, e),
+      )
     }
+    LetJoin({ name, ty, args, body }, e) =>
+      LetJoin(
+        { name, ty, args, body: self.inline(freq, env, in_loop, body) },
+        self.inline(freq, env, in_loop, e),
+      )
     Apply(f, xs) => {
-      fn replace() {
-        match env.find(f) {
-          Some({ args, body, .. }) =>
-            if f.name.to_string().contains("main") {
-              knf
-            } else {
-              self.tracer.println("Knf inline \{f.name}")
-              let mut env = Env::new()
-              for i, param in args {
-                env = env.add(param.0, xs[i])
-              }
-              alpha_rename(self.knf_env, env, body)
-            }
-          None => knf
+      fn replace(fundef : FuncDef) {
+        if f.name.to_string().contains("main") {
+          knf
+        } else {
+          self.tracer.println("Knf inline \{f.name}")
+          let mut env = Env::new()
+          for i, param in fundef.args {
+            env = env.add(param.0, xs[i])
+          }
+          alpha_rename(self.knf_env, env, fundef.body)
         }
       }
 
       match freq.get(f) {
-        Some(Once) => replace()
+        Some(Once) => env.find(f).map_or(knf, replace)
         Some(Many(n)) =>
           match env.find(f) {
-            Some({ body, args, ty, .. }) => {
+            Some({ body, args, ty, .. } as fundef) => {
               self.tracer.println("Inline threshold \{n} \{size(body)}")
               let fn_like_args = args
                 .filter(fn(x) { x.1.is_fn_like() })
@@ -318,7 +343,7 @@ pub fn InlineEnv::inline(
               self.tracer.println("Fn like \{fn_like_args}")
               if size(body) * n < 20 || fn_like_args > 0 {
                 self.tracer.println("Inline decision \{f} accepted")
-                replace()
+                replace(fundef)
               } else {
                 self.tracer.println("Inline decision \{f} rejected")
                 knf
@@ -372,6 +397,21 @@ pub fn InlineEnv::dfe(
           }
           let e = self.dfe(freq, env, e)
           LetRec(fundef, e)
+        }
+      }
+    LetJoin(fundef, e) =>
+      match freq.get(fundef.name) {
+        Some(Zero) => self.dfe(freq, env, e)
+        _ => {
+          let env = env.add(fundef.name, (fundef.args, fundef.body))
+          let fundef = {
+            name: fundef.name,
+            ty: fundef.ty,
+            args: fundef.args,
+            body: self.dfe(freq, env, fundef.body),
+          }
+          let e = self.dfe(freq, env, e)
+          LetJoin(fundef, e)
         }
       }
     _ => knf

@@ -231,6 +231,12 @@ fn LambdaLiftEnv::lift(
         }
       }
     }
+    Jump(f, xs) => {
+      let (l1, f, _) = self.eta_expand(f)
+      let (l2, xs, _) = self.eta_expand_names(xs)
+      l1.append(l2)
+      (l1, Jump(f, xs))
+    }
     LetRec(fdef, e) => {
       let fvars = self.free_set_closure
         .get(fdef.name)
@@ -252,7 +258,7 @@ fn LambdaLiftEnv::lift(
         .length()
       let new_integer_args_length = new_args.length() - new_float_args_length
       // we don't want to lift functions with too many arguments
-      if new_integer_args_length >= 9 || new_float_args_length >= 9 {
+      if new_integer_args_length >= 12 || new_float_args_length >= 12 {
         let self = self.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
           init=self,
@@ -299,6 +305,29 @@ fn LambdaLiftEnv::lift(
         self.lift(e, top)
       }
     }
+    LetJoin(fdef, e) => {
+      let body_env = fdef.args.fold(
+        init=self,
+        fn(env, arg) { env.add_name_type(arg.0, arg.1) },
+      )
+      let (l, body_e) = body_env.lift(fdef.body, false)
+      let fdef = FuncDef::{
+        name: fdef.name,
+        ty: fdef.ty,
+        args: fdef.args,
+        body: bind_all((body_e, Unit, l)),
+      }
+      if top {
+        self.top_names.insert(fdef.name)
+        self.top_bindings.push(LetRec(fdef))
+        self.lift(e, top)
+      } else {
+        let l = [Binding::LetJoin(fdef)]
+        let (l2, e) = self.lift(e, top)
+        l.append(l2)
+        (l, e)
+      }
+    }
   }
 }
 
@@ -319,7 +348,9 @@ fn count_let_rec(knf : Knf) -> Int {
     Let((_, _), c, d) => count_let_rec(c) + count_let_rec(d)
     Var(_) => 0
     LetRec(f, e) => 1 + count_let_rec(e) + count_let_rec(f.body)
+    LetJoin(f, e) => count_let_rec(e) + count_let_rec(f.body)
     Apply(_, _) => 0
+    Jump(_, _) => 0
     Tuple(_) => 0
     LetTuple(_, _, e) => count_let_rec(e)
     Get(_, _) => 0

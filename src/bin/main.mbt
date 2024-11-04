@@ -186,8 +186,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let knf = inline.go(knf, 0)
       let lamlift = @knf.LambdaLiftEnv::new(tracer)
       let knf = lamlift.go(knf)
-      let licm = @knf.LICM::new(tracer, knf)
-      let knf = licm.go(0)
       self.opt_knf = Some(knf)
     }
     Js => {

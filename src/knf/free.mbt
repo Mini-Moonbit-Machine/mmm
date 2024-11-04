@@ -24,7 +24,7 @@ pub fn knf_free_vars(k : Knf) -> FreeSet {
       fv
     }
     Var(x) => FreeSet::of([x])
-    Apply(f, args) => {
+    Apply(f, args) | Jump(f, args) => {
       let fv = FreeSet::from_array(args)
       fv.insert(f)
       fv
@@ -38,7 +38,7 @@ pub fn knf_free_vars(k : Knf) -> FreeSet {
       let fv = fv1.union(fv2)
       fv
     }
-    LetRec(f, k) => {
+    LetRec(f, k) | LetJoin(f, k) => {
       let fv1 = knf_fdef_free_vars(f)
       let fv2 = knf_free_vars(k)
       fv2.remove(f.name)
@@ -133,7 +133,7 @@ pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {
       fv
     }
     Var(x) => FreeSet::of([x])
-    Apply(f, args) =>
+    Apply(f, args) | Jump(f, args) =>
       match self.ctx.get(f) {
         Some(fv2) => {
           let fv = FreeSet::from_array(args)
@@ -155,7 +155,7 @@ pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {
       let fv = fv1.union(fv2)
       fv
     }
-    LetRec(f, k) => {
+    LetRec(f, k) | LetJoin(f, k) => {
       let fv1 = self.knf_fdef_free_vars_closure(f)
       let fv2 = self.knf_free_vars_closure(k)
       fv2.remove(f.name)

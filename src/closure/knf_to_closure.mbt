@@ -195,5 +195,6 @@ fn build_closure(
       let r = self.build_closure!(k, func_def_list, let_list, ty_env)
       (r.0, r.1, let_list)
     }
+    _ => fail!("LetJoin and Jump not implemented")
   }
 }

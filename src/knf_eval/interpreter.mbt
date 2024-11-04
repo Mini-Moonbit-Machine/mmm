@@ -186,13 +186,13 @@ pub fn KnfInterpreter::eval(
       let new_env = env.add(x, v)
       self.eval!(new_env, e2)
     }
-    LetRec(f, e) => {
+    LetRec(f, e) | LetJoin(f, e) => {
       let f_env = Ref::new(env)
       let new_env = env.add(f.name, Closure(f, f_env))
       f_env.val = new_env
       self.eval!(new_env, e)
     }
-    Apply(f, xs) => {
+    Apply(f, xs) | Jump(f, xs) => {
       let f = find!(env, f)
       match f {
         Closure(f, f_env) => {

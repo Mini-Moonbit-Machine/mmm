@@ -1,34 +1,6 @@
-pub fn is_loop(f : FuncDef) -> Bool {
-  tail_rec_or_trivial(f.body, f.name) && has_self_rec(f.body, f.name)
-}
-
 typealias NameSet = @hashset.T[Name]
 
 typealias ImmutNameSet = @immut/hashset.T[Name]
-
-pub fn tail_rec_or_trivial(knf : Knf, name : Name) -> Bool {
-  match knf {
-    IfEq(_, _, e1, e2) | IfLe(_, _, e1, e2) =>
-      tail_rec_or_trivial(e1, name) && tail_rec_or_trivial(e2, name)
-    Let(_, _, e2) => tail_rec_or_trivial(e2, name)
-    LetTuple(_, _, e2) => tail_rec_or_trivial(e2, name)
-    LetRec(_, e2) => tail_rec_or_trivial(e2, name)
-    Apply(f, _) => f == name
-    _ => true
-  }
-}
-
-pub fn has_self_rec(knf : Knf, name : Name) -> Bool {
-  match knf {
-    IfEq(_, _, e1, e2) | IfLe(_, _, e1, e2) =>
-      has_self_rec(e1, name) || has_self_rec(e2, name)
-    Let(_, _, e2) => has_self_rec(e2, name)
-    LetTuple(_, _, e2) => has_self_rec(e2, name)
-    LetRec(_, e2) => has_self_rec(e2, name)
-    Apply(f, _) => f == name
-    _ => false
-  }
-}
 
 pub fn loop_inv_args(knf : Knf, name : Name, params : Array[Name]) -> NameSet {
   match knf {
@@ -39,6 +11,7 @@ pub fn loop_inv_args(knf : Knf, name : Name, params : Array[Name]) -> NameSet {
     Let(_, _, e2) => loop_inv_args(e2, name, params)
     LetTuple(_, _, e2) => loop_inv_args(e2, name, params)
     LetRec(_, e2) => loop_inv_args(e2, name, params)
+    LetJoin(_, e2) => loop_inv_args(e2, name, params)
     Apply(f, args) =>
       if f == name {
         let set = NameSet::new()
@@ -51,26 +24,16 @@ pub fn loop_inv_args(knf : Knf, name : Name, params : Array[Name]) -> NameSet {
       } else {
         NameSet::from_iter(params.iter())
       }
+    Jump(_, _) => NameSet::new()
     _ => NameSet::from_iter(params.iter())
   }
 }
 
 pub fn loop_inv(knf : Knf, env : ImmutNameSet) -> Bool {
   match knf {
-    IfEq(_, _, _, _) | IfLe(_, _, _, _) => false
-    Let(_, _, _) => false
-    LetTuple(_, _, _) => false
-    LetRec(_, _) => false
-    Unit | Bool(_) | Int(_) | Double(_) => false
-    Neg(_) | Add(_, _) | Sub(_, _) | Mul(_, _) | Div(_, _) => false
-    FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_) => false
-    Put(_, _, _) => false
-    Apply(_, _) => false
-    ExternalArray(_) => false
-    ExternalFunctionApplication(_, _) => false
-    Tuple(_) => false
     Var(x) => env.contains(x)
     Get(x, y) => env.contains(x) && env.contains(y)
+    _ => false
   }
 }
 
@@ -179,6 +142,12 @@ pub fn LICM::go(self : LICM, id : Int) -> Knf {
         let { name, ty, args, body } = fundef
         let fundef = { name, ty, args, body: hoist(body, env) }
         LetRec(fundef, hoist(e, env.add(fundef.name, (fundef, bindings))))
+      }
+      LetJoin(fundef, e) => {
+        let (fundef, bindings) = hoist_inv_from_def(fundef, self.tracer)
+        let { name, ty, args, body } = fundef
+        let fundef = { name, ty, args, body: hoist(body, env) }
+        LetJoin(fundef, hoist(e, env.add(fundef.name, (fundef, bindings))))
       }
       Apply(f, xs) =>
         match env[f] {

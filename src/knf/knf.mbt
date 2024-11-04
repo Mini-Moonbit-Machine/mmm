@@ -23,6 +23,8 @@ pub enum Knf {
   Var(Name)
   LetRec(FuncDef, Knf)
   Apply(Name, Array[Name])
+  LetJoin(FuncDef, Knf)
+  Jump(Name, Array[Name])
   Tuple(Array[Name])
   LetTuple(Array[(Name, Type)], Name, Knf)
   Get(Name, Name)

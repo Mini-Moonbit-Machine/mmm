@@ -84,9 +84,14 @@ fn PrettyKnf::print_one_level(
       logger.write_string(") = \{y}\n")
       self.print_one_level(logger, e)
     }
-    LetRec(fundef, e) => {
+    LetRec(fundef, e) | LetJoin(fundef, e) => {
       let { name, ty, args, body } = fundef
-      logger.write_string("let rec \{name}: \{ty} = (")
+      let s = match val {
+        LetRec(_) => "let rec"
+        LetJoin(_) => "let join"
+        _ => @util.t.abort("unexpected binding")
+      }
+      logger.write_string("\{s} \{name}: \{ty} = (")
       let mut first = true
       for arg in args {
         let (arg_name, arg_ty) = arg
@@ -107,6 +112,14 @@ fn PrettyKnf::print_one_level(
     }
     Apply(name, args) => {
       logger.write_string("Apply(\{name}, [")
+      for arg in args {
+        logger.write_string(arg.to_string())
+        logger.write_string(", ")
+      }
+      logger.write_string("])")
+    }
+    Jump(name, args) => {
+      logger.write_string("Jump(\{name}, [")
       for arg in args {
         logger.write_string(arg.to_string())
         logger.write_string(", ")

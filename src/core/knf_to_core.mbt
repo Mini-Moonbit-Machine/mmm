@@ -859,6 +859,7 @@ fn build_knf_expr(
           (ctx, bb, val)
         }
       }
+    _ => self.tracer.abort("not implemented")
   }
 }
 

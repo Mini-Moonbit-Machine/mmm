@@ -7,16 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main136l1_5 #f5 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: array[int32] heap(1024)> <- [..] = 0
-    let %1: unit = call f4(0, f5.m0)
-    return ()
-  }
-}
-.fn read_ch_until_newline_or_eof1l0_0 #f0 : fn() -> int32
+.fn read_ch_until_newline_or_eof.1l0_0 #f0 : fn() -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -44,7 +35,51 @@
     return $b6.0
   }
 }
-.fn skip21.163l3_1 #f1 : fn(int32, int32, int32, array[int32]) -> int32
+.fn T$start_12 #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn lp.221l5_2 #f2 : fn(int32, int32, array[int32], array[int32], array[int32], array[int32]) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (int32, int32, array[int32], array[int32], array[int32], array[int32]) {
+    let %0: int32 = load int32 field($b0.2, 0 * @32)
+    let %1: int32 = load int32 offset($b0.4, %0 * @32)
+    let %2: bool = eq(%1, 0)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    let %3: int32 = add($b0.1, 1)
+    let %4: int32 = call f1(%3, 0, $b0.0, $b0.3)
+    jump b6(%4)
+  }
+  .bb #b2 () {
+    let %6: int32 = add($b0.1, 1)
+    let %7: int32 = call f3(%6, $b0.0, $b0.2, $b0.3, $b0.4, $b0.5)
+    let _ = store int32 field($b0.5, 0 * @32) <- %7
+    jump b0($b0.0, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
+  }
+  .bb #b6 (int32) {
+    let _ = store int32 field($b0.5, 0 * @32) <- $b6.0
+    jump b3(())
+  }
+}
+.fn skip.144l3_1 #f1 : fn(int32, int32, int32, array[int32]) -> int32
 .freevars ()
 .entry b14 {
   .bb #b0 (int32, int32, int32, array[int32]) {
@@ -114,51 +149,7 @@
     jump b13($f0, $f1, $f2, $f3)
   }
 }
-.fn lp108.240l5_2 #f2 : fn(array[int32], int32, int32, array[int32], array[int32], array[int32]) -> unit
-.freevars ()
-.entry b5 {
-  .bb #b0 (array[int32], int32, int32, array[int32], array[int32], array[int32]) {
-    let %0: int32 = load int32 field($b0.0, 0 * @32)
-    let %1: int32 = load int32 offset($b0.4, %0 * @32)
-    let %2: bool = eq(%1, 0)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let %3: int32 = add($b0.2, 1)
-    let %4: int32 = call f1(%3, 0, $b0.1, $b0.3)
-    jump b6(%4)
-  }
-  .bb #b2 () {
-    let %6: int32 = add($b0.2, 1)
-    let %7: int32 = call f3(%6, $b0.0, $b0.1, $b0.3, $b0.4, $b0.5)
-    let _ = store int32 field($b0.5, 0 * @32) <- %7
-    jump b0($b0.0, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-  .loop #b4 pre #Some(b5) header #b0 {
-    .block #b1
-    .block #b2
-    .block #b3
-  }
-  .bb #b5 () {
-    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
-  }
-  .bb #b6 (int32) {
-    let _ = store int32 field($b0.5, 0 * @32) <- $b6.0
-    jump b3(())
-  }
-}
-.fn T$start_12 #f12 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn read_prog140l2_4 #f4 : fn(int32, array[int32]) -> unit
+.fn read_prog.124l2_4 #f4 : fn(int32, array[int32]) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, array[int32]) {
@@ -171,7 +162,7 @@
     let %3: int32 = mul(1024, 1024)
     let _ = alloc <m1: array[int32] heap(%3)> <- [..] = 0
     let _ = alloc <m2: array[int32] heap(1)> <- [..] = 0
-    let %6: int32 = call f3(0, f4.m0, $b0.0, $b0.1, f4.m1, f4.m2)
+    let %6: int32 = call f3(0, $b0.0, f4.m0, $b0.1, f4.m1, f4.m2)
     jump b3(())
   }
   .bb #b2 () {
@@ -191,11 +182,11 @@
     jump b4($f0, $f1)
   }
 }
-.fn aux40.180l4_3 #f3 : fn(int32, array[int32], int32, array[int32], array[int32], array[int32]) -> int32
+.fn aux.161l4_3 #f3 : fn(int32, int32, array[int32], array[int32], array[int32], array[int32]) -> int32
 .freevars ()
 .entry b29 {
-  .bb #b0 (int32, array[int32], int32, array[int32], array[int32], array[int32]) {
-    let %0: bool = le($b0.2, $b0.0)
+  .bb #b0 (int32, int32, array[int32], array[int32], array[int32], array[int32]) {
+    let %0: bool = le($b0.1, $b0.0)
     br %0 b1() b2()
   }
   .bb #b1 () {
@@ -207,9 +198,9 @@
     br %2 b3() b4()
   }
   .bb #b3 () {
-    let %3: int32 = load int32 field($b0.1, 0 * @32)
+    let %3: int32 = load int32 field($b0.2, 0 * @32)
     let %4: int32 = add(%3, 1)
-    let _ = store int32 field($b0.1, 0 * @32) <- %4
+    let _ = store int32 field($b0.2, 0 * @32) <- %4
     let %6: int32 = add($b0.0, 1)
     jump b0(%6, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
@@ -218,9 +209,9 @@
     br %8 b5() b6()
   }
   .bb #b5 () {
-    let %9: int32 = load int32 field($b0.1, 0 * @32)
+    let %9: int32 = load int32 field($b0.2, 0 * @32)
     let %10: int32 = sub(%9, 1)
-    let _ = store int32 field($b0.1, 0 * @32) <- %10
+    let _ = store int32 field($b0.2, 0 * @32) <- %10
     let %12: int32 = add($b0.0, 1)
     jump b0(%12, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
@@ -229,8 +220,8 @@
     br %14 b7() b8()
   }
   .bb #b7 () {
-    let %15: int32 = load int32 field($b0.1, 0 * @32)
-    let %16: int32 = load int32 field($b0.1, 0 * @32)
+    let %15: int32 = load int32 field($b0.2, 0 * @32)
+    let %16: int32 = load int32 field($b0.2, 0 * @32)
     let %17: int32 = load int32 offset($b0.4, %16 * @32)
     let %18: int32 = add(%17, 1)
     let _ = store int32 offset($b0.4, %15 * @32) <- %18
@@ -242,8 +233,8 @@
     br %22 b9() b10()
   }
   .bb #b9 () {
-    let %23: int32 = load int32 field($b0.1, 0 * @32)
-    let %24: int32 = load int32 field($b0.1, 0 * @32)
+    let %23: int32 = load int32 field($b0.2, 0 * @32)
+    let %24: int32 = load int32 field($b0.2, 0 * @32)
     let %25: int32 = load int32 offset($b0.4, %24 * @32)
     let %26: int32 = sub(%25, 1)
     let _ = store int32 offset($b0.4, %23 * @32) <- %26
@@ -255,7 +246,7 @@
     br %30 b11() b12()
   }
   .bb #b11 () {
-    let %31: int32 = load int32 field($b0.1, 0 * @32)
+    let %31: int32 = load int32 field($b0.2, 0 * @32)
     let %32: int32 = load int32 offset($b0.4, %31 * @32)
     let %33: unit = ext_call minimbt_print_char(%32)
     let %34: int32 = add($b0.0, 1)
@@ -266,7 +257,7 @@
     br %36 b13() b14()
   }
   .bb #b13 () {
-    let %37: int32 = load int32 field($b0.1, 0 * @32)
+    let %37: int32 = load int32 field($b0.2, 0 * @32)
     let %38: int32 = call f0()
     let _ = store int32 offset($b0.4, %37 * @32) <- %38
     let %40: int32 = add($b0.0, 1)
@@ -278,7 +269,7 @@
   }
   .bb #b15 () {
     let _ = store int32 field($b0.5, 0 * @32) <- $b0.0
-    let %44: unit = call f2($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
+    let %44: unit = call f2($b0.1, $b0.0, $b0.2, $b0.3, $b0.4, $b0.5)
     jump b30(%44)
   }
   .bb #b16 () {
@@ -354,6 +345,15 @@
     let %45: int32 = load int32 field($b0.5, 0 * @32)
     let %46: int32 = add(%45, 1)
     jump b0(%46, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+}
+.fn main.120l1_5 #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(1024)> <- [..] = 0
+    let %1: unit = call f4(0, f5.m0)
+    return ()
   }
 }
 .thunk ::0 start

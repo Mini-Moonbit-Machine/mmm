@@ -22,7 +22,9 @@ pub fn Knf::to_json(self : Knf) -> Json {
       ["Let", [n.to_json(), t.to_json()], k1.to_json(), k2.to_json()]
     Var(n) => ["Var", n.to_json()]
     LetRec(f, k) => ["LetRec", f.to_json(), k.to_json()]
+    LetJoin(f, k) => ["LetJoin", f.to_json(), k.to_json()]
     Apply(n, ns) => ["Apply", n.to_json(), ns.to_json()]
+    Jump(n, ns) => ["Jump", n.to_json(), ns.to_json()]
     Tuple(ns) => ["Tuple", ns.to_json()]
     LetTuple(n_ts, n, k) => {
       let n_ts_res = []

@@ -41,7 +41,17 @@ pub fn knf_max_counter(knf : Knf) -> Int {
         f.name.slot,
         @math.maximum(knf_max_counter(f.body), knf_max_counter(e)),
       )
+    LetJoin(f, e) =>
+      @math.maximum(
+        f.name.slot,
+        @math.maximum(knf_max_counter(f.body), knf_max_counter(e)),
+      )
     Apply(x, xs) =>
+      @math.maximum(
+        x.slot,
+        xs.map(fn(x) { x.slot }).fold(init=0, fn(a, b) { @math.maximum(a, b) }),
+      )
+    Jump(x, xs) =>
       @math.maximum(
         x.slot,
         xs.map(fn(x) { x.slot }).fold(init=0, fn(a, b) { @math.maximum(a, b) }),

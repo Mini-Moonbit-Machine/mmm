@@ -47,6 +47,7 @@ pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
 enum Binding {
   Let(Name, Type, Knf)
   LetRec(FuncDef)
+  LetJoin(FuncDef)
   LetTuple(Array[(Name, Type)], Name)
 }
 
@@ -62,6 +63,7 @@ fn bind_all(kr : KnfResult) -> Knf {
     ret = match item {
       Binding::Let(x, ty, e) => Let((x, ty), e, ret)
       Binding::LetRec(f) => LetRec(f, ret)
+      Binding::LetJoin(f) => LetJoin(f, ret)
       Binding::LetTuple(xs, y) => LetTuple(xs, y, ret)
     }
   }
@@ -88,17 +90,7 @@ fn materialize_knf_with_name(
   match knf {
     (Knf::Var(x), _, _) => x
     (k, ty, _) => {
-      let temp = self.new_named_temp(
-        try {
-          if name == "_" {
-            self.new_temp()
-          } else {
-            Name::from_string!(name)
-          }
-        } catch {
-          _ => fail!("invalid variable name: \{name}")
-        },
-      )
+      let temp = self.make_name!(name)
       let_list.push(Binding::Let(temp, ty, k))
       temp
     }
@@ -110,9 +102,7 @@ fn make_name(self : KnfEnv, name : String) -> Name!Failure {
     if name == "_" {
       self.new_temp()
     } else {
-      let new_id = self.counter
-      self.counter += 1
-      Name::from_string!(name + new_id.to_string())
+      self.new_named_temp(Name::from_string!(name))
     }
   } catch {
     _ => fail!("invalid variable name: \{name}")
@@ -367,8 +357,7 @@ fn build_knf(
       let inner_let_list = []
       for item in args {
         let (x, ty) = item
-        let x_name = self.make_name!(x)
-        let tmp = self.new_named_temp(x_name)
+        let tmp = self.make_name!(x)
         new_binders.push((tmp, ty))
         env2 = env2.add(x, tmp)
         ty_env2 = ty_env2.add(x, ty)
@@ -387,8 +376,7 @@ fn build_knf(
       let new_binders = []
       for item in xs {
         let (x, ty) = item
-        let x_name = self.make_name!(x)
-        let tmp = self.new_named_temp(x_name)
+        let tmp = self.make_name!(x)
         new_binders.push((tmp, ty))
         env2 = env2.add(x, tmp)
         ty_env2 = ty_env2.add(x, ty)
