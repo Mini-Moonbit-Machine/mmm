@@ -17,7 +17,7 @@ pub enum CallFreq {
   Once
   Many(Int)
   AsClosure
-} derive(Show)
+} derive(Show, Eq)
 
 pub fn next(self : CallFreq) -> CallFreq {
   match self {
@@ -371,57 +371,64 @@ fn alpha_rename_k(
   }
 }
 
+fn jp_count(knf : Knf) -> Int {
+  match knf {
+    IfEq(_, _, e1, e2) => jp_count(e1) + jp_count(e2)
+    IfLe(_, _, e1, e2) => jp_count(e1) + jp_count(e2)
+    Let(_, e1, e2) => jp_count(e1) + jp_count(e2)
+    LetJoin(fundef, e) => 1 + jp_count(e) + jp_count(fundef.body)
+    LetRec(fundef, e) => jp_count(e) + jp_count(fundef.body)
+    LetTuple(_, _, e) => jp_count(e)
+    _ => 0
+  }
+}
+
 pub fn InlineEnv::inline(
   self : InlineEnv,
   freq : Map[Name, CallFreq],
   env : Env[FuncDef],
-  in_loop : Name?,
+  fun : Name?,
   knf : Knf,
   cont : (Knf) -> Knf
 ) -> Knf {
   match knf {
     IfEq(x, y, e1, e2) => {
-      let e1 = self.inline(freq, env, in_loop, e1, cont)
-      let e2 = self.inline(freq, env, in_loop, e2, cont)
+      let e1 = self.inline(freq, env, fun, e1, cont)
+      let e2 = self.inline(freq, env, fun, e2, cont)
       IfEq(x, y, e1, e2)
     }
     IfLe(x, y, e1, e2) => {
-      let e1 = self.inline(freq, env, in_loop, e1, cont)
-      let e2 = self.inline(freq, env, in_loop, e2, cont)
+      let e1 = self.inline(freq, env, fun, e1, cont)
+      let e2 = self.inline(freq, env, fun, e2, cont)
       IfLe(x, y, e1, e2)
     }
     Let(xt, e1, e2) =>
       self.inline(
         freq,
         env,
-        in_loop,
+        fun,
         e1,
-        fn(e1) { Let(xt, e1, self.inline(freq, env, in_loop, e2, cont)) },
+        fn(e1) { Let(xt, e1, self.inline(freq, env, fun, e2, cont)) },
       )
     LetTuple(xts, y, e) => {
-      let e = self.inline(freq, env, in_loop, e, cont)
+      let e = self.inline(freq, env, fun, e, cont)
       LetTuple(xts, y, e)
     }
     LetRec({ name, ty, args, body } as fundef, e) => {
       let env = env.add(name, fundef)
-      let in_loop = if is_tail_rec(fundef) { Some(name) } else { None }
+      let fun = Some(name)
       LetRec(
-        {
-          name,
-          ty,
-          args,
-          body: self.inline(freq, env, in_loop, body, fn(x) { x }),
-        },
-        self.inline(freq, env, in_loop, e, cont),
+        { name, ty, args, body: self.inline(freq, env, fun, body, fn(x) { x }) },
+        self.inline(freq, env, fun, e, cont),
       )
     }
     LetJoin({ name, ty, args, body }, e) =>
       LetJoin(
-        { name, ty, args, body: self.inline(freq, env, in_loop, body, cont) },
-        self.inline(freq, env, in_loop, e, cont),
+        { name, ty, args, body: self.inline(freq, env, fun, body, cont) },
+        self.inline(freq, env, fun, e, cont),
       )
     Apply(f, xs) => {
-      if f.to_string().contains("main") || in_loop == Some(f) {
+      if f.to_string().contains("main") {
         return cont(knf)
       }
       fn replace(fundef : FuncDef) {
@@ -435,28 +442,42 @@ pub fn InlineEnv::inline(
         alpha_rename_k(self.knf_env, env, fundef.body, cont)
       }
 
-      match freq.get(f) {
-        Some(Once) => env.find(f).map_or(knf, replace)
-        Some(Many(n)) =>
-          match env.find(f) {
-            Some({ body, args, ty, .. } as fundef) => {
-              self.tracer.println("Inline threshold \{n} \{size(body)}")
-              let fn_like_args = args
-                .filter(fn(x) { x.1.is_fn_like() })
-                .length() +
-                ty.is_fn_like().to_int()
-              self.tracer.println("Fn like \{fn_like_args}")
-              if size(body) * n < 20 || (fn_like_args > 0 && size(body) < 60) {
-                self.tracer.println("Inline decision \{f} accepted")
-                replace(fundef)
-              } else {
-                self.tracer.println("Inline decision \{f} rejected")
-                cont(knf)
-              }
-            }
-            None => cont(knf)
+      fn inline(
+        args : Array[(@types.Name, @types.Type)],
+        body,
+        ty : @types.Type,
+        freq : CallFreq,
+        fundef : FuncDef
+      ) {
+        self.tracer.println("Inline threshold \{size(body)}")
+        let fn_like_args = args.filter(fn(x) { x.1.is_fn_like() }).length() +
+          ty.is_fn_like().to_int()
+        self.tracer.println("Fn like \{fn_like_args}")
+        let jp_count = jp_count(body)
+        self.tracer.println("Join point count \{jp_count}")
+        if (size(body) < 10 && fun.to_string().contains("main") == false) ||
+          (
+            freq == Once &&
+            size(body) < 30 &&
+            fun.to_string().contains("main") == false
+          ) ||
+          (fn_like_args > 0 && size(body) < 60) {
+          self.tracer.println("Inline decision \{f} accepted")
+          replace(fundef)
+        } else {
+          self.tracer.println("Inline decision \{f} rejected")
+          cont(knf)
+        }
+      }
+
+      match env.find(f) {
+        Some({ body, args, ty, .. } as fundef) =>
+          match freq.get(f) {
+            Some(Once as f) => inline(args, body, ty, f, fundef)
+            Some(Many(_) as f) => inline(args, body, ty, f, fundef)
+            _ => cont(knf)
           }
-        _ => cont(knf)
+        None => cont(knf)
       }
     }
     Jump(_, _) => knf // discard

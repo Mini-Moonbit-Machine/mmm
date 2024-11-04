@@ -1,43 +1,49 @@
-let rec dummy.56: Int = (i.2: Int) {
+let rec dummy.52: Int = (i.2: Int) {
   Var(i.2)
 }
-let _39: Int = Int(1)
-let rec dummy.57: Int = (i.2: Int) {
-  Apply(dummy.56, [i.2, ])
+let _37: Int = Int(1)
+let rec dummy.53: Int = (i.2: Int) {
+  Apply(dummy.52, [i.2, ])
 }
-let arr.40: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_39, dummy.57, ])
-let rec aux.58: Var({val: Some(Int)}) = (x.42: Var({val: Some(Int)}), arr.40: Array(Fun([Int], Int))) {
-  let _43: Int = Int(0)
-  let _44: Fun([Int], Int) = Get arr.40[_43]
-  Apply(_44, [x.42, ])
+let arr.38: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_37, dummy.53, ])
+let rec aux.54: Var({val: Some(Int)}) = (x.40: Var({val: Some(Int)}), arr.38: Array(Fun([Int], Int))) {
+  let _41: Int = Int(0)
+  let _42: Fun([Int], Int) = Get arr.38[_41]
+  Apply(_42, [x.40, ])
 }
-let rec h.59: Var({val: Some(Int)}) = (x.51: Var({val: Some(Int)}), arr.40: Array(Fun([Int], Int))) {
-  let _52: Int = Int(0)
-  if (x.51 == _52) then {
+let rec h.55: Var({val: Some(Int)}) = (x.47: Var({val: Some(Int)}), arr.38: Array(Fun([Int], Int))) {
+  let _48: Int = Int(0)
+  if (x.47 == _48) then {
     Int(1)
   } else {
-    let _53: Int = Int(1)
-    let _54: Int = Sub(x.51, _53)
-    let _55: Var({val: Some(Int)}) = Apply(aux.58, [_54, arr.40, ])
-    Mul(x.51, _55)
+    let _49: Int = Int(1)
+    let _50: Int = Sub(x.47, _49)
+    let _51: Var({val: Some(Int)}) = Apply(aux.54, [_50, arr.38, ])
+    Mul(x.47, _51)
   }
 }
-let _46: Int = Int(0)
-let rec h.60: Var({val: Some(Int)}) = (x.51: Var({val: Some(Int)})) {
-  Apply(h.59, [x.51, arr.40, ])
+let _44: Int = Int(0)
+let rec h.56: Var({val: Some(Int)}) = (x.47: Var({val: Some(Int)})) {
+  Apply(h.55, [x.47, arr.38, ])
 }
-let _47: Unit = Put arr.40[_46] = h.60
+let _45: Unit = Put arr.38[_44] = h.56
+let rec f1.57: Unit = (arr.38: Array(Fun([Int], Int))) {
+  let _24: Int = Int(5)
+  let _25: Int = Apply(h.55, [_24, arr.38, ])
+  ExtApply(minimbt_print_int, [_25, ])
+}
 let _26: Int = Int(5)
-let a.27: Int = Apply(h.59, [_26, arr.40, ])
-let rec main.61: Var({val: Some(Unit)}) = (a.27: Int, arr.40: Array(Fun([Int], Int))) {
-  let _48: Int = Int(5)
-  let _49: Int = Apply(h.59, [_48, arr.40, ])
-  let _31: Unit = ExtApply(minimbt_print_int, [_49, ])
+let a.27: Int = Apply(h.55, [_26, arr.38, ])
+let rec g.58: Var({val: Some(Int)}) = (x.29: Var({val: Some(Int)}), a.27: Int) {
+  Add(x.29, a.27)
+}
+let rec main.59: Var({val: Some(Unit)}) = (a.27: Int, arr.38: Array(Fun([Int], Int))) {
+  let _31: Unit = Apply(f1.57, [arr.38, ])
   let _32: Int = Int(10)
-  let _33: Int = Add(_32, a.27)
+  let _33: Int = Apply(g.58, [_32, a.27, ])
   let _34: Unit = ExtApply(minimbt_print_int, [_33, ])
   let _35: Int = Int(31)
-  let _36: Int = Add(_35, a.27)
+  let _36: Int = Apply(g.58, [_35, a.27, ])
   ExtApply(minimbt_print_int, [_36, ])
 }
-Apply(main.61, [a.27, arr.40, ])
+Apply(main.59, [a.27, arr.38, ])

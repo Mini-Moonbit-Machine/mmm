@@ -15,37 +15,130 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.711
-  .type main.711, @function
+  .globl main.211
+  .type main.211, @function
 # leaf false
-main.711:
-.main.711_0:
+main.211:
+.main.211_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, zero
-
-.main.711_2:
   li a0, 40
-  bge s0, a0, .main.711_3
-
-.main.711_4:
-  mv a0, zero
-  mv a1, s0
-  li a2, 40
-  call xloop.713
-  addi a0, s0, 1
-  mv s0, a0
-  j .main.711_2
-
-.main.711_3:
-  mv a0, zero
-
-.main.711_5:
+  call mandelbrot.207
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl yloop.208
+  .type yloop.208, @function
+# leaf false
+yloop.208:
+.yloop.208_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a1
+  mv s1, a0
+
+.yloop.208_2:
+  blt s1, s0, .yloop.208_4
+
+.yloop.208_3:
+  mv a0, zero
+
+.yloop.208_5:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.yloop.208_4:
+
+.yloop.208_7:
+  mv s2, zero
+
+.yloop.208_9:
+  bge s2, s0, .yloop.208_10
+
+.yloop.208_11:
+  fcvt.d.w fa0, s2
+  fadd.d fa1, fa0, fa0
+  fcvt.d.w fa0, s0
+  fdiv.d fa1, fa1, fa0
+  li a0, 4609434218613702656
+  fmv.d.x fa2, a0
+  fsub.d fa1, fa1, fa2
+  fcvt.d.w fa2, s1
+  fadd.d fa2, fa2, fa2
+  fdiv.d fa0, fa2, fa0
+  li a0, 4607182418800017408
+  fmv.d.x fa2, a0
+  fsub.d fa2, fa0, fa2
+
+.yloop.208_21:
+  li a0, 1000
+  fmv.d.x fa0, zero
+  fmv.d fa4, fa0
+  fmv.d fa3, fa0
+  fmv.d fa5, fa0
+
+.yloop.208_23:
+  beq a0, zero, .yloop.208_24
+
+.yloop.208_25:
+  fsub.d fa0, fa0, fa5
+  fadd.d fa0, fa0, fa1
+  fadd.d fa4, fa4, fa4
+  fmadd.d fa3, fa4, fa3, fa2
+  fmul.d fa5, fa0, fa0
+  fmul.d fa6, fa3, fa3
+  li a1, 4611686018427387904
+  fmv.d.x fa4, a1
+  fmul.d fa4, fa4, fa4
+  fadd.d fa7, fa5, fa6
+  fle.d a1, fa4, fa7
+  beq a1, zero, .yloop.208_27
+
+.yloop.208_26:
+  mv a0, zero
+  call minimbt_print_int
+
+.yloop.208_28:
+
+.yloop.208_29:
+
+.yloop.208_13:
+  addi a0, s2, 1
+  mv s2, a0
+  j .yloop.208_9
+
+.yloop.208_10:
+  call minimbt_print_endline
+  mv a0, zero
+
+.yloop.208_12:
+
+.yloop.208_6:
+  addi a0, s1, 1
+  mv s1, a0
+  j .yloop.208_2
+
+.yloop.208_24:
+  li a0, 1
+  call minimbt_print_int
+  j .yloop.208_29
+
+.yloop.208_27:
+  addi a0, a0, -1
+  fmv.d fa4, fa0
+  fmv.d fa0, fa5
+  fmv.d fa5, fa6
+  j .yloop.208_23
 
   .p2align 2
   .text
@@ -56,126 +149,9 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.711
+  call main.211
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl xloop.713
-  .type xloop.713, @function
-# leaf false
-xloop.713:
-.xloop.713_0:
-  addi sp, sp, -80
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  fsd fs0, 40(sp)
-  fsd fs1, 48(sp)
-  fsd fs2, 56(sp)
-  fsd fs3, 64(sp)
-  mv s1, a2
-  mv s0, a0
-  mv s2, a1
-
-.xloop.713_2:
-  bge s0, s1, .xloop.713_3
-
-.xloop.713_4:
-  fcvt.d.w fa0, s0
-  call dbl.712
-  fcvt.d.w fs0, s1
-  fdiv.d fa0, fa0, fs0
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fs1, fa0, fa1
-  fcvt.d.w fa0, s2
-  call dbl.712
-  fdiv.d fa0, fa0, fs0
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa3, fa0, fa1
-
-.xloop.713_14:
-  li a0, 1000
-  mv s3, a0
-  fmv.d.x fa0, zero
-  fmv.d fs0, fa0
-  fmv.d fa2, fa0
-  fmv.d fa1, fa0
-  fmv.d fs2, fa3
-
-.xloop.713_16:
-  beq s3, zero, .xloop.713_17
-
-.xloop.713_18:
-  fsub.d fa1, fa2, fa1
-  fadd.d fs3, fa1, fs1
-  call dbl.712
-  fmadd.d fa3, fa0, fs0, fs2
-  fmul.d fa2, fs3, fs3
-  fmul.d fa1, fa3, fa3
-  li a0, 4611686018427387904
-  fmv.d.x fa0, a0
-  fmul.d fa0, fa0, fa0
-  fadd.d fa4, fa2, fa1
-  fle.d a0, fa0, fa4
-  beq a0, zero, .xloop.713_20
-
-.xloop.713_19:
-  mv a0, zero
-  call minimbt_print_int
-
-.xloop.713_21:
-
-.xloop.713_22:
-
-.xloop.713_6:
-  addi a0, s0, 1
-  mv s0, a0
-  j .xloop.713_2
-
-.xloop.713_3:
-  call minimbt_print_endline
-  mv a0, zero
-
-.xloop.713_5:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  fld fs0, 40(sp)
-  fld fs1, 48(sp)
-  fld fs2, 56(sp)
-  fld fs3, 64(sp)
-  addi sp, sp, 80
-  ret
-
-.xloop.713_17:
-  li a0, 1
-  call minimbt_print_int
-  j .xloop.713_22
-
-.xloop.713_20:
-  addi a0, s3, -1
-  mv s3, a0
-  fmv.d fa0, fs3
-  fmv.d fs0, fa3
-  j .xloop.713_16
-
-  .p2align 2
-  .text
-  .globl dbl.712
-  .type dbl.712, @function
-# leaf true
-dbl.712:
-.dbl.712_0:
-  fadd.d fa0, fa0, fa0
   ret
 
   .p2align 2
@@ -198,6 +174,22 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl mandelbrot.207
+  .type mandelbrot.207, @function
+# leaf false
+mandelbrot.207:
+.mandelbrot.207_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, a0
+  mv a0, zero
+  call yloop.208
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

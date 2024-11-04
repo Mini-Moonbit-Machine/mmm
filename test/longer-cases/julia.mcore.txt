@@ -15,6 +15,54 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl calc_pixel.156
+  .type calc_pixel.156, @function
+# leaf true
+calc_pixel.156:
+.calc_pixel.156_0:
+  fmv.d fa2, fa3
+  fmv.d fa2, fa4
+  mv a1, a0
+
+.calc_pixel.156_2:
+  fmul.d fa3, fa0, fa0
+  fmul.d fa2, fa1, fa1
+  lw a0, iter.3
+  beq a1, a0, .calc_pixel.156_3
+
+.calc_pixel.156_4:
+  fadd.d fa4, fa3, fa2
+  fld fa5, limit_sq.2, t5
+  fle.d a0, fa5, fa4
+  bne a0, zero, .calc_pixel.156_5
+
+.calc_pixel.156_6:
+  li a0, 4611686018427387904
+  fmv.d.x fa4, a0
+  fmul.d fa0, fa4, fa0
+  fld fa4, c_im.6, t5
+  fmadd.d fa1, fa0, fa1, fa4
+  fsub.d fa0, fa3, fa2
+  fld fa2, c_re.5, t5
+  fadd.d fa0, fa0, fa2
+  addi a0, a1, 1
+  mv a1, a0
+  j .calc_pixel.156_2
+
+.calc_pixel.156_3:
+  lw a0, iter.3
+
+.calc_pixel.156_8:
+  ret
+
+.calc_pixel.156_5:
+  mv a0, a1
+
+.calc_pixel.156_7:
+  j .calc_pixel.156_8
+
+  .p2align 2
+  .text
   .globl T$iter.3
   .type T$iter.3, @function
 # leaf true
@@ -47,6 +95,53 @@ T$limit.1:
 
   .p2align 2
   .text
+  .globl main.160
+  .type main.160, @function
+# leaf false
+main.160:
+.main.160_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  fmv.d fa0, fa1
+  fmv.d fa0, fa2
+  call minimbt_read_int
+  mv s0, a0
+  li a0, 2
+  mul s1, s0, a0
+  mul a0, s1, s0
+  slliw a1, a0, 2
+  sub s2, s11, a1
+  andi s11, s2, -8
+  mv a1, a0
+  fld fa0, c_im.6, t5
+  fld fa1, c_re.5, t5
+  lw a5, iter.3
+  fld fa2, limit_sq.2, t5
+  mv a0, s1
+  mv a1, s0
+  mv a2, zero
+  mv a3, zero
+  mv a4, s2
+  call main_loop.158
+  mv a0, s1
+  mv a1, s0
+  mv a2, zero
+  mv a3, zero
+  mv a4, s2
+  call print_loop.159
+  mv a0, zero
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
   .globl T$_4
   .type T$_4, @function
 # leaf true
@@ -69,80 +164,88 @@ T$c_im.6:
 
   .p2align 2
   .text
-  .globl main.197
-  .type main.197, @function
+  .globl main_loop.158
+  .type main_loop.158, @function
 # leaf false
-main.197:
-.main.197_0:
-  addi sp, sp, -48
+main_loop.158:
+.main_loop.158_0:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
   sd s4, 40(sp)
+  sd s5, 48(sp)
   fmv.d fa0, fa1
   fmv.d fa0, fa2
-  call minimbt_read_int
   mv s0, a0
-  li a0, 2
-  mul s1, s0, a0
-  mul a0, s1, s0
-  slliw a1, a0, 2
-  sub s2, s11, a1
-  andi s11, s2, -8
-  mv a1, a0
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a5, iter.3
-  fld fa2, limit_sq.2, t5
-  mv a0, s1
-  mv a1, s0
-  mv a2, zero
-  mv a3, zero
-  mv a4, s2
-  call main_loop.196
-  mv s3, zero
-  mv s4, zero
+  mv s1, a1
+  mv s3, a2
+  mv s4, a3
+  mv s2, a4
 
-.main.197_2:
-  beq s4, s0, .main.197_3
+.main_loop.158_2:
+  beq s4, s1, .main_loop.158_3
 
-.main.197_4:
-  beq s3, s1, .main.197_5
+.main_loop.158_4:
+  beq s3, s0, .main_loop.158_5
 
-.main.197_6:
-  mul a0, s4, s1
-  add a0, a0, s3
-  slliw a0, a0, 2
-  add a0, s2, a0
-  lw a0, 0(a0)
-  addi a0, a0, 48
-  call minimbt_print_char
+.main_loop.158_6:
+  fcvt.d.w fa0, s3
+  li a0, 4613937818241073152
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.d.w fa1, s0
+  fdiv.d fa0, fa0, fa1
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fa0, fa0, fa1
+  fneg.d fa0, fa0
+  fcvt.d.w fa1, s4
+  li a0, 4613937818241073152
+  fmv.d.x fa2, a0
+  fmul.d fa1, fa2, fa1
+  fcvt.d.w fa2, s1
+  fdiv.d fa1, fa1, fa2
+  li a0, 4609434218613702656
+  fmv.d.x fa2, a0
+  fsub.d fa1, fa1, fa2
+  fld fa2, c_im.6, t5
+  fld fa3, c_re.5, t5
+  lw a1, iter.3
+  fld fa4, limit_sq.2, t5
+  mv a0, zero
+  call calc_pixel.156
+  mul a1, s4, s0
+  add s5, a1, s3
+  call clamp.157
+  slliw a1, s5, 2
+  add a1, s2, a1
+  sw a0, 0(a1)
   addi a0, s3, 1
   mv s3, a0
-  j .main.197_2
+  j .main_loop.158_2
 
-.main.197_3:
+.main_loop.158_3:
   mv a0, zero
 
-.main.197_8:
+.main_loop.158_8:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
   ld s3, 32(sp)
   ld s4, 40(sp)
-  addi sp, sp, 48
+  ld s5, 48(sp)
+  addi sp, sp, 64
   ret
 
-.main.197_5:
-  li a0, 10
-  call minimbt_print_char
+.main_loop.158_5:
   addi a0, s4, 1
   mv s3, zero
   mv s4, a0
-  j .main.197_2
+  j .main_loop.158_2
 
   .p2align 2
   .text
@@ -157,158 +260,90 @@ T$limit_sq.2:
 
   .p2align 2
   .text
-  .globl main_loop.196
-  .type main_loop.196, @function
-# leaf true
-main_loop.196:
-.main_loop.196_0:
-  mv t0, a0
-  mv a7, a1
-  mv a6, a2
-  mv a2, a3
-  mv a0, a4
-  fmv.d fa0, fa1
-  mv a1, a5
-  fmv.d fa0, fa2
-  mv a1, t0
-  mv a5, a7
-  mv a3, a6
-  mv a4, a0
+  .globl print_loop.159
+  .type print_loop.159, @function
+# leaf false
+print_loop.159:
+.print_loop.159_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  mv s2, a0
+  mv s3, a1
+  mv s4, a2
+  mv s1, a3
+  mv s0, a4
 
-.main_loop.196_2:
-  beq a2, a5, .main_loop.196_3
+.print_loop.159_2:
+  beq s1, s3, .print_loop.159_3
 
-.main_loop.196_4:
-  beq a3, a1, .main_loop.196_5
+.print_loop.159_4:
+  beq s4, s2, .print_loop.159_5
 
-.main_loop.196_6:
-  fcvt.d.w fa0, a3
-  li a0, 4613937818241073152
-  fmv.d.x fa1, a0
-  fmul.d fa0, fa1, fa0
-  fcvt.d.w fa1, a1
-  fdiv.d fa0, fa0, fa1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fa0, fa0, fa1
-  fneg.d fa0, fa0
-  fcvt.d.w fa1, a2
-  li a0, 4613937818241073152
-  fmv.d.x fa2, a0
-  fmul.d fa1, fa2, fa1
-  fcvt.d.w fa2, a5
-  fdiv.d fa1, fa1, fa2
-  li a0, 4609434218613702656
-  fmv.d.x fa2, a0
-  fsub.d fa1, fa1, fa2
-  mv a0, zero
-
-.main_loop.196_8:
-  fmul.d fa2, fa0, fa0
-  fmul.d fa3, fa1, fa1
-  lw a6, iter.3
-  bne a0, a6, .main_loop.196_10
-
-.main_loop.196_9:
-  mul a0, a2, a1
-  add a0, a0, a3
-  lw a6, iter.3
-  bge zero, a6, .main_loop.196_11
-
-.main_loop.196_12:
-  lw a6, iter.3
-  li a7, 48
-  bge a6, a7, .main_loop.196_13
-
-.main_loop.196_14:
-  lw a6, iter.3
+.print_loop.159_6:
+  mul a0, s1, s2
+  add a0, a0, s4
   slliw a0, a0, 2
-  add a0, a4, a0
-  sw a6, 0(a0)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
+  add a0, s0, a0
+  lw a0, 0(a0)
+  addi a0, a0, 48
+  call minimbt_print_char
+  addi a0, s4, 1
+  mv s4, a0
+  j .print_loop.159_2
 
-.main_loop.196_3:
+.print_loop.159_3:
   mv a0, zero
 
-.main_loop.196_28:
+.print_loop.159_8:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  addi sp, sp, 48
   ret
 
-.main_loop.196_5:
-  addi a0, a2, 1
-  mv a3, zero
-  mv a2, a0
-  j .main_loop.196_2
+.print_loop.159_5:
+  li a0, 10
+  call minimbt_print_char
+  addi a0, s1, 1
+  mv s4, zero
+  mv s1, a0
+  j .print_loop.159_2
 
-.main_loop.196_10:
-  fadd.d fa4, fa2, fa3
-  fld fa5, limit_sq.2, t5
-  fle.d a6, fa5, fa4
-  beq a6, zero, .main_loop.196_18
+  .p2align 2
+  .text
+  .globl clamp.157
+  .type clamp.157, @function
+# leaf true
+clamp.157:
+.clamp.157_0:
+  bge zero, a0, .clamp.157_1
 
-.main_loop.196_17:
-  mul a6, a2, a1
-  add a6, a6, a3
-  bge zero, a0, .main_loop.196_19
+.clamp.157_2:
+  li a1, 48
+  blt a0, a1, .clamp.157_4
 
-.main_loop.196_20:
-  li a7, 48
-  blt a0, a7, .main_loop.196_22
-
-.main_loop.196_21:
+.clamp.157_3:
   li a0, 48
-  slliw a6, a6, 2
-  add a6, a4, a6
-  sw a0, 0(a6)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
 
-.main_loop.196_18:
-  li a6, 4611686018427387904
-  fmv.d.x fa4, a6
-  fmul.d fa0, fa4, fa0
-  fld fa4, c_im.6, t5
-  fmadd.d fa1, fa0, fa1, fa4
-  fsub.d fa0, fa2, fa3
-  fld fa2, c_re.5, t5
-  fadd.d fa0, fa0, fa2
-  addi a0, a0, 1
-  j .main_loop.196_8
+.clamp.157_5:
 
-.main_loop.196_19:
-  slliw a0, a6, 2
-  add a0, a4, a0
-  sw zero, 0(a0)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
+.clamp.157_6:
+  ret
 
-.main_loop.196_22:
-  slliw a6, a6, 2
-  add a6, a4, a6
-  sw a0, 0(a6)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
+.clamp.157_1:
+  mv a0, zero
+  j .clamp.157_6
 
-.main_loop.196_11:
-  slliw a0, a0, 2
-  add a0, a4, a0
-  sw zero, 0(a0)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
-
-.main_loop.196_13:
-  li a6, 48
-  slliw a0, a0, 2
-  add a0, a4, a0
-  sw a6, 0(a0)
-  addi a0, a3, 1
-  mv a3, a0
-  j .main_loop.196_2
+.clamp.157_4:
+  j .clamp.157_5
 
   .p2align 2
   .text
@@ -323,7 +358,7 @@ T$start:
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  call main.197
+  call main.160
   ld ra, 0(sp)
   addi sp, sp, 16
   ret

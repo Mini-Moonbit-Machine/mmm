@@ -7,34 +7,58 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$start #f2 : fn() -> unit
+.fn main.20 #f3 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f0()
-    return %0
-  }
-}
-.fn main.17 #f0 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le(123, 0)
-    br %0 b1() b2()
+    let %0: int32 = call f0(())
+    let %1: bool = le(%0, 0)
+    br %1 b1() b2()
   }
   .bb #b1 () {
-    let %1: int32 = add(456, 123)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    jump b3(%2)
+    let %2: int32 = call f1(())
+    let %3: int32 = add(%2, %0)
+    let %4: unit = ext_call minimbt_print_int(%3)
+    jump b3(%4)
   }
   .bb #b2 () {
-    let %3: int32 = sub(789, 123)
-    let %4: int32 = add(%3, 123)
-    let %5: unit = ext_call minimbt_print_int(%4)
-    jump b3(%5)
+    let %5: int32 = call f2(())
+    let %6: int32 = sub(%5, %0)
+    let %7: int32 = add(%6, %0)
+    let %8: unit = ext_call minimbt_print_int(%7)
+    jump b3(%8)
   }
   .bb #b3 (unit) {
     return $b3.0
+  }
+}
+.fn h.19 #f2 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 789
+  }
+}
+.fn f.17 #f0 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 123
+  }
+}
+.fn T$start #f8 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn g.18 #f1 : fn(unit) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 456
   }
 }
 .thunk ::0 start

@@ -9,178 +9,181 @@ let rec modulo.6: Int = (x.7: Int, y.8: Int) {
   let _10: Int = Mul(q.9, y.8)
   Sub(x.7, _10)
 }
-let rec main.64: Var({val: Some(Unit)}) = () {
-  let n.65: Int = Int(100)
-  let _66: Int = Int(0)
-  let arr.67: Array(Int) = ExtApply(minimbt_create_array, [n.65, _66, ])
-  let rec aux.208: Unit = (i.209: Int, state.210: Int) {
-    let join aux.211: Unit = (i.212: Int, state.213: Int) {
-      if (i.212 == n.65) then {
-        Unit
-      } else {
-        let new_state.214: Int = Apply(random.1, [state.213, ])
-        let _215: Int = Int(65537)
-        let res.216: Int = Apply(modulo.6, [new_state.214, _215, ])
-        let _217: Unit = Put arr.67[i.212] = res.216
-        let _218: Int = Int(1)
-        let _219: Int = Add(i.212, _218)
-        Jump(aux.211, [_219, res.216, ])
-      }
+let rec fill_buffer.11: Unit = (arr.12: Array(Int), n.13: Int) {
+  let _23: Int = Int(0)
+  let _24: Int = Int(12345)
+  let join aux.117: Unit = (i.118: Int, state.119: Int) {
+    if (i.118 == n.13) then {
+      Unit
+    } else {
+      let new_state.120: Int = Apply(random.1, [state.119, ])
+      let _121: Int = Int(65537)
+      let res.122: Int = Apply(modulo.6, [new_state.120, _121, ])
+      let _123: Unit = Put arr.12[i.118] = res.122
+      let _124: Int = Int(1)
+      let _125: Int = Add(i.118, _124)
+      Jump(aux.117, [_125, res.122, ])
     }
-    Jump(aux.211, [i.209, state.210, ])
   }
-  let _220: Int = Int(0)
-  let _221: Int = Int(12345)
-  let _68: Unit = Apply(aux.208, [_220, _221, ])
-  let rec insert.233: Unit = (arr.234: Array(Int), i.235: Int) {
-    let join insert.236: Unit = (arr.237: Array(Int), i.238: Int) {
-      let _239: Int = Int(0)
-      if (i.238 == _239) then {
+  Jump(aux.117, [_23, _24, ])
+}
+let rec isort.25: Unit = (arr.26: Array(Int), n.27: Int) {
+  let rec insert.28: Unit = (arr.29: Array(Int), i.30: Int) {
+    let join insert.79: Unit = (arr.80: Array(Int), i.81: Int) {
+      let _82: Int = Int(0)
+      if (i.81 == _82) then {
         Unit
       } else {
-        let _240: Int = Int(1)
-        let _241: Int = Sub(i.238, _240)
-        let _242: Int = Get arr.237[_241]
-        let _243: Int = Get arr.237[i.238]
-        if (_242 <= _243) then {
+        let _83: Int = Int(1)
+        let _84: Int = Sub(i.81, _83)
+        let _85: Int = Get arr.80[_84]
+        let _86: Int = Get arr.80[i.81]
+        if (_85 <= _86) then {
           Unit
         } else {
-          let tmp.244: Int = Get arr.237[i.238]
-          let _245: Int = Int(1)
-          let _246: Int = Sub(i.238, _245)
-          let _247: Int = Get arr.237[_246]
-          let _248: Unit = Put arr.237[i.238] = _247
-          let _249: Int = Int(1)
-          let _250: Int = Sub(i.238, _249)
-          let _251: Unit = Put arr.237[_250] = tmp.244
-          let _252: Int = Int(1)
-          let _253: Int = Sub(i.238, _252)
-          Jump(insert.236, [arr.237, _253, ])
+          let tmp.87: Int = Get arr.80[i.81]
+          let _88: Int = Int(1)
+          let _89: Int = Sub(i.81, _88)
+          let _90: Int = Get arr.80[_89]
+          let _91: Unit = Put arr.80[i.81] = _90
+          let _92: Int = Int(1)
+          let _93: Int = Sub(i.81, _92)
+          let _94: Unit = Put arr.80[_93] = tmp.87
+          let _95: Int = Int(1)
+          let _96: Int = Sub(i.81, _95)
+          Jump(insert.79, [arr.80, _96, ])
         }
       }
     }
-    Jump(insert.236, [arr.234, i.235, ])
+    Jump(insert.79, [arr.29, i.30, ])
   }
-  let rec aux.254: Unit = (i.255: Int) {
-    let join aux.256: Unit = (i.257: Int) {
-      if (i.257 == n.65) then {
-        Unit
-      } else {
-        let _258: Unit = Apply(insert.233, [arr.67, i.257, ])
-        let _259: Int = Int(1)
-        let _260: Int = Add(i.257, _259)
-        Jump(aux.256, [_260, ])
-      }
+  let _51: Int = Int(1)
+  let join aux.126: Unit = (i.127: Int) {
+    if (i.127 == n.27) then {
+      Unit
+    } else {
+      let _128: Unit = Apply(insert.28, [arr.26, i.127, ])
+      let _129: Int = Int(1)
+      let _130: Int = Add(i.127, _129)
+      Jump(aux.126, [_130, ])
     }
-    Jump(aux.256, [i.255, ])
   }
-  let _261: Int = Int(1)
-  let _69: Unit = Apply(aux.254, [_261, ])
-  let rec aux.262: Unit = (i.263: Int) {
-    let join aux.264: Unit = (i.265: Int) {
-      if (i.265 == n.65) then {
-        Unit
-      } else {
-        let _266: Int = Get arr.67[i.265]
-        let _267: Unit = ExtApply(minimbt_print_int, [_266, ])
-        let _268: Int = Int(32)
-        let _269: Unit = ExtApply(minimbt_print_char, [_268, ])
-        let _270: Int = Int(1)
-        let _271: Int = Add(i.265, _270)
-        Jump(aux.264, [_271, ])
-      }
+  Jump(aux.126, [_51, ])
+}
+let rec print_array.52: Unit = (arr.53: Array(Int), n.54: Int) {
+  let _63: Int = Int(0)
+  let join aux.131: Unit = (i.132: Int) {
+    if (i.132 == n.54) then {
+      Unit
+    } else {
+      let _133: Int = Get arr.53[i.132]
+      let _134: Unit = ExtApply(minimbt_print_int, [_133, ])
+      let _135: Int = Int(32)
+      let _136: Unit = ExtApply(minimbt_print_char, [_135, ])
+      let _137: Int = Int(1)
+      let _138: Int = Add(i.132, _137)
+      Jump(aux.131, [_138, ])
     }
-    Jump(aux.264, [i.263, ])
   }
-  let _272: Int = Int(0)
-  Apply(aux.262, [_272, ])
-}
-Apply(main.64, [])let rec random.1: Int = (state.2: Int) {
-  let _3: Int = Int(75)
-  let _4: Int = Mul(state.2, _3)
-  let _5: Int = Int(74)
-  Add(_4, _5)
-}
-let rec modulo.6: Int = (x.7: Int, y.8: Int) {
-  let q.9: Int = Div(x.7, y.8)
-  let _10: Int = Mul(q.9, y.8)
-  Sub(x.7, _10)
+  Jump(aux.131, [_63, ])
 }
 let rec main.64: Var({val: Some(Unit)}) = () {
   let n.65: Int = Int(100)
   let _66: Int = Int(0)
   let arr.67: Array(Int) = ExtApply(minimbt_create_array, [n.65, _66, ])
-  let _220: Int = Int(0)
-  let _221: Int = Int(12345)
-  let join aux.319: Unit = (i.320: Int, state.321: Int) {
-    if (i.320 == n.65) then {
-      let _68: Unit = Unit
-      let rec insert.233: Unit = (arr.234: Array(Int), i.235: Int) {
-        let join insert.236: Unit = (arr.237: Array(Int), i.238: Int) {
-          let _239: Int = Int(0)
-          if (i.238 == _239) then {
-            Unit
-          } else {
-            let _240: Int = Int(1)
-            let _241: Int = Sub(i.238, _240)
-            let _242: Int = Get arr.237[_241]
-            let _243: Int = Get arr.237[i.238]
-            if (_242 <= _243) then {
-              Unit
-            } else {
-              let tmp.244: Int = Get arr.237[i.238]
-              let _245: Int = Int(1)
-              let _246: Int = Sub(i.238, _245)
-              let _247: Int = Get arr.237[_246]
-              let _248: Unit = Put arr.237[i.238] = _247
-              let _249: Int = Int(1)
-              let _250: Int = Sub(i.238, _249)
-              let _251: Unit = Put arr.237[_250] = tmp.244
-              let _252: Int = Int(1)
-              let _253: Int = Sub(i.238, _252)
-              Jump(insert.236, [arr.237, _253, ])
-            }
-          }
-        }
-        Jump(insert.236, [arr.234, i.235, ])
-      }
-      let _261: Int = Int(1)
-      let join aux.348: Unit = (i.349: Int) {
-        if (i.349 == n.65) then {
-          let _69: Unit = Unit
-          let _272: Int = Int(0)
-          let join aux.350: Unit = (i.351: Int) {
-            if (i.351 == n.65) then {
-              Unit
-            } else {
-              let _352: Int = Get arr.67[i.351]
-              let _353: Unit = ExtApply(minimbt_print_int, [_352, ])
-              let _354: Int = Int(32)
-              let _355: Unit = ExtApply(minimbt_print_char, [_354, ])
-              let _356: Int = Int(1)
-              let _357: Int = Add(i.351, _356)
-              Jump(aux.350, [_357, ])
-            }
-          }
-          Jump(aux.350, [_272, ])
-        } else {
-          let _358: Unit = Apply(insert.233, [arr.67, i.349, ])
-          let _359: Int = Int(1)
-          let _360: Int = Add(i.349, _359)
-          Jump(aux.348, [_360, ])
-        }
-      }
-      Jump(aux.348, [_261, ])
+  let _68: Unit = Apply(fill_buffer.11, [arr.67, n.65, ])
+  let _69: Unit = Apply(isort.25, [arr.67, n.65, ])
+  Apply(print_array.52, [arr.67, n.65, ])
+}
+Apply(main.64, [])let rec fill_buffer.11: Unit = (arr.12: Array(Int), n.13: Int) {
+  let _23: Int = Int(0)
+  let _24: Int = Int(12345)
+  let join aux.117: Unit = (i.118: Int, state.119: Int) {
+    if (i.118 == n.13) then {
+      Unit
     } else {
-      let new_state.361: Int = Apply(random.1, [state.321, ])
-      let _362: Int = Int(65537)
-      let res.363: Int = Apply(modulo.6, [new_state.361, _362, ])
-      let _364: Unit = Put arr.67[i.320] = res.363
-      let _365: Int = Int(1)
-      let _366: Int = Add(i.320, _365)
-      Jump(aux.319, [_366, res.363, ])
+      let _141: Int = Int(75)
+      let _142: Int = Mul(state.119, _141)
+      let _143: Int = Int(74)
+      let new_state.120: Int = Add(_142, _143)
+      let _121: Int = Int(65537)
+      let q.144: Int = Div(new_state.120, _121)
+      let _145: Int = Mul(q.144, _121)
+      let res.122: Int = Sub(new_state.120, _145)
+      let _123: Unit = Put arr.12[i.118] = res.122
+      let _124: Int = Int(1)
+      let _125: Int = Add(i.118, _124)
+      Jump(aux.117, [_125, res.122, ])
     }
   }
-  Jump(aux.319, [_220, _221, ])
+  Jump(aux.117, [_23, _24, ])
+}
+let rec isort.25: Unit = (arr.26: Array(Int), n.27: Int) {
+  let rec insert.28: Unit = (arr.29: Array(Int), i.30: Int) {
+    let join insert.79: Unit = (arr.80: Array(Int), i.81: Int) {
+      let _82: Int = Int(0)
+      if (i.81 == _82) then {
+        Unit
+      } else {
+        let _83: Int = Int(1)
+        let _84: Int = Sub(i.81, _83)
+        let _85: Int = Get arr.80[_84]
+        let _86: Int = Get arr.80[i.81]
+        if (_85 <= _86) then {
+          Unit
+        } else {
+          let tmp.87: Int = Get arr.80[i.81]
+          let _88: Int = Int(1)
+          let _89: Int = Sub(i.81, _88)
+          let _90: Int = Get arr.80[_89]
+          let _91: Unit = Put arr.80[i.81] = _90
+          let _92: Int = Int(1)
+          let _93: Int = Sub(i.81, _92)
+          let _94: Unit = Put arr.80[_93] = tmp.87
+          let _95: Int = Int(1)
+          let _96: Int = Sub(i.81, _95)
+          Jump(insert.79, [arr.80, _96, ])
+        }
+      }
+    }
+    Jump(insert.79, [arr.29, i.30, ])
+  }
+  let _51: Int = Int(1)
+  let join aux.126: Unit = (i.127: Int) {
+    if (i.127 == n.27) then {
+      Unit
+    } else {
+      let _128: Unit = Apply(insert.28, [arr.26, i.127, ])
+      let _129: Int = Int(1)
+      let _130: Int = Add(i.127, _129)
+      Jump(aux.126, [_130, ])
+    }
+  }
+  Jump(aux.126, [_51, ])
+}
+let rec print_array.52: Unit = (arr.53: Array(Int), n.54: Int) {
+  let _63: Int = Int(0)
+  let join aux.131: Unit = (i.132: Int) {
+    if (i.132 == n.54) then {
+      Unit
+    } else {
+      let _133: Int = Get arr.53[i.132]
+      let _134: Unit = ExtApply(minimbt_print_int, [_133, ])
+      let _135: Int = Int(32)
+      let _136: Unit = ExtApply(minimbt_print_char, [_135, ])
+      let _137: Int = Int(1)
+      let _138: Int = Add(i.132, _137)
+      Jump(aux.131, [_138, ])
+    }
+  }
+  Jump(aux.131, [_63, ])
+}
+let rec main.64: Var({val: Some(Unit)}) = () {
+  let n.65: Int = Int(100)
+  let _66: Int = Int(0)
+  let arr.67: Array(Int) = ExtApply(minimbt_create_array, [n.65, _66, ])
+  let _68: Unit = Apply(fill_buffer.11, [arr.67, n.65, ])
+  let _69: Unit = Apply(isort.25, [arr.67, n.65, ])
+  Apply(print_array.52, [arr.67, n.65, ])
 }
 Apply(main.64, [])

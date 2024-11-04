@@ -1,20 +1,24 @@
-let rec main.23: Var({val: Some(Unit)}) = () {
-  let _8: Int = Int(21600)
-  let _9: Int = Int(337500)
-  let join gcd.17: Int = (m.18: Int, n.19: Int) {
-    let _20: Int = Int(0)
-    if (m.18 == _20) then {
-      ExtApply(minimbt_print_int, [n.19, ])
+let rec gcd.17: Int = (m.2: Int, n.3: Int) {
+  let join gcd.11: Int = (m.12: Int, n.13: Int) {
+    let _14: Int = Int(0)
+    if (m.12 == _14) then {
+      Var(n.13)
     } else {
-      if (m.18 <= n.19) then {
-        let _21: Int = Sub(n.19, m.18)
-        Jump(gcd.17, [m.18, _21, ])
+      if (m.12 <= n.13) then {
+        let _15: Int = Sub(n.13, m.12)
+        Jump(gcd.11, [m.12, _15, ])
       } else {
-        let _22: Int = Sub(m.18, n.19)
-        Jump(gcd.17, [n.19, _22, ])
+        let _16: Int = Sub(m.12, n.13)
+        Jump(gcd.11, [n.13, _16, ])
       }
     }
   }
-  Jump(gcd.17, [_8, _9, ])
+  Jump(gcd.11, [m.2, n.3, ])
 }
-Apply(main.23, [])
+let rec main.18: Var({val: Some(Unit)}) = () {
+  let _8: Int = Int(21600)
+  let _9: Int = Int(337500)
+  let _10: Int = Apply(gcd.17, [_8, _9, ])
+  ExtApply(minimbt_print_int, [_10, ])
+}
+Apply(main.18, [])

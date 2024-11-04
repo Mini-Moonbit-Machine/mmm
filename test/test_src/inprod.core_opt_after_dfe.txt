@@ -7,47 +7,55 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$start #f2 : fn() -> unit
+.fn T$start #f4 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f0()
+    let %0: unit = call f1()
     return %0
   }
 }
-.fn main.430 #f0 : fn() -> unit
+.fn main.232 #f1 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: (double, double, double) heap(3)> <- [0] = 1, [1] = 2, [2] = 3
     let _ = alloc <m1: (double, double, double) heap(3)> <- [0] = 4, [1] = 5, [2] = 6
-    let %2: double = load double field(f0.m0, 0 * @(@64, @(@64, @(@64, @32))))
-    let %3: double = load double field(f0.m0, 1 * @(@64, @(@64, @(@64, @32))))
-    let %4: double = load double field(f0.m0, 2 * @(@64, @(@64, @(@64, @32))))
-    let %5: double = load double field(f0.m1, 0 * @(@64, @(@64, @(@64, @32))))
-    let %6: double = load double field(f0.m1, 1 * @(@64, @(@64, @(@64, @32))))
-    let %7: double = load double field(f0.m1, 2 * @(@64, @(@64, @(@64, @32))))
-    let %8: double = mul(%2, %5)
-    let %9: double = load double field(f0.m0, 0 * @(@64, @(@64, @(@64, @32))))
-    let %10: double = load double field(f0.m0, 1 * @(@64, @(@64, @(@64, @32))))
-    let %11: double = load double field(f0.m0, 2 * @(@64, @(@64, @(@64, @32))))
-    let %12: double = load double field(f0.m1, 0 * @(@64, @(@64, @(@64, @32))))
-    let %13: double = load double field(f0.m1, 1 * @(@64, @(@64, @(@64, @32))))
-    let %14: double = load double field(f0.m1, 2 * @(@64, @(@64, @(@64, @32))))
-    let %15: double = mul(%10, %13)
-    let %16: double = add(%8, %15)
-    let %17: double = load double field(f0.m0, 0 * @(@64, @(@64, @(@64, @32))))
-    let %18: double = load double field(f0.m0, 1 * @(@64, @(@64, @(@64, @32))))
-    let %19: double = load double field(f0.m0, 2 * @(@64, @(@64, @(@64, @32))))
-    let %20: double = load double field(f0.m1, 0 * @(@64, @(@64, @(@64, @32))))
-    let %21: double = load double field(f0.m1, 1 * @(@64, @(@64, @(@64, @32))))
-    let %22: double = load double field(f0.m1, 2 * @(@64, @(@64, @(@64, @32))))
-    let %23: double = mul(%19, %22)
-    let %24: double = add(%16, %23)
-    let %25: double = mul(1000000, %24)
-    let %26: int32 = conv.d2i.rtz(%25)
-    let %27: unit = ext_call minimbt_print_int(%26)
-    return %27
+    let %2: double = call f0(f1.m0, f1.m1)
+    let %3: double = mul(1000000, %2)
+    let %4: int32 = conv.d2i.rtz(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    return %5
+  }
+}
+.fn inprod.231 #f0 : fn((double, double, double), (double, double, double)) -> double
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = load double field($f0, 0 * @(@64, @(@64, @(@64, @32))))
+    let %1: double = load double field($f0, 1 * @(@64, @(@64, @(@64, @32))))
+    let %2: double = load double field($f0, 2 * @(@64, @(@64, @(@64, @32))))
+    let %3: double = load double field($f1, 0 * @(@64, @(@64, @(@64, @32))))
+    let %4: double = load double field($f1, 1 * @(@64, @(@64, @(@64, @32))))
+    let %5: double = load double field($f1, 2 * @(@64, @(@64, @(@64, @32))))
+    let %6: double = mul(%0, %3)
+    let %7: double = load double field($f0, 0 * @(@64, @(@64, @(@64, @32))))
+    let %8: double = load double field($f0, 1 * @(@64, @(@64, @(@64, @32))))
+    let %9: double = load double field($f0, 2 * @(@64, @(@64, @(@64, @32))))
+    let %10: double = load double field($f1, 0 * @(@64, @(@64, @(@64, @32))))
+    let %11: double = load double field($f1, 1 * @(@64, @(@64, @(@64, @32))))
+    let %12: double = load double field($f1, 2 * @(@64, @(@64, @(@64, @32))))
+    let %13: double = mul(%8, %11)
+    let %14: double = add(%6, %13)
+    let %15: double = load double field($f0, 0 * @(@64, @(@64, @(@64, @32))))
+    let %16: double = load double field($f0, 1 * @(@64, @(@64, @(@64, @32))))
+    let %17: double = load double field($f0, 2 * @(@64, @(@64, @(@64, @32))))
+    let %18: double = load double field($f1, 0 * @(@64, @(@64, @(@64, @32))))
+    let %19: double = load double field($f1, 1 * @(@64, @(@64, @(@64, @32))))
+    let %20: double = load double field($f1, 2 * @(@64, @(@64, @(@64, @32))))
+    let %21: double = mul(%17, %20)
+    let %22: double = add(%14, %21)
+    return %22
   }
 }
 .thunk ::0 start

@@ -7,69 +7,19 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn mem_fib.47 #f2 : fn(closure(int32) -> int32, int32) -> int32
+.fn fib.45 #f3 : fn(int32, int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: bool = le($f1, 1)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3($f1)
-  }
-  .bb #b2 () {
-    let %1: int32 = sub($f1, 1)
-    let %2: int32 = apply $f0(%1)
-    let %3: int32 = sub($f1, 2)
-    let %4: int32 = apply $f0(%3)
-    let %5: int32 = add(%2, %4)
-    jump b3(%5)
-  }
-  .bb #b3 (int32) {
-    return $b3.0
+    let %0: int32 = add($f0, 1)
+    let %1: int32 = load_symbol ::0
+    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = %1
+    let %3: int32 = load_symbol ::0
+    let %4: int32 = call f2($f0, f3.m0, %3)
+    return %4
   }
 }
-.fn main.48 #f4 : fn(int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let %1: int32 = add(%0, 1)
-    let %2: int32 = load_symbol ::0
-    let _ = alloc <m0: array[int32] heap(%1)> <- [..] = %2
-    let %4: int32 = load_symbol ::0
-    let %5: int32 = call f3(%0, f4.m0, %4)
-    let %6: unit = ext_call minimbt_print_int(%5)
-    let %7: unit = ext_call minimbt_print_char(10)
-    return ()
-  }
-}
-.fn memed.50 #f7 : closure(int32) -> int32
-.freevars (array[int32])
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let %1: int32 = call f3($f0, ^1, %0)
-    return %1
-  }
-}
-.fn T$start #f10 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let %1: unit = call f4(%0)
-    return %1
-  }
-}
-.fn T$unmem_magic.1 #f0 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return -1919810
-  }
-}
-.fn memed.49 #f3 : fn(int32, array[int32], int32) -> int32
+.fn memed.46 #f2 : fn(int32, array[int32], int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -79,37 +29,61 @@
     br %2 b1() b2()
   }
   .bb #b1 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f7, [1] = $f1
-    jump b7()
+    let %3: bool = le($f0, 1)
+    br %3 b3() b4()
   }
   .bb #b2 () {
-    let %6: int32 = load int32 offset($f1, $f0 * @32)
-    jump b3(%6)
+    let %13: int32 = load int32 offset($f1, $f0 * @32)
+    jump b6(%13)
   }
-  .bb #b3 (int32) {
-    return $b3.0
+  .bb #b3 () {
+    let _ = store int32 offset($f1, $f0 * @32) <- $f0
+    jump b5($f0)
   }
-  .bb #b4 (int32) {
-    let _ = store int32 offset($f1, $f0 * @32) <- $b4.0
-    jump b3($b4.0)
+  .bb #b4 () {
+    let %5: int32 = sub($f0, 1)
+    let %6: int32 = load_symbol ::0
+    let %7: int32 = call f2(%5, $f1, %6)
+    let %8: int32 = sub($f0, 2)
+    let %9: int32 = load_symbol ::0
+    let %10: int32 = call f2(%8, $f1, %9)
+    let %11: int32 = add(%7, %10)
+    let _ = store int32 offset($f1, $f0 * @32) <- %11
+    jump b5(%11)
   }
-  .bb #b7 () {
-    let %7: bool = le($f0, 1)
-    br %7 b8() b9()
+  .bb #b5 (int32) {
+    jump b6($b5.0)
   }
-  .bb #b8 () {
-    jump b10($f0)
+  .bb #b6 (int32) {
+    return $b6.0
   }
-  .bb #b9 () {
-    let %8: int32 = sub($f0, 1)
-    let %9: int32 = apply f3.m0(%8)
-    let %10: int32 = sub($f0, 2)
-    let %11: int32 = apply f3.m0(%10)
-    let %12: int32 = add(%9, %11)
-    jump b10(%12)
+}
+.fn T$start #f8 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load_symbol ::0
+    let %1: unit = call f4(%0)
+    return %1
   }
-  .bb #b10 (int32) {
-    jump b4($b10.0)
+}
+.fn main.47 #f4 : fn(int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let %1: int32 = load_symbol ::0
+    let %2: int32 = call f3(%0, %1)
+    let %3: unit = ext_call minimbt_print_int(%2)
+    let %4: unit = ext_call minimbt_print_char(10)
+    return ()
+  }
+}
+.fn T$unmem_magic.1 #f0 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return -1919810
   }
 }
 .thunk ::0 unmem_magic.1

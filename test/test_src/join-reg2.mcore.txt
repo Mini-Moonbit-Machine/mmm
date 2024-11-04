@@ -15,6 +15,61 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl main.20
+  .type main.20, @function
+# leaf false
+main.20:
+.main.20_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a0, zero
+  call f.17
+  mv s0, a0
+  bge zero, s0, .main.20_1
+
+.main.20_2:
+  mv a0, zero
+  call h.19
+  sub a0, a0, s0
+  add a0, a0, s0
+  call minimbt_print_int
+
+.main.20_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.main.20_1:
+  mv a0, zero
+  call g.18
+  add a0, a0, s0
+  call minimbt_print_int
+  j .main.20_3
+
+  .p2align 2
+  .text
+  .globl h.19
+  .type h.19, @function
+# leaf true
+h.19:
+.h.19_0:
+  li a0, 789
+  ret
+
+  .p2align 2
+  .text
+  .globl f.17
+  .type f.17, @function
+# leaf true
+f.17:
+.f.17_0:
+  li a0, 123
+  ret
+
+  .p2align 2
+  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -22,39 +77,20 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.17
+  call main.20
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main.17
-  .type main.17, @function
-# leaf false
-main.17:
-.main.17_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 123
-  bge zero, a0, .main.17_1
-
-.main.17_2:
-  li a0, 789
-  addi a0, a0, -123
-  addi a0, a0, 123
-  call minimbt_print_int
-
-.main.17_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl g.18
+  .type g.18, @function
+# leaf true
+g.18:
+.g.18_0:
+  li a0, 456
   ret
-
-.main.17_1:
-  li a0, 123
-  addi a0, a0, 456
-  call minimbt_print_int
-  j .main.17_3
 
   .p2align 2
   .text

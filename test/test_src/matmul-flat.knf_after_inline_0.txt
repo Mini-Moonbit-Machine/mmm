@@ -27,30 +27,10 @@ let rec loop2.21: Unit = (i.22: Int, m.23: Int, j.24: Int, a.25: Array(Array(Dou
     if (_206 <= j.202) then {
       let _207: Int = Int(1)
       let _208: Int = Sub(m.201, _207)
-      let join loop3.235: Unit = (i.236: Int, j.237: Int, k.238: Int, a.239: Array(Array(Double)), b.240: Array(Array(Double)), c.241: Array(Array(Double))) {
-        let _242: Int = Int(0)
-        if (_242 <= k.238) then {
-          let _243: Array(Double) = Get c.241[i.236]
-          let _244: Array(Double) = Get c.241[i.236]
-          let _245: Double = Get _244[j.237]
-          let _246: Array(Double) = Get a.239[i.236]
-          let _247: Double = Get _246[k.238]
-          let _248: Array(Double) = Get b.240[k.238]
-          let _249: Double = Get _248[j.237]
-          let _250: Double = FMul(_247, _249)
-          let _251: Double = FAdd(_245, _250)
-          let _252: Unit = Put _243[j.237] = _251
-          let _253: Int = Int(1)
-          let _254: Int = Sub(k.238, _253)
-          Jump(loop3.235, [i.236, j.237, _254, a.239, b.240, c.241, ])
-        } else {
-          let _209: Unit = Unit
-          let _210: Int = Int(1)
-          let _211: Int = Sub(j.202, _210)
-          Jump(loop2.199, [i.200, m.201, _211, a.203, b.204, c.205, ])
-        }
-      }
-      Jump(loop3.235, [i.200, j.202, _208, a.203, b.204, c.205, ])
+      let _209: Unit = Apply(loop3.1, [i.200, j.202, _208, a.203, b.204, c.205, ])
+      let _210: Int = Int(1)
+      let _211: Int = Sub(j.202, _210)
+      Jump(loop2.199, [i.200, m.201, _211, a.203, b.204, c.205, ])
     } else {
       Unit
     }
@@ -63,15 +43,15 @@ let rec loop1.34: Unit = (i.35: Int, m.36: Int, n.37: Int, a.38: Array(Array(Dou
     if (_219 <= i.213) then {
       let _220: Int = Int(1)
       let _221: Int = Sub(n.215, _220)
-      let join loop2.255: Unit = (i.256: Int, m.257: Int, j.258: Int, a.259: Array(Array(Double)), b.260: Array(Array(Double)), c.261: Array(Array(Double))) {
-        let _262: Int = Int(0)
-        if (_262 <= j.258) then {
-          let _263: Int = Int(1)
-          let _264: Int = Sub(m.257, _263)
-          let _265: Unit = Apply(loop3.1, [i.256, j.258, _264, a.259, b.260, c.261, ])
-          let _266: Int = Int(1)
-          let _267: Int = Sub(j.258, _266)
-          Jump(loop2.255, [i.256, m.257, _267, a.259, b.260, c.261, ])
+      let join loop2.235: Unit = (i.236: Int, m.237: Int, j.238: Int, a.239: Array(Array(Double)), b.240: Array(Array(Double)), c.241: Array(Array(Double))) {
+        let _242: Int = Int(0)
+        if (_242 <= j.238) then {
+          let _243: Int = Int(1)
+          let _244: Int = Sub(m.237, _243)
+          let _245: Unit = Apply(loop3.1, [i.236, j.238, _244, a.239, b.240, c.241, ])
+          let _246: Int = Int(1)
+          let _247: Int = Sub(j.238, _246)
+          Jump(loop2.235, [i.236, m.237, _247, a.239, b.240, c.241, ])
         } else {
           let _222: Unit = Unit
           let _223: Int = Int(1)
@@ -79,7 +59,7 @@ let rec loop1.34: Unit = (i.35: Int, m.36: Int, n.37: Int, a.38: Array(Array(Dou
           Jump(loop1.212, [_224, m.214, n.215, a.216, b.217, c.218, ])
         }
       }
-      Jump(loop2.255, [i.213, m.214, _221, a.216, b.217, c.218, ])
+      Jump(loop2.235, [i.213, m.214, _221, a.216, b.217, c.218, ])
     } else {
       Unit
     }
@@ -90,35 +70,43 @@ let rec main.57: Var({val: Some(Unit)}) = () {
   let _58: Int = Int(0)
   let _59: Double = Double(0)
   let dummy.60: Array(Double) = ExtApply(minimbt_create_float_array, [_58, _59, ])
-  let rec make_arr.71: Array(Array(Double)) = (m.72: Int, n.73: Int, dummy.74: Array(Double)) {
-    let mat.75: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [m.72, dummy.74, ])
-    let _76: Int = Int(1)
-    let _77: Int = Sub(m.72, _76)
-    let join init_arr.281: Unit = (i.282: Int, n.283: Int, mat.284: Array(Array(Double))) {
-      let _285: Int = Int(0)
-      if (_285 <= i.282) then {
-        let _286: Double = Double(0)
-        let _287: Array(Double) = ExtApply(minimbt_create_float_array, [n.283, _286, ])
-        let _288: Unit = Put mat.284[i.282] = _287
-        let _289: Int = Int(1)
-        let _290: Int = Sub(i.282, _289)
-        Jump(init_arr.281, [_290, n.283, mat.284, ])
+  let rec init_arr.61: Unit = (i.62: Int, n.63: Int, mat.64: Array(Array(Double))) {
+    let join init_arr.225: Unit = (i.226: Int, n.227: Int, mat.228: Array(Array(Double))) {
+      let _229: Int = Int(0)
+      if (_229 <= i.226) then {
+        let _230: Double = Double(0)
+        let _231: Array(Double) = ExtApply(minimbt_create_float_array, [n.227, _230, ])
+        let _232: Unit = Put mat.228[i.226] = _231
+        let _233: Int = Int(1)
+        let _234: Int = Sub(i.226, _233)
+        Jump(init_arr.225, [_234, n.227, mat.228, ])
       } else {
-        let _78: Unit = Unit
-        Var(mat.75)
+        Unit
       }
     }
-    Jump(init_arr.281, [_77, n.73, mat.75, ])
+    Jump(init_arr.225, [i.62, n.63, mat.64, ])
   }
   let _79: Int = Int(2)
   let _80: Int = Int(3)
-  let a.81: Array(Array(Double)) = Apply(make_arr.71, [_79, _80, dummy.60, ])
+  let mat.295: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_79, dummy.60, ])
+  let _296: Int = Int(1)
+  let _297: Int = Sub(_79, _296)
+  let _298: Unit = Apply(init_arr.61, [_297, _80, mat.295, ])
+  let a.81: Array(Array(Double)) = Var(mat.295)
   let _82: Int = Int(3)
   let _83: Int = Int(2)
-  let b.84: Array(Array(Double)) = Apply(make_arr.71, [_82, _83, dummy.60, ])
+  let mat.309: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_82, dummy.60, ])
+  let _310: Int = Int(1)
+  let _311: Int = Sub(_82, _310)
+  let _312: Unit = Apply(init_arr.61, [_311, _83, mat.309, ])
+  let b.84: Array(Array(Double)) = Var(mat.309)
   let _85: Int = Int(2)
   let _86: Int = Int(2)
-  let c.87: Array(Array(Double)) = Apply(make_arr.71, [_85, _86, dummy.60, ])
+  let mat.316: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_85, dummy.60, ])
+  let _317: Int = Int(1)
+  let _318: Int = Sub(_85, _317)
+  let _319: Unit = Apply(init_arr.61, [_318, _86, mat.316, ])
+  let c.87: Array(Array(Double)) = Var(mat.316)
   let _88: Int = Int(0)
   let _89: Array(Double) = Get a.81[_88]
   let _90: Int = Int(0)
@@ -182,9 +170,9 @@ let rec main.57: Var({val: Some(Unit)}) = () {
   let _148: Int = Int(2)
   let _149: Int = Int(3)
   let _150: Int = Int(2)
-  let _291: Int = Int(1)
-  let _292: Int = Sub(_148, _291)
-  let _293: Unit = Apply(loop1.34, [_292, _149, _150, a.81, b.84, c.87, ])
+  let _320: Int = Int(1)
+  let _321: Int = Sub(_148, _320)
+  let _322: Unit = Apply(loop1.34, [_321, _149, _150, a.81, b.84, c.87, ])
   let _151: Unit = Unit
   let _152: Int = Int(0)
   let _153: Array(Double) = Get c.87[_152]

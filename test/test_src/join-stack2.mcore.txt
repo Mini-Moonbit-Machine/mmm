@@ -15,31 +15,45 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.12
-  .type main.12, @function
+  .globl g.13
+  .type g.13, @function
+# leaf true
+g.13:
+.g.13_0:
+  li a0, 456
+  ret
+
+  .p2align 2
+  .text
+  .globl main.14
+  .type main.14, @function
 # leaf false
-main.12:
-.main.12_0:
+main.14:
+.main.14_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 123
-  blt zero, a0, .main.12_2
+  sd s0, 8(sp)
+  mv a0, zero
+  call f.12
+  mv s0, a0
+  blt zero, s0, .main.14_2
 
-.main.12_1:
-  li a0, 123
-  addi a0, a0, 456
+.main.14_1:
+  mv a0, zero
+  call g.13
+  add a0, a0, s0
   call minimbt_print_int
 
-.main.12_3:
+.main.14_3:
   ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
-.main.12_2:
-  li a0, 123
-  addi a0, a0, 123
+.main.14_2:
+  add a0, s0, s0
   call minimbt_print_int
-  j .main.12_3
+  j .main.14_3
 
   .p2align 2
   .text
@@ -50,9 +64,19 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.12
+  call main.14
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl f.12
+  .type f.12, @function
+# leaf true
+f.12:
+.f.12_0:
+  li a0, 123
   ret
 
   .p2align 2
