@@ -7,17 +7,32 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main.38 #f4 : fn() -> unit
+.fn dec.31 #f2 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = call f1(123)
-    let %1: int32 = call f3(%0)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    return %2
+    let %0: int32 = sub($f0, 1)
+    return %0
   }
 }
-.fn inc.36 #f1 : fn(int32) -> int32
+.fn main.32 #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f4(123)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.fn dbl.29 #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = add($f0, $f0)
+    return %0
+  }
+}
+.fn inc.30 #f1 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -25,37 +40,30 @@
     return %0
   }
 }
-.fn composed.39 #f3 : fn(int32) -> int32
+.fn T$start #f12 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = add($f0, $f0)
-    let %1: int32 = sub(%0, 1)
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn composed.34 #f4 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f1($f0)
+    let %1: int32 = call f3(%0)
     return %1
   }
 }
-.fn T$start #f10 : fn() -> unit
+.fn composed.33 #f3 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f4()
-    return %0
-  }
-}
-.fn dbl.35 #f0 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = add($f0, $f0)
-    return %0
-  }
-}
-.fn dec.37 #f2 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = sub($f0, 1)
-    return %0
+    let %0: int32 = call f0($f0)
+    let %1: int32 = call f2(%0)
+    return %1
   }
 }
 .thunk ::0 start

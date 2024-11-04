@@ -1,0 +1,68 @@
+let rec iter.1: Fun([Fun([Int], Bool)], Bool) = (arr.2: Array(Int), len.3: Int) {
+  let rec do.4: Bool = (yield.5: Var({val: Some(Fun([Int], Bool))})) {
+    let rec next.6: Bool = (i.7: Var({val: Some(Int)})) {
+      let _8: Int = Int(1)
+      let _9: Int = Sub(len.3, _8)
+      if (i.7 <= _9) then {
+        let _10: Int = Get arr.2[i.7]
+        let _11: Bool = Apply(yield.5, [_10, ])
+        let _14: Bool = Bool(true)
+        if (_11 == _14) then {
+          let _12: Int = Int(1)
+          let _13: Int = Add(i.7, _12)
+          Apply(next.6, [_13, ])
+        } else {
+          Bool(false)
+        }
+      } else {
+        Bool(false)
+      }
+    }
+    let _15: Int = Int(0)
+    Apply(next.6, [_15, ])
+  }
+  Var(do.4)
+}
+let rec each.16: Unit = (iter.17: Fun([Fun([Int], Bool)], Bool), f.18: Fun([Int], Unit)) {
+  let rec yield.19: Bool = (x.20: Var({val: Some(Int)})) {
+    let _21: Unit = Apply(f.18, [x.20, ])
+    Bool(true)
+  }
+  let rec do.22: Var({val: Some(Unit)}) = () {
+    let _23: Bool = Apply(iter.17, [yield.19, ])
+    let _24: Bool = Bool(true)
+    if (_23 == _24) then {
+      Apply(do.22, [])
+    } else {
+      Unit
+    }
+  }
+  Apply(do.22, [])
+}
+let rec main.25: Var({val: Some(Unit)}) = () {
+  let _26: Int = Int(5)
+  let _27: Int = Int(1)
+  let arr.28: Array(Int) = ExtApply(minimbt_create_array, [_26, _27, ])
+  let _29: Int = Int(0)
+  let _30: Int = Int(1)
+  let _31: Unit = Put arr.28[_29] = _30
+  let _32: Int = Int(1)
+  let _33: Int = Int(2)
+  let _34: Unit = Put arr.28[_32] = _33
+  let _35: Int = Int(2)
+  let _36: Int = Int(3)
+  let _37: Unit = Put arr.28[_35] = _36
+  let _38: Int = Int(3)
+  let _39: Int = Int(4)
+  let _40: Unit = Put arr.28[_38] = _39
+  let _41: Int = Int(4)
+  let _42: Int = Int(5)
+  let _43: Unit = Put arr.28[_41] = _42
+  let _44: Int = Int(5)
+  let f.45: Fun([Fun([Int], Bool)], Bool) = Apply(iter.1, [arr.28, _44, ])
+  let rec print.46: Unit = (x.47: Var({val: Some(Int)})) {
+    ExtApply(minimbt_print_int, [x.47, ])
+  }
+  Apply(each.16, [f.45, print.46, ])
+}
+Apply(main.25, [])

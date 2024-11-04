@@ -455,13 +455,19 @@ pub fn InlineEnv::inline(
         self.tracer.println("Fn like \{fn_like_args}")
         let jp_count = jp_count(body)
         self.tracer.println("Join point count \{jp_count}")
+        let n = match freq {
+          Once => 1
+          Many(n) => n
+          Zero => 0
+          AsClosure => 100000
+        }
         if (size(body) < 10 && fun.to_string().contains("main") == false) ||
           (
             freq == Once &&
             size(body) < 30 &&
             fun.to_string().contains("main") == false
           ) ||
-          (fn_like_args > 0 && size(body) < 60) {
+          (fn_like_args > 0 && size(body) * n < 100) {
           self.tracer.println("Inline decision \{f} accepted")
           replace(fundef)
         } else {

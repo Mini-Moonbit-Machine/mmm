@@ -1,23 +1,25 @@
-let rec dbl.35: Int = (x.8: Int) {
+let rec dbl.29: Int = (x.8: Int) {
   Add(x.8, x.8)
 }
-let rec inc.36: Int = (x.10: Int) {
+let rec inc.30: Int = (x.10: Int) {
   let _11: Int = Int(1)
   Add(x.10, _11)
 }
-let rec dec.37: Int = (x.13: Int) {
+let rec dec.31: Int = (x.13: Int) {
   let _14: Int = Int(1)
   Sub(x.13, _14)
 }
-let rec composed.39: Int = (x.24: Int) {
-  let _25: Int = Add(x.24, x.24)
-  let _30: Int = Int(1)
-  Sub(_25, _30)
+let rec composed.33: Int = (x.24: Int) {
+  let _25: Int = Apply(dbl.29, [x.24, ])
+  Apply(dec.31, [_25, ])
 }
-let rec main.38: Var({val: Some(Unit)}) = () {
+let rec composed.34: Int = (x.27: Int) {
+  let _28: Int = Apply(inc.30, [x.27, ])
+  Apply(composed.33, [_28, ])
+}
+let rec main.32: Var({val: Some(Unit)}) = () {
   let _18: Int = Int(123)
-  let _34: Int = Apply(inc.36, [_18, ])
-  let _19: Int = Apply(composed.39, [_34, ])
+  let _19: Int = Apply(composed.34, [_18, ])
   ExtApply(minimbt_print_int, [_19, ])
 }
-Apply(main.38, [])
+Apply(main.32, [])

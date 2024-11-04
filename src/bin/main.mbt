@@ -180,9 +180,12 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let knf = self.knf.unwrap()
+      let licm = @knf.LICM::new(tracer, knf)
+      let knf = licm.go(0)
       let tre = @knf.TailRecElim::new(tracer, knf)
-      let mut knf = tre.go()
-      for i in 0..<2 {
+      let _knf = tre.go()
+      let mut knf = knf
+      for i in 0..<1 {
         let inline = @knf.InlineEnv::new(tracer, knf)
         knf = inline.go(i)
       }

@@ -30,13 +30,21 @@ memseti64:
 
   .p2align 2
   .text
-  .globl g.58
-  .type g.58, @function
-# leaf true
-g.58:
-.g.58_0:
-  lw a1, a.27
-  add a0, a0, a1
+  .globl f1.23
+  .type f1.23, @function
+# leaf false
+f1.23:
+.f1.23_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  ld a0, fixedpoint.43
+  mv s10, a0
+  ld a1, 0(a0)
+  li a0, 5
+  jalr a1
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -48,10 +56,7 @@ T$_45:
 .T$_45_0:
   ld a0, arr.38
   lw a1, _44
-  addi a2, s11, -8
-  andi s11, a2, -8
-  la a3, h.56
-  sd a3, 0(a2)
+  ld a2, fixedpoint.43
   slliw a1, a1, 3
   add a0, a0, a1
   sd a2, 0(a0)
@@ -60,40 +65,17 @@ T$_45:
 
   .p2align 2
   .text
-  .globl dummy.53
-  .type dummy.53, @function
-# leaf false
-dummy.53:
-.dummy.53_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call dummy.52
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl h.56
-  .type h.56, @function
-# leaf false
-h.56:
-.h.56_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  ld a1, arr.38
-  call h.55
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl dummy.52
-  .type dummy.52, @function
+  .globl g.14
+  .type g.14, @function
 # leaf true
-dummy.52:
-.dummy.52_0:
+g.14:
+.g.14_0:
+  addi a1, s11, -16
+  andi s11, a1, -8
+  la a2, h.16
+  sd a2, 0(a1)
+  sd a0, 8(a1)
+  mv a0, a1
   ret
 
   .p2align 2
@@ -119,7 +101,7 @@ T$arr.38:
   lw a0, _37
   addi a2, s11, -8
   andi s11, a2, -8
-  la a1, dummy.53
+  la a1, dummy.1
   sd a1, 0(a2)
   slliw a1, a0, 3
   sub s0, s11, a1
@@ -135,67 +117,50 @@ T$arr.38:
 
   .p2align 2
   .text
-  .globl main.59
-  .type main.59, @function
+  .globl main.30
+  .type main.30, @function
 # leaf false
-main.59:
-.main.59_0:
+main.30:
+.main.30_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a0, a1
-  ld a0, arr.38
-  call f1.57
-  lw s0, a.27
+  call f1.23
   li a0, 10
-  mv a1, s0
-  call g.58
+  call g.28
   call minimbt_print_int
   li a0, 31
-  mv a1, s0
-  call g.58
+  call g.28
   call minimbt_print_int
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl h.55
-  .type h.55, @function
+  .globl dummy.1
+  .type dummy.1, @function
+# leaf true
+dummy.1:
+.dummy.1_0:
+  ret
+
+  .p2align 2
+  .text
+  .globl aux.39
+  .type aux.39, @function
 # leaf false
-h.55:
-.h.55_0:
+aux.39:
+.aux.39_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  mv a0, a1
-  beq s0, zero, .h.55_1
-
-.h.55_2:
-  addi a0, s0, -1
-
-.h.55_5:
   ld a1, arr.38
   ld a1, 0(a1)
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
-
-.h.55_4:
-  mul a0, s0, a0
-
-.h.55_3:
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
-
-.h.55_1:
-  li a0, 1
-  j .h.55_3
 
   .p2align 2
   .text
@@ -205,6 +170,17 @@ h.55:
 T$_26:
 .T$_26_0:
   li a0, 5
+  ret
+
+  .p2align 2
+  .text
+  .globl g.28
+  .type g.28, @function
+# leaf true
+g.28:
+.g.28_0:
+  lw a1, a.27
+  add a0, a0, a1
   ret
 
   .p2align 2
@@ -219,6 +195,38 @@ T$_37:
 
   .p2align 2
   .text
+  .globl h.16
+  .type h.16, @function
+# leaf false
+h.16:
+.h.16_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a1, s10
+  mv s0, a0
+  ld a1, 8(a1)
+  beq s0, zero, .h.16_1
+
+.h.16_2:
+  addi a0, s0, -1
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mul a0, s0, a0
+
+.h.16_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.h.16_1:
+  li a0, 1
+  j .h.16_3
+
+  .p2align 2
+  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -226,9 +234,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  lw a0, a.27
-  ld a1, arr.38
-  call main.59
+  call main.30
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -242,9 +248,12 @@ T$a.27:
 .T$a.27_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  lw a0, _26
-  ld a1, arr.38
-  call h.55
+  ld a0, fixedpoint.43
+  lw a1, _26
+  mv s10, a0
+  ld a2, 0(a0)
+  mv a0, a1
+  jalr a2
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -269,6 +278,9 @@ minimbt_main:
   call T$arr.38
   la t5, arr.38
   sd a0, 0(t5)
+  call T$fixedpoint.43
+  la t5, fixedpoint.43
+  sd a0, 0(t5)
   call T$_44
   la t5, _44
   sw a0, 0(t5)
@@ -289,17 +301,18 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl f1.57
-  .type f1.57, @function
+  .globl T$fixedpoint.43
+  .type T$fixedpoint.43, @function
 # leaf false
-f1.57:
-.f1.57_0:
+T$fixedpoint.43:
+.T$fixedpoint.43_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  ld a1, arr.38
-  li a0, 5
-  call h.55
-  call minimbt_print_int
+  addi a0, s11, -8
+  andi s11, a0, -8
+  la a1, aux.39
+  sd a1, 0(a0)
+  call g.14
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -317,6 +330,12 @@ arr.38:
   .type start, @object
 start:
   .zero 4
+  .p2align 2
+  .bss
+  .globl fixedpoint.43
+  .type fixedpoint.43, @object
+fixedpoint.43:
+  .zero 8
   .p2align 2
   .bss
   .globl a.27

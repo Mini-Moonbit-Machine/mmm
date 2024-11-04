@@ -15,413 +15,50 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl move_perm1_forward.606
-  .type move_perm1_forward.606, @function
+  .globl move_perm1_forward.248
+  .type move_perm1_forward.248, @function
 # leaf false
-move_perm1_forward.606:
-.move_perm1_forward.606_0:
+move_perm1_forward.248:
+.move_perm1_forward.248_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  lw a3, 0(a1)
-  addi a3, a3, -1
-  blt a3, a0, .move_perm1_forward.606_2
+  mv a3, a0
+  lw a0, 0(a1)
+  addi a0, a0, -1
+  blt a0, a3, .move_perm1_forward.248_2
 
-.move_perm1_forward.606_1:
-  addi a3, a0, 1
-  slliw a4, a3, 2
+.move_perm1_forward.248_1:
+  addi a0, a3, 1
+  slliw a4, a0, 2
   add a4, a2, a4
   lw a4, 0(a4)
-  slliw a0, a0, 2
-  add a0, a2, a0
-  sw a4, 0(a0)
-  mv a0, a3
-  call move_perm1_forward.606
+  slliw a3, a3, 2
+  add a3, a2, a3
+  sw a4, 0(a3)
+  call move_perm1_forward.248
   mv a0, zero
 
-.move_perm1_forward.606_3:
+.move_perm1_forward.248_3:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.move_perm1_forward.606_2:
+.move_perm1_forward.248_2:
   mv a0, zero
-  j .move_perm1_forward.606_3
+  j .move_perm1_forward.248_3
 
   .p2align 2
   .text
-  .globl go_loop.607
-  .type go_loop.607, @function
+  .globl main.251
+  .type main.251, @function
 # leaf false
-go_loop.607:
-.go_loop.607_0:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  mv s0, a0
-  mv s5, a1
-  mv s3, a2
-  mv s1, a3
-  mv s4, a4
-  mv s2, a5
-
-.go_loop.607_2:
-  lw a0, 0(s1)
-  li a1, 1
-  bne a0, a1, .go_loop.607_4
-
-.go_loop.607_3:
-  lw a0, 0(s5)
-  beq a0, s0, .go_loop.607_5
-
-.go_loop.607_6:
-  lw a0, 0(s4)
-  sw a0, 0(s3)
-  mv a0, zero
-  mv a1, s5
-  mv a2, s4
-  call move_perm1_forward.608
-  lw a0, 0(s5)
-  lw a1, 0(s3)
-  slliw a0, a0, 2
-  add a0, s4, a0
-  sw a1, 0(a0)
-  lw a0, 0(s5)
-  slliw a1, a0, 2
-  add a1, s2, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slliw a0, a0, 2
-  add a0, s2, a0
-  sw a1, 0(a0)
-  lw a0, 0(s5)
-  slliw a0, a0, 2
-  add a0, s2, a0
-  lw a0, 0(a0)
-  li a1, 1
-  bge a0, a1, .go_loop.607_7
-
-.go_loop.607_8:
-  lw a0, 0(s5)
-  addi a0, a0, 1
-  sw a0, 0(s5)
-  j .go_loop.607_2
-
-.go_loop.607_4:
-  mv a0, zero
-
-.go_loop.607_11:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  addi sp, sp, 64
-  ret
-
-.go_loop.607_5:
-  sw zero, 0(s1)
-  sw zero, 0(s5)
-  j .go_loop.607_2
-
-.go_loop.607_7:
-  sw zero, 0(s1)
-  j .go_loop.607_2
-
-  .p2align 2
-  .text
-  .globl fannkuch.600
-  .type fannkuch.600, @function
-# leaf false
-fannkuch.600:
-.fannkuch.600_0:
-  addi sp, sp, -80
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  sd s6, 56(sp)
-  sd s7, 64(sp)
-  sd s8, 72(sp)
-  mv s0, a0
-  slliw a0, s0, 2
-  sub s4, s11, a0
-  andi s11, s4, -8
-  mv a1, s0
-  mv a1, zero
-
-.fannkuch.600_2:
-  addi a0, s0, -1
-  bge a0, a1, .fannkuch.600_3
-
-.fannkuch.600_4:
-  slliw a0, s0, 2
-  sub s3, s11, a0
-  andi s11, s3, -8
-  mv a1, s0
-  slliw a0, s0, 2
-  sub s6, s11, a0
-  andi s11, s6, -8
-  mv a1, s0
-  addi s2, s11, -4
-  andi s11, s2, -8
-  sw zero, 0(s2)
-  addi s5, s11, -4
-  andi s11, s5, -8
-  sw zero, 0(s5)
-  addi s1, s11, -4
-  andi s11, s1, -8
-  sw zero, 0(s1)
-  addi s8, s11, -4
-  andi s11, s8, -8
-  sw zero, 0(s8)
-  addi a0, s11, -4
-  andi s11, a0, -8
-  sw s0, 0(a0)
-
-.fannkuch.600_16:
-  mv s7, a0
-
-.fannkuch.600_18:
-  lw a0, 0(s7)
-  li a1, 1
-  blt a0, a1, .fannkuch.600_20
-
-.fannkuch.600_19:
-  mv a0, zero
-
-.fannkuch.600_22:
-  addi a1, s0, -1
-  bge a1, a0, .fannkuch.600_23
-
-.fannkuch.600_24:
-  mv a0, s7
-  mv a1, s6
-  call init_count.602
-  sw zero, 0(s2)
-  lw a0, 0(s3)
-  addi a1, s11, -4
-  andi s11, a1, -8
-  sw a0, 0(a1)
-  mv a0, a1
-  mv a1, s3
-  mv a2, s2
-  call do_flip.603
-
-.fannkuch.600_30:
-  lw a0, 0(s5)
-  lw a1, 0(s2)
-  blt a1, a0, .fannkuch.600_26
-
-.fannkuch.600_25:
-  lw a0, 0(s2)
-  sw a0, 0(s5)
-  lw a0, 0(s1)
-  lw a1, 0(s2)
-  lw a2, 0(s8)
-  li a3, 2
-  div a3, a2, a3
-  li a4, 2
-  mul a3, a3, a4
-  sub a2, a2, a3
-  li a3, 2
-  mul a2, a2, a3
-  li a3, 1
-  sub a2, a3, a2
-  mul a1, a1, a2
-  add a0, a0, a1
-  sw a0, 0(s1)
-  addi a3, s11, -4
-  andi s11, a3, -8
-  li a0, 1
-  sw a0, 0(a3)
-  addi a2, s11, -4
-  andi s11, a2, -8
-  sw zero, 0(a2)
-  mv a0, s0
-  mv a1, s7
-  mv a4, s4
-  mv a5, s6
-  call go_loop.605
-
-.fannkuch.600_31:
-  lw a0, 0(s8)
-  addi a0, a0, 1
-  sw a0, 0(s8)
-  j .fannkuch.600_18
-
-.fannkuch.600_3:
-  slliw a0, a1, 2
-  add a0, s4, a0
-  sw a1, 0(a0)
-  addi a0, a1, 1
-  mv a1, a0
-  j .fannkuch.600_2
-
-.fannkuch.600_20:
-  mv a0, zero
-
-.fannkuch.600_29:
-
-.fannkuch.600_6:
-  lw a0, 0(s5)
-  lw a1, 0(s1)
-  addi a2, s11, -8
-  andi s11, a2, -8
-  sw a0, 0(a2)
-  sw a1, 4(a2)
-  mv a0, a2
-
-.fannkuch.600_5:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  ld s7, 64(sp)
-  ld s8, 72(sp)
-  addi sp, sp, 80
-  ret
-
-.fannkuch.600_23:
-  slliw a1, a0, 2
-  add a1, s4, a1
-  lw a1, 0(a1)
-  slliw a2, a0, 2
-  add a2, s3, a2
-  sw a1, 0(a2)
-  addi a0, a0, 1
-  j .fannkuch.600_22
-
-.fannkuch.600_26:
-  lw a0, 0(s1)
-  lw a1, 0(s2)
-  lw a2, 0(s8)
-  li a3, 2
-  div a3, a2, a3
-  li a4, 2
-  mul a3, a3, a4
-  sub a2, a2, a3
-  li a3, 2
-  mul a2, a2, a3
-  li a3, 1
-  sub a2, a3, a2
-  mul a1, a1, a2
-  add a0, a0, a1
-  sw a0, 0(s1)
-  addi a3, s11, -4
-  andi s11, a3, -8
-  li a0, 1
-  sw a0, 0(a3)
-  addi a2, s11, -4
-  andi s11, a2, -8
-  sw zero, 0(a2)
-  mv a0, s0
-  mv a1, s7
-  mv a4, s4
-  mv a5, s6
-  call go_loop.607
-
-.fannkuch.600_32:
-  lw a0, 0(s8)
-  addi a0, a0, 1
-  sw a0, 0(s8)
-  j .fannkuch.600_18
-
-  .p2align 2
-  .text
-  .globl do_flip.603
-  .type do_flip.603, @function
-# leaf true
-do_flip.603:
-.do_flip.603_0:
-  mv a3, a1
-  mv a1, a2
-  mv a2, a0
-
-.do_flip.603_2:
-  lw a0, 0(a2)
-  beq a0, zero, .do_flip.603_3
-
-.do_flip.603_4:
-  addi a4, s11, -4
-  andi s11, a4, -8
-  sw zero, 0(a4)
-
-.do_flip.603_9:
-  mv a0, zero
-
-.do_flip.603_11:
-  lw a5, 0(a2)
-  li a6, 2
-  div a5, a5, a6
-  blt a5, a0, .do_flip.603_13
-
-.do_flip.603_12:
-  slliw a5, a0, 2
-  add a5, a3, a5
-  lw a5, 0(a5)
-  sw a5, 0(a4)
-  lw a5, 0(a2)
-  sub a5, a5, a0
-  slliw a5, a5, 2
-  add a5, a3, a5
-  lw a5, 0(a5)
-  slliw a6, a0, 2
-  add a6, a3, a6
-  sw a5, 0(a6)
-  lw a5, 0(a2)
-  sub a5, a5, a0
-  lw a6, 0(a4)
-  slliw a5, a5, 2
-  add a5, a3, a5
-  sw a6, 0(a5)
-  addi a0, a0, 1
-  j .do_flip.603_11
-
-.do_flip.603_3:
-  mv a0, zero
-
-.do_flip.603_5:
-  ret
-
-.do_flip.603_13:
-  mv a0, zero
-
-.do_flip.603_14:
-
-.do_flip.603_6:
-  lw a0, 0(a3)
-  sw a0, 0(a2)
-  lw a0, 0(a1)
-  addi a0, a0, 1
-  sw a0, 0(a1)
-  j .do_flip.603_2
-
-  .p2align 2
-  .text
-  .globl main.609
-  .type main.609, @function
-# leaf false
-main.609:
-.main.609_0:
+main.251:
+.main.251_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
   li a0, 9
-  call fannkuch.600
+  call fannkuch.240
   lw s0, 0(a0)
   lw a0, 4(a0)
   call minimbt_print_int
@@ -434,12 +71,46 @@ main.609:
 
   .p2align 2
   .text
-  .globl go_loop.605
-  .type go_loop.605, @function
+  .globl init_count.244
+  .type init_count.244, @function
 # leaf false
-go_loop.605:
-.go_loop.605_0:
-  addi sp, sp, -64
+init_count.244:
+.init_count.244_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  lw a2, 0(a0)
+  li a3, 1
+  beq a2, a3, .init_count.244_1
+
+.init_count.244_2:
+  lw a2, 0(a0)
+  addi a3, a2, -1
+  slliw a3, a3, 2
+  add a3, a1, a3
+  sw a2, 0(a3)
+  lw a2, 0(a0)
+  addi a2, a2, -1
+  sw a2, 0(a0)
+  call init_count.244
+  mv a0, zero
+
+.init_count.244_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.init_count.244_1:
+  mv a0, zero
+  j .init_count.244_3
+
+  .p2align 2
+  .text
+  .globl fannkuch.240
+  .type fannkuch.240, @function
+# leaf false
+fannkuch.240:
+.fannkuch.240_0:
+  addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -447,59 +118,113 @@ go_loop.605:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv s0, a0
-  mv s5, a1
-  mv s3, a2
-  mv s1, a3
-  mv s4, a4
-  mv s2, a5
+  sd s6, 56(sp)
+  sd s7, 64(sp)
+  sd s8, 72(sp)
+  sd s9, 80(sp)
+  sd s10, 88(sp)
+  mv a5, a0
+  slliw a0, a5, 2
+  sub a4, s11, a0
+  andi s11, a4, -8
+  mv a1, a5
 
-.go_loop.605_2:
-  lw a0, 0(s1)
-  li a1, 1
-  bne a0, a1, .go_loop.605_4
-
-.go_loop.605_3:
-  lw a0, 0(s5)
-  beq a0, s0, .go_loop.605_5
-
-.go_loop.605_6:
-  lw a0, 0(s4)
-  sw a0, 0(s3)
+.fannkuch.240_18:
   mv a0, zero
-  mv a1, s5
-  mv a2, s4
-  call move_perm1_forward.606
-  lw a0, 0(s5)
-  lw a1, 0(s3)
-  slliw a0, a0, 2
-  add a0, s4, a0
-  sw a1, 0(a0)
-  lw a0, 0(s5)
+  mv a2, a5
+  mv a3, a4
+
+.fannkuch.240_13:
+  addi a1, a2, -1
+  blt a1, a0, .fannkuch.240_15
+
+.fannkuch.240_14:
   slliw a1, a0, 2
-  add a1, s2, a1
-  lw a1, 0(a1)
-  addi a1, a1, -1
-  slliw a0, a0, 2
-  add a0, s2, a0
-  sw a1, 0(a0)
-  lw a0, 0(s5)
-  slliw a0, a0, 2
-  add a0, s2, a0
-  lw a0, 0(a0)
-  li a1, 1
-  bge a0, a1, .go_loop.605_7
-
-.go_loop.605_8:
-  lw a0, 0(s5)
+  add a1, a3, a1
+  sw a0, 0(a1)
   addi a0, a0, 1
-  sw a0, 0(s5)
-  j .go_loop.605_2
+  j .fannkuch.240_13
 
-.go_loop.605_4:
+.fannkuch.240_15:
   mv a0, zero
 
-.go_loop.605_11:
+.fannkuch.240_16:
+
+.fannkuch.240_1:
+  slliw a0, a5, 2
+  sub a3, s11, a0
+  andi s11, a3, -8
+  mv a1, a5
+  slliw a0, a5, 2
+  sub a2, s11, a0
+  andi s11, a2, -8
+  mv a1, a5
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw zero, 0(a1)
+  addi s5, s11, -4
+  andi s11, s5, -8
+  sw zero, 0(s5)
+  addi s0, s11, -4
+  andi s11, s0, -8
+  sw zero, 0(s0)
+  addi a0, s11, -4
+  andi s11, a0, -8
+  sw zero, 0(a0)
+  addi a6, s11, -4
+  andi s11, a6, -8
+  sw a5, 0(a6)
+
+.fannkuch.240_27:
+  mv s6, a6
+  mv s1, a5
+  mv s3, a4
+  mv s2, a3
+  mv s4, a2
+  mv s10, a1
+  mv s8, a0
+
+.fannkuch.240_19:
+  lw a0, 0(s6)
+  li a1, 1
+  blt a0, a1, .fannkuch.240_21
+
+.fannkuch.240_20:
+
+.fannkuch.240_100:
+  mv a1, zero
+  mv a4, s1
+  mv a3, s3
+  mv a2, s2
+
+.fannkuch.240_95:
+  addi a0, a4, -1
+  blt a0, a1, .fannkuch.240_97
+
+.fannkuch.240_96:
+  slliw a0, a1, 2
+  add a0, a3, a0
+  lw a0, 0(a0)
+  slliw a5, a1, 2
+  add a5, a2, a5
+  sw a0, 0(a5)
+  addi a0, a1, 1
+  mv a1, a0
+  j .fannkuch.240_95
+
+.fannkuch.240_21:
+  mv a0, zero
+
+.fannkuch.240_25:
+
+.fannkuch.240_2:
+  lw a0, 0(s5)
+  lw a1, 0(s0)
+  addi a2, s11, -8
+  andi s11, a2, -8
+  sw a0, 0(a2)
+  sw a1, 4(a2)
+  mv a0, a2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -507,51 +232,280 @@ go_loop.605:
   ld s3, 32(sp)
   ld s4, 40(sp)
   ld s5, 48(sp)
-  addi sp, sp, 64
+  ld s6, 56(sp)
+  ld s7, 64(sp)
+  ld s8, 72(sp)
+  ld s9, 80(sp)
+  ld s10, 88(sp)
+  addi sp, sp, 96
   ret
 
-.go_loop.605_5:
-  sw zero, 0(s1)
-  sw zero, 0(s5)
-  j .go_loop.605_2
+.fannkuch.240_97:
+  mv a0, zero
 
-.go_loop.605_7:
-  sw zero, 0(s1)
-  j .go_loop.605_2
+.fannkuch.240_98:
 
-  .p2align 2
-  .text
-  .globl move_perm1_forward.608
-  .type move_perm1_forward.608, @function
-# leaf false
-move_perm1_forward.608:
-.move_perm1_forward.608_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  lw a3, 0(a1)
-  addi a3, a3, -1
-  blt a3, a0, .move_perm1_forward.608_2
+.fannkuch.240_29:
+  mv a0, s6
+  mv a1, s4
+  call init_count.244
+  sw zero, 0(s10)
+  lw a0, 0(s2)
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw a0, 0(a1)
 
-.move_perm1_forward.608_1:
-  addi a3, a0, 1
-  slliw a4, a3, 2
-  add a4, a2, a4
-  lw a4, 0(a4)
+.fannkuch.240_106:
+  mv a0, a1
+  mv a3, s2
+  mv a4, s10
+
+.fannkuch.240_101:
+  lw a1, 0(a0)
+  beq a1, zero, .fannkuch.240_102
+
+.fannkuch.240_103:
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw zero, 0(a1)
+
+.fannkuch.240_115:
+  mv a2, zero
+  mv a5, a1
+
+.fannkuch.240_110:
+  lw a1, 0(a0)
+  li a6, 2
+  div a1, a1, a6
+  blt a1, a2, .fannkuch.240_112
+
+.fannkuch.240_111:
+  slliw a1, a2, 2
+  add a1, a3, a1
+  lw a1, 0(a1)
+  sw a1, 0(a5)
+  lw a1, 0(a0)
+  sub a1, a1, a2
+  slliw a1, a1, 2
+  add a1, a3, a1
+  lw a1, 0(a1)
+  slliw a6, a2, 2
+  add a6, a3, a6
+  sw a1, 0(a6)
+  lw a1, 0(a0)
+  sub a1, a1, a2
+  lw a6, 0(a5)
+  slliw a1, a1, 2
+  add a1, a3, a1
+  sw a6, 0(a1)
+  addi a1, a2, 1
+  mv a2, a1
+  j .fannkuch.240_110
+
+.fannkuch.240_102:
+  mv a0, zero
+
+.fannkuch.240_104:
+
+.fannkuch.240_30:
+  lw a0, 0(s5)
+  lw a1, 0(s10)
+  blt a1, a0, .fannkuch.240_23
+
+.fannkuch.240_22:
+  lw a0, 0(s10)
+  sw a0, 0(s5)
+  lw a0, 0(s0)
+  lw a1, 0(s10)
+  lw a2, 0(s8)
+  li a3, 2
+  div a3, a2, a3
+  li a4, 2
+  mul a3, a3, a4
+  sub a2, a2, a3
+  li a3, 2
+  mul a2, a2, a3
+  li a3, 1
+  sub a2, a3, a2
+  mul a1, a1, a2
+  add a0, a0, a1
+  sw a0, 0(s0)
+  addi a0, s11, -4
+  andi s11, a0, -8
+  li a1, 1
+  sw a1, 0(a0)
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw zero, 0(a1)
+
+.fannkuch.240_134:
+  mv s9, a1
+  mv s7, a0
+
+.fannkuch.240_123:
+  lw a0, 0(s7)
+  li a1, 1
+  bne a0, a1, .fannkuch.240_125
+
+.fannkuch.240_124:
+  lw a0, 0(s6)
+  beq a0, s1, .fannkuch.240_126
+
+.fannkuch.240_127:
+  lw a0, 0(s3)
+  sw a0, 0(s9)
+  mv a0, zero
+  mv a1, s6
+  mv a2, s3
+  call move_perm1_forward.248
+  lw a0, 0(s6)
+  lw a1, 0(s9)
   slliw a0, a0, 2
-  add a0, a2, a0
-  sw a4, 0(a0)
-  mv a0, a3
-  call move_perm1_forward.608
+  add a0, s3, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  slliw a1, a0, 2
+  add a1, s4, a1
+  lw a1, 0(a1)
+  addi a1, a1, -1
+  slliw a0, a0, 2
+  add a0, s4, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  slliw a0, a0, 2
+  add a0, s4, a0
+  lw a0, 0(a0)
+  li a1, 1
+  bge a0, a1, .fannkuch.240_128
+
+.fannkuch.240_129:
+  lw a0, 0(s6)
+  addi a0, a0, 1
+  sw a0, 0(s6)
+  j .fannkuch.240_123
+
+.fannkuch.240_23:
+  lw a0, 0(s0)
+  lw a1, 0(s10)
+  lw a2, 0(s8)
+  li a3, 2
+  div a3, a2, a3
+  li a4, 2
+  mul a3, a3, a4
+  sub a2, a2, a3
+  li a3, 2
+  mul a2, a2, a3
+  li a3, 1
+  sub a2, a3, a2
+  mul a1, a1, a2
+  add a0, a0, a1
+  sw a0, 0(s0)
+  addi a0, s11, -4
+  andi s11, a0, -8
+  li a1, 1
+  sw a1, 0(a0)
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw zero, 0(a1)
+
+.fannkuch.240_80:
+  mv s9, a1
+  mv s7, a0
+
+.fannkuch.240_69:
+  lw a0, 0(s7)
+  li a1, 1
+  bne a0, a1, .fannkuch.240_71
+
+.fannkuch.240_70:
+  lw a0, 0(s6)
+  beq a0, s1, .fannkuch.240_72
+
+.fannkuch.240_73:
+  lw a0, 0(s3)
+  sw a0, 0(s9)
+  mv a0, zero
+  mv a1, s6
+  mv a2, s3
+  call move_perm1_forward.250
+  lw a0, 0(s6)
+  lw a1, 0(s9)
+  slliw a0, a0, 2
+  add a0, s3, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  slliw a1, a0, 2
+  add a1, s4, a1
+  lw a1, 0(a1)
+  addi a1, a1, -1
+  slliw a0, a0, 2
+  add a0, s4, a0
+  sw a1, 0(a0)
+  lw a0, 0(s6)
+  slliw a0, a0, 2
+  add a0, s4, a0
+  lw a0, 0(a0)
+  li a1, 1
+  bge a0, a1, .fannkuch.240_74
+
+.fannkuch.240_75:
+  lw a0, 0(s6)
+  addi a0, a0, 1
+  sw a0, 0(s6)
+  j .fannkuch.240_69
+
+.fannkuch.240_71:
   mv a0, zero
 
-.move_perm1_forward.608_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
+.fannkuch.240_78:
 
-.move_perm1_forward.608_2:
+.fannkuch.240_28:
+  lw a0, 0(s8)
+  addi a0, a0, 1
+  sw a0, 0(s8)
+  j .fannkuch.240_19
+
+.fannkuch.240_72:
+  sw zero, 0(s7)
+  sw zero, 0(s6)
+  j .fannkuch.240_69
+
+.fannkuch.240_74:
+  sw zero, 0(s7)
+  j .fannkuch.240_69
+
+.fannkuch.240_125:
   mv a0, zero
-  j .move_perm1_forward.608_3
+
+.fannkuch.240_132:
+
+.fannkuch.240_31:
+  lw a0, 0(s8)
+  addi a0, a0, 1
+  sw a0, 0(s8)
+  j .fannkuch.240_19
+
+.fannkuch.240_126:
+  sw zero, 0(s7)
+  sw zero, 0(s6)
+  j .fannkuch.240_123
+
+.fannkuch.240_128:
+  sw zero, 0(s7)
+  j .fannkuch.240_123
+
+.fannkuch.240_112:
+  mv a1, zero
+
+.fannkuch.240_113:
+
+.fannkuch.240_107:
+  lw a1, 0(a3)
+  sw a1, 0(a0)
+  lw a1, 0(a4)
+  addi a1, a1, 1
+  sw a1, 0(a4)
+  j .fannkuch.240_101
 
   .p2align 2
   .text
@@ -562,44 +516,10 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.609
+  call main.251
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl init_count.602
-  .type init_count.602, @function
-# leaf false
-init_count.602:
-.init_count.602_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  lw a2, 0(a0)
-  li a3, 1
-  beq a2, a3, .init_count.602_1
-
-.init_count.602_2:
-  lw a2, 0(a0)
-  addi a3, a2, -1
-  slliw a3, a3, 2
-  add a3, a1, a3
-  sw a2, 0(a3)
-  lw a2, 0(a0)
-  addi a2, a2, -1
-  sw a2, 0(a0)
-  call init_count.602
-  mv a0, zero
-
-.init_count.602_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.init_count.602_1:
-  mv a0, zero
-  j .init_count.602_3
 
   .p2align 2
   .text
@@ -622,6 +542,40 @@ minimbt_main:
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
+
+  .p2align 2
+  .text
+  .globl move_perm1_forward.250
+  .type move_perm1_forward.250, @function
+# leaf false
+move_perm1_forward.250:
+.move_perm1_forward.250_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a3, a0
+  lw a0, 0(a1)
+  addi a0, a0, -1
+  blt a0, a3, .move_perm1_forward.250_2
+
+.move_perm1_forward.250_1:
+  addi a0, a3, 1
+  slliw a4, a0, 2
+  add a4, a2, a4
+  lw a4, 0(a4)
+  slliw a3, a3, 2
+  add a3, a2, a3
+  sw a4, 0(a3)
+  call move_perm1_forward.250
+  mv a0, zero
+
+.move_perm1_forward.250_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.move_perm1_forward.250_2:
+  mv a0, zero
+  j .move_perm1_forward.250_3
 
 __end_text:
   .p2align 2

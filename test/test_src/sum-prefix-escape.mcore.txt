@@ -15,6 +15,35 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl sum_nested.28
+  .type sum_nested.28, @function
+# leaf true
+sum_nested.28:
+.sum_nested.28_5:
+
+.sum_nested.28_0:
+  addi a5, a3, -1
+  blt a5, a1, .sum_nested.28_2
+
+.sum_nested.28_1:
+  slliw a5, a1, 2
+  add a5, a2, a5
+  lw a5, 0(a5)
+  add a0, a0, a5
+  slliw a5, a1, 2
+  add a5, a4, a5
+  sw a0, 0(a5)
+  addi a1, a1, 1
+  j .sum_nested.28_0
+
+.sum_nested.28_2:
+  mv a0, zero
+
+.sum_nested.28_3:
+  ret
+
+  .p2align 2
+  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -22,18 +51,44 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.48
+  call main.29
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main.48
-  .type main.48, @function
+  .globl sum_prefix.27
+  .type sum_prefix.27, @function
 # leaf false
-main.48:
-.main.48_0:
+sum_prefix.27:
+.sum_prefix.27_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv a2, a0
+  mv a3, a1
+  slliw a0, a3, 2
+  sub s0, s11, a0
+  andi s11, s0, -8
+  mv a1, a3
+  mv a0, zero
+  mv a1, zero
+  mv a4, s0
+  call sum_nested.28
+  mv a0, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.29
+  .type main.29, @function
+# leaf false
+main.29:
+.main.29_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -40
@@ -50,7 +105,7 @@ main.48:
   sw a1, 32(a0)
   sw a1, 36(a0)
   li a1, 10
-  call sum_prefix.47
+  call sum_prefix.27
   lw a0, 0(a0)
   call minimbt_print_int
   ld ra, 0(sp)
@@ -77,46 +132,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl sum_prefix.47
-  .type sum_prefix.47, @function
-# leaf false
-sum_prefix.47:
-.sum_prefix.47_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a5, a0
-  slliw a0, a1, 2
-  sub a3, s11, a0
-  andi s11, a3, -8
-  mv a4, zero
-  mv a2, zero
-
-.sum_prefix.47_2:
-  addi a0, a1, -1
-  blt a0, a2, .sum_prefix.47_4
-
-.sum_prefix.47_3:
-  slliw a0, a2, 2
-  add a0, a5, a0
-  lw a0, 0(a0)
-  add a0, a4, a0
-  slliw a4, a2, 2
-  add a4, a3, a4
-  sw a0, 0(a4)
-  addi a2, a2, 1
-  mv a4, a0
-  j .sum_prefix.47_2
-
-.sum_prefix.47_4:
-  mv a0, a3
-
-.sum_prefix.47_5:
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

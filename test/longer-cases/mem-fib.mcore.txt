@@ -30,11 +30,11 @@ memseti32:
 
   .p2align 2
   .text
-  .globl fib.45
-  .type fib.45, @function
+  .globl fib.39
+  .type fib.39, @function
 # leaf false
-fib.45:
-.fib.45_0:
+fib.39:
+.fib.39_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -54,7 +54,7 @@ fib.45:
   mv a0, s0
   mv a1, s2
   mv a2, s1
-  call memed.46
+  call memed.40
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -64,11 +64,11 @@ fib.45:
 
   .p2align 2
   .text
-  .globl memed.46
-  .type memed.46, @function
+  .globl memed.40
+  .type memed.40, @function
 # leaf false
-memed.46:
-.memed.46_0:
+memed.40:
+.memed.40_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -76,37 +76,45 @@ memed.46:
   sd s2, 24(sp)
   sd s3, 32(sp)
   mv s0, a0
-  mv s1, a1
+  mv s2, a1
   mv a0, a2
   slliw a0, s0, 2
-  add a0, s1, a0
+  add a0, s2, a0
   lw a0, 0(a0)
   lw a1, unmem_magic.1
-  bne a0, a1, .memed.46_2
+  bne a0, a1, .memed.40_2
 
-.memed.46_1:
+.memed.40_1:
+  addi s1, s11, -16
+  andi s11, s1, -8
+  la a0, memed.41
+  sd a0, 0(s1)
+  sd s2, 8(s1)
+
+.memed.40_7:
   li a0, 1
-  bge a0, s0, .memed.46_3
+  bge a0, s0, .memed.40_8
 
-.memed.46_4:
+.memed.40_9:
   addi a0, s0, -1
-  lw s2, unmem_magic.1
-  mv a1, s1
-  mv a2, s2
-  call memed.46
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
   mv s3, a0
   addi a0, s0, -2
-  mv a1, s1
-  mv a2, s2
-  call memed.46
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
   add a0, s3, a0
+
+.memed.40_10:
+
+.memed.40_4:
   slliw a1, s0, 2
-  add a1, s1, a1
+  add a1, s2, a1
   sw a0, 0(a1)
 
-.memed.46_5:
-
-.memed.46_6:
+.memed.40_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -115,18 +123,32 @@ memed.46:
   addi sp, sp, 48
   ret
 
-.memed.46_2:
+.memed.40_2:
   slliw a0, s0, 2
-  add a0, s1, a0
+  add a0, s2, a0
   lw a0, 0(a0)
-  j .memed.46_6
+  j .memed.40_3
 
-.memed.46_3:
-  slliw a0, s0, 2
-  add a0, s1, a0
-  sw s0, 0(a0)
+.memed.40_8:
   mv a0, s0
-  j .memed.46_5
+  j .memed.40_10
+
+  .p2align 2
+  .text
+  .globl memed.41
+  .type memed.41, @function
+# leaf false
+memed.41:
+.memed.41_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, s10
+  ld a1, 8(a1)
+  lw a2, unmem_magic.1
+  call memed.40
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
 
   .p2align 2
   .text
@@ -138,23 +160,23 @@ T$start:
   addi sp, sp, -16
   sd ra, 0(sp)
   lw a0, unmem_magic.1
-  call main.47
+  call main.42
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main.47
-  .type main.47, @function
+  .globl main.42
+  .type main.42, @function
 # leaf false
-main.47:
-.main.47_0:
+main.42:
+.main.42_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   call minimbt_read_int
   lw a1, unmem_magic.1
-  call fib.45
+  call fib.39
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char

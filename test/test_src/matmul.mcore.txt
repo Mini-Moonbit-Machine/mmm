@@ -30,11 +30,114 @@ memseti64:
 
   .p2align 2
   .text
-  .globl main.255
-  .type main.255, @function
+  .globl matmul.160
+  .type matmul.160, @function
 # leaf false
-main.255:
-.main.255_0:
+matmul.160:
+.matmul.160_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a6, a1
+  mv a7, a2
+  mv a1, a3
+  mv a2, a4
+  mv a3, a5
+  addi a0, a0, -1
+  mv a4, a6
+  mv a5, a7
+  call loop1.161
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl init_arr.166
+  .type init_arr.166, @function
+# leaf false
+init_arr.166:
+.init_arr.166_5:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a3, a0
+  mv a0, a2
+  mv a2, a0
+
+.init_arr.166_0:
+  blt a3, zero, .init_arr.166_2
+
+.init_arr.166_1:
+  slliw a0, a1, 3
+  sub a0, s11, a0
+  andi s11, a0, -8
+  slliw a4, a3, 3
+  add a4, a2, a4
+  sd a0, 0(a4)
+  addi a0, a3, -1
+  mv a3, a0
+  j .init_arr.166_0
+
+.init_arr.166_2:
+  mv a0, zero
+
+.init_arr.166_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.164
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl gen_arr.165
+  .type gen_arr.165, @function
+# leaf false
+gen_arr.165:
+.gen_arr.165_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  slliw a0, s0, 3
+  sub s2, s11, a0
+  andi s11, s2, -8
+  mv a1, s0
+  mv a0, s2
+  call memseti64
+  addi a0, s0, -1
+  mv a1, s1
+  mv a2, s2
+  call init_arr.166
+  mv a0, s2
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main.164
+  .type main.164, @function
+# leaf false
+main.164:
+.main.164_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -45,17 +148,17 @@ main.255:
   li a0, 2
   li a1, 3
   mv a2, s0
-  call gen_arr.256
+  call gen_arr.165
   mv s1, a0
   li a0, 3
   li a1, 2
   mv a2, s0
-  call gen_arr.256
+  call gen_arr.165
   mv s2, a0
   li a0, 2
   mv a1, a0
   mv a2, s0
-  call gen_arr.256
+  call gen_arr.165
   mv s0, a0
   ld a0, 0(s1)
   li a1, 4607182418800017408
@@ -111,7 +214,7 @@ main.255:
   mv a3, s1
   mv a4, s2
   mv a5, s0
-  call matmul.251
+  call matmul.160
   ld a0, 0(s0)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
@@ -141,143 +244,104 @@ main.255:
 
   .p2align 2
   .text
-  .globl loop1.252
-  .type loop1.252, @function
+  .globl loop1.161
+  .type loop1.161, @function
 # leaf true
-loop1.252:
-.loop1.252_0:
+loop1.161:
+.loop1.161_5:
+  addi sp, sp, -16
+  sd s0, 0(sp)
+  sd s1, 8(sp)
+  mv t0, a0
+  mv a7, a1
+  mv a6, a2
+  mv a1, a3
+  mv a0, a5
+  mv a2, t0
+  mv a3, a6
+  mv a5, a4
+  mv a4, a0
 
-.loop1.252_2:
-  blt a0, zero, .loop1.252_4
+.loop1.161_0:
+  blt a2, zero, .loop1.161_2
 
-.loop1.252_3:
-  addi a6, a5, -1
+.loop1.161_1:
+  addi a0, a4, -1
 
-.loop1.252_7:
-  mv a7, a6
+.loop1.161_12:
+  mv a6, a0
 
-.loop1.252_9:
-  blt a7, zero, .loop1.252_11
+.loop1.161_7:
+  blt a6, zero, .loop1.161_9
 
-.loop1.252_10:
-  addi a6, a4, -1
+.loop1.161_8:
+  addi a0, a5, -1
 
-.loop1.252_14:
+.loop1.161_19:
+  mv t0, a0
+  mv t4, a7
+  mv t1, a3
+  mv t3, a1
+  mv t2, a2
 
-.loop1.252_16:
-  blt a6, zero, .loop1.252_18
+.loop1.161_14:
+  blt t0, zero, .loop1.161_16
 
-.loop1.252_17:
-  slliw t0, a0, 3
-  add t0, a3, t0
-  ld t0, 0(t0)
-  slliw t1, a7, 3
-  add t1, t0, t1
-  fld fa0, 0(t1)
-  slliw t1, a0, 3
-  add t1, a1, t1
-  ld t1, 0(t1)
-  slliw t2, a6, 3
-  add t1, t1, t2
-  fld fa1, 0(t1)
-  slliw t1, a6, 3
-  add t1, a2, t1
-  ld t1, 0(t1)
-  slliw t2, a7, 3
-  add t1, t1, t2
-  fld fa2, 0(t1)
+.loop1.161_15:
+  slliw a0, t2, 3
+  add a0, t3, a0
+  ld a0, 0(a0)
+  slliw s0, a6, 3
+  add s0, a0, s0
+  fld fa0, 0(s0)
+  slliw s0, t2, 3
+  add s0, t4, s0
+  ld s0, 0(s0)
+  slliw s1, t0, 3
+  add s0, s0, s1
+  fld fa1, 0(s0)
+  slliw s0, t0, 3
+  add s0, t1, s0
+  ld s0, 0(s0)
+  slliw s1, a6, 3
+  add s0, s0, s1
+  fld fa2, 0(s0)
   fmadd.d fa0, fa1, fa2, fa0
-  slliw t1, a7, 3
-  add t0, t0, t1
-  fsd fa0, 0(t0)
-  addi a6, a6, -1
-  j .loop1.252_16
+  slliw s0, a6, 3
+  add a0, a0, s0
+  fsd fa0, 0(a0)
+  addi a0, t0, -1
+  mv t0, a0
+  j .loop1.161_14
 
-.loop1.252_4:
+.loop1.161_2:
   mv a0, zero
 
-.loop1.252_5:
-  ret
-
-.loop1.252_11:
-  mv a6, zero
-
-.loop1.252_12:
-
-.loop1.252_6:
-  addi a0, a0, -1
-  j .loop1.252_2
-
-.loop1.252_18:
-  mv a6, zero
-
-.loop1.252_19:
-
-.loop1.252_13:
-  addi a6, a7, -1
-  mv a7, a6
-  j .loop1.252_9
-
-  .p2align 2
-  .text
-  .globl T$start
-  .type T$start, @function
-# leaf false
-T$start:
-.T$start_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.255
-  ld ra, 0(sp)
+.loop1.161_3:
+  ld s0, 0(sp)
+  ld s1, 8(sp)
   addi sp, sp, 16
   ret
 
-  .p2align 2
-  .text
-  .globl gen_arr.256
-  .type gen_arr.256, @function
-# leaf false
-gen_arr.256:
-.gen_arr.256_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s2, a0
-  mv s1, a1
-  slliw a0, s2, 3
-  sub s0, s11, a0
-  andi s11, s0, -8
-  mv a1, s2
-  mv a0, s0
-  call memseti64
-  addi a0, s2, -1
+.loop1.161_9:
+  mv a0, zero
 
-.gen_arr.256_2:
-  blt a0, zero, .gen_arr.256_4
+.loop1.161_10:
 
-.gen_arr.256_3:
-  slliw a1, s1, 3
-  sub a2, s11, a1
-  andi s11, a2, -8
-  mv a1, s1
-  slliw a1, a0, 3
-  add a1, s0, a1
-  sd a2, 0(a1)
-  addi a0, a0, -1
-  j .gen_arr.256_2
+.loop1.161_6:
+  addi a0, a2, -1
+  mv a2, a0
+  j .loop1.161_0
 
-.gen_arr.256_4:
-  mv a0, s0
+.loop1.161_16:
+  mv a0, zero
 
-.gen_arr.256_5:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
+.loop1.161_17:
+
+.loop1.161_13:
+  addi a0, a6, -1
+  mv a6, a0
+  j .loop1.161_7
 
   .p2align 2
   .text
@@ -299,28 +363,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl matmul.251
-  .type matmul.251, @function
-# leaf false
-matmul.251:
-.matmul.251_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a6, a1
-  mv a7, a2
-  mv a1, a3
-  mv a2, a4
-  mv a3, a5
-  addi a0, a0, -1
-  mv a4, a6
-  mv a5, a7
-  call loop1.252
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

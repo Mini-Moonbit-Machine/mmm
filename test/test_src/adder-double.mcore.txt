@@ -15,18 +15,17 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.16
-  .type main.16, @function
+  .globl main.15
+  .type main.15, @function
 # leaf false
-main.16:
-.main.16_0:
+main.15:
+.main.15_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 1
-  fcvt.d.w fa0, a0
-  li a0, 4612001270401303839
-  fmv.d.x fa1, a0
-  fadd.d fa0, fa1, fa0
+  li a1, 4612001270401303839
+  fmv.d.x fa0, a1
+  call adder.16
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   ld ra, 0(sp)
@@ -42,7 +41,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.16
+  call main.15
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -67,6 +66,17 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl adder.16
+  .type adder.16, @function
+# leaf true
+adder.16:
+.adder.16_0:
+  fcvt.d.w fa1, a0
+  fadd.d fa0, fa0, fa1
   ret
 
 __end_text:

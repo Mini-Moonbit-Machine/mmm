@@ -7,54 +7,55 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$start #f4 : fn() -> unit
+.fn T$start #f6 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f1()
+    let %0: unit = call f2()
     return %0
   }
 }
-.fn main.48 #f1 : fn() -> unit
+.fn sum_prefix.27 #f1 : fn(array[int32], int32) -> array[int32]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap($f1)> <- [..] = 0
+    let %1: unit = call f0(0, 0, $f0, $f1, f1.m0)
+    return f1.m0
+  }
+}
+.fn main.29 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(10)> <- [..] = 4
-    let %1: array[int32] = call f0(f1.m0, 10)
+    let %1: array[int32] = call f1(f2.m0, 10)
     let %2: int32 = load int32 field(%1, 0 * @32)
     let %3: unit = ext_call minimbt_print_int(%2)
     return %3
   }
 }
-.fn sum_prefix.47 #f0 : fn(array[int32], int32) -> array[int32]
+.fn sum_nested.28 #f0 : fn(int32, int32, array[int32], int32, array[int32]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let _ = alloc <m0: array[int32] heap($f1)> <- [..] = 0
-    jump b1(0, 0)
+    let %0: int32 = sub($f3, 1)
+    let %1: bool = le($f1, %0)
+    br %1 b1() b2()
   }
-  .loop #b1 pre #Some(b0) header #b2 {
-    .block #b3
-    .block #b4
-    .block #b5
+  .bb #b1 () {
+    let %2: int32 = load int32 offset($f2, $f1 * @32)
+    let %3: int32 = add($f0, %2)
+    let _ = store int32 offset($f4, $f1 * @32) <- %3
+    let %5: int32 = add($f1, 1)
+    let %6: unit = call f0(%3, %5, $f2, $f3, $f4)
+    jump b3(%6)
   }
-  .bb #b2 (int32, int32) {
-    let %1: int32 = sub($f1, 1)
-    let %2: bool = le($b2.1, %1)
-    br %2 b3() b4()
+  .bb #b2 () {
+    jump b3(())
   }
-  .bb #b3 () {
-    let %3: int32 = load int32 offset($f0, $b2.1 * @32)
-    let %4: int32 = add($b2.0, %3)
-    let _ = store int32 offset(f0.m0, $b2.1 * @32) <- %4
-    let %6: int32 = add($b2.1, 1)
-    jump b2(%4, %6)
-  }
-  .bb #b4 () {
-    jump b5(f0.m0)
-  }
-  .bb #b5 (any) {
-    return $b5.0
+  .bb #b3 (unit) {
+    return $b3.0
   }
 }
 .thunk ::0 start

@@ -15,37 +15,73 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl add.7659
-  .type add.7659, @function
-# leaf true
-add.7659:
-.add.7659_0:
-  add a0, a0, a1
-  ret
-
-  .p2align 2
-  .text
-  .globl add.7661
-  .type add.7661, @function
+  .globl main.6916
+  .type main.6916, @function
 # leaf false
-add.7661:
-.add.7661_0:
+main.6916:
+.main.6916_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a2, s10
-  call add.7659
+  addi a0, s11, -4
+  andi s11, a0, -8
+  sw zero, 0(a0)
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw zero, 0(a1)
+  addi a2, s11, -64
+  andi s11, a2, -8
+  la a3, aux.6927
+  sd a3, 0(a2)
+  li a3, 100
+  sd a3, 8(a2)
+  li a3, 1000
+  sd a3, 16(a2)
+  li a3, 1
+  sd a3, 24(a2)
+  li a3, 50
+  sd a3, 32(a2)
+  li a3, 1200
+  sd a3, 40(a2)
+  sd a0, 48(a2)
+  sd a1, 56(a2)
+  addi a1, s11, -8
+  andi s11, a1, -8
+  la a0, add.6928
+  sd a0, 0(a1)
+  mv a0, a2
+  mv a2, zero
+  call fold.6915
+  call minimbt_print_int
+  li a0, 10
+  call minimbt_print_char
+  mv a0, zero
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl aux.7658
-  .type aux.7658, @function
+  .globl add.6928
+  .type add.6928, @function
 # leaf false
-aux.7658:
-.aux.7658_0:
-  addi sp, sp, -64
+add.6928:
+.add.6928_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a2, s10
+  call add.6926
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl aux.6925
+  .type aux.6925, @function
+# leaf false
+aux.6925:
+.aux.6925_8:
+  addi sp, sp, -80
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -54,89 +90,55 @@ aux.7658:
   sd s4, 40(sp)
   sd s5, 48(sp)
   sd s6, 56(sp)
+  sd s7, 64(sp)
   mv s6, a1
-  mv s3, a2
-  mv s0, a3
-  mv s4, a4
-  mv s1, a5
-  mv s2, a6
-  mv s5, a7
+  mv s0, a2
+  mv s5, a3
+  mv s1, a4
+  mv s4, a5
+  mv s3, a6
+  mv s2, a7
 
-.aux.7658_2:
+.aux.6925_0:
+
+.aux.6925_19:
   mv a0, zero
 
-.aux.7658_4:
-
-.aux.7658_41:
+.aux.6925_11:
   mv a0, zero
   mv a1, s6
-  mv a2, s2
-  call aux.7652
-
-.aux.7658_51:
-  lw a1, 0(a0)
-  lw a0, 4(a0)
-  beq a1, zero, .aux.7658_42
-
-.aux.7658_43:
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  lw a0, 0(a1)
-  lw a1, 4(a1)
-  beq a0, zero, .aux.7658_47
-
-.aux.7658_48:
-  add a0, s0, a1
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  mv a0, a1
-
-.aux.7658_49:
-
-.aux.7658_50:
+  mv a2, s0
+  mv a3, s5
+  mv a4, s3
+  mv a5, s2
+  call aux.6921
   mv a1, a0
 
-.aux.7658_36:
+.aux.6925_20:
   lw a0, 0(a1)
-  lw a1, 4(a1)
-  bne a0, zero, .aux.7658_6
+  lw s7, 4(a1)
+  bne a0, zero, .aux.6925_13
 
-.aux.7658_5:
+.aux.6925_12:
   addi a0, s11, -8
   andi s11, a0, -8
   sw zero, 0(a0)
   sw zero, 4(a0)
+
+.aux.6925_17:
+
+.aux.6925_9:
   lw a1, 0(a0)
   lw a0, 4(a0)
-  beq a1, zero, .aux.7658_7
+  bne a1, zero, .aux.6925_2
 
-.aux.7658_8:
-  blt s1, a0, .aux.7658_10
+.aux.6925_1:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw zero, 0(a0)
+  sw zero, 4(a0)
 
-.aux.7658_9:
-  bne zero, zero, .aux.7658_12
-
-.aux.7658_11:
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  mv a0, a1
-
-.aux.7658_13:
-
-.aux.7658_17:
-
-.aux.7658_18:
-
-.aux.7658_34:
+.aux.6925_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -145,112 +147,46 @@ aux.7658:
   ld s4, 40(sp)
   ld s5, 48(sp)
   ld s6, 56(sp)
-  addi sp, sp, 64
+  ld s7, 64(sp)
+  addi sp, sp, 80
   ret
 
-.aux.7658_42:
-  mv a0, zero
-  mv a1, s3
-  mv a2, s5
-  call aux.7653
+.aux.6925_13:
+  mv a0, s7
+  mv a1, s1
+  call aux.6922
 
-.aux.7658_52:
-  lw a1, 0(a0)
-  lw a0, 4(a0)
-  beq a1, zero, .aux.7658_44
+.aux.6925_21:
+  bne a0, zero, .aux.6925_15
 
-.aux.7658_45:
-  add a0, s0, a0
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  mv a0, a1
-
-.aux.7658_46:
-  j .aux.7658_50
-
-.aux.7658_44:
+.aux.6925_14:
   addi a0, s11, -8
   andi s11, a0, -8
-  sw zero, 0(a0)
-  sw zero, 4(a0)
-  j .aux.7658_46
-
-.aux.7658_47:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw zero, 0(a0)
-  sw zero, 4(a0)
-  j .aux.7658_49
-
-.aux.7658_6:
-
-.aux.7658_37:
-  blt a1, s4, .aux.7658_39
-
-.aux.7658_38:
-  mv a0, zero
-
-.aux.7658_40:
-
-.aux.7658_35:
-  bne a0, zero, .aux.7658_20
-
-.aux.7658_19:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  li a2, 1
-  sw a2, 0(a0)
-  sw a1, 4(a0)
-  lw a1, 0(a0)
-  lw a0, 4(a0)
-  beq a1, zero, .aux.7658_21
-
-.aux.7658_22:
-  blt s1, a0, .aux.7658_24
-
-.aux.7658_23:
-  bne zero, zero, .aux.7658_26
-
-.aux.7658_25:
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  mv a0, a1
-
-.aux.7658_27:
-
-.aux.7658_31:
-
-.aux.7658_32:
-
-.aux.7658_33:
-  j .aux.7658_34
-
-.aux.7658_39:
-  li a0, 1
-  j .aux.7658_40
-
-.aux.7658_20:
-  mv a0, zero
-  j .aux.7658_4
-
-.aux.7658_21:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw zero, 0(a0)
-  sw zero, 4(a0)
-  j .aux.7658_32
-
-.aux.7658_24:
   li a1, 1
-  bne a1, zero, .aux.7658_29
+  sw a1, 0(a0)
+  sw s7, 4(a0)
 
-.aux.7658_28:
+.aux.6925_16:
+  j .aux.6925_17
+
+.aux.6925_15:
+  mv a0, zero
+  j .aux.6925_11
+
+.aux.6925_2:
+
+.aux.6925_22:
+  blt s4, a0, .aux.6925_24
+
+.aux.6925_23:
+  mv a1, zero
+
+.aux.6925_25:
+
+.aux.6925_10:
+  bne a1, zero, .aux.6925_4
+
+.aux.6925_3:
   addi a1, s11, -8
   andi s11, a1, -8
   li a2, 1
@@ -258,60 +194,88 @@ aux.7658:
   sw a0, 4(a1)
   mv a0, a1
 
-.aux.7658_30:
-  j .aux.7658_31
+.aux.6925_5:
+  j .aux.6925_6
 
-.aux.7658_29:
-  mv a0, zero
-  j .aux.7658_2
-
-.aux.7658_26:
-  mv a0, zero
-  j .aux.7658_2
-
-.aux.7658_7:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw zero, 0(a0)
-  sw zero, 4(a0)
-  j .aux.7658_18
-
-.aux.7658_10:
+.aux.6925_24:
   li a1, 1
-  bne a1, zero, .aux.7658_15
+  j .aux.6925_25
 
-.aux.7658_14:
-  addi a1, s11, -8
-  andi s11, a1, -8
-  li a2, 1
-  sw a2, 0(a1)
-  sw a0, 4(a1)
-  mv a0, a1
-
-.aux.7658_16:
-  j .aux.7658_17
-
-.aux.7658_15:
+.aux.6925_4:
   mv a0, zero
-  j .aux.7658_2
-
-.aux.7658_12:
-  mv a0, zero
-  j .aux.7658_2
+  j .aux.6925_0
 
   .p2align 2
   .text
-  .globl aux.7653
-  .type aux.7653, @function
+  .globl aux.6922
+  .type aux.6922, @function
 # leaf true
-aux.7653:
-.aux.7653_0:
+aux.6922:
+.aux.6922_0:
+  blt a0, a1, .aux.6922_2
+
+.aux.6922_1:
+  mv a0, zero
+
+.aux.6922_3:
+  ret
+
+.aux.6922_2:
+  li a0, 1
+  j .aux.6922_3
+
+  .p2align 2
+  .text
+  .globl add.6926
+  .type add.6926, @function
+# leaf true
+add.6926:
+.add.6926_0:
+  add a0, a0, a1
+  ret
+
+  .p2align 2
+  .text
+  .globl aux.6927
+  .type aux.6927, @function
+# leaf false
+aux.6927:
+.aux.6927_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, s10
+  lw a2, 8(a1)
+  lw a3, 16(a1)
+  lw a4, 24(a1)
+  lw a5, 32(a1)
+  lw a6, 40(a1)
+  ld a7, 48(a1)
+  ld t0, 56(a1)
+  mv a1, a2
+  mv a2, a3
+  mv a3, a4
+  mv a4, a5
+  mv a5, a6
+  mv a6, a7
+  mv a7, t0
+  call aux.6925
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl aux.6918
+  .type aux.6918, @function
+# leaf true
+aux.6918:
+.aux.6918_0:
   mv a0, a1
   mv a1, a2
   lw a2, 0(a1)
-  beq a2, a0, .aux.7653_1
+  beq a2, a0, .aux.6918_1
 
-.aux.7653_2:
+.aux.6918_2:
   addi a0, a2, 1
   sw a0, 0(a1)
   addi a0, s11, -8
@@ -320,46 +284,92 @@ aux.7653:
   sw a1, 0(a0)
   sw a2, 4(a0)
 
-.aux.7653_3:
+.aux.6918_3:
   ret
 
-.aux.7653_1:
+.aux.6918_1:
   addi a0, s11, -8
   andi s11, a0, -8
   sw zero, 0(a0)
   sw zero, 4(a0)
-  j .aux.7653_3
+  j .aux.6918_3
 
   .p2align 2
   .text
-  .globl aux.7652
-  .type aux.7652, @function
-# leaf true
-aux.7652:
-.aux.7652_0:
-  mv a3, a1
-  mv a0, a2
+  .globl aux.6921
+  .type aux.6921, @function
+# leaf false
+aux.6921:
+.aux.6921_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s2, a2
+  mv s0, a3
+  mv a2, a4
+  mv s1, a5
+
+.aux.6921_8:
+  mv a0, zero
+  call aux.6917
+
+.aux.6921_12:
   lw a1, 0(a0)
-  beq a1, a3, .aux.7652_1
+  lw a0, 4(a0)
+  bne a1, zero, .aux.6921_10
 
-.aux.7652_2:
-  addi a2, a1, 1
-  sw a2, 0(a0)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  li a2, 1
-  sw a2, 0(a0)
-  sw a1, 4(a0)
+.aux.6921_9:
+  mv a0, zero
+  mv a1, s2
+  mv a2, s1
+  call aux.6918
 
-.aux.7652_3:
-  ret
+.aux.6921_11:
+  mv a1, a0
 
-.aux.7652_1:
+.aux.6921_4:
+  lw a0, 0(a1)
+  lw a1, 4(a1)
+  bne a0, zero, .aux.6921_2
+
+.aux.6921_1:
   addi a0, s11, -8
   andi s11, a0, -8
   sw zero, 0(a0)
   sw zero, 4(a0)
-  j .aux.7652_3
+
+.aux.6921_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.aux.6921_10:
+  addi a1, s11, -8
+  andi s11, a1, -8
+  li a2, 1
+  sw a2, 0(a1)
+  sw a0, 4(a1)
+  mv a0, a1
+  j .aux.6921_11
+
+.aux.6921_2:
+
+.aux.6921_7:
+  add a0, s0, a1
+
+.aux.6921_5:
+  addi a1, s11, -8
+  andi s11, a1, -8
+  li a2, 1
+  sw a2, 0(a1)
+  sw a0, 4(a1)
+  mv a0, a1
+  j .aux.6921_3
 
   .p2align 2
   .text
@@ -370,85 +380,10 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.7651
+  call main.6916
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl main.7651
-  .type main.7651, @function
-# leaf false
-main.7651:
-.main.7651_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  addi a0, s11, -4
-  andi s11, a0, -8
-  sw zero, 0(a0)
-  addi a2, s11, -4
-  andi s11, a2, -8
-  sw zero, 0(a2)
-  addi a1, s11, -64
-  andi s11, a1, -8
-  la a3, aux.7660
-  sd a3, 0(a1)
-  li a3, 100
-  sd a3, 8(a1)
-  li a3, 1000
-  sd a3, 16(a1)
-  li a3, 1
-  sd a3, 24(a1)
-  li a3, 50
-  sd a3, 32(a1)
-  li a3, 1200
-  sd a3, 40(a1)
-  sd a0, 48(a1)
-  sd a2, 56(a1)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a2, add.7661
-  sd a2, 0(a0)
-  mv s1, a1
-  mv s0, a0
-  mv s2, zero
-
-.main.7651_2:
-  mv s10, s1
-  ld a1, 0(s1)
-  mv a0, zero
-  jalr a1
-  mv a1, a0
-  lw a0, 0(a1)
-  lw a1, 4(a1)
-  bne a0, zero, .main.7651_4
-
-.main.7651_3:
-  mv a0, s2
-  call minimbt_print_int
-  li a0, 10
-  call minimbt_print_char
-  mv a0, zero
-
-.main.7651_5:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-.main.7651_4:
-  mv s10, s0
-  ld a2, 0(s0)
-  mv a0, s2
-  jalr a2
-  mv s2, a0
-  j .main.7651_2
 
   .p2align 2
   .text
@@ -474,32 +409,100 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl aux.7660
-  .type aux.7660, @function
-# leaf false
-aux.7660:
-.aux.7660_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, s10
-  lw a2, 8(a1)
-  lw a3, 16(a1)
-  lw a4, 24(a1)
-  lw a5, 32(a1)
-  lw a6, 40(a1)
-  ld a7, 48(a1)
-  ld t0, 56(a1)
+  .globl aux.6917
+  .type aux.6917, @function
+# leaf true
+aux.6917:
+.aux.6917_0:
+  mv a0, a1
   mv a1, a2
-  mv a2, a3
-  mv a3, a4
-  mv a4, a5
-  mv a5, a6
-  mv a6, a7
-  mv a7, t0
-  call aux.7658
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  lw a2, 0(a1)
+  beq a2, a0, .aux.6917_1
+
+.aux.6917_2:
+  addi a0, a2, 1
+  sw a0, 0(a1)
+  addi a0, s11, -8
+  andi s11, a0, -8
+  li a1, 1
+  sw a1, 0(a0)
+  sw a2, 4(a0)
+
+.aux.6917_3:
   ret
+
+.aux.6917_1:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  sw zero, 0(a0)
+  sw zero, 4(a0)
+  j .aux.6917_3
+
+  .p2align 2
+  .text
+  .globl fold.6915
+  .type fold.6915, @function
+# leaf false
+fold.6915:
+.fold.6915_8:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s2, a1
+  mv s1, a2
+
+.fold.6915_0:
+  mv s10, s0
+  ld a1, 0(s0)
+  mv a0, zero
+  jalr a1
+  mv a1, a0
+  lw a0, 0(a1)
+  lw a1, 4(a1)
+  beq a0, zero, .fold.6915_1
+
+.fold.6915_2:
+  mv s10, s2
+  ld a2, 0(s2)
+  mv a0, s1
+  jalr a2
+  mv s1, a0
+  mv s10, s0
+  ld a1, 0(s0)
+  mv a0, zero
+  jalr a1
+  mv a1, a0
+  lw a0, 0(a1)
+  lw a1, 4(a1)
+  beq a0, zero, .fold.6915_3
+
+.fold.6915_4:
+  mv s10, s2
+  ld a2, 0(s2)
+  mv a0, s1
+  jalr a2
+  mv s1, a0
+  j .fold.6915_0
+
+.fold.6915_1:
+  mv a0, s1
+
+.fold.6915_6:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.fold.6915_3:
+  mv a0, s1
+
+.fold.6915_5:
+  j .fold.6915_6
 
 __end_text:
   .p2align 2

@@ -15,71 +15,73 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl quicksort.166
-  .type quicksort.166, @function
+  .globl main.96
+  .type main.96, @function
 # leaf false
-quicksort.166:
-.quicksort.166_0:
+main.96:
+.main.96_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  call minimbt_read_int
+  mv s0, a0
+  slliw a0, s0, 2
+  sub s1, s11, a0
+  andi s11, s1, -8
+  mv a1, s0
+  mv a0, zero
+  mv a1, s1
+  mv a2, s0
+  call input.97
+  addi a2, s0, -1
+  mv a0, s1
+  mv a1, zero
+  call quicksort.95
+  mv a0, zero
+  mv a1, s1
+  mv a2, s0
+  call output.98
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl output.98
+  .type output.98, @function
+# leaf false
+output.98:
+.output.98_5:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s2, a0
-  mv s1, a2
+  mv s1, a0
+  mv s0, a1
+  mv s2, a2
 
-.quicksort.166_2:
-  addi a0, s1, -1
-  blt a0, a1, .quicksort.166_4
+.output.98_0:
+  addi a0, s2, -1
+  blt a0, s1, .output.98_2
 
-.quicksort.166_3:
-
-.quicksort.166_7:
+.output.98_1:
   slliw a0, s1, 2
-  add a0, s2, a0
+  add a0, s0, a0
   lw a0, 0(a0)
-  addi a2, a1, -1
-  addi a3, s11, -4
-  andi s11, a3, -8
-  sw a2, 0(a3)
+  call minimbt_print_int
+  call minimbt_print_endline
+  addi a0, s1, 1
+  mv s1, a0
+  j .output.98_0
 
-.quicksort.166_20:
-  mv a2, a1
-
-.quicksort.166_22:
-  addi a4, s1, -1
-  blt a4, a2, .quicksort.166_24
-
-.quicksort.166_23:
-  slliw a4, a2, 2
-  add a4, s2, a4
-  lw a4, 0(a4)
-  blt a0, a4, .quicksort.166_26
-
-.quicksort.166_25:
-  lw a4, 0(a3)
-  addi a4, a4, 1
-  sw a4, 0(a3)
-  lw a4, 0(a3)
-  slliw a5, a4, 2
-  add a5, s2, a5
-  lw a5, 0(a5)
-  slliw a6, a2, 2
-  add a6, s2, a6
-  lw a6, 0(a6)
-  slliw a4, a4, 2
-  add a4, s2, a4
-  sw a6, 0(a4)
-  slliw a4, a2, 2
-  add a4, s2, a4
-  sw a5, 0(a4)
-  addi a2, a2, 1
-  j .quicksort.166_22
-
-.quicksort.166_4:
+.output.98_2:
   mv a0, zero
 
-.quicksort.166_5:
+.output.98_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -87,42 +89,122 @@ quicksort.166:
   addi sp, sp, 32
   ret
 
-.quicksort.166_24:
+  .p2align 2
+  .text
+  .globl quicksort.95
+  .type quicksort.95, @function
+# leaf false
+quicksort.95:
+.quicksort.95_5:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv a3, a2
+  mv s1, a0
+  mv a2, a1
+  mv s0, a3
+
+.quicksort.95_0:
+  addi a0, s0, -1
+  blt a0, a2, .quicksort.95_2
+
+.quicksort.95_1:
+
+.quicksort.95_7:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  addi a3, a2, -1
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw a3, 0(a1)
+
+.quicksort.95_28:
+  mv a3, a2
+  mv a5, s1
+  mv a4, s0
+
+.quicksort.95_20:
+  addi a6, a4, -1
+  blt a6, a3, .quicksort.95_22
+
+.quicksort.95_21:
+  slliw a6, a3, 2
+  add a6, a5, a6
+  lw a6, 0(a6)
+  blt a0, a6, .quicksort.95_24
+
+.quicksort.95_23:
+  lw a6, 0(a1)
+  addi a6, a6, 1
+  sw a6, 0(a1)
+  lw a6, 0(a1)
+  slliw a7, a6, 2
+  add a7, a5, a7
+  lw a7, 0(a7)
+  slliw t0, a3, 2
+  add t0, a5, t0
+  lw t0, 0(t0)
+  slliw a6, a6, 2
+  add a6, a5, a6
+  sw t0, 0(a6)
+  slliw a6, a3, 2
+  add a6, a5, a6
+  sw a7, 0(a6)
+  addi a3, a3, 1
+  j .quicksort.95_20
+
+.quicksort.95_2:
   mv a0, zero
 
-.quicksort.166_28:
+.quicksort.95_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
 
-.quicksort.166_8:
-  lw a0, 0(a3)
+.quicksort.95_22:
+  mv a0, zero
+
+.quicksort.95_26:
+
+.quicksort.95_8:
+  lw a0, 0(a1)
   addi a0, a0, 1
-  sw a0, 0(a3)
-  lw a0, 0(a3)
-  slliw a2, a0, 2
-  add a2, s2, a2
-  lw a2, 0(a2)
-  slliw a4, s1, 2
-  add a4, s2, a4
+  sw a0, 0(a1)
+  lw a0, 0(a1)
+  slliw a3, a0, 2
+  add a3, s1, a3
+  lw a3, 0(a3)
+  slliw a4, s0, 2
+  add a4, s1, a4
   lw a4, 0(a4)
   slliw a0, a0, 2
-  add a0, s2, a0
+  add a0, s1, a0
   sw a4, 0(a0)
-  slliw a0, s1, 2
-  add a0, s2, a0
-  sw a2, 0(a0)
-  lw a0, 0(a3)
-  mv s0, a0
+  slliw a0, s0, 2
+  add a0, s1, a0
+  sw a3, 0(a0)
+  lw a0, 0(a1)
+  mv s2, a0
 
-.quicksort.166_6:
-  addi a2, s0, -1
-  mv a0, s2
-  call quicksort.166
-  addi a0, s0, 1
-  mv a1, a0
-  j .quicksort.166_2
+.quicksort.95_6:
+  addi a3, s2, -1
+  mv a0, s1
+  mv a1, a2
+  mv a2, a3
+  call quicksort.95
+  addi a0, s2, 1
+  mv a2, a0
+  j .quicksort.95_0
 
-.quicksort.166_26:
-  addi a2, a2, 1
-  j .quicksort.166_22
+.quicksort.95_24:
+  addi a3, a3, 1
+  j .quicksort.95_20
 
   .p2align 2
   .text
@@ -133,74 +215,9 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.167
+  call main.96
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.167
-  .type main.167, @function
-# leaf false
-main.167:
-.main.167_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  call minimbt_read_int
-  mv s0, a0
-  slliw a0, s0, 2
-  sub s1, s11, a0
-  andi s11, s1, -8
-  mv a1, s0
-  mv s2, zero
-
-.main.167_2:
-  addi a0, s0, -1
-  blt a0, s2, .main.167_4
-
-.main.167_3:
-  call minimbt_read_int
-  slliw a1, s2, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s2, 1
-  mv s2, a0
-  j .main.167_2
-
-.main.167_4:
-  addi a2, s0, -1
-  mv a0, s1
-  mv a1, zero
-  call quicksort.166
-  mv s2, zero
-
-.main.167_6:
-  addi a0, s0, -1
-  blt a0, s2, .main.167_8
-
-.main.167_7:
-  slliw a0, s2, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
-  call minimbt_print_int
-  call minimbt_print_endline
-  addi a0, s2, 1
-  mv s2, a0
-  j .main.167_6
-
-.main.167_8:
-  mv a0, zero
-
-.main.167_9:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -222,6 +239,46 @@ minimbt_main:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl input.97
+  .type input.97, @function
+# leaf false
+input.97:
+.input.97_5:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s1, a0
+  mv s0, a1
+  mv s2, a2
+
+.input.97_0:
+  addi a0, s2, -1
+  blt a0, s1, .input.97_2
+
+.input.97_1:
+  call minimbt_read_int
+  slliw a1, s1, 2
+  add a1, s0, a1
+  sw a0, 0(a1)
+  addi a0, s1, 1
+  mv s1, a0
+  j .input.97_0
+
+.input.97_2:
+  mv a0, zero
+
+.input.97_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
   addi sp, sp, 32
   ret
 

@@ -1,0 +1,78 @@
+let rec mandelbrot.1: Unit = (w.2: Int) {
+  let rec dbl.3: Double = (f.4: Double) {
+    FAdd(f.4, f.4)
+  }
+  let rec yloop.5: Unit = (y.6: Int) {
+    if (w.2 <= y.6) then {
+      Unit
+    } else {
+      let rec xloop.7: Unit = (x.8: Int, y.9: Int) {
+        if (w.2 <= x.8) then {
+          let _10: Unit = ExtApply(minimbt_print_endline, [])
+          Unit
+        } else {
+          let _11: Double = ExtApply(minimbt_float_of_int, [x.8, ])
+          let _12: Double = Apply(dbl.3, [_11, ])
+          let _13: Double = ExtApply(minimbt_float_of_int, [w.2, ])
+          let _14: Double = FDiv(_12, _13)
+          let _15: Double = Double(1.5)
+          let cr.16: Double = FSub(_14, _15)
+          let _17: Double = ExtApply(minimbt_float_of_int, [y.9, ])
+          let _18: Double = Apply(dbl.3, [_17, ])
+          let _19: Double = ExtApply(minimbt_float_of_int, [w.2, ])
+          let _20: Double = FDiv(_18, _19)
+          let _21: Double = Double(1)
+          let ci.22: Double = FSub(_20, _21)
+          let rec iloop.23: Unit = (i.24: Int, zr.25: Double, zi.26: Double, zr2.27: Double, zi2.28: Double, cr.29: Double, ci.30: Double) {
+            let _31: Int = Int(0)
+            if (i.24 == _31) then {
+              let _32: Int = Int(1)
+              ExtApply(minimbt_print_int, [_32, ])
+            } else {
+              let _33: Double = FSub(zr2.27, zi2.28)
+              let tr.34: Double = FAdd(_33, cr.29)
+              let _35: Double = Apply(dbl.3, [zr.25, ])
+              let _36: Double = FMul(_35, zi.26)
+              let ti.37: Double = FAdd(_36, ci.30)
+              let zr2.38: Double = FMul(tr.34, tr.34)
+              let zi2.39: Double = FMul(ti.37, ti.37)
+              let _40: Double = Double(2)
+              let _41: Double = Double(2)
+              let _42: Double = FMul(_40, _41)
+              let _43: Double = FAdd(zr2.38, zi2.39)
+              if (_42 <= _43) then {
+                let _44: Int = Int(0)
+                ExtApply(minimbt_print_int, [_44, ])
+              } else {
+                let _45: Int = Int(1)
+                let _46: Int = Sub(i.24, _45)
+                Apply(iloop.23, [_46, tr.34, ti.37, zr2.38, zi2.39, cr.29, ci.30, ])
+              }
+            }
+          }
+          let _47: Int = Int(1000)
+          let _48: Double = Double(0)
+          let _49: Double = Double(0)
+          let _50: Double = Double(0)
+          let _51: Double = Double(0)
+          let _52: Unit = Apply(iloop.23, [_47, _48, _49, _50, _51, cr.16, ci.22, ])
+          let _53: Int = Int(1)
+          let _54: Int = Add(x.8, _53)
+          Apply(xloop.7, [_54, y.9, ])
+        }
+      }
+      let _55: Int = Int(0)
+      let _56: Unit = Apply(xloop.7, [_55, y.6, ])
+      let _57: Int = Int(1)
+      let _58: Int = Add(y.6, _57)
+      Apply(yloop.5, [_58, ])
+    }
+  }
+  let _59: Int = Int(0)
+  Apply(yloop.5, [_59, ])
+}
+let rec main.60: Var({val: Some(Unit)}) = () {
+  let _61: Int = Int(40)
+  Apply(mandelbrot.1, [_61, ])
+}
+Apply(main.60, [])

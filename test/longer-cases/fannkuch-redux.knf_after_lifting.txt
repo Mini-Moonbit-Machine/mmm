@@ -1,415 +1,400 @@
-let rec init_count.602: Unit = (r.368: Array(Int), count.20: Array(Int)) {
-  let _385: Int = Int(0)
-  let _386: Int = Get r.368[_385]
-  let _387: Int = Int(1)
-  if (_386 == _387) then {
-    let _388: Unit = Unit
-    Unit
-  } else {
-    let _389: Int = Int(0)
-    let _390: Int = Get r.368[_389]
-    let _391: Int = Int(1)
-    let _392: Int = Sub(_390, _391)
-    let _393: Int = Int(0)
-    let _394: Int = Get r.368[_393]
-    let _395: Unit = Put count.20[_392] = _394
-    let _396: Int = Int(0)
-    let _397: Int = Int(0)
-    let _398: Int = Get r.368[_397]
-    let _399: Int = Int(1)
-    let _400: Int = Sub(_398, _399)
-    let _401: Unit = Put r.368[_396] = _400
-    let _388: Unit = Apply(init_count.602, [r.368, count.20, ])
-    Unit
-  }
-}
-let rec flip_loop.604: Unit = (i.421: Int, k.413: Array(Int), t.419: Array(Int), perm.18: Array(Int)) {
-  let join flip_loop.422: Unit = (i.423: Int) {
-    let _424: Int = Int(0)
-    let _425: Int = Get k.413[_424]
-    let _426: Int = Int(2)
-    let _427: Int = Div(_425, _426)
-    if (i.423 <= _427) then {
-      let _428: Int = Int(0)
-      let _429: Int = Get perm.18[i.423]
-      let _430: Unit = Put t.419[_428] = _429
-      let _431: Int = Int(0)
-      let _432: Int = Get k.413[_431]
-      let _433: Int = Sub(_432, i.423)
-      let _434: Int = Get perm.18[_433]
-      let _435: Unit = Put perm.18[i.423] = _434
-      let _436: Int = Int(0)
-      let _437: Int = Get k.413[_436]
-      let _438: Int = Sub(_437, i.423)
-      let _439: Int = Int(0)
-      let _440: Int = Get t.419[_439]
-      let _441: Unit = Put perm.18[_438] = _440
-      let _442: Int = Int(1)
-      let _443: Int = Add(i.423, _442)
-      Jump(flip_loop.422, [_443, ])
-    } else {
-      Unit
-    }
-  }
-  Jump(flip_loop.422, [i.421, ])
-}
-let rec do_flip.603: Unit = (k.411: Array(Int), perm.18: Array(Int), flips.23: Array(Int)) {
-  let join do_flip.412: Unit = (k.413: Array(Int)) {
-    let _414: Int = Int(0)
-    let _415: Int = Get k.413[_414]
-    let _416: Int = Int(0)
-    if (_415 == _416) then {
-      Unit
-    } else {
-      let _417: Int = Int(1)
-      let _418: Int = Int(0)
-      let t.419: Array(Int) = ExtApply(minimbt_create_array, [_417, _418, ])
-      let _444: Int = Int(0)
-      let _445: Unit = Apply(flip_loop.604, [_444, k.413, t.419, perm.18, ])
-      let _446: Int = Int(0)
-      let _447: Int = Int(0)
-      let _448: Int = Get perm.18[_447]
-      let _449: Unit = Put k.413[_446] = _448
-      let _450: Int = Int(0)
-      let _451: Int = Int(0)
-      let _452: Int = Get flips.23[_451]
-      let _453: Int = Int(1)
-      let _454: Int = Add(_452, _453)
-      let _455: Unit = Put flips.23[_450] = _454
-      Jump(do_flip.412, [k.413, ])
-    }
-  }
-  Jump(do_flip.412, [k.411, ])
-}
-let rec move_perm1_forward.606: Unit = (i.511: Int, r.368: Array(Int), arr.573: Array(Int)) {
-  let _512: Int = Int(0)
-  let _513: Int = Get r.368[_512]
-  let _514: Int = Int(1)
-  let _515: Int = Sub(_513, _514)
-  if (i.511 <= _515) then {
-    let _516: Int = Int(1)
-    let _517: Int = Add(i.511, _516)
-    let _518: Int = Get arr.573[_517]
-    let _519: Unit = Put arr.573[i.511] = _518
-    let _520: Int = Int(1)
-    let _521: Int = Add(i.511, _520)
-    let _522: Unit = Apply(move_perm1_forward.606, [_521, r.368, arr.573, ])
-    Unit
+let rec init_arr.241: Unit = (i.232: Int, n.2: Int, arr.230: Array(Int)) {
+  let _233: Int = Int(1)
+  let _234: Int = Sub(n.2, _233)
+  if (i.232 <= _234) then {
+    let _235: Unit = Put arr.230[i.232] = i.232
+    let _236: Int = Int(1)
+    let _237: Int = Add(i.232, _236)
+    Apply(init_arr.241, [_237, n.2, arr.230, ])
   } else {
     Unit
   }
 }
-let rec go_loop.605: Unit = (n.2: Int, r.368: Array(Int), t.491: Array(Int), go.488: Array(Bool), arr.573: Array(Int), count.20: Array(Int)) {
-  let join go_loop.493: Unit = () {
-    let _494: Int = Int(0)
-    let _495: Bool = Get go.488[_494]
-    let _496: Bool = Bool(true)
-    if (_495 == _496) then {
-      let _497: Int = Int(0)
-      let _498: Int = Get r.368[_497]
-      if (_498 == n.2) then {
-        let _500: Int = Int(0)
-        let _501: Bool = Bool(false)
-        let _502: Unit = Put go.488[_500] = _501
-        let _503: Int = Int(0)
-        let _504: Int = Int(0)
-        let _505: Unit = Put r.368[_503] = _504
-        let _499: Unit = Unit
-        Jump(go_loop.493, [])
+let rec copy_perm.243: Unit = (i.41: Int, n.2: Int, arr.230: Array(Int), perm.18: Array(Int)) {
+  let _42: Int = Int(1)
+  let _43: Int = Sub(n.2, _42)
+  if (i.41 <= _43) then {
+    let _44: Int = Get arr.230[i.41]
+    let _45: Unit = Put perm.18[i.41] = _44
+    let _46: Int = Int(1)
+    let _47: Int = Add(i.41, _46)
+    Apply(copy_perm.243, [_47, n.2, arr.230, perm.18, ])
+  } else {
+    Unit
+  }
+}
+let rec init_count.244: Unit = (r.36: Array(Int), count.20: Array(Int)) {
+  let _51: Int = Int(0)
+  let _52: Int = Get r.36[_51]
+  let _53: Int = Int(1)
+  if (_52 == _53) then {
+    let _67: Unit = Unit
+    Unit
+  } else {
+    let _54: Int = Int(0)
+    let _55: Int = Get r.36[_54]
+    let _56: Int = Int(1)
+    let _57: Int = Sub(_55, _56)
+    let _58: Int = Int(0)
+    let _59: Int = Get r.36[_58]
+    let _60: Unit = Put count.20[_57] = _59
+    let _61: Int = Int(0)
+    let _62: Int = Int(0)
+    let _63: Int = Get r.36[_62]
+    let _64: Int = Int(1)
+    let _65: Int = Sub(_63, _64)
+    let _66: Unit = Put r.36[_61] = _65
+    let _67: Unit = Apply(init_count.244, [r.36, count.20, ])
+    Unit
+  }
+}
+let rec flip_loop.246: Unit = (i.85: Int, k.77: Array(Int), t.83: Array(Int), perm.18: Array(Int)) {
+  let _86: Int = Int(0)
+  let _87: Int = Get k.77[_86]
+  let _88: Int = Int(2)
+  let _89: Int = Div(_87, _88)
+  if (i.85 <= _89) then {
+    let _90: Int = Int(0)
+    let _91: Int = Get perm.18[i.85]
+    let _92: Unit = Put t.83[_90] = _91
+    let _93: Int = Int(0)
+    let _94: Int = Get k.77[_93]
+    let _95: Int = Sub(_94, i.85)
+    let _96: Int = Get perm.18[_95]
+    let _97: Unit = Put perm.18[i.85] = _96
+    let _98: Int = Int(0)
+    let _99: Int = Get k.77[_98]
+    let _100: Int = Sub(_99, i.85)
+    let _101: Int = Int(0)
+    let _102: Int = Get t.83[_101]
+    let _103: Unit = Put perm.18[_100] = _102
+    let _104: Int = Int(1)
+    let _105: Int = Add(i.85, _104)
+    Apply(flip_loop.246, [_105, k.77, t.83, perm.18, ])
+  } else {
+    Unit
+  }
+}
+let rec do_flip.245: Unit = (k.77: Array(Int), perm.18: Array(Int), flips.23: Array(Int)) {
+  let _78: Int = Int(0)
+  let _79: Int = Get k.77[_78]
+  let _80: Int = Int(0)
+  if (_79 == _80) then {
+    Unit
+  } else {
+    let _81: Int = Int(1)
+    let _82: Int = Int(0)
+    let t.83: Array(Int) = ExtApply(minimbt_create_array, [_81, _82, ])
+    let _106: Int = Int(0)
+    let _107: Unit = Apply(flip_loop.246, [_106, k.77, t.83, perm.18, ])
+    let _108: Int = Int(0)
+    let _109: Int = Int(0)
+    let _110: Int = Get perm.18[_109]
+    let _111: Unit = Put k.77[_108] = _110
+    let _112: Int = Int(0)
+    let _113: Int = Int(0)
+    let _114: Int = Get flips.23[_113]
+    let _115: Int = Int(1)
+    let _116: Int = Add(_114, _115)
+    let _117: Unit = Put flips.23[_112] = _116
+    Apply(do_flip.245, [k.77, perm.18, flips.23, ])
+  }
+}
+let rec move_perm1_forward.248: Unit = (i.170: Int, r.36: Array(Int), arr.230: Array(Int)) {
+  let _171: Int = Int(0)
+  let _172: Int = Get r.36[_171]
+  let _173: Int = Int(1)
+  let _174: Int = Sub(_172, _173)
+  if (i.170 <= _174) then {
+    let _175: Int = Int(1)
+    let _176: Int = Add(i.170, _175)
+    let _177: Int = Get arr.230[_176]
+    let _178: Unit = Put arr.230[i.170] = _177
+    let _179: Int = Int(1)
+    let _180: Int = Add(i.170, _179)
+    let _181: Unit = Apply(move_perm1_forward.248, [_180, r.36, arr.230, ])
+    Unit
+  } else {
+    Unit
+  }
+}
+let rec go_loop.247: Unit = (n.2: Int, r.36: Array(Int), t.153: Array(Int), go.150: Array(Bool), arr.230: Array(Int), count.20: Array(Int)) {
+  let _155: Int = Int(0)
+  let _156: Bool = Get go.150[_155]
+  let _210: Bool = Bool(true)
+  if (_156 == _210) then {
+    let _157: Int = Int(0)
+    let _158: Int = Get r.36[_157]
+    if (_158 == n.2) then {
+      let _159: Int = Int(0)
+      let _160: Bool = Bool(false)
+      let _161: Unit = Put go.150[_159] = _160
+      let _162: Int = Int(0)
+      let _163: Int = Int(0)
+      let _164: Unit = Put r.36[_162] = _163
+      let _209: Unit = Unit
+      Apply(go_loop.247, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
+    } else {
+      let _165: Int = Int(0)
+      let _166: Int = Int(0)
+      let _167: Int = Get arr.230[_166]
+      let _168: Unit = Put t.153[_165] = _167
+      let _182: Int = Int(0)
+      let _183: Unit = Apply(move_perm1_forward.248, [_182, r.36, arr.230, ])
+      let _184: Int = Int(0)
+      let _185: Int = Get r.36[_184]
+      let _186: Int = Int(0)
+      let _187: Int = Get t.153[_186]
+      let _188: Unit = Put arr.230[_185] = _187
+      let _189: Int = Int(0)
+      let _190: Int = Get r.36[_189]
+      let _191: Int = Int(0)
+      let _192: Int = Get r.36[_191]
+      let _193: Int = Get count.20[_192]
+      let _194: Int = Int(1)
+      let _195: Int = Sub(_193, _194)
+      let _196: Unit = Put count.20[_190] = _195
+      let _197: Int = Int(1)
+      let _198: Int = Int(0)
+      let _199: Int = Get r.36[_198]
+      let _200: Int = Get count.20[_199]
+      if (_197 <= _200) then {
+        let _201: Int = Int(0)
+        let _202: Bool = Bool(false)
+        let _208: Unit = Put go.150[_201] = _202
+        let _209: Unit = Unit
+        Apply(go_loop.247, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
       } else {
-        let _506: Int = Int(0)
-        let _507: Int = Int(0)
-        let _508: Int = Get arr.573[_507]
-        let _509: Unit = Put t.491[_506] = _508
-        let _523: Int = Int(0)
-        let _524: Unit = Apply(move_perm1_forward.606, [_523, r.368, arr.573, ])
-        let _525: Int = Int(0)
-        let _526: Int = Get r.368[_525]
-        let _527: Int = Int(0)
-        let _528: Int = Get t.491[_527]
-        let _529: Unit = Put arr.573[_526] = _528
-        let _530: Int = Int(0)
-        let _531: Int = Get r.368[_530]
-        let _532: Int = Int(0)
-        let _533: Int = Get r.368[_532]
-        let _534: Int = Get count.20[_533]
-        let _535: Int = Int(1)
-        let _536: Int = Sub(_534, _535)
-        let _537: Unit = Put count.20[_531] = _536
-        let _538: Int = Int(1)
-        let _539: Int = Int(0)
-        let _540: Int = Get r.368[_539]
-        let _541: Int = Get count.20[_540]
-        if (_538 <= _541) then {
-          let _543: Int = Int(0)
-          let _544: Bool = Bool(false)
-          let _542: Unit = Put go.488[_543] = _544
-          let _499: Unit = Unit
-          Jump(go_loop.493, [])
-        } else {
-          let _545: Int = Int(0)
-          let _546: Int = Int(0)
-          let _547: Int = Get r.368[_546]
-          let _548: Int = Int(1)
-          let _549: Int = Add(_547, _548)
-          let _542: Unit = Put r.368[_545] = _549
-          let _499: Unit = Unit
-          Jump(go_loop.493, [])
-        }
+        let _203: Int = Int(0)
+        let _204: Int = Int(0)
+        let _205: Int = Get r.36[_204]
+        let _206: Int = Int(1)
+        let _207: Int = Add(_205, _206)
+        let _208: Unit = Put r.36[_203] = _207
+        let _209: Unit = Unit
+        Apply(go_loop.247, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
       }
-    } else {
-      Unit
     }
+  } else {
+    Unit
   }
-  Jump(go_loop.493, [])
 }
-let rec move_perm1_forward.608: Unit = (i.511: Int, r.368: Array(Int), arr.573: Array(Int)) {
-  let _512: Int = Int(0)
-  let _513: Int = Get r.368[_512]
-  let _514: Int = Int(1)
-  let _515: Int = Sub(_513, _514)
-  if (i.511 <= _515) then {
-    let _516: Int = Int(1)
-    let _517: Int = Add(i.511, _516)
-    let _518: Int = Get arr.573[_517]
-    let _519: Unit = Put arr.573[i.511] = _518
-    let _520: Int = Int(1)
-    let _521: Int = Add(i.511, _520)
-    let _522: Unit = Apply(move_perm1_forward.608, [_521, r.368, arr.573, ])
+let rec move_perm1_forward.250: Unit = (i.170: Int, r.36: Array(Int), arr.230: Array(Int)) {
+  let _171: Int = Int(0)
+  let _172: Int = Get r.36[_171]
+  let _173: Int = Int(1)
+  let _174: Int = Sub(_172, _173)
+  if (i.170 <= _174) then {
+    let _175: Int = Int(1)
+    let _176: Int = Add(i.170, _175)
+    let _177: Int = Get arr.230[_176]
+    let _178: Unit = Put arr.230[i.170] = _177
+    let _179: Int = Int(1)
+    let _180: Int = Add(i.170, _179)
+    let _181: Unit = Apply(move_perm1_forward.250, [_180, r.36, arr.230, ])
     Unit
   } else {
     Unit
   }
 }
-let rec go_loop.607: Unit = (n.2: Int, r.368: Array(Int), t.491: Array(Int), go.488: Array(Bool), arr.573: Array(Int), count.20: Array(Int)) {
-  let join go_loop.493: Unit = () {
-    let _494: Int = Int(0)
-    let _495: Bool = Get go.488[_494]
-    let _496: Bool = Bool(true)
-    if (_495 == _496) then {
-      let _497: Int = Int(0)
-      let _498: Int = Get r.368[_497]
-      if (_498 == n.2) then {
-        let _500: Int = Int(0)
-        let _501: Bool = Bool(false)
-        let _502: Unit = Put go.488[_500] = _501
-        let _503: Int = Int(0)
-        let _504: Int = Int(0)
-        let _505: Unit = Put r.368[_503] = _504
-        let _499: Unit = Unit
-        Jump(go_loop.493, [])
+let rec go_loop.249: Unit = (n.2: Int, r.36: Array(Int), t.153: Array(Int), go.150: Array(Bool), arr.230: Array(Int), count.20: Array(Int)) {
+  let _155: Int = Int(0)
+  let _156: Bool = Get go.150[_155]
+  let _210: Bool = Bool(true)
+  if (_156 == _210) then {
+    let _157: Int = Int(0)
+    let _158: Int = Get r.36[_157]
+    if (_158 == n.2) then {
+      let _159: Int = Int(0)
+      let _160: Bool = Bool(false)
+      let _161: Unit = Put go.150[_159] = _160
+      let _162: Int = Int(0)
+      let _163: Int = Int(0)
+      let _164: Unit = Put r.36[_162] = _163
+      let _209: Unit = Unit
+      Apply(go_loop.249, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
+    } else {
+      let _165: Int = Int(0)
+      let _166: Int = Int(0)
+      let _167: Int = Get arr.230[_166]
+      let _168: Unit = Put t.153[_165] = _167
+      let _182: Int = Int(0)
+      let _183: Unit = Apply(move_perm1_forward.250, [_182, r.36, arr.230, ])
+      let _184: Int = Int(0)
+      let _185: Int = Get r.36[_184]
+      let _186: Int = Int(0)
+      let _187: Int = Get t.153[_186]
+      let _188: Unit = Put arr.230[_185] = _187
+      let _189: Int = Int(0)
+      let _190: Int = Get r.36[_189]
+      let _191: Int = Int(0)
+      let _192: Int = Get r.36[_191]
+      let _193: Int = Get count.20[_192]
+      let _194: Int = Int(1)
+      let _195: Int = Sub(_193, _194)
+      let _196: Unit = Put count.20[_190] = _195
+      let _197: Int = Int(1)
+      let _198: Int = Int(0)
+      let _199: Int = Get r.36[_198]
+      let _200: Int = Get count.20[_199]
+      if (_197 <= _200) then {
+        let _201: Int = Int(0)
+        let _202: Bool = Bool(false)
+        let _208: Unit = Put go.150[_201] = _202
+        let _209: Unit = Unit
+        Apply(go_loop.249, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
       } else {
-        let _506: Int = Int(0)
-        let _507: Int = Int(0)
-        let _508: Int = Get arr.573[_507]
-        let _509: Unit = Put t.491[_506] = _508
-        let _523: Int = Int(0)
-        let _524: Unit = Apply(move_perm1_forward.608, [_523, r.368, arr.573, ])
-        let _525: Int = Int(0)
-        let _526: Int = Get r.368[_525]
-        let _527: Int = Int(0)
-        let _528: Int = Get t.491[_527]
-        let _529: Unit = Put arr.573[_526] = _528
-        let _530: Int = Int(0)
-        let _531: Int = Get r.368[_530]
-        let _532: Int = Int(0)
-        let _533: Int = Get r.368[_532]
-        let _534: Int = Get count.20[_533]
-        let _535: Int = Int(1)
-        let _536: Int = Sub(_534, _535)
-        let _537: Unit = Put count.20[_531] = _536
-        let _538: Int = Int(1)
-        let _539: Int = Int(0)
-        let _540: Int = Get r.368[_539]
-        let _541: Int = Get count.20[_540]
-        if (_538 <= _541) then {
-          let _543: Int = Int(0)
-          let _544: Bool = Bool(false)
-          let _542: Unit = Put go.488[_543] = _544
-          let _499: Unit = Unit
-          Jump(go_loop.493, [])
-        } else {
-          let _545: Int = Int(0)
-          let _546: Int = Int(0)
-          let _547: Int = Get r.368[_546]
-          let _548: Int = Int(1)
-          let _549: Int = Add(_547, _548)
-          let _542: Unit = Put r.368[_545] = _549
-          let _499: Unit = Unit
-          Jump(go_loop.493, [])
-        }
+        let _203: Int = Int(0)
+        let _204: Int = Int(0)
+        let _205: Int = Get r.36[_204]
+        let _206: Int = Int(1)
+        let _207: Int = Add(_205, _206)
+        let _208: Unit = Put r.36[_203] = _207
+        let _209: Unit = Unit
+        Apply(go_loop.249, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
       }
-    } else {
-      Unit
     }
+  } else {
+    Unit
   }
-  Jump(go_loop.493, [])
 }
-let rec compute.601: Unit = (r.36: Array(Int), n.2: Int, arr.573: Array(Int), perm.18: Array(Int), count.20: Array(Int), flips.23: Array(Int), nperm.32: Array(Int), check_sum.29: Array(Int), max_flips.26: Array(Int)) {
-  let join compute.367: Unit = (r.368: Array(Int)) {
-    let _369: Int = Int(1)
-    let _370: Int = Int(0)
-    let _371: Int = Get r.368[_370]
-    if (_369 <= _371) then {
-      let _382: Int = Int(0)
-      let join copy_perm.585: Unit = (i.586: Int) {
-        let _587: Int = Int(1)
-        let _588: Int = Sub(n.2, _587)
-        if (i.586 <= _588) then {
-          let _589: Int = Get arr.573[i.586]
-          let _590: Unit = Put perm.18[i.586] = _589
-          let _591: Int = Int(1)
-          let _592: Int = Add(i.586, _591)
-          Jump(copy_perm.585, [_592, ])
-        } else {
-          let _383: Unit = Unit
-          let _402: Unit = Apply(init_count.602, [r.368, count.20, ])
-          let _403: Int = Int(0)
-          let _404: Int = Int(0)
-          let _405: Unit = Put flips.23[_403] = _404
-          let _406: Int = Int(1)
-          let _407: Int = Int(0)
-          let _408: Int = Get perm.18[_407]
-          let k.409: Array(Int) = ExtApply(minimbt_create_array, [_406, _408, ])
-          let _456: Unit = Apply(do_flip.603, [k.409, perm.18, flips.23, ])
-          let _457: Int = Int(0)
-          let _458: Int = Get max_flips.26[_457]
-          let _459: Int = Int(0)
-          let _460: Int = Get flips.23[_459]
-          if (_458 <= _460) then {
-            let _462: Int = Int(0)
-            let _463: Int = Int(0)
-            let _464: Int = Get flips.23[_463]
-            let _461: Unit = Put max_flips.26[_462] = _464
-            let _465: Int = Int(0)
-            let _466: Int = Int(0)
-            let _467: Int = Get check_sum.29[_466]
-            let _468: Int = Int(0)
-            let _469: Int = Get flips.23[_468]
-            let _470: Int = Int(1)
-            let _471: Int = Int(0)
-            let _472: Int = Get nperm.32[_471]
-            let _473: Int = Int(0)
-            let _474: Int = Get nperm.32[_473]
-            let _475: Int = Int(2)
-            let _476: Int = Div(_474, _475)
-            let _477: Int = Int(2)
-            let _478: Int = Mul(_476, _477)
-            let _479: Int = Sub(_472, _478)
-            let _480: Int = Int(2)
-            let _481: Int = Mul(_479, _480)
-            let _482: Int = Sub(_470, _481)
-            let _483: Int = Mul(_469, _482)
-            let _484: Int = Add(_467, _483)
-            let _485: Unit = Put check_sum.29[_465] = _484
-            let _486: Int = Int(1)
-            let _487: Bool = Bool(true)
-            let go.488: Array(Bool) = ExtApply(minimbt_create_array, [_486, _487, ])
-            let _489: Int = Int(1)
-            let _490: Int = Int(0)
-            let t.491: Array(Int) = ExtApply(minimbt_create_array, [_489, _490, ])
-            let _550: Unit = Apply(go_loop.605, [n.2, r.368, t.491, go.488, arr.573, count.20, ])
-            let _551: Int = Int(0)
-            let _552: Int = Int(0)
-            let _553: Int = Get nperm.32[_552]
-            let _554: Int = Int(1)
-            let _555: Int = Add(_553, _554)
-            let _556: Unit = Put nperm.32[_551] = _555
-            Jump(compute.367, [r.368, ])
-          } else {
-            let _461: Unit = Unit
-            let _465: Int = Int(0)
-            let _466: Int = Int(0)
-            let _467: Int = Get check_sum.29[_466]
-            let _468: Int = Int(0)
-            let _469: Int = Get flips.23[_468]
-            let _470: Int = Int(1)
-            let _471: Int = Int(0)
-            let _472: Int = Get nperm.32[_471]
-            let _473: Int = Int(0)
-            let _474: Int = Get nperm.32[_473]
-            let _475: Int = Int(2)
-            let _476: Int = Div(_474, _475)
-            let _477: Int = Int(2)
-            let _478: Int = Mul(_476, _477)
-            let _479: Int = Sub(_472, _478)
-            let _480: Int = Int(2)
-            let _481: Int = Mul(_479, _480)
-            let _482: Int = Sub(_470, _481)
-            let _483: Int = Mul(_469, _482)
-            let _484: Int = Add(_467, _483)
-            let _485: Unit = Put check_sum.29[_465] = _484
-            let _486: Int = Int(1)
-            let _487: Bool = Bool(true)
-            let go.488: Array(Bool) = ExtApply(minimbt_create_array, [_486, _487, ])
-            let _489: Int = Int(1)
-            let _490: Int = Int(0)
-            let t.491: Array(Int) = ExtApply(minimbt_create_array, [_489, _490, ])
-            let _550: Unit = Apply(go_loop.607, [n.2, r.368, t.491, go.488, arr.573, count.20, ])
-            let _551: Int = Int(0)
-            let _552: Int = Int(0)
-            let _553: Int = Get nperm.32[_552]
-            let _554: Int = Int(1)
-            let _555: Int = Add(_553, _554)
-            let _556: Unit = Put nperm.32[_551] = _555
-            Jump(compute.367, [r.368, ])
-          }
-        }
-      }
-      Jump(copy_perm.585, [_382, ])
+let rec compute.242: Unit = (r.36: Array(Int), n.2: Int, arr.230: Array(Int), perm.18: Array(Int), count.20: Array(Int), flips.23: Array(Int), nperm.32: Array(Int), check_sum.29: Array(Int), max_flips.26: Array(Int)) {
+  let _37: Int = Int(1)
+  let _38: Int = Int(0)
+  let _39: Int = Get r.36[_38]
+  if (_37 <= _39) then {
+    let _48: Int = Int(0)
+    let _49: Unit = Apply(copy_perm.243, [_48, n.2, arr.230, perm.18, ])
+    let _68: Unit = Apply(init_count.244, [r.36, count.20, ])
+    let _69: Int = Int(0)
+    let _70: Int = Int(0)
+    let _71: Unit = Put flips.23[_69] = _70
+    let _72: Int = Int(1)
+    let _73: Int = Int(0)
+    let _74: Int = Get perm.18[_73]
+    let k.75: Array(Int) = ExtApply(minimbt_create_array, [_72, _74, ])
+    let _118: Unit = Apply(do_flip.245, [k.75, perm.18, flips.23, ])
+    let _119: Int = Int(0)
+    let _120: Int = Get max_flips.26[_119]
+    let _121: Int = Int(0)
+    let _122: Int = Get flips.23[_121]
+    if (_120 <= _122) then {
+      let _123: Int = Int(0)
+      let _124: Int = Int(0)
+      let _125: Int = Get flips.23[_124]
+      let _126: Unit = Put max_flips.26[_123] = _125
+      let _127: Int = Int(0)
+      let _128: Int = Int(0)
+      let _129: Int = Get check_sum.29[_128]
+      let _130: Int = Int(0)
+      let _131: Int = Get flips.23[_130]
+      let _132: Int = Int(1)
+      let _133: Int = Int(0)
+      let _134: Int = Get nperm.32[_133]
+      let _135: Int = Int(0)
+      let _136: Int = Get nperm.32[_135]
+      let _137: Int = Int(2)
+      let _138: Int = Div(_136, _137)
+      let _139: Int = Int(2)
+      let _140: Int = Mul(_138, _139)
+      let _141: Int = Sub(_134, _140)
+      let _142: Int = Int(2)
+      let _143: Int = Mul(_141, _142)
+      let _144: Int = Sub(_132, _143)
+      let _145: Int = Mul(_131, _144)
+      let _146: Int = Add(_129, _145)
+      let _147: Unit = Put check_sum.29[_127] = _146
+      let _148: Int = Int(1)
+      let _149: Bool = Bool(true)
+      let go.150: Array(Bool) = ExtApply(minimbt_create_array, [_148, _149, ])
+      let _151: Int = Int(1)
+      let _152: Int = Int(0)
+      let t.153: Array(Int) = ExtApply(minimbt_create_array, [_151, _152, ])
+      let _211: Unit = Apply(go_loop.247, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
+      let _212: Int = Int(0)
+      let _213: Int = Int(0)
+      let _214: Int = Get nperm.32[_213]
+      let _215: Int = Int(1)
+      let _216: Int = Add(_214, _215)
+      let _217: Unit = Put nperm.32[_212] = _216
+      Apply(compute.242, [r.36, n.2, arr.230, perm.18, count.20, flips.23, nperm.32, check_sum.29, max_flips.26, ])
     } else {
-      Unit
+      let _126: Unit = Unit
+      let _127: Int = Int(0)
+      let _128: Int = Int(0)
+      let _129: Int = Get check_sum.29[_128]
+      let _130: Int = Int(0)
+      let _131: Int = Get flips.23[_130]
+      let _132: Int = Int(1)
+      let _133: Int = Int(0)
+      let _134: Int = Get nperm.32[_133]
+      let _135: Int = Int(0)
+      let _136: Int = Get nperm.32[_135]
+      let _137: Int = Int(2)
+      let _138: Int = Div(_136, _137)
+      let _139: Int = Int(2)
+      let _140: Int = Mul(_138, _139)
+      let _141: Int = Sub(_134, _140)
+      let _142: Int = Int(2)
+      let _143: Int = Mul(_141, _142)
+      let _144: Int = Sub(_132, _143)
+      let _145: Int = Mul(_131, _144)
+      let _146: Int = Add(_129, _145)
+      let _147: Unit = Put check_sum.29[_127] = _146
+      let _148: Int = Int(1)
+      let _149: Bool = Bool(true)
+      let go.150: Array(Bool) = ExtApply(minimbt_create_array, [_148, _149, ])
+      let _151: Int = Int(1)
+      let _152: Int = Int(0)
+      let t.153: Array(Int) = ExtApply(minimbt_create_array, [_151, _152, ])
+      let _211: Unit = Apply(go_loop.249, [n.2, r.36, t.153, go.150, arr.230, count.20, ])
+      let _212: Int = Int(0)
+      let _213: Int = Int(0)
+      let _214: Int = Get nperm.32[_213]
+      let _215: Int = Int(1)
+      let _216: Int = Add(_214, _215)
+      let _217: Unit = Put nperm.32[_212] = _216
+      Apply(compute.242, [r.36, n.2, arr.230, perm.18, count.20, flips.23, nperm.32, check_sum.29, max_flips.26, ])
     }
+  } else {
+    Unit
   }
-  Jump(compute.367, [r.36, ])
 }
-let rec fannkuch.600: Tuple([Int, Int]) = (n.2: Int) {
-  let _572: Int = Int(0)
-  let arr.573: Array(Int) = ExtApply(minimbt_create_array, [n.2, _572, ])
-  let _583: Int = Int(0)
-  let join init_arr.593: Unit = (i.594: Int) {
-    let _595: Int = Int(1)
-    let _596: Int = Sub(n.2, _595)
-    if (i.594 <= _596) then {
-      let _597: Unit = Put arr.573[i.594] = i.594
-      let _598: Int = Int(1)
-      let _599: Int = Add(i.594, _598)
-      Jump(init_arr.593, [_599, ])
-    } else {
-      let _584: Unit = Unit
-      let _17: Int = Int(0)
-      let perm.18: Array(Int) = ExtApply(minimbt_create_array, [n.2, _17, ])
-      let _19: Int = Int(0)
-      let count.20: Array(Int) = ExtApply(minimbt_create_array, [n.2, _19, ])
-      let _21: Int = Int(1)
-      let _22: Int = Int(0)
-      let flips.23: Array(Int) = ExtApply(minimbt_create_array, [_21, _22, ])
-      let _24: Int = Int(1)
-      let _25: Int = Int(0)
-      let max_flips.26: Array(Int) = ExtApply(minimbt_create_array, [_24, _25, ])
-      let _27: Int = Int(1)
-      let _28: Int = Int(0)
-      let check_sum.29: Array(Int) = ExtApply(minimbt_create_array, [_27, _28, ])
-      let _30: Int = Int(1)
-      let _31: Int = Int(0)
-      let nperm.32: Array(Int) = ExtApply(minimbt_create_array, [_30, _31, ])
-      let _33: Int = Int(1)
-      let r.34: Array(Int) = ExtApply(minimbt_create_array, [_33, n.2, ])
-      let _218: Unit = Apply(compute.601, [r.34, n.2, arr.573, perm.18, count.20, flips.23, nperm.32, check_sum.29, max_flips.26, ])
-      let _219: Int = Int(0)
-      let _220: Int = Get max_flips.26[_219]
-      let _221: Int = Int(0)
-      let _222: Int = Get check_sum.29[_221]
-      Tuple([_220, _222, ])
-    }
-  }
-  Jump(init_arr.593, [_583, ])
+let rec fannkuch.240: Tuple([Int, Int]) = (n.2: Int) {
+  let _229: Int = Int(0)
+  let arr.230: Array(Int) = ExtApply(minimbt_create_array, [n.2, _229, ])
+  let _238: Int = Int(0)
+  let _239: Unit = Apply(init_arr.241, [_238, n.2, arr.230, ])
+  let _17: Int = Int(0)
+  let perm.18: Array(Int) = ExtApply(minimbt_create_array, [n.2, _17, ])
+  let _19: Int = Int(0)
+  let count.20: Array(Int) = ExtApply(minimbt_create_array, [n.2, _19, ])
+  let _21: Int = Int(1)
+  let _22: Int = Int(0)
+  let flips.23: Array(Int) = ExtApply(minimbt_create_array, [_21, _22, ])
+  let _24: Int = Int(1)
+  let _25: Int = Int(0)
+  let max_flips.26: Array(Int) = ExtApply(minimbt_create_array, [_24, _25, ])
+  let _27: Int = Int(1)
+  let _28: Int = Int(0)
+  let check_sum.29: Array(Int) = ExtApply(minimbt_create_array, [_27, _28, ])
+  let _30: Int = Int(1)
+  let _31: Int = Int(0)
+  let nperm.32: Array(Int) = ExtApply(minimbt_create_array, [_30, _31, ])
+  let _33: Int = Int(1)
+  let r.34: Array(Int) = ExtApply(minimbt_create_array, [_33, n.2, ])
+  let _218: Unit = Apply(compute.242, [r.34, n.2, arr.230, perm.18, count.20, flips.23, nperm.32, check_sum.29, max_flips.26, ])
+  let _219: Int = Int(0)
+  let _220: Int = Get max_flips.26[_219]
+  let _221: Int = Int(0)
+  let _222: Int = Get check_sum.29[_221]
+  Tuple([_220, _222, ])
 }
-let rec main.609: Var({val: Some(Unit)}) = () {
+let rec main.251: Var({val: Some(Unit)}) = () {
   let _224: Int = Int(9)
-  let _225: Tuple([Int, Int]) = Apply(fannkuch.600, [_224, ])
+  let _225: Tuple([Int, Int]) = Apply(fannkuch.240, [_224, ])
   let (max_flips.226: Var({val: Some(Int)}), check_sum.227: Var({val: Some(Int)})) = _225
   let _228: Unit = ExtApply(minimbt_print_int, [check_sum.227, ])
   ExtApply(minimbt_print_int, [max_flips.226, ])
 }
-Apply(main.609, [])
+Apply(main.251, [])
