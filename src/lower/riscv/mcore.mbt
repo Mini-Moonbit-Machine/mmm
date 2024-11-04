@@ -164,11 +164,11 @@ let raw_memseti64 =
   #|  .type memseti64, @function
   #|memseti64:
   #|  blez a1, .memseti64_b1
-  #|  slli a1, a1, 2
+  #|  slli a1, a1, 3
   #|  add a1, a1, a0
   #|.memseti64_b0:
   #|  sd a2, 0(a0)
-  #|  addi a0, a0, 4
+  #|  addi a0, a0, 8
   #|  bne a0, a1, .memseti64_b0
   #|.memseti64_b1:
   #|  ret
