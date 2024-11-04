@@ -7,21 +7,13 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn g.48 #f1 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = add($f0, 1)
-    return %0
-  }
-}
-.fn main.49 #f2 : fn() -> unit
+.fn main.49 #f0 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(10)> <- [..] = 1
-    let %1: int32 = call f0()
-    let %2: int32 = load int32 offset(f2.m0, 0 * @32)
+    let %1: int32 = load int32 offset(f0.m0, 0 * @32)
+    let %2: int32 = add(%1, %1)
     let %3: int32 = add(%2, %2)
     let %4: int32 = add(%3, %3)
     let %5: int32 = add(%4, %4)
@@ -36,18 +28,18 @@
     let %14: int32 = add(%13, %13)
     let %15: int32 = add(%14, %14)
     let %16: int32 = add(%15, %15)
-    let %17: int32 = add(%16, %16)
-    let %18: int32 = load int32 offset(f2.m0, 1 * @32)
-    let %19: bool = eq(%18, 0)
-    br %19 b1() b2()
+    let %17: int32 = load int32 offset(f0.m0, 1 * @32)
+    let %18: bool = eq(%17, 0)
+    br %18 b1() b2()
   }
   .bb #b1 () {
-    let %20: int32 = call f1(67890)
-    let %21: unit = ext_call minimbt_print_int(%20)
-    jump b3(%21)
+    let %19: int32 = add(67890, 1)
+    let %20: unit = ext_call minimbt_print_int(%19)
+    jump b3(%20)
   }
   .bb #b2 () {
-    let %22: int32 = add(%2, %3)
+    let %21: int32 = add(%1, %2)
+    let %22: int32 = add(%21, %3)
     let %23: int32 = add(%22, %4)
     let %24: int32 = add(%23, %5)
     let %25: int32 = add(%24, %6)
@@ -61,28 +53,20 @@
     let %33: int32 = add(%32, %14)
     let %34: int32 = add(%33, %15)
     let %35: int32 = add(%34, %16)
-    let %36: int32 = add(%35, %17)
-    let %37: int32 = add(%36, %1)
-    let %38: unit = ext_call minimbt_print_int(%37)
-    jump b3(%38)
+    let %36: int32 = add(%35, 12345)
+    let %37: unit = ext_call minimbt_print_int(%36)
+    jump b3(%37)
   }
   .bb #b3 (unit) {
     return $b3.0
   }
 }
-.fn T$start #f6 : fn() -> unit
+.fn T$start #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f2()
+    let %0: unit = call f0()
     return %0
-  }
-}
-.fn f.47 #f0 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return 12345
   }
 }
 .thunk ::0 start

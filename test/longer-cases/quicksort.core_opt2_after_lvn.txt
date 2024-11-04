@@ -29,7 +29,8 @@
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset($b0.1, $b0.0 * @32)
+    let %6: ptr = compute_address unit offset(0, $b0.0 * @32)
+    let %2: int32 = load int32 raw($b0.1, %6)
     let %3: unit = ext_call minimbt_print_int(%2)
     let %4: unit = ext_call minimbt_print_endline()
     let %5: int32 = add($b0.0, 1)
@@ -82,7 +83,8 @@
     jump b0($b0.0, %5, $b0.2)
   }
   .bb #b7 () {
-    let %6: int32 = load int32 offset($b0.0, $b0.2 * @32)
+    let %55: ptr = compute_address unit offset(0, $b0.2 * @32)
+    let %6: int32 = load int32 raw($b0.0, %55)
     let %7: int32 = sub($b0.1, 1)
     let _ = alloc <m7: array[int32] heap(1)> <- [..] = %7
     jump b28()
@@ -92,10 +94,12 @@
     let %11: int32 = add(%10, 1)
     let _ = store int32 field(f2.m7, 0 * @32) <- %11
     let %13: int32 = load int32 field(f2.m7, 0 * @32)
-    let %14: int32 = load int32 offset($b0.0, %13 * @32)
-    let %15: int32 = load int32 offset($b0.0, $b0.2 * @32)
-    let _ = store int32 offset($b0.0, %13 * @32) <- %15
-    let _ = store int32 offset($b0.0, $b0.2 * @32) <- %14
+    let %53: ptr = compute_address unit offset(0, %13 * @32)
+    let %14: int32 = load int32 raw($b0.0, %53)
+    let %52: ptr = compute_address unit offset(0, $b0.2 * @32)
+    let %15: int32 = load int32 raw($b0.0, %52)
+    let _ = store int32 raw($b0.0, %53) <- %15
+    let _ = store int32 raw($b0.0, %52) <- %14
     let %18: int32 = load int32 field(f2.m7, 0 * @32)
     jump b6(%18)
   }
@@ -105,7 +109,8 @@
     br %20 b21() b22()
   }
   .bb #b21 () {
-    let %21: int32 = load int32 offset($b20.2, $b20.0 * @32)
+    let %54: ptr = compute_address unit offset(0, $b20.0 * @32)
+    let %21: int32 = load int32 raw($b20.2, %54)
     let %22: bool = le(%21, $b20.4)
     br %22 b23() b24()
   }
@@ -117,10 +122,12 @@
     let %24: int32 = add(%23, 1)
     let _ = store int32 field($b20.1, 0 * @32) <- %24
     let %26: int32 = load int32 field($b20.1, 0 * @32)
-    let %27: int32 = load int32 offset($b20.2, %26 * @32)
-    let %28: int32 = load int32 offset($b20.2, $b20.0 * @32)
-    let _ = store int32 offset($b20.2, %26 * @32) <- %28
-    let _ = store int32 offset($b20.2, $b20.0 * @32) <- %27
+    let %43: ptr = compute_address unit offset(0, %26 * @32)
+    let %27: int32 = load int32 raw($b20.2, %43)
+    let %42: ptr = compute_address unit offset(0, $b20.0 * @32)
+    let %28: int32 = load int32 raw($b20.2, %42)
+    let _ = store int32 raw($b20.2, %43) <- %28
+    let _ = store int32 raw($b20.2, %42) <- %27
     let %31: int32 = add($b20.0, 1)
     jump b20(%31, $b20.1, $b20.2, $b20.3, $b20.4)
   }
@@ -164,7 +171,8 @@
   }
   .bb #b1 () {
     let %2: int32 = ext_call minimbt_read_int()
-    let _ = store int32 offset($b0.1, $b0.0 * @32) <- %2
+    let %5: ptr = compute_address unit offset(0, $b0.0 * @32)
+    let _ = store int32 raw($b0.1, %5) <- %2
     let %4: int32 = add($b0.0, 1)
     jump b0(%4, $b0.1, $b0.2)
   }

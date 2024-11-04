@@ -64,10 +64,13 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($f5, 1)
-    let %2: unit = call f1(%1, $f1, $f2, $f3, $f0, $f4)
-    let %3: int32 = sub($f0, 1)
-    let %4: unit = call f2(%3, $f1, $f2, $f3, $f4, $f5)
-    jump b3(%4)
+    let %2: array[double] = load array[double] offset($f3, $f0 * @ptr)
+    let %3: array[double] = load array[double] offset($f3, $f0 * @ptr)
+    let %4: array[double] = load array[double] offset($f1, $f0 * @ptr)
+    let %5: unit = call f1(%1, $f1, $f2, $f3, $f0, $f4, %2, %3, %4)
+    let %6: int32 = sub($f0, 1)
+    let %7: unit = call f2(%6, $f1, $f2, $f3, $f4, $f5)
+    jump b3(%7)
   }
   .bb #b2 () {
     jump b3(())
@@ -131,7 +134,7 @@
     return ()
   }
 }
-.fn loop3.163 #f0 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) -> unit
+.fn loop3.163 #f0 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -139,19 +142,16 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    let %1: array[double] = load array[double] offset($f3, $f4 * @ptr)
-    let %2: array[double] = load array[double] offset($f3, $f4 * @ptr)
-    let %3: double = load double offset(%2, $f5 * @64)
-    let %4: array[double] = load array[double] offset($f1, $f4 * @ptr)
-    let %5: double = load double offset(%4, $f0 * @64)
-    let %6: array[double] = load array[double] offset($f2, $f0 * @ptr)
-    let %7: double = load double offset(%6, $f5 * @64)
-    let %8: double = mul(%5, %7)
-    let %9: double = add(%3, %8)
-    let _ = store double offset(%1, $f5 * @64) <- %9
-    let %11: int32 = sub($f0, 1)
-    let %12: unit = call f0(%11, $f1, $f2, $f3, $f4, $f5)
-    jump b3(%12)
+    let %1: double = load double offset($f7, $f5 * @64)
+    let %2: double = load double offset($f8, $f0 * @64)
+    let %3: array[double] = load array[double] offset($f2, $f0 * @ptr)
+    let %4: double = load double offset(%3, $f5 * @64)
+    let %5: double = mul(%2, %4)
+    let %6: double = add(%1, %5)
+    let _ = store double offset($f6, $f5 * @64) <- %6
+    let %8: int32 = sub($f0, 1)
+    let %9: unit = call f0(%8, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
+    jump b3(%9)
   }
   .bb #b2 () {
     jump b3(())
@@ -160,7 +160,7 @@
     return $b3.0
   }
 }
-.fn loop2.162 #f1 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32) -> unit
+.fn loop2.162 #f1 : fn(int32, array[array[double]], array[array[double]], array[array[double]], int32, int32, array[double], array[double], array[double]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -169,9 +169,9 @@
   }
   .bb #b1 () {
     let %1: int32 = sub($f5, 1)
-    let %2: unit = call f0(%1, $f1, $f2, $f3, $f4, $f0)
+    let %2: unit = call f0(%1, $f1, $f2, $f3, $f4, $f0, $f6, $f7, $f8)
     let %3: int32 = sub($f0, 1)
-    let %4: unit = call f1(%3, $f1, $f2, $f3, $f4, $f5)
+    let %4: unit = call f1(%3, $f1, $f2, $f3, $f4, $f5, $f6, $f7, $f8)
     jump b3(%4)
   }
   .bb #b2 () {

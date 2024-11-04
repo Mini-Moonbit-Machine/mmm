@@ -180,8 +180,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let knf = self.knf.unwrap()
-      let licm = @knf.LICM::new(tracer, knf)
-      let knf = licm.go(0)
       let tre = @knf.TailRecElim::new(tracer, knf)
       let _knf = tre.go()
       let mut knf = knf
@@ -191,6 +189,12 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       }
       let lamlift = @knf.LambdaLifter::new(tracer, knf)
       let knf = lamlift.go()
+      let licm = @knf.LICM::new(tracer, knf)
+      let knf = licm.go(0)
+      let licm = @knf.LICM::new(tracer, knf)
+      let knf = licm.go(1)
+      let licm = @knf.LICM::new(tracer, knf)
+      let knf = licm.go(2)
       self.opt_knf = Some(knf)
     }
     Js => {

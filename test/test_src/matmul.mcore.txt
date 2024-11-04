@@ -15,21 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 3
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 8
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl matmul.160
   .type matmul.160, @function
 # leaf false
@@ -106,29 +91,23 @@ T$start:
 # leaf false
 gen_arr.165:
 .gen_arr.165_0:
-  addi sp, sp, -32
+  addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  slliw a0, s0, 3
-  sub s2, s11, a0
-  andi s11, s2, -8
-  mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s0, -1
-  mv a1, s1
-  mv a2, s2
+  mv a3, a1
+  mv a1, a2
+  slliw a1, a0, 3
+  sub s0, s11, a1
+  andi s11, s0, -8
+  mv a1, a0
+  addi a0, a0, -1
+  mv a1, a3
+  mv a2, s0
   call init_arr.166
-  mv a0, s2
+  mv a0, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -249,69 +228,70 @@ main.164:
 # leaf true
 loop1.161:
 .loop1.161_5:
-  addi sp, sp, -16
+  addi sp, sp, -48
   sd s0, 0(sp)
   sd s1, 8(sp)
-  mv t0, a0
-  mv a7, a1
+  sd s2, 16(sp)
+  sd s3, 24(sp)
+  sd s4, 32(sp)
+  mv a7, a0
+  mv t0, a1
   mv a6, a2
-  mv a1, a3
+  mv a2, a3
+  mv a1, a4
   mv a0, a5
-  mv a2, t0
-  mv a3, a6
-  mv a5, a4
-  mv a4, a0
-
-.loop1.161_0:
-  blt a2, zero, .loop1.161_2
-
-.loop1.161_1:
-  addi a0, a4, -1
-
-.loop1.161_12:
+  mv a3, t0
+  mv a4, a6
   mv a6, a0
 
+.loop1.161_0:
+  blt a7, zero, .loop1.161_2
+
+.loop1.161_1:
+  addi t0, a6, -1
+  slliw a0, a7, 3
+  add a5, a2, a0
+  ld a5, 0(a5)
+  add a0, a3, a0
+  ld a0, 0(a0)
+
+.loop1.161_12:
+  mv t1, t0
+  mv t2, a5
+  mv t0, a0
+
 .loop1.161_7:
-  blt a6, zero, .loop1.161_9
+  blt t1, zero, .loop1.161_9
 
 .loop1.161_8:
-  addi a0, a5, -1
+  addi a0, a1, -1
 
 .loop1.161_19:
-  mv t0, a0
-  mv t4, a7
-  mv t1, a3
-  mv t3, a1
-  mv t2, a2
+  mv t3, a0
+  mv s2, a3
+  mv s0, a4
+  mv s1, a2
+  mv s3, a7
 
 .loop1.161_14:
-  blt t0, zero, .loop1.161_16
+  blt t3, zero, .loop1.161_16
 
 .loop1.161_15:
-  slliw a0, t2, 3
-  add a0, t3, a0
-  ld a0, 0(a0)
-  slliw s0, a6, 3
-  add s0, a0, s0
-  fld fa0, 0(s0)
-  slliw s0, t2, 3
-  add s0, t4, s0
-  ld s0, 0(s0)
-  slliw s1, t0, 3
-  add s0, s0, s1
-  fld fa1, 0(s0)
-  slliw s0, t0, 3
-  add s0, t1, s0
-  ld s0, 0(s0)
-  slliw s1, a6, 3
-  add s0, s0, s1
-  fld fa2, 0(s0)
+  slliw a0, t1, 3
+  add t4, t2, a0
+  fld fa0, 0(t4)
+  slliw t4, t3, 3
+  add s4, t0, t4
+  fld fa1, 0(s4)
+  add t4, s0, t4
+  ld t4, 0(t4)
+  add t4, t4, a0
+  fld fa2, 0(t4)
   fmadd.d fa0, fa1, fa2, fa0
-  slliw s0, a6, 3
-  add a0, a0, s0
+  add a0, a5, a0
   fsd fa0, 0(a0)
-  addi a0, t0, -1
-  mv t0, a0
+  addi a0, t3, -1
+  mv t3, a0
   j .loop1.161_14
 
 .loop1.161_2:
@@ -320,7 +300,10 @@ loop1.161:
 .loop1.161_3:
   ld s0, 0(sp)
   ld s1, 8(sp)
-  addi sp, sp, 16
+  ld s2, 16(sp)
+  ld s3, 24(sp)
+  ld s4, 32(sp)
+  addi sp, sp, 48
   ret
 
 .loop1.161_9:
@@ -329,8 +312,8 @@ loop1.161:
 .loop1.161_10:
 
 .loop1.161_6:
-  addi a0, a2, -1
-  mv a2, a0
+  addi a0, a7, -1
+  mv a7, a0
   j .loop1.161_0
 
 .loop1.161_16:
@@ -339,8 +322,8 @@ loop1.161:
 .loop1.161_17:
 
 .loop1.161_13:
-  addi a0, a6, -1
-  mv a6, a0
+  addi a0, t1, -1
+  mv t1, a0
   j .loop1.161_7
 
   .p2align 2

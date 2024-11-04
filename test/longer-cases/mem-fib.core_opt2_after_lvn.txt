@@ -22,7 +22,8 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load int32 offset($f1, $f0 * @32)
+    let %14: ptr = compute_address unit offset(0, $f0 * @32)
+    let %0: int32 = load int32 raw($f1, %14)
     let %1: int32 = load_symbol ::0
     let %2: bool = eq(%0, %1)
     br %2 b1() b2()
@@ -32,14 +33,16 @@
     jump b7()
   }
   .bb #b2 () {
-    let %6: int32 = load int32 offset($f1, $f0 * @32)
+    let %15: ptr = compute_address unit offset(0, $f0 * @32)
+    let %6: int32 = load int32 raw($f1, %15)
     jump b3(%6)
   }
   .bb #b3 (int32) {
     return $b3.0
   }
   .bb #b4 (int32) {
-    let _ = store int32 offset($f1, $f0 * @32) <- $b4.0
+    let %13: ptr = compute_address unit offset(0, $f0 * @32)
+    let _ = store int32 raw($f1, %13) <- $b4.0
     jump b3($b4.0)
   }
   .bb #b7 () {

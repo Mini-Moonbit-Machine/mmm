@@ -16,7 +16,8 @@
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset($b0.2, $b0.0 * @32)
+    let %6: ptr = compute_address unit offset(0, $b0.0 * @32)
+    let %2: int32 = load int32 raw($b0.2, %6)
     let %3: bool = apply $b0.3(%2)
     let %4: bool = eq(%3, true)
     br %4 b3() b4()

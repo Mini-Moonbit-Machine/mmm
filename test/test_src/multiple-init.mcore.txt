@@ -15,29 +15,24 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
+  .globl T$_40
+  .type T$_40, @function
+# leaf true
+T$_40:
+.T$_40_0:
+  li a0, 2
   ret
 
   .p2align 2
   .text
-  .globl T$_50
-  .type T$_50, @function
+  .globl T$_38
+  .type T$_38, @function
 # leaf true
-T$_50:
-.T$_50_0:
+T$_38:
+.T$_38_0:
   ld a0, len.3
-  lw a1, _48
-  lw a2, _49
+  lw a1, _36
+  lw a2, _37
   slliw a1, a1, 2
   add a0, a0, a1
   sw a2, 0(a0)
@@ -46,34 +41,18 @@ T$_50:
 
   .p2align 2
   .text
-  .globl main.66
-  .type main.66, @function
-# leaf false
-main.66:
-.main.66_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, a1
-  ld a0, len.3
-  lw a0, 0(a0)
-  call minimbt_print_int
-  call minimbt_print_endline
-  ld a0, len2.11
-  lw a0, 0(a0)
-  call minimbt_print_int
-  mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl T$_24
   .type T$_24, @function
-# leaf true
+# leaf false
 T$_24:
 .T$_24_0:
-  mv a0, zero
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  ld a0, len.3
+  ld a1, len2.11
+  call init.42
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -83,6 +62,16 @@ T$_24:
 # leaf true
 T$_16:
 .T$_16_0:
+  mv a0, zero
+  ret
+
+  .p2align 2
+  .text
+  .globl T$_36
+  .type T$_36, @function
+# leaf true
+T$_36:
+.T$_36_0:
   mv a0, zero
   ret
 
@@ -98,12 +87,35 @@ T$_10:
 
   .p2align 2
   .text
-  .globl T$_58
-  .type T$_58, @function
+  .globl T$_41
+  .type T$_41, @function
 # leaf true
-T$_58:
-.T$_58_0:
-  li a0, 2
+T$_41:
+.T$_41_0:
+  ld a0, len2.11
+  lw a1, _39
+  lw a2, _40
+  slliw a1, a1, 2
+  add a0, a0, a1
+  sw a2, 0(a0)
+  mv a0, zero
+  ret
+
+  .p2align 2
+  .text
+  .globl init.42
+  .type init.42, @function
+# leaf true
+init.42:
+.init.42_0:
+  mv a0, a1
+  ld a0, len.3
+  li a1, 3
+  sw a1, 0(a0)
+  ld a0, len2.11
+  li a1, 4
+  sw a1, 0(a0)
+  mv a0, zero
   ret
 
   .p2align 2
@@ -115,18 +127,14 @@ T$len.3:
 .T$len.3_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   lw a0, _1
-  lw a2, _2
+  lw a1, _2
   slliw a1, a0, 2
-  sub s0, s11, a1
-  andi s11, s0, -8
+  sub a2, s11, a1
+  andi s11, a2, -8
   mv a1, a0
-  mv a0, s0
-  call memseti32
-  mv a0, s0
+  mv a0, a2
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -142,28 +150,12 @@ T$_1:
 
   .p2align 2
   .text
-  .globl T$_62
-  .type T$_62, @function
+  .globl T$_37
+  .type T$_37, @function
 # leaf true
-T$_62:
-.T$_62_0:
-  ld a0, len.3
-  lw a1, _60
-  lw a2, _61
-  slliw a1, a1, 2
-  add a0, a0, a1
-  sw a2, 0(a0)
-  mv a0, zero
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_57
-  .type T$_57, @function
-# leaf true
-T$_57:
-.T$_57_0:
-  mv a0, zero
+T$_37:
+.T$_37_0:
+  li a0, 1
   ret
 
   .p2align 2
@@ -189,13 +181,13 @@ minimbt_main:
   call T$len.3
   la t5, len.3
   sd a0, 0(t5)
-  call T$_48
-  la t5, _48
+  call T$_36
+  la t5, _36
   sw a0, 0(t5)
-  call T$_49
-  la t5, _49
+  call T$_37
+  la t5, _37
   sw a0, 0(t5)
-  call T$_50
+  call T$_38
   call T$_8
   call T$_9
   la t5, _9
@@ -206,28 +198,14 @@ minimbt_main:
   call T$len2.11
   la t5, len2.11
   sd a0, 0(t5)
-  call T$_57
-  la t5, _57
+  call T$_39
+  la t5, _39
   sw a0, 0(t5)
-  call T$_58
-  la t5, _58
+  call T$_40
+  la t5, _40
   sw a0, 0(t5)
-  call T$_59
+  call T$_41
   call T$_16
-  call T$_60
-  la t5, _60
-  sw a0, 0(t5)
-  call T$_61
-  la t5, _61
-  sw a0, 0(t5)
-  call T$_62
-  call T$_63
-  la t5, _63
-  sw a0, 0(t5)
-  call T$_64
-  la t5, _64
-  sw a0, 0(t5)
-  call T$_65
   call T$_24
   call T$start
   mv sp, s0
@@ -239,12 +217,22 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl T$_48
-  .type T$_48, @function
-# leaf true
-T$_48:
-.T$_48_0:
-  mv a0, zero
+  .globl T$len2.11
+  .type T$len2.11, @function
+# leaf false
+T$len2.11:
+.T$len2.11_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  lw a0, _9
+  lw a1, _10
+  slliw a1, a0, 2
+  sub a2, s11, a1
+  andi s11, a2, -8
+  mv a1, a0
+  mv a0, a2
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -259,30 +247,6 @@ T$_8:
 
   .p2align 2
   .text
-  .globl T$len2.11
-  .type T$len2.11, @function
-# leaf false
-T$len2.11:
-.T$len2.11_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  lw a0, _9
-  lw a2, _10
-  slliw a1, a0, 2
-  sub s0, s11, a1
-  andi s11, s0, -8
-  mv a1, a0
-  mv a0, s0
-  call memseti32
-  mv a0, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl T$_9
   .type T$_9, @function
 # leaf true
@@ -293,73 +257,11 @@ T$_9:
 
   .p2align 2
   .text
-  .globl T$_61
-  .type T$_61, @function
+  .globl T$_39
+  .type T$_39, @function
 # leaf true
-T$_61:
-.T$_61_0:
-  li a0, 3
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_65
-  .type T$_65, @function
-# leaf true
-T$_65:
-.T$_65_0:
-  ld a0, len2.11
-  lw a1, _63
-  lw a2, _64
-  slliw a1, a1, 2
-  add a0, a0, a1
-  sw a2, 0(a0)
-  mv a0, zero
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_59
-  .type T$_59, @function
-# leaf true
-T$_59:
-.T$_59_0:
-  ld a0, len2.11
-  lw a1, _57
-  lw a2, _58
-  slliw a1, a1, 2
-  add a0, a0, a1
-  sw a2, 0(a0)
-  mv a0, zero
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_49
-  .type T$_49, @function
-# leaf true
-T$_49:
-.T$_49_0:
-  li a0, 1
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_64
-  .type T$_64, @function
-# leaf true
-T$_64:
-.T$_64_0:
-  li a0, 4
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_63
-  .type T$_63, @function
-# leaf true
-T$_63:
-.T$_63_0:
+T$_39:
+.T$_39_0:
   mv a0, zero
   ret
 
@@ -375,12 +277,24 @@ T$_2:
 
   .p2align 2
   .text
-  .globl T$_60
-  .type T$_60, @function
-# leaf true
-T$_60:
-.T$_60_0:
+  .globl main.43
+  .type main.43, @function
+# leaf false
+main.43:
+.main.43_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, a1
+  ld a0, len.3
+  lw a0, 0(a0)
+  call minimbt_print_int
+  call minimbt_print_endline
+  ld a0, len2.11
+  lw a0, 0(a0)
+  call minimbt_print_int
   mv a0, zero
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -394,7 +308,7 @@ T$start:
   sd ra, 0(sp)
   ld a0, len.3
   ld a1, len2.11
-  call main.66
+  call main.43
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -402,57 +316,9 @@ T$start:
 __end_text:
   .p2align 2
   .bss
-  .globl _48
-  .type _48, @object
-_48:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _1
-  .type _1, @object
-_1:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _24
-  .type _24, @object
-_24:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl len.3
-  .type len.3, @object
-len.3:
-  .zero 8
-  .p2align 2
-  .bss
-  .globl _50
-  .type _50, @object
-_50:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _63
-  .type _63, @object
-_63:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _62
-  .type _62, @object
-_62:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _61
-  .type _61, @object
-_61:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _57
-  .type _57, @object
-_57:
+  .globl _40
+  .type _40, @object
+_40:
   .zero 4
   .p2align 2
   .bss
@@ -468,6 +334,30 @@ start:
   .zero 4
   .p2align 2
   .bss
+  .globl _38
+  .type _38, @object
+_38:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _1
+  .type _1, @object
+_1:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _37
+  .type _37, @object
+_37:
+  .zero 4
+  .p2align 2
+  .bss
+  .globl _39
+  .type _39, @object
+_39:
+  .zero 4
+  .p2align 2
+  .bss
   .globl len2.11
   .type len2.11, @object
 len2.11:
@@ -480,33 +370,21 @@ _16:
   .zero 4
   .p2align 2
   .bss
-  .globl _49
-  .type _49, @object
-_49:
+  .globl _24
+  .type _24, @object
+_24:
   .zero 4
   .p2align 2
   .bss
-  .globl _59
-  .type _59, @object
-_59:
-  .zero 4
+  .globl len.3
+  .type len.3, @object
+len.3:
+  .zero 8
   .p2align 2
   .bss
-  .globl _65
-  .type _65, @object
-_65:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _64
-  .type _64, @object
-_64:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl _58
-  .type _58, @object
-_58:
+  .globl _41
+  .type _41, @object
+_41:
   .zero 4
   .p2align 2
   .bss
@@ -516,15 +394,15 @@ _2:
   .zero 4
   .p2align 2
   .bss
-  .globl _9
-  .type _9, @object
-_9:
+  .globl _36
+  .type _36, @object
+_36:
   .zero 4
   .p2align 2
   .bss
-  .globl _60
-  .type _60, @object
-_60:
+  .globl _9
+  .type _9, @object
+_9:
   .zero 4
   .p2align 2
   .bss

@@ -15,51 +15,22 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl fib.39
   .type fib.39, @function
 # leaf false
 fib.39:
 .fib.39_0:
-  addi sp, sp, -32
+  addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv a0, a1
-  addi a0, s0, 1
-  lw s1, unmem_magic.1
-  slliw a1, a0, 2
-  sub s2, s11, a1
-  andi s11, s2, -8
-  mv a1, a0
-  mv a0, s2
-  mv a2, s1
-  call memseti32
-  mv a0, s0
-  mv a1, s2
-  mv a2, s1
+  addi a1, a0, 1
+  lw a2, unmem_magic.1
+  slliw a3, a1, 2
+  sub a3, s11, a3
+  andi s11, a3, -8
+  mv a1, a3
   call memed.40
   ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -82,7 +53,21 @@ memed.40:
   add a0, s2, a0
   lw a0, 0(a0)
   lw a1, unmem_magic.1
-  bne a0, a1, .memed.40_2
+  beq a0, a1, .memed.40_1
+
+.memed.40_2:
+  slliw a0, s0, 2
+  add a0, s2, a0
+  lw a0, 0(a0)
+
+.memed.40_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
 
 .memed.40_1:
   addi s1, s11, -16
@@ -113,20 +98,6 @@ memed.40:
   slliw a1, s0, 2
   add a1, s2, a1
   sw a0, 0(a1)
-
-.memed.40_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  addi sp, sp, 48
-  ret
-
-.memed.40_2:
-  slliw a0, s0, 2
-  add a0, s2, a0
-  lw a0, 0(a0)
   j .memed.40_3
 
 .memed.40_8:

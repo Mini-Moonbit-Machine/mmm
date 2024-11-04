@@ -24,7 +24,8 @@
     let %0: array[closure(int32) -> int32] = load_symbol ::1
     let %1: int32 = load_symbol ::3
     let %2: closure(int32) -> int32 = load_symbol ::2
-    let _ = store closure(int32) -> int32 offset(%0, %1 * @ptr) <- %2
+    let %4: ptr = compute_address unit offset(0, %1 * @64)
+    let _ = store closure(int32) -> int32 raw(%0, %4) <- %2
     return ()
   }
 }
@@ -53,16 +54,17 @@
     return f8.m1
   }
 }
-.fn main.30 #f25 : fn() -> unit
+.fn main.30 #f24 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let %0: unit = call f18()
-    let %1: int32 = call f24(10)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    let %3: int32 = call f24(31)
-    let %4: unit = ext_call minimbt_print_int(%3)
-    return %4
+    let %1: int32 = load_symbol ::6
+    let %2: int32 = add(10, %1)
+    let %3: unit = ext_call minimbt_print_int(%2)
+    let %5: int32 = add(31, %1)
+    let %6: unit = ext_call minimbt_print_int(%5)
+    return %6
   }
 }
 .fn dummy.1 #f0 : fn(int32) -> int32
@@ -87,15 +89,6 @@
 .entry b0 {
   .bb #b0 () {
     return 5
-  }
-}
-.fn g.28 #f24 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load_symbol ::6
-    let %1: int32 = add($f0, %0)
-    return %1
   }
 }
 .fn h.16 #f4 : closure(int32) -> int32
@@ -135,11 +128,11 @@
     return %2
   }
 }
-.fn T$start #f28 : fn() -> unit
+.fn T$start #f26 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f25()
+    let %0: unit = call f24()
     return %0
   }
 }

@@ -15,21 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 3
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 8
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl f1.23
   .type f1.23, @function
 # leaf false
@@ -97,21 +82,17 @@ T$arr.38:
 .T$arr.38_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   lw a0, _37
-  addi a2, s11, -8
-  andi s11, a2, -8
-  la a1, dummy.1
-  sd a1, 0(a2)
+  addi a1, s11, -8
+  andi s11, a1, -8
+  la a2, dummy.1
+  sd a2, 0(a1)
   slliw a1, a0, 3
-  sub s0, s11, a1
-  andi s11, s0, -8
+  sub a2, s11, a1
+  andi s11, a2, -8
   mv a1, a0
-  mv a0, s0
-  call memseti64
-  mv a0, s0
+  mv a0, a2
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -124,14 +105,15 @@ main.30:
 .main.30_0:
   addi sp, sp, -16
   sd ra, 0(sp)
+  sd s0, 8(sp)
   call f1.23
-  li a0, 10
-  call g.28
+  lw s0, a.27
+  addi a0, s0, 10
   call minimbt_print_int
-  li a0, 31
-  call g.28
+  addi a0, s0, 31
   call minimbt_print_int
   ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -170,17 +152,6 @@ aux.39:
 T$_26:
 .T$_26_0:
   li a0, 5
-  ret
-
-  .p2align 2
-  .text
-  .globl g.28
-  .type g.28, @function
-# leaf true
-g.28:
-.g.28_0:
-  lw a1, a.27
-  add a0, a0, a1
   ret
 
   .p2align 2
