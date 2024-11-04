@@ -1,3 +1,10 @@
+let rec compose.1: Fun([Int], Int) = (f.2: Fun([Int], Int), g.3: Fun([Int], Int)) {
+  let rec composed.4: Int = (x.5: Int) {
+    let _6: Int = Apply(f.2, [x.5, ])
+    Apply(g.3, [_6, ])
+  }
+  Var(composed.4)
+}
 let rec dbl.7: Int = (x.8: Int) {
   Add(x.8, x.8)
 }
@@ -10,16 +17,10 @@ let rec dec.12: Int = (x.13: Int) {
   Sub(x.13, _14)
 }
 let rec main.15: Var({val: Some(Unit)}) = () {
-  let rec composed.23: Int = (x.24: Int) {
-    let _25: Int = Apply(dbl.7, [x.24, ])
-    Apply(dec.12, [_25, ])
-  }
-  let rec composed.26: Int = (x.27: Int) {
-    let _28: Int = Apply(inc.9, [x.27, ])
-    Apply(composed.23, [_28, ])
-  }
+  let _16: Fun([Int], Int) = Apply(compose.1, [dbl.7, dec.12, ])
+  let h.17: Fun([Int], Int) = Apply(compose.1, [inc.9, _16, ])
   let _18: Int = Int(123)
-  let _19: Int = Apply(composed.26, [_18, ])
+  let _19: Int = Apply(h.17, [_18, ])
   ExtApply(minimbt_print_int, [_19, ])
 }
 Apply(main.15, [])

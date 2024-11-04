@@ -1,11 +1,18 @@
-let rec adder.16: Double = (y.13: Int, _7: Double) {
-  let _14: Double = ExtApply(minimbt_float_of_int, [y.13, ])
-  FAdd(_7, _14)
+let rec adder.13: Double = (y.4: Int, x.2: Double) {
+  let _5: Double = ExtApply(minimbt_float_of_int, [y.4, ])
+  FAdd(x.2, _5)
+}
+let rec make_adder.12: Fun([Int], Double) = (x.2: Double) {
+  let rec adder.14: Double = (y.4: Int) {
+    Apply(adder.13, [y.4, x.2, ])
+  }
+  Var(adder.14)
 }
 let rec main.15: Var({val: Some(Unit)}) = () {
   let _7: Double = Double(2.14)
+  let add.8: Fun([Int], Double) = Apply(make_adder.12, [_7, ])
   let _9: Int = Int(1)
-  let _10: Double = Apply(adder.16, [_9, _7, ])
+  let _10: Double = Apply(add.8, [_9, ])
   let _11: Int = ExtApply(minimbt_int_of_float, [_10, ])
   ExtApply(minimbt_print_int, [_11, ])
 }

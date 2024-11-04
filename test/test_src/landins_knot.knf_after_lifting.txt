@@ -1,7 +1,26 @@
-let rec dummy.50: Int = (i.2: Int) {
+let rec dummy.37: Int = (i.2: Int) {
   Var(i.2)
 }
-let rec h.52: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)}), f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+let rec aux.40: Var({val: Some(Int)}) = (x.8: Var({val: Some(Int)}), arr.6: Array(Fun([Int], Int))) {
+  let _9: Int = Int(0)
+  let _10: Fun([Int], Int) = Get arr.6[_9]
+  Apply(_10, [x.8, ])
+}
+let rec landins_knot.38: Fun([Int], Int) = (f.4: Fun([Fun([Int], Int)], Fun([Int], Int))) {
+  let _5: Int = Int(1)
+  let rec dummy.39: Int = (i.2: Int) {
+    Apply(dummy.37, [i.2, ])
+  }
+  let arr.6: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_5, dummy.39, ])
+  let rec aux.41: Var({val: Some(Int)}) = (x.8: Var({val: Some(Int)})) {
+    Apply(aux.40, [x.8, arr.6, ])
+  }
+  let fixedpoint.11: Fun([Int], Int) = Apply(f.4, [aux.41, ])
+  let _12: Int = Int(0)
+  let _13: Unit = Put arr.6[_12] = fixedpoint.11
+  Var(fixedpoint.11)
+}
+let rec h.43: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)}), f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
   let _18: Int = Int(0)
   if (x.17 == _18) then {
     Int(1)
@@ -12,34 +31,25 @@ let rec h.52: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)}), f.15: Var({v
     Mul(x.17, _21)
   }
 }
-let rec g.51: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
-  let rec h.53: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)})) {
-    Apply(h.52, [x.17, f.15, ])
+let rec g.42: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  let rec h.44: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)})) {
+    Apply(h.43, [x.17, f.15, ])
   }
-  Var(h.53)
+  Var(h.44)
 }
-let _39: Int = Int(1)
-let rec dummy.54: Int = (i.2: Int) {
-  Apply(dummy.50, [i.2, ])
+let rec g.45: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
+  Apply(g.42, [f.15, ])
 }
-let arr.40: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_39, dummy.54, ])
-let rec aux.55: Var({val: Some(Int)}) = (x.42: Var({val: Some(Int)}), arr.40: Array(Fun([Int], Int))) {
-  let _43: Int = Int(0)
-  let _44: Fun([Int], Int) = Get arr.40[_43]
-  Apply(_44, [x.42, ])
+let factorial.22: Fun([Int], Int) = Apply(landins_knot.38, [g.45, ])
+let rec f1.46: Unit = (factorial.22: Fun([Int], Int)) {
+  let _24: Int = Int(5)
+  let _25: Int = Apply(factorial.22, [_24, ])
+  ExtApply(minimbt_print_int, [_25, ])
 }
-let rec aux.56: Var({val: Some(Int)}) = (x.42: Var({val: Some(Int)})) {
-  Apply(aux.55, [x.42, arr.40, ])
-}
-let fixedpoint.45: Fun([Int], Int) = Apply(g.51, [aux.56, ])
-let _46: Int = Int(0)
-let _47: Unit = Put arr.40[_46] = fixedpoint.45
 let _26: Int = Int(5)
-let a.27: Int = Apply(fixedpoint.45, [_26, ])
-let rec main.57: Var({val: Some(Unit)}) = (a.27: Int, fixedpoint.45: Fun([Int], Int)) {
-  let _48: Int = Int(5)
-  let _49: Int = Apply(fixedpoint.45, [_48, ])
-  let _31: Unit = ExtApply(minimbt_print_int, [_49, ])
+let a.27: Int = Apply(factorial.22, [_26, ])
+let rec main.47: Var({val: Some(Unit)}) = (a.27: Int, factorial.22: Fun([Int], Int)) {
+  let _31: Unit = Apply(f1.46, [factorial.22, ])
   let _32: Int = Int(10)
   let _33: Int = Add(_32, a.27)
   let _34: Unit = ExtApply(minimbt_print_int, [_33, ])
@@ -47,4 +57,4 @@ let rec main.57: Var({val: Some(Unit)}) = (a.27: Int, fixedpoint.45: Fun([Int], 
   let _36: Int = Add(_35, a.27)
   ExtApply(minimbt_print_int, [_36, ])
 }
-Apply(main.57, [a.27, fixedpoint.45, ])
+Apply(main.47, [a.27, factorial.22, ])

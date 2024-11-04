@@ -1,6 +1,19 @@
 let rec dummy.1: Int = (i.2: Int) {
   Var(i.2)
 }
+let rec landins_knot.3: Fun([Int], Int) = (f.4: Fun([Fun([Int], Int)], Fun([Int], Int))) {
+  let _5: Int = Int(1)
+  let arr.6: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_5, dummy.1, ])
+  let rec aux.7: Var({val: Some(Int)}) = (x.8: Var({val: Some(Int)})) {
+    let _9: Int = Int(0)
+    let _10: Fun([Int], Int) = Get arr.6[_9]
+    Apply(_10, [x.8, ])
+  }
+  let fixedpoint.11: Fun([Int], Int) = Apply(f.4, [aux.7, ])
+  let _12: Int = Int(0)
+  let _13: Unit = Put arr.6[_12] = fixedpoint.11
+  Var(fixedpoint.11)
+}
 let rec g.14: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)})))}) = (f.15: Var({val: Some(Fun([Int], Var({val: Some(Int)})))})) {
   let rec h.16: Var({val: Some(Int)}) = (x.17: Var({val: Some(Int)})) {
     let _18: Int = Int(0)
@@ -15,22 +28,16 @@ let rec g.14: Var({val: Some(Fun([Var({val: Some(Int)})], Var({val: Some(Int)}))
   }
   Var(h.16)
 }
-let _39: Int = Int(1)
-let arr.40: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_39, dummy.1, ])
-let rec aux.41: Var({val: Some(Int)}) = (x.42: Var({val: Some(Int)})) {
-  let _43: Int = Int(0)
-  let _44: Fun([Int], Int) = Get arr.40[_43]
-  Apply(_44, [x.42, ])
+let factorial.22: Fun([Int], Int) = Apply(landins_knot.3, [g.14, ])
+let rec f1.23: Unit = () {
+  let _24: Int = Int(5)
+  let _25: Int = Apply(factorial.22, [_24, ])
+  ExtApply(minimbt_print_int, [_25, ])
 }
-let fixedpoint.45: Fun([Int], Int) = Apply(g.14, [aux.41, ])
-let _46: Int = Int(0)
-let _47: Unit = Put arr.40[_46] = fixedpoint.45
 let _26: Int = Int(5)
-let a.27: Int = Apply(fixedpoint.45, [_26, ])
+let a.27: Int = Apply(factorial.22, [_26, ])
 let rec main.30: Var({val: Some(Unit)}) = () {
-  let _48: Int = Int(5)
-  let _49: Int = Apply(fixedpoint.45, [_48, ])
-  let _31: Unit = ExtApply(minimbt_print_int, [_49, ])
+  let _31: Unit = Apply(f1.23, [])
   let _32: Int = Int(10)
   let _33: Int = Add(_32, a.27)
   let _34: Unit = ExtApply(minimbt_print_int, [_33, ])

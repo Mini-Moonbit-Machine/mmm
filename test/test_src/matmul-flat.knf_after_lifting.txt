@@ -1,4 +1,4 @@
-let rec loop3.231: Unit = (i.2: Int, j.3: Int, k.4: Int, a.5: Array(Array(Double)), b.6: Array(Array(Double)), c.7: Array(Array(Double))) {
+let rec loop3.179: Unit = (i.2: Int, j.3: Int, k.4: Int, a.5: Array(Array(Double)), b.6: Array(Array(Double)), c.7: Array(Array(Double))) {
   let _8: Int = Int(0)
   if (_8 <= k.4) then {
     let _9: Array(Double) = Get c.7[i.2]
@@ -13,38 +13,44 @@ let rec loop3.231: Unit = (i.2: Int, j.3: Int, k.4: Int, a.5: Array(Array(Double
     let _18: Unit = Put _9[j.3] = _17
     let _19: Int = Int(1)
     let _20: Int = Sub(k.4, _19)
-    Apply(loop3.231, [i.2, j.3, _20, a.5, b.6, c.7, ])
+    Apply(loop3.179, [i.2, j.3, _20, a.5, b.6, c.7, ])
   } else {
     Unit
   }
 }
-let rec loop2.232: Unit = (i.22: Int, m.23: Int, j.24: Int, a.25: Array(Array(Double)), b.26: Array(Array(Double)), c.27: Array(Array(Double))) {
+let rec loop2.180: Unit = (i.22: Int, m.23: Int, j.24: Int, a.25: Array(Array(Double)), b.26: Array(Array(Double)), c.27: Array(Array(Double))) {
   let _28: Int = Int(0)
   if (_28 <= j.24) then {
     let _29: Int = Int(1)
     let _30: Int = Sub(m.23, _29)
-    let _31: Unit = Apply(loop3.231, [i.22, j.24, _30, a.25, b.26, c.27, ])
+    let _31: Unit = Apply(loop3.179, [i.22, j.24, _30, a.25, b.26, c.27, ])
     let _32: Int = Int(1)
     let _33: Int = Sub(j.24, _32)
-    Apply(loop2.232, [i.22, m.23, _33, a.25, b.26, c.27, ])
+    Apply(loop2.180, [i.22, m.23, _33, a.25, b.26, c.27, ])
   } else {
     Unit
   }
 }
-let rec loop1.233: Unit = (i.35: Int, m.36: Int, n.37: Int, a.38: Array(Array(Double)), b.39: Array(Array(Double)), c.40: Array(Array(Double))) {
+let rec loop1.181: Unit = (i.35: Int, m.36: Int, n.37: Int, a.38: Array(Array(Double)), b.39: Array(Array(Double)), c.40: Array(Array(Double))) {
   let _41: Int = Int(0)
   if (_41 <= i.35) then {
     let _42: Int = Int(1)
     let _43: Int = Sub(n.37, _42)
-    let _44: Unit = Apply(loop2.232, [i.35, m.36, _43, a.38, b.39, c.40, ])
+    let _44: Unit = Apply(loop2.180, [i.35, m.36, _43, a.38, b.39, c.40, ])
     let _45: Int = Int(1)
     let _46: Int = Sub(i.35, _45)
-    Apply(loop1.233, [_46, m.36, n.37, a.38, b.39, c.40, ])
+    Apply(loop1.181, [_46, m.36, n.37, a.38, b.39, c.40, ])
   } else {
     Unit
   }
 }
-let rec init_arr.235: Unit = (i.62: Int, n.63: Int, mat.64: Array(Array(Double))) {
+let rec mul.182: Unit = (l.48: Int, m.49: Int, n.50: Int, a.51: Array(Array(Double)), b.52: Array(Array(Double)), c.53: Array(Array(Double))) {
+  let _54: Int = Int(1)
+  let _55: Int = Sub(l.48, _54)
+  let _56: Unit = Apply(loop1.181, [_55, m.49, n.50, a.51, b.52, c.53, ])
+  Unit
+}
+let rec init_arr.184: Unit = (i.62: Int, n.63: Int, mat.64: Array(Array(Double))) {
   let _65: Int = Int(0)
   if (_65 <= i.62) then {
     let _66: Double = Double(0)
@@ -52,127 +58,122 @@ let rec init_arr.235: Unit = (i.62: Int, n.63: Int, mat.64: Array(Array(Double))
     let _68: Unit = Put mat.64[i.62] = _67
     let _69: Int = Int(1)
     let _70: Int = Sub(i.62, _69)
-    Apply(init_arr.235, [_70, n.63, mat.64, ])
+    Apply(init_arr.184, [_70, n.63, mat.64, ])
   } else {
     Unit
   }
 }
-let rec main.234: Var({val: Some(Unit)}) = () {
+let rec make_arr.185: Array(Array(Double)) = (m.72: Int, n.73: Int, dummy.74: Array(Double)) {
+  let mat.75: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [m.72, dummy.74, ])
+  let _76: Int = Int(1)
+  let _77: Int = Sub(m.72, _76)
+  let _78: Unit = Apply(init_arr.184, [_77, n.73, mat.75, ])
+  Var(mat.75)
+}
+let rec main.183: Var({val: Some(Unit)}) = () {
   let _58: Int = Int(0)
   let _59: Double = Double(0)
   let dummy.60: Array(Double) = ExtApply(minimbt_create_float_array, [_58, _59, ])
   let _79: Int = Int(2)
   let _80: Int = Int(3)
-  let mat.203: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_79, dummy.60, ])
-  let _204: Int = Int(1)
-  let _205: Int = Sub(_79, _204)
-  let _206: Unit = Apply(init_arr.235, [_205, _80, mat.203, ])
+  let a.81: Array(Array(Double)) = Apply(make_arr.185, [_79, _80, dummy.60, ])
   let _82: Int = Int(3)
   let _83: Int = Int(2)
-  let mat.217: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_82, dummy.60, ])
-  let _218: Int = Int(1)
-  let _219: Int = Sub(_82, _218)
-  let _220: Unit = Apply(init_arr.235, [_219, _83, mat.217, ])
+  let b.84: Array(Array(Double)) = Apply(make_arr.185, [_82, _83, dummy.60, ])
   let _85: Int = Int(2)
   let _86: Int = Int(2)
-  let mat.224: Array(Array(Double)) = ExtApply(minimbt_create_ptr_array, [_85, dummy.60, ])
-  let _225: Int = Int(1)
-  let _226: Int = Sub(_85, _225)
-  let _227: Unit = Apply(init_arr.235, [_226, _86, mat.224, ])
+  let c.87: Array(Array(Double)) = Apply(make_arr.185, [_85, _86, dummy.60, ])
   let _88: Int = Int(0)
-  let _89: Array(Double) = Get mat.203[_88]
+  let _89: Array(Double) = Get a.81[_88]
   let _90: Int = Int(0)
   let _91: Double = Double(1)
   let _92: Unit = Put _89[_90] = _91
   let _93: Int = Int(0)
-  let _94: Array(Double) = Get mat.203[_93]
+  let _94: Array(Double) = Get a.81[_93]
   let _95: Int = Int(1)
   let _96: Double = Double(2)
   let _97: Unit = Put _94[_95] = _96
   let _98: Int = Int(0)
-  let _99: Array(Double) = Get mat.203[_98]
+  let _99: Array(Double) = Get a.81[_98]
   let _100: Int = Int(2)
   let _101: Double = Double(3)
   let _102: Unit = Put _99[_100] = _101
   let _103: Int = Int(1)
-  let _104: Array(Double) = Get mat.203[_103]
+  let _104: Array(Double) = Get a.81[_103]
   let _105: Int = Int(0)
   let _106: Double = Double(4)
   let _107: Unit = Put _104[_105] = _106
   let _108: Int = Int(1)
-  let _109: Array(Double) = Get mat.203[_108]
+  let _109: Array(Double) = Get a.81[_108]
   let _110: Int = Int(1)
   let _111: Double = Double(5)
   let _112: Unit = Put _109[_110] = _111
   let _113: Int = Int(1)
-  let _114: Array(Double) = Get mat.203[_113]
+  let _114: Array(Double) = Get a.81[_113]
   let _115: Int = Int(2)
   let _116: Double = Double(6)
   let _117: Unit = Put _114[_115] = _116
   let _118: Int = Int(0)
-  let _119: Array(Double) = Get mat.217[_118]
+  let _119: Array(Double) = Get b.84[_118]
   let _120: Int = Int(0)
   let _121: Double = Double(7)
   let _122: Unit = Put _119[_120] = _121
   let _123: Int = Int(0)
-  let _124: Array(Double) = Get mat.217[_123]
+  let _124: Array(Double) = Get b.84[_123]
   let _125: Int = Int(1)
   let _126: Double = Double(8)
   let _127: Unit = Put _124[_125] = _126
   let _128: Int = Int(1)
-  let _129: Array(Double) = Get mat.217[_128]
+  let _129: Array(Double) = Get b.84[_128]
   let _130: Int = Int(0)
   let _131: Double = Double(9)
   let _132: Unit = Put _129[_130] = _131
   let _133: Int = Int(1)
-  let _134: Array(Double) = Get mat.217[_133]
+  let _134: Array(Double) = Get b.84[_133]
   let _135: Int = Int(1)
   let _136: Double = Double(10)
   let _137: Unit = Put _134[_135] = _136
   let _138: Int = Int(2)
-  let _139: Array(Double) = Get mat.217[_138]
+  let _139: Array(Double) = Get b.84[_138]
   let _140: Int = Int(0)
   let _141: Double = Double(11)
   let _142: Unit = Put _139[_140] = _141
   let _143: Int = Int(2)
-  let _144: Array(Double) = Get mat.217[_143]
+  let _144: Array(Double) = Get b.84[_143]
   let _145: Int = Int(1)
   let _146: Double = Double(12)
   let _147: Unit = Put _144[_145] = _146
   let _148: Int = Int(2)
   let _149: Int = Int(3)
   let _150: Int = Int(2)
-  let _228: Int = Int(1)
-  let _229: Int = Sub(_148, _228)
-  let _230: Unit = Apply(loop1.233, [_229, _149, _150, mat.203, mat.217, mat.224, ])
-  let _151: Unit = Unit
+  let _151: Unit = Apply(mul.182, [_148, _149, _150, a.81, b.84, c.87, ])
   let _152: Int = Int(0)
-  let _153: Array(Double) = Get mat.224[_152]
+  let _153: Array(Double) = Get c.87[_152]
   let _154: Int = Int(0)
   let _155: Double = Get _153[_154]
   let _156: Int = ExtApply(minimbt_truncate, [_155, ])
   let _157: Unit = ExtApply(minimbt_print_int, [_156, ])
   let _158: Unit = ExtApply(minimbt_print_endline, [])
   let _159: Int = Int(0)
-  let _160: Array(Double) = Get mat.224[_159]
+  let _160: Array(Double) = Get c.87[_159]
   let _161: Int = Int(1)
   let _162: Double = Get _160[_161]
   let _163: Int = ExtApply(minimbt_truncate, [_162, ])
   let _164: Unit = ExtApply(minimbt_print_int, [_163, ])
   let _165: Unit = ExtApply(minimbt_print_endline, [])
   let _166: Int = Int(1)
-  let _167: Array(Double) = Get mat.224[_166]
+  let _167: Array(Double) = Get c.87[_166]
   let _168: Int = Int(0)
   let _169: Double = Get _167[_168]
   let _170: Int = ExtApply(minimbt_truncate, [_169, ])
   let _171: Unit = ExtApply(minimbt_print_int, [_170, ])
   let _172: Unit = ExtApply(minimbt_print_endline, [])
   let _173: Int = Int(1)
-  let _174: Array(Double) = Get mat.224[_173]
+  let _174: Array(Double) = Get c.87[_173]
   let _175: Int = Int(1)
   let _176: Double = Get _174[_175]
   let _177: Int = ExtApply(minimbt_truncate, [_176, ])
   let _178: Unit = ExtApply(minimbt_print_int, [_177, ])
   Unit
 }
-Apply(main.234, [])
+Apply(main.183, [])
