@@ -252,20 +252,6 @@ pub enum Control {
   Panic
 } derive(Show, Eq)
 
-pub fn Block::all_basic_blocks(self : Block, func : Fn) -> Array[BasicBlock] {
-  let result = []
-  match self {
-    BasicBlock(~bb) => result.push(bb)
-    Loop(~l) => {
-      result.append(func.blocks[l.header].unwrap().all_basic_blocks(func))
-      for bref in l.blocks {
-        result.append(func.blocks[bref].unwrap().all_basic_blocks(func))
-      }
-    }
-  }
-  result
-}
-
 pub fn Block::is_basic_block(self : Block) -> Bool {
   match self {
     BasicBlock(_) => true
