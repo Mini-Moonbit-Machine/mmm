@@ -15,32 +15,17 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.7l0_0
-  .type main.7l0_0, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-main.7l0_0:
-.main.7l0_0_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 789
-  beq a0, zero, .main.7l0_0_1
-
-.main.7l0_0_2:
-  li a0, 456
-  addi a0, a0, -123
-  addi a0, a0, 123
-  addi a0, a0, 456
-
-.main.7l0_0_3:
-  call minimbt_print_int
+  call main.18
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-.main.7l0_0_1:
-  li a0, 123
-  addi a0, a0, -456
-  j .main.7l0_0_3
 
   .p2align 2
   .text
@@ -56,7 +41,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_2
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -66,17 +51,32 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl T$start_2
-  .type T$start_2, @function
+  .globl main.18
+  .type main.18, @function
 # leaf false
-T$start_2:
-.T$start_2_0:
+main.18:
+.main.18_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.7l0_0
+  li a0, 789
+  beq a0, zero, .main.18_1
+
+.main.18_2:
+  li a0, 456
+  addi a0, a0, -123
+  addi a0, a0, 123
+  addi a0, a0, 456
+
+.main.18_3:
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+.main.18_1:
+  li a0, 123
+  addi a0, a0, -456
+  j .main.18_3
 
 __end_text:
   .p2align 2

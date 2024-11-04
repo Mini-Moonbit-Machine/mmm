@@ -15,59 +15,73 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.1l0_0
-  .type main.1l0_0, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-main.1l0_0:
-.main.1l0_0_0:
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.17
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.17
+  .type main.17, @function
+# leaf false
+main.17:
+.main.17_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 4608218246714312622
   fmv.d.x fa0, a0
-  fcvt.w.d a2, fa0, rtz
+  fcvt.w.d a3, fa0, rtz
   li a0, 4616820122002590269
   fmv.d.x fa0, a0
-  fcvt.w.d a1, fa0, rtz
-  li a0, 4620569368692376207
-  fmv.d.x fa0, a0
+  fcvt.w.d a0, fa0, rtz
+  li a1, 4620569368692376207
+  fmv.d.x fa0, a1
   fneg.d fa0, fa0
-  fcvt.w.d a3, fa0, rtz
-  blt a3, zero, .main.1l0_0_2
+  fcvt.w.d a2, fa0, rtz
+  blt a2, zero, .main.17_2
 
-.main.1l0_0_1:
+.main.17_1:
+  mv a4, a3
+
+.main.17_3:
+  blt zero, a3, .main.17_5
+
+.main.17_4:
+  mv a1, a0
+
+.main.17_6:
+  add a1, a4, a1
+  blt a0, zero, .main.17_8
+
+.main.17_7:
   mv a0, a2
 
-.main.1l0_0_3:
-  blt zero, a2, .main.1l0_0_5
-
-.main.1l0_0_4:
-  mv a4, a1
-
-.main.1l0_0_6:
-  add a0, a0, a4
-  blt a1, zero, .main.1l0_0_8
-
-.main.1l0_0_7:
-  mv a1, a3
-
-.main.1l0_0_9:
-  add a0, a0, a1
+.main.17_9:
+  add a0, a1, a0
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.main.1l0_0_2:
-  mv a0, a1
-  j .main.1l0_0_3
+.main.17_2:
+  mv a4, a0
+  j .main.17_3
 
-.main.1l0_0_5:
-  mv a4, a3
-  j .main.1l0_0_6
-
-.main.1l0_0_8:
+.main.17_5:
   mv a1, a2
-  j .main.1l0_0_9
+  j .main.17_6
+
+.main.17_8:
+  mv a0, a3
+  j .main.17_9
 
   .p2align 2
   .text
@@ -83,26 +97,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_2
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_2
-  .type T$start_2, @function
-# leaf false
-T$start_2:
-.T$start_2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.1l0_0
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

@@ -15,11 +15,25 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl g.51l1_0
-  .type g.51l1_0, @function
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.65
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl g.66
+  .type g.66, @function
 # leaf true
-g.51l1_0:
-.g.51l1_0_5:
+g.66:
+.g.66_5:
   addi sp, sp, -32
   sd s0, 0(sp)
   sd s1, 8(sp)
@@ -42,7 +56,7 @@ g.51l1_0:
   mv t0, t4
   mv t1, a0
 
-.g.51l1_0_0:
+.g.66_0:
   add a0, a1, t3
   add a0, a0, a2
   add a0, a0, a6
@@ -52,16 +66,16 @@ g.51l1_0:
   add a0, a0, a3
   add a0, a0, a5
   add a0, a0, t1
-  blt zero, a4, .g.51l1_0_2
+  blt zero, a4, .g.66_2
 
-.g.51l1_0_1:
+.g.66_1:
   neg a0, a4
   mv a4, a0
-  j .g.51l1_0_0
+  j .g.66_0
 
-.g.51l1_0_2:
+.g.66_2:
 
-.g.51l1_0_3:
+.g.66_3:
   ld s0, 0(sp)
   ld s1, 8(sp)
   ld s2, 16(sp)
@@ -71,11 +85,11 @@ g.51l1_0:
 
   .p2align 2
   .text
-  .globl main.27l0_1
-  .type main.27l0_1, @function
+  .globl main.65
+  .type main.65, @function
 # leaf false
-main.27l0_1:
-.main.27l0_1_0:
+main.65:
+.main.65_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -40
@@ -111,23 +125,9 @@ main.27l0_1:
   lw t1, 32(a0)
   lw t2, 36(a0)
   li a0, 1
-  call g.51l1_0
+  call g.66
   call minimbt_print_int
   mv a0, zero
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl T$start_4
-  .type T$start_4, @function
-# leaf false
-T$start_4:
-.T$start_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.27l0_1
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -146,7 +146,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)

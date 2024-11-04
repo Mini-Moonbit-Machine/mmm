@@ -15,48 +15,14 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.12l1_1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.12l1_1
-  .type main.12l1_1, @function
-# leaf false
-main.12l1_1:
-.main.12l1_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a0, s11, -24
-  andi s11, a0, -8
-  li a1, 4608218246714312622
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  fsd fa0, 8(a0)
-  fsd fa0, 16(a0)
-  addi a1, s11, -24
-  andi s11, a1, -8
-  li a2, 4616820122002590269
-  fmv.d.x fa0, a2
-  fsd fa0, 0(a1)
-  fsd fa0, 8(a1)
-  fsd fa0, 16(a1)
-  li a2, 2
-  call inprod.1l0_0
-  li a0, 4696837146684686336
-  fmv.d.x fa1, a0
-  fmul.d fa0, fa1, fa0
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
+  call main.25
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -75,7 +41,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
@@ -85,11 +51,11 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl inprod.1l0_0
-  .type inprod.1l0_0, @function
+  .globl inprod.24
+  .type inprod.24, @function
 # leaf false
-inprod.1l0_0:
-.inprod.1l0_0_0:
+inprod.24:
+.inprod.24_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   fsd fs0, 8(sp)
@@ -97,9 +63,9 @@ inprod.1l0_0:
   mv a3, a0
   mv a4, a1
   mv a1, a2
-  blt a1, zero, .inprod.1l0_0_2
+  blt a1, zero, .inprod.24_2
 
-.inprod.1l0_0_1:
+.inprod.24_1:
   slliw a0, a1, 3
   add a0, a3, a0
   fld fs0, 0(a0)
@@ -109,19 +75,53 @@ inprod.1l0_0:
   addi a2, a1, -1
   mv a0, a3
   mv a1, a4
-  call inprod.1l0_0
+  call inprod.24
   fmadd.d fa0, fs0, fs1, fa0
 
-.inprod.1l0_0_3:
+.inprod.24_3:
   ld ra, 0(sp)
   fld fs0, 8(sp)
   fld fs1, 16(sp)
   addi sp, sp, 32
   ret
 
-.inprod.1l0_0_2:
+.inprod.24_2:
   fmv.d.x fa0, zero
-  j .inprod.1l0_0_3
+  j .inprod.24_3
+
+  .p2align 2
+  .text
+  .globl main.25
+  .type main.25, @function
+# leaf false
+main.25:
+.main.25_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -24
+  andi s11, a0, -8
+  li a1, 4608218246714312622
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  fsd fa0, 8(a0)
+  fsd fa0, 16(a0)
+  addi a1, s11, -24
+  andi s11, a1, -8
+  li a2, 4616820122002590269
+  fmv.d.x fa0, a2
+  fsd fa0, 0(a1)
+  fsd fa0, 8(a1)
+  fsd fa0, 16(a1)
+  li a2, 2
+  call inprod.24
+  li a0, 4696837146684686336
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
 
 __end_text:
   .p2align 2

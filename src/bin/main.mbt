@@ -184,8 +184,8 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       knf_env.init_counter_from_existing(knf)
       let inline = @knf.InlineEnv::new(knf_env, tracer)
       let knf = inline.go(knf, 0)
-      let lamlift = @knf.LambdaLiftEnv::new(tracer)
-      let knf = lamlift.go(knf)
+      let lamlift = @knf.LambdaLifter::new(tracer, knf)
+      let knf = lamlift.go()
       self.opt_knf = Some(knf)
     }
     Js => {

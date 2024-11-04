@@ -6,48 +6,47 @@ typealias NameCtx = @immut/hashmap.T[
 
 typealias TypeCtx = @immut/hashmap.T[Name, Type]
 
-pub struct LambdaLiftEnv {
-  name_ctx : NameCtx // old_func_name -> (new_func_name, args, fvars, old_type)
-  type_ctx : TypeCtx
+pub struct LambdaLifter {
+  knf : Knf
   mut free_set_closure : Map[Name, FreeSet]
+  knf_env : KnfEnv
   top_bindings : LetList
   top_names : FreeSet
-  lifted_counter : UInt
-  closure_counter : UInt
   tracer : @util.SubTracer
 }
 
-pub fn LambdaLiftEnv::new(tracer : @util.SubTracer) -> LambdaLiftEnv {
-  LambdaLiftEnv::{
-    name_ctx: NameCtx::new(),
-    type_ctx: TypeCtx::new(),
+pub struct LambdaLiftEnv {
+  name_ctx : NameCtx // old_func_name -> (new_func_name, args, fvars, old_type)
+  type_ctx : TypeCtx
+  knf_env : KnfEnv
+  tracer : @util.SubTracer
+}
+
+pub fn LambdaLifter::new(tracer : @util.SubTracer, knf : Knf) -> LambdaLifter {
+  let knf_env = KnfEnv::new(@typer.externals(), tracer)
+  knf_env.init_counter_from_existing(knf)
+  let top_bindings = []
+  let top_names = FreeSet::new()
+  LambdaLifter::{
+    knf,
     free_set_closure: Map::new(),
-    top_bindings: [],
-    top_names: FreeSet::new(),
-    lifted_counter: 0,
-    closure_counter: 0,
+    knf_env,
     tracer,
+    top_bindings,
+    top_names,
   }
 }
 
+pub fn LambdaLiftEnv::new(
+  knf_env : KnfEnv,
+  tracer : @util.SubTracer
+) -> LambdaLiftEnv {
+  { name_ctx: NameCtx::new(), type_ctx: TypeCtx::new(), knf_env, tracer }
+}
+
 fn add_name_type(self : LambdaLiftEnv, name : Name, ty : Type) -> LambdaLiftEnv {
-  let name_ctx = self.name_ctx
   let type_ctx = self.type_ctx.add(name, ty)
-  let free_set_closure = self.free_set_closure
-  let top_letrec = self.top_bindings
-  let top_names = self.top_names
-  let lifted_counter = self.lifted_counter
-  let closure_counter = self.closure_counter
-  LambdaLiftEnv::{
-    name_ctx,
-    type_ctx,
-    free_set_closure,
-    top_bindings: top_letrec,
-    top_names,
-    lifted_counter,
-    closure_counter,
-    tracer: self.tracer,
-  }
+  { ..self, type_ctx, }
 }
 
 fn add_lifted_name(
@@ -57,44 +56,19 @@ fn add_lifted_name(
   fvars : Array[Name],
   ty0 : Type
 ) -> (Name, LambdaLiftEnv) {
-  let new_name = old_name.to_string() + "l" + self.lifted_counter.to_string()
-  let new_name = try {
-    Name::from_string!(new_name)
-  } catch {
-    _ => self.tracer.abort("failed to create new name \{new_name}")
-  }
+  let new_name = self.knf_env.new_named_temp(old_name)
   let name_ctx = self.name_ctx.add(old_name, (new_name, args, fvars, ty0))
-  let type_ctx = self.type_ctx
-  let free_set_closure = self.free_set_closure
-  let top_letrec = self.top_bindings
-  let top_names = self.top_names
-  let lifted_counter = self.lifted_counter + 1
-  let closure_counter = self.closure_counter
-  let env = LambdaLiftEnv::{
-    name_ctx,
-    type_ctx,
-    free_set_closure,
-    top_bindings: top_letrec,
-    top_names,
-    lifted_counter,
-    closure_counter,
-    tracer: self.tracer,
-  }
+  let env = { ..self, name_ctx, }
   (new_name, env)
 }
 
-pub fn LambdaLiftEnv::eta_expand(
+pub fn eta_expand(
   self : LambdaLiftEnv,
   name : Name
 ) -> (LetList, Name, LambdaLiftEnv) {
   match self.name_ctx.find(name) {
     Some((name, args, fvars, ty0)) => {
-      let cls_name = name.to_string() + "c" + self.closure_counter.to_string()
-      let cls_name = try {
-        Name::from_string!(cls_name)
-      } catch {
-        _ => self.tracer.abort("failed to create new name \{cls_name}")
-      }
+      let cls_name = self.knf_env.new_named_temp(name)
       let (ty, args_ty) = match ty0 {
         Fun(args_ty, ty) => (ty, args_ty)
         _ => self.tracer.abort("failed to find fun type for \{name}")
@@ -116,7 +90,7 @@ pub fn LambdaLiftEnv::eta_expand(
   }
 }
 
-fn LambdaLiftEnv::eta_expand_names(
+fn eta_expand_names(
   self : LambdaLiftEnv,
   xs : Array[Name]
 ) -> (LetList, Array[Name], LambdaLiftEnv) {
@@ -132,7 +106,7 @@ fn LambdaLiftEnv::eta_expand_names(
   (let_list, ys, self)
 }
 
-fn LambdaLiftEnv::get_type(self : LambdaLiftEnv, name : Name) -> Type {
+fn get_type(self : LambdaLiftEnv, name : Name) -> Type {
   let name = match self.name_ctx.find(name) {
     Some((name, _, _, _)) => name
     None => name
@@ -144,8 +118,9 @@ fn LambdaLiftEnv::get_type(self : LambdaLiftEnv, name : Name) -> Type {
   }
 }
 
-fn LambdaLiftEnv::lift(
-  self : LambdaLiftEnv,
+fn LambdaLifter::lift(
+  self : LambdaLifter,
+  env : LambdaLiftEnv,
   knf : Knf,
   top : Bool
 ) -> (LetList, Knf) {
@@ -158,82 +133,82 @@ fn LambdaLiftEnv::lift(
     | Mul(_, _) | Div(_, _) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
       ([], knf)
     IfEq(x, y, k1, k2) => {
-      let (l1, k1) = self.lift(k1, top)
-      let (l2, k2) = self.lift(k2, top)
+      let (l1, k1) = self.lift(env, k1, top)
+      let (l2, k2) = self.lift(env, k2, top)
       let k1 = bind_all((k1, Unit, l1))
       let k2 = bind_all((k2, Unit, l2))
       ([], IfEq(x, y, k1, k2))
     }
     IfLe(x, y, k1, k2) => {
-      let (l1, k1) = self.lift(k1, top)
-      let (l2, k2) = self.lift(k2, top)
+      let (l1, k1) = self.lift(env, k1, top)
+      let (l2, k2) = self.lift(env, k2, top)
       let k1 = bind_all((k1, Unit, l1))
       let k2 = bind_all((k2, Unit, l2))
       ([], IfLe(x, y, k1, k2))
     }
     Let((x, ty), e1, e2) => {
-      let (l, e1) = self.lift(e1, false)
+      let (l, e1) = self.lift(env, e1, false)
       l.push(Binding::Let(x, ty, e1))
-      let self = self.add_name_type(x, ty)
+      let env = env.add_name_type(x, ty)
       if top {
         self.top_bindings.append(l)
-        self.lift(e2, top)
+        self.lift(env, e2, top)
       } else {
-        let (l2, e2) = self.lift(e2, top)
+        let (l2, e2) = self.lift(env, e2, top)
         l.append(l2)
         (l, e2)
       }
     }
     LetTuple(xts, y, k) => {
-      let self = xts.fold(
-        init=self,
+      let env = xts.fold(
+        init=env,
         fn(env, xt) { env.add_name_type(xt.0, xt.1) },
       )
       if top {
         self.top_bindings.push(Binding::LetTuple(xts, y))
-        self.lift(k, top)
+        self.lift(env, k, top)
       } else {
         let l = [Binding::LetTuple(xts, y)]
-        let (l2, k) = self.lift(k, top)
+        let (l2, k) = self.lift(env, k, top)
         l.append(l2)
         (l, k)
       }
     }
     ExternalArray(x) => {
-      let (l, x, _) = self.eta_expand(x)
+      let (l, x, _) = env.eta_expand(x)
       (l, ExternalArray(x))
     }
     Tuple(xs) => {
-      let (l, ys, _) = self.eta_expand_names(xs)
+      let (l, ys, _) = env.eta_expand_names(xs)
       (l, Tuple(ys))
     }
     Get(_, _) => ([], knf)
     Put(a, b, x) => {
-      let (l, x, _) = self.eta_expand(x)
+      let (l, x, _) = env.eta_expand(x)
       (l, Put(a, b, x))
     }
     Var(x) => {
-      let (l, x, _) = self.eta_expand(x)
+      let (l, x, _) = env.eta_expand(x)
       (l, Var(x))
     }
     ExternalFunctionApplication(f, xs) => {
-      let (l, ys, _) = self.eta_expand_names(xs)
+      let (l, ys, _) = env.eta_expand_names(xs)
       (l, ExternalFunctionApplication(f, ys))
     }
     Apply(f, xs) => {
-      let (l, ys, self) = self.eta_expand_names(xs)
-      match self.name_ctx.find(f) {
+      let (l, ys, env) = env.eta_expand_names(xs)
+      match env.name_ctx.find(f) {
         Some((new_name, _, fvars, _)) => (l, Apply(new_name, ys + fvars))
         None => {
-          let (l1, f, _) = self.eta_expand(f)
+          let (l1, f, _) = env.eta_expand(f)
           l.append(l1)
           (l, Apply(f, ys))
         }
       }
     }
     Jump(f, xs) => {
-      let (l1, f, _) = self.eta_expand(f)
-      let (l2, xs, _) = self.eta_expand_names(xs)
+      let (l1, f, _) = env.eta_expand(f)
+      let (l2, xs, _) = env.eta_expand_names(xs)
       l1.append(l2)
       (l1, Jump(f, xs))
     }
@@ -251,7 +226,7 @@ fn LambdaLiftEnv::lift(
         fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
         fdef.ty,
       )
-      let fvars_with_type = fvars.map(fn(name) { (name, self.get_type(name)) })
+      let fvars_with_type = fvars.map(fn(name) { (name, env.get_type(name)) })
       let new_args = fdef.args + fvars_with_type
       let new_float_args_length = new_args
         .filter(fn(arg) { arg.1.is_float_like() })
@@ -259,12 +234,12 @@ fn LambdaLiftEnv::lift(
       let new_integer_args_length = new_args.length() - new_float_args_length
       // we don't want to lift functions with too many arguments
       if new_integer_args_length >= 12 || new_float_args_length >= 12 {
-        let self = self.add_name_type(fdef.name, old_fun_type)
+        let env = env.add_name_type(fdef.name, old_fun_type)
         let body_env = fdef.args.fold(
-          init=self,
+          init=env,
           fn(env, arg) { env.add_name_type(arg.0, arg.1) },
         )
-        let (l, body_e) = body_env.lift(fdef.body, false)
+        let (l, body_e) = self.lift(body_env, fdef.body, false)
         let fdef = FuncDef::{
           name: fdef.name,
           ty: fdef.ty,
@@ -274,27 +249,27 @@ fn LambdaLiftEnv::lift(
         if top {
           self.top_names.insert(fdef.name)
           self.top_bindings.push(LetRec(fdef))
-          self.lift(e, top)
+          self.lift(env, e, top)
         } else {
           let l = [Binding::LetRec(fdef)]
-          let (l2, e) = self.lift(e, top)
+          let (l2, e) = self.lift(env, e, top)
           l.append(l2)
           (l, e)
         }
       } else {
         self.top_names.insert(fdef.name)
-        let (new_name, self) = self.add_lifted_name(
+        let (new_name, env) = env.add_lifted_name(
           fdef.name,
           fdef.args.map(fn(arg) { arg.0 }),
           fvars,
           Fun(fdef.args.iter().map(fn(arg) { arg.1 }).collect(), fdef.ty),
         )
-        let self = self.add_name_type(new_name, old_fun_type)
+        let env = env.add_name_type(new_name, old_fun_type)
         let body_env = new_args.fold(
-          init=self,
+          init=env,
           fn(env, arg) { env.add_name_type(arg.0, arg.1) },
         )
-        let (l, body_e) = body_env.lift(fdef.body, false)
+        let (l, body_e) = self.lift(body_env, fdef.body, false)
         let fdef = FuncDef::{
           name: new_name,
           ty: fdef.ty,
@@ -302,15 +277,15 @@ fn LambdaLiftEnv::lift(
           body: bind_all((body_e, Unit, l)),
         }
         self.top_bindings.push(LetRec(fdef))
-        self.lift(e, top)
+        self.lift(env, e, top)
       }
     }
     LetJoin(fdef, e) => {
       let body_env = fdef.args.fold(
-        init=self,
+        init=env,
         fn(env, arg) { env.add_name_type(arg.0, arg.1) },
       )
-      let (l, body_e) = body_env.lift(fdef.body, false)
+      let (l, body_e) = self.lift(body_env, fdef.body, false)
       let fdef = FuncDef::{
         name: fdef.name,
         ty: fdef.ty,
@@ -320,10 +295,10 @@ fn LambdaLiftEnv::lift(
       if top {
         self.top_names.insert(fdef.name)
         self.top_bindings.push(LetRec(fdef))
-        self.lift(e, top)
+        self.lift(env, e, top)
       } else {
         let l = [Binding::LetJoin(fdef)]
-        let (l2, e) = self.lift(e, top)
+        let (l2, e) = self.lift(env, e, top)
         l.append(l2)
         (l, e)
       }
@@ -360,14 +335,16 @@ fn count_let_rec(knf : Knf) -> Int {
   }
 }
 
-pub fn go(self : LambdaLiftEnv, knf : Knf) -> Knf {
+pub fn go(self : LambdaLifter) -> Knf {
+  let knf = self.knf
   let n1 = count_let_rec(knf)
   let old_knf = knf
   let fvc = FreeSetClosure::new()
   let (_, ctx) = fvc.compute(knf)
   self.tracer.record("free_set_closure", ctx)
   self.free_set_closure = ctx
-  let (l, knf) = self.lift(knf, true)
+  let env = LambdaLiftEnv::new(self.knf_env, self.tracer)
+  let (l, knf) = self.lift(env, knf, true)
   if l.length() > 0 {
     self.tracer.abort("top level let list should be empty")
   }

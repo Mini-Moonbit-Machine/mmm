@@ -15,65 +15,111 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_12
-  .type T$start_12, @function
+  .globl quicksort.126
+  .type quicksort.126, @function
 # leaf false
-T$start_12:
-.T$start_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.57l2_5
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl input.61l3_3
-  .type input.61l3_3, @function
-# leaf false
-input.61l3_3:
-.input.61l3_3_5:
-  addi sp, sp, -32
+quicksort.126:
+.quicksort.126_5:
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
+  sd s3, 32(sp)
+  sd s4, 40(sp)
+  sd s5, 48(sp)
+  mv s3, a0
   mv s1, a1
   mv s2, a2
 
-.input.61l3_3_0:
+.quicksort.126_0:
   addi a0, s2, -1
-  blt a0, s0, .input.61l3_3_2
+  blt a0, s1, .quicksort.126_2
 
-.input.61l3_3_1:
-  call minimbt_read_int
-  slliw a1, s0, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi a0, s0, 1
-  mv s0, a0
-  j .input.61l3_3_0
+.quicksort.126_1:
+  slliw a0, s2, 2
+  add a0, s3, a0
+  lw a0, 0(a0)
+  addi a1, s1, -1
+  addi s0, s11, -4
+  andi s11, s0, -8
+  sw a1, 0(s0)
 
-.input.61l3_3_2:
+.quicksort.126_23:
+  mv s5, s1
+  mv s4, a0
+
+.quicksort.126_15:
+  addi a0, s2, -1
+  blt a0, s5, .quicksort.126_17
+
+.quicksort.126_16:
+  slliw a0, s5, 2
+  add a0, s3, a0
+  lw a0, 0(a0)
+  blt s4, a0, .quicksort.126_19
+
+.quicksort.126_18:
+  lw a0, 0(s0)
+  addi a0, a0, 1
+  sw a0, 0(s0)
+  lw a1, 0(s0)
+  mv a0, s3
+  mv a2, s5
+  call swap.125
+
+.quicksort.126_20:
+  addi a0, s5, 1
+  mv s5, a0
+  j .quicksort.126_15
+
+.quicksort.126_2:
   mv a0, zero
 
-.input.61l3_3_3:
+.quicksort.126_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  addi sp, sp, 64
   ret
+
+.quicksort.126_17:
+  mv a0, zero
+
+.quicksort.126_21:
+
+.quicksort.126_6:
+  lw a0, 0(s0)
+  addi a0, a0, 1
+  sw a0, 0(s0)
+  lw a1, 0(s0)
+  mv a0, s3
+  mv a2, s2
+  call swap.125
+  lw s0, 0(s0)
+  addi a2, s0, -1
+  mv a0, s3
+  mv a1, s1
+  call quicksort.126
+  addi a0, s0, 1
+  mv s1, a0
+  j .quicksort.126_0
+
+.quicksort.126_19:
+  mv a0, zero
+  j .quicksort.126_20
 
   .p2align 2
   .text
-  .globl swap.1l0_0
-  .type swap.1l0_0, @function
+  .globl swap.125
+  .type swap.125, @function
 # leaf true
-swap.1l0_0:
-.swap.1l0_0_0:
+swap.125:
+.swap.125_0:
   slliw a3, a1, 2
   add a3, a0, a3
   lw a3, 0(a3)
@@ -91,11 +137,52 @@ swap.1l0_0:
 
   .p2align 2
   .text
-  .globl main.57l2_5
-  .type main.57l2_5, @function
+  .globl output.130
+  .type output.130, @function
 # leaf false
-main.57l2_5:
-.main.57l2_5_0:
+output.130:
+.output.130_5:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  mv s2, a2
+
+.output.130_0:
+  addi a0, s2, -1
+  blt a0, s0, .output.130_2
+
+.output.130_1:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  call minimbt_print_int
+  call minimbt_print_endline
+  addi a0, s0, 1
+  mv s0, a0
+  j .output.130_0
+
+.output.130_2:
+  mv a0, zero
+
+.output.130_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main.128
+  .type main.128, @function
+# leaf false
+main.128:
+.main.128_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -109,15 +196,15 @@ main.57l2_5:
   mv a0, zero
   mv a1, s1
   mv a2, s0
-  call input.61l3_3
+  call input.129
   addi a2, s0, -1
   mv a0, s1
   mv a1, zero
-  call quicksort.45l1_2
+  call quicksort.126
   mv a0, zero
   mv a1, s1
   mv a2, s0
-  call output.75l4_4
+  call output.130
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -126,11 +213,11 @@ main.57l2_5:
 
   .p2align 2
   .text
-  .globl output.75l4_4
-  .type output.75l4_4, @function
+  .globl input.129
+  .type input.129, @function
 # leaf false
-output.75l4_4:
-.output.75l4_4_5:
+input.129:
+.input.129_5:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -140,29 +227,42 @@ output.75l4_4:
   mv s1, a1
   mv s2, a2
 
-.output.75l4_4_0:
+.input.129_0:
   addi a0, s2, -1
-  blt a0, s0, .output.75l4_4_2
+  blt a0, s0, .input.129_2
 
-.output.75l4_4_1:
-  slliw a0, s0, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
-  call minimbt_print_int
-  call minimbt_print_endline
+.input.129_1:
+  call minimbt_read_int
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
   addi a0, s0, 1
   mv s0, a0
-  j .output.75l4_4_0
+  j .input.129_0
 
-.output.75l4_4_2:
+.input.129_2:
   mv a0, zero
 
-.output.75l4_4_3:
+.input.129_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.128
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -179,113 +279,13 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_12
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
-
-  .p2align 2
-  .text
-  .globl quicksort.45l1_2
-  .type quicksort.45l1_2, @function
-# leaf false
-quicksort.45l1_2:
-.quicksort.45l1_2_5:
-  addi sp, sp, -64
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  sd s5, 48(sp)
-  mv s3, a0
-  mv s1, a1
-  mv s2, a2
-
-.quicksort.45l1_2_0:
-  addi a0, s2, -1
-  blt a0, s1, .quicksort.45l1_2_2
-
-.quicksort.45l1_2_1:
-  slliw a0, s2, 2
-  add a0, s3, a0
-  lw a0, 0(a0)
-  addi a1, s1, -1
-  addi s0, s11, -4
-  andi s11, s0, -8
-  sw a1, 0(s0)
-
-.quicksort.45l1_2_23:
-  mv s5, s1
-  mv s4, a0
-
-.quicksort.45l1_2_15:
-  addi a0, s2, -1
-  blt a0, s5, .quicksort.45l1_2_17
-
-.quicksort.45l1_2_16:
-  slliw a0, s5, 2
-  add a0, s3, a0
-  lw a0, 0(a0)
-  blt s4, a0, .quicksort.45l1_2_19
-
-.quicksort.45l1_2_18:
-  lw a0, 0(s0)
-  addi a0, a0, 1
-  sw a0, 0(s0)
-  lw a1, 0(s0)
-  mv a0, s3
-  mv a2, s5
-  call swap.1l0_0
-
-.quicksort.45l1_2_20:
-  addi a0, s5, 1
-  mv s5, a0
-  j .quicksort.45l1_2_15
-
-.quicksort.45l1_2_2:
-  mv a0, zero
-
-.quicksort.45l1_2_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  addi sp, sp, 64
-  ret
-
-.quicksort.45l1_2_17:
-  mv a0, zero
-
-.quicksort.45l1_2_21:
-
-.quicksort.45l1_2_6:
-  lw a0, 0(s0)
-  addi a0, a0, 1
-  sw a0, 0(s0)
-  lw a1, 0(s0)
-  mv a0, s3
-  mv a2, s2
-  call swap.1l0_0
-  lw s0, 0(s0)
-  addi a2, s0, -1
-  mv a0, s3
-  mv a1, s1
-  call quicksort.45l1_2
-  addi a0, s0, 1
-  mv s1, a0
-  j .quicksort.45l1_2_0
-
-.quicksort.45l1_2_19:
-  mv a0, zero
-  j .quicksort.45l1_2_20
 
 __end_text:
   .p2align 2

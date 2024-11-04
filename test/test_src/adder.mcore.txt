@@ -15,24 +15,41 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl adder.10l1_0
-  .type adder.10l1_0, @function
+  .globl adder.13
+  .type adder.13, @function
 # leaf true
-adder.10l1_0:
-.adder.10l1_0_0:
+adder.13:
+.adder.13_0:
   add a0, a1, a0
   ret
 
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.5l0_1
+  call main.12
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.12
+  .type main.12, @function
+# leaf false
+main.12:
+.main.12_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 7
+  li a1, 3
+  call adder.13
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -51,29 +68,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main.5l0_1
-  .type main.5l0_1, @function
-# leaf false
-main.5l0_1:
-.main.5l0_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 7
-  li a1, 3
-  call adder.10l1_0
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

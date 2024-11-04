@@ -7,105 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn flip_loop.321l6_4 #f4 : fn(int32, array[int32], array[int32], array[int32]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f1, 0 * @32)
-    let %1: int32 = div(%0, 2)
-    let %2: bool = le($f0, %1)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let %3: int32 = load int32 offset($f3, $f0 * @32)
-    let _ = store int32 offset($f2, 0 * @32) <- %3
-    let %5: int32 = load int32 offset($f1, 0 * @32)
-    let %6: int32 = sub(%5, $f0)
-    let %7: int32 = load int32 offset($f3, %6 * @32)
-    let _ = store int32 offset($f3, $f0 * @32) <- %7
-    let %9: int32 = load int32 offset($f1, 0 * @32)
-    let %10: int32 = sub(%9, $f0)
-    let %11: int32 = load int32 offset($f2, 0 * @32)
-    let _ = store int32 offset($f3, %10 * @32) <- %11
-    let %13: int32 = add($f0, 1)
-    let %14: unit = call f4(%13, $f1, $f2, $f3)
-    jump b3(%14)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn gen_perm1.240l1_1 #f1 : fn(int32) -> array[int32]
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: array[int32] heap($f0)> <- [..] = 0
-    let %1: unit = call f0(0, f1.m0, $f0)
-    return f1.m0
-  }
-}
-.fn init_count.287l4_3 #f3 : fn(array[int32], array[int32]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f0, 0 * @32)
-    let %1: bool = eq(%0, 1)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(())
-  }
-  .bb #b2 () {
-    let %2: int32 = load int32 offset($f0, 0 * @32)
-    let %3: int32 = sub(%2, 1)
-    let %4: int32 = load int32 offset($f0, 0 * @32)
-    let _ = store int32 offset($f1, %3 * @32) <- %4
-    let %6: int32 = load int32 offset($f0, 0 * @32)
-    let %7: int32 = sub(%6, 1)
-    let _ = store int32 offset($f0, 0 * @32) <- %7
-    let %9: unit = call f3($f0, $f1)
-    jump b3(%9)
-  }
-  .bb #b3 (unit) {
-    return ()
-  }
-}
-.fn T$start_20 #f20 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f9()
-    return %0
-  }
-}
-.fn move_perm1_forward.408l7_6 #f6 : fn(int32, array[int32], array[int32]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f1, 0 * @32)
-    let %1: int32 = sub(%0, 1)
-    let %2: bool = le($f0, %1)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let %3: int32 = add($f0, 1)
-    let %4: int32 = load int32 offset($f2, %3 * @32)
-    let _ = store int32 offset($f2, $f0 * @32) <- %4
-    let %6: int32 = add($f0, 1)
-    let %7: unit = call f6(%6, $f1, $f2)
-    jump b3(())
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn copy_perm.277l3_2 #f2 : fn(int32, int32, array[int32], array[int32]) -> unit
+.fn copy_perm.464 #f2 : fn(int32, int32, array[int32], array[int32]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -127,7 +29,37 @@
     return $b3.0
   }
 }
-.fn compute.272l2_8 #f8 : fn(array[int32], int32, array[int32], array[int32], array[int32], array[int32], array[int32], array[int32], array[int32]) -> unit
+.fn init_arr.462 #f0 : fn(int32, array[int32], int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = sub($f2, 1)
+    let %1: bool = le($f0, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let _ = store int32 offset($f1, $f0 * @32) <- $f0
+    let %3: int32 = add($f0, 1)
+    let %4: unit = call f0(%3, $f1, $f2)
+    jump b3(%4)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn gen_perm1.461 #f1 : fn(int32) -> array[int32]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap($f0)> <- [..] = 0
+    let %1: unit = call f0(0, f1.m0, $f0)
+    return f1.m0
+  }
+}
+.fn compute.463 #f8 : fn(array[int32], int32, array[int32], array[int32], array[int32], array[int32], array[int32], array[int32], array[int32]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -184,7 +116,64 @@
     return $b6.0
   }
 }
-.fn main.223l0_9 #f9 : fn() -> unit
+.fn flip_loop.467 #f4 : fn(int32, array[int32], array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f1, 0 * @32)
+    let %1: int32 = div(%0, 2)
+    let %2: bool = le($f0, %1)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    let %3: int32 = load int32 offset($f3, $f0 * @32)
+    let _ = store int32 offset($f2, 0 * @32) <- %3
+    let %5: int32 = load int32 offset($f1, 0 * @32)
+    let %6: int32 = sub(%5, $f0)
+    let %7: int32 = load int32 offset($f3, %6 * @32)
+    let _ = store int32 offset($f3, $f0 * @32) <- %7
+    let %9: int32 = load int32 offset($f1, 0 * @32)
+    let %10: int32 = sub(%9, $f0)
+    let %11: int32 = load int32 offset($f2, 0 * @32)
+    let _ = store int32 offset($f3, %10 * @32) <- %11
+    let %13: int32 = add($f0, 1)
+    let %14: unit = call f4(%13, $f1, $f2, $f3)
+    jump b3(%14)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn init_count.465 #f3 : fn(array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f0, 0 * @32)
+    let %1: bool = eq(%0, 1)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %2: int32 = load int32 offset($f0, 0 * @32)
+    let %3: int32 = sub(%2, 1)
+    let %4: int32 = load int32 offset($f0, 0 * @32)
+    let _ = store int32 offset($f1, %3 * @32) <- %4
+    let %6: int32 = load int32 offset($f0, 0 * @32)
+    let %7: int32 = sub(%6, 1)
+    let _ = store int32 offset($f0, 0 * @32) <- %7
+    let %9: unit = call f3($f0, $f1)
+    jump b3(%9)
+  }
+  .bb #b3 (unit) {
+    return ()
+  }
+}
+.fn main.460 #f9 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -207,54 +196,7 @@
     return %15
   }
 }
-.fn init_arr.244l2_0 #f0 : fn(int32, array[int32], int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = sub($f2, 1)
-    let %1: bool = le($f0, %0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    let _ = store int32 offset($f1, $f0 * @32) <- $f0
-    let %3: int32 = add($f0, 1)
-    let %4: unit = call f0(%3, $f1, $f2)
-    jump b3(%4)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn do_flip.313l5_5 #f5 : fn(array[int32], array[int32], array[int32]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load int32 offset($f0, 0 * @32)
-    let %1: bool = eq(%0, 0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(())
-  }
-  .bb #b2 () {
-    let _ = alloc <m0: array[int32] heap(1)> <- [..] = 0
-    let %3: unit = call f4(0, $f0, f5.m0, $f1)
-    let %4: int32 = load int32 offset($f1, 0 * @32)
-    let _ = store int32 offset($f0, 0 * @32) <- %4
-    let %6: int32 = load int32 offset($f2, 0 * @32)
-    let %7: int32 = add(%6, 1)
-    let _ = store int32 offset($f2, 0 * @32) <- %7
-    let %9: unit = call f5($f0, $f1, $f2)
-    jump b3(%9)
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn go_loop.391l6_7 #f7 : fn(int32, array[int32], array[int32], array[bool], array[int32], array[int32]) -> unit
+.fn go_loop.468 #f7 : fn(int32, array[int32], array[int32], array[bool], array[int32], array[int32]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -311,6 +253,64 @@
   }
   .bb #b9 (unit) {
     return $b9.0
+  }
+}
+.fn T$start #f20 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f9()
+    return %0
+  }
+}
+.fn move_perm1_forward.469 #f6 : fn(int32, array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f1, 0 * @32)
+    let %1: int32 = sub(%0, 1)
+    let %2: bool = le($f0, %1)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    let %3: int32 = add($f0, 1)
+    let %4: int32 = load int32 offset($f2, %3 * @32)
+    let _ = store int32 offset($f2, $f0 * @32) <- %4
+    let %6: int32 = add($f0, 1)
+    let %7: unit = call f6(%6, $f1, $f2)
+    jump b3(())
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn do_flip.466 #f5 : fn(array[int32], array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load int32 offset($f0, 0 * @32)
+    let %1: bool = eq(%0, 0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
+  }
+  .bb #b2 () {
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = 0
+    let %3: unit = call f4(0, $f0, f5.m0, $f1)
+    let %4: int32 = load int32 offset($f1, 0 * @32)
+    let _ = store int32 offset($f0, 0 * @32) <- %4
+    let %6: int32 = load int32 offset($f2, 0 * @32)
+    let %7: int32 = add(%6, 1)
+    let _ = store int32 offset($f2, 0 * @32) <- %7
+    let %9: unit = call f5($f0, $f1, $f2)
+    jump b3(%9)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
   }
 }
 .thunk ::0 start

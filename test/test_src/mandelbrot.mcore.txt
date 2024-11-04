@@ -15,26 +15,167 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_10
-  .type T$start_10, @function
+  .globl yloop.121
+  .type yloop.121, @function
 # leaf false
-T$start_10:
-.T$start_10_0:
+yloop.121:
+.yloop.121_5:
+  addi sp, sp, -80
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  fsd fs0, 40(sp)
+  fsd fs1, 48(sp)
+  fsd fs2, 56(sp)
+  fsd fs3, 64(sp)
+  mv s0, a0
+  mv s1, a1
+
+.yloop.121_0:
+  blt s0, s1, .yloop.121_2
+
+.yloop.121_1:
+  mv a0, zero
+
+.yloop.121_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  fld fs0, 40(sp)
+  fld fs1, 48(sp)
+  fld fs2, 56(sp)
+  fld fs3, 64(sp)
+  addi sp, sp, 80
+  ret
+
+.yloop.121_2:
+
+.yloop.121_12:
+  mv s2, zero
+
+.yloop.121_7:
+  bge s2, s1, .yloop.121_8
+
+.yloop.121_9:
+  fcvt.d.w fa0, s2
+  call dbl.120
+  fcvt.d.w fs1, s1
+  fdiv.d fa0, fa0, fs1
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fs0, fa0, fa1
+  fcvt.d.w fa0, s0
+  call dbl.120
+  fdiv.d fa0, fa0, fs1
+  li a0, 4607182418800017408
+  fmv.d.x fa1, a0
+  fsub.d fa3, fa0, fa1
+
+.yloop.121_29:
+  li a0, 1000
+  mv s3, a0
+  fmv.d.x fa0, zero
+  fmv.d fs1, fa0
+  fmv.d fa1, fa0
+  fmv.d fa2, fa0
+  fmv.d fs2, fs0
+  fmv.d fs0, fa3
+
+.yloop.121_21:
+  beq s3, zero, .yloop.121_22
+
+.yloop.121_23:
+  fsub.d fa1, fa1, fa2
+  fadd.d fs3, fa1, fs2
+  call dbl.120
+  fmadd.d fa3, fa0, fs1, fs0
+  fmul.d fa1, fs3, fs3
+  fmul.d fa2, fa3, fa3
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
+  fmul.d fa0, fa0, fa0
+  fadd.d fa4, fa1, fa2
+  fle.d a0, fa0, fa4
+  beq a0, zero, .yloop.121_25
+
+.yloop.121_24:
+  mv a0, zero
+  call minimbt_print_int
+
+.yloop.121_26:
+
+.yloop.121_27:
+
+.yloop.121_13:
+  addi a0, s2, 1
+  mv s2, a0
+  j .yloop.121_7
+
+.yloop.121_8:
+  call minimbt_print_endline
+  mv a0, zero
+
+.yloop.121_10:
+
+.yloop.121_6:
+  addi a0, s0, 1
+  mv s0, a0
+  j .yloop.121_0
+
+.yloop.121_22:
+  li a0, 1
+  call minimbt_print_int
+  j .yloop.121_27
+
+.yloop.121_25:
+  addi a0, s3, -1
+  mv s3, a0
+  fmv.d fa0, fs3
+  fmv.d fs1, fa3
+  j .yloop.121_21
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.60l0_4
+  call main.119
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl dbl.62l1_0
-  .type dbl.62l1_0, @function
+  .globl dbl.120
+  .type dbl.120, @function
 # leaf true
-dbl.62l1_0:
-.dbl.62l1_0_0:
+dbl.120:
+.dbl.120_0:
   fadd.d fa0, fa0, fa0
+  ret
+
+  .p2align 2
+  .text
+  .globl main.119
+  .type main.119, @function
+# leaf false
+main.119:
+.main.119_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, zero
+  li a1, 40
+  call yloop.121
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -51,155 +192,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_10
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl yloop.64l2_3
-  .type yloop.64l2_3, @function
-# leaf false
-yloop.64l2_3:
-.yloop.64l2_3_5:
-  addi sp, sp, -80
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  fsd fs0, 40(sp)
-  fsd fs1, 48(sp)
-  fsd fs2, 56(sp)
-  fsd fs3, 64(sp)
-  mv s2, a0
-  mv s0, a1
-
-.yloop.64l2_3_0:
-  blt s2, s0, .yloop.64l2_3_2
-
-.yloop.64l2_3_1:
-  mv a0, zero
-
-.yloop.64l2_3_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  fld fs0, 40(sp)
-  fld fs1, 48(sp)
-  fld fs2, 56(sp)
-  fld fs3, 64(sp)
-  addi sp, sp, 80
-  ret
-
-.yloop.64l2_3_2:
-
-.yloop.64l2_3_12:
-  mv s1, zero
-
-.yloop.64l2_3_7:
-  bge s1, s0, .yloop.64l2_3_8
-
-.yloop.64l2_3_9:
-  fcvt.d.w fa0, s1
-  call dbl.62l1_0
-  fcvt.d.w fs1, s0
-  fdiv.d fa0, fa0, fs1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s2
-  call dbl.62l1_0
-  fdiv.d fa0, fa0, fs1
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa2, fa0, fa1
-
-.yloop.64l2_3_29:
-  li a0, 1000
-  mv s3, a0
-  fmv.d.x fa0, zero
-  fmv.d fa3, fa0
-  fmv.d fs3, fa0
-  fmv.d fa1, fa0
-  fmv.d fs1, fs0
-  fmv.d fs0, fa2
-
-.yloop.64l2_3_21:
-  beq s3, zero, .yloop.64l2_3_22
-
-.yloop.64l2_3_23:
-  fsub.d fa0, fa0, fa1
-  fadd.d fs2, fa0, fs1
-  fmv.d fa0, fa3
-  call dbl.62l1_0
-  fmadd.d fa0, fa0, fs3, fs0
-  fmul.d fa2, fs2, fs2
-  fmul.d fa1, fa0, fa0
-  li a0, 4611686018427387904
-  fmv.d.x fa3, a0
-  fmul.d fa3, fa3, fa3
-  fadd.d fa4, fa2, fa1
-  fle.d a0, fa3, fa4
-  beq a0, zero, .yloop.64l2_3_25
-
-.yloop.64l2_3_24:
-  mv a0, zero
-  call minimbt_print_int
-
-.yloop.64l2_3_26:
-
-.yloop.64l2_3_27:
-
-.yloop.64l2_3_13:
-  addi a0, s1, 1
-  mv s1, a0
-  j .yloop.64l2_3_7
-
-.yloop.64l2_3_8:
-  call minimbt_print_endline
-  mv a0, zero
-
-.yloop.64l2_3_10:
-
-.yloop.64l2_3_6:
-  addi a0, s2, 1
-  mv s2, a0
-  j .yloop.64l2_3_0
-
-.yloop.64l2_3_22:
-  li a0, 1
-  call minimbt_print_int
-  j .yloop.64l2_3_27
-
-.yloop.64l2_3_25:
-  addi a0, s3, -1
-  mv s3, a0
-  fmv.d fa3, fs2
-  fmv.d fs3, fa0
-  fmv.d fa0, fa2
-  j .yloop.64l2_3_21
-
-  .p2align 2
-  .text
-  .globl main.60l0_4
-  .type main.60l0_4, @function
-# leaf false
-main.60l0_4:
-.main.60l0_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, zero
-  li a1, 40
-  call yloop.64l2_3
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

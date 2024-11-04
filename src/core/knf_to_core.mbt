@@ -243,7 +243,7 @@ fn build_func_def(
   let { name, ty, args, body } = fd
   let mut self = self
   let mut ctx = ctx.enter_func_def()
-  let new_name = name.to_string() + "_" + fref._.id.to_string()
+  let new_name = name.to_string()
   let new_name = try {
     @types.Name::from_string!(new_name)
   } catch {

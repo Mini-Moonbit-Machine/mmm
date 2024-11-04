@@ -15,43 +15,15 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl sum.1l0_0
-  .type sum.1l0_0, @function
+  .globl main.11
+  .type main.11, @function
 # leaf false
-sum.1l0_0:
-.sum.1l0_0_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  bge zero, s0, .sum.1l0_0_1
-
-.sum.1l0_0_2:
-  addi a0, s0, -1
-  call sum.1l0_0
-  add a0, a0, s0
-
-.sum.1l0_0_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.sum.1l0_0_1:
-  mv a0, zero
-  j .sum.1l0_0_3
-
-  .p2align 2
-  .text
-  .globl main.7l1_1
-  .type main.7l1_1, @function
-# leaf false
-main.7l1_1:
-.main.7l1_1_0:
+main.11:
+.main.11_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 10000
-  call sum.1l0_0
+  call sum.10
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -59,14 +31,42 @@ main.7l1_1:
 
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl sum.10
+  .type sum.10, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+sum.10:
+.sum.10_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.7l1_1
+  sd s0, 8(sp)
+  mv s0, a0
+  bge zero, s0, .sum.10_1
+
+.sum.10_2:
+  addi a0, s0, -1
+  call sum.10
+  add a0, a0, s0
+
+.sum.10_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.sum.10_1:
+  mv a0, zero
+  j .sum.10_3
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.11
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -85,7 +85,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)

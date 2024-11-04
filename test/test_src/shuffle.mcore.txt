@@ -15,31 +15,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.21l1_1
-  .type main.21l1_1, @function
+  .globl foo.28
+  .type foo.28, @function
 # leaf false
-main.21l1_1:
-.main.21l1_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 2
-  li a1, 1
-  li a2, 4
-  li a3, 5
-  li a4, 6
-  li a5, 3
-  call foo.1l0_0
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl foo.1l0_0
-  .type foo.1l0_0, @function
-# leaf false
-foo.1l0_0:
-.foo.1l0_0_0:
+foo.28:
+.foo.28_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -75,14 +55,34 @@ foo.1l0_0:
 
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.21l1_1
+  call main.29
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.29
+  .type main.29, @function
+# leaf false
+main.29:
+.main.29_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 2
+  li a1, 1
+  li a2, 4
+  li a3, 5
+  li a4, 6
+  li a5, 3
+  call foo.28
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -101,7 +101,7 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)

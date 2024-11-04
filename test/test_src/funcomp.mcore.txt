@@ -15,45 +15,80 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_12
-  .type T$start_12, @function
+  .globl composed.30
+  .type composed.30, @function
 # leaf false
-T$start_12:
-.T$start_12_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.15l3_5
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl composed.20l4_3
-  .type composed.20l4_3, @function
-# leaf false
-composed.20l4_3:
-.composed.20l4_3_0:
+composed.30:
+.composed.30_0:
   addi sp, sp, -16
   sd ra, 0(sp)
 
-.composed.20l4_3_2:
+.composed.30_2:
   add a0, a0, a0
 
-.composed.20l4_3_1:
-  call dec.12l2_2
+.composed.30_1:
+  call dec.28
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl dec.12l2_2
-  .type dec.12l2_2, @function
+  .globl dec.28
+  .type dec.28, @function
 # leaf true
-dec.12l2_2:
-.dec.12l2_2_0:
+dec.28:
+.dec.28_0:
   addi a0, a0, -1
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.29
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl composed.31
+  .type composed.31, @function
+# leaf false
+composed.31:
+.composed.31_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+
+.composed.31_2:
+  addi a0, a0, 1
+
+.composed.31_1:
+  call composed.30
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.29
+  .type main.29, @function
+# leaf false
+main.29:
+.main.29_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 123
+  call composed.31
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -70,47 +105,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_12
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main.15l3_5
-  .type main.15l3_5, @function
-# leaf false
-main.15l3_5:
-.main.15l3_5_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 123
-  call composed.23l5_4
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl composed.23l5_4
-  .type composed.23l5_4, @function
-# leaf false
-composed.23l5_4:
-.composed.23l5_4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-
-.composed.23l5_4_2:
-  addi a0, a0, 1
-
-.composed.23l5_4_1:
-  call composed.20l4_3
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

@@ -15,56 +15,82 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl T$start_4
-  .type T$start_4, @function
+  .globl T$start
+  .type T$start, @function
 # leaf false
-T$start_4:
-.T$start_4_0:
+T$start:
+.T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.1l0_1
+  call main.12
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl f.2l1_0
-  .type f.2l1_0, @function
+  .globl main.12
+  .type main.12, @function
 # leaf false
-f.2l1_0:
-.f.2l1_0_8:
+main.12:
+.main.12_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-
-.f.2l1_0_0:
   call minimbt_read_int
   li a1, -2147483648
-  beq a0, a1, .f.2l1_0_1
+  beq a0, a1, .main.12_1
 
-.f.2l1_0_2:
+.main.12_2:
   call minimbt_print_int
-  call minimbt_read_int
-  li a1, -2147483648
-  bne a0, a1, .f.2l1_0_4
+  call f.13
 
-.f.2l1_0_3:
-  call minimbt_print_int
-
-.f.2l1_0_5:
-
-.f.2l1_0_6:
+.main.12_3:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.f.2l1_0_1:
+.main.12_1:
   call minimbt_print_int
-  j .f.2l1_0_6
+  j .main.12_3
 
-.f.2l1_0_4:
+  .p2align 2
+  .text
+  .globl f.13
+  .type f.13, @function
+# leaf false
+f.13:
+.f.13_8:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+
+.f.13_0:
+  call minimbt_read_int
+  li a1, -2147483648
+  beq a0, a1, .f.13_1
+
+.f.13_2:
   call minimbt_print_int
-  j .f.2l1_0_0
+  call minimbt_read_int
+  li a1, -2147483648
+  bne a0, a1, .f.13_4
+
+.f.13_3:
+  call minimbt_print_int
+
+.f.13_5:
+
+.f.13_6:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.f.13_1:
+  call minimbt_print_int
+  j .f.13_6
+
+.f.13_4:
+  call minimbt_print_int
+  j .f.13_0
 
   .p2align 2
   .text
@@ -80,39 +106,13 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start_4
+  call T$start
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
-
-  .p2align 2
-  .text
-  .globl main.1l0_1
-  .type main.1l0_1, @function
-# leaf false
-main.1l0_1:
-.main.1l0_1_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call minimbt_read_int
-  li a1, -2147483648
-  beq a0, a1, .main.1l0_1_1
-
-.main.1l0_1_2:
-  call minimbt_print_int
-  call f.2l1_0
-
-.main.1l0_1_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.main.1l0_1_1:
-  call minimbt_print_int
-  j .main.1l0_1_3
 
 __end_text:
   .p2align 2
