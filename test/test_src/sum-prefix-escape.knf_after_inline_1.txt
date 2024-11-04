@@ -1,0 +1,29 @@
+let rec main.19: Var({val: Some(Unit)}) = () {
+  let _20: Int = Int(10)
+  let _21: Int = Int(4)
+  let arr.22: Array(Int) = ExtApply(minimbt_create_array, [_20, _21, ])
+  let _23: Int = Int(10)
+  let _47: Int = Int(0)
+  let res.48: Array(Int) = ExtApply(minimbt_create_array, [_23, _47, ])
+  let _62: Int = Int(0)
+  let _63: Int = Int(0)
+  let join sum_nested.65: Unit = (acc.66: Int, x.67: Int) {
+    let _68: Int = Int(1)
+    let _69: Int = Sub(_23, _68)
+    if (x.67 <= _69) then {
+      let _70: Int = Get arr.22[x.67]
+      let s.71: Int = Add(acc.66, _70)
+      let _72: Unit = Put res.48[x.67] = s.71
+      let _73: Int = Int(1)
+      let _74: Int = Add(x.67, _73)
+      Jump(sum_nested.65, [s.71, _74, ])
+    } else {
+      let _64: Unit = Unit
+      let _25: Int = Int(0)
+      let _26: Int = Get res.48[_25]
+      ExtApply(minimbt_print_int, [_26, ])
+    }
+  }
+  Jump(sum_nested.65, [_62, _63, ])
+}
+Apply(main.19, [])

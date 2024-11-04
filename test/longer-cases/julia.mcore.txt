@@ -47,16 +47,40 @@ T$limit.1:
 
   .p2align 2
   .text
-  .globl main.95
-  .type main.95, @function
+  .globl T$_4
+  .type T$_4, @function
+# leaf true
+T$_4:
+.T$_4_0:
+  li a0, 4593527504729830064
+  fmv.d.x fa0, a0
+  ret
+
+  .p2align 2
+  .text
+  .globl T$c_im.6
+  .type T$c_im.6, @function
+# leaf true
+T$c_im.6:
+.T$c_im.6_0:
+  li a0, 4604885582990058455
+  fmv.d.x fa0, a0
+  ret
+
+  .p2align 2
+  .text
+  .globl main.197
+  .type main.197, @function
 # leaf false
-main.95:
-.main.95_0:
-  addi sp, sp, -32
+main.197:
+.main.197_0:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
+  sd s3, 32(sp)
+  sd s4, 40(sp)
   fmv.d fa0, fa1
   fmv.d fa0, fa2
   call minimbt_read_int
@@ -77,95 +101,48 @@ main.95:
   mv a2, zero
   mv a3, zero
   mv a4, s2
-  call main_loop.93
-  mv a0, s1
-  mv a1, s0
-  mv a2, zero
-  mv a3, zero
-  mv a4, s2
-  call print_loop.94
+  call main_loop.196
+  mv s3, zero
+  mv s4, zero
+
+.main.197_2:
+  beq s4, s0, .main.197_3
+
+.main.197_4:
+  beq s3, s1, .main.197_5
+
+.main.197_6:
+  mul a0, s4, s1
+  add a0, a0, s3
+  slliw a0, a0, 2
+  add a0, s2, a0
+  lw a0, 0(a0)
+  addi a0, a0, 48
+  call minimbt_print_char
+  addi a0, s3, 1
+  mv s3, a0
+  j .main.197_2
+
+.main.197_3:
   mv a0, zero
+
+.main.197_8:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  addi sp, sp, 32
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  addi sp, sp, 48
   ret
 
-  .p2align 2
-  .text
-  .globl T$_4
-  .type T$_4, @function
-# leaf true
-T$_4:
-.T$_4_0:
-  li a0, 4593527504729830064
-  fmv.d.x fa0, a0
-  ret
-
-  .p2align 2
-  .text
-  .globl calc_pixel.92
-  .type calc_pixel.92, @function
-# leaf true
-calc_pixel.92:
-.calc_pixel.92_8:
-  mv a2, a0
-  fmv.d fa5, fa2
-  fmv.d fa2, fa3
-  mv a0, a1
-  fmv.d fa3, fa4
-  mv a1, a2
-  fmv.d fa4, fa5
-
-.calc_pixel.92_0:
-  fmul.d fa2, fa0, fa0
-  fmul.d fa3, fa1, fa1
-  lw a0, iter.3
-  beq a1, a0, .calc_pixel.92_1
-
-.calc_pixel.92_2:
-  fadd.d fa4, fa2, fa3
-  fld fa5, limit_sq.2, t5
-  fle.d a0, fa5, fa4
-  bne a0, zero, .calc_pixel.92_3
-
-.calc_pixel.92_4:
-  li a0, 4611686018427387904
-  fmv.d.x fa4, a0
-  fmul.d fa0, fa4, fa0
-  fld fa4, c_im.6, t5
-  fmadd.d fa1, fa0, fa1, fa4
-  fsub.d fa0, fa2, fa3
-  fld fa2, c_re.5, t5
-  fadd.d fa0, fa0, fa2
-  addi a1, a1, 1
-  lw a0, iter.3
-  fld fa3, limit_sq.2, t5
-  j .calc_pixel.92_0
-
-.calc_pixel.92_1:
-  lw a0, iter.3
-
-.calc_pixel.92_6:
-  ret
-
-.calc_pixel.92_3:
-  mv a0, a1
-
-.calc_pixel.92_5:
-  j .calc_pixel.92_6
-
-  .p2align 2
-  .text
-  .globl T$c_im.6
-  .type T$c_im.6, @function
-# leaf true
-T$c_im.6:
-.T$c_im.6_0:
-  li a0, 4604885582990058455
-  fmv.d.x fa0, a0
-  ret
+.main.197_5:
+  li a0, 10
+  call minimbt_print_char
+  addi a0, s4, 1
+  mv s3, zero
+  mv s4, a0
+  j .main.197_2
 
   .p2align 2
   .text
@@ -180,6 +157,161 @@ T$limit_sq.2:
 
   .p2align 2
   .text
+  .globl main_loop.196
+  .type main_loop.196, @function
+# leaf true
+main_loop.196:
+.main_loop.196_0:
+  mv t0, a0
+  mv a7, a1
+  mv a6, a2
+  mv a2, a3
+  mv a0, a4
+  fmv.d fa0, fa1
+  mv a1, a5
+  fmv.d fa0, fa2
+  mv a1, t0
+  mv a5, a7
+  mv a3, a6
+  mv a4, a0
+
+.main_loop.196_2:
+  beq a2, a5, .main_loop.196_3
+
+.main_loop.196_4:
+  beq a3, a1, .main_loop.196_5
+
+.main_loop.196_6:
+  fcvt.d.w fa0, a3
+  li a0, 4613937818241073152
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.d.w fa1, a1
+  fdiv.d fa0, fa0, fa1
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fa0, fa0, fa1
+  fneg.d fa0, fa0
+  fcvt.d.w fa1, a2
+  li a0, 4613937818241073152
+  fmv.d.x fa2, a0
+  fmul.d fa1, fa2, fa1
+  fcvt.d.w fa2, a5
+  fdiv.d fa1, fa1, fa2
+  li a0, 4609434218613702656
+  fmv.d.x fa2, a0
+  fsub.d fa1, fa1, fa2
+  mv a0, zero
+
+.main_loop.196_8:
+  fmul.d fa2, fa0, fa0
+  fmul.d fa3, fa1, fa1
+  lw a6, iter.3
+  bne a0, a6, .main_loop.196_10
+
+.main_loop.196_9:
+  mul a0, a2, a1
+  add a0, a0, a3
+  lw a6, iter.3
+  bge zero, a6, .main_loop.196_11
+
+.main_loop.196_12:
+  lw a6, iter.3
+  li a7, 48
+  bge a6, a7, .main_loop.196_13
+
+.main_loop.196_14:
+  lw a6, iter.3
+  slliw a0, a0, 2
+  add a0, a4, a0
+  sw a6, 0(a0)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+.main_loop.196_3:
+  mv a0, zero
+
+.main_loop.196_28:
+  ret
+
+.main_loop.196_5:
+  addi a0, a2, 1
+  mv a3, zero
+  mv a2, a0
+  j .main_loop.196_2
+
+.main_loop.196_10:
+  fadd.d fa4, fa2, fa3
+  fld fa5, limit_sq.2, t5
+  fle.d a6, fa5, fa4
+  beq a6, zero, .main_loop.196_18
+
+.main_loop.196_17:
+  mul a6, a2, a1
+  add a6, a6, a3
+  bge zero, a0, .main_loop.196_19
+
+.main_loop.196_20:
+  li a7, 48
+  blt a0, a7, .main_loop.196_22
+
+.main_loop.196_21:
+  li a0, 48
+  slliw a6, a6, 2
+  add a6, a4, a6
+  sw a0, 0(a6)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+.main_loop.196_18:
+  li a6, 4611686018427387904
+  fmv.d.x fa4, a6
+  fmul.d fa0, fa4, fa0
+  fld fa4, c_im.6, t5
+  fmadd.d fa1, fa0, fa1, fa4
+  fsub.d fa0, fa2, fa3
+  fld fa2, c_re.5, t5
+  fadd.d fa0, fa0, fa2
+  addi a0, a0, 1
+  j .main_loop.196_8
+
+.main_loop.196_19:
+  slliw a0, a6, 2
+  add a0, a4, a0
+  sw zero, 0(a0)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+.main_loop.196_22:
+  slliw a6, a6, 2
+  add a6, a4, a6
+  sw a0, 0(a6)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+.main_loop.196_11:
+  slliw a0, a0, 2
+  add a0, a4, a0
+  sw zero, 0(a0)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+.main_loop.196_13:
+  li a6, 48
+  slliw a0, a0, 2
+  add a0, a4, a0
+  sw a6, 0(a0)
+  addi a0, a3, 1
+  mv a3, a0
+  j .main_loop.196_2
+
+  .p2align 2
+  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -191,179 +323,10 @@ T$start:
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  call main.95
+  call main.197
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl main_loop.93
-  .type main_loop.93, @function
-# leaf false
-main_loop.93:
-.main_loop.93_14:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  mv s0, a0
-  mv s4, a1
-  mv s2, a2
-  mv s1, a3
-  mv s3, a4
-  mv a0, a5
-
-.main_loop.93_0:
-  beq s1, s4, .main_loop.93_1
-
-.main_loop.93_2:
-  beq s2, s0, .main_loop.93_3
-
-.main_loop.93_4:
-  fcvt.d.w fa0, s2
-  li a0, 4613937818241073152
-  fmv.d.x fa1, a0
-  fmul.d fa0, fa1, fa0
-  fcvt.d.w fa1, s0
-  fdiv.d fa0, fa0, fa1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fa0, fa0, fa1
-  fneg.d fa0, fa0
-  fcvt.d.w fa1, s1
-  li a0, 4613937818241073152
-  fmv.d.x fa2, a0
-  fmul.d fa1, fa2, fa1
-  fcvt.d.w fa2, s4
-  fdiv.d fa1, fa1, fa2
-  li a0, 4609434218613702656
-  fmv.d.x fa2, a0
-  fsub.d fa1, fa1, fa2
-  fld fa2, c_im.6, t5
-  fld fa3, c_re.5, t5
-  lw a1, iter.3
-  fld fa4, limit_sq.2, t5
-  mv a0, zero
-  call calc_pixel.92
-  mv a2, a0
-  mul a0, s1, s0
-  add a1, a0, s2
-  bge zero, a2, .main_loop.93_5
-
-.main_loop.93_6:
-  li a0, 48
-  blt a2, a0, .main_loop.93_8
-
-.main_loop.93_7:
-  li a0, 48
-
-.main_loop.93_9:
-
-.main_loop.93_10:
-  slliw a1, a1, 2
-  add a1, s3, a1
-  sw a0, 0(a1)
-  addi a1, s2, 1
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  mv s2, a1
-  j .main_loop.93_0
-
-.main_loop.93_1:
-  mv a0, zero
-
-.main_loop.93_12:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  addi sp, sp, 48
-  ret
-
-.main_loop.93_3:
-  addi a1, s1, 1
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  mv s2, zero
-  mv s1, a1
-  j .main_loop.93_0
-
-.main_loop.93_5:
-  mv a0, zero
-  j .main_loop.93_10
-
-.main_loop.93_8:
-  mv a0, a2
-  j .main_loop.93_9
-
-  .p2align 2
-  .text
-  .globl print_loop.94
-  .type print_loop.94, @function
-# leaf false
-print_loop.94:
-.print_loop.94_8:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  sd s4, 40(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
-  mv s3, a3
-  mv s4, a4
-
-.print_loop.94_0:
-  beq s3, s1, .print_loop.94_1
-
-.print_loop.94_2:
-  beq s2, s0, .print_loop.94_3
-
-.print_loop.94_4:
-  mul a0, s3, s0
-  add a0, a0, s2
-  slliw a0, a0, 2
-  add a0, s4, a0
-  lw a0, 0(a0)
-  addi a0, a0, 48
-  call minimbt_print_char
-  addi a0, s2, 1
-  mv s2, a0
-  j .print_loop.94_0
-
-.print_loop.94_1:
-  mv a0, zero
-
-.print_loop.94_6:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  addi sp, sp, 48
-  ret
-
-.print_loop.94_3:
-  li a0, 10
-  call minimbt_print_char
-  addi a0, s3, 1
-  mv s2, zero
-  mv s3, a0
-  j .print_loop.94_0
 
   .p2align 2
   .text

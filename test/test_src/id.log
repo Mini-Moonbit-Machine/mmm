@@ -321,6 +321,8 @@
 // [Knf] build_knf: Int(1000)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%1)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%0)])
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -408,8 +410,12 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
+// [KnfOpt] func_tre: f.1 false
+// [KnfOpt] func_tre: main.4 false
 // [KnfOpt] freq: {f.1: Once, main.4: Once}
-// [KnfOpt] Knf inline Some(f)
+// [KnfOpt] Knf inline Some(f) let _6: Int = Unit
+// [KnfOpt] ExtApply(minimbt_print_int, [_6, ])
+// [KnfOpt] freq: {main.4: Once}
 // [KnfOpt] Numbers of let rec: 1 1 0
 // [Parser] flags: []
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f2: Once})

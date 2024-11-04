@@ -59,6 +59,7 @@ fn shift_value(self : Renamer, value : @core.Value) -> @core.Value {
       BlockParam(bref=bref._.shift(self.counter.block_counter), ~bpref)
     FnParam(~fref, ~fpref) => FnParam(~fref, ~fpref)
     Self(..) => value
+    Phantom(..) => value
   }
 }
 

@@ -1,0 +1,147 @@
+let limit.1: Double = Double(2)
+let limit_sq.2: Double = FMul(limit.1, limit.1)
+let iter.3: Int = Int(300)
+let _4: Double = Double(0.123)
+let c_re.5: Double = FNeg(_4)
+let c_im.6: Double = Double(0.745)
+let rec main_loop.26: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31: Array(Int)) {
+  let join main_loop.105: Unit = (w.106: Int, h.107: Int, x.108: Int, y.109: Int, ret.110: Array(Int)) {
+    if (y.109 == h.107) then {
+      Unit
+    } else {
+      if (x.108 == w.106) then {
+        let _111: Int = Int(0)
+        let _112: Int = Int(1)
+        let _113: Int = Add(y.109, _112)
+        Jump(main_loop.105, [w.106, h.107, _111, _113, ret.110, ])
+      } else {
+        let _114: Double = Double(3)
+        let _115: Double = ExtApply(minimbt_float_of_int, [x.108, ])
+        let _116: Double = FMul(_114, _115)
+        let _117: Double = ExtApply(minimbt_float_of_int, [w.106, ])
+        let _118: Double = FDiv(_116, _117)
+        let _119: Double = Double(1.5)
+        let _120: Double = FSub(_118, _119)
+        let cr.121: Double = FNeg(_120)
+        let _122: Double = Double(3)
+        let _123: Double = ExtApply(minimbt_float_of_int, [y.109, ])
+        let _124: Double = FMul(_122, _123)
+        let _125: Double = ExtApply(minimbt_float_of_int, [h.107, ])
+        let _126: Double = FDiv(_124, _125)
+        let _127: Double = Double(1.5)
+        let ci.128: Double = FSub(_126, _127)
+        let _129: Int = Int(0)
+        let join calc_pixel.158: Int = (zr.159: Double, zi.160: Double, it.161: Int) {
+          let zr2.162: Double = FMul(zr.159, zr.159)
+          let zi2.163: Double = FMul(zi.160, zi.160)
+          if (it.161 == iter.3) then {
+            let _131: Int = Mul(y.109, w.106)
+            let _132: Int = Add(_131, x.108)
+            let _164: Int = Int(0)
+            if (iter.3 <= _164) then {
+              let _133: Int = Int(0)
+              let _134: Unit = Put ret.110[_132] = _133
+              let _135: Int = Int(1)
+              let _136: Int = Add(x.108, _135)
+              Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+            } else {
+              let _165: Int = Int(48)
+              if (_165 <= iter.3) then {
+                let _133: Int = Int(48)
+                let _134: Unit = Put ret.110[_132] = _133
+                let _135: Int = Int(1)
+                let _136: Int = Add(x.108, _135)
+                Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+              } else {
+                let _134: Unit = Put ret.110[_132] = iter.3
+                let _135: Int = Int(1)
+                let _136: Int = Add(x.108, _135)
+                Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+              }
+            }
+          } else {
+            let _166: Double = FAdd(zr2.162, zi2.163)
+            if (limit_sq.2 <= _166) then {
+              let _131: Int = Mul(y.109, w.106)
+              let _132: Int = Add(_131, x.108)
+              let _167: Int = Int(0)
+              if (it.161 <= _167) then {
+                let _133: Int = Int(0)
+                let _134: Unit = Put ret.110[_132] = _133
+                let _135: Int = Int(1)
+                let _136: Int = Add(x.108, _135)
+                Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+              } else {
+                let _168: Int = Int(48)
+                if (_168 <= it.161) then {
+                  let _133: Int = Int(48)
+                  let _134: Unit = Put ret.110[_132] = _133
+                  let _135: Int = Int(1)
+                  let _136: Int = Add(x.108, _135)
+                  Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+                } else {
+                  let _134: Unit = Put ret.110[_132] = it.161
+                  let _135: Int = Int(1)
+                  let _136: Int = Add(x.108, _135)
+                  Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+                }
+              }
+            } else {
+              let _169: Double = Double(2)
+              let _170: Double = FMul(_169, zr.159)
+              let _171: Double = FMul(_170, zi.160)
+              let new_zi.172: Double = FAdd(_171, c_im.6)
+              let _173: Double = FSub(zr2.162, zi2.163)
+              let new_zr.174: Double = FAdd(_173, c_re.5)
+              let _175: Int = Int(1)
+              let _176: Int = Add(it.161, _175)
+              Jump(calc_pixel.158, [new_zr.174, new_zi.172, _176, ])
+            }
+          }
+        }
+        Jump(calc_pixel.158, [cr.121, ci.128, _129, ])
+      }
+    }
+  }
+  Jump(main_loop.105, [w.27, h.28, x.29, y.30, ret.31, ])
+}
+let rec main.77: Var({val: Some(Unit)}) = () {
+  let h.78: Int = ExtApply(minimbt_read_int, [])
+  let _79: Int = Int(2)
+  let w.80: Int = Mul(h.78, _79)
+  let _81: Int = Mul(w.80, h.78)
+  let _82: Int = Int(0)
+  let ret.83: Array(Int) = ExtApply(minimbt_create_array, [_81, _82, ])
+  let _84: Int = Int(0)
+  let _85: Int = Int(0)
+  let _86: Unit = Apply(main_loop.26, [w.80, h.78, _84, _85, ret.83, ])
+  let _87: Int = Int(0)
+  let _88: Int = Int(0)
+  let join print_loop.177: Unit = (w.178: Int, h.179: Int, x.180: Int, y.181: Int, ret.182: Array(Int)) {
+    if (y.181 == h.179) then {
+      let _89: Unit = Unit
+      Unit
+    } else {
+      if (x.180 == w.178) then {
+        let _183: Int = Int(10)
+        let _184: Unit = ExtApply(minimbt_print_char, [_183, ])
+        let _185: Int = Int(0)
+        let _186: Int = Int(1)
+        let _187: Int = Add(y.181, _186)
+        Jump(print_loop.177, [w.178, h.179, _185, _187, ret.182, ])
+      } else {
+        let _188: Int = Int(48)
+        let _189: Int = Mul(y.181, w.178)
+        let _190: Int = Add(_189, x.180)
+        let _191: Int = Get ret.182[_190]
+        let _192: Int = Add(_188, _191)
+        let _193: Unit = ExtApply(minimbt_print_char, [_192, ])
+        let _194: Int = Int(1)
+        let _195: Int = Add(x.180, _194)
+        Jump(print_loop.177, [w.178, h.179, _195, y.181, ret.182, ])
+      }
+    }
+  }
+  Jump(print_loop.177, [w.80, h.78, _87, _88, ret.83, ])
+}
+Apply(main.77, [])

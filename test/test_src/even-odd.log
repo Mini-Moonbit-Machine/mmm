@@ -1351,6 +1351,24 @@
 // [Knf] build_knf: Int(789)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Core] b0 control: Panic -> Return(args=[Int32(val=123)])
+// [Core] b0 control: Panic -> Return(args=[Int32(val=456)])
+// [Core] b3 control: Panic -> Jump(target=b5, args=[Insn(iref=%2)])
+// [Core] b4 control: Panic -> Jump(target=b5, args=[Insn(iref=%6)])
+// [Core] b1 control: Panic -> Branch(cond=Insn(iref=%1), t=b3, t_args=[], f=b4, f_args=[])
+// [Core] b5 control: Panic -> Jump(target=b6, args=[BlockParam(bref=b5, bpref=$b.0)])
+// [Core] b2 control: Panic -> Jump(target=b6, args=[Insn(iref=%10)])
+// [Core] b0 control: Panic -> Branch(cond=Insn(iref=%0), t=b1, t_args=[], f=b2, f_args=[])
+// [Core] b6 control: Panic -> Return(args=[BlockParam(bref=b6, bpref=$b.0)])
+// [Core] b3 control: Panic -> Jump(target=b5, args=[Insn(iref=%2)])
+// [Core] b4 control: Panic -> Jump(target=b5, args=[Insn(iref=%6)])
+// [Core] b1 control: Panic -> Branch(cond=Insn(iref=%1), t=b3, t_args=[], f=b4, f_args=[])
+// [Core] b5 control: Panic -> Jump(target=b6, args=[BlockParam(bref=b5, bpref=$b.0)])
+// [Core] b2 control: Panic -> Jump(target=b6, args=[Insn(iref=%10)])
+// [Core] b0 control: Panic -> Branch(cond=Insn(iref=%0), t=b1, t_args=[], f=b2, f_args=[])
+// [Core] b6 control: Panic -> Return(args=[BlockParam(bref=b6, bpref=$b.0)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%3)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%2)])
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -1719,6 +1737,25 @@
 // [Wasm] Lowering function T$t.1
 // [Wasm] Lowering control Return(args=[Int32(val=123)])
 // [Wasm] Lowered function T$t.1 to wasm
+// [KnfOpt] func_tre: even.3 false
+// [KnfOpt] func_tre: odd.5 false
+// [KnfOpt] func_tre: main.19 false
+// [KnfOpt] freq: {even.3: Many(3), odd.5: Many(2), main.19: Once}
+// [KnfOpt] Inline threshold 3 35
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision even.3 rejected
+// [KnfOpt] Inline threshold 3 35
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision even.3 rejected
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision odd.5 rejected
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision odd.5 rejected
+// [KnfOpt] Inline threshold 3 35
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision even.3 rejected
 // [KnfOpt] freq: {even.3: Many(3), odd.5: Many(2), main.19: Once}
 // [KnfOpt] Inline threshold 3 35
 // [KnfOpt] Fn like 0

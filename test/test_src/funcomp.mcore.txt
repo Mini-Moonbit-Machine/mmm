@@ -15,30 +15,39 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl composed.30
-  .type composed.30, @function
+  .globl main.38
+  .type main.38, @function
 # leaf false
-composed.30:
-.composed.30_0:
+main.38:
+.main.38_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-
-.composed.30_2:
-  add a0, a0, a0
-
-.composed.30_1:
-  call dec.28
+  li a0, 123
+  call inc.36
+  call composed.39
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl dec.28
-  .type dec.28, @function
+  .globl inc.36
+  .type inc.36, @function
 # leaf true
-dec.28:
-.dec.28_0:
+inc.36:
+.inc.36_0:
+  addi a0, a0, 1
+  ret
+
+  .p2align 2
+  .text
+  .globl composed.39
+  .type composed.39, @function
+# leaf true
+composed.39:
+.composed.39_0:
+  add a0, a0, a0
   addi a0, a0, -1
   ret
 
@@ -51,42 +60,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.29
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl composed.31
-  .type composed.31, @function
-# leaf false
-composed.31:
-.composed.31_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-
-.composed.31_2:
-  addi a0, a0, 1
-
-.composed.31_1:
-  call composed.30
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.29
-  .type main.29, @function
-# leaf false
-main.29:
-.main.29_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 123
-  call composed.31
-  call minimbt_print_int
+  call main.38
   ld ra, 0(sp)
   addi sp, sp, 16
   ret

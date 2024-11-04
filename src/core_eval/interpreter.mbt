@@ -719,5 +719,6 @@ fn CoreInterpreter::eval_value(ctx : Ctx, value : Value) -> Object!Failure {
         fail!("fn param not found")
       }
     Self(_) => ctx.closure
+    Phantom(_) => fail!("phantom")
   }
 }

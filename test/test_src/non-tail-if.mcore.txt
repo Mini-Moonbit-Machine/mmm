@@ -41,47 +41,90 @@ main.17:
   fcvt.w.d a3, fa0, rtz
   li a0, 4616820122002590269
   fmv.d.x fa0, a0
-  fcvt.w.d a0, fa0, rtz
-  li a1, 4620569368692376207
-  fmv.d.x fa0, a1
+  fcvt.w.d a1, fa0, rtz
+  li a0, 4620569368692376207
+  fmv.d.x fa0, a0
   fneg.d fa0, fa0
   fcvt.w.d a2, fa0, rtz
   blt a2, zero, .main.17_2
 
 .main.17_1:
-  mv a4, a3
+  blt zero, a3, .main.17_4
 
 .main.17_3:
-  blt zero, a3, .main.17_5
+  add a0, a3, a1
+  blt a1, zero, .main.17_6
 
-.main.17_4:
-  mv a1, a0
-
-.main.17_6:
-  add a1, a4, a1
-  blt a0, zero, .main.17_8
+.main.17_5:
+  add a0, a0, a2
+  call minimbt_print_int
 
 .main.17_7:
-  mv a0, a2
 
-.main.17_9:
-  add a0, a1, a0
-  call minimbt_print_int
+.main.17_11:
+
+.main.17_21:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
 .main.17_2:
-  mv a4, a0
-  j .main.17_3
+  blt zero, a3, .main.17_13
 
-.main.17_5:
-  mv a1, a2
-  j .main.17_6
+.main.17_12:
+  add a0, a1, a1
+  blt a1, zero, .main.17_15
+
+.main.17_14:
+  add a0, a0, a2
+  call minimbt_print_int
+
+.main.17_16:
+
+.main.17_20:
+  j .main.17_21
+
+.main.17_13:
+  add a0, a1, a2
+  blt a1, zero, .main.17_18
+
+.main.17_17:
+  add a0, a0, a2
+  call minimbt_print_int
+
+.main.17_19:
+  j .main.17_20
+
+.main.17_18:
+  add a0, a0, a3
+  call minimbt_print_int
+  j .main.17_19
+
+.main.17_15:
+  add a0, a0, a3
+  call minimbt_print_int
+  j .main.17_16
+
+.main.17_4:
+  add a0, a3, a2
+  blt a1, zero, .main.17_9
 
 .main.17_8:
-  mv a0, a3
-  j .main.17_9
+  add a0, a0, a2
+  call minimbt_print_int
+
+.main.17_10:
+  j .main.17_11
+
+.main.17_9:
+  add a0, a0, a3
+  call minimbt_print_int
+  j .main.17_10
+
+.main.17_6:
+  add a0, a0, a3
+  call minimbt_print_int
+  j .main.17_7
 
   .p2align 2
   .text

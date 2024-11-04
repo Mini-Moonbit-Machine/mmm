@@ -1,0 +1,29 @@
+let rec main.13: Var({val: Some(Unit)}) = () {
+  let _14: Int = Int(3)
+  let _15: Double = Double(1.23)
+  let v1.16: Array(Double) = ExtApply(minimbt_create_float_array, [_14, _15, ])
+  let _17: Int = Int(3)
+  let _18: Double = Double(4.56)
+  let v2.19: Array(Double) = ExtApply(minimbt_create_float_array, [_17, _18, ])
+  let _20: Double = Double(1000000)
+  let _21: Double = Double(0)
+  let _22: Int = Int(2)
+  let join inprod.38: Double = (v1.39: Array(Double), v2.40: Array(Double), acc.41: Double, i.42: Int) {
+    let _43: Int = Int(0)
+    if (_43 <= i.42) then {
+      let _44: Double = Get v1.39[i.42]
+      let _45: Double = Get v2.40[i.42]
+      let _46: Double = FMul(_44, _45)
+      let _47: Double = FAdd(acc.41, _46)
+      let _48: Int = Int(1)
+      let _49: Int = Sub(i.42, _48)
+      Jump(inprod.38, [v1.39, v2.40, _47, _49, ])
+    } else {
+      let _24: Double = FMul(_20, acc.41)
+      let _25: Int = ExtApply(minimbt_truncate, [_24, ])
+      ExtApply(minimbt_print_int, [_25, ])
+    }
+  }
+  Jump(inprod.38, [v1.16, v2.19, _21, _22, ])
+}
+Apply(main.13, [])

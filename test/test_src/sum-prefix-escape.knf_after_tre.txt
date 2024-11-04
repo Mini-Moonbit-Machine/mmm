@@ -1,0 +1,36 @@
+let rec sum_prefix.1: Array(Int) = (arr.2: Array(Int), len.3: Int) {
+  let _4: Int = Int(0)
+  let res.5: Array(Int) = ExtApply(minimbt_create_array, [len.3, _4, ])
+  let rec sum_nested.6: Unit = (acc.7: Int, x.8: Int) {
+    let join sum_nested.27: Unit = (acc.28: Int, x.29: Int) {
+      let _30: Int = Int(1)
+      let _31: Int = Sub(len.3, _30)
+      if (x.29 <= _31) then {
+        let _32: Int = Get arr.2[x.29]
+        let s.33: Int = Add(acc.28, _32)
+        let _34: Unit = Put res.5[x.29] = s.33
+        let _35: Int = Int(1)
+        let _36: Int = Add(x.29, _35)
+        Jump(sum_nested.27, [s.33, _36, ])
+      } else {
+        Unit
+      }
+    }
+    Jump(sum_nested.27, [acc.7, x.8, ])
+  }
+  let _16: Int = Int(0)
+  let _17: Int = Int(0)
+  let _18: Unit = Apply(sum_nested.6, [_16, _17, ])
+  Var(res.5)
+}
+let rec main.19: Var({val: Some(Unit)}) = () {
+  let _20: Int = Int(10)
+  let _21: Int = Int(4)
+  let arr.22: Array(Int) = ExtApply(minimbt_create_array, [_20, _21, ])
+  let _23: Int = Int(10)
+  let _24: Array(Int) = Apply(sum_prefix.1, [arr.22, _23, ])
+  let _25: Int = Int(0)
+  let _26: Int = Get _24[_25]
+  ExtApply(minimbt_print_int, [_26, ])
+}
+Apply(main.19, [])

@@ -7,83 +7,8 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn T$_45 #f16 : fn() -> unit
+.fn h.50 #f7 : fn(int32) -> int32
 .freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: array[closure(int32) -> int32] = load_symbol ::1
-    let %1: int32 = load_symbol ::3
-    let %2: closure(int32) -> int32 = load_symbol ::2
-    let _ = store closure(int32) -> int32 offset(%0, %1 * @ptr) <- %2
-    return ()
-  }
-}
-.fn g.14 #f1 : fn(closure(int32) -> int32) -> closure(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f4, [1] = $f0
-    return f1.m0
-  }
-}
-.fn T$_44 #f14 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return 0
-  }
-}
-.fn T$arr.38 #f8 : fn() -> array[closure(int32) -> int32]
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f0
-    let _ = alloc <m1: array[closure(int32) -> int32] heap(%0)> <- [..] = f8.m0
-    return f8.m1
-  }
-}
-.fn main.30 #f22 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: closure(int32) -> int32 = load_symbol ::2
-    let %1: int32 = apply %0(5)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    let %3: int32 = load_symbol ::6
-    let %4: int32 = add(10, %3)
-    let %5: unit = ext_call minimbt_print_int(%4)
-    let %7: int32 = add(31, %3)
-    let %8: unit = ext_call minimbt_print_int(%7)
-    return %8
-  }
-}
-.fn dummy.1 #f0 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return $f0
-  }
-}
-.fn aux.39 #f10 : fn(int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: array[closure(int32) -> int32] = load_symbol ::1
-    let %1: closure(int32) -> int32 = load closure(int32) -> int32 field(%0, 0 * @ptr)
-    let %2: int32 = apply %1($f0)
-    return %2
-  }
-}
-.fn T$_26 #f18 : fn() -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return 5
-  }
-}
-.fn h.16 #f4 : closure(int32) -> int32
-.freevars (closure(int32) -> int32)
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f0, 0)
@@ -94,53 +19,106 @@
   }
   .bb #b2 () {
     let %1: int32 = sub($f0, 1)
-    let %2: int32 = apply ^1(%1)
-    let %3: int32 = mul($f0, %2)
-    jump b3(%3)
+    jump b5()
   }
   .bb #b3 (int32) {
     return $b3.0
   }
+  .bb #b4 (int32) {
+    let %3: int32 = mul($f0, $b4.0)
+    jump b3(%3)
+  }
+  .bb #b5 () {
+    let %4: array[closure(int32) -> int32] = load_symbol ::1
+    let %5: closure(int32) -> int32 = load closure(int32) -> int32 field(%4, 0 * @ptr)
+    let %6: int32 = apply %5(%1)
+    jump b4(%6)
+  }
 }
-.fn T$_37 #f6 : fn() -> int32
+.fn T$_47 #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: array[closure(int32) -> int32] = load_symbol ::1
+    let %1: int32 = load_symbol ::2
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f7
+    let _ = store closure(int32) -> int32 offset(%0, %1 * @ptr) <- f12.m0
+    return ()
+  }
+}
+.fn T$arr.40 #f4 : fn() -> array[closure(int32) -> int32]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load_symbol ::0
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f0
+    let _ = alloc <m1: array[closure(int32) -> int32] heap(%0)> <- [..] = f4.m0
+    return f4.m1
+  }
+}
+.fn T$_39 #f2 : fn() -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     return 1
   }
 }
-.fn T$a.27 #f20 : fn() -> int32
+.fn main.30 #f18 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: closure(int32) -> int32 = load_symbol ::2
-    let %1: int32 = load_symbol ::5
-    let %2: int32 = apply %0(%1)
-    return %2
+    let %0: int32 = call f7(5)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    let %2: int32 = load_symbol ::5
+    let %3: int32 = add(10, %2)
+    let %4: unit = ext_call minimbt_print_int(%3)
+    let %6: int32 = add(31, %2)
+    let %7: unit = ext_call minimbt_print_int(%6)
+    return %7
   }
 }
-.fn T$start #f24 : fn() -> unit
+.fn dummy.1 #f0 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f22()
-    return %0
+    return $f0
   }
 }
-.fn T$fixedpoint.43 #f12 : fn() -> closure(int32) -> int32
+.fn T$_26 #f14 : fn() -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f10
-    let %1: closure(int32) -> int32 = call f1(f12.m0)
+    return 5
+  }
+}
+.fn T$_46 #f10 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return 0
+  }
+}
+.fn T$a.27 #f16 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load_symbol ::4
+    let %1: int32 = call f7(%0)
     return %1
   }
 }
-.thunk ::0 _37
-.thunk ::1 arr.38
-.thunk ::2 fixedpoint.43
-.thunk ::3 _44
-.thunk ::4 _45
-.thunk ::5 _26
-.thunk ::6 a.27
-.thunk ::7 start
+.fn T$start #f20 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f18()
+    return %0
+  }
+}
+.thunk ::0 _39
+.thunk ::1 arr.40
+.thunk ::2 _46
+.thunk ::3 _47
+.thunk ::4 _26
+.thunk ::5 a.27
+.thunk ::6 start

@@ -124,6 +124,7 @@ fn WasmFnLoweringCtx::get_local_name(
       )
     FnParam(~fpref, ..) => Name("\{fpref}")
     Self(..) => self.closure_ptr
+    Phantom(..) => self.tracer.abort("Phantom value should not appear")
   }
   self.tracer.println("Get Local name \{value} -> \{name}")
   name
@@ -176,6 +177,8 @@ pub fn WasmFnLoweringCtx::lower_value(
       self.emit_wasm(GetLocal(name=self.get_local_name(value)))
     @core.Value::FreeVar(..) =>
       self.emit_wasm(GetLocal(name=self.get_local_name(value)))
+    @core.Value::Phantom(..) =>
+      self.tracer.abort("Phantom value should not appear in wasm backend")
   }
 }
 

@@ -1,0 +1,212 @@
+let rec read_ch_until_newline_or_eof.1: Int = () {
+  let c.2: Int = ExtApply(minimbt_read_char, [])
+  let _3: Int = Int(10)
+  if (c.2 == _3) then {
+    Int(-1)
+  } else {
+    let _4: Int = Int(13)
+    if (c.2 == _4) then {
+      Int(-1)
+    } else {
+      Var(c.2)
+    }
+  }
+}
+let rec main.120: Var({val: Some(Unit)}) = () {
+  let len.121: Int = Int(1024)
+  let _122: Int = Int(0)
+  let prog.123: Array(Int) = ExtApply(minimbt_create_array, [len.121, _122, ])
+  let rec read_prog.124: Var({val: Some(Unit)}) = (i.125: Var({val: Some(Int)})) {
+    let x.126: Int = Apply(read_ch_until_newline_or_eof.1, [])
+    let _127: Int = Int(-1)
+    if (x.126 == _127) then {
+      let _282: Int = Int(1)
+      let _283: Int = Int(0)
+      let ptr.284: Array(Int) = ExtApply(minimbt_create_array, [_282, _283, ])
+      let _285: Int = Int(1024)
+      let _286: Int = Int(1024)
+      let _287: Int = Mul(_285, _286)
+      let _288: Int = Int(0)
+      let cells.289: Array(Int) = ExtApply(minimbt_create_array, [_287, _288, ])
+      let _290: Int = Int(1)
+      let _291: Int = Int(0)
+      let next_pc.292: Array(Int) = ExtApply(minimbt_create_array, [_290, _291, ])
+      let rec skip.293: Var({val: Some(Int)}) = (pc.294: Var({val: Some(Int)}), level.295: Int) {
+        let join skip.296: Var({val: Some(Int)}) = (pc.297: Var({val: Some(Int)}), level.298: Int) {
+          if (i.125 <= pc.297) then {
+            Var(pc.297)
+          } else {
+            let i.299: Int = Get prog.123[pc.297]
+            let _300: Int = Int(91)
+            if (i.299 == _300) then {
+              let _301: Int = Int(1)
+              let _302: Int = Add(pc.297, _301)
+              let _303: Int = Int(1)
+              let _304: Int = Add(level.298, _303)
+              Jump(skip.296, [_302, _304, ])
+            } else {
+              let _305: Int = Int(93)
+              if (i.299 == _305) then {
+                let _306: Int = Int(0)
+                if (level.298 == _306) then {
+                  Var(pc.297)
+                } else {
+                  let _307: Int = Int(1)
+                  let _308: Int = Add(pc.297, _307)
+                  let _309: Int = Int(1)
+                  let _310: Int = Sub(level.298, _309)
+                  Jump(skip.296, [_308, _310, ])
+                }
+              } else {
+                let _311: Int = Int(1)
+                let _312: Int = Add(pc.297, _311)
+                Jump(skip.296, [_312, level.298, ])
+              }
+            }
+          }
+        }
+        Jump(skip.296, [pc.294, level.295, ])
+      }
+      let rec aux.313: Var({val: Some(Int)}) = (pc.314: Var({val: Some(Int)})) {
+        let join aux.315: Var({val: Some(Int)}) = (pc.316: Var({val: Some(Int)})) {
+          if (i.125 <= pc.316) then {
+            Var(pc.316)
+          } else {
+            let i.317: Int = Get prog.123[pc.316]
+            let _318: Int = Int(62)
+            if (i.317 == _318) then {
+              let _319: Int = Int(0)
+              let _320: Int = Int(0)
+              let _321: Int = Get ptr.284[_320]
+              let _322: Int = Int(1)
+              let _323: Int = Add(_321, _322)
+              let _324: Unit = Put ptr.284[_319] = _323
+              let _325: Int = Int(1)
+              let _326: Int = Add(pc.316, _325)
+              Jump(aux.315, [_326, ])
+            } else {
+              let _327: Int = Int(60)
+              if (i.317 == _327) then {
+                let _328: Int = Int(0)
+                let _329: Int = Int(0)
+                let _330: Int = Get ptr.284[_329]
+                let _331: Int = Int(1)
+                let _332: Int = Sub(_330, _331)
+                let _333: Unit = Put ptr.284[_328] = _332
+                let _334: Int = Int(1)
+                let _335: Int = Add(pc.316, _334)
+                Jump(aux.315, [_335, ])
+              } else {
+                let _336: Int = Int(43)
+                if (i.317 == _336) then {
+                  let _337: Int = Int(0)
+                  let _338: Int = Get ptr.284[_337]
+                  let _339: Int = Int(0)
+                  let _340: Int = Get ptr.284[_339]
+                  let _341: Int = Get cells.289[_340]
+                  let _342: Int = Int(1)
+                  let _343: Int = Add(_341, _342)
+                  let _344: Unit = Put cells.289[_338] = _343
+                  let _345: Int = Int(1)
+                  let _346: Int = Add(pc.316, _345)
+                  Jump(aux.315, [_346, ])
+                } else {
+                  let _347: Int = Int(45)
+                  if (i.317 == _347) then {
+                    let _348: Int = Int(0)
+                    let _349: Int = Get ptr.284[_348]
+                    let _350: Int = Int(0)
+                    let _351: Int = Get ptr.284[_350]
+                    let _352: Int = Get cells.289[_351]
+                    let _353: Int = Int(1)
+                    let _354: Int = Sub(_352, _353)
+                    let _355: Unit = Put cells.289[_349] = _354
+                    let _356: Int = Int(1)
+                    let _357: Int = Add(pc.316, _356)
+                    Jump(aux.315, [_357, ])
+                  } else {
+                    let _358: Int = Int(46)
+                    if (i.317 == _358) then {
+                      let _359: Int = Int(0)
+                      let _360: Int = Get ptr.284[_359]
+                      let _361: Int = Get cells.289[_360]
+                      let _362: Unit = ExtApply(minimbt_print_char, [_361, ])
+                      let _363: Int = Int(1)
+                      let _364: Int = Add(pc.316, _363)
+                      Jump(aux.315, [_364, ])
+                    } else {
+                      let _365: Int = Int(44)
+                      if (i.317 == _365) then {
+                        let _366: Int = Int(0)
+                        let _367: Int = Get ptr.284[_366]
+                        let _368: Int = Apply(read_ch_until_newline_or_eof.1, [])
+                        let _369: Unit = Put cells.289[_367] = _368
+                        let _370: Int = Int(1)
+                        let _371: Int = Add(pc.316, _370)
+                        Jump(aux.315, [_371, ])
+                      } else {
+                        let _372: Int = Int(91)
+                        if (i.317 == _372) then {
+                          let _373: Int = Int(0)
+                          let _374: Unit = Put next_pc.292[_373] = pc.316
+                          let join lp.417: Var({val: Some(Unit)}) = () {
+                            let _418: Int = Int(0)
+                            let _419: Int = Get ptr.284[_418]
+                            let _420: Int = Get cells.289[_419]
+                            let _421: Int = Int(0)
+                            if (_420 == _421) then {
+                              let _422: Int = Int(0)
+                              let _423: Int = Int(1)
+                              let _424: Int = Add(pc.316, _423)
+                              let _425: Int = Int(0)
+                              let _426: Var({val: Some(Int)}) = Apply(skip.293, [_424, _425, ])
+                              let _427: Unit = Put next_pc.292[_422] = _426
+                              let _392: Var({val: Some(Unit)}) = Unit
+                              let _393: Int = Int(0)
+                              let _394: Int = Get next_pc.292[_393]
+                              let _395: Int = Int(1)
+                              let _396: Int = Add(_394, _395)
+                              Jump(aux.315, [_396, ])
+                            } else {
+                              let _428: Int = Int(0)
+                              let _429: Int = Int(1)
+                              let _430: Int = Add(pc.316, _429)
+                              let _431: Var({val: Some(Int)}) = Apply(aux.313, [_430, ])
+                              let _432: Unit = Put next_pc.292[_428] = _431
+                              Jump(lp.417, [])
+                            }
+                          }
+                          Jump(lp.417, [])
+                        } else {
+                          let _397: Int = Int(93)
+                          if (i.317 == _397) then {
+                            Var(pc.316)
+                          } else {
+                            Var(pc.316)
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        Jump(aux.315, [pc.314, ])
+      }
+      let _398: Int = Int(0)
+      let _399: Var({val: Some(Int)}) = Apply(aux.313, [_398, ])
+      Unit
+    } else {
+      let _128: Unit = Put prog.123[i.125] = x.126
+      let _129: Int = Int(1)
+      let _130: Int = Add(i.125, _129)
+      Apply(read_prog.124, [_130, ])
+    }
+  }
+  let _131: Int = Int(0)
+  let _132: Var({val: Some(Unit)}) = Apply(read_prog.124, [_131, ])
+  Unit
+}
+Apply(main.120, [])

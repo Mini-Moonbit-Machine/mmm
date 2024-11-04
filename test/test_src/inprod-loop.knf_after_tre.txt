@@ -1,0 +1,33 @@
+let rec inprod.1: Double = (v1.2: Array(Double), v2.3: Array(Double), acc.4: Double, i.5: Int) {
+  let join inprod.26: Double = (v1.27: Array(Double), v2.28: Array(Double), acc.29: Double, i.30: Int) {
+    let _31: Int = Int(0)
+    if (_31 <= i.30) then {
+      let _32: Double = Get v1.27[i.30]
+      let _33: Double = Get v2.28[i.30]
+      let _34: Double = FMul(_32, _33)
+      let _35: Double = FAdd(acc.29, _34)
+      let _36: Int = Int(1)
+      let _37: Int = Sub(i.30, _36)
+      Jump(inprod.26, [v1.27, v2.28, _35, _37, ])
+    } else {
+      Var(acc.29)
+    }
+  }
+  Jump(inprod.26, [v1.2, v2.3, acc.4, i.5, ])
+}
+let rec main.13: Var({val: Some(Unit)}) = () {
+  let _14: Int = Int(3)
+  let _15: Double = Double(1.23)
+  let v1.16: Array(Double) = ExtApply(minimbt_create_float_array, [_14, _15, ])
+  let _17: Int = Int(3)
+  let _18: Double = Double(4.56)
+  let v2.19: Array(Double) = ExtApply(minimbt_create_float_array, [_17, _18, ])
+  let _20: Double = Double(1000000)
+  let _21: Double = Double(0)
+  let _22: Int = Int(2)
+  let _23: Double = Apply(inprod.1, [v1.16, v2.19, _21, _22, ])
+  let _24: Double = FMul(_20, _23)
+  let _25: Int = ExtApply(minimbt_truncate, [_24, ])
+  ExtApply(minimbt_print_int, [_25, ])
+}
+Apply(main.13, [])

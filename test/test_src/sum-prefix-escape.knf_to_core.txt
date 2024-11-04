@@ -7,47 +7,46 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn sum_nested.43 #f0 : fn(int32, int32, int32, array[int32], array[int32]) -> unit
+.fn T$start #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = sub($f2, 1)
-    let %1: bool = le($f1, %0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    let %2: int32 = load int32 offset($f3, $f1 * @32)
-    let %3: int32 = add($f0, %2)
-    let _ = store int32 offset($f4, $f1 * @32) <- %3
-    let %5: int32 = add($f1, 1)
-    let %6: unit = call f0(%3, %5, $f2, $f3, $f4)
-    jump b3(%6)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-}
-.fn T$start #f4 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f1()
+    let %0: unit = call f0()
     return %0
   }
 }
-.fn main.42 #f1 : fn() -> unit
+.fn main.75 #f0 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(10)> <- [..] = 4
     let _ = alloc <m1: array[int32] heap(10)> <- [..] = 0
-    let %2: unit = call f0(0, 0, 10, f1.m0, f1.m1)
-    let %3: int32 = load int32 offset(f1.m1, 0 * @32)
-    let %4: unit = ext_call minimbt_print_int(%3)
-    return %4
+    jump b1(0, 0)
+  }
+  .loop #b1 pre #Some(b0) header #b2 {
+    .block #b3
+    .block #b4
+    .block #b5
+  }
+  .bb #b2 (int32, int32) {
+    let %2: int32 = sub(10, 1)
+    let %3: bool = le($b2.1, %2)
+    br %3 b3() b4()
+  }
+  .bb #b3 () {
+    let %4: int32 = load int32 offset(f0.m0, $b2.1 * @32)
+    let %5: int32 = add($b2.0, %4)
+    let _ = store int32 offset(f0.m1, $b2.1 * @32) <- %5
+    let %7: int32 = add($b2.1, 1)
+    jump b2(%5, %7)
+  }
+  .bb #b4 () {
+    let %8: int32 = load int32 offset(f0.m1, 0 * @32)
+    let %9: unit = ext_call minimbt_print_int(%8)
+    jump b5(%9)
+  }
+  .bb #b5 (any) {
+    return $b5.0
   }
 }
 .thunk ::0 start

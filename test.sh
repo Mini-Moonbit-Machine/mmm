@@ -8,6 +8,6 @@ end
 
 for file in test/longer-cases/*.mbt
   echo "Testing $file"
-  moon run src/bin/main.mbt -- --end-stage riscv $file
+  moon run src/bin/main.mbt -- --end-stage riscv -notc $file
   echo \n
 end

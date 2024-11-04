@@ -1,45 +1,30 @@
-let rec next.72: Bool = (i.55: Var({val: Some(Int)}), _44: Int, arr.28: Array(Int), yield.53: Var({val: Some(Fun([Int], Bool))})) {
-  let _56: Int = Int(1)
-  let _57: Int = Sub(_44, _56)
-  if (i.55 <= _57) then {
-    let _58: Int = Get arr.28[i.55]
-    let _59: Bool = Apply(yield.53, [_58, ])
-    let _60: Bool = Bool(true)
-    if (_59 == _60) then {
-      let _61: Int = Int(1)
-      let _62: Int = Add(i.55, _61)
-      Apply(next.72, [_62, _44, arr.28, yield.53, ])
+let rec do.125: Bool = (yield.80: Var({val: Some(Fun([Int], Bool))}), _44: Int, arr.28: Array(Int)) {
+  let _92: Int = Int(0)
+  let join next.100: Bool = (i.101: Var({val: Some(Int)})) {
+    let _102: Int = Int(1)
+    let _103: Int = Sub(_44, _102)
+    if (i.101 <= _103) then {
+      let _104: Int = Get arr.28[i.101]
+      let _105: Bool = Apply(yield.80, [_104, ])
+      let _106: Bool = Bool(true)
+      if (_105 == _106) then {
+        let _107: Int = Int(1)
+        let _108: Int = Add(i.101, _107)
+        Jump(next.100, [_108, ])
+      } else {
+        Bool(false)
+      }
     } else {
       Bool(false)
     }
-  } else {
-    Bool(false)
   }
+  Jump(next.100, [_92, ])
 }
-let rec do.71: Bool = (yield.53: Var({val: Some(Fun([Int], Bool))}), _44: Int, arr.28: Array(Int)) {
-  let _63: Int = Int(0)
-  Apply(next.72, [_63, _44, arr.28, yield.53, ])
-}
-let rec print.73: Unit = (x.47: Var({val: Some(Int)})) {
-  ExtApply(minimbt_print_int, [x.47, ])
-}
-let rec yield.74: Bool = (x.65: Var({val: Some(Int)})) {
-  let _66: Unit = Apply(print.73, [x.65, ])
+let rec yield.126: Bool = (x.94: Var({val: Some(Int)})) {
+  let _95: Unit = ExtApply(minimbt_print_int, [x.94, ])
   Bool(true)
 }
-let rec do.75: Var({val: Some(Unit)}) = (_44: Int, arr.28: Array(Int)) {
-  let rec yield.76: Bool = (x.65: Var({val: Some(Int)})) {
-    Apply(yield.74, [x.65, ])
-  }
-  let _68: Bool = Apply(do.71, [yield.76, _44, arr.28, ])
-  let _69: Bool = Bool(true)
-  if (_68 == _69) then {
-    Apply(do.75, [_44, arr.28, ])
-  } else {
-    Unit
-  }
-}
-let rec main.70: Var({val: Some(Unit)}) = () {
+let rec main.124: Var({val: Some(Unit)}) = () {
   let _26: Int = Int(5)
   let _27: Int = Int(1)
   let arr.28: Array(Int) = ExtApply(minimbt_create_array, [_26, _27, ])
@@ -59,6 +44,18 @@ let rec main.70: Var({val: Some(Unit)}) = () {
   let _42: Int = Int(5)
   let _43: Unit = Put arr.28[_41] = _42
   let _44: Int = Int(5)
-  Apply(do.75, [_44, arr.28, ])
+  let join do.121: Var({val: Some(Unit)}) = () {
+    let rec yield.127: Bool = (x.94: Var({val: Some(Int)})) {
+      Apply(yield.126, [x.94, ])
+    }
+    let _122: Bool = Apply(do.125, [yield.127, _44, arr.28, ])
+    let _123: Bool = Bool(true)
+    if (_122 == _123) then {
+      Jump(do.121, [])
+    } else {
+      Unit
+    }
+  }
+  Jump(do.121, [])
 }
-Apply(main.70, [])
+Apply(main.124, [])

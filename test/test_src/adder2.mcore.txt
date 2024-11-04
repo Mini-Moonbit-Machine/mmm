@@ -15,12 +15,21 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl adder.21
-  .type adder.21, @function
-# leaf true
-adder.21:
-.adder.21_0:
-  add a0, a1, a0
+  .globl main.15
+  .type main.15, @function
+# leaf false
+main.15:
+.main.15_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 10
+  addi a0, a0, 2
+  li a1, 20
+  addi a1, a1, 3
+  add a0, a0, a1
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -32,32 +41,8 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.19
+  call main.15
   ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.19
-  .type main.19, @function
-# leaf false
-main.19:
-.main.19_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  li a0, 10
-  li a1, 2
-  call adder.20
-  mv s0, a0
-  li a0, 20
-  li a1, 3
-  call adder.21
-  add a0, s0, a0
-  call minimbt_print_int
-  ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -81,16 +66,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl adder.20
-  .type adder.20, @function
-# leaf true
-adder.20:
-.adder.20_0:
-  add a0, a1, a0
   ret
 
 __end_text:

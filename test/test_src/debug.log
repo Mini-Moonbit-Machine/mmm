@@ -114,7 +114,7 @@
 // [Asm]   comment = ""
 // [Asm] }
 // [Asm] 
-// [Asm] subst   call main.24 ->   call main.24
+// [Asm] subst   call main.34 ->   call main.34
 // [Asm] subst   ret ->   ret
 // [Asm] pre_assigned_registers: Self(fref=f0) -> v0, FnParam(fref=f0, fpref=$f.1) -> v3, FnParam(fref=f0, fpref=$f.0) -> v2
 // [Asm] defs: []
@@ -139,7 +139,7 @@
 // [Asm] live_set: []
 // [Asm] move_origin: []
 // [Asm] graph G {
-// [Asm]   graph [label="integer interference graph of g.23"];
+// [Asm]   graph [label="integer interference graph of g.33"];
 // [Asm]   r0 [label="v2 ← a0", color=green];
 // [Asm]   r2 [label="v3 ← a0", color=green];
 // [Asm]   r1 [label="a1", color=blue];
@@ -150,7 +150,7 @@
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
-// [Asm]   graph [label="float interference graph of g.23"];
+// [Asm]   graph [label="float interference graph of g.33"];
 // [Asm]   comment = ""
 // [Asm]   comment = ""
 // [Asm] }
@@ -172,14 +172,14 @@
 // [Asm] live_set: []
 // [Asm] move_origin: []
 // [Asm] graph G {
-// [Asm]   graph [label="integer interference graph of main.24"];
+// [Asm]   graph [label="integer interference graph of main.34"];
 // [Asm]   r0 [label="a0", color=blue];
 // [Asm]   comment = "0:a0"
 // [Asm]   comment = ""
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
-// [Asm]   graph [label="float interference graph of main.24"];
+// [Asm]   graph [label="float interference graph of main.34"];
 // [Asm]   comment = ""
 // [Asm]   comment = ""
 // [Asm] }
@@ -194,7 +194,7 @@
 // [Asm] .T$start_0:
 // [Asm]   # save_ctx1  # live: []
 // [Asm]   # save_ctx2  # live: []
-// [Asm]   call main.24  # live: [a0]
+// [Asm]   call main.34  # live: [a0]
 // [Asm]   mv v2, a0  # live: [v2]
 // [Asm]   # restore_ctx2  # live: [v2]
 // [Asm] # control
@@ -203,11 +203,11 @@
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm] # leaf true
-// [Asm] g.23:
+// [Asm] g.33:
 // [Asm] # block info: defs: [v3, a0, v2], uses: [a1, a0, v3], upward_exposed: [a1, a0], params_defs: []
 // [Asm] # live_in: [a1, a0], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .g.23_0:
+// [Asm] .g.33_0:
 // [Asm]   # save_ctx1  # live: [a1, a0]
 // [Asm]   mv v2, a0  # live: [a1]
 // [Asm]   mv v3, a1  # live: [v3]
@@ -239,11 +239,11 @@
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm] # leaf true
-// [Asm] main.24:
+// [Asm] main.34:
 // [Asm] # block info: defs: [a0], uses: [zero, a0], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main.24_0:
+// [Asm] .main.34_0:
 // [Asm]   # save_ctx1  # live: [zero]
 // [Asm] # control
 // [Asm]   mv a0, zero  # live: [a0]
@@ -277,6 +277,22 @@
 // [Knf] build_knf: Unit
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Core] b0 control: Panic -> Return(args=[FnParam(fref=f0, fpref=$f.1)])
+// [Core] b7 control: Panic -> Jump(target=b9, args=[Insn(iref=%4)])
+// [Core] b8 control: Panic -> Jump(target=b9, args=[Insn(iref=%5)])
+// [Core] b5 control: Panic -> Branch(cond=Insn(iref=%3), t=b7, t_args=[], f=b8, f_args=[])
+// [Core] b9 control: Panic -> Jump(target=b10, args=[BlockParam(bref=b9, bpref=$b.0)])
+// [Core] b6 control: Panic -> Jump(target=b10, args=[Int32(val=1)])
+// [Core] b3 control: Panic -> Branch(cond=Insn(iref=%2), t=b5, t_args=[], f=b6, f_args=[])
+// [Core] b10 control: Panic -> Jump(target=b11, args=[BlockParam(bref=b10, bpref=$b.0)])
+// [Core] b4 control: Panic -> Jump(target=b11, args=[Int32(val=1)])
+// [Core] b1 control: Panic -> Branch(cond=Insn(iref=%1), t=b3, t_args=[], f=b4, f_args=[])
+// [Core] b11 control: Panic -> Jump(target=b12, args=[BlockParam(bref=b11, bpref=$b.0)])
+// [Core] b2 control: Panic -> Jump(target=b12, args=[FnParam(fref=f1, fpref=$f.0)])
+// [Core] b0 control: Panic -> Branch(cond=Insn(iref=%0), t=b1, t_args=[], f=b2, f_args=[])
+// [Core] b12 control: Panic -> Return(args=[BlockParam(bref=b12, bpref=$b.0)])
+// [Core] b0 control: Panic -> Return(args=[Unit])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%0)])
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -301,18 +317,18 @@
 // [Main] .T$start_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
-// [Main]   call main.24
+// [Main]   call main.34
 // [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl g.23
-// [Main]   .type g.23, @function
+// [Main]   .globl g.33
+// [Main]   .type g.33, @function
 // [Main] # leaf true
-// [Main] g.23:
-// [Main] .g.23_0:
+// [Main] g.33:
+// [Main] .g.33_0:
 // [Main]   mv a0, a1
 // [Main]   ret
 // [Main] 
@@ -340,11 +356,11 @@
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl main.24
-// [Main]   .type main.24, @function
+// [Main]   .globl main.34
+// [Main]   .type main.34, @function
 // [Main] # leaf true
-// [Main] main.24:
-// [Main] .main.24_0:
+// [Main] main.34:
+// [Main] .main.34_0:
 // [Main]   mv a0, zero
 // [Main]   ret
 // [Main] 
@@ -360,20 +376,28 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f2, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
-// [Wasm] Lowering function g.23
+// [Wasm] Lowering function g.33
 // [Wasm] Lowering control Return(args=[FnParam(fref=f0, fpref=$f.1)])
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.1) -> $$f.1
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.1) -> $$f.1
-// [Wasm] Lowered function g.23 to wasm
-// [Wasm] Lowering function main.24
+// [Wasm] Lowered function g.33 to wasm
+// [Wasm] Lowering function main.34
 // [Wasm] Lowering control Return(args=[Unit])
-// [Wasm] Lowered function main.24 to wasm
+// [Wasm] Lowered function main.34 to wasm
+// [KnfOpt] func_tre: useless.1 false
+// [KnfOpt] func_tre: dummy.5 false
+// [KnfOpt] func_tre: f.7 false
+// [KnfOpt] func_tre: g.9 false
+// [KnfOpt] func_tre: main.15 false
 // [KnfOpt] freq: {useless.1: Zero, dummy.5: Zero, f.7: Once, g.9: Once, main.15: Once}
-// [KnfOpt] Knf inline Some(f)
-// [KnfOpt] Knf inline Some(g)
+// [KnfOpt] Knf inline Some(f) Unit
+// [KnfOpt] Knf inline Some(g) Unit
+// [KnfOpt] freq: {f.7: Once, g.16: Once, main.15: Once}
+// [KnfOpt] Knf inline Some(f) Unit
+// [KnfOpt] Knf inline Some(g) Unit
 // [KnfOpt] Numbers of let rec: 3 3 0
 // [Parser] flags: []
-// [CoreOpt] eliminated tail rec call %2: Call(ty=Int32, f=f1, args=[Int32(val=1)])
+// [CoreOpt] eliminated tail rec call %4: Call(ty=Int32, f=f1, args=[Int32(val=1)])
 // [CoreOpt] Call frequnce: FnCallFreq({f6: Once, f0: Once, f1: Never, f2: Once})
 // [CoreOpt] Remove dead function: f1

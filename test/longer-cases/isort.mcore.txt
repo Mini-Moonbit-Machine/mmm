@@ -15,159 +15,15 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl aux.130
-  .type aux.130, @function
+  .globl modulo.368
+  .type modulo.368, @function
 # leaf true
-aux.130:
-.aux.130_5:
-  mv a4, a0
-  mv a3, a1
-  mv a0, a2
-  mv a1, a4
-  mv a2, a3
-  mv a3, a0
-
-.aux.130_0:
-  bne a1, a2, .aux.130_2
-
-.aux.130_1:
-  mv a0, zero
-
-.aux.130_3:
+modulo.368:
+.modulo.368_0:
+  div a2, a0, a1
+  mul a1, a2, a1
+  sub a0, a0, a1
   ret
-
-.aux.130_2:
-
-.aux.130_15:
-  mv a4, a1
-
-.aux.130_7:
-  beq a4, zero, .aux.130_8
-
-.aux.130_9:
-  addi a0, a4, -1
-  slliw a0, a0, 2
-  add a0, a3, a0
-  lw a0, 0(a0)
-  slliw a5, a4, 2
-  add a5, a3, a5
-  lw a5, 0(a5)
-  bge a5, a0, .aux.130_10
-
-.aux.130_11:
-  slliw a0, a4, 2
-  add a0, a3, a0
-  lw a0, 0(a0)
-  addi a5, a4, -1
-  slliw a6, a5, 2
-  add a6, a3, a6
-  lw a6, 0(a6)
-  slliw a4, a4, 2
-  add a4, a3, a4
-  sw a6, 0(a4)
-  slliw a4, a5, 2
-  add a4, a3, a4
-  sw a0, 0(a4)
-  mv a4, a5
-  j .aux.130_7
-
-.aux.130_8:
-  mv a0, zero
-
-.aux.130_13:
-
-.aux.130_6:
-  addi a0, a1, 1
-  mv a1, a0
-  j .aux.130_0
-
-.aux.130_10:
-  mv a0, zero
-
-.aux.130_12:
-  j .aux.130_13
-
-  .p2align 2
-  .text
-  .globl main.127
-  .type main.127, @function
-# leaf false
-main.127:
-.main.127_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  addi s0, s11, -400
-  andi s11, s0, -8
-  li a0, 100
-  mv a1, a0
-  mv a0, zero
-  li a1, 12345
-  li a2, 100
-  mv a3, s0
-  call aux.128
-  li a0, 1
-  li a1, 100
-  mv a2, s0
-  call aux.130
-  mv a0, zero
-  li a1, 100
-  mv a2, s0
-  call aux.131
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl aux.128
-  .type aux.128, @function
-# leaf true
-aux.128:
-.aux.128_5:
-  mv a4, a0
-  mv a0, a1
-  mv a1, a2
-  mv a2, a3
-  mv a3, a4
-  mv a4, a2
-
-.aux.128_0:
-  bne a3, a1, .aux.128_2
-
-.aux.128_1:
-  mv a0, zero
-
-.aux.128_3:
-  ret
-
-.aux.128_2:
-
-.aux.128_9:
-  li a2, 75
-  mul a0, a0, a2
-  addi a0, a0, 74
-  mv a2, a0
-
-.aux.128_6:
-
-.aux.128_8:
-  li a0, 65537
-  div a0, a2, a0
-  li a5, 65537
-  mul a0, a0, a5
-  sub a0, a2, a0
-  mv a2, a0
-
-.aux.128_7:
-  slliw a0, a3, 2
-  add a0, a4, a0
-  sw a2, 0(a0)
-  addi a0, a3, 1
-  mv a3, a0
-  mv a0, a2
-  j .aux.128_0
 
   .p2align 2
   .text
@@ -178,9 +34,101 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.127
+  call main.369
   ld ra, 0(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.369
+  .type main.369, @function
+# leaf false
+main.369:
+.main.369_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  addi s1, s11, -400
+  andi s11, s1, -8
+  li a0, 100
+  mv a1, a0
+  mv s0, zero
+  li a0, 12345
+  mv a1, a0
+
+.main.369_2:
+  li a0, 100
+  beq s0, a0, .main.369_3
+
+.main.369_4:
+  mv a0, a1
+  call random.367
+  li a1, 65537
+  call modulo.368
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+  addi a1, s0, 1
+  mv s0, a1
+  mv a1, a0
+  j .main.369_2
+
+.main.369_3:
+  li a0, 1
+  mv s0, a0
+
+.main.369_6:
+  li a0, 100
+  beq s0, a0, .main.369_7
+
+.main.369_8:
+  mv a0, s1
+  mv a1, s0
+  call insert.370
+  addi a0, s0, 1
+  mv s0, a0
+  j .main.369_6
+
+.main.369_7:
+  mv s0, zero
+
+.main.369_10:
+  li a0, 100
+  beq s0, a0, .main.369_11
+
+.main.369_12:
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
+  call minimbt_print_int
+  li a0, 32
+  call minimbt_print_char
+  addi a0, s0, 1
+  mv s0, a0
+  j .main.369_10
+
+.main.369_11:
+  mv a0, zero
+
+.main.369_13:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl random.367
+  .type random.367, @function
+# leaf true
+random.367:
+.random.367_0:
+  li a1, 75
+  mul a0, a0, a1
+  addi a0, a0, 74
   ret
 
   .p2align 2
@@ -207,44 +155,57 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl aux.131
-  .type aux.131, @function
-# leaf false
-aux.131:
-.aux.131_5:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  mv s2, a2
+  .globl insert.370
+  .type insert.370, @function
+# leaf true
+insert.370:
+.insert.370_0:
+  mv a2, a0
+  mv a0, a1
+  mv a1, a2
+  mv a2, a0
 
-.aux.131_0:
-  beq s0, s1, .aux.131_1
+.insert.370_2:
+  beq a2, zero, .insert.370_3
 
-.aux.131_2:
-  slliw a0, s0, 2
-  add a0, s2, a0
+.insert.370_4:
+  addi a0, a2, -1
+  slliw a0, a0, 2
+  add a0, a1, a0
   lw a0, 0(a0)
-  call minimbt_print_int
-  li a0, 32
-  call minimbt_print_char
-  addi a0, s0, 1
-  mv s0, a0
-  j .aux.131_0
+  slliw a3, a2, 2
+  add a3, a1, a3
+  lw a3, 0(a3)
+  bge a3, a0, .insert.370_5
 
-.aux.131_1:
+.insert.370_6:
+  slliw a0, a2, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  addi a3, a2, -1
+  slliw a4, a3, 2
+  add a4, a1, a4
+  lw a4, 0(a4)
+  slliw a2, a2, 2
+  add a2, a1, a2
+  sw a4, 0(a2)
+  slliw a2, a3, 2
+  add a2, a1, a2
+  sw a0, 0(a2)
+  mv a2, a3
+  j .insert.370_2
+
+.insert.370_3:
   mv a0, zero
 
-.aux.131_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
+.insert.370_8:
   ret
+
+.insert.370_5:
+  mv a0, zero
+
+.insert.370_7:
+  j .insert.370_8
 
 __end_text:
   .p2align 2

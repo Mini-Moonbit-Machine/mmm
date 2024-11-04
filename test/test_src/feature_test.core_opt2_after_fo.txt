@@ -36,26 +36,38 @@
   }
   .bb #b1 () {
     let %13: unit = ext_call minimbt_print_int(1)
-    jump b3(%13)
+    let %14: bool = eq(1, 1)
+    br %14 b3() b4()
   }
   .bb #b2 () {
-    let %14: unit = ext_call minimbt_print_int(0)
-    jump b3(%14)
+    let %17: unit = ext_call minimbt_print_int(0)
+    let %18: bool = eq(1, 1)
+    br %18 b6() b7()
   }
-  .bb #b3 (unit) {
-    let %15: bool = eq(1, 1)
-    br %15 b4() b5()
+  .bb #b3 () {
+    let %15: unit = ext_call minimbt_print_int(1)
+    jump b5(%15)
   }
   .bb #b4 () {
-    let %16: unit = ext_call minimbt_print_int(1)
-    jump b6(%16)
+    let %16: unit = ext_call minimbt_print_int(0)
+    jump b5(%16)
   }
-  .bb #b5 () {
-    let %17: unit = ext_call minimbt_print_int(0)
-    jump b6(%17)
+  .bb #b5 (unit) {
+    jump b9($b5.0)
   }
-  .bb #b6 (unit) {
-    return $b6.0
+  .bb #b6 () {
+    let %19: unit = ext_call minimbt_print_int(1)
+    jump b8(%19)
+  }
+  .bb #b7 () {
+    let %20: unit = ext_call minimbt_print_int(0)
+    jump b8(%20)
+  }
+  .bb #b8 (unit) {
+    jump b9($b8.0)
+  }
+  .bb #b9 (unit) {
+    return $b9.0
   }
 }
 .thunk ::0 start

@@ -15,11 +15,59 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl yloop.121
-  .type yloop.121, @function
+  .globl main.711
+  .type main.711, @function
 # leaf false
-yloop.121:
-.yloop.121_5:
+main.711:
+.main.711_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, zero
+
+.main.711_2:
+  li a0, 40
+  bge s0, a0, .main.711_3
+
+.main.711_4:
+  mv a0, zero
+  mv a1, s0
+  li a2, 40
+  call xloop.713
+  addi a0, s0, 1
+  mv s0, a0
+  j .main.711_2
+
+.main.711_3:
+  mv a0, zero
+
+.main.711_5:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl T$start
+  .type T$start, @function
+# leaf false
+T$start:
+.T$start_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call main.711
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl xloop.713
+  .type xloop.713, @function
+# leaf false
+xloop.713:
+.xloop.713_0:
   addi sp, sp, -80
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -30,16 +78,72 @@ yloop.121:
   fsd fs1, 48(sp)
   fsd fs2, 56(sp)
   fsd fs3, 64(sp)
+  mv s1, a2
   mv s0, a0
-  mv s1, a1
+  mv s2, a1
 
-.yloop.121_0:
-  blt s0, s1, .yloop.121_2
+.xloop.713_2:
+  bge s0, s1, .xloop.713_3
 
-.yloop.121_1:
+.xloop.713_4:
+  fcvt.d.w fa0, s0
+  call dbl.712
+  fcvt.d.w fs0, s1
+  fdiv.d fa0, fa0, fs0
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fs1, fa0, fa1
+  fcvt.d.w fa0, s2
+  call dbl.712
+  fdiv.d fa0, fa0, fs0
+  li a0, 4607182418800017408
+  fmv.d.x fa1, a0
+  fsub.d fa3, fa0, fa1
+
+.xloop.713_14:
+  li a0, 1000
+  mv s3, a0
+  fmv.d.x fa0, zero
+  fmv.d fs0, fa0
+  fmv.d fa2, fa0
+  fmv.d fa1, fa0
+  fmv.d fs2, fa3
+
+.xloop.713_16:
+  beq s3, zero, .xloop.713_17
+
+.xloop.713_18:
+  fsub.d fa1, fa2, fa1
+  fadd.d fs3, fa1, fs1
+  call dbl.712
+  fmadd.d fa3, fa0, fs0, fs2
+  fmul.d fa2, fs3, fs3
+  fmul.d fa1, fa3, fa3
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
+  fmul.d fa0, fa0, fa0
+  fadd.d fa4, fa2, fa1
+  fle.d a0, fa0, fa4
+  beq a0, zero, .xloop.713_20
+
+.xloop.713_19:
+  mv a0, zero
+  call minimbt_print_int
+
+.xloop.713_21:
+
+.xloop.713_22:
+
+.xloop.713_6:
+  addi a0, s0, 1
+  mv s0, a0
+  j .xloop.713_2
+
+.xloop.713_3:
+  call minimbt_print_endline
   mv a0, zero
 
-.yloop.121_3:
+.xloop.713_5:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -52,130 +156,26 @@ yloop.121:
   addi sp, sp, 80
   ret
 
-.yloop.121_2:
-
-.yloop.121_12:
-  mv s2, zero
-
-.yloop.121_7:
-  bge s2, s1, .yloop.121_8
-
-.yloop.121_9:
-  fcvt.d.w fa0, s2
-  call dbl.120
-  fcvt.d.w fs1, s1
-  fdiv.d fa0, fa0, fs1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s0
-  call dbl.120
-  fdiv.d fa0, fa0, fs1
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa3, fa0, fa1
-
-.yloop.121_29:
-  li a0, 1000
-  mv s3, a0
-  fmv.d.x fa0, zero
-  fmv.d fs1, fa0
-  fmv.d fa1, fa0
-  fmv.d fa2, fa0
-  fmv.d fs2, fs0
-  fmv.d fs0, fa3
-
-.yloop.121_21:
-  beq s3, zero, .yloop.121_22
-
-.yloop.121_23:
-  fsub.d fa1, fa1, fa2
-  fadd.d fs3, fa1, fs2
-  call dbl.120
-  fmadd.d fa3, fa0, fs1, fs0
-  fmul.d fa1, fs3, fs3
-  fmul.d fa2, fa3, fa3
-  li a0, 4611686018427387904
-  fmv.d.x fa0, a0
-  fmul.d fa0, fa0, fa0
-  fadd.d fa4, fa1, fa2
-  fle.d a0, fa0, fa4
-  beq a0, zero, .yloop.121_25
-
-.yloop.121_24:
-  mv a0, zero
-  call minimbt_print_int
-
-.yloop.121_26:
-
-.yloop.121_27:
-
-.yloop.121_13:
-  addi a0, s2, 1
-  mv s2, a0
-  j .yloop.121_7
-
-.yloop.121_8:
-  call minimbt_print_endline
-  mv a0, zero
-
-.yloop.121_10:
-
-.yloop.121_6:
-  addi a0, s0, 1
-  mv s0, a0
-  j .yloop.121_0
-
-.yloop.121_22:
+.xloop.713_17:
   li a0, 1
   call minimbt_print_int
-  j .yloop.121_27
+  j .xloop.713_22
 
-.yloop.121_25:
+.xloop.713_20:
   addi a0, s3, -1
   mv s3, a0
   fmv.d fa0, fs3
-  fmv.d fs1, fa3
-  j .yloop.121_21
+  fmv.d fs0, fa3
+  j .xloop.713_16
 
   .p2align 2
   .text
-  .globl T$start
-  .type T$start, @function
-# leaf false
-T$start:
-.T$start_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main.119
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl dbl.120
-  .type dbl.120, @function
+  .globl dbl.712
+  .type dbl.712, @function
 # leaf true
-dbl.120:
-.dbl.120_0:
+dbl.712:
+.dbl.712_0:
   fadd.d fa0, fa0, fa0
-  ret
-
-  .p2align 2
-  .text
-  .globl main.119
-  .type main.119, @function
-# leaf false
-main.119:
-.main.119_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, zero
-  li a1, 40
-  call yloop.121
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 2

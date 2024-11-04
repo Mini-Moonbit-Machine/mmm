@@ -161,6 +161,7 @@ pub enum Type {
   Tuple(~fields : Array[Type])
   Array(~elem : Type)
   Ptr
+  Any
 } derive(Show, Eq)
 
 pub enum Value {
@@ -176,6 +177,7 @@ pub enum Value {
   BlockParam(~bref : BlockRef, ~bpref : BlockParamRef)
   FnParam(~fref : FnRef, ~fpref : FnParamRef)
   Self(~fref : FnRef)
+  Phantom(~ty : Type)
 } derive(Show, Eq)
 
 pub enum RoundMode {
@@ -310,6 +312,7 @@ pub fn Type::width(self : Type) -> Width {
     Tuple(..) => WidthPtr
     Array(..) => WidthPtr
     Ptr => WidthPtr
+    Any => Width32
   }
 }
 
@@ -338,6 +341,7 @@ pub fn Type::size_of_lp64(self : Type) -> Int {
     Tuple(..) => 8
     Array(..) => 8
     Ptr => 8
+    Any => 0
   }
 }
 
@@ -353,6 +357,7 @@ pub fn Type::size_of_ilp32(self : Type) -> Int {
     Tuple(..) => 4
     Array(..) => 4
     Ptr => 4
+    Any => 0
   }
 }
 
@@ -403,14 +408,24 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
       }
       insn.ty()
     }
-    FreeVar(~fvref) => func.fvars[fvref.id - 1]
+    FreeVar(~fvref) =>
+      if fvref.id - 1 < func.fvars.length() {
+        func.fvars[fvref.id - 1]
+      } else {
+        fail!("ty: free_var \{fvref} - out of range")
+      }
     BlockParam(~bref, ~bpref) => {
       let block = match func.blocks.get(bref) {
         Some(block) => block
         _ => fail!("bb not found")
       }
       match block {
-        BasicBlock(~bb) => bb.params[bpref.id]
+        BasicBlock(~bb) =>
+          if bpref.id < bb.params.length() {
+            bb.params[bpref.id]
+          } else {
+            fail!("ty: block_param \{bref}, \{bpref} - out of range")
+          }
         Loop(_) =>
           fail!("block parameters of loop not supported: \{bref}, \{bpref}")
       }
@@ -421,8 +436,18 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
         None => fail!("ty: fn_param \{fref} - func not found")
       }
       match func.ty {
-        DirectFn(~params, ..) => params[fpref.id]
-        ClosureFn(~params, ..) => params[fpref.id]
+        DirectFn(~params, ..) =>
+          if fpref.id < params.length() {
+            params[fpref.id]
+          } else {
+            fail!("ty: fn_param \{fref}, \{fpref} - out of range")
+          }
+        ClosureFn(~params, ..) =>
+          if fpref.id < params.length() {
+            params[fpref.id]
+          } else {
+            fail!("ty: fn_param \{fref}, \{fpref} - out of range")
+          }
         _ => fail!("not a function type")
       }
     }
@@ -460,6 +485,7 @@ pub fn Value::ty(self : Value, core : Core, func : Fn) -> Type!Failure {
       }
       func.ty
     }
+    Phantom(~ty) => ty
   }
 }
 
@@ -658,6 +684,7 @@ pub impl Hash for Value with hash_combine(self, hasher) {
       hasher.combine_int(12)
       hasher.combine(fref)
     }
+    Phantom(..) => hasher.combine_int(13)
   }
 }
 
@@ -775,4 +802,11 @@ pub fn block_param(bb : BlockRef, index : Int) -> Value {
 
 pub fn fn_param(f : FnRef, index : Int) -> Value {
   FnParam(fref=f, fpref=FnParamRef({ id: index }))
+}
+
+pub fn is_any(self : Type) -> Bool {
+  match self {
+    Type::Any => true
+    _ => false
+  }
 }

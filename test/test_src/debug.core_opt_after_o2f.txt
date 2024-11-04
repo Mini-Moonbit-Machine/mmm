@@ -7,7 +7,22 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn f.22 #f1 : fn(int32) -> int32
+.fn g.33 #f0 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return $f1
+  }
+}
+.fn T$start #f6 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn f.32 #f1 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -19,39 +34,44 @@
     br %1 b3() b4()
   }
   .bb #b2 () {
-    jump b6($f0)
+    jump b12($f0)
   }
   .bb #b3 () {
-    let %2: int32 = call f1(1)
-    jump b5(%2)
+    let %2: bool = eq(true, true)
+    br %2 b5() b6()
   }
   .bb #b4 () {
-    let %3: int32 = call f0(2, 1)
-    jump b5(%3)
+    jump b11(1)
   }
-  .bb #b5 (int32) {
-    jump b6($b5.0)
+  .bb #b5 () {
+    let %3: bool = eq(true, true)
+    br %3 b7() b8()
   }
-  .bb #b6 (int32) {
-    return $b6.0
+  .bb #b6 () {
+    jump b10(1)
+  }
+  .bb #b7 () {
+    let %4: int32 = call f1(1)
+    jump b9(%4)
+  }
+  .bb #b8 () {
+    let %5: int32 = call f0(2, 1)
+    jump b9(%5)
+  }
+  .bb #b9 (int32) {
+    jump b10($b9.0)
+  }
+  .bb #b10 (int32) {
+    jump b11($b10.0)
+  }
+  .bb #b11 (int32) {
+    jump b12($b11.0)
+  }
+  .bb #b12 (int32) {
+    return $b12.0
   }
 }
-.fn T$start #f6 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f2()
-    return %0
-  }
-}
-.fn g.23 #f0 : fn(int32, int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    return $f1
-  }
-}
-.fn main.24 #f2 : fn() -> unit
+.fn main.34 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {

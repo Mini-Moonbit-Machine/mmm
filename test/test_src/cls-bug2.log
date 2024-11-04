@@ -692,6 +692,12 @@
 // [Knf] build_knf: Int(9)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Core] b1 control: Panic -> Jump(target=b3, args=[Insn(iref=%6)])
+// [Core] b2 control: Panic -> Jump(target=b3, args=[Unit])
+// [Core] b0 control: Panic -> Branch(cond=Insn(iref=%0), t=b1, t_args=[], f=b2, f_args=[])
+// [Core] b3 control: Panic -> Return(args=[BlockParam(bref=b3, bpref=$b.0)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%0)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%0)])
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -848,6 +854,9 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[Int32(val=9)])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function main.11 to wasm
+// [KnfOpt] func_tre: f.1 false
+// [KnfOpt] func_tre: main.11 false
+// [KnfOpt] freq: {f.1: AsClosure, main.11: Once}
 // [KnfOpt] freq: {f.1: AsClosure, main.11: Once}
 // [KnfOpt] Numbers of let rec: 2 3 1
 // [KnfOpt] Give up lambda lifting because of too many let rec produced

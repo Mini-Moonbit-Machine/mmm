@@ -1,0 +1,127 @@
+let limit.1: Double = Double(2)
+let limit_sq.2: Double = FMul(limit.1, limit.1)
+let iter.3: Int = Int(300)
+let _4: Double = Double(0.123)
+let c_re.5: Double = FNeg(_4)
+let c_im.6: Double = Double(0.745)
+let rec calc_pixel.7: Int = (zr.8: Double, zi.9: Double, it.10: Int) {
+  let join calc_pixel.90: Int = (zr.91: Double, zi.92: Double, it.93: Int) {
+    let zr2.94: Double = FMul(zr.91, zr.91)
+    let zi2.95: Double = FMul(zi.92, zi.92)
+    if (it.93 == iter.3) then {
+      Var(iter.3)
+    } else {
+      let _96: Double = FAdd(zr2.94, zi2.95)
+      if (limit_sq.2 <= _96) then {
+        Var(it.93)
+      } else {
+        let _97: Double = Double(2)
+        let _98: Double = FMul(_97, zr.91)
+        let _99: Double = FMul(_98, zi.92)
+        let new_zi.100: Double = FAdd(_99, c_im.6)
+        let _101: Double = FSub(zr2.94, zi2.95)
+        let new_zr.102: Double = FAdd(_101, c_re.5)
+        let _103: Int = Int(1)
+        let _104: Int = Add(it.93, _103)
+        Jump(calc_pixel.90, [new_zr.102, new_zi.100, _104, ])
+      }
+    }
+  }
+  Jump(calc_pixel.90, [zr.8, zi.9, it.10, ])
+}
+let rec clamp.22: Int = (i.23: Int) {
+  let _24: Int = Int(0)
+  if (i.23 <= _24) then {
+    Int(0)
+  } else {
+    let _25: Int = Int(48)
+    if (_25 <= i.23) then {
+      Int(48)
+    } else {
+      Var(i.23)
+    }
+  }
+}
+let rec main_loop.26: Unit = (w.27: Int, h.28: Int, x.29: Int, y.30: Int, ret.31: Array(Int)) {
+  let join main_loop.105: Unit = (w.106: Int, h.107: Int, x.108: Int, y.109: Int, ret.110: Array(Int)) {
+    if (y.109 == h.107) then {
+      Unit
+    } else {
+      if (x.108 == w.106) then {
+        let _111: Int = Int(0)
+        let _112: Int = Int(1)
+        let _113: Int = Add(y.109, _112)
+        Jump(main_loop.105, [w.106, h.107, _111, _113, ret.110, ])
+      } else {
+        let _114: Double = Double(3)
+        let _115: Double = ExtApply(minimbt_float_of_int, [x.108, ])
+        let _116: Double = FMul(_114, _115)
+        let _117: Double = ExtApply(minimbt_float_of_int, [w.106, ])
+        let _118: Double = FDiv(_116, _117)
+        let _119: Double = Double(1.5)
+        let _120: Double = FSub(_118, _119)
+        let cr.121: Double = FNeg(_120)
+        let _122: Double = Double(3)
+        let _123: Double = ExtApply(minimbt_float_of_int, [y.109, ])
+        let _124: Double = FMul(_122, _123)
+        let _125: Double = ExtApply(minimbt_float_of_int, [h.107, ])
+        let _126: Double = FDiv(_124, _125)
+        let _127: Double = Double(1.5)
+        let ci.128: Double = FSub(_126, _127)
+        let _129: Int = Int(0)
+        let res.130: Int = Apply(calc_pixel.7, [cr.121, ci.128, _129, ])
+        let _131: Int = Mul(y.109, w.106)
+        let _132: Int = Add(_131, x.108)
+        let _133: Int = Apply(clamp.22, [res.130, ])
+        let _134: Unit = Put ret.110[_132] = _133
+        let _135: Int = Int(1)
+        let _136: Int = Add(x.108, _135)
+        Jump(main_loop.105, [w.106, h.107, _136, y.109, ret.110, ])
+      }
+    }
+  }
+  Jump(main_loop.105, [w.27, h.28, x.29, y.30, ret.31, ])
+}
+let rec print_loop.58: Unit = (w.59: Int, h.60: Int, x.61: Int, y.62: Int, ret.63: Array(Int)) {
+  let join print_loop.137: Unit = (w.138: Int, h.139: Int, x.140: Int, y.141: Int, ret.142: Array(Int)) {
+    if (y.141 == h.139) then {
+      Unit
+    } else {
+      if (x.140 == w.138) then {
+        let _143: Int = Int(10)
+        let _144: Unit = ExtApply(minimbt_print_char, [_143, ])
+        let _145: Int = Int(0)
+        let _146: Int = Int(1)
+        let _147: Int = Add(y.141, _146)
+        Jump(print_loop.137, [w.138, h.139, _145, _147, ret.142, ])
+      } else {
+        let _148: Int = Int(48)
+        let _149: Int = Mul(y.141, w.138)
+        let _150: Int = Add(_149, x.140)
+        let _151: Int = Get ret.142[_150]
+        let _152: Int = Add(_148, _151)
+        let _153: Unit = ExtApply(minimbt_print_char, [_152, ])
+        let _154: Int = Int(1)
+        let _155: Int = Add(x.140, _154)
+        Jump(print_loop.137, [w.138, h.139, _155, y.141, ret.142, ])
+      }
+    }
+  }
+  Jump(print_loop.137, [w.59, h.60, x.61, y.62, ret.63, ])
+}
+let rec main.77: Var({val: Some(Unit)}) = () {
+  let h.78: Int = ExtApply(minimbt_read_int, [])
+  let _79: Int = Int(2)
+  let w.80: Int = Mul(h.78, _79)
+  let _81: Int = Mul(w.80, h.78)
+  let _82: Int = Int(0)
+  let ret.83: Array(Int) = ExtApply(minimbt_create_array, [_81, _82, ])
+  let _84: Int = Int(0)
+  let _85: Int = Int(0)
+  let _86: Unit = Apply(main_loop.26, [w.80, h.78, _84, _85, ret.83, ])
+  let _87: Int = Int(0)
+  let _88: Int = Int(0)
+  let _89: Unit = Apply(print_loop.58, [w.80, h.78, _87, _88, ret.83, ])
+  Unit
+}
+Apply(main.77, [])

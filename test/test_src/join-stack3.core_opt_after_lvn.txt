@@ -15,15 +15,17 @@
     br %0 b1() b2()
   }
   .bb #b1 () {
-    jump b3(456)
+    let %1: int32 = add(456, 123)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    jump b3(%2)
   }
   .bb #b2 () {
-    jump b3(789)
+    let %3: int32 = add(789, 123)
+    let %4: unit = ext_call minimbt_print_int(%3)
+    jump b3(%4)
   }
-  .bb #b3 (int32) {
-    let %1: int32 = add($b3.0, 123)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    return %2
+  .bb #b3 (unit) {
+    return $b3.0
   }
 }
 .fn T$start #f2 : fn() -> unit

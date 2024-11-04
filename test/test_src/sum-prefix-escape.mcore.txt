@@ -15,45 +15,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl sum_nested.43
-  .type sum_nested.43, @function
-# leaf true
-sum_nested.43:
-.sum_nested.43_5:
-  mv a6, a0
-  mv a5, a1
-  mv a1, a3
-  mv a0, a4
-  mv a4, a6
-  mv a3, a5
-  mv a5, a2
-  mv a2, a1
-  mv a1, a0
-
-.sum_nested.43_0:
-  addi a0, a5, -1
-  blt a0, a3, .sum_nested.43_2
-
-.sum_nested.43_1:
-  slliw a0, a3, 2
-  add a0, a2, a0
-  lw a0, 0(a0)
-  add a0, a4, a0
-  slliw a4, a3, 2
-  add a4, a1, a4
-  sw a0, 0(a4)
-  addi a3, a3, 1
-  mv a4, a0
-  j .sum_nested.43_0
-
-.sum_nested.43_2:
-  mv a0, zero
-
-.sum_nested.43_3:
-  ret
-
-  .p2align 2
-  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -61,55 +22,8 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.42
+  call main.75
   ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.42
-  .type main.42, @function
-# leaf false
-main.42:
-.main.42_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  addi a3, s11, -40
-  andi s11, a3, -8
-  li a0, 4
-  sw a0, 0(a3)
-  sw a0, 4(a3)
-  sw a0, 8(a3)
-  sw a0, 12(a3)
-  sw a0, 16(a3)
-  sw a0, 20(a3)
-  sw a0, 24(a3)
-  sw a0, 28(a3)
-  sw a0, 32(a3)
-  sw a0, 36(a3)
-  addi s0, s11, -40
-  andi s11, s0, -8
-  sw zero, 0(s0)
-  sw zero, 4(s0)
-  sw zero, 8(s0)
-  sw zero, 12(s0)
-  sw zero, 16(s0)
-  sw zero, 20(s0)
-  sw zero, 24(s0)
-  sw zero, 28(s0)
-  sw zero, 32(s0)
-  sw zero, 36(s0)
-  mv a0, zero
-  mv a1, zero
-  li a2, 10
-  mv a4, s0
-  call sum_nested.43
-  lw a0, 0(s0)
-  call minimbt_print_int
-  ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -133,6 +47,68 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main.75
+  .type main.75, @function
+# leaf false
+main.75:
+.main.75_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -40
+  andi s11, a0, -8
+  li a1, 4
+  sw a1, 0(a0)
+  sw a1, 4(a0)
+  sw a1, 8(a0)
+  sw a1, 12(a0)
+  sw a1, 16(a0)
+  sw a1, 20(a0)
+  sw a1, 24(a0)
+  sw a1, 28(a0)
+  sw a1, 32(a0)
+  sw a1, 36(a0)
+  addi a1, s11, -40
+  andi s11, a1, -8
+  sw zero, 0(a1)
+  sw zero, 4(a1)
+  sw zero, 8(a1)
+  sw zero, 12(a1)
+  sw zero, 16(a1)
+  sw zero, 20(a1)
+  sw zero, 24(a1)
+  sw zero, 28(a1)
+  sw zero, 32(a1)
+  sw zero, 36(a1)
+  mv a2, zero
+  mv a3, zero
+
+.main.75_2:
+  li a4, 10
+  addi a4, a4, -1
+  blt a4, a3, .main.75_4
+
+.main.75_3:
+  slliw a4, a3, 2
+  add a4, a0, a4
+  lw a4, 0(a4)
+  add a2, a2, a4
+  slliw a4, a3, 2
+  add a4, a1, a4
+  sw a2, 0(a4)
+  addi a3, a3, 1
+  j .main.75_2
+
+.main.75_4:
+  lw a0, 0(a1)
+  call minimbt_print_int
+
+.main.75_5:
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

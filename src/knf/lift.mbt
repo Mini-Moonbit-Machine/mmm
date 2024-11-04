@@ -281,6 +281,11 @@ fn LambdaLifter::lift(
       }
     }
     LetJoin(fdef, e) => {
+      let fun_type = Type::Fun(
+        fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
+        fdef.ty,
+      )
+      let env = env.add_name_type(fdef.name, fun_type)
       let body_env = fdef.args.fold(
         init=env,
         fn(env, arg) { env.add_name_type(arg.0, arg.1) },

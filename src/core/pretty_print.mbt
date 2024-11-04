@@ -61,6 +61,7 @@ fn print_type(logger : @util.IndentLogger, ty : Type) -> Unit {
       logger.write_string("]")
     }
     Ptr => logger.write_string("ptr")
+    Any => logger.write_string("any")
   }
 }
 
@@ -80,6 +81,7 @@ fn print_value(logger : @util.IndentLogger, val : Value) -> Unit {
       logger.write_string("f\{id}.m\{id2}")
     Fn(~fref) => logger.write_string("\{fref}")
     Self(_) => logger.write_string("self")
+    Phantom(..) => logger.write_string("phantom")
   }
 }
 

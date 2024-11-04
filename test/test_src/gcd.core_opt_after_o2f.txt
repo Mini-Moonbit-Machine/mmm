@@ -7,52 +7,53 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn gcd.11 #f0 : fn(int32, int32) -> int32
+.fn T$start #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: bool = eq($f0, 0)
-    br %0 b1() b2()
+    let %0: unit = call f0()
+    return %0
   }
-  .bb #b1 () {
-    jump b6($f1)
+}
+.fn main.23 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    jump b1(21600, 337500)
   }
-  .bb #b2 () {
-    let %1: bool = le($f0, $f1)
-    br %1 b3() b4()
+  .loop #b1 pre #Some(b0) header #b2 {
+    .block #b3
+    .block #b4
+    .block #b5
+    .block #b6
+    .block #b7
+    .block #b8
+  }
+  .bb #b2 (int32, int32) {
+    let %0: bool = eq($b2.0, 0)
+    br %0 b3() b4()
   }
   .bb #b3 () {
-    let %2: int32 = sub($f1, $f0)
-    let %3: int32 = call f0($f0, %2)
-    jump b5(%3)
+    let %1: unit = ext_call minimbt_print_int($b2.1)
+    jump b8(%1)
   }
   .bb #b4 () {
-    let %4: int32 = sub($f0, $f1)
-    let %5: int32 = call f0($f1, %4)
-    jump b5(%5)
+    let %2: bool = le($b2.0, $b2.1)
+    br %2 b5() b6()
   }
-  .bb #b5 (int32) {
-    jump b6($b5.0)
+  .bb #b5 () {
+    let %3: int32 = sub($b2.1, $b2.0)
+    jump b2($b2.0, %3)
   }
-  .bb #b6 (int32) {
-    return $b6.0
+  .bb #b6 () {
+    let %4: int32 = sub($b2.0, $b2.1)
+    jump b2($b2.1, %4)
   }
-}
-.fn main.12 #f1 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = call f0(21600, 337500)
-    let %1: unit = ext_call minimbt_print_int(%0)
-    return %1
+  .bb #b7 (any) {
+    jump b8($b7.0)
   }
-}
-.fn T$start #f4 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f1()
-    return %0
+  .bb #b8 (unit) {
+    return $b8.0
   }
 }
 .thunk ::0 start

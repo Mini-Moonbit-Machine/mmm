@@ -703,6 +703,13 @@
 // [Knf] build_knf: Int(12)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
+// [Core] b0 control: Panic -> Return(args=[Int32(val=10)])
+// [Core] b1 control: Panic -> Jump(target=b3, args=[Int32(val=0)])
+// [Core] b2 control: Panic -> Jump(target=b3, args=[Insn(iref=%5)])
+// [Core] b0 control: Panic -> Branch(cond=Insn(iref=%0), t=b1, t_args=[], f=b2, f_args=[])
+// [Core] b3 control: Panic -> Return(args=[BlockParam(bref=b3, bpref=$b.0)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%2)])
+// [Core] b0 control: Panic -> Return(args=[Insn(iref=%1)])
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_heap, @object
@@ -887,6 +894,15 @@
 // [Wasm] Local Insn(iref=%1) -> $%1
 // [Wasm] Local Insn(iref=%0) -> $%0
 // [Wasm] Lowered function main.12 to wasm
+// [KnfOpt] func_tre: f.2 false
+// [KnfOpt] func_tre: main.8 false
+// [KnfOpt] freq: {f.2: Many(2), main.8: Once}
+// [KnfOpt] Inline threshold 2 11
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision f.2 rejected
+// [KnfOpt] Inline threshold 2 11
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline decision f.2 rejected
 // [KnfOpt] freq: {f.2: Many(2), main.8: Once}
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Fn like 0

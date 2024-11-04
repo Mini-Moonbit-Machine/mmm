@@ -1,0 +1,41 @@
+let rec getx.1: Double = (v.2: Tuple([Double, Double, Double])) {
+  let (x.3: Var({val: Some(Double)}), _4: Var({val: Some(Double)}), _5: Var({val: Some(Double)})) = v.2
+  Var(x.3)
+}
+let rec gety.6: Double = (v.7: Tuple([Double, Double, Double])) {
+  let (_8: Var({val: Some(Double)}), y.9: Var({val: Some(Double)}), _10: Var({val: Some(Double)})) = v.7
+  Var(y.9)
+}
+let rec getz.11: Double = (v.12: Tuple([Double, Double, Double])) {
+  let (_13: Var({val: Some(Double)}), _14: Var({val: Some(Double)}), z.15: Var({val: Some(Double)})) = v.12
+  Var(z.15)
+}
+let rec inprod.16: Double = (v1.17: Tuple([Double, Double, Double]), v2.18: Tuple([Double, Double, Double])) {
+  let _19: Double = Apply(getx.1, [v1.17, ])
+  let _20: Double = Apply(getx.1, [v2.18, ])
+  let _21: Double = FMul(_19, _20)
+  let _22: Double = Apply(gety.6, [v1.17, ])
+  let _23: Double = Apply(gety.6, [v2.18, ])
+  let _24: Double = FMul(_22, _23)
+  let _25: Double = FAdd(_21, _24)
+  let _26: Double = Apply(getz.11, [v1.17, ])
+  let _27: Double = Apply(getz.11, [v2.18, ])
+  let _28: Double = FMul(_26, _27)
+  FAdd(_25, _28)
+}
+let rec main.29: Var({val: Some(Unit)}) = () {
+  let _30: Double = Double(1000000)
+  let _31: Double = Double(1)
+  let _32: Double = Double(2)
+  let _33: Double = Double(3)
+  let _34: Tuple([Double, Double, Double]) = Tuple([_31, _32, _33, ])
+  let _35: Double = Double(4)
+  let _36: Double = Double(5)
+  let _37: Double = Double(6)
+  let _38: Tuple([Double, Double, Double]) = Tuple([_35, _36, _37, ])
+  let _39: Double = Apply(inprod.16, [_34, _38, ])
+  let _40: Double = FMul(_30, _39)
+  let _41: Int = ExtApply(minimbt_truncate, [_40, ])
+  ExtApply(minimbt_print_int, [_41, ])
+}
+Apply(main.29, [])

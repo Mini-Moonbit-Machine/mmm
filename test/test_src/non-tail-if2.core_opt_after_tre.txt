@@ -20,14 +20,15 @@
     let %3: int32 = load int32 field(f0.m0, 1 * @32)
     let %4: int32 = add(12345, %3)
     let %5: int32 = add(%4, 67890)
-    jump b3(%5)
+    let %6: unit = ext_call minimbt_print_int(%5)
+    jump b3(%6)
   }
   .bb #b2 () {
-    jump b3(7)
+    let %7: unit = ext_call minimbt_print_int(7)
+    jump b3(%7)
   }
-  .bb #b3 (int32) {
-    let %6: unit = ext_call minimbt_print_int($b3.0)
-    return %6
+  .bb #b3 (unit) {
+    return $b3.0
   }
 }
 .fn T$start #f2 : fn() -> unit

@@ -7,40 +7,6 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn ack.19 #f0 : fn(int32, int32) -> int32
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = le($f0, 0)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    let %1: int32 = add($f1, 1)
-    jump b6(%1)
-  }
-  .bb #b2 () {
-    let %2: bool = le($f1, 0)
-    br %2 b3() b4()
-  }
-  .bb #b3 () {
-    let %3: int32 = sub($f0, 1)
-    let %4: int32 = call f0(%3, 1)
-    jump b5(%4)
-  }
-  .bb #b4 () {
-    let %5: int32 = sub($f0, 1)
-    let %6: int32 = sub($f1, 1)
-    let %7: int32 = call f0($f0, %6)
-    let %8: int32 = call f0(%5, %7)
-    jump b5(%8)
-  }
-  .bb #b5 (int32) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (int32) {
-    return $b6.0
-  }
-}
 .fn T$start #f4 : fn() -> unit
 .freevars ()
 .entry b0 {
@@ -49,13 +15,56 @@
     return %0
   }
 }
-.fn main.20 #f1 : fn() -> unit
+.fn main.34 #f1 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let %0: int32 = call f0(3, 8)
     let %1: unit = ext_call minimbt_print_int(%0)
     return %1
+  }
+}
+.fn ack.33 #f0 : fn(int32, int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    jump b1($f0, $f1)
+  }
+  .loop #b1 pre #Some(b0) header #b2 {
+    .block #b3
+    .block #b4
+    .block #b5
+    .block #b6
+    .block #b7
+    .block #b8
+  }
+  .bb #b2 (int32, int32) {
+    let %0: bool = le($b2.0, 0)
+    br %0 b3() b4()
+  }
+  .bb #b3 () {
+    let %1: int32 = add($b2.1, 1)
+    jump b8(%1)
+  }
+  .bb #b4 () {
+    let %2: bool = le($b2.1, 0)
+    br %2 b5() b6()
+  }
+  .bb #b5 () {
+    let %3: int32 = sub($b2.0, 1)
+    jump b2(%3, 1)
+  }
+  .bb #b6 () {
+    let %4: int32 = sub($b2.0, 1)
+    let %5: int32 = sub($b2.1, 1)
+    let %6: int32 = call f0($b2.0, %5)
+    jump b2(%4, %6)
+  }
+  .bb #b7 (any) {
+    jump b8($b7.0)
+  }
+  .bb #b8 (int32) {
+    return $b8.0
   }
 }
 .thunk ::0 start

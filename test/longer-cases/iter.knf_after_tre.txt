@@ -1,0 +1,74 @@
+let rec iter.1: Fun([Fun([Int], Bool)], Bool) = (arr.2: Array(Int), len.3: Int) {
+  let rec do.4: Bool = (yield.5: Var({val: Some(Fun([Int], Bool))})) {
+    let rec next.6: Bool = (i.7: Var({val: Some(Int)})) {
+      let join next.48: Bool = (i.49: Var({val: Some(Int)})) {
+        let _50: Int = Int(1)
+        let _51: Int = Sub(len.3, _50)
+        if (i.49 <= _51) then {
+          let _52: Int = Get arr.2[i.49]
+          let _53: Bool = Apply(yield.5, [_52, ])
+          let _54: Bool = Bool(true)
+          if (_53 == _54) then {
+            let _55: Int = Int(1)
+            let _56: Int = Add(i.49, _55)
+            Jump(next.48, [_56, ])
+          } else {
+            Bool(false)
+          }
+        } else {
+          Bool(false)
+        }
+      }
+      Jump(next.48, [i.7, ])
+    }
+    let _15: Int = Int(0)
+    Apply(next.6, [_15, ])
+  }
+  Var(do.4)
+}
+let rec each.16: Unit = (iter.17: Fun([Fun([Int], Bool)], Bool), f.18: Fun([Int], Unit)) {
+  let rec yield.19: Bool = (x.20: Var({val: Some(Int)})) {
+    let _21: Unit = Apply(f.18, [x.20, ])
+    Bool(true)
+  }
+  let rec do.22: Var({val: Some(Unit)}) = () {
+    let join do.57: Var({val: Some(Unit)}) = () {
+      let _58: Bool = Apply(iter.17, [yield.19, ])
+      let _59: Bool = Bool(true)
+      if (_58 == _59) then {
+        Jump(do.57, [])
+      } else {
+        Unit
+      }
+    }
+    Jump(do.57, [])
+  }
+  Apply(do.22, [])
+}
+let rec main.25: Var({val: Some(Unit)}) = () {
+  let _26: Int = Int(5)
+  let _27: Int = Int(1)
+  let arr.28: Array(Int) = ExtApply(minimbt_create_array, [_26, _27, ])
+  let _29: Int = Int(0)
+  let _30: Int = Int(1)
+  let _31: Unit = Put arr.28[_29] = _30
+  let _32: Int = Int(1)
+  let _33: Int = Int(2)
+  let _34: Unit = Put arr.28[_32] = _33
+  let _35: Int = Int(2)
+  let _36: Int = Int(3)
+  let _37: Unit = Put arr.28[_35] = _36
+  let _38: Int = Int(3)
+  let _39: Int = Int(4)
+  let _40: Unit = Put arr.28[_38] = _39
+  let _41: Int = Int(4)
+  let _42: Int = Int(5)
+  let _43: Unit = Put arr.28[_41] = _42
+  let _44: Int = Int(5)
+  let f.45: Fun([Fun([Int], Bool)], Bool) = Apply(iter.1, [arr.28, _44, ])
+  let rec print.46: Unit = (x.47: Var({val: Some(Int)})) {
+    ExtApply(minimbt_print_int, [x.47, ])
+  }
+  Apply(each.16, [f.45, print.46, ])
+}
+Apply(main.25, [])
