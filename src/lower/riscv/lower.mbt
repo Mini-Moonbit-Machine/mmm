@@ -1854,10 +1854,14 @@ fn subst_vreg_with_preg_or_spill(
       ThFlurd(rd=frf(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
     ThFsurd(~rd, ~rs1, ~rs2, ~shift) =>
       ThFsurd(rd=frf(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
-    ThLurd(~rd, ~rs1, ~rs2, ~shift) | ThLurw(~rd, ~rs1, ~rs2, ~shift) =>
+    ThLurd(~rd, ~rs1, ~rs2, ~shift) =>
       ThLurd(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
-    ThSurd(~rd, ~rs1, ~rs2, ~shift) | ThSurw(~rd, ~rs1, ~rs2, ~shift) =>
+    ThSurd(~rd, ~rs1, ~rs2, ~shift) =>
       ThSurd(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThLurw(~rd, ~rs1, ~rs2, ~shift) =>
+      ThLurw(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThSurw(~rd, ~rs1, ~rs2, ~shift) =>
+      ThSurw(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
     LdSym(~rd, ~l) => LdSym(rd=frx(rd), ~l)
     LwSym(~rd, ~l) => LwSym(rd=frx(rd), ~l)
     // TODO: rt need to be handled specially
