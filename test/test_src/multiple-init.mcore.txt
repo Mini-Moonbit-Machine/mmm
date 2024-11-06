@@ -16,21 +16,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti32
-  .type memseti32, @function
-memseti32:
-  blez a1, .memseti32_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti32_b0:
-  sw a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti32_b0
-.memseti32_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl T$_20_26
   .type T$_20_26, @function
 # leaf true
@@ -58,18 +43,14 @@ T$len2.13_18:
 .T$len2.13_18_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   lw a0, _11
-  lw a2, _12
+  lw a1, _12
   slliw a1, a0, 2
-  sub s0, s11, a1
-  andi s11, s0, -8
+  sub a2, s11, a1
+  andi s11, a2, -8
   mv a1, a0
-  mv a0, s0
-  call memseti32
-  mv a0, s0
+  mv a0, a2
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
@@ -122,18 +103,14 @@ T$len.3_4:
 .T$len.3_4_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   lw a0, _1
-  lw a2, _2
+  lw a1, _2
   slliw a1, a0, 2
-  sub s0, s11, a1
-  andi s11, s0, -8
+  sub a2, s11, a1
+  andi s11, a2, -8
   mv a1, a0
-  mv a0, s0
-  call memseti32
-  mv a0, s0
+  mv a0, a2
   ld ra, 0(sp)
-  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 

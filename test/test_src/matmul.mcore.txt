@@ -16,21 +16,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl memseti64
-  .type memseti64, @function
-memseti64:
-  blez a1, .memseti64_b1
-  slli a1, a1, 2
-  add a1, a1, a0
-.memseti64_b0:
-  sd a2, 0(a0)
-  addi a0, a0, 4
-  bne a0, a1, .memseti64_b0
-.memseti64_b1:
-  ret
-
-  .p2align 2
-  .text
   .globl T$start_12
   .type T$start_12, @function
 # leaf false
@@ -284,29 +269,23 @@ init_arr63l2_0:
 # leaf false
 gen_arr57l1_1:
 .gen_arr57l1_1_0:
-  addi sp, sp, -32
+  addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  slliw a0, s0, 3
-  sub s2, s11, a0
-  andi s11, s2, -8
+  mv a3, a1
+  mv a1, a2
+  slliw a1, a0, 3
+  sub s0, s11, a1
+  andi s11, s0, -8
+  mv a1, a0
+  addi a0, a0, -1
   mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s0, -1
-  mv a1, s2
-  mv a2, s1
+  mv a2, a3
   call init_arr63l2_0
-  mv a0, s2
+  mv a0, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 2
