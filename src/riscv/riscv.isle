@@ -77,6 +77,12 @@
     (FmsubD (rd FReg) (rs1 FReg) (rs2 FReg) (rs3 FReg))
     (FnmsubD (rd FReg) (rs1 FReg) (rs2 FReg) (rs3 FReg))
     (ThAddsl (rd XReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThFlurd (rd FReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThFsurd (rd FReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThLurd (rd XReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThSurd (rd XReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThLurw (rd XReg) (rs1 XReg) (rs2 XReg) (shift Int32))
+    (ThSurw (rd XReg) (rs1 XReg) (rs2 XReg) (shift Int32))
     (Nop)
     (LwSym (rd XReg) (l Label))
     (LdSym (rd XReg) (l Label))
@@ -492,6 +498,33 @@
   (let ((dst XReg (next_virtual_xreg))
         (_ Unit (emit_risc_v (RvAsm.ThAddsl dst x y z))))
     dst))
+
+(decl rv_th_flurd (XReg XReg Int32) FReg)
+(rule (rv_th_flurd x y z)
+  (let ((dst FReg (next_virtual_freg))
+        (_ Unit (emit_risc_v (RvAsm.ThFlurd dst x y z))))
+    dst))
+
+(decl rv_th_fsurd (FReg XReg XReg Int32) Unit)
+(rule (rv_th_fsurd x y z w) (emit_risc_v (RvAsm.ThFsurd x y z w)))
+
+(decl rv_th_lurd (XReg XReg Int32) XReg)
+(rule (rv_th_lurd x y z)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.ThLurd dst x y z))))
+    dst))
+
+(decl rv_th_surd (XReg XReg XReg Int32) Unit)
+(rule (rv_th_surd x y z w) (emit_risc_v (RvAsm.ThSurd x y z w)))
+
+(decl rv_th_lurw (XReg XReg Int32) XReg)
+(rule (rv_th_lurw x y z)
+  (let ((dst XReg (next_virtual_xreg))
+        (_ Unit (emit_risc_v (RvAsm.ThLurw dst x y z))))
+    dst))
+
+(decl rv_th_surw (XReg XReg XReg Int32) Unit)
+(rule (rv_th_surw x y z w) (emit_risc_v (RvAsm.ThSurw x y z w)))
 
 (decl rv_lwsym (Label) XReg)
 (rule (rv_lwsym x)

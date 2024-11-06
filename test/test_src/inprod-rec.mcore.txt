@@ -1,4 +1,4 @@
-  .option arch, +xtheadba
+  .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
   .p2align 4
   .bss
   .type large_heap, @object
@@ -98,10 +98,8 @@ inprod1.27:
   blt a2, zero, .inprod1.27_2
 
 .inprod1.27_1:
-  th.addsl a3, a0, a2, 3
-  fld fs0, 0(a3)
-  th.addsl a3, a1, a2, 3
-  fld fs1, 0(a3)
+  th.flurd fs0, a0, a2, 3
+  th.flurd fs1, a1, a2, 3
   addi a2, a2, -1
   call inprod1.27
   fmadd.d fa0, fs0, fs1, fa0

@@ -1,4 +1,4 @@
-  .option arch, +xtheadba
+  .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
   .p2align 4
   .bss
   .type large_heap, @object
@@ -183,10 +183,8 @@ loop114.233:
 
 .loop114.233_1:
   addi a2, s3, -1
-  th.addsl a0, s5, s0, 3
-  ld a1, 0(a0)
-  th.addsl a0, s1, s0, 3
-  ld a0, 0(a0)
+  th.lurd a1, s5, s0, 3
+  th.lurd a0, s1, s0, 3
 
 .loop114.233_12:
   mv s9, a2
@@ -317,36 +315,30 @@ minimbt_main:
 # leaf true
 loop322.235:
 .loop322.235_5:
-  mv t4, a0
   mv t3, a1
   mv t2, a2
-  mv a2, a3
+  mv a1, a3
   mv t1, a4
-  mv a3, a5
-  mv a5, a6
-  mv a0, t0
-  mv a1, t4
-  mv a6, t3
-  mv a4, t2
-  mv t0, a0
+  mv a2, a5
+  mv a4, a6
+  mv a6, a7
+  mv a7, t0
+  mv a5, t3
+  mv a3, t2
+  mv t0, t1
 
 .loop322.235_0:
-  blt a1, zero, .loop322.235_2
+  blt a0, zero, .loop322.235_2
 
 .loop322.235_1:
-  th.addsl a0, a7, a3, 3
-  fld fa0, 0(a0)
-  th.addsl a0, t0, a1, 3
-  fld fa1, 0(a0)
-  th.addsl a0, a4, a1, 3
-  ld a0, 0(a0)
-  th.addsl a0, a0, a3, 3
-  fld fa2, 0(a0)
+  th.flurd fa0, a6, a2, 3
+  th.flurd fa1, a7, a0, 3
+  th.lurd t1, a3, a0, 3
+  th.flurd fa2, t1, a2, 3
   fmadd.d fa0, fa1, fa2, fa0
-  th.addsl a0, a5, a3, 3
-  fsd fa0, 0(a0)
-  addi a0, a1, -1
-  mv a1, a0
+  th.addsl t1, a4, a2, 3
+  fsd fa0, 0(t1)
+  addi a0, a0, -1
   j .loop322.235_0
 
 .loop322.235_2:

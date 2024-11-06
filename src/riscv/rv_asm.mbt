@@ -76,6 +76,12 @@ pub enum RvAsm {
   FnmsubD(~rd : FReg, ~rs1 : FReg, ~rs2 : FReg, ~rs3 : FReg)
   // thead
   ThAddsl(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThFlurd(~rd : FReg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThFsurd(~rd : FReg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThLurd(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThSurd(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThLurw(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
+  ThSurw(~rd : Reg, ~rs1 : Reg, ~rs2 : Reg, ~shift : Int)
   // pseudo instructions
   Nop
   LwSym(~rd : Reg, ~l : Label)
@@ -277,6 +283,18 @@ pub impl Show for RvAsm with output(self, logger) {
       write4(logger, "fnmsub.d", rd, rs1, rs2, rs3)
     ThAddsl(~rd, ~rs1, ~rs2, ~shift) =>
       write4(logger, "th.addsl", rd, rs1, rs2, shift)
+    ThFlurd(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.flurd", rd, rs1, rs2, shift)
+    ThFsurd(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.fsurd", rd, rs1, rs2, shift)
+    ThLurd(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.lurd", rd, rs1, rs2, shift)
+    ThSurd(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.surd", rd, rs1, rs2, shift)
+    ThLurw(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.lurw", rd, rs1, rs2, shift)
+    ThSurw(~rd, ~rs1, ~rs2, ~shift) =>
+      write4(logger, "th.surw", rd, rs1, rs2, shift)
     Nop => logger.write_string("nop")
     LwSym(~rd, ~l) => {
       logger.write_string("lw ")

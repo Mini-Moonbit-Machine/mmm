@@ -23,7 +23,7 @@ pub struct RiscvFnLoweringCtx {
   used_primitive : MutSet[String]
   mut is_leaf : Bool
   mut mfn : MFn?
-  use_xtheadba : Bool
+  use_xthead : Bool
   tracer : @util.SubTracer
 }
 
@@ -680,7 +680,7 @@ fn RiscvFnLoweringCtx::lower_address(
       fn fallback() {
         let base = @generated.constructor_lower_value(self, val)
         let index = @generated.constructor_lower_value(self, offset)
-        if self.use_xtheadba {
+        if self.use_xthead {
           let shift = match width.size_of_lp64() {
             4 => 2
             8 => 3
@@ -745,7 +745,7 @@ fn RiscvFnLoweringCtx::lower_address(
         ma
       }
 
-      if self.use_xtheadba {
+      if self.use_xthead {
         match self.insn_any(raw_offset).map(fn(iref) { self.ref_insn(iref) }) {
           Some(@core.Insn::ComputeAddress(~ma)) =>
             match ma {
@@ -803,12 +803,64 @@ fn RiscvFnLoweringCtx::lower_load(
 ) -> AnyReg {
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
-      let ma = self.lower_address(addr)
-      match (ty.size_of_lp64(), c) {
-        (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
-        (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
-        (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
-        _ => self.tracer.abort("Invalid type size")
+      fn fallback() {
+        let ma = self.lower_address(addr)
+        match (ty.size_of_lp64(), c) {
+          (4, X) => xreg_to(@generated.constructor_rv_lw(self, ma))
+          (8, X) => xreg_to(@generated.constructor_rv_ld(self, ma))
+          (8, F) => freg_to(@generated.constructor_rv_fld(self, ma))
+          _ => self.tracer.abort("Invalid type size")
+        }
+      }
+
+      if self.use_xthead {
+        fn thead_memidx_ext_load(
+          val : @core.Value,
+          offset : @core.Value,
+          width : @core.Width
+        ) {
+          let base = @generated.constructor_lower_value(self, val) |> xreg
+          let index = @generated.constructor_lower_value(self, offset) |> xreg
+          let shift = match width.size_of_lp64() {
+            4 => 2
+            8 => 3
+            _ => self.tracer.abort("Invalid type size")
+          }
+          match (ty.size_of_lp64(), c) {
+            (4, X) =>
+              xreg_to(
+                @generated.constructor_rv_th_lurw(self, base, index, shift),
+              )
+            (8, X) =>
+              xreg_to(
+                @generated.constructor_rv_th_lurd(self, base, index, shift),
+              )
+            (8, F) =>
+              freg_to(
+                @generated.constructor_rv_th_flurd(self, base, index, shift),
+              )
+            _ => fallback()
+          }
+        }
+
+        match addr {
+          Offset(~val, ~offset, ~width, ..) =>
+            thead_memidx_ext_load(val, offset, width)
+          Raw(~val, ~raw_offset, ..) =>
+            match
+              self.insn_any(raw_offset).map(fn(iref) { self.ref_insn(iref) }) {
+              Some(@core.Insn::ComputeAddress(~ma)) =>
+                match ma {
+                  Offset(val=@core.Value::Int64(val=0), ~offset, ~width, ..) =>
+                    thead_memidx_ext_load(val, offset, width)
+                  _ => fallback()
+                }
+              _ => fallback()
+            }
+          _ => fallback()
+        }
+      } else {
+        fallback()
       }
     }
     None => xreg_to(@generated.constructor_rv_mv(self, self.zero_reg()))
@@ -1734,6 +1786,14 @@ fn subst_vreg_with_preg_or_spill(
       FnmsubD(rd=frf(rd), rs1=ff(rs1), rs2=ff(rs2), rs3=ff(rs3))
     ThAddsl(~rd, ~rs1, ~rs2, ~shift) =>
       ThAddsl(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThFlurd(~rd, ~rs1, ~rs2, ~shift) =>
+      ThFlurd(rd=frf(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThFsurd(~rd, ~rs1, ~rs2, ~shift) =>
+      ThFsurd(rd=frf(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThLurd(~rd, ~rs1, ~rs2, ~shift) | ThLurw(~rd, ~rs1, ~rs2, ~shift) =>
+      ThLurd(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
+    ThSurd(~rd, ~rs1, ~rs2, ~shift) | ThSurw(~rd, ~rs1, ~rs2, ~shift) =>
+      ThSurd(rd=frx(rd), rs1=fx(rs1), rs2=fx(rs2), ~shift)
     LdSym(~rd, ~l) => LdSym(rd=frx(rd), ~l)
     LwSym(~rd, ~l) => LwSym(rd=frx(rd), ~l)
     // TODO: rt need to be handled specially
@@ -2113,7 +2173,7 @@ pub fn RiscvFnLoweringCtx::new(
   core : @core.Core,
   func : @core.Fn,
   tracer : @util.SubTracer,
-  ~use_xtheadba : Bool = false
+  ~use_xthead : Bool = false
 ) -> RiscvFnLoweringCtx {
   let value_ref_count = MutMap::new()
   let value_regs = MutMap::new()
@@ -2144,7 +2204,7 @@ pub fn RiscvFnLoweringCtx::new(
     is_leaf: true,
     mfn: None,
     used_primitive: MutSet::new(),
-    use_xtheadba,
+    use_xthead,
     tracer,
   }
   lower_ctx.assign_reg_for_closure_ptr()
@@ -2158,16 +2218,16 @@ pub fn RiscvFnLoweringCtx::new(
 
 pub struct RiscvLoweringCtx {
   core : @core.Core
-  use_xtheadba : Bool
+  use_xthead : Bool
   tracer : @util.SubTracer
 }
 
 pub fn RiscvLoweringCtx::new(
   core : @core.Core,
   tracer : @util.SubTracer,
-  ~use_xtheadba : Bool = false
+  ~use_xthead : Bool = false
 ) -> RiscvLoweringCtx {
-  { core, tracer, use_xtheadba }
+  { core, tracer, use_xthead }
 }
 
 fn save_sp(insns : Array[MInsn]) -> Unit {
@@ -2294,7 +2354,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.core,
       func,
       self.tracer,
-      use_xtheadba=self.use_xtheadba,
+      use_xthead=self.use_xthead,
     )
     let (mfn, liveness) = lower_ctx.lower!()
     let lbl = @riscv.Label::Label(func.name)

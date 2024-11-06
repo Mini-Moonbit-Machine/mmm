@@ -1,4 +1,4 @@
-  .option arch, +xtheadba
+  .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
   .p2align 4
   .bss
   .type large_heap, @object
@@ -25,64 +25,51 @@ loop148.240:
   sd s0, 0(sp)
   sd s1, 8(sp)
   sd s2, 16(sp)
-  mv a7, a0
+  mv a6, a0
   mv t0, a1
-  mv a6, a2
+  mv a7, a2
   mv a2, a3
   mv a1, a4
   mv a0, a5
-  mv t1, t0
-  mv t2, a6
-  mv t0, a2
-  mv a6, a1
-  mv a1, a0
+  mv t1, a7
+  mv a7, a2
+  mv a5, a1
 
 .loop148.240_0:
-  blt a7, zero, .loop148.240_2
+  blt a6, zero, .loop148.240_2
 
 .loop148.240_1:
-  addi a3, t2, -1
-  th.addsl a0, a1, a7, 3
-  ld a2, 0(a0)
-  th.addsl a0, t0, a7, 3
-  ld a0, 0(a0)
+  addi a3, t1, -1
+  th.lurd a2, a0, a6, 3
+  th.lurd a1, a7, a6, 3
 
 .loop148.240_12:
-  mv a4, a3
-  mv a3, a2
-  mv a5, a2
-  mv a2, a0
+  mv a4, a2
 
 .loop148.240_7:
-  blt a4, zero, .loop148.240_9
+  blt a3, zero, .loop148.240_9
 
 .loop148.240_8:
-  addi a0, t1, -1
+  addi t2, t0, -1
 
 .loop148.240_19:
-  mv s1, a7
-  mv t3, a0
-  mv t4, t0
-  mv s0, a6
-  mv s2, a1
+  mv s1, a6
+  mv t3, a7
+  mv t4, a5
+  mv s2, a0
 
 .loop148.240_14:
-  blt t3, zero, .loop148.240_16
+  blt t2, zero, .loop148.240_16
 
 .loop148.240_15:
-  th.addsl a0, a5, a4, 3
-  fld fa0, 0(a0)
-  th.addsl a0, a2, t3, 3
-  fld fa1, 0(a0)
-  th.addsl a0, s0, t3, 3
-  ld a0, 0(a0)
-  th.addsl a0, a0, a4, 3
-  fld fa2, 0(a0)
+  th.flurd fa0, a4, a3, 3
+  th.flurd fa1, a1, t2, 3
+  th.lurd s0, t4, t2, 3
+  th.flurd fa2, s0, a3, 3
   fmadd.d fa0, fa1, fa2, fa0
-  th.addsl a0, a3, a4, 3
-  fsd fa0, 0(a0)
-  addi a0, t3, -1
-  mv t3, a0
+  th.addsl s0, a2, a3, 3
+  fsd fa0, 0(s0)
+  addi t2, t2, -1
   j .loop148.240_14
 
 .loop148.240_2:
@@ -96,23 +83,22 @@ loop148.240:
   ret
 
 .loop148.240_9:
-  mv a0, zero
+  mv a1, zero
 
 .loop148.240_10:
 
 .loop148.240_6:
-  addi a0, a7, -1
-  mv a7, a0
+  addi a1, a6, -1
+  mv a6, a1
   j .loop148.240_0
 
 .loop148.240_16:
-  mv a0, zero
+  mv t2, zero
 
 .loop148.240_17:
 
 .loop148.240_13:
-  addi a0, a4, -1
-  mv a4, a0
+  addi a3, a3, -1
   j .loop148.240_7
 
   .p2align 2

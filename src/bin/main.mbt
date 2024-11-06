@@ -288,7 +288,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(
         core,
         subtracer,
-        use_xtheadba=opts.use_xtheadba,
+        use_xthead=opts.use_xthead,
       )
       let asm = try {
         lower_ctx.lower!()
@@ -351,7 +351,7 @@ struct Options {
   mut file : String?
   mut output_to_console : Bool
   mut redirect_to_log : Bool
-  mut use_xtheadba : Bool
+  mut use_xthead : Bool
 }
 
 fn Options::new() -> Options {
@@ -369,7 +369,7 @@ fn Options::new() -> Options {
     file: None,
     output_to_console: false,
     redirect_to_log: true,
-    use_xtheadba: false,
+    use_xthead: false,
   }
 }
 
@@ -461,7 +461,7 @@ fn main {
           fn(s) {
             opts.out_file = s
             if s.contains("speed") {
-              opts.use_xtheadba = true
+              opts.use_xthead = true
             }
           },
         ),
@@ -475,12 +475,7 @@ fn main {
       ),
       ("--js", "", @ArgParser.Unit(fn() { opts.js = true }), "Output JS"),
       ("--wasm", "", @ArgParser.Unit(fn() { opts.wasm = true }), "Output WAT"),
-      (
-        "--use-xtheadba",
-        "",
-        @ArgParser.Unit(fn() { opts.use_xtheadba = true }),
-        "",
-      ),
+      ("--use-xthead", "", @ArgParser.Unit(fn() { opts.use_xthead = true }), ""),
       // Regular directives
       (
         "--print",

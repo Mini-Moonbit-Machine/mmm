@@ -93,6 +93,14 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
       ([rd.to_any()], [rs1.to_any(), rs2.to_any(), rs3.to_any()])
     ThAddsl(~rd, ~rs1, ~rs2, ..) =>
       ([rd.to_any()], [rs1.to_any(), rs2.to_any()])
+    ThFlurd(~rd, ~rs1, ~rs2, ..) =>
+      ([rd.to_any()], [rs1.to_any(), rs2.to_any()])
+    ThFsurd(~rd, ~rs1, ~rs2, ..) =>
+      ([], [rd.to_any(), rs1.to_any(), rs2.to_any()])
+    ThLurd(~rd, ~rs1, ~rs2, ..) | ThLurw(~rd, ~rs1, ~rs2, ..) =>
+      ([rd.to_any()], [rs1.to_any(), rs2.to_any()])
+    ThSurd(~rd, ~rs1, ~rs2, ..) | ThSurw(~rd, ~rs1, ~rs2, ..) =>
+      ([], [rd.to_any(), rs1.to_any(), rs2.to_any()])
     LdSym(~rd, ..) | LwSym(~rd, ..) | La(~rd, ..) | Li(~rd, ..) =>
       ([rd.to_any()], [])
     FldSym(~rd, ..) => ([rd.to_any()], [])

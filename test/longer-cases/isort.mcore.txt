@@ -1,4 +1,4 @@
-  .option arch, +xtheadba
+  .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
   .p2align 4
   .bss
   .type large_heap, @object
@@ -73,8 +73,7 @@ aux73.148:
   beq s0, s1, .aux73.148_1
 
 .aux73.148_2:
-  th.addsl a0, s2, s0, 2
-  lw a0, 0(a0)
+  th.lurd a0, s2, s0, 2
   call minimbt_print_int
   li a0, 32
   call minimbt_print_char
@@ -194,18 +193,14 @@ aux60.147:
 
 .aux60.147_9:
   addi a0, a2, -1
-  th.addsl a0, a3, a0, 2
-  lw a0, 0(a0)
-  th.addsl a5, a3, a2, 2
-  lw a5, 0(a5)
+  th.lurd a0, a3, a0, 2
+  th.lurd a5, a3, a2, 2
   bge a5, a0, .aux60.147_10
 
 .aux60.147_11:
-  th.addsl a0, a3, a2, 2
-  lw a0, 0(a0)
+  th.lurd a0, a3, a2, 2
   addi a5, a2, -1
-  th.addsl a6, a3, a5, 2
-  lw a6, 0(a6)
+  th.lurd a6, a3, a5, 2
   th.addsl a2, a3, a2, 2
   sw a6, 0(a2)
   th.addsl a2, a3, a5, 2
