@@ -58,19 +58,19 @@
 // [Asm] live_set: [v2, v0, v4, v3]
 // [Asm] move_origin: [v4]
 // [Asm] defined: s10 is X
-// [Asm] defs: [v16]
-// [Asm] live_set: [v2, v0, v16, v3]
+// [Asm] defs: [v15]
+// [Asm] live_set: [v2, v0, v15, v3]
 // [Asm] move_origin: []
-// [Asm] defined: v16 is X
+// [Asm] defined: v15 is X
 // [Asm] defs: []
-// [Asm] live_set: [v2, v0, v16, v3]
+// [Asm] live_set: [v2, v0, v15, v3]
 // [Asm] move_origin: []
 // [Asm] defs: [a0]
-// [Asm] live_set: [v2, v16, a0, v3]
+// [Asm] live_set: [v2, v15, a0, v3]
 // [Asm] move_origin: [v0]
 // [Asm] defined: a0 is X
 // [Asm] defs: [a1]
-// [Asm] live_set: [v2, a1, v16, a0, v3]
+// [Asm] live_set: [v2, a1, v15, a0, v3]
 // [Asm] move_origin: [v2]
 // [Asm] defined: a1 is X
 // [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
@@ -117,10 +117,6 @@
 // [Asm] defs: []
 // [Asm] live_set: [v2, v11, v3]
 // [Asm] move_origin: []
-// [Asm] defs: [v15]
-// [Asm] live_set: [v11, v15]
-// [Asm] move_origin: []
-// [Asm] defined: v15 is X
 // [Asm] defs: []
 // [Asm] live_set: [v11]
 // [Asm] move_origin: []
@@ -141,12 +137,11 @@
 // [Asm]   r1 [label="v14 ← a0", color=green];
 // [Asm]   r11 [label="a1", color=blue];
 // [Asm]   r7 [label="v6 ← a2", color=green];
-// [Asm]   r10 [label="v16 ← a2", color=green];
+// [Asm]   r10 [label="v15 ← a2", color=green];
 // [Asm]   r22 [label="a7", color=blue];
 // [Asm]   r14 [label="t2", color=blue];
 // [Asm]   r8 [label="v7 ← a3", color=green];
 // [Asm]   r5 [label="v3 ← s1", color=green];
-// [Asm]   r24 [label="v15 ← a1", color=green];
 // [Asm]   r15 [label="t3", color=blue];
 // [Asm]   r2 [label="v0 ← a1", color=green];
 // [Asm]   r16 [label="t4", color=blue];
@@ -204,7 +199,6 @@
 // [Asm]   r2 -- r5;
 // [Asm]   r3 -- r14;
 // [Asm]   r4 -- r7;
-// [Asm]   r23 -- r24;
 // [Asm]   r3 -- r17;
 // [Asm]   r5 -- r7;
 // [Asm]   r4 -- r8;
@@ -220,8 +214,8 @@
 // [Asm]   r5 -- r15;
 // [Asm]   r4 -- r19;
 // [Asm]   r5 -- r12;
-// [Asm]   comment = "0:v10-> 1:v14-> 2:v0-> 3:a0-> 4:v2-> 5:v3-> 10:v16-> 11:a1-> 6:v4-> 7:v6-> 8:v7-> 9:s10-> 12:t0-> 13:t1-> 14:t2-> 15:t3-> 16:t4-> 17:a2-> 18:a3-> 19:a4-> 20:a5-> 21:a6-> 22:a7-> 23:v11-> 24:v15"
-// [Asm]   comment = "v10<-a0;v11<-a0;v4<-a0;v2<-s0;v14<-a0;v6<-a2;v16<-a2;v7<-a3;v3<-s1;v15<-a1;v0<-a1;"
+// [Asm]   comment = "0:v10-> 1:v14-> 2:v0-> 3:a0-> 4:v2-> 5:v3-> 10:v15-> 11:a1-> 6:v4-> 7:v6-> 8:v7-> 9:s10-> 12:t0-> 13:t1-> 14:t2-> 15:t3-> 16:t4-> 17:a2-> 18:a3-> 19:a4-> 20:a5-> 21:a6-> 22:a7-> 23:v11"
+// [Asm]   comment = "v10<-a0;v11<-a0;v4<-a0;v2<-s0;v14<-a0;v6<-a2;v15<-a2;v7<-a3;v3<-s1;v0<-a1;"
 // [Asm] }
 // [Asm] 
 // [Asm] graph G {
@@ -260,12 +254,11 @@
 // [Asm] subst   bne v6, v7, .memed8_2 ->   bne a2, a3, .memed8_2
 // [Asm] subst   ret ->   ret
 // [Asm] subst   mv s10, v4 ->   mv s10, a0
-// [Asm] subst   ld v16, 0(v4) ->   ld a2, 0(a0)
+// [Asm] subst   ld v15, 0(v4) ->   ld a2, 0(a0)
 // [Asm] subst   mv a0, v0 ->   mv a0, a1
 // [Asm] subst   mv a1, v2 ->   mv a1, s0
-// [Asm] subst   jalr v16 ->   jalr a2
-// [Asm] subst   th.addsl v15, v3, v2, 2 ->   th.addsl a1, s1, s0, 2
-// [Asm] subst   sw v11, 0(v15) ->   sw a0, 0(a1)
+// [Asm] subst   jalr v15 ->   jalr a2
+// [Asm] subst   th.surw v11, v3, v2, 2 ->   th.surd a0, s1, s0, 2
 // [Asm] pre_assigned_registers: Insn(iref=%3) -> v6, Insn(iref=%2) -> v5, Insn(iref=%1) -> v4, Self(fref=f4) -> v0, Insn(iref=%6) -> v9, Mem(fref=f4, mref=m0) -> v2, Insn(iref=%5) -> v8, Insn(iref=%0) -> v3, Insn(iref=%4) -> v7
 // [Asm] defs: []
 // [Asm] live_set: [s11, zero]
@@ -1499,20 +1492,19 @@
 // [Asm] # control
 // [Asm]   bne v6, v7, .memed8_2  # live: [v2, v0, v4, v3]
 // [Asm] 
-// [Asm] # block info: defs: [t1, v16, v14, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, v11, ft4, ft9, a5, a0, fa4, ft2, a2, a3, s10, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v15], uses: [v3, v11, v16, a0, v0, v4, a1, v15, v2], upward_exposed: [v3, v0, v4, v2], params_defs: []
+// [Asm] # block info: defs: [t1, v14, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, v11, ft4, ft9, a5, a0, fa4, ft2, a2, a3, s10, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v15], uses: [v3, v11, a0, v0, v4, a1, v15, v2], upward_exposed: [v3, v0, v4, v2], params_defs: []
 // [Asm] # live_in: [v2, v0, v4, v3], live_out: [v14]
 // [Asm] # block parameters: []
 // [Asm] .memed8_1:
 // [Asm]   mv s10, v4  # live: [v2, v0, v4, v3]
-// [Asm]   ld v16, 0(v4)  # live: [v2, v0, v16, v3]
-// [Asm]   # save_ctx2  # live: [v2, v0, v16, v3]
-// [Asm]   mv a0, v0  # live: [v2, v16, a0, v3]
-// [Asm]   mv a1, v2  # live: [v2, a1, v16, a0, v3]
-// [Asm]   jalr v16  # live: [v2, a0, v3]
+// [Asm]   ld v15, 0(v4)  # live: [v2, v0, v15, v3]
+// [Asm]   # save_ctx2  # live: [v2, v0, v15, v3]
+// [Asm]   mv a0, v0  # live: [v2, v15, a0, v3]
+// [Asm]   mv a1, v2  # live: [v2, a1, v15, a0, v3]
+// [Asm]   jalr v15  # live: [v2, a0, v3]
 // [Asm]   mv v11, a0  # live: [v2, v11, v3]
 // [Asm]   # restore_ctx2  # live: [v2, v11, v3]
-// [Asm]   th.addsl v15, v3, v2, 2  # live: [v11, v15]
-// [Asm]   sw v11, 0(v15)  # live: [v11]
+// [Asm]   th.surw v11, v3, v2, 2  # live: [v11]
 // [Asm] # control
 // [Asm]   mv v14, v11  # live: [v14]
 // [Asm] 
@@ -1794,8 +1786,7 @@
 // [Main]   mv a0, a1
 // [Main]   mv a1, s0
 // [Main]   jalr a2
-// [Main]   th.addsl a1, s1, s0, 2
-// [Main]   sw a0, 0(a1)
+// [Main]   th.surd a0, s1, s0, 2
 // [Main] 
 // [Main] .memed8_3:
 // [Main]   ld ra, 0(sp)

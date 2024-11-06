@@ -783,12 +783,76 @@ fn RiscvFnLoweringCtx::lower_store(
   let r = @generated.constructor_lower_value(self, val)
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
-      let ma = self.lower_address(addr)
-      match (ty.size_of_lp64(), c) {
-        (4, X) => @generated.constructor_rv_sw(self, xreg(r), ma)
-        (8, X) => @generated.constructor_rv_sd(self, xreg(r), ma)
-        (8, F) => @generated.constructor_rv_fsd(self, freg(r), ma)
-        _ => self.tracer.abort("Invalid type size")
+      fn fallback() {
+        let ma = self.lower_address(addr)
+        match (ty.size_of_lp64(), c) {
+          (4, X) => @generated.constructor_rv_sw(self, xreg(r), ma)
+          (8, X) => @generated.constructor_rv_sd(self, xreg(r), ma)
+          (8, F) => @generated.constructor_rv_fsd(self, freg(r), ma)
+          _ => self.tracer.abort("Invalid type size")
+        }
+      }
+
+      if self.use_xthead {
+        fn thead_memidx_ext_store(
+          val : @core.Value,
+          offset : @core.Value,
+          width : @core.Width
+        ) {
+          let base = @generated.constructor_lower_value(self, val) |> xreg
+          let index = @generated.constructor_lower_value(self, offset) |> xreg
+          let shift = match width.size_of_lp64() {
+            4 => 2
+            8 => 3
+            _ => self.tracer.abort("Invalid type size")
+          }
+          match (ty.size_of_lp64(), c) {
+            (4, X) =>
+              @generated.constructor_rv_th_surw(
+                self,
+                xreg(r),
+                base,
+                index,
+                shift,
+              )
+            (8, X) =>
+              @generated.constructor_rv_th_surd(
+                self,
+                xreg(r),
+                base,
+                index,
+                shift,
+              )
+            (8, F) =>
+              @generated.constructor_rv_th_fsurd(
+                self,
+                freg(r),
+                base,
+                index,
+                shift,
+              )
+            _ => fallback()
+          }
+        }
+
+        match addr {
+          Offset(~val, ~offset, ~width, ..) =>
+            thead_memidx_ext_store(val, offset, width)
+          Raw(~val, ~raw_offset, ..) =>
+            match
+              self.insn_any(raw_offset).map(fn(iref) { self.ref_insn(iref) }) {
+              Some(@core.Insn::ComputeAddress(~ma)) =>
+                match ma {
+                  Offset(val=@core.Value::Int64(val=0), ~offset, ~width, ..) =>
+                    thead_memidx_ext_store(val, offset, width)
+                  _ => fallback()
+                }
+              _ => fallback()
+            }
+          _ => fallback()
+        }
+      } else {
+        fallback()
       }
     }
     None => ()
