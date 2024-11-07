@@ -27,12 +27,15 @@ let rec mem_fib.11: Int = (f.12: Fun([Int], Int), n.13: Int) {
     Add(_17, _20)
   }
 }
+let rec fib.21: Int = (n.22: Int) {
+  let _23: Int = Int(1)
+  let _24: Int = Add(n.22, _23)
+  let f.25: Fun([Int], Int) = Apply(mem.2, [mem_fib.11, _24, ])
+  Apply(f.25, [n.22, ])
+}
 let rec main.26: Var({val: Some(Unit)}) = () {
   let n.27: Int = ExtApply(minimbt_read_int, [])
-  let _38: Int = Int(1)
-  let _39: Int = Add(n.27, _38)
-  let f.40: Fun([Int], Int) = Apply(mem.2, [mem_fib.11, _39, ])
-  let _28: Int = Apply(f.40, [n.27, ])
+  let _28: Int = Apply(fib.21, [n.27, ])
   let _29: Unit = ExtApply(minimbt_print_int, [_28, ])
   let _30: Int = Int(10)
   let _31: Unit = ExtApply(minimbt_print_char, [_30, ])

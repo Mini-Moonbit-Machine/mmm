@@ -23,7 +23,9 @@ mandelbrot.62:
   addi sp, sp, -16
   sd ra, 0(sp)
   mv a1, a0
+  fcvt.d.w fa0, a1
   mv a0, zero
+  fmv.d fa1, fa0
   call yloop.63
   ld ra, 0(sp)
   addi sp, sp, 16
@@ -51,32 +53,28 @@ main.66:
 # leaf false
 yloop.63:
 .yloop.63_5:
-  addi sp, sp, -32
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
+  fsd fs0, 32(sp)
+  fsd fs1, 40(sp)
+  fsd fs2, 48(sp)
   mv s1, a0
   mv s0, a1
+  fmv.d fs1, fa0
+  fmv.d fs0, fa1
 
 .yloop.63_0:
-  blt s1, s0, .yloop.63_2
-
-.yloop.63_1:
-  mv a0, zero
-
-.yloop.63_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
+  bge s1, s0, .yloop.63_1
 
 .yloop.63_2:
+  fcvt.d.w fa0, s1
 
 .yloop.63_12:
   mv s2, zero
+  fmv.d fs2, fa0
 
 .yloop.63_7:
   bge s2, s0, .yloop.63_8
@@ -84,29 +82,27 @@ yloop.63:
 .yloop.63_9:
   fcvt.d.w fa0, s2
   fadd.d fa0, fa0, fa0
-  fcvt.d.w fa1, s0
-  fdiv.d fa0, fa0, fa1
+  fdiv.d fa0, fa0, fs1
   li a0, 4609434218613702656
-  fmv.d.x fa2, a0
-  fsub.d fa0, fa0, fa2
-  fcvt.d.w fa2, s1
-  fadd.d fa2, fa2, fa2
-  fdiv.d fa1, fa2, fa1
+  fmv.d.x fa1, a0
+  fsub.d fa0, fa0, fa1
+  fadd.d fa1, fs2, fs2
+  fdiv.d fa1, fa1, fs0
   li a0, 4607182418800017408
   fmv.d.x fa2, a0
   fsub.d fa1, fa1, fa2
 
-.yloop.63_29:
+.yloop.63_26:
   li a0, 1000
   fmv.d.x fa2, zero
   fmv.d fa3, fa2
   fmv.d fa4, fa2
   fmv.d fa5, fa2
 
-.yloop.63_21:
-  beq a0, zero, .yloop.63_22
+.yloop.63_18:
+  beq a0, zero, .yloop.63_19
 
-.yloop.63_23:
+.yloop.63_20:
   fsub.d fa4, fa4, fa5
   fadd.d fa6, fa4, fa0
   fadd.d fa2, fa2, fa2
@@ -118,20 +114,34 @@ yloop.63:
   fmul.d fa2, fa2, fa2
   fadd.d fa7, fa4, fa5
   fle.d a1, fa2, fa7
-  beq a1, zero, .yloop.63_25
+  beq a1, zero, .yloop.63_22
 
-.yloop.63_24:
+.yloop.63_21:
   mv a0, zero
   call minimbt_print_int
 
-.yloop.63_26:
+.yloop.63_23:
 
-.yloop.63_27:
+.yloop.63_24:
 
 .yloop.63_13:
   addi a0, s2, 1
   mv s2, a0
   j .yloop.63_7
+
+.yloop.63_1:
+  mv a0, zero
+
+.yloop.63_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  fld fs0, 32(sp)
+  fld fs1, 40(sp)
+  fld fs2, 48(sp)
+  addi sp, sp, 64
+  ret
 
 .yloop.63_8:
   call minimbt_print_endline
@@ -144,15 +154,15 @@ yloop.63:
   mv s1, a0
   j .yloop.63_0
 
-.yloop.63_22:
+.yloop.63_19:
   li a0, 1
   call minimbt_print_int
-  j .yloop.63_27
+  j .yloop.63_24
 
-.yloop.63_25:
+.yloop.63_22:
   addi a0, a0, -1
   fmv.d fa2, fa6
-  j .yloop.63_21
+  j .yloop.63_18
 
   .p2align 2
   .text

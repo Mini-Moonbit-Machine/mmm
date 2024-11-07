@@ -1,27 +1,33 @@
-let rec aux.84: Unit = (i.15: Int, state.16: Int, n.13: Int, arr.12: Array(Int)) {
+let rec random.70: Int = (state.2: Int) {
+  let _3: Int = Int(75)
+  let _4: Int = Mul(state.2, _3)
+  let _5: Int = Int(74)
+  Add(_4, _5)
+}
+let rec modulo.71: Int = (x.7: Int, y.8: Int) {
+  let q.9: Int = Div(x.7, y.8)
+  let _10: Int = Mul(q.9, y.8)
+  Sub(x.7, _10)
+}
+let rec aux.73: Unit = (i.15: Int, state.16: Int, n.13: Int, arr.12: Array(Int)) {
   if (i.15 == n.13) then {
     Unit
   } else {
-    let _72: Int = Int(75)
-    let _73: Int = Mul(state.16, _72)
-    let _74: Int = Int(74)
-    let new_state.17: Int = Add(_73, _74)
+    let new_state.17: Int = Apply(random.70, [state.16, ])
     let _18: Int = Int(65537)
-    let q.75: Int = Div(new_state.17, _18)
-    let _76: Int = Mul(q.75, _18)
-    let res.19: Int = Sub(new_state.17, _76)
+    let res.19: Int = Apply(modulo.71, [new_state.17, _18, ])
     let _20: Unit = Put arr.12[i.15] = res.19
     let _21: Int = Int(1)
     let _22: Int = Add(i.15, _21)
-    Apply(aux.84, [_22, res.19, n.13, arr.12, ])
+    Apply(aux.73, [_22, res.19, n.13, arr.12, ])
   }
 }
-let rec fill_buffer.83: Unit = (arr.12: Array(Int), n.13: Int) {
+let rec fill_buffer.72: Unit = (arr.12: Array(Int), n.13: Int) {
   let _23: Int = Int(0)
   let _24: Int = Int(12345)
-  Apply(aux.84, [_23, _24, n.13, arr.12, ])
+  Apply(aux.73, [_23, _24, n.13, arr.12, ])
 }
-let rec insert.86: Unit = (arr.29: Array(Int), i.30: Int) {
+let rec insert.75: Unit = (arr.29: Array(Int), i.30: Int) {
   let _31: Int = Int(0)
   if (i.30 == _31) then {
     Unit
@@ -43,39 +49,25 @@ let rec insert.86: Unit = (arr.29: Array(Int), i.30: Int) {
       let _43: Unit = Put arr.29[_42] = tmp.36
       let _44: Int = Int(1)
       let _45: Int = Sub(i.30, _44)
-      Apply(insert.86, [arr.29, _45, ])
+      Apply(insert.75, [arr.29, _45, ])
     }
   }
 }
-let rec aux.87: Unit = (i.47: Int, n.27: Int, arr.26: Array(Int)) {
+let rec aux.76: Unit = (i.47: Int, n.27: Int, arr.26: Array(Int)) {
   if (i.47 == n.27) then {
     Unit
   } else {
-    let _48: Unit = Apply(insert.86, [arr.26, i.47, ])
+    let _48: Unit = Apply(insert.75, [arr.26, i.47, ])
     let _49: Int = Int(1)
     let _50: Int = Add(i.47, _49)
-    if (_50 == n.27) then {
-      Unit
-    } else {
-      let _77: Unit = Apply(insert.86, [arr.26, _50, ])
-      let _78: Int = Int(1)
-      let _79: Int = Add(_50, _78)
-      Apply(aux.87, [_79, n.27, arr.26, ])
-    }
+    Apply(aux.76, [_50, n.27, arr.26, ])
   }
 }
-let rec isort.85: Unit = (arr.26: Array(Int), n.27: Int) {
+let rec isort.74: Unit = (arr.26: Array(Int), n.27: Int) {
   let _51: Int = Int(1)
-  if (_51 == n.27) then {
-    Unit
-  } else {
-    let _80: Unit = Apply(insert.86, [arr.26, _51, ])
-    let _81: Int = Int(1)
-    let _82: Int = Add(_51, _81)
-    Apply(aux.87, [_82, n.27, arr.26, ])
-  }
+  Apply(aux.76, [_51, n.27, arr.26, ])
 }
-let rec aux.89: Unit = (i.56: Int, n.54: Int, arr.53: Array(Int)) {
+let rec aux.78: Unit = (i.56: Int, n.54: Int, arr.53: Array(Int)) {
   if (i.56 == n.54) then {
     Unit
   } else {
@@ -85,19 +77,19 @@ let rec aux.89: Unit = (i.56: Int, n.54: Int, arr.53: Array(Int)) {
     let _60: Unit = ExtApply(minimbt_print_char, [_59, ])
     let _61: Int = Int(1)
     let _62: Int = Add(i.56, _61)
-    Apply(aux.89, [_62, n.54, arr.53, ])
+    Apply(aux.78, [_62, n.54, arr.53, ])
   }
 }
-let rec print_array.88: Unit = (arr.53: Array(Int), n.54: Int) {
+let rec print_array.77: Unit = (arr.53: Array(Int), n.54: Int) {
   let _63: Int = Int(0)
-  Apply(aux.89, [_63, n.54, arr.53, ])
+  Apply(aux.78, [_63, n.54, arr.53, ])
 }
-let rec main.90: Var({val: Some(Unit)}) = () {
+let rec main.79: Var({val: Some(Unit)}) = () {
   let n.65: Int = Int(100)
   let _66: Int = Int(0)
   let arr.67: Array(Int) = ExtApply(minimbt_create_array, [n.65, _66, ])
-  let _68: Unit = Apply(fill_buffer.83, [arr.67, n.65, ])
-  let _69: Unit = Apply(isort.85, [arr.67, n.65, ])
-  Apply(print_array.88, [arr.67, n.65, ])
+  let _68: Unit = Apply(fill_buffer.72, [arr.67, n.65, ])
+  let _69: Unit = Apply(isort.74, [arr.67, n.65, ])
+  Apply(print_array.77, [arr.67, n.65, ])
 }
-Apply(main.90, [])
+Apply(main.79, [])

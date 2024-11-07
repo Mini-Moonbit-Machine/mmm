@@ -11,8 +11,10 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f2(0, $f0)
-    return %0
+    let %0: double = conv.i2d($f0)
+    let %1: double = conv.i2d($f0)
+    let %2: unit = call f2(0, $f0, %0, %1)
+    return %2
   }
 }
 .fn iloop.65 #f0 : fn(int32, double, double, double, double, double, double) -> unit
@@ -73,10 +75,10 @@
     return %0
   }
 }
-.fn xloop.64 #f1 : fn(int32, int32, int32) -> unit
+.fn xloop.64 #f1 : fn(int32, int32, int32, double, double, double) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, int32, int32) {
+  .bb #b0 (int32, int32, int32, double, double, double) {
     let %0: bool = le($b0.2, $b0.0)
     br %0 b1() b2()
   }
@@ -87,17 +89,14 @@
   .bb #b2 () {
     let %2: double = conv.i2d($b0.0)
     let %3: double = add(%2, %2)
-    let %4: double = conv.i2d($b0.2)
-    let %5: double = div(%3, %4)
-    let %6: double = sub(%5, 1.5)
-    let %7: double = conv.i2d($b0.1)
-    let %8: double = add(%7, %7)
-    let %9: double = conv.i2d($b0.2)
-    let %10: double = div(%8, %9)
-    let %11: double = sub(%10, 1)
-    let %12: unit = call f0(1000, 0, 0, 0, 0, %6, %11)
-    let %13: int32 = add($b0.0, 1)
-    jump b0(%13, $b0.1, $b0.2)
+    let %4: double = div(%3, $b0.3)
+    let %5: double = sub(%4, 1.5)
+    let %6: double = add($b0.4, $b0.4)
+    let %7: double = div(%6, $b0.5)
+    let %8: double = sub(%7, 1)
+    let %9: unit = call f0(1000, 0, 0, 0, 0, %5, %8)
+    let %10: int32 = add($b0.0, 1)
+    jump b0(%10, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
   .bb #b3 (unit) {
     return $b3.0
@@ -108,13 +107,13 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1, $f2)
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
   }
 }
-.fn yloop.63 #f2 : fn(int32, int32) -> unit
+.fn yloop.63 #f2 : fn(int32, int32, double, double) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, int32) {
+  .bb #b0 (int32, int32, double, double) {
     let %0: bool = le($b0.1, $b0.0)
     br %0 b1() b2()
   }
@@ -122,9 +121,10 @@
     jump b3(())
   }
   .bb #b2 () {
-    let %1: unit = call f1(0, $b0.0, $b0.1)
-    let %2: int32 = add($b0.0, 1)
-    jump b0(%2, $b0.1)
+    let %1: double = conv.i2d($b0.0)
+    let %2: unit = call f1(0, $b0.0, $b0.1, $b0.2, %1, $b0.3)
+    let %3: int32 = add($b0.0, 1)
+    jump b0(%3, $b0.1, $b0.2, $b0.3)
   }
   .bb #b3 (unit) {
     return $b3.0
@@ -135,7 +135,7 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1)
+    jump b4($f0, $f1, $f2, $f3)
   }
 }
 .fn T$start #f10 : fn() -> unit

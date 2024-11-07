@@ -29,11 +29,51 @@ pub fn loop_inv_args(knf : Knf, name : Name, params : Array[Name]) -> NameSet {
   }
 }
 
+let loop_inv_ext_map : Map[String, Unit] = {
+  "minimbt_float_of_int": (),
+  "minimbt_int_of_float": (),
+}
+
 pub fn loop_inv(knf : Knf, env : ImmutNameSet) -> Bool {
   match knf {
+    IfEq(_, _, _, _) | IfLe(_, _, _, _) => false
+    Let(_, _, _) => false
+    LetTuple(_, _, _) => false
+    LetRec(_, _) => false
+    LetJoin(_, _) => false
+    Unit | Bool(_) | Int(_) | Double(_) => false
+    Neg(_) | Add(_, _) | Sub(_, _) | Mul(_, _) | Div(_, _) => false
+    FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_) => false
+    Put(_, _, _) => false
+    Apply(_, _) => false
+    ExternalArray(_) => false
+    ExternalFunctionApplication(f, xs) =>
+      xs.iter().all(fn(x) { env.contains(x) }) && loop_inv_ext_map.contains(f)
+    Tuple(_) => false
     Var(x) => env.contains(x)
+    Get(_, _) => false
+    Jump(_, _) => false
+  }
+}
+
+pub fn loop_inv_2(knf : Knf, env : ImmutNameSet) -> Bool {
+  match knf {
+    IfEq(_, _, _, _) | IfLe(_, _, _, _) => false
+    Let(_, _, _) => false
+    LetTuple(_, _, _) => false
+    LetRec(_, _) => false
+    LetJoin(_, _) => false
+    Unit | Bool(_) | Int(_) | Double(_) => false
+    Neg(_) | Add(_, _) | Sub(_, _) | Mul(_, _) | Div(_, _) => false
+    FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_) => false
+    Put(_, _, _) => false
+    Apply(_, _) => false
+    ExternalArray(_) => false
+    ExternalFunctionApplication(_, _) => false
+    Tuple(_) => false
+    Var(_) => false
     Get(x, y) => env.contains(x) && env.contains(y)
-    _ => false
+    Jump(_, _) => false
   }
 }
 
@@ -75,7 +115,7 @@ pub fn hoist_inv_from_def(
       IfLe(x, y, e1, e2) => IfLe(x, y, aux(e1, inv), aux(e2, inv))
       Let((x, t), e1, e2) => {
         let e1 = aux(e1, inv)
-        if loop_inv(e1, inv) && t.is_ptr_like() {
+        if loop_inv(e1, inv) || (loop_inv_2(e1, inv) && t.is_ptr_like()) {
           bindings.push(Binding::Let(x, t, e1))
           tracer.println("hoist: \{x}")
           aux(e2, inv)
@@ -131,18 +171,26 @@ pub fn LICM::new(tracer : @util.SubTracer, knf : Knf) -> LICM {
 pub fn LICM::go(self : LICM, id : Int) -> Knf {
   let knf_env = KnfEnv::new(@typer.externals(), self.tracer)
   knf_env.init_counter_from_existing(self.knf)
+  let freq = Map::new()
+  call_freq(self.knf, Env::new(), freq)
   fn hoist(knf : Knf, env : Env[(FuncDef, Array[Binding])]) -> Knf {
     match knf {
       IfEq(x, y, e1, e2) => IfEq(x, y, hoist(e1, env), hoist(e2, env))
       IfLe(x, y, e1, e2) => IfLe(x, y, hoist(e1, env), hoist(e2, env))
       Let((x, t), e1, e2) => Let((x, t), hoist(e1, env), hoist(e2, env))
       LetTuple(xs, y, e) => LetTuple(xs, y, hoist(e, env))
-      LetRec(fundef, e) => {
-        let (fundef, bindings) = hoist_inv_from_def(fundef, self.tracer)
-        let { name, ty, args, body } = fundef
-        let fundef = { name, ty, args, body: hoist(body, env) }
-        LetRec(fundef, hoist(e, env.add(fundef.name, (fundef, bindings))))
-      }
+      LetRec(fundef, e) =>
+        if is_tail_rec(fundef) &&
+          freq.get(fundef.name) != Some(CallFreq::AsClosure) {
+          let (fundef, bindings) = hoist_inv_from_def(fundef, self.tracer)
+          let { name, ty, args, body } = fundef
+          let fundef = { name, ty, args, body: hoist(body, env) }
+          LetRec(fundef, hoist(e, env.add(fundef.name, (fundef, bindings))))
+        } else {
+          let { name, ty, args, body } = fundef
+          let fundef = { name, ty, args, body: hoist(body, env) }
+          LetRec(fundef, hoist(e, env))
+        }
       LetJoin(fundef, e) => {
         let (fundef, bindings) = hoist_inv_from_def(fundef, self.tracer)
         let { name, ty, args, body } = fundef

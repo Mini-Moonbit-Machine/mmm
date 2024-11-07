@@ -1,16 +1,22 @@
+let rec random.1: Int = (state.2: Int) {
+  let _3: Int = Int(75)
+  let _4: Int = Mul(state.2, _3)
+  let _5: Int = Int(74)
+  Add(_4, _5)
+}
+let rec modulo.6: Int = (x.7: Int, y.8: Int) {
+  let q.9: Int = Div(x.7, y.8)
+  let _10: Int = Mul(q.9, y.8)
+  Sub(x.7, _10)
+}
 let rec fill_buffer.11: Unit = (arr.12: Array(Int), n.13: Int) {
   let rec aux.14: Unit = (i.15: Int, state.16: Int) {
     if (i.15 == n.13) then {
       Unit
     } else {
-      let _72: Int = Int(75)
-      let _73: Int = Mul(state.16, _72)
-      let _74: Int = Int(74)
-      let new_state.17: Int = Add(_73, _74)
+      let new_state.17: Int = Apply(random.1, [state.16, ])
       let _18: Int = Int(65537)
-      let q.75: Int = Div(new_state.17, _18)
-      let _76: Int = Mul(q.75, _18)
-      let res.19: Int = Sub(new_state.17, _76)
+      let res.19: Int = Apply(modulo.6, [new_state.17, _18, ])
       let _20: Unit = Put arr.12[i.15] = res.19
       let _21: Int = Int(1)
       let _22: Int = Add(i.15, _21)
@@ -55,25 +61,11 @@ let rec isort.25: Unit = (arr.26: Array(Int), n.27: Int) {
       let _48: Unit = Apply(insert.28, [arr.26, i.47, ])
       let _49: Int = Int(1)
       let _50: Int = Add(i.47, _49)
-      if (_50 == n.27) then {
-        Unit
-      } else {
-        let _77: Unit = Apply(insert.28, [arr.26, _50, ])
-        let _78: Int = Int(1)
-        let _79: Int = Add(_50, _78)
-        Apply(aux.46, [_79, ])
-      }
+      Apply(aux.46, [_50, ])
     }
   }
   let _51: Int = Int(1)
-  if (_51 == n.27) then {
-    Unit
-  } else {
-    let _80: Unit = Apply(insert.28, [arr.26, _51, ])
-    let _81: Int = Int(1)
-    let _82: Int = Add(_51, _81)
-    Apply(aux.46, [_82, ])
-  }
+  Apply(aux.46, [_51, ])
 }
 let rec print_array.52: Unit = (arr.53: Array(Int), n.54: Int) {
   let rec aux.55: Unit = (i.56: Int) {
