@@ -18,18 +18,19 @@ let rec main.25: Var({val: Some(Unit)}) = () {
   let _42: Int = Int(5)
   let _43: Unit = Put arr.28[_41] = _42
   let _44: Int = Int(5)
-  let rec do.58: Bool = (yield.59: Var({val: Some(Fun([Int], Bool))})) {
-    let rec next.60: Bool = (i.61: Var({val: Some(Int)})) {
-      let _62: Int = Int(1)
-      let _63: Int = Sub(_44, _62)
-      if (i.61 <= _63) then {
-        let _64: Int = Get arr.28[i.61]
-        let _65: Bool = Apply(yield.59, [_64, ])
-        let _66: Bool = Bool(true)
-        if (_65 == _66) then {
-          let _67: Int = Int(1)
-          let _68: Int = Add(i.61, _67)
-          Apply(next.60, [_68, ])
+  let rec do.82: Bool = (yield.83: Var({val: Some(Fun([Int], Bool))})) {
+    let _95: Int = Int(0)
+    let join next.96: Bool = (i.97: Var({val: Some(Int)})) {
+      let _98: Int = Int(1)
+      let _99: Int = Sub(_44, _98)
+      if (i.97 <= _99) then {
+        let _100: Int = Get arr.28[i.97]
+        let _101: Bool = Apply(yield.83, [_100, ])
+        let _102: Bool = Bool(true)
+        if (_101 == _102) then {
+          let _103: Int = Int(1)
+          let _104: Int = Add(i.97, _103)
+          Jump(next.96, [_104, ])
         } else {
           Bool(false)
         }
@@ -37,31 +38,24 @@ let rec main.25: Var({val: Some(Unit)}) = () {
         Bool(false)
       }
     }
-    let _69: Int = Int(0)
-    Apply(next.60, [_69, ])
+    Jump(next.96, [_95, ])
   }
   let rec print.46: Unit = (x.47: Var({val: Some(Int)})) {
     ExtApply(minimbt_print_int, [x.47, ])
   }
-  let rec yield.70: Bool = (x.71: Var({val: Some(Int)})) {
-    let _72: Unit = Apply(print.46, [x.71, ])
+  let rec yield.105: Bool = (x.106: Var({val: Some(Int)})) {
+    let _107: Unit = Apply(print.46, [x.106, ])
     Bool(true)
   }
-  let rec do.73: Var({val: Some(Unit)}) = () {
-    let _74: Bool = Apply(do.58, [yield.70, ])
-    let _75: Bool = Bool(true)
-    if (_74 == _75) then {
-      let _76: Bool = Apply(do.58, [yield.70, ])
-      let _77: Bool = Bool(true)
-      if (_76 == _77) then {
-        Apply(do.73, [])
-      } else {
-        Unit
-      }
+  let join do.112: Var({val: Some(Unit)}) = () {
+    let _113: Bool = Apply(do.82, [yield.105, ])
+    let _114: Bool = Bool(true)
+    if (_113 == _114) then {
+      Jump(do.112, [])
     } else {
       Unit
     }
   }
-  Apply(do.73, [])
+  Jump(do.112, [])
 }
 Apply(main.25, [])

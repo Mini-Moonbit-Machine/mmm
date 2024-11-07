@@ -471,7 +471,7 @@ pub fn InlineEnv::inline(
             n < 4 &&
             fun.to_string().contains("main") == false
           ) ||
-          (fn_like_args > 0 && size(body) * n < 50) ||
+          (fn_like_args > 0 && size(body) < 100) ||
           (n == 1 && size(body) < 30) {
           self.tracer.println("Inline decision \{f} accepted")
           replace(fundef)

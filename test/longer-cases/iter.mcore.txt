@@ -15,74 +15,97 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl print.81
-  .type print.81, @function
+  .globl main.115
+  .type main.115, @function
 # leaf false
-print.81:
-.print.81_0:
+main.115:
+.main.115_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call minimbt_print_int
+  sd s0, 8(sp)
+  addi s0, s11, -20
+  andi s11, s0, -8
+  li a0, 1
+  sw a0, 0(s0)
+  sw a0, 4(s0)
+  sw a0, 8(s0)
+  sw a0, 12(s0)
+  sw a0, 16(s0)
+  li a0, 1
+  sw a0, 0(s0)
+  li a0, 2
+  sw a0, 4(s0)
+  li a0, 3
+  sw a0, 8(s0)
+  li a0, 4
+  sw a0, 12(s0)
+  li a0, 5
+  sw a0, 16(s0)
+
+.main.115_2:
+  addi a0, s11, -8
+  andi s11, a0, -8
+  la a1, yield.119
+  sd a1, 0(a0)
+  li a1, 5
+  mv a2, s0
+  call do.116
+  li a1, 1
+  bne a0, a1, .main.115_4
+
+.main.115_3:
+  j .main.115_2
+
+.main.115_4:
+  mv a0, zero
+
+.main.115_5:
   ld ra, 0(sp)
+  ld s0, 8(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl yield.85
-  .type yield.85, @function
+  .globl do.116
+  .type do.116, @function
 # leaf false
-yield.85:
-.yield.85_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, s10
-  call yield.82
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl next.80
-  .type next.80, @function
-# leaf false
-next.80:
-.next.80_8:
+do.116:
+.do.116_0:
   addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
-  mv s3, a0
+  mv s2, a0
   mv s0, a1
-  mv s2, a2
-  mv s1, a3
+  mv s1, a2
+  mv s3, zero
 
-.next.80_0:
+.do.116_2:
   addi a0, s0, -1
-  blt a0, s3, .next.80_2
+  blt a0, s3, .do.116_4
 
-.next.80_1:
+.do.116_3:
   slliw a0, s3, 2
-  add a0, s2, a0
+  add a0, s1, a0
   lw a0, 0(a0)
-  mv s10, s1
-  ld a1, 0(s1)
+  mv s10, s2
+  ld a1, 0(s2)
   jalr a1
   li a1, 1
-  bne a0, a1, .next.80_4
+  bne a0, a1, .do.116_6
 
-.next.80_3:
+.do.116_5:
   addi a0, s3, 1
   mv s3, a0
-  j .next.80_0
+  j .do.116_2
 
-.next.80_2:
+.do.116_4:
   mv a0, zero
 
-.next.80_6:
+.do.116_8:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -91,130 +114,40 @@ next.80:
   addi sp, sp, 48
   ret
 
-.next.80_4:
+.do.116_6:
   mv a0, zero
 
-.next.80_5:
-  j .next.80_6
+.do.116_7:
+  j .do.116_8
 
   .p2align 2
   .text
-  .globl do.79
-  .type do.79, @function
+  .globl yield.119
+  .type yield.119, @function
 # leaf false
-do.79:
-.do.79_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a3, a0
-  mv a0, zero
-  call next.80
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.78
-  .type main.78, @function
-# leaf false
-main.78:
-.main.78_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a1, s11, -20
-  andi s11, a1, -8
-  li a0, 1
-  sw a0, 0(a1)
-  sw a0, 4(a1)
-  sw a0, 8(a1)
-  sw a0, 12(a1)
-  sw a0, 16(a1)
-  li a0, 1
-  sw a0, 0(a1)
-  li a0, 2
-  sw a0, 4(a1)
-  li a0, 3
-  sw a0, 8(a1)
-  li a0, 4
-  sw a0, 12(a1)
-  li a0, 5
-  sw a0, 16(a1)
-  li a0, 5
-  call do.83
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl yield.84
-  .type yield.84, @function
-# leaf false
-yield.84:
-.yield.84_0:
+yield.119:
+.yield.119_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   mv a1, s10
-  call yield.82
+  call yield.118
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl do.83
-  .type do.83, @function
+  .globl print.117
+  .type print.117, @function
 # leaf false
-do.83:
-.do.83_8:
-  addi sp, sp, -32
+print.117:
+.print.117_0:
+  addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  mv s0, a0
-  mv s1, a1
-
-.do.83_0:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, yield.84
-  sd a1, 0(a0)
-  mv a1, s0
-  mv a2, s1
-  call do.79
-  li a1, 1
-  bne a0, a1, .do.83_2
-
-.do.83_1:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, yield.85
-  sd a1, 0(a0)
-  mv a1, s0
-  mv a2, s1
-  call do.79
-  li a1, 1
-  bne a0, a1, .do.83_4
-
-.do.83_3:
-  j .do.83_0
-
-.do.83_2:
-  mv a0, zero
-
-.do.83_6:
+  call minimbt_print_int
   ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
-
-.do.83_4:
-  mv a0, zero
-
-.do.83_5:
-  j .do.83_6
 
   .p2align 2
   .text
@@ -225,21 +158,21 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.78
+  call main.115
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl yield.82
-  .type yield.82, @function
+  .globl yield.118
+  .type yield.118, @function
 # leaf false
-yield.82:
-.yield.82_0:
+yield.118:
+.yield.118_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call print.81
+  call print.117
   li a0, 1
   ld ra, 0(sp)
   addi sp, sp, 16

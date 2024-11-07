@@ -15,16 +15,34 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl inprod.26
-  .type inprod.26, @function
-# leaf true
-inprod.26:
-.inprod.26_5:
+  .globl main.50
+  .type main.50, @function
+# leaf false
+main.50:
+.main.50_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  addi a0, s11, -24
+  andi s11, a0, -8
+  li a1, 4608218246714312622
+  fmv.d.x fa0, a1
+  fsd fa0, 0(a0)
+  fsd fa0, 8(a0)
+  fsd fa0, 16(a0)
+  addi a1, s11, -24
+  andi s11, a1, -8
+  li a2, 4616820122002590269
+  fmv.d.x fa0, a2
+  fsd fa0, 0(a1)
+  fsd fa0, 8(a1)
+  fsd fa0, 16(a1)
+  fmv.d.x fa0, zero
+  li a2, 2
 
-.inprod.26_0:
-  blt a2, zero, .inprod.26_2
+.main.50_2:
+  blt a2, zero, .main.50_4
 
-.inprod.26_1:
+.main.50_3:
   slliw a3, a2, 3
   add a4, a0, a3
   fld fa1, 0(a4)
@@ -32,11 +50,18 @@ inprod.26:
   fld fa2, 0(a3)
   fmadd.d fa0, fa1, fa2, fa0
   addi a2, a2, -1
-  j .inprod.26_0
+  j .main.50_2
 
-.inprod.26_2:
+.main.50_4:
+  li a0, 4696837146684686336
+  fmv.d.x fa1, a0
+  fmul.d fa0, fa1, fa0
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
 
-.inprod.26_3:
+.main.50_5:
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -48,7 +73,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.27
+  call main.50
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -73,41 +98,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main.27
-  .type main.27, @function
-# leaf false
-main.27:
-.main.27_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a0, s11, -24
-  andi s11, a0, -8
-  li a1, 4608218246714312622
-  fmv.d.x fa0, a1
-  fsd fa0, 0(a0)
-  fsd fa0, 8(a0)
-  fsd fa0, 16(a0)
-  addi a1, s11, -24
-  andi s11, a1, -8
-  li a2, 4616820122002590269
-  fmv.d.x fa0, a2
-  fsd fa0, 0(a1)
-  fsd fa0, 8(a1)
-  fsd fa0, 16(a1)
-  fmv.d.x fa0, zero
-  li a2, 2
-  call inprod.26
-  li a0, 4696837146684686336
-  fmv.d.x fa1, a0
-  fmul.d fa0, fa1, fa0
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

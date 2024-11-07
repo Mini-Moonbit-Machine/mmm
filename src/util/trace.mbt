@@ -92,6 +92,13 @@ pub fn SubTracer::abort[T](self : SubTracer, msg : String) -> T {
   panic()
 }
 
+pub fn SubTracer::timeout[T](self : SubTracer, msg : String) -> T {
+  while true {
+
+  }
+  panic()
+}
+
 pub struct Tracer {
   tracers : Array[(String, SubTracer)]
   log_buf : MutMap[Array[String]]

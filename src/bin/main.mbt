@@ -181,7 +181,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       )
       let knf = self.knf.unwrap()
       let tre = @knf.TailRecElim::new(tracer, knf)
-      let _knf = tre.go()
+      let knf = tre.go()
       let mut knf = knf
       for i in 0..<1 {
         let inline = @knf.InlineEnv::new(tracer, knf)

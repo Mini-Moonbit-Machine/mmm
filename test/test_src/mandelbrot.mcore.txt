@@ -15,154 +15,130 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl mandelbrot.62
-  .type mandelbrot.62, @function
+  .globl main.211
+  .type main.211, @function
 # leaf false
-mandelbrot.62:
-.mandelbrot.62_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, a0
-  fcvt.d.w fa0, a1
-  mv a0, zero
-  fmv.d fa1, fa0
-  call yloop.63
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.66
-  .type main.66, @function
-# leaf false
-main.66:
-.main.66_0:
+main.211:
+.main.211_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 40
-  call mandelbrot.62
+  call mandelbrot.207
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl yloop.63
-  .type yloop.63, @function
+  .globl yloop.208
+  .type yloop.208, @function
 # leaf false
-yloop.63:
-.yloop.63_5:
-  addi sp, sp, -64
+yloop.208:
+.yloop.208_0:
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  fsd fs0, 32(sp)
-  fsd fs1, 40(sp)
-  fsd fs2, 48(sp)
-  mv s1, a0
   mv s0, a1
-  fmv.d fs1, fa0
-  fmv.d fs0, fa1
+  mv s1, a0
 
-.yloop.63_0:
-  bge s1, s0, .yloop.63_1
+.yloop.208_2:
+  blt s1, s0, .yloop.208_4
 
-.yloop.63_2:
-  fcvt.d.w fa0, s1
-
-.yloop.63_12:
-  mv s2, zero
-  fmv.d fs2, fa0
-
-.yloop.63_7:
-  bge s2, s0, .yloop.63_8
-
-.yloop.63_9:
-  fcvt.d.w fa0, s2
-  fadd.d fa0, fa0, fa0
-  fdiv.d fa0, fa0, fs1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fa0, fa0, fa1
-  fadd.d fa1, fs2, fs2
-  fdiv.d fa1, fa1, fs0
-  li a0, 4607182418800017408
-  fmv.d.x fa2, a0
-  fsub.d fa1, fa1, fa2
-
-.yloop.63_26:
-  li a0, 1000
-  fmv.d.x fa2, zero
-  fmv.d fa3, fa2
-  fmv.d fa4, fa2
-  fmv.d fa5, fa2
-
-.yloop.63_18:
-  beq a0, zero, .yloop.63_19
-
-.yloop.63_20:
-  fsub.d fa4, fa4, fa5
-  fadd.d fa6, fa4, fa0
-  fadd.d fa2, fa2, fa2
-  fmadd.d fa3, fa2, fa3, fa1
-  fmul.d fa4, fa6, fa6
-  fmul.d fa5, fa3, fa3
-  li a1, 4611686018427387904
-  fmv.d.x fa2, a1
-  fmul.d fa2, fa2, fa2
-  fadd.d fa7, fa4, fa5
-  fle.d a1, fa2, fa7
-  beq a1, zero, .yloop.63_22
-
-.yloop.63_21:
-  mv a0, zero
-  call minimbt_print_int
-
-.yloop.63_23:
-
-.yloop.63_24:
-
-.yloop.63_13:
-  addi a0, s2, 1
-  mv s2, a0
-  j .yloop.63_7
-
-.yloop.63_1:
+.yloop.208_3:
   mv a0, zero
 
-.yloop.63_3:
+.yloop.208_5:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
-  fld fs0, 32(sp)
-  fld fs1, 40(sp)
-  fld fs2, 48(sp)
-  addi sp, sp, 64
+  addi sp, sp, 32
   ret
 
-.yloop.63_8:
+.yloop.208_4:
+
+.yloop.208_7:
+  mv s2, zero
+
+.yloop.208_9:
+  bge s2, s0, .yloop.208_10
+
+.yloop.208_11:
+  fcvt.d.w fa0, s2
+  fadd.d fa1, fa0, fa0
+  fcvt.d.w fa0, s0
+  fdiv.d fa1, fa1, fa0
+  li a0, 4609434218613702656
+  fmv.d.x fa2, a0
+  fsub.d fa1, fa1, fa2
+  fcvt.d.w fa2, s1
+  fadd.d fa2, fa2, fa2
+  fdiv.d fa0, fa2, fa0
+  li a0, 4607182418800017408
+  fmv.d.x fa2, a0
+  fsub.d fa2, fa0, fa2
+
+.yloop.208_21:
+  li a0, 1000
+  fmv.d.x fa0, zero
+  fmv.d fa4, fa0
+  fmv.d fa3, fa0
+  fmv.d fa5, fa0
+
+.yloop.208_23:
+  beq a0, zero, .yloop.208_24
+
+.yloop.208_25:
+  fsub.d fa0, fa0, fa5
+  fadd.d fa0, fa0, fa1
+  fadd.d fa4, fa4, fa4
+  fmadd.d fa3, fa4, fa3, fa2
+  fmul.d fa5, fa0, fa0
+  fmul.d fa6, fa3, fa3
+  li a1, 4611686018427387904
+  fmv.d.x fa4, a1
+  fmul.d fa4, fa4, fa4
+  fadd.d fa7, fa5, fa6
+  fle.d a1, fa4, fa7
+  beq a1, zero, .yloop.208_27
+
+.yloop.208_26:
+  mv a0, zero
+  call minimbt_print_int
+
+.yloop.208_28:
+
+.yloop.208_29:
+
+.yloop.208_13:
+  addi a0, s2, 1
+  mv s2, a0
+  j .yloop.208_9
+
+.yloop.208_10:
   call minimbt_print_endline
   mv a0, zero
 
-.yloop.63_10:
+.yloop.208_12:
 
-.yloop.63_6:
+.yloop.208_6:
   addi a0, s1, 1
   mv s1, a0
-  j .yloop.63_0
+  j .yloop.208_2
 
-.yloop.63_19:
+.yloop.208_24:
   li a0, 1
   call minimbt_print_int
-  j .yloop.63_24
+  j .yloop.208_29
 
-.yloop.63_22:
+.yloop.208_27:
   addi a0, a0, -1
-  fmv.d fa2, fa6
-  j .yloop.63_18
+  fmv.d fa4, fa0
+  fmv.d fa0, fa5
+  fmv.d fa5, fa6
+  j .yloop.208_23
 
   .p2align 2
   .text
@@ -173,7 +149,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.66
+  call main.211
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -198,6 +174,22 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl mandelbrot.207
+  .type mandelbrot.207, @function
+# leaf false
+mandelbrot.207:
+.mandelbrot.207_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, a0
+  mv a0, zero
+  call yloop.208
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

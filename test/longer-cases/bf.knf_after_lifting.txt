@@ -1,4 +1,4 @@
-let rec read_ch_until_newline_or_eof.133: Int = () {
+let rec read_ch_until_newline_or_eof.249: Int = () {
   let c.2: Int = ExtApply(minimbt_read_char, [])
   let _3: Int = Int(10)
   if (c.2 == _3) then {
@@ -12,154 +12,162 @@ let rec read_ch_until_newline_or_eof.133: Int = () {
     }
   }
 }
-let rec skip.135: Var({val: Some(Int)}) = (pc.20: Var({val: Some(Int)}), level.21: Int, len.6: Int, prog.7: Array(Int)) {
-  if (len.6 <= pc.20) then {
-    Var(pc.20)
-  } else {
-    let i.22: Int = Get prog.7[pc.20]
-    let _23: Int = Int(91)
-    if (i.22 == _23) then {
-      let _24: Int = Int(1)
-      let _25: Int = Add(pc.20, _24)
-      let _26: Int = Int(1)
-      let _27: Int = Add(level.21, _26)
-      Apply(skip.135, [_25, _27, len.6, prog.7, ])
+let rec skip.251: Var({val: Some(Int)}) = (pc.20: Var({val: Some(Int)}), level.21: Int, len.6: Int, prog.7: Array(Int)) {
+  let join skip.133: Var({val: Some(Int)}) = (pc.134: Var({val: Some(Int)}), level.135: Int) {
+    if (len.6 <= pc.134) then {
+      Var(pc.134)
     } else {
-      let _28: Int = Int(93)
-      if (i.22 == _28) then {
-        let _29: Int = Int(0)
-        if (level.21 == _29) then {
-          Var(pc.20)
-        } else {
-          let _30: Int = Int(1)
-          let _31: Int = Add(pc.20, _30)
-          let _32: Int = Int(1)
-          let _33: Int = Sub(level.21, _32)
-          Apply(skip.135, [_31, _33, len.6, prog.7, ])
-        }
+      let i.136: Int = Get prog.7[pc.134]
+      let _137: Int = Int(91)
+      if (i.136 == _137) then {
+        let _138: Int = Int(1)
+        let _139: Int = Add(pc.134, _138)
+        let _140: Int = Int(1)
+        let _141: Int = Add(level.135, _140)
+        Jump(skip.133, [_139, _141, ])
       } else {
-        let _34: Int = Int(1)
-        let _35: Int = Add(pc.20, _34)
-        Apply(skip.135, [_35, level.21, len.6, prog.7, ])
+        let _142: Int = Int(93)
+        if (i.136 == _142) then {
+          let _143: Int = Int(0)
+          if (level.135 == _143) then {
+            Var(pc.134)
+          } else {
+            let _144: Int = Int(1)
+            let _145: Int = Add(pc.134, _144)
+            let _146: Int = Int(1)
+            let _147: Int = Sub(level.135, _146)
+            Jump(skip.133, [_145, _147, ])
+          }
+        } else {
+          let _148: Int = Int(1)
+          let _149: Int = Add(pc.134, _148)
+          Jump(skip.133, [_149, level.135, ])
+        }
       }
     }
   }
+  Jump(skip.133, [pc.20, level.21, ])
 }
-let rec lp.137: Var({val: Some(Unit)}) = (pc.37: Var({val: Some(Int)}), len.6: Int, ptr.10: Array(Int), prog.7: Array(Int), cells.15: Array(Int), next_pc.18: Array(Int)) {
-  let _97: Int = Int(0)
-  let _98: Int = Get ptr.10[_97]
-  let _99: Int = Get cells.15[_98]
-  let _100: Int = Int(0)
-  if (_99 == _100) then {
-    let _101: Int = Int(0)
-    let _102: Int = Int(1)
-    let _103: Int = Add(pc.37, _102)
-    let _104: Int = Int(0)
-    let _105: Var({val: Some(Int)}) = Apply(skip.135, [_103, _104, len.6, prog.7, ])
-    let _106: Unit = Put next_pc.18[_101] = _105
-    Unit
-  } else {
-    let _107: Int = Int(0)
-    let _108: Int = Int(1)
-    let _109: Int = Add(pc.37, _108)
-    let _110: Var({val: Some(Int)}) = Apply(aux.136, [_109, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
-    let _111: Unit = Put next_pc.18[_107] = _110
-    Apply(lp.137, [pc.37, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
-  }
-}
-let rec aux.136: Var({val: Some(Int)}) = (pc.37: Var({val: Some(Int)}), len.6: Int, ptr.10: Array(Int), prog.7: Array(Int), cells.15: Array(Int), next_pc.18: Array(Int)) {
-  if (len.6 <= pc.37) then {
-    Var(pc.37)
-  } else {
-    let i.38: Int = Get prog.7[pc.37]
-    let _39: Int = Int(62)
-    if (i.38 == _39) then {
-      let _40: Int = Int(0)
-      let _41: Int = Int(0)
-      let _42: Int = Get ptr.10[_41]
-      let _43: Int = Int(1)
-      let _44: Int = Add(_42, _43)
-      let _45: Unit = Put ptr.10[_40] = _44
-      let _46: Int = Int(1)
-      let _47: Int = Add(pc.37, _46)
-      Apply(aux.136, [_47, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+let rec lp.253: Var({val: Some(Unit)}) = (pc.167: Var({val: Some(Int)}), len.6: Int, ptr.10: Array(Int), prog.7: Array(Int), cells.15: Array(Int), next_pc.18: Array(Int)) {
+  let join lp.227: Var({val: Some(Unit)}) = () {
+    let _228: Int = Int(0)
+    let _229: Int = Get ptr.10[_228]
+    let _230: Int = Get cells.15[_229]
+    let _231: Int = Int(0)
+    if (_230 == _231) then {
+      let _232: Int = Int(0)
+      let _233: Int = Int(1)
+      let _234: Int = Add(pc.167, _233)
+      let _235: Int = Int(0)
+      let _236: Var({val: Some(Int)}) = Apply(skip.251, [_234, _235, len.6, prog.7, ])
+      let _237: Unit = Put next_pc.18[_232] = _236
+      Unit
     } else {
-      let _48: Int = Int(60)
-      if (i.38 == _48) then {
-        let _49: Int = Int(0)
-        let _50: Int = Int(0)
-        let _51: Int = Get ptr.10[_50]
-        let _52: Int = Int(1)
-        let _53: Int = Sub(_51, _52)
-        let _54: Unit = Put ptr.10[_49] = _53
-        let _55: Int = Int(1)
-        let _56: Int = Add(pc.37, _55)
-        Apply(aux.136, [_56, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+      let _238: Int = Int(0)
+      let _239: Int = Int(1)
+      let _240: Int = Add(pc.167, _239)
+      let _241: Var({val: Some(Int)}) = Apply(aux.252, [_240, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+      let _242: Unit = Put next_pc.18[_238] = _241
+      Jump(lp.227, [])
+    }
+  }
+  Jump(lp.227, [])
+}
+let rec aux.252: Var({val: Some(Int)}) = (pc.37: Var({val: Some(Int)}), len.6: Int, ptr.10: Array(Int), prog.7: Array(Int), cells.15: Array(Int), next_pc.18: Array(Int)) {
+  let join aux.166: Var({val: Some(Int)}) = (pc.167: Var({val: Some(Int)})) {
+    if (len.6 <= pc.167) then {
+      Var(pc.167)
+    } else {
+      let i.168: Int = Get prog.7[pc.167]
+      let _169: Int = Int(62)
+      if (i.168 == _169) then {
+        let _170: Int = Int(0)
+        let _171: Int = Int(0)
+        let _172: Int = Get ptr.10[_171]
+        let _173: Int = Int(1)
+        let _174: Int = Add(_172, _173)
+        let _175: Unit = Put ptr.10[_170] = _174
+        let _176: Int = Int(1)
+        let _177: Int = Add(pc.167, _176)
+        Jump(aux.166, [_177, ])
       } else {
-        let _57: Int = Int(43)
-        if (i.38 == _57) then {
-          let _58: Int = Int(0)
-          let _59: Int = Get ptr.10[_58]
-          let _60: Int = Int(0)
-          let _61: Int = Get ptr.10[_60]
-          let _62: Int = Get cells.15[_61]
-          let _63: Int = Int(1)
-          let _64: Int = Add(_62, _63)
-          let _65: Unit = Put cells.15[_59] = _64
-          let _66: Int = Int(1)
-          let _67: Int = Add(pc.37, _66)
-          Apply(aux.136, [_67, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+        let _178: Int = Int(60)
+        if (i.168 == _178) then {
+          let _179: Int = Int(0)
+          let _180: Int = Int(0)
+          let _181: Int = Get ptr.10[_180]
+          let _182: Int = Int(1)
+          let _183: Int = Sub(_181, _182)
+          let _184: Unit = Put ptr.10[_179] = _183
+          let _185: Int = Int(1)
+          let _186: Int = Add(pc.167, _185)
+          Jump(aux.166, [_186, ])
         } else {
-          let _68: Int = Int(45)
-          if (i.38 == _68) then {
-            let _69: Int = Int(0)
-            let _70: Int = Get ptr.10[_69]
-            let _71: Int = Int(0)
-            let _72: Int = Get ptr.10[_71]
-            let _73: Int = Get cells.15[_72]
-            let _74: Int = Int(1)
-            let _75: Int = Sub(_73, _74)
-            let _76: Unit = Put cells.15[_70] = _75
-            let _77: Int = Int(1)
-            let _78: Int = Add(pc.37, _77)
-            Apply(aux.136, [_78, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+          let _187: Int = Int(43)
+          if (i.168 == _187) then {
+            let _188: Int = Int(0)
+            let _189: Int = Get ptr.10[_188]
+            let _190: Int = Int(0)
+            let _191: Int = Get ptr.10[_190]
+            let _192: Int = Get cells.15[_191]
+            let _193: Int = Int(1)
+            let _194: Int = Add(_192, _193)
+            let _195: Unit = Put cells.15[_189] = _194
+            let _196: Int = Int(1)
+            let _197: Int = Add(pc.167, _196)
+            Jump(aux.166, [_197, ])
           } else {
-            let _79: Int = Int(46)
-            if (i.38 == _79) then {
-              let _80: Int = Int(0)
-              let _81: Int = Get ptr.10[_80]
-              let _82: Int = Get cells.15[_81]
-              let _83: Unit = ExtApply(minimbt_print_char, [_82, ])
-              let _84: Int = Int(1)
-              let _85: Int = Add(pc.37, _84)
-              Apply(aux.136, [_85, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+            let _198: Int = Int(45)
+            if (i.168 == _198) then {
+              let _199: Int = Int(0)
+              let _200: Int = Get ptr.10[_199]
+              let _201: Int = Int(0)
+              let _202: Int = Get ptr.10[_201]
+              let _203: Int = Get cells.15[_202]
+              let _204: Int = Int(1)
+              let _205: Int = Sub(_203, _204)
+              let _206: Unit = Put cells.15[_200] = _205
+              let _207: Int = Int(1)
+              let _208: Int = Add(pc.167, _207)
+              Jump(aux.166, [_208, ])
             } else {
-              let _86: Int = Int(44)
-              if (i.38 == _86) then {
-                let _87: Int = Int(0)
-                let _88: Int = Get ptr.10[_87]
-                let _89: Int = Apply(read_ch_until_newline_or_eof.133, [])
-                let _90: Unit = Put cells.15[_88] = _89
-                let _91: Int = Int(1)
-                let _92: Int = Add(pc.37, _91)
-                Apply(aux.136, [_92, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+              let _209: Int = Int(46)
+              if (i.168 == _209) then {
+                let _210: Int = Int(0)
+                let _211: Int = Get ptr.10[_210]
+                let _212: Int = Get cells.15[_211]
+                let _213: Unit = ExtApply(minimbt_print_char, [_212, ])
+                let _214: Int = Int(1)
+                let _215: Int = Add(pc.167, _214)
+                Jump(aux.166, [_215, ])
               } else {
-                let _93: Int = Int(91)
-                if (i.38 == _93) then {
-                  let _94: Int = Int(0)
-                  let _95: Unit = Put next_pc.18[_94] = pc.37
-                  let _112: Var({val: Some(Unit)}) = Apply(lp.137, [pc.37, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
-                  let _113: Int = Int(0)
-                  let _114: Int = Get next_pc.18[_113]
-                  let _115: Int = Int(1)
-                  let _116: Int = Add(_114, _115)
-                  Apply(aux.136, [_116, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+                let _216: Int = Int(44)
+                if (i.168 == _216) then {
+                  let _217: Int = Int(0)
+                  let _218: Int = Get ptr.10[_217]
+                  let _219: Int = Apply(read_ch_until_newline_or_eof.249, [])
+                  let _220: Unit = Put cells.15[_218] = _219
+                  let _221: Int = Int(1)
+                  let _222: Int = Add(pc.167, _221)
+                  Jump(aux.166, [_222, ])
                 } else {
-                  let _117: Int = Int(93)
-                  if (i.38 == _117) then {
-                    Var(pc.37)
+                  let _223: Int = Int(91)
+                  if (i.168 == _223) then {
+                    let _224: Int = Int(0)
+                    let _225: Unit = Put next_pc.18[_224] = pc.167
+                    let _243: Var({val: Some(Unit)}) = Apply(lp.253, [pc.167, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+                    let _244: Int = Int(0)
+                    let _245: Int = Get next_pc.18[_244]
+                    let _246: Int = Int(1)
+                    let _247: Int = Add(_245, _246)
+                    Jump(aux.166, [_247, ])
                   } else {
-                    Var(pc.37)
+                    let _248: Int = Int(93)
+                    if (i.168 == _248) then {
+                      Var(pc.167)
+                    } else {
+                      Var(pc.167)
+                    }
                   }
                 }
               }
@@ -169,8 +177,9 @@ let rec aux.136: Var({val: Some(Int)}) = (pc.37: Var({val: Some(Int)}), len.6: I
       }
     }
   }
+  Jump(aux.166, [pc.37, ])
 }
-let rec bf.134: Unit = (len.6: Int, prog.7: Array(Int)) {
+let rec bf.250: Unit = (len.6: Int, prog.7: Array(Int)) {
   let _8: Int = Int(1)
   let _9: Int = Int(0)
   let ptr.10: Array(Int) = ExtApply(minimbt_create_array, [_8, _9, ])
@@ -183,27 +192,27 @@ let rec bf.134: Unit = (len.6: Int, prog.7: Array(Int)) {
   let _17: Int = Int(0)
   let next_pc.18: Array(Int) = ExtApply(minimbt_create_array, [_16, _17, ])
   let _118: Int = Int(0)
-  let _119: Var({val: Some(Int)}) = Apply(aux.136, [_118, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
+  let _119: Var({val: Some(Int)}) = Apply(aux.252, [_118, len.6, ptr.10, prog.7, cells.15, next_pc.18, ])
   Unit
 }
-let rec read_prog.139: Var({val: Some(Unit)}) = (i.125: Var({val: Some(Int)}), prog.123: Array(Int)) {
-  let x.126: Int = Apply(read_ch_until_newline_or_eof.133, [])
+let rec read_prog.255: Var({val: Some(Unit)}) = (i.125: Var({val: Some(Int)}), prog.123: Array(Int)) {
+  let x.126: Int = Apply(read_ch_until_newline_or_eof.249, [])
   let _127: Int = Int(-1)
   if (x.126 == _127) then {
-    Apply(bf.134, [i.125, prog.123, ])
+    Apply(bf.250, [i.125, prog.123, ])
   } else {
     let _128: Unit = Put prog.123[i.125] = x.126
     let _129: Int = Int(1)
     let _130: Int = Add(i.125, _129)
-    Apply(read_prog.139, [_130, prog.123, ])
+    Apply(read_prog.255, [_130, prog.123, ])
   }
 }
-let rec main.138: Var({val: Some(Unit)}) = () {
+let rec main.254: Var({val: Some(Unit)}) = () {
   let len.121: Int = Int(1024)
   let _122: Int = Int(0)
   let prog.123: Array(Int) = ExtApply(minimbt_create_array, [len.121, _122, ])
   let _131: Int = Int(0)
-  let _132: Var({val: Some(Unit)}) = Apply(read_prog.139, [_131, prog.123, ])
+  let _132: Var({val: Some(Unit)}) = Apply(read_prog.255, [_131, prog.123, ])
   Unit
 }
-Apply(main.138, [])
+Apply(main.254, [])

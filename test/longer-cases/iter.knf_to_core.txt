@@ -7,7 +7,90 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn print.81 #f2 : fn(int32) -> unit
+.fn do.116 #f0 : fn(closure(int32) -> bool, int32, array[int32]) -> bool
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    jump b1(0)
+  }
+  .loop #b1 pre #Some(b0) header #b2 {
+    .block #b3
+    .block #b4
+    .block #b5
+    .block #b6
+    .block #b7
+    .block #b8
+  }
+  .bb #b2 (int32) {
+    let %0: int32 = sub($f1, 1)
+    let %1: bool = le($b2.0, %0)
+    br %1 b3() b4()
+  }
+  .bb #b3 () {
+    let %2: int32 = load int32 offset($f2, $b2.0 * @32)
+    let %3: bool = apply $f0(%2)
+    let %4: bool = eq(%3, true)
+    br %4 b5() b6()
+  }
+  .bb #b4 () {
+    jump b8(false)
+  }
+  .bb #b5 () {
+    let %5: int32 = add($b2.0, 1)
+    jump b2(%5)
+  }
+  .bb #b6 () {
+    jump b7(false)
+  }
+  .bb #b7 (any) {
+    jump b8($b7.0)
+  }
+  .bb #b8 (any) {
+    return $b8.0
+  }
+}
+.fn main.115 #f3 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let _ = alloc <m0: array[int32] heap(5)> <- [..] = 1
+    let _ = store int32 offset(f3.m0, 0 * @32) <- 1
+    let _ = store int32 offset(f3.m0, 1 * @32) <- 2
+    let _ = store int32 offset(f3.m0, 2 * @32) <- 3
+    let _ = store int32 offset(f3.m0, 3 * @32) <- 4
+    let _ = store int32 offset(f3.m0, 4 * @32) <- 5
+    jump b1()
+  }
+  .loop #b1 pre #Some(b0) header #b2 {
+    .block #b3
+    .block #b4
+    .block #b5
+  }
+  .bb #b2 () {
+    let _ = alloc <m1: closure(int32) -> bool heap(1)> <- [0] = f8
+    let %7: bool = call f0(f3.m1, 5, f3.m0)
+    let %8: bool = eq(%7, true)
+    br %8 b3() b4()
+  }
+  .bb #b3 () {
+    jump b2()
+  }
+  .bb #b4 () {
+    jump b5(())
+  }
+  .bb #b5 (any) {
+    return $b5.0
+  }
+}
+.fn yield.119 #f8 : closure(int32) -> bool
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = call f2($f0)
+    return %0
+  }
+}
+.fn print.117 #f1 : fn(int32) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -15,121 +98,19 @@
     return %0
   }
 }
-.fn yield.85 #f13 : closure(int32) -> bool
+.fn T$start #f10 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: bool = call f3($f0)
+    let %0: unit = call f3()
     return %0
   }
 }
-.fn next.80 #f0 : fn(int32, int32, array[int32], closure(int32) -> bool) -> bool
+.fn yield.118 #f2 : fn(int32) -> bool
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = sub($f1, 1)
-    let %1: bool = le($f0, %0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    let %2: int32 = load int32 offset($f2, $f0 * @32)
-    let %3: bool = apply $f3(%2)
-    let %4: bool = eq(%3, true)
-    br %4 b3() b4()
-  }
-  .bb #b2 () {
-    jump b6(false)
-  }
-  .bb #b3 () {
-    let %5: int32 = add($f0, 1)
-    let %6: bool = call f0(%5, $f1, $f2, $f3)
-    jump b5(%6)
-  }
-  .bb #b4 () {
-    jump b5(false)
-  }
-  .bb #b5 (bool) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (bool) {
-    return $b6.0
-  }
-}
-.fn do.79 #f1 : fn(closure(int32) -> bool, int32, array[int32]) -> bool
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = call f0(0, $f1, $f2, $f0)
-    return %0
-  }
-}
-.fn main.78 #f5 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: array[int32] heap(5)> <- [..] = 1
-    let _ = store int32 offset(f5.m0, 0 * @32) <- 1
-    let _ = store int32 offset(f5.m0, 1 * @32) <- 2
-    let _ = store int32 offset(f5.m0, 2 * @32) <- 3
-    let _ = store int32 offset(f5.m0, 3 * @32) <- 4
-    let _ = store int32 offset(f5.m0, 4 * @32) <- 5
-    let %6: unit = call f4(5, f5.m0)
-    return %6
-  }
-}
-.fn yield.84 #f11 : closure(int32) -> bool
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = call f3($f0)
-    return %0
-  }
-}
-.fn do.83 #f4 : fn(int32, array[int32]) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let _ = alloc <m0: closure(int32) -> bool heap(1)> <- [0] = f11
-    let %1: bool = call f1(f4.m0, $f0, $f1)
-    let %2: bool = eq(%1, true)
-    br %2 b1() b2()
-  }
-  .bb #b1 () {
-    let _ = alloc <m1: closure(int32) -> bool heap(1)> <- [0] = f13
-    let %4: bool = call f1(f4.m1, $f0, $f1)
-    let %5: bool = eq(%4, true)
-    br %5 b3() b4()
-  }
-  .bb #b2 () {
-    jump b6(())
-  }
-  .bb #b3 () {
-    let %6: unit = call f4($f0, $f1)
-    jump b5(%6)
-  }
-  .bb #b4 () {
-    jump b5(())
-  }
-  .bb #b5 (unit) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (unit) {
-    return $b6.0
-  }
-}
-.fn T$start #f16 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn yield.82 #f3 : fn(int32) -> bool
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f2($f0)
+    let %0: unit = call f1($f0)
     return true
   }
 }
