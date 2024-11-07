@@ -14,7 +14,7 @@ pub enum CallFreq {
   Once
   Many(Int)
   AsClosure
-} derive(Show)
+} derive(Show, Eq)
 
 pub fn next(self : CallFreq) -> CallFreq {
   match self {

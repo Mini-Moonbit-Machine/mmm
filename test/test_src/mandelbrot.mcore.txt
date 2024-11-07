@@ -21,7 +21,7 @@ __begin_text:
 # leaf false
 yloop7.136:
 .yloop7.136_5:
-  addi sp, sp, -80
+  addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -31,11 +31,104 @@ yloop7.136:
   fsd fs1, 48(sp)
   fsd fs2, 56(sp)
   fsd fs3, 64(sp)
+  fsd fs4, 72(sp)
+  fsd fs5, 80(sp)
+  fsd fs6, 88(sp)
   mv s1, a0
   mv s0, a1
+  fmv.d fs1, fa0
+  fmv.d fs0, fa1
 
 .yloop7.136_0:
-  blt s1, s0, .yloop7.136_2
+  bge s1, s0, .yloop7.136_1
+
+.yloop7.136_2:
+  fcvt.d.w fa0, s1
+
+.yloop7.136_12:
+  mv s2, zero
+  fmv.d fs2, fa0
+
+.yloop7.136_7:
+  bge s2, s0, .yloop7.136_8
+
+.yloop7.136_9:
+  fcvt.d.w fa0, s2
+  call dbl4.135
+  fdiv.d fa0, fa0, fs1
+  li a0, 4609434218613702656
+  fmv.d.x fa1, a0
+  fsub.d fs3, fa0, fa1
+  fmv.d fa0, fs2
+  call dbl4.135
+  fdiv.d fa0, fa0, fs0
+  li a0, 4607182418800017408
+  fmv.d.x fa1, a0
+  fsub.d fa0, fa0, fa1
+
+.yloop7.136_26:
+  li a0, 1000
+  mv s3, a0
+  fmv.d.x fa1, zero
+  fmv.d fs4, fa1
+  fmv.d fa2, fa1
+  fmv.d fa3, fa1
+  fmv.d fs5, fa0
+
+.yloop7.136_18:
+  beq s3, zero, .yloop7.136_19
+
+.yloop7.136_20:
+  fsub.d fa0, fa2, fa3
+  fadd.d fs6, fa0, fs3
+  fmv.d fa0, fa1
+  call dbl4.135
+  fmadd.d fa3, fa0, fs4, fs5
+  fmul.d fa2, fs6, fs6
+  fmul.d fa0, fa3, fa3
+  li a0, 4611686018427387904
+  fmv.d.x fa1, a0
+  fmul.d fa1, fa1, fa1
+  fadd.d fa4, fa2, fa0
+  fle.d a0, fa1, fa4
+  beq a0, zero, .yloop7.136_22
+
+.yloop7.136_21:
+  mv a0, zero
+  call minimbt_print_int
+
+.yloop7.136_23:
+
+.yloop7.136_24:
+
+.yloop7.136_13:
+  addi a0, s2, 1
+  mv s2, a0
+  j .yloop7.136_7
+
+.yloop7.136_22:
+  addi a0, s3, -1
+  mv s3, a0
+  fmv.d fa1, fs6
+  fmv.d fs4, fa3
+  fmv.d fa3, fa0
+  j .yloop7.136_18
+
+.yloop7.136_19:
+  li a0, 1
+  call minimbt_print_int
+  j .yloop7.136_24
+
+.yloop7.136_8:
+  call minimbt_print_endline
+  mv a0, zero
+
+.yloop7.136_10:
+
+.yloop7.136_6:
+  addi a0, s1, 1
+  mv s1, a0
+  j .yloop7.136_0
 
 .yloop7.136_1:
   mv a0, zero
@@ -50,95 +143,11 @@ yloop7.136:
   fld fs1, 48(sp)
   fld fs2, 56(sp)
   fld fs3, 64(sp)
-  addi sp, sp, 80
+  fld fs4, 72(sp)
+  fld fs5, 80(sp)
+  fld fs6, 88(sp)
+  addi sp, sp, 96
   ret
-
-.yloop7.136_2:
-
-.yloop7.136_12:
-  mv s2, zero
-
-.yloop7.136_7:
-  bge s2, s0, .yloop7.136_8
-
-.yloop7.136_9:
-  fcvt.d.w fa0, s2
-  call dbl4.135
-  fcvt.d.w fs1, s0
-  fdiv.d fa0, fa0, fs1
-  li a0, 4609434218613702656
-  fmv.d.x fa1, a0
-  fsub.d fs0, fa0, fa1
-  fcvt.d.w fa0, s1
-  call dbl4.135
-  fdiv.d fa0, fa0, fs1
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa0, fa0, fa1
-
-.yloop7.136_29:
-  li a0, 1000
-  mv s3, a0
-  fmv.d.x fa1, zero
-  fmv.d fs1, fa1
-  fmv.d fa2, fa1
-  fmv.d fa3, fa1
-  fmv.d fs2, fa0
-
-.yloop7.136_21:
-  beq s3, zero, .yloop7.136_22
-
-.yloop7.136_23:
-  fsub.d fa0, fa2, fa3
-  fadd.d fs3, fa0, fs0
-  fmv.d fa0, fa1
-  call dbl4.135
-  fmadd.d fa3, fa0, fs1, fs2
-  fmul.d fa2, fs3, fs3
-  fmul.d fa0, fa3, fa3
-  li a0, 4611686018427387904
-  fmv.d.x fa1, a0
-  fmul.d fa1, fa1, fa1
-  fadd.d fa4, fa2, fa0
-  fle.d a0, fa1, fa4
-  beq a0, zero, .yloop7.136_25
-
-.yloop7.136_24:
-  mv a0, zero
-  call minimbt_print_int
-
-.yloop7.136_26:
-
-.yloop7.136_27:
-
-.yloop7.136_13:
-  addi a0, s2, 1
-  mv s2, a0
-  j .yloop7.136_7
-
-.yloop7.136_25:
-  addi a0, s3, -1
-  mv s3, a0
-  fmv.d fa1, fs3
-  fmv.d fs1, fa3
-  fmv.d fa3, fa0
-  j .yloop7.136_21
-
-.yloop7.136_22:
-  li a0, 1
-  call minimbt_print_int
-  j .yloop7.136_27
-
-.yloop7.136_8:
-  call minimbt_print_endline
-  mv a0, zero
-
-.yloop7.136_10:
-
-.yloop7.136_6:
-  addi a0, s1, 1
-  mv s1, a0
-  j .yloop7.136_0
 
   .p2align 2
   .text
@@ -163,8 +172,11 @@ main75.134:
 .main75.134_0:
   addi sp, sp, -16
   sd ra, 0(sp)
+  li a0, 40
+  fcvt.d.w fa0, a0
   mv a0, zero
   li a1, 40
+  fmv.d fa1, fa0
   call yloop7.136
   ld ra, 0(sp)
   addi sp, sp, 16

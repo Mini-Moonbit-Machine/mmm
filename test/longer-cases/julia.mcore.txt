@@ -135,6 +135,8 @@ main94.114:
   sub s2, s11, a1
   andi s11, s2, -8
   mv a1, a0
+  fcvt.d.w fa3, s1
+  fcvt.d.w fa4, s0
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a5, iter.3
@@ -292,33 +294,38 @@ minimbt_main:
 # leaf false
 main_loop30.112:
 .main_loop30.112_14:
-  addi sp, sp, -48
+  addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
   sd s4, 40(sp)
-  mv s0, a0
-  mv s4, a1
-  mv s2, a2
+  fsd fs0, 48(sp)
+  fsd fs1, 56(sp)
+  fmv.d fa5, fa3
+  fmv.d fa3, fa4
+  mv s2, a0
+  mv s0, a1
+  mv s4, a2
   mv s1, a3
   mv s3, a4
   mv a0, a5
+  fmv.d fs0, fa5
+  fmv.d fs1, fa3
 
 .main_loop30.112_0:
-  beq s1, s4, .main_loop30.112_1
+  beq s1, s0, .main_loop30.112_1
 
 .main_loop30.112_2:
-  beq s2, s0, .main_loop30.112_3
+  beq s4, s2, .main_loop30.112_3
 
 .main_loop30.112_4:
-  fcvt.d.w fa0, s2
+  fcvt.d.w fa0, s4
   li a0, 4613937818241073152
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
-  fcvt.d.w fa1, s0
-  fdiv.d fa0, fa0, fa1
+  fdiv.d fa0, fa0, fs0
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
   fsub.d fa0, fa0, fa1
@@ -327,8 +334,7 @@ main_loop30.112:
   li a0, 4613937818241073152
   fmv.d.x fa2, a0
   fmul.d fa1, fa2, fa1
-  fcvt.d.w fa2, s4
-  fdiv.d fa1, fa1, fa2
+  fdiv.d fa1, fa1, fs1
   li a0, 4609434218613702656
   fmv.d.x fa2, a0
   fsub.d fa1, fa1, fa2
@@ -338,8 +344,8 @@ main_loop30.112:
   fld fa4, limit_sq.2, t5
   mv a0, zero
   call calc_pixel7.111
-  mul a1, s1, s0
-  add a1, a1, s2
+  mul a1, s1, s2
+  add a1, a1, s4
   bge zero, a0, .main_loop30.112_5
 
 .main_loop30.112_6:
@@ -353,12 +359,12 @@ main_loop30.112:
 
 .main_loop30.112_10:
   th.surw a0, s3, a1, 2
-  addi a1, s2, 1
+  addi a1, s4, 1
   fld fa0, c_im.6, t5
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  mv s2, a1
+  mv s4, a1
   j .main_loop30.112_0
 
 .main_loop30.112_8:
@@ -374,7 +380,7 @@ main_loop30.112:
   fld fa1, c_re.5, t5
   lw a0, iter.3
   fld fa2, limit_sq.2, t5
-  mv s2, zero
+  mv s4, zero
   mv s1, a1
   j .main_loop30.112_0
 
@@ -388,7 +394,9 @@ main_loop30.112:
   ld s2, 24(sp)
   ld s3, 32(sp)
   ld s4, 40(sp)
-  addi sp, sp, 48
+  fld fs0, 48(sp)
+  fld fs1, 56(sp)
+  addi sp, sp, 64
   ret
 
 __end_text:
