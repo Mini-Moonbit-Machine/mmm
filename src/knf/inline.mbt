@@ -465,7 +465,14 @@ pub fn InlineEnv::inline(
           Zero => 0
           AsClosure => 100000
         }
-        if size(body) < 5 && n < 5 {
+        if (size(body) < 5 && n < 5) ||
+          (
+            size(body) < 10 &&
+            n < 4 &&
+            fun.to_string().contains("main") == false
+          ) ||
+          (fn_like_args > 0 && size(body) * n < 50) ||
+          (n == 1 && size(body) < 30) {
           self.tracer.println("Inline decision \{f} accepted")
           replace(fundef)
         } else {

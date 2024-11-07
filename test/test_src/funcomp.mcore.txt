@@ -15,95 +15,28 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main.15
-  .type main.15, @function
-# leaf false
-main.15:
-.main.15_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, dbl.7
-  sd a1, 0(a0)
-  addi a1, s11, -8
-  andi s11, a1, -8
-  la a2, dec.12
-  sd a2, 0(a1)
-  call compose.1
-  mv a1, a0
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a2, inc.9
-  sd a2, 0(a0)
-  call compose.1
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 123
-  jalr a1
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl dbl.7
-  .type dbl.7, @function
+  .globl dec.31
+  .type dec.31, @function
 # leaf true
-dbl.7:
-.dbl.7_0:
-  add a0, a0, a0
-  ret
-
-  .p2align 2
-  .text
-  .globl composed.4
-  .type composed.4, @function
-# leaf false
-composed.4:
-.composed.4_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a1, s10
-  ld a2, 8(a1)
-  ld s0, 16(a1)
-  mv s10, a2
-  ld a1, 0(a2)
-  jalr a1
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl dec.12
-  .type dec.12, @function
-# leaf true
-dec.12:
-.dec.12_0:
+dec.31:
+.dec.31_0:
   addi a0, a0, -1
   ret
 
   .p2align 2
   .text
-  .globl compose.1
-  .type compose.1, @function
-# leaf true
-compose.1:
-.compose.1_0:
-  addi a2, s11, -24
-  andi s11, a2, -8
-  la a3, composed.4
-  sd a3, 0(a2)
-  sd a0, 8(a2)
-  sd a1, 16(a2)
-  mv a0, a2
+  .globl main.32
+  .type main.32, @function
+# leaf false
+main.32:
+.main.32_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 123
+  call composed.34
+  call minimbt_print_int
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -115,19 +48,47 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.15
+  call main.32
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl inc.9
-  .type inc.9, @function
-# leaf true
-inc.9:
-.inc.9_0:
+  .globl composed.34
+  .type composed.34, @function
+# leaf false
+composed.34:
+.composed.34_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+
+.composed.34_2:
   addi a0, a0, 1
+
+.composed.34_1:
+  call composed.33
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl composed.33
+  .type composed.33, @function
+# leaf false
+composed.33:
+.composed.33_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+
+.composed.33_2:
+  add a0, a0, a0
+
+.composed.33_1:
+  call dec.31
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2

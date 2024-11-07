@@ -22,51 +22,49 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.6
+  call main.9
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main.6
-  .type main.6, @function
+  .globl f.10
+  .type f.10, @function
 # leaf false
-main.6:
-.main.6_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call f.7
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl f.7
-  .type f.7, @function
-# leaf false
-f.7:
-.f.7_5:
+f.10:
+.f.10_8:
   addi sp, sp, -16
   sd ra, 0(sp)
 
-.f.7_0:
+.f.10_0:
   call minimbt_read_int
   li a1, -2147483648
-  bne a0, a1, .f.7_2
+  beq a0, a1, .f.10_1
 
-.f.7_1:
+.f.10_2:
+  call minimbt_print_int
+  call minimbt_read_int
+  li a1, -2147483648
+  bne a0, a1, .f.10_4
+
+.f.10_3:
   call minimbt_print_int
 
-.f.7_3:
+.f.10_5:
+
+.f.10_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.f.7_2:
+.f.10_1:
   call minimbt_print_int
-  j .f.7_0
+  j .f.10_6
+
+.f.10_4:
+  call minimbt_print_int
+  j .f.10_0
 
   .p2align 2
   .text
@@ -88,6 +86,20 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl main.9
+  .type main.9, @function
+# leaf false
+main.9:
+.main.9_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  call f.10
+  ld ra, 0(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

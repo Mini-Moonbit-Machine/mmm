@@ -15,200 +15,70 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl print_array.77
-  .type print_array.77, @function
-# leaf false
-print_array.77:
-.print_array.77_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a2, a0
-  mv a0, zero
-  call aux.78
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl main.79
-  .type main.79, @function
-# leaf false
-main.79:
-.main.79_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  addi s0, s11, -400
-  andi s11, s0, -8
-  li a0, 100
-  mv a1, a0
-  mv a0, s0
-  li a1, 100
-  call fill_buffer.72
-  mv a0, s0
-  li a1, 100
-  call isort.74
-  mv a0, s0
-  li a1, 100
-  call print_array.77
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl aux.73
-  .type aux.73, @function
+  .globl aux.90
+  .type aux.90, @function
 # leaf true
-aux.73:
-.aux.73_5:
-  mv a4, a0
-  mv a0, a3
-  mv a3, a4
-  mv a4, a0
+aux.90:
+.aux.90_5:
 
-.aux.73_0:
-  bne a3, a2, .aux.73_2
+.aux.90_0:
+  beq a0, a2, .aux.90_1
 
-.aux.73_1:
-  mv a0, zero
-
-.aux.73_3:
-  ret
-
-.aux.73_2:
-
-.aux.73_9:
-  li a0, 75
-  mul a0, a1, a0
-  addi a0, a0, 74
-  mv a1, a0
-
-.aux.73_6:
-
-.aux.73_8:
-  li a0, 65537
-  div a0, a1, a0
+.aux.90_2:
+  li a4, 75
+  mul a1, a1, a4
+  addi a1, a1, 74
+  li a4, 65537
+  div a4, a1, a4
   li a5, 65537
-  mul a0, a0, a5
-  sub a0, a1, a0
+  mul a4, a4, a5
+  sub a1, a1, a4
+  slliw a4, a0, 2
+  add a4, a3, a4
+  sw a1, 0(a4)
+  addi a0, a0, 1
+  j .aux.90_0
 
-.aux.73_7:
-  slliw a1, a3, 2
-  add a1, a4, a1
-  sw a0, 0(a1)
-  addi a1, a3, 1
-  mv a3, a1
-  mv a1, a0
-  j .aux.73_0
-
-  .p2align 2
-  .text
-  .globl aux.76
-  .type aux.76, @function
-# leaf true
-aux.76:
-.aux.76_5:
-  mv a4, a0
-  mv a3, a1
-  mv a0, a2
-  mv a1, a4
-  mv a4, a3
-  mv a3, a0
-
-.aux.76_0:
-  bne a1, a4, .aux.76_2
-
-.aux.76_1:
+.aux.90_1:
   mv a0, zero
 
-.aux.76_3:
+.aux.90_3:
   ret
 
-.aux.76_2:
-
-.aux.76_15:
-  mv a2, a1
-
-.aux.76_7:
-  beq a2, zero, .aux.76_8
-
-.aux.76_9:
-  addi a0, a2, -1
-  slliw a0, a0, 2
-  add a0, a3, a0
-  lw a0, 0(a0)
-  slliw a5, a2, 2
-  add a5, a3, a5
-  lw a5, 0(a5)
-  bge a5, a0, .aux.76_10
-
-.aux.76_11:
-  slliw a0, a2, 2
-  add a5, a3, a0
-  lw a5, 0(a5)
-  addi a2, a2, -1
-  slliw a6, a2, 2
-  add a7, a3, a6
-  lw a7, 0(a7)
-  add a0, a3, a0
-  sw a7, 0(a0)
-  add a0, a3, a6
-  sw a5, 0(a0)
-  j .aux.76_7
-
-.aux.76_8:
-  mv a0, zero
-
-.aux.76_13:
-
-.aux.76_6:
-  addi a0, a1, 1
-  mv a1, a0
-  j .aux.76_0
-
-.aux.76_10:
-  mv a0, zero
-
-.aux.76_12:
-  j .aux.76_13
-
   .p2align 2
   .text
-  .globl aux.78
-  .type aux.78, @function
+  .globl aux.95
+  .type aux.95, @function
 # leaf false
-aux.78:
-.aux.78_5:
+aux.95:
+.aux.95_5:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
 
-.aux.78_0:
-  beq s1, s0, .aux.78_1
+.aux.95_0:
+  beq s0, s1, .aux.95_1
 
-.aux.78_2:
-  slliw a0, s1, 2
+.aux.95_2:
+  slliw a0, s0, 2
   add a0, s2, a0
   lw a0, 0(a0)
   call minimbt_print_int
   li a0, 32
   call minimbt_print_char
-  addi a0, s1, 1
-  mv s1, a0
-  j .aux.78_0
+  addi a0, s0, 1
+  mv s0, a0
+  j .aux.95_0
 
-.aux.78_1:
+.aux.95_1:
   mv a0, zero
 
-.aux.78_3:
+.aux.95_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -218,21 +88,117 @@ aux.78:
 
   .p2align 2
   .text
-  .globl fill_buffer.72
-  .type fill_buffer.72, @function
+  .globl main.94
+  .type main.94, @function
 # leaf false
-fill_buffer.72:
-.fill_buffer.72_0:
+main.94:
+.main.94_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  addi s0, s11, -400
+  andi s11, s0, -8
+  li a0, 100
+  mv a1, a0
+  mv a0, s0
+  li a1, 100
+  call fill_buffer.89
+  mv a0, s0
+  li a1, 100
+  call isort.91
+  mv a0, zero
+  li a1, 100
+  mv a2, s0
+  call aux.95
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl isort.91
+  .type isort.91, @function
+# leaf false
+isort.91:
+.isort.91_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a2, a0
+  li a0, 1
+  call aux.93
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl fill_buffer.89
+  .type fill_buffer.89, @function
+# leaf false
+fill_buffer.89:
+.fill_buffer.89_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   mv a3, a0
   mv a2, a1
   mv a0, zero
   li a1, 12345
-  call aux.73
+  call aux.90
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl aux.93
+  .type aux.93, @function
+# leaf false
+aux.93:
+.aux.93_8:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s1, a0
+  mv s0, a1
+  mv s2, a2
+
+.aux.93_0:
+  beq s1, s0, .aux.93_1
+
+.aux.93_2:
+  mv a0, s2
+  mv a1, s1
+  call insert.92
+  addi s1, s1, 1
+  beq s1, s0, .aux.93_3
+
+.aux.93_4:
+  mv a0, s2
+  mv a1, s1
+  call insert.92
+  addi a0, s1, 1
+  mv s1, a0
+  j .aux.93_0
+
+.aux.93_1:
+  mv a0, zero
+
+.aux.93_6:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.aux.93_3:
+  mv a0, zero
+
+.aux.93_5:
+  j .aux.93_6
 
   .p2align 2
   .text
@@ -243,23 +209,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main.79
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl isort.74
-  .type isort.74, @function
-# leaf false
-isort.74:
-.isort.74_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a2, a0
-  li a0, 1
-  call aux.76
+  call main.94
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -285,6 +235,57 @@ minimbt_main:
   ld s11, 16(sp)
   addi sp, sp, 32
   ret
+
+  .p2align 2
+  .text
+  .globl insert.92
+  .type insert.92, @function
+# leaf true
+insert.92:
+.insert.92_8:
+  mv a2, a0
+  mv a0, a1
+  mv a1, a2
+  mv a2, a0
+
+.insert.92_0:
+  beq a2, zero, .insert.92_1
+
+.insert.92_2:
+  addi a0, a2, -1
+  slliw a0, a0, 2
+  add a0, a1, a0
+  lw a0, 0(a0)
+  slliw a3, a2, 2
+  add a3, a1, a3
+  lw a3, 0(a3)
+  bge a3, a0, .insert.92_3
+
+.insert.92_4:
+  slliw a0, a2, 2
+  add a3, a1, a0
+  lw a3, 0(a3)
+  addi a2, a2, -1
+  slliw a4, a2, 2
+  add a5, a1, a4
+  lw a5, 0(a5)
+  add a0, a1, a0
+  sw a5, 0(a0)
+  add a0, a1, a4
+  sw a3, 0(a0)
+  j .insert.92_0
+
+.insert.92_1:
+  mv a0, zero
+
+.insert.92_6:
+  ret
+
+.insert.92_3:
+  mv a0, zero
+
+.insert.92_5:
+  j .insert.92_6
 
 __end_text:
   .p2align 2
