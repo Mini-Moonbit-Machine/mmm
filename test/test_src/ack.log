@@ -664,6 +664,17 @@
 // [Asm]   mv v5, v10  # live: [v4, v5, zero]
 // [Asm]   j .ack1.21_0  # live: [v4, v5, zero]
 // [Asm] 
+// [Asm] # block info: defs: [v11, v4, v5, v15], uses: [v11, v4, v15], upward_exposed: [v4], params_defs: []
+// [Asm] # live_in: [v4, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack1.21_3:
+// [Asm]   addi v11, v4, -1  # live: [v11, zero]
+// [Asm] # control
+// [Asm]   mv v4, v11  # live: [v4, zero]
+// [Asm]   li v15, 1  # live: [v4, v15, zero]
+// [Asm]   mv v5, v15  # live: [v4, v5, zero]
+// [Asm]   j .ack1.21_0  # live: [v4, v5, zero]
+// [Asm] 
 // [Asm] # block info: defs: [v12, v13], uses: [v5, v12], upward_exposed: [v5], params_defs: []
 // [Asm] # live_in: [v5], live_out: [v13]
 // [Asm] # block parameters: []
@@ -680,17 +691,6 @@
 // [Asm]   mv a0, v13  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # block info: defs: [v11, v4, v5, v15], uses: [v11, v4, v15], upward_exposed: [v4], params_defs: []
-// [Asm] # live_in: [v4, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_3:
-// [Asm]   addi v11, v4, -1  # live: [v11, zero]
-// [Asm] # control
-// [Asm]   mv v4, v11  # live: [v4, zero]
-// [Asm]   li v15, 1  # live: [v4, v15, zero]
-// [Asm]   mv v5, v15  # live: [v4, v5, zero]
-// [Asm]   j .ack1.21_0  # live: [v4, v5, zero]
 // [Asm] 
 // [Asm] # leaf false
 // [Asm] minimbt_main:
@@ -824,6 +824,11 @@
 // [Main]   mv a0, s0
 // [Main]   j .ack1.21_0
 // [Main] 
+// [Main] .ack1.21_3:
+// [Main]   addi a0, a0, -1
+// [Main]   li a1, 1
+// [Main]   j .ack1.21_0
+// [Main] 
 // [Main] .ack1.21_1:
 // [Main]   addi a0, a1, 1
 // [Main] 
@@ -832,11 +837,6 @@
 // [Main]   ld s0, 8(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
-// [Main] 
-// [Main] .ack1.21_3:
-// [Main]   addi a0, a0, -1
-// [Main]   li a1, 1
-// [Main]   j .ack1.21_0
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text

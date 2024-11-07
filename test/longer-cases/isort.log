@@ -439,9 +439,6 @@
 // [Asm] move_origin: [v25]
 // [Asm] defined: v26 is X
 // [Asm] defs: []
-// [Asm] live_set: [v5, v6, v26, zero, v7]
-// [Asm] move_origin: []
-// [Asm] defs: []
 // [Asm] live_set: [v5, v6, v10, zero, v9, v7]
 // [Asm] move_origin: []
 // [Asm] defs: [v29]
@@ -467,6 +464,9 @@
 // [Asm] live_set: [v5, v6, v26, zero, v7]
 // [Asm] move_origin: [zero]
 // [Asm] defined: v26 is X
+// [Asm] defs: []
+// [Asm] live_set: [v5, v6, v26, zero, v7]
+// [Asm] move_origin: []
 // [Asm] defs: [v12]
 // [Asm] live_set: [v5, v10, zero, v7, v6, v12, v9]
 // [Asm] move_origin: []
@@ -634,13 +634,13 @@
 // [Asm] subst   addi v28, v5, 1 ->   addi a0, a1, 1
 // [Asm] subst   mv v5, v28 ->   mv a1, a0
 // [Asm] subst   j .aux60.147_0 ->   j .aux60.147_0
-// [Asm] subst   j .aux60.147_13 ->   j .aux60.147_13
 // [Asm] subst   beq v10, zero, .aux60.147_8 ->   beq a2, zero, .aux60.147_8
 // [Asm] subst   mv v29, zero ->   mv a0, zero
 // [Asm] subst   mv v25, zero ->   mv a0, zero
 // [Asm] subst   bne v5, v6, .aux60.147_2 ->   bne a1, a4, .aux60.147_2
 // [Asm] subst   mv v10, v5 ->   mv a2, a1
 // [Asm] subst   mv v26, zero ->   mv a0, zero
+// [Asm] subst   j .aux60.147_13 ->   j .aux60.147_13
 // [Asm] subst   addi v12, v10, -1 ->   addi a0, a2, -1
 // [Asm] subst   th.lurw v14, v9, v12, 2 ->   th.lurw a0, a3, a0, 2
 // [Asm] subst   th.lurw v16, v9, v10, 2 ->   th.lurw a5, a3, a2, 2
@@ -1681,12 +1681,19 @@
 // [Asm]   mv v10, v20  # live: [v5, v6, v10, zero, v9, v7]
 // [Asm]   j .aux60.147_7  # live: [v5, v6, v10, zero, v9, v7]
 // [Asm] 
-// [Asm] # block info: defs: [v26], uses: [zero], upward_exposed: [zero], params_defs: []
-// [Asm] # live_in: [v5, v6, zero, v7], live_out: [v5, v6, v26, zero, v7]
+// [Asm] # block info: defs: [v25], uses: [zero], upward_exposed: [zero], params_defs: []
+// [Asm] # live_in: [v5, v6, zero, v7], live_out: [v25, v5, v6, zero, v7]
 // [Asm] # block parameters: []
-// [Asm] .aux60.147_8:
+// [Asm] .aux60.147_10:
 // [Asm] # control
-// [Asm]   mv v26, zero  # live: [v5, v6, v26, zero, v7]
+// [Asm]   mv v25, zero  # live: [v25, v5, v6, zero, v7]
+// [Asm] 
+// [Asm] # block info: defs: [v26], uses: [v25], upward_exposed: [v25], params_defs: [v25]
+// [Asm] # live_in: [v25, v5, v6, zero, v7], live_out: [v5, v6, v26, zero, v7]
+// [Asm] # block parameters: [v25]
+// [Asm] .aux60.147_12:
+// [Asm] # control
+// [Asm]   mv v26, v25  # live: [v5, v6, v26, zero, v7]
 // [Asm] 
 // [Asm] # block info: defs: [v27], uses: [v26], upward_exposed: [v26], params_defs: [v26]
 // [Asm] # live_in: [v5, v6, v26, zero, v7], live_out: [v5, v6, zero, v27, v7]
@@ -1706,19 +1713,12 @@
 // [Asm]   mv v7, v7  # live: [v5, v6, zero, v7]
 // [Asm]   j .aux60.147_0  # live: [v5, v6, zero, v7]
 // [Asm] 
-// [Asm] # block info: defs: [v25], uses: [zero], upward_exposed: [zero], params_defs: []
-// [Asm] # live_in: [v5, v6, zero, v7], live_out: [v25, v5, v6, zero, v7]
+// [Asm] # block info: defs: [v26], uses: [zero], upward_exposed: [zero], params_defs: []
+// [Asm] # live_in: [v5, v6, zero, v7], live_out: [v5, v6, v26, zero, v7]
 // [Asm] # block parameters: []
-// [Asm] .aux60.147_10:
+// [Asm] .aux60.147_8:
 // [Asm] # control
-// [Asm]   mv v25, zero  # live: [v25, v5, v6, zero, v7]
-// [Asm] 
-// [Asm] # block info: defs: [v26], uses: [v25], upward_exposed: [v25], params_defs: [v25]
-// [Asm] # live_in: [v25, v5, v6, zero, v7], live_out: [v5, v6, v26, zero, v7]
-// [Asm] # block parameters: [v25]
-// [Asm] .aux60.147_12:
-// [Asm] # control
-// [Asm]   mv v26, v25  # live: [v5, v6, v26, zero, v7]
+// [Asm]   mv v26, zero  # live: [v5, v6, v26, zero, v7]
 // [Asm]   j .aux60.147_13  # live: [v5, v6, v26, zero, v7]
 // [Asm] 
 // [Asm] start:
@@ -2082,8 +2082,10 @@
 // [Main]   mv a2, a5
 // [Main]   j .aux60.147_7
 // [Main] 
-// [Main] .aux60.147_8:
+// [Main] .aux60.147_10:
 // [Main]   mv a0, zero
+// [Main] 
+// [Main] .aux60.147_12:
 // [Main] 
 // [Main] .aux60.147_13:
 // [Main] 
@@ -2092,10 +2094,8 @@
 // [Main]   mv a1, a0
 // [Main]   j .aux60.147_0
 // [Main] 
-// [Main] .aux60.147_10:
+// [Main] .aux60.147_8:
 // [Main]   mv a0, zero
-// [Main] 
-// [Main] .aux60.147_12:
 // [Main]   j .aux60.147_13
 // [Main] 
 // [Main] __end_text:

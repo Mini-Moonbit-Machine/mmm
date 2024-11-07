@@ -3,7 +3,7 @@ pub fn find_all_defs_of_value(
   val : @core.Value
 ) -> Array[@core.Value] {
   let res = []
-  let worklist = []
+  let worklist = @queue.new()
   let visited = @hashset.new()
   fn push_or_pend(val : @core.Value) {
     match val {
