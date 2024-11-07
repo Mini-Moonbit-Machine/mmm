@@ -509,10 +509,10 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
   let mut used_farg = 0
   for arg in args {
     let ty = self.type_of(arg)
-    let argc = ty_to_reg_class(ty)
+    let argc = ty_to_reg_class_opt(ty)
     let r = @generated.constructor_lower_value(self, arg)
     match argc {
-      X => {
+      Some(X) => {
         @generated.constructor_rv_mv_to(
           self,
           @riscv.reg_arg_list[used_xarg],
@@ -523,7 +523,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
           self.tracer.abort("Too many arguments")
         }
       }
-      F => {
+      Some(F) => {
         @generated.constructor_rv_fmv_to(
           self,
           @riscv.freg_arg_list[used_farg],
@@ -531,6 +531,12 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
         )
         used_farg += 1
         if used_farg >= @riscv.freg_arg_list.length() {
+          self.tracer.abort("Too many arguments")
+        }
+      }
+      None => {
+        used_xarg += 1
+        if used_xarg >= @riscv.reg_arg_list.length() {
           self.tracer.abort("Too many arguments")
         }
       }
