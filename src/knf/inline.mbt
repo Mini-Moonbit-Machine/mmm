@@ -417,10 +417,14 @@ pub fn InlineEnv::inline(
     LetRec({ name, ty, args, body } as fundef, e) => {
       let env = env.add(name, fundef)
       let fun = Some(name)
-      LetRec(
-        { name, ty, args, body: self.inline(freq, env, fun, body, fn(x) { x }) },
-        self.inline(freq, env, fun, e, cont),
-      )
+      let fundef = {
+        name,
+        ty,
+        args,
+        body: self.inline(freq, env, fun, body, fn(x) { x }),
+      }
+      let env = env.add(name, fundef)
+      LetRec(fundef, self.inline(freq, env, fun, e, cont))
     }
     LetJoin({ name, ty, args, body }, e) =>
       LetJoin(
