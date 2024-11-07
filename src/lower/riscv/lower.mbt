@@ -342,6 +342,28 @@ fn RiscvFnLoweringCtx::is_closure_reg(
   }
 }
 
+fn RiscvFnLoweringCtx::power_of_two(
+  self : RiscvFnLoweringCtx,
+  i : @core.Value
+) -> Int? {
+  let _ = self
+  match i {
+    @core.Value::Int32(~val) =>
+      if val > 0 && (val & (val - 1)) == 0 {
+        Some(val.ctz())
+      } else {
+        None
+      }
+    @core.Value::Int64(~val) =>
+      if val > 0 && (val & (val - 1)) == 0 {
+        Some(val.ctz())
+      } else {
+        None
+      }
+    _ => None
+  }
+}
+
 fn RiscvFnLoweringCtx::closure_reg(self : RiscvFnLoweringCtx) -> @riscv.Reg {
   V(self.closure_reg)
 }

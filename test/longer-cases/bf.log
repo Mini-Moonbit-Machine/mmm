@@ -469,7 +469,7 @@
 // [Asm] subst   andi s11, v4, -8 ->   andi s11, a4, -8
 // [Asm] subst   sw zero, 0(v4) ->   sw zero, 0(a4)
 // [Asm] subst   li v16, 1024 ->   li a0, 1024
-// [Asm] subst   mul v8, v16, v16 ->   mul a0, a0, a0
+// [Asm] subst   slli v8, v16, 10 ->   slli a0, a0, 10
 // [Asm] subst   slliw v14, v8, 2 ->   slliw a1, a0, 2
 // [Asm] subst   sub v5, s11, v14 ->   sub a5, s11, a1
 // [Asm] subst   andi s11, v5, -8 ->   andi s11, a5, -8
@@ -2749,7 +2749,7 @@
 // [Asm]   andi s11, v4, -8  # live: [v2, zero, v4, s11, v3]
 // [Asm]   sw zero, 0(v4)  # live: [v2, zero, v4, s11, v3]
 // [Asm]   li v16, 1024  # live: [v2, v16, zero, v4, s11, v3]
-// [Asm]   mul v8, v16, v16  # live: [v2, zero, v8, v4, s11, v3]
+// [Asm]   slli v8, v16, 10  # live: [v2, zero, v8, v4, s11, v3]
 // [Asm]   slliw v14, v8, 2  # live: [v2, v14, zero, v8, v4, s11, v3]
 // [Asm]   sub v5, s11, v14  # live: [v2, v5, zero, v8, v4, v3]
 // [Asm]   andi s11, v5, -8  # live: [v2, v5, zero, v8, v4, s11, v3]
@@ -3768,7 +3768,7 @@
 // [Main]   andi s11, a4, -8
 // [Main]   sw zero, 0(a4)
 // [Main]   li a0, 1024
-// [Main]   mul a0, a0, a0
+// [Main]   slli a0, a0, 10
 // [Main]   slliw a1, a0, 2
 // [Main]   sub a5, s11, a1
 // [Main]   andi s11, a5, -8

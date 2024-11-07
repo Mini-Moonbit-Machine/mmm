@@ -245,15 +245,31 @@
 
 ;;;; Rules for i32 multiplications
 
+(decl power_of_two (Int32) Value)
+(extern extractor power_of_two power_of_two)
+
 (rule (lower (insn_op (ty_int32) (op_mul) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_mul a b)))
 
+(rule 1 (lower (insn_op (ty_int32) (op_mul) (arg2 (has_type a (ty_int32)) (power_of_two b))))
+  (mr (rv_slli a b)))
+
+(rule 2 (lower (insn_op (ty_int32) (op_mul) (arg2 (power_of_two a) (has_type b (ty_int32)))))
+  (mr (rv_slli b a)))
+
+(rule 3 (lower (insn_op (ty_int32) (op_mul) (arg2 (has_type a (ty_int32)) (power_of_two 0))))
+  (mr a))
+
+(rule 4 (lower (insn_op (ty_int32) (op_mul) (arg2 (power_of_two 0) (has_type b (ty_int32)))))
+  (mr b))
 
 ;;;; Rules for i32 divisions
 
 (rule (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
   (mr (rv_div a b)))
 
+(rule 1 (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (power_of_two b))))
+  (mr (rv_srai a b)))
 
 ;;;; Rules for i32 negations
 
