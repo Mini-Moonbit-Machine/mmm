@@ -7,7 +7,15 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn yloop7.136 #f3 : fn(int32, int32, double, double) -> unit
+.fn T$start #f8 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
+  }
+}
+.fn yloop7.135 #f2 : fn(int32, int32, double, double) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, int32, double, double) {
@@ -46,10 +54,10 @@
   }
   .bb #b9 () {
     let %6: double = conv.i2d($b7.0)
-    let %7: double = call f0(%6)
+    let %7: double = add(%6, %6)
     let %8: double = div(%7, $b7.3)
     let %9: double = sub(%8, 1.5)
-    let %10: double = call f0($b7.4)
+    let %10: double = add($b7.4, $b7.4)
     let %11: double = div(%10, $b7.5)
     let %12: double = sub(%11, 1)
     jump b26()
@@ -80,7 +88,7 @@
   .bb #b20 () {
     let %17: double = sub($b18.3, $b18.4)
     let %18: double = add(%17, $b18.5)
-    let %19: double = call f0($b18.1)
+    let %19: double = add($b18.1, $b18.1)
     let %20: double = mul(%19, $b18.2)
     let %21: double = add(%20, $b18.6)
     let %22: double = mul(%18, %18)
@@ -116,28 +124,12 @@
     jump b25(1000, 0, 0, 0, 0, %9, %12)
   }
 }
-.fn T$start #f10 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f4()
-    return %0
-  }
-}
-.fn dbl4.135 #f0 : fn(double) -> double
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: double = add($f0, $f0)
-    return %0
-  }
-}
-.fn main75.134 #f4 : fn() -> unit
+.fn main75.134 #f3 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let %0: double = conv.i2d(40)
-    let %2: unit = call f3(0, 40, %0, %0)
+    let %2: unit = call f2(0, 40, %0, %0)
     return %2
   }
 }

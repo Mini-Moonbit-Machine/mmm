@@ -23,89 +23,24 @@ main33:
 .main33_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
   call minimbt_read_int
-  mv s0, a0
-  addi a1, s0, 1
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a2, mem_fib15
-  sd a2, 0(a0)
-  call mem2
-  mv s10, a0
-  ld a1, 0(a0)
-  mv a0, s0
+  addi a1, a0, 1
+  lw a2, unmem_magic.1
+  slliw a2, a1, 2
+  sub a2, s11, a2
+  andi s11, a2, -8
+  addi a1, s11, -16
+  andi s11, a1, -8
+  la a3, memed8.51
+  sd a3, 0(a1)
+  sd a2, 8(a1)
+  mv s10, a1
+  ld a1, 0(a1)
   jalr a1
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
   mv a0, zero
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl mem_fib15
-  .type mem_fib15, @function
-# leaf false
-mem_fib15:
-.mem_fib15_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
-  li a0, 1
-  bge a0, s0, .mem_fib15_1
-
-.mem_fib15_2:
-  addi a0, s0, -1
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  mv s2, a0
-  addi a0, s0, -2
-  mv s10, s1
-  ld a1, 0(s1)
-  jalr a1
-  add a0, s2, a0
-
-.mem_fib15_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-.mem_fib15_1:
-  mv a0, s0
-  j .mem_fib15_3
-
-  .p2align 2
-  .text
-  .globl mem2
-  .type mem2, @function
-# leaf false
-mem2:
-.mem2_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  lw a2, unmem_magic.1
-  slliw a2, a1, 2
-  sub a2, s11, a2
-  andi s11, a2, -8
-  addi a1, s11, -24
-  andi s11, a1, -8
-  la a3, memed8
-  sd a3, 0(a1)
-  sd a2, 8(a1)
-  sd a0, 16(a1)
-  mv a0, a1
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -161,41 +96,63 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl memed8
-  .type memed8, @function
+  .globl memed8.51
+  .type memed8.51, @function
 # leaf false
-memed8:
-.memed8_0:
-  addi sp, sp, -32
+memed8.51:
+.memed8.51_0:
+  addi sp, sp, -48
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
-  mv a1, s10
-  mv s0, a0
-  ld s1, 8(a1)
-  ld a0, 16(a1)
-  th.lurw a2, s1, s0, 2
-  lw a3, unmem_magic.1
-  bne a2, a3, .memed8_2
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv s1, s10
+  mv s2, a0
+  ld s0, 8(s1)
+  th.lurw a0, s0, s2, 2
+  lw a1, unmem_magic.1
+  beq a0, a1, .memed8.51_1
 
-.memed8_1:
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  mv a1, s0
-  jalr a2
-  th.surw a0, s1, s0, 2
+.memed8.51_2:
+  th.lurw a0, s0, s2, 2
 
-.memed8_3:
+.memed8.51_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
-  addi sp, sp, 32
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
   ret
 
-.memed8_2:
-  th.lurw a0, s1, s0, 2
-  j .memed8_3
+.memed8.51_1:
+
+.memed8.51_6:
+  li a0, 1
+  bge a0, s2, .memed8.51_7
+
+.memed8.51_8:
+  addi a0, s2, -1
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  mv s3, a0
+  addi a0, s2, -2
+  mv s10, s1
+  ld a1, 0(s1)
+  jalr a1
+  add a0, s3, a0
+
+.memed8.51_9:
+
+.memed8.51_4:
+  th.surw a0, s0, s2, 2
+  j .memed8.51_3
+
+.memed8.51_7:
+  mv a0, s2
+  j .memed8.51_9
 
 __end_text:
   .p2align 2

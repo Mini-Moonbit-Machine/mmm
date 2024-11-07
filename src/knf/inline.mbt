@@ -232,24 +232,25 @@ pub fn InlineEnv::inline(
         args: fundef.args,
         body: self.inline(freq, env, fundef.body),
       }
+      let env = env.add(fundef.name, (fundef.args, fundef.body))
       let e = self.inline(freq, env, e)
       LetRec(fundef, e)
     }
     Apply(f, xs) => {
       fn replace() {
         match env.find(f) {
-          Some((params, body)) =>
-            if f.name.to_string().contains("main") {
-              knf
-            } else {
-              self.tracer.println("Knf inline \{f.name}")
-              let mut env = Env::new()
-              for i, param in params {
-                env = env.add(param.0, xs[i])
-              }
-              alpha_rename(self.knf_env, env, body)
+          Some((params, body)) => {
+            self.tracer.println("Knf inline \{f.name}")
+            let mut env = Env::new()
+            for i, param in params {
+              env = env.add(param.0, xs[i])
             }
-          None => knf
+            alpha_rename(self.knf_env, env, body)
+          }
+          None => {
+            self.tracer.println("Knf inline not found \{f.name}")
+            knf
+          }
         }
       }
 
