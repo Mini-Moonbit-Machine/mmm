@@ -16,61 +16,59 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl do6.81
-  .type do6.81, @function
+  .globl main33.80
+  .type main33.80, @function
 # leaf false
-do6.81:
-.do6.81_0:
+main33.80:
+.main33.80_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a3, a0
-  mv a0, zero
-  call next9.82
+  addi a1, s11, -20
+  andi s11, a1, -8
+  li a0, 1
+  sw a0, 0(a1)
+  sw a0, 4(a1)
+  sw a0, 8(a1)
+  sw a0, 12(a1)
+  sw a0, 16(a1)
+  li a0, 1
+  sw a0, 0(a1)
+  li a0, 2
+  sw a0, 4(a1)
+  li a0, 3
+  sw a0, 8(a1)
+  li a0, 4
+  sw a0, 12(a1)
+  li a0, 5
+  sw a0, 16(a1)
+  li a0, 5
+  call do30.85
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl do6.83
-  .type do6.83, @function
+  .globl yield25.86
+  .type yield25.86, @function
 # leaf false
-do6.83:
-.do6.83_0:
+yield25.86:
+.yield25.86_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   mv a1, s10
-  lw a2, 8(a1)
-  ld a3, 16(a1)
-  mv a1, a2
-  mv a2, a3
-  call do6.81
+  call yield25.84
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl yield25.85
-  .type yield25.85, @function
+  .globl print59.83
+  .type print59.83, @function
 # leaf false
-yield25.85:
-.yield25.85_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call print59.84
-  li a0, 1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl print59.84
-  .type print59.84, @function
-# leaf false
-print59.84:
-.print59.84_0:
+print59.83:
+.print59.83_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   call minimbt_print_int
@@ -80,77 +78,60 @@ print59.84:
 
   .p2align 2
   .text
-  .globl main33.80
-  .type main33.80, @function
+  .globl yield25.84
+  .type yield25.84, @function
 # leaf false
-main33.80:
-.main33.80_0:
+yield25.84:
+.yield25.84_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  addi a0, s11, -20
-  andi s11, a0, -8
-  li a1, 1
-  sw a1, 0(a0)
-  sw a1, 4(a0)
-  sw a1, 8(a0)
-  sw a1, 12(a0)
-  sw a1, 16(a0)
-  li a1, 1
-  sw a1, 0(a0)
-  li a1, 2
-  sw a1, 4(a0)
-  li a1, 3
-  sw a1, 8(a0)
-  li a1, 4
-  sw a1, 12(a0)
-  li a1, 5
-  sw a1, 16(a0)
-  addi a1, s11, -24
-  andi s11, a1, -8
-  la a2, do6.83
-  sd a2, 0(a1)
-  li a2, 5
-  sd a2, 8(a1)
-  sd a0, 16(a1)
-  mv a0, a1
-  call do30.86
+  call print59.83
+  li a0, 1
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl do30.86
-  .type do30.86, @function
+  .globl do30.85
+  .type do30.85, @function
 # leaf false
-do30.86:
-.do30.86_5:
-  addi sp, sp, -16
+do30.85:
+.do30.85_5:
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
+  sd s1, 16(sp)
   mv s0, a0
+  mv s1, a1
 
-.do30.86_0:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, yield25.87
-  sd a1, 0(a0)
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
+.do30.85_0:
+  addi a3, s11, -8
+  andi s11, a3, -8
+  la a0, yield25.86
+  sd a0, 0(a3)
+
+.do30.85_7:
+  mv a0, zero
+  mv a1, s0
+  mv a2, s1
+  call next9.82
+
+.do30.85_6:
   li a1, 1
-  bne a0, a1, .do30.86_2
+  bne a0, a1, .do30.85_2
 
-.do30.86_1:
-  j .do30.86_0
+.do30.85_1:
+  j .do30.85_0
 
-.do30.86_2:
+.do30.85_2:
   mv a0, zero
 
-.do30.86_3:
+.do30.85_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
-  addi sp, sp, 16
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -240,21 +221,6 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl yield25.87
-  .type yield25.87, @function
-# leaf false
-yield25.87:
-.yield25.87_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, s10
-  call yield25.85
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

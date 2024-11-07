@@ -16,65 +16,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl adder4.17
-  .type adder4.17, @function
+  .globl adder4.22
+  .type adder4.22, @function
 # leaf true
-adder4.17:
-.adder4.17_0:
-  mv a1, s10
-  lw a1, 8(a1)
-  add a0, a1, a0
-  ret
-
-  .p2align 2
-  .text
-  .globl main7
-  .type main7, @function
-# leaf false
-main7:
-.main7_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  addi a0, s11, -16
-  andi s11, a0, -8
-  la a1, adder4.17
-  sd a1, 0(a0)
-  li a1, 2
-  sd a1, 8(a0)
-  addi s0, s11, -16
-  andi s11, s0, -8
-  la a1, adder4.19
-  sd a1, 0(s0)
-  li a1, 3
-  sd a1, 8(s0)
-  mv s10, a0
-  ld a1, 0(a0)
-  li a0, 10
-  jalr a1
-  mv s1, a0
-  mv s10, s0
-  ld a1, 0(s0)
-  li a0, 20
-  jalr a1
-  add a0, s1, a0
-  call minimbt_print_int
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl adder4.19
-  .type adder4.19, @function
-# leaf true
-adder4.19:
-.adder4.19_0:
-  mv a1, s10
-  lw a1, 8(a1)
+adder4.22:
+.adder4.22_0:
   add a0, a1, a0
   ret
 
@@ -87,7 +33,7 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main7
+  call main7.21
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -112,6 +58,40 @@ minimbt_main:
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
+  ret
+
+  .p2align 2
+  .text
+  .globl adder4.23
+  .type adder4.23, @function
+# leaf true
+adder4.23:
+.adder4.23_0:
+  add a0, a1, a0
+  ret
+
+  .p2align 2
+  .text
+  .globl main7.21
+  .type main7.21, @function
+# leaf false
+main7.21:
+.main7.21_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  li a0, 10
+  li a1, 2
+  call adder4.22
+  mv s0, a0
+  li a0, 20
+  li a1, 3
+  call adder4.23
+  add a0, s0, a0
+  call minimbt_print_int
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
   ret
 
 __end_text:

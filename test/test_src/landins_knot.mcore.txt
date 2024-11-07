@@ -24,7 +24,7 @@ main37:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  ld a0, factorial.28
+  ld a0, fixedpoint.52
   mv s10, a0
   ld a1, 0(a0)
   li a0, 5
@@ -102,16 +102,6 @@ dummy1:
 
   .p2align 2
   .text
-  .globl T$factorial.28
-  .type T$factorial.28, @function
-# leaf true
-T$factorial.28:
-.T$factorial.28_0:
-  ld a0, fixedpoint.52
-  ret
-
-  .p2align 2
-  .text
   .globl T$a.33
   .type T$a.33, @function
 # leaf false
@@ -119,7 +109,7 @@ T$a.33:
 .T$a.33_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  ld a0, factorial.28
+  ld a0, fixedpoint.52
   lw a1, _32
   mv s10, a0
   ld a2, 0(a0)
@@ -220,6 +210,16 @@ T$_54:
 
   .p2align 2
   .text
+  .globl T$_53
+  .type T$_53, @function
+# leaf true
+T$_53:
+.T$_53_0:
+  mv a0, zero
+  ret
+
+  .p2align 2
+  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -230,16 +230,6 @@ T$start:
   call main37
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_53
-  .type T$_53, @function
-# leaf true
-T$_53:
-.T$_53_0:
-  mv a0, zero
   ret
 
   .p2align 2
@@ -269,9 +259,6 @@ minimbt_main:
   la t5, _53
   sw a0, 0(t5)
   call T$_54
-  call T$factorial.28
-  la t5, factorial.28
-  sd a0, 0(t5)
   call T$_32
   la t5, _32
   sw a0, 0(t5)
@@ -293,12 +280,6 @@ __end_text:
   .type arr.47, @object
 arr.47:
   .zero 8
-  .p2align 2
-  .bss
-  .globl start
-  .type start, @object
-start:
-  .zero 4
   .p2align 2
   .bss
   .globl _53
@@ -325,10 +306,10 @@ a.33:
   .zero 4
   .p2align 2
   .bss
-  .globl factorial.28
-  .type factorial.28, @object
-factorial.28:
-  .zero 8
+  .globl start
+  .type start, @object
+start:
+  .zero 4
   .p2align 2
   .bss
   .globl _46

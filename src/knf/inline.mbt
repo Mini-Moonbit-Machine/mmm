@@ -110,6 +110,56 @@ fn size(knf : Knf) -> Int {
   }
 }
 
+fn beta_reduce(env : Env[Name], knf : Knf) -> Knf {
+  fn f(x : Name) -> Name {
+    env.find(x).or(x)
+  }
+
+  match knf {
+    Unit => Unit
+    Bool(b) => Bool(b)
+    Int(i) => Int(i)
+    Double(d) => Double(d)
+    Neg(x) => Neg(f(x))
+    Add(x, y) => Add(f(x), f(y))
+    Sub(x, y) => Sub(f(x), f(y))
+    Mul(x, y) => Mul(f(x), f(y))
+    Div(x, y) => Div(f(x), f(y))
+    FNeg(x) => FNeg(f(x))
+    FAdd(x, y) => FAdd(f(x), f(y))
+    FSub(x, y) => FSub(f(x), f(y))
+    FMul(x, y) => FMul(f(x), f(y))
+    FDiv(x, y) => FDiv(f(x), f(y))
+    IfEq(x, y, e1, e2) =>
+      IfEq(f(x), f(y), beta_reduce(env, e1), beta_reduce(env, e2))
+    IfLe(x, y, e1, e2) =>
+      IfLe(f(x), f(y), beta_reduce(env, e1), beta_reduce(env, e2))
+    Let((x, xt), e1, e2) =>
+      match beta_reduce(env, e1) {
+        Var(y) => {
+          @util.t.println("beta reduce \{x} = \{y}")
+          beta_reduce(env.add(x, y), e2)
+        }
+        e1 => Let((x, xt), e1, beta_reduce(env, e2))
+      }
+    LetRec(fundef, e) => {
+      let { name, ty, args, body } = fundef
+      let fundef = { name, ty, args, body: beta_reduce(env, body) }
+      let env = env.add(name, name)
+      LetRec(fundef, beta_reduce(env, e))
+    }
+    Var(x) => Var(f(x))
+    Tuple(xs) => Tuple(xs.map(f))
+    LetTuple(xts, y, e) => LetTuple(xts, f(y), beta_reduce(env, e))
+    Get(x, y) => Get(f(x), f(y))
+    Put(x, y, z) => Put(f(x), f(y), f(z))
+    Apply(func, xs) => Apply(f(func), xs.map(f))
+    ExternalArray(x) => ExternalArray(f(x))
+    ExternalFunctionApplication(name, xs) =>
+      ExternalFunctionApplication(name, xs.map(f))
+  }
+}
+
 fn alpha_rename(knf_env : KnfEnv, env : Env[Name], knf : Knf) -> Knf {
   fn f(x : Name) -> Name {
     env
@@ -331,10 +381,15 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   let env = Env::new()
   call_freq(knf, env, freq)
   self.tracer.println("freq: \{freq}")
+  let knf = beta_reduce(Env::new(), knf)
+  let knf = assoc(knf)
   let knf = self.inline(freq, Env::new(), knf)
   let freq = Map::new()
   call_freq(knf, env, freq)
   let knf = self.dfe(freq, Env::new(), knf)
+  let knf = beta_reduce(Env::new(), knf)
+  let knf = assoc(knf)
+  let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
   self.tracer.record("knf_after_inline_\{n}", knf.to_pretty_print())
   knf
