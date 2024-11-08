@@ -146,12 +146,14 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
   reg_ctx_f.set_info()
   self.xctx.allocator.go()
   self.fctx.allocator.go()
-  self.tracer.println(
+  self.tracer.record(
+    "xreg",
     self.xctx.allocator.to_dot(
       "integer interference graph of \{self.mfn.name._}",
     ),
   )
-  self.tracer.println(
+  self.tracer.record(
+    "freg",
     self.fctx.allocator.to_dot("float interference graph of \{self.mfn.name._}"),
   )
 }
