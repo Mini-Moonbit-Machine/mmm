@@ -96,7 +96,7 @@ pub fn PPAllocator::query_all_clobbered[Info](
     let (reg, color) = asgn
     // an assignment for hardware register is just a constraint
     // so it doesn't necessarily mean that the register is clobbered
-    if self.spilled.contains(color) == false && self.phy.contains(reg) == false {
+    if self.phy.contains(reg) == false {
       clobbered.insert(color)
     }
   }
