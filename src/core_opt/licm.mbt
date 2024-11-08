@@ -31,6 +31,11 @@ fn FnLICM::handle_loop(self : FnLICM, l : @core.Loop) -> Unit {
         .get(pre)
         .or_else(fn() { self.tracer.abort("pre_header not found") })
         .bb_or_header_bb(self.func)
+      let header = self.func.blocks
+        .get(l.header)
+        .or_else(fn() { self.tracer.abort("header not found") })
+        .bb_or_header_bb(self.func)
+      self.handle_block(header, pre)
       for bref in l.blocks {
         let bb = self.func.blocks
           .get(bref)

@@ -7,23 +7,21 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main9.13 #f3 : fn(int32) -> unit
+.fn main9.13 #f3 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let %1: int32 = call f2(12, %0)
-    let %2: unit = ext_call minimbt_print_int(%1)
-    return %2
+    let %0: int32 = call f2(12)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
   }
 }
 .fn T$start #f6 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load_symbol ::0
-    let %1: unit = call f3(%0)
-    return %1
+    let %0: unit = call f3()
+    return %0
   }
 }
 .fn T$x.1 #f0 : fn() -> int32
@@ -33,7 +31,7 @@
     return 10
   }
 }
-.fn f2.12 #f2 : fn(int32, int32) -> int32
+.fn f2.12 #f2 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -45,11 +43,10 @@
   }
   .bb #b2 () {
     let %1: int32 = sub($f0, 1)
-    let %2: int32 = load_symbol ::0
-    let %3: int32 = call f2(%1, %2)
-    let %4: int32 = load_symbol ::0
-    let %5: int32 = add(%4, %3)
-    jump b3(%5)
+    let %2: int32 = call f2(%1)
+    let %3: int32 = load_symbol ::0
+    let %4: int32 = add(%3, %2)
+    jump b3(%4)
   }
   .bb #b3 (int32) {
     return $b3.0

@@ -7,7 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn odd6.25 #f4 : fn(int32, int32, int32) -> int32
+.fn odd6.25 #f4 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -19,11 +19,9 @@
     br %1 b3() b4()
   }
   .bb #b2 () {
-    let %7: int32 = add($f0, 1)
-    let %8: int32 = load_symbol ::1
-    let %9: int32 = load_symbol ::0
-    let %10: int32 = call f5(%7, %8, %9)
-    jump b6(%10)
+    let %5: int32 = add($f0, 1)
+    let %6: int32 = call f5(%5)
+    jump b6(%6)
   }
   .bb #b3 () {
     let %2: int32 = load_symbol ::1
@@ -31,10 +29,8 @@
   }
   .bb #b4 () {
     let %3: int32 = sub($f0, 1)
-    let %4: int32 = load_symbol ::1
-    let %5: int32 = load_symbol ::0
-    let %6: int32 = call f5(%3, %4, %5)
-    jump b5(%6)
+    let %4: int32 = call f5(%3)
+    jump b5(%4)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)
@@ -47,10 +43,8 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load_symbol ::1
-    let %1: int32 = load_symbol ::0
-    let %2: unit = call f6(%0, %1)
-    return %2
+    let %0: unit = call f6()
+    return %0
   }
 }
 .fn T$t.1 #f0 : fn() -> int32
@@ -60,15 +54,13 @@
     return 123
   }
 }
-.fn main21.26 #f6 : fn(int32, int32) -> unit
+.fn main21.26 #f6 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = load_symbol ::1
-    let %1: int32 = load_symbol ::0
-    let %2: int32 = call f5(789, %0, %1)
-    let %3: unit = ext_call minimbt_print_int(%2)
-    return %3
+    let %0: int32 = call f5(789)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
   }
 }
 .fn T$f.2 #f2 : fn() -> int32
@@ -78,7 +70,7 @@
     return 456
   }
 }
-.fn even3.24 #f5 : fn(int32, int32, int32) -> int32
+.fn even3.24 #f5 : fn(int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -90,11 +82,9 @@
     br %1 b3() b4()
   }
   .bb #b2 () {
-    let %7: int32 = add($f0, 1)
-    let %8: int32 = load_symbol ::1
-    let %9: int32 = load_symbol ::0
-    let %10: int32 = call f4(%7, %8, %9)
-    jump b6(%10)
+    let %5: int32 = add($f0, 1)
+    let %6: int32 = call f4(%5)
+    jump b6(%6)
   }
   .bb #b3 () {
     let %2: int32 = load_symbol ::0
@@ -102,10 +92,8 @@
   }
   .bb #b4 () {
     let %3: int32 = sub($f0, 1)
-    let %4: int32 = load_symbol ::1
-    let %5: int32 = load_symbol ::0
-    let %6: int32 = call f4(%3, %4, %5)
-    jump b5(%6)
+    let %4: int32 = call f4(%3)
+    jump b5(%4)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)

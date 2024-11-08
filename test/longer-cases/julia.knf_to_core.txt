@@ -30,7 +30,7 @@
     return 2
   }
 }
-.fn calc_pixel7.111 #f12 : fn(double, double, int32, double, double, int32, double) -> int32
+.fn calc_pixel7.111 #f12 : fn(double, double, int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -62,12 +62,8 @@
     let %13: double = load_symbol ::4
     let %14: double = add(%12, %13)
     let %15: int32 = add($f2, 1)
-    let %16: double = load_symbol ::5
-    let %17: double = load_symbol ::4
-    let %18: int32 = load_symbol ::2
-    let %19: double = load_symbol ::1
-    let %20: int32 = call f12(%14, %11, %15, %16, %17, %18, %19)
-    jump b5(%20)
+    let %16: int32 = call f12(%14, %11, %15)
+    jump b5(%16)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)
@@ -90,7 +86,7 @@
     return 0.745
   }
 }
-.fn main94.114 #f15 : fn(double, double, int32, double) -> unit
+.fn main94.114 #f15 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -100,12 +96,8 @@
     let _ = alloc <m0: array[int32] heap(%2)> <- [..] = 0
     let %4: double = conv.i2d(%1)
     let %5: double = conv.i2d(%0)
-    let %6: double = load_symbol ::5
-    let %7: double = load_symbol ::4
-    let %8: int32 = load_symbol ::2
-    let %9: double = load_symbol ::1
-    let %10: unit = call f13(%1, %0, 0, 0, f15.m0, %6, %7, %8, %9, %4, %5)
-    let %11: unit = call f14(%1, %0, 0, 0, f15.m0)
+    let %6: unit = call f13(%1, %0, 0, 0, f15.m0, %4, %5)
+    let %7: unit = call f14(%1, %0, 0, 0, f15.m0)
     return ()
   }
 }
@@ -160,15 +152,11 @@
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: double = load_symbol ::5
-    let %1: double = load_symbol ::4
-    let %2: int32 = load_symbol ::2
-    let %3: double = load_symbol ::1
-    let %4: unit = call f15(%0, %1, %2, %3)
-    return %4
+    let %0: unit = call f15()
+    return %0
   }
 }
-.fn main_loop30.112 #f13 : fn(int32, int32, int32, int32, array[int32], double, double, int32, double, double, double) -> unit
+.fn main_loop30.112 #f13 : fn(int32, int32, int32, int32, array[int32], double, double) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -184,58 +172,46 @@
   }
   .bb #b3 () {
     let %2: int32 = add($f3, 1)
-    let %3: double = load_symbol ::5
-    let %4: double = load_symbol ::4
-    let %5: int32 = load_symbol ::2
-    let %6: double = load_symbol ::1
-    let %7: unit = call f13($f0, $f1, 0, %2, $f4, %3, %4, %5, %6, $f9, $f10)
-    jump b11(%7)
+    let %3: unit = call f13($f0, $f1, 0, %2, $f4, $f5, $f6)
+    jump b11(%3)
   }
   .bb #b4 () {
-    let %8: double = conv.i2d($f2)
-    let %9: double = mul(3, %8)
-    let %10: double = div(%9, $f9)
-    let %11: double = sub(%10, 1.5)
-    let %12: double = neg(%11)
-    let %13: double = conv.i2d($f3)
-    let %14: double = mul(3, %13)
-    let %15: double = div(%14, $f10)
-    let %16: double = sub(%15, 1.5)
-    let %17: double = load_symbol ::5
-    let %18: double = load_symbol ::4
-    let %19: int32 = load_symbol ::2
-    let %20: double = load_symbol ::1
-    let %21: int32 = call f12(%12, %16, 0, %17, %18, %19, %20)
-    let %22: int32 = mul($f3, $f0)
-    let %23: int32 = add(%22, $f2)
-    let %24: bool = le(%21, 0)
-    br %24 b5() b6()
+    let %4: double = conv.i2d($f2)
+    let %5: double = mul(3, %4)
+    let %6: double = div(%5, $f5)
+    let %7: double = sub(%6, 1.5)
+    let %8: double = neg(%7)
+    let %9: double = conv.i2d($f3)
+    let %10: double = mul(3, %9)
+    let %11: double = div(%10, $f6)
+    let %12: double = sub(%11, 1.5)
+    let %13: int32 = call f12(%8, %12, 0)
+    let %14: int32 = mul($f3, $f0)
+    let %15: int32 = add(%14, $f2)
+    let %16: bool = le(%13, 0)
+    br %16 b5() b6()
   }
   .bb #b5 () {
     jump b10(0)
   }
   .bb #b6 () {
-    let %25: bool = le(48, %21)
-    br %25 b7() b8()
+    let %17: bool = le(48, %13)
+    br %17 b7() b8()
   }
   .bb #b7 () {
     jump b9(48)
   }
   .bb #b8 () {
-    jump b9(%21)
+    jump b9(%13)
   }
   .bb #b9 (int32) {
     jump b10($b9.0)
   }
   .bb #b10 (int32) {
-    let _ = store int32 offset($f4, %23 * @32) <- $b10.0
-    let %27: int32 = add($f2, 1)
-    let %28: double = load_symbol ::5
-    let %29: double = load_symbol ::4
-    let %30: int32 = load_symbol ::2
-    let %31: double = load_symbol ::1
-    let %32: unit = call f13($f0, $f1, %27, $f3, $f4, %28, %29, %30, %31, $f9, $f10)
-    jump b11(%32)
+    let _ = store int32 offset($f4, %15 * @32) <- $b10.0
+    let %19: int32 = add($f2, 1)
+    let %20: unit = call f13($f0, $f1, %19, $f3, $f4, $f5, $f6)
+    jump b11(%20)
   }
   .bb #b11 (unit) {
     jump b12($b11.0)

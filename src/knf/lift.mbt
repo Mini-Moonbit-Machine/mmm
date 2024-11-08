@@ -152,6 +152,7 @@ fn LambdaLifter::lift(
       let env = env.add_name_type(x, ty)
       if top {
         self.top_bindings.append(l)
+        self.top_names.insert(x)
         self.lift(env, e2, top)
       } else {
         let (l2, e2) = self.lift(env, e2, top)

@@ -4,7 +4,7 @@ let iter.3: Int = Int(300)
 let _4: Double = Double(0.123)
 let c_re.5: Double = FNeg(_4)
 let c_im.6: Double = Double(0.745)
-let rec calc_pixel7.111: Int = (zr8.9: Double, zi10.11: Double, it12.13: Int, c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
+let rec calc_pixel7.111: Int = (zr8.9: Double, zi10.11: Double, it12.13: Int) {
   let zr2.14: Double = FMul(zr8.9, zr8.9)
   let zi2.15: Double = FMul(zi10.11, zi10.11)
   if (it12.13 == iter.3) then {
@@ -22,11 +22,11 @@ let rec calc_pixel7.111: Int = (zr8.9: Double, zi10.11: Double, it12.13: Int, c_
       let new_zr.22: Double = FAdd(_21, c_re.5)
       let _23: Int = Int(1)
       let _24: Int = Add(it12.13, _23)
-      Apply(calc_pixel7.111, [new_zr.22, new_zi.20, _24, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      Apply(calc_pixel7.111, [new_zr.22, new_zi.20, _24, ])
     }
   }
 }
-let rec main_loop30.112: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: Int, ret39.40: Array(Int), c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double, _47: Double, _55: Double) {
+let rec main_loop30.112: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: Int, ret39.40: Array(Int), _47: Double, _55: Double) {
   if (y37.38 == h33.34) then {
     Unit
   } else {
@@ -34,7 +34,7 @@ let rec main_loop30.112: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: 
       let _41: Int = Int(0)
       let _42: Int = Int(1)
       let _43: Int = Add(y37.38, _42)
-      Apply(main_loop30.112, [w31.32, h33.34, _41, _43, ret39.40, c_im.6, c_re.5, iter.3, limit_sq.2, _47, _55, ])
+      Apply(main_loop30.112, [w31.32, h33.34, _41, _43, ret39.40, _47, _55, ])
     } else {
       let _44: Double = Double(3)
       let _45: Double = ExtApply(minimbt_float_of_int, [x35.36, ])
@@ -50,7 +50,7 @@ let rec main_loop30.112: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: 
       let _57: Double = Double(1.5)
       let ci.58: Double = FSub(_56, _57)
       let _59: Int = Int(0)
-      let res.60: Int = Apply(calc_pixel7.111, [cr.51, ci.58, _59, c_im.6, c_re.5, iter.3, limit_sq.2, ])
+      let res.60: Int = Apply(calc_pixel7.111, [cr.51, ci.58, _59, ])
       let _61: Int = Mul(y37.38, w31.32)
       let _62: Int = Add(_61, x35.36)
       let _109: Int = Int(0)
@@ -67,7 +67,7 @@ let rec main_loop30.112: Unit = (w31.32: Int, h33.34: Int, x35.36: Int, y37.38: 
       let _65: Unit = Put ret39.40[_62] = _63
       let _66: Int = Int(1)
       let _67: Int = Add(x35.36, _66)
-      Apply(main_loop30.112, [w31.32, h33.34, _67, y37.38, ret39.40, c_im.6, c_re.5, iter.3, limit_sq.2, _47, _55, ])
+      Apply(main_loop30.112, [w31.32, h33.34, _67, y37.38, ret39.40, _47, _55, ])
     }
   }
 }
@@ -95,7 +95,7 @@ let rec print_loop68.113: Unit = (w69.70: Int, h71.72: Int, x73.74: Int, y75.76:
     }
   }
 }
-let rec main94.114: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, iter.3: Int, limit_sq.2: Double) {
+let rec main94.114: Var({val: Some(Unit)}) = () {
   let h.95: Int = ExtApply(minimbt_read_int, [])
   let _96: Int = Int(2)
   let w.97: Int = Mul(h.95, _96)
@@ -106,10 +106,10 @@ let rec main94.114: Var({val: Some(Unit)}) = (c_im.6: Double, c_re.5: Double, it
   let _102: Int = Int(0)
   let _116: Double = ExtApply(minimbt_float_of_int, [w.97, ])
   let _117: Double = ExtApply(minimbt_float_of_int, [h.95, ])
-  let _104: Unit = Apply(main_loop30.112, [w.97, h.95, _101, _102, ret.100, c_im.6, c_re.5, iter.3, limit_sq.2, _116, _117, ])
+  let _104: Unit = Apply(main_loop30.112, [w.97, h.95, _101, _102, ret.100, _116, _117, ])
   let _105: Int = Int(0)
   let _106: Int = Int(0)
   let _108: Unit = Apply(print_loop68.113, [w.97, h.95, _105, _106, ret.100, ])
   Unit
 }
-Apply(main94.114, [c_im.6, c_re.5, iter.3, limit_sq.2, ])
+Apply(main94.114, [])
