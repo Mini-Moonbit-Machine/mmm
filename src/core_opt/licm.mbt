@@ -31,6 +31,12 @@ fn FnLICM::handle_loop(self : FnLICM, l : @core.Loop) -> Unit {
         .get(pre)
         .or_else(fn() { self.tracer.abort("pre_header not found") })
         .bb_or_header_bb(self.func)
+      let header = self.func.blocks
+        .get(l.header)
+        .or_else(fn() { self.tracer.abort("header not found") })
+        .bb_or_header_bb(self.func)
+      let count = Ref::new(0)
+      self.handle_block(header, pre, count)
       for bref in l.blocks {
         let bb = self.func.blocks
           .get(bref)
@@ -38,7 +44,7 @@ fn FnLICM::handle_loop(self : FnLICM, l : @core.Loop) -> Unit {
         if bb.is_basic_block() == false {
           continue
         }
-        self.handle_block(bb.bb_or_header_bb(self.func), pre)
+        self.handle_block(bb.bb_or_header_bb(self.func), pre, count)
       }
     }
     _ => ()
@@ -48,8 +54,12 @@ fn FnLICM::handle_loop(self : FnLICM, l : @core.Loop) -> Unit {
 fn FnLICM::handle_block(
   self : FnLICM,
   bb : @core.BasicBlock,
-  pre_header : @core.BasicBlock
+  pre_header : @core.BasicBlock,
+  count : Ref[Int]
 ) -> Unit {
+  if count.val >= 5 {
+    return
+  }
   let mut changed = true
   while changed {
     let mut lifted = None
@@ -57,16 +67,18 @@ fn FnLICM::handle_block(
       let insn = self.func.insns.get(iref).unwrap()
       match insn {
         LoadSymbol(_) => {
-          changed = true
           lifted = Some((iref, i))
+          break
         }
         _ => ()
       }
     }
     match lifted {
       Some((iref, i)) => {
+        changed = true
         bb.seq.remove(i) |> ignore
         pre_header.seq.push(iref)
+        count.val += 1
       }
       None => changed = false
     }

@@ -11,6 +11,14 @@ fn read_ch_until_newline_or_eof() -> Int {
   }
 };
 
+let move_left: Int = 60;
+let move_right: Int = 62;
+let increase: Int = 43;
+let decrease: Int = 45;
+let print: Int = 46;
+let read: Int = 44;
+let loop_start: Int = 91;
+let loop_end: Int = 93;
 fn bf(len : Int, prog : Array[Int]) -> Unit {
   let ptr = Array::make(1, 0);
   let cells = Array::make(1024 * 1024, 0);
@@ -20,9 +28,9 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
       pc
     } else {
       let i = prog[pc];
-      if i == 91 { // '['
+      if i == loop_start { // '['
         skip(pc + 1, level + 1)
-      } else if i == 93 { // ']'
+      } else if i == loop_end { // ']'
         if level == 0 {
           pc
         } else {
@@ -38,25 +46,25 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
       pc
     } else {
       let i = prog[pc];
-      if i == 62 { // '>'
+      if i == move_right { // '>'
         ptr[0] = ptr[0] + 1;
         aux(pc + 1)
-      } else if i == 60 { // '<'
+      } else if i == move_left { // '<'
         ptr[0] = ptr[0] - 1;
         aux(pc + 1)
-      } else if i == 43 { // '+'
+      } else if i == increase { // '+'
         cells[ptr[0]] = cells[ptr[0]] + 1;
         aux(pc + 1)
-      } else if i == 45 { // '-'
+      } else if i == decrease { // '-'
         cells[ptr[0]] = cells[ptr[0]] - 1;
         aux(pc + 1)
-      } else if i == 46 { // '.'
+      } else if i == print { // '.'
         print_char(cells[ptr[0]]);
         aux(pc + 1)
-      } else if i == 44 { // ','
+      } else if i == read { // ','
         cells[ptr[0]] = read_ch_until_newline_or_eof();
         aux(pc + 1)
-      } else if i == 91 { // '['
+      } else if i == loop_start { // '['
         next_pc[0] = pc;
         fn lp() {
           if cells[ptr[0]] == 0 {
@@ -69,7 +77,7 @@ fn bf(len : Int, prog : Array[Int]) -> Unit {
         };
         lp();
         aux(next_pc[0] + 1)
-      } else if i == 93 { // ']'
+      } else if i == loop_end { // ']'
         pc
       } else {
         pc

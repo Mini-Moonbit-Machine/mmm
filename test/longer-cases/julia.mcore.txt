@@ -42,16 +42,15 @@ T$c_re.5:
 # leaf true
 calc_pixel7.111:
 .calc_pixel7.111_8:
-  fld fa2, c_re.5, t5
-  fld fa3, c_im.6, t5
   lw a1, iter.3
+  fld fa2, c_im.6, t5
+  fld fa3, c_re.5, t5
   fld fa4, limit_sq.2, t5
 
 .calc_pixel7.111_0:
   fmul.d fa5, fa0, fa0
   fmul.d fa6, fa1, fa1
-  lw a2, iter.3
-  beq a0, a2, .calc_pixel7.111_1
+  beq a0, a1, .calc_pixel7.111_1
 
 .calc_pixel7.111_2:
   fadd.d fa7, fa5, fa6
@@ -62,9 +61,9 @@ calc_pixel7.111:
   li a2, 4611686018427387904
   fmv.d.x fa7, a2
   fmul.d fa0, fa7, fa0
-  fmadd.d fa1, fa0, fa1, fa3
+  fmadd.d fa1, fa0, fa1, fa2
   fsub.d fa0, fa5, fa6
-  fadd.d fa0, fa0, fa2
+  fadd.d fa0, fa0, fa3
   addi a0, a0, 1
   j .calc_pixel7.111_0
 
