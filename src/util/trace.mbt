@@ -74,10 +74,14 @@ pub fn SubTracer::record[T : Show](
   msg : T
 ) -> Unit {
   match self.record_buf.get(item) {
-    Some(buf) => buf.write_string(Show::to_string(msg))
+    Some(buf) => {
+      buf.write_string(Show::to_string(msg))
+      buf.write_char('\n')
+    }
     None => {
       let buf = Buffer::new()
       buf.write_string(Show::to_string(msg))
+      buf.write_char('\n')
       self.record_buf.set(item, buf)
     }
   }
