@@ -993,9 +993,6 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
   init_reg : AnyReg
 ) -> Unit {
   self.is_leaf = false
-  if true {
-    return
-  }
   match fill {
     Init(..) =>
       match (elem_sz, init_rc) {
@@ -1017,12 +1014,15 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
           @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
-          @generated.constructor_rv_call(self, Label("memsetf64"), 2, 1)
-          self.used_primitive.insert("memsetf64")
+          @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
+          self.used_primitive.insert("memseti64")
         }
         _ => self.tracer.abort("Invalid fill")
       }
     Zero => {
+      if true {
+        return
+      }
       @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
       @generated.constructor_rv_call(self, Label("memset0e\{elem_sz}"), 2, 0)
       self.used_primitive.insert("memset0e\{elem_sz}")

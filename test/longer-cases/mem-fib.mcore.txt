@@ -16,27 +16,51 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl memseti32
+  .type memseti32, @function
+memseti32:
+  blez a1, .memseti32_b1
+  slli a1, a1, 2
+  add a1, a1, a0
+.memseti32_b0:
+  sw a2, 0(a0)
+  addi a0, a0, 4
+  bne a0, a1, .memseti32_b0
+.memseti32_b1:
+  ret
+
+  .p2align 2
+  .text
   .globl main33.57
   .type main33.57, @function
 # leaf false
 main33.57:
 .main33.57_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
   call minimbt_read_int
-  addi a1, a0, 1
+  mv s0, a0
+  addi a0, s0, 1
   lw a2, unmem_magic.1
-  slliw a2, a1, 2
-  sub a2, s11, a2
-  andi s11, a2, -8
-  mv a1, a2
+  slliw a1, a0, 2
+  sub s1, s11, a1
+  andi s11, s1, -8
+  mv a1, a0
+  mv a0, s1
+  call memseti32
+  mv a0, s0
+  mv a1, s1
   call memed8.58
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
   mv a0, zero
   ld ra, 0(sp)
-  addi sp, sp, 16
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
