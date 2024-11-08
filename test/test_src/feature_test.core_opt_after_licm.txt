@@ -1,0 +1,61 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn main1.36 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = add(1, 2)
+    let %1: int32 = conv.d2i.rtz(%0)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    let %3: double = sub(1, 2)
+    let %4: int32 = conv.d2i.rtz(%3)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    let %6: double = mul(1, 2)
+    let %7: int32 = conv.d2i.rtz(%6)
+    let %8: unit = ext_call minimbt_print_int(%7)
+    let %9: double = div(1, 2)
+    let %10: int32 = conv.d2i.rtz(%9)
+    let %11: unit = ext_call minimbt_print_int(%10)
+    let %12: bool = le(1, 2)
+    br %12 b1() b2()
+  }
+  .bb #b1 () {
+    let %13: unit = ext_call minimbt_print_int(1)
+    jump b3(%13)
+  }
+  .bb #b2 () {
+    let %14: unit = ext_call minimbt_print_int(0)
+    jump b3(%14)
+  }
+  .bb #b3 (unit) {
+    let %15: bool = eq(1, 1)
+    br %15 b4() b5()
+  }
+  .bb #b4 () {
+    let %16: unit = ext_call minimbt_print_int(1)
+    jump b6(%16)
+  }
+  .bb #b5 () {
+    let %17: unit = ext_call minimbt_print_int(0)
+    jump b6(%17)
+  }
+  .bb #b6 (unit) {
+    return $b6.0
+  }
+}
+.fn T$start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.thunk ::0 start

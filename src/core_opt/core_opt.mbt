@@ -36,6 +36,9 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()
   self.tracer.record("core_opt_after_lvn", core.to_pretty_print())
+  let licm = LICM::new(core, self.tracer)
+  licm.go()
+  self.tracer.record("core_opt_after_licm", core.to_pretty_print())
 }
 
 // WARNING: CoreOpt2 assumes that it targets to riscv64.

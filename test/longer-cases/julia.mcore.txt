@@ -42,31 +42,34 @@ T$c_re.5:
 # leaf true
 calc_pixel7.111:
 .calc_pixel7.111_8:
+  fld fa5, limit_sq.2, t5
+  lw a2, iter.3
+  fld fa6, c_re.5, t5
+  fld fa7, c_im.6, t5
 
 .calc_pixel7.111_0:
-  fmul.d fa3, fa0, fa0
-  fmul.d fa4, fa1, fa1
+  fmul.d fa2, fa0, fa0
+  fmul.d fa3, fa1, fa1
   lw a1, iter.3
   beq a0, a1, .calc_pixel7.111_1
 
 .calc_pixel7.111_2:
-  fadd.d fa2, fa3, fa4
-  fld fa5, limit_sq.2, t5
-  fle.d a1, fa5, fa2
+  fadd.d fa4, fa2, fa3
+  fle.d a1, fa5, fa4
   bne a1, zero, .calc_pixel7.111_3
 
 .calc_pixel7.111_4:
   li a1, 4611686018427387904
-  fmv.d.x fa2, a1
-  fmul.d fa0, fa2, fa0
-  fld fa2, c_im.6, t5
-  fmadd.d fa1, fa0, fa1, fa2
-  fsub.d fa0, fa3, fa4
-  fld fa3, c_re.5, t5
-  fadd.d fa0, fa0, fa3
+  fmv.d.x fa4, a1
+  fmul.d fa0, fa4, fa0
+  fmadd.d fa1, fa0, fa1, fa7
+  fsub.d fa0, fa2, fa3
+  fadd.d fa0, fa0, fa6
   addi a0, a0, 1
-  lw a1, iter.3
-  fld fa4, limit_sq.2, t5
+  fmv.d fa2, fa7
+  fmv.d fa3, fa6
+  mv a1, a2
+  fmv.d fa4, fa5
   j .calc_pixel7.111_0
 
 .calc_pixel7.111_3:
@@ -77,7 +80,7 @@ calc_pixel7.111:
   ret
 
 .calc_pixel7.111_1:
-  lw a0, iter.3
+  mv a0, a2
   j .calc_pixel7.111_6
 
   .p2align 2
@@ -294,58 +297,66 @@ minimbt_main:
 # leaf false
 main_loop30.112:
 .main_loop30.112_14:
-  addi sp, sp, -64
+  addi sp, sp, -96
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
   sd s3, 32(sp)
   sd s4, 40(sp)
-  fsd fs0, 48(sp)
-  fsd fs1, 56(sp)
+  sd s5, 48(sp)
+  fsd fs0, 56(sp)
+  fsd fs1, 64(sp)
+  fsd fs2, 72(sp)
+  fsd fs3, 80(sp)
+  fsd fs4, 88(sp)
   fmv.d fa5, fa3
   fmv.d fa3, fa4
+  fld fs3, limit_sq.2, t5
+  lw s0, iter.3
+  fld fs0, c_re.5, t5
+  fld fs1, c_im.6, t5
   mv s2, a0
-  mv s0, a1
-  mv s4, a2
-  mv s1, a3
-  mv s3, a4
+  mv s3, a1
+  mv s5, a2
+  mv s4, a3
+  mv s1, a4
   mv a0, a5
-  fmv.d fs0, fa5
-  fmv.d fs1, fa3
+  fmv.d fs2, fa5
+  fmv.d fs4, fa3
 
 .main_loop30.112_0:
-  beq s1, s0, .main_loop30.112_1
+  beq s4, s3, .main_loop30.112_1
 
 .main_loop30.112_2:
-  beq s4, s2, .main_loop30.112_3
+  beq s5, s2, .main_loop30.112_3
 
 .main_loop30.112_4:
-  fcvt.d.w fa0, s4
+  fcvt.d.w fa0, s5
   li a0, 4613937818241073152
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
-  fdiv.d fa0, fa0, fs0
+  fdiv.d fa0, fa0, fs2
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
   fsub.d fa0, fa0, fa1
   fneg.d fa0, fa0
-  fcvt.d.w fa1, s1
+  fcvt.d.w fa1, s4
   li a0, 4613937818241073152
   fmv.d.x fa2, a0
   fmul.d fa1, fa2, fa1
-  fdiv.d fa1, fa1, fs1
+  fdiv.d fa1, fa1, fs4
   li a0, 4609434218613702656
   fmv.d.x fa2, a0
   fsub.d fa1, fa1, fa2
-  fld fa2, c_im.6, t5
-  fld fa3, c_re.5, t5
-  lw a1, iter.3
-  fld fa4, limit_sq.2, t5
   mv a0, zero
+  fmv.d fa2, fs1
+  fmv.d fa3, fs0
+  mv a1, s0
+  fmv.d fa4, fs3
   call calc_pixel7.111
-  mul a1, s1, s2
-  add a1, a1, s4
+  mul a1, s4, s2
+  add a1, a1, s5
   bge zero, a0, .main_loop30.112_5
 
 .main_loop30.112_6:
@@ -358,13 +369,13 @@ main_loop30.112:
 .main_loop30.112_9:
 
 .main_loop30.112_10:
-  th.surw a0, s3, a1, 2
-  addi a1, s4, 1
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  mv s4, a1
+  th.surw a0, s1, a1, 2
+  addi a0, s5, 1
+  mv s5, a0
+  fmv.d fa0, fs1
+  fmv.d fa1, fs0
+  mv a0, s0
+  fmv.d fa2, fs3
   j .main_loop30.112_0
 
 .main_loop30.112_8:
@@ -375,13 +386,13 @@ main_loop30.112:
   j .main_loop30.112_10
 
 .main_loop30.112_3:
-  addi a1, s1, 1
-  fld fa0, c_im.6, t5
-  fld fa1, c_re.5, t5
-  lw a0, iter.3
-  fld fa2, limit_sq.2, t5
-  mv s4, zero
-  mv s1, a1
+  addi a0, s4, 1
+  mv s5, zero
+  mv s4, a0
+  fmv.d fa0, fs1
+  fmv.d fa1, fs0
+  mv a0, s0
+  fmv.d fa2, fs3
   j .main_loop30.112_0
 
 .main_loop30.112_1:
@@ -394,9 +405,13 @@ main_loop30.112:
   ld s2, 24(sp)
   ld s3, 32(sp)
   ld s4, 40(sp)
-  fld fs0, 48(sp)
-  fld fs1, 56(sp)
-  addi sp, sp, 64
+  ld s5, 48(sp)
+  fld fs0, 56(sp)
+  fld fs1, 64(sp)
+  fld fs2, 72(sp)
+  fld fs3, 80(sp)
+  fld fs4, 88(sp)
+  addi sp, sp, 96
   ret
 
 __end_text:
