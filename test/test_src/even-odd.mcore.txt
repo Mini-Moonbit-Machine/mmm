@@ -16,37 +16,19 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl odd6.25
-  .type odd6.25, @function
+  .globl main21.28
+  .type main21.28, @function
 # leaf false
-odd6.25:
-.odd6.25_0:
+main21.28:
+.main21.28_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  blt a0, zero, .odd6.25_2
-
-.odd6.25_1:
-  beq a0, zero, .odd6.25_3
-
-.odd6.25_4:
-  addi a0, a0, -1
-  call even3.24
-
-.odd6.25_5:
-
-.odd6.25_6:
+  li a0, 789
+  call even3.26
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-.odd6.25_3:
-  lw a0, f.2
-  j .odd6.25_5
-
-.odd6.25_2:
-  addi a0, a0, 1
-  call even3.24
-  j .odd6.25_6
 
   .p2align 2
   .text
@@ -57,46 +39,44 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main21.26
+  call main21.28
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main21.26
-  .type main21.26, @function
+  .globl even3.26
+  .type even3.26, @function
 # leaf false
-main21.26:
-.main21.26_0:
+even3.26:
+.even3.26_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 789
-  call even3.24
-  call minimbt_print_int
+  blt a0, zero, .even3.26_2
+
+.even3.26_1:
+  beq a0, zero, .even3.26_3
+
+.even3.26_4:
+  addi a0, a0, -1
+  call odd6.27
+
+.even3.26_5:
+
+.even3.26_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-  .p2align 2
-  .text
-  .globl T$t.1
-  .type T$t.1, @function
-# leaf true
-T$t.1:
-.T$t.1_0:
+.even3.26_3:
   li a0, 123
-  ret
+  j .even3.26_5
 
-  .p2align 2
-  .text
-  .globl T$f.2
-  .type T$f.2, @function
-# leaf true
-T$f.2:
-.T$f.2_0:
-  li a0, 456
-  ret
+.even3.26_2:
+  addi a0, a0, 1
+  call odd6.27
+  j .even3.26_6
 
   .p2align 2
   .text
@@ -112,12 +92,6 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$t.1
-  la t5, t.1
-  sw a0, 0(t5)
-  call T$f.2
-  la t5, f.2
-  sw a0, 0(t5)
   call T$start
   mv sp, s0
   ld ra, 0(sp)
@@ -128,51 +102,39 @@ minimbt_main:
 
   .p2align 2
   .text
-  .globl even3.24
-  .type even3.24, @function
+  .globl odd6.27
+  .type odd6.27, @function
 # leaf false
-even3.24:
-.even3.24_0:
+odd6.27:
+.odd6.27_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  blt a0, zero, .even3.24_2
+  blt a0, zero, .odd6.27_2
 
-.even3.24_1:
-  beq a0, zero, .even3.24_3
+.odd6.27_1:
+  beq a0, zero, .odd6.27_3
 
-.even3.24_4:
+.odd6.27_4:
   addi a0, a0, -1
-  call odd6.25
+  call even3.26
 
-.even3.24_5:
+.odd6.27_5:
 
-.even3.24_6:
+.odd6.27_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.even3.24_3:
-  lw a0, t.1
-  j .even3.24_5
+.odd6.27_3:
+  li a0, 456
+  j .odd6.27_5
 
-.even3.24_2:
+.odd6.27_2:
   addi a0, a0, 1
-  call odd6.25
-  j .even3.24_6
+  call even3.26
+  j .odd6.27_6
 
 __end_text:
-  .p2align 2
-  .bss
-  .globl t.1
-  .type t.1, @object
-t.1:
-  .zero 4
-  .p2align 2
-  .bss
-  .globl f.2
-  .type f.2, @object
-f.2:
-  .zero 4
   .p2align 2
   .bss
   .globl start

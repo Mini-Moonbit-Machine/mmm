@@ -25,6 +25,37 @@ pub fn next(self : CallFreq) -> CallFreq {
   }
 }
 
+fn assoc_non_top(knf : Knf, top : Bool) -> Knf {
+  match knf {
+    IfEq(x, y, e1, e2) =>
+      IfEq(x, y, assoc_non_top(e1, false), assoc_non_top(e2, false))
+    IfLe(x, y, e1, e2) =>
+      IfLe(x, y, assoc_non_top(e1, false), assoc_non_top(e2, false))
+    Let(xt, e1, e2) =>
+      if top {
+        Let(xt, assoc_non_top(e1, false), assoc_non_top(e2, top))
+      } else {
+        fn insert(knf : Knf) -> Knf {
+          match knf {
+            Let(yt, e3, e4) => Let(yt, e3, insert(e4))
+            LetRec(fundefs, e) => LetRec(fundefs, insert(e))
+            LetTuple(yts, z, e) => LetTuple(yts, z, insert(e))
+            e => Let(xt, e, assoc_non_top(e2, top))
+          }
+        }
+
+        insert(assoc_non_top(e1, false))
+      }
+    LetRec(fundef, e) => {
+      let { name, ty, args, body } = fundef
+      let fundef = { name, ty, args, body: assoc_non_top(body, false) }
+      LetRec(fundef, assoc_non_top(e, top))
+    }
+    LetTuple(xts, y, e) => LetTuple(xts, y, assoc_non_top(e, top))
+    _ => knf
+  }
+}
+
 fn assoc(knf : Knf) -> Knf {
   match knf {
     IfEq(x, y, e1, e2) => IfEq(x, y, assoc(e1), assoc(e2))
@@ -107,6 +138,121 @@ fn size(knf : Knf) -> Int {
     LetRec(fundef, e) => 1 + size(fundef.body) + size(e)
     LetTuple(_, _, e) => 1 + size(e)
     _ => 1
+  }
+}
+
+fn top_int_reduce(
+  knf_env : KnfEnv,
+  env : Env[(Type, Knf)],
+  knf : Knf,
+  top : Bool
+) -> Knf {
+  fn f(x : Name, cont : (Name) -> Knf) -> Knf {
+    env
+    .find(x)
+    .map_or_else(
+      fn() { cont(x) },
+      fn(x) {
+        let (ty, knf) = x
+        let tmp = knf_env.new_temp()
+        Let((tmp, ty), knf, cont(tmp))
+      },
+    )
+  }
+
+  fn fs(xs : Array[Name], cont : (Array[Name]) -> Knf) -> Knf {
+    match xs {
+      [] => cont([])
+      [x, .. as rest] =>
+        f(x, fn(x) { fs(rest.iter().to_array(), fn(xs) { cont([x, ..xs]) }) })
+    }
+  }
+
+  match knf {
+    Unit => Unit
+    Bool(b) => Bool(b)
+    Int(i) => Int(i)
+    Double(d) => Double(d)
+    Neg(x) => f(x, fn(x) { Neg(x) })
+    Add(x, y) => f(x, fn(x) { f(y, fn(y) { Add(x, y) }) })
+    Sub(x, y) => f(x, fn(x) { f(y, fn(y) { Sub(x, y) }) })
+    Mul(x, y) => f(x, fn(x) { f(y, fn(y) { Mul(x, y) }) })
+    Div(x, y) => f(x, fn(x) { f(y, fn(y) { Div(x, y) }) })
+    FNeg(x) => f(x, fn(x) { FNeg(x) })
+    FAdd(x, y) => f(x, fn(x) { f(y, fn(y) { FAdd(x, y) }) })
+    FSub(x, y) => f(x, fn(x) { f(y, fn(y) { FSub(x, y) }) })
+    FMul(x, y) => f(x, fn(x) { f(y, fn(y) { FMul(x, y) }) })
+    FDiv(x, y) => f(x, fn(x) { f(y, fn(y) { FDiv(x, y) }) })
+    IfEq(x, y, e1, e2) =>
+      f(
+        x,
+        fn(x) {
+          f(
+            y,
+            fn(y) {
+              IfEq(
+                x,
+                y,
+                top_int_reduce(knf_env, env, e1, false),
+                top_int_reduce(knf_env, env, e2, false),
+              )
+            },
+          )
+        },
+      )
+    IfLe(x, y, e1, e2) =>
+      f(
+        x,
+        fn(x) {
+          f(
+            y,
+            fn(y) {
+              IfLe(
+                x,
+                y,
+                top_int_reduce(knf_env, env, e1, false),
+                top_int_reduce(knf_env, env, e2, false),
+              )
+            },
+          )
+        },
+      )
+    Let((x, xt), e1, e2) =>
+      if top {
+        match e1 {
+          Int(_) as y => {
+            @util.t.println("top int reduce \{x} = \{y}")
+            top_int_reduce(knf_env, env.add(x, (xt, y)), e2, top)
+          }
+          _ => {
+            let e1 = top_int_reduce(knf_env, env, e1, false)
+            Let((x, xt), e1, top_int_reduce(knf_env, env, e2, top))
+          }
+        }
+      } else {
+        let e1 = top_int_reduce(knf_env, env, e1, false)
+        Let((x, xt), e1, top_int_reduce(knf_env, env, e2, top))
+      }
+    LetRec(fundef, e) => {
+      let { name, ty, args, body } = fundef
+      let fundef = {
+        name,
+        ty,
+        args,
+        body: top_int_reduce(knf_env, env, body, false),
+      }
+      LetRec(fundef, top_int_reduce(knf_env, env, e, top))
+    }
+    Var(x) => f(x, fn(x) { Var(x) })
+    Tuple(xs) => fs(xs, fn(xs) { Tuple(xs) })
+    LetTuple(xts, y, e) =>
+      f(y, fn(y) { LetTuple(xts, y, top_int_reduce(knf_env, env, e, top)) })
+    Get(x, y) => f(x, fn(x) { f(y, fn(y) { Get(x, y) }) })
+    Put(x, y, z) => f(x, fn(x) { f(y, fn(y) { f(z, fn(z) { Put(x, y, z) }) }) })
+    Apply(func, xs) => f(func, fn(func) { fs(xs, fn(xs) { Apply(func, xs) }) })
+    ExternalArray(x) => f(x, fn(x) { ExternalArray(x) })
+    ExternalFunctionApplication(name, xs) =>
+      fs(xs, fn(xs) { ExternalFunctionApplication(name, xs) })
   }
 }
 
@@ -391,6 +537,8 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   let knf = assoc(knf)
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
+  let knf = top_int_reduce(self.knf_env, Env::new(), knf, true)
+  let knf = assoc_non_top(knf, true)
   self.tracer.record("knf_after_inline_\{n}", knf.to_pretty_print())
   knf
 }

@@ -31,11 +31,27 @@ memseti32:
 
   .p2align 2
   .text
-  .globl main33.57
-  .type main33.57, @function
+  .globl memed8.61
+  .type memed8.61, @function
 # leaf false
-main33.57:
-.main33.57_0:
+memed8.61:
+.memed8.61_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a1, s10
+  ld a1, 8(a1)
+  call memed8.60
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main33.59
+  .type main33.59, @function
+# leaf false
+main33.59:
+.main33.59_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -43,16 +59,16 @@ main33.57:
   call minimbt_read_int
   mv s0, a0
   addi a0, s0, 1
-  lw a2, unmem_magic.1
   slliw a1, a0, 2
   sub s1, s11, a1
   andi s11, s1, -8
+  li a2, -1919810
   mv a1, a0
   mv a0, s1
   call memseti32
   mv a0, s0
   mv a1, s1
-  call memed8.58
+  call memed8.60
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
@@ -65,22 +81,6 @@ main33.57:
 
   .p2align 2
   .text
-  .globl memed8.59
-  .type memed8.59, @function
-# leaf false
-memed8.59:
-.memed8.59_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a1, s10
-  ld a1, 8(a1)
-  call memed8.58
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl T$start
   .type T$start, @function
 # leaf false
@@ -88,83 +88,9 @@ T$start:
 .T$start_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main33.57
+  call main33.59
   ld ra, 0(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl memed8.58
-  .type memed8.58, @function
-# leaf false
-memed8.58:
-.memed8.58_0:
-  addi sp, sp, -48
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  sd s3, 32(sp)
-  mv s0, a0
-  mv s1, a1
-  th.lurw a0, s1, s0, 2
-  lw a1, unmem_magic.1
-  beq a0, a1, .memed8.58_1
-
-.memed8.58_2:
-  th.lurw a0, s1, s0, 2
-
-.memed8.58_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  addi sp, sp, 48
-  ret
-
-.memed8.58_1:
-  addi s2, s11, -16
-  andi s11, s2, -8
-  la a0, memed8.59
-  sd a0, 0(s2)
-  sd s1, 8(s2)
-
-.memed8.58_7:
-  li a0, 1
-  bge a0, s0, .memed8.58_8
-
-.memed8.58_9:
-  addi a0, s0, -1
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  mv s3, a0
-  addi a0, s0, -2
-  mv s10, s2
-  ld a1, 0(s2)
-  jalr a1
-  add a0, s3, a0
-
-.memed8.58_10:
-
-.memed8.58_4:
-  th.surw a0, s1, s0, 2
-  j .memed8.58_3
-
-.memed8.58_8:
-  mv a0, s0
-  j .memed8.58_10
-
-  .p2align 2
-  .text
-  .globl T$unmem_magic.1
-  .type T$unmem_magic.1, @function
-# leaf true
-T$unmem_magic.1:
-.T$unmem_magic.1_0:
-  li a0, -1919810
   ret
 
   .p2align 2
@@ -181,9 +107,6 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$unmem_magic.1
-  la t5, unmem_magic.1
-  sw a0, 0(t5)
   call T$start
   mv sp, s0
   ld ra, 0(sp)
@@ -192,13 +115,71 @@ minimbt_main:
   addi sp, sp, 32
   ret
 
-__end_text:
   .p2align 2
-  .bss
-  .globl unmem_magic.1
-  .type unmem_magic.1, @object
-unmem_magic.1:
-  .zero 4
+  .text
+  .globl memed8.60
+  .type memed8.60, @function
+# leaf false
+memed8.60:
+.memed8.60_0:
+  addi sp, sp, -48
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  sd s3, 32(sp)
+  mv s1, a0
+  mv s0, a1
+  th.lurw a0, s0, s1, 2
+  li a1, -1919810
+  beq a0, a1, .memed8.60_1
+
+.memed8.60_2:
+  th.lurw a0, s0, s1, 2
+
+.memed8.60_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  addi sp, sp, 48
+  ret
+
+.memed8.60_1:
+  addi s2, s11, -16
+  andi s11, s2, -8
+  la a0, memed8.61
+  sd a0, 0(s2)
+  sd s0, 8(s2)
+
+.memed8.60_6:
+  li a0, 1
+  bge a0, s1, .memed8.60_7
+
+.memed8.60_8:
+  addi a0, s1, -1
+  mv s10, s2
+  ld a1, 0(s2)
+  jalr a1
+  mv s3, a0
+  addi a0, s1, -2
+  mv s10, s2
+  ld a1, 0(s2)
+  jalr a1
+  add a0, s3, a0
+
+.memed8.60_9:
+
+.memed8.60_4:
+  th.surw a0, s0, s1, 2
+  j .memed8.60_3
+
+.memed8.60_7:
+  mv a0, s1
+  j .memed8.60_9
+
+__end_text:
   .p2align 2
   .bss
   .globl start
