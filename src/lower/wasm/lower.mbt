@@ -771,19 +771,48 @@ pub fn WasmLoweringCtx::lower_globals(
   let insn = []
   for symbol in self.core.global_names {
     let symbol = self.core.global_symbols.get(symbol.1).unwrap()
-    let thunk = self.core.funcs.get(symbol.thunk).unwrap()
-    insn.push(Call(target=Label(thunk.name)))
-    match ty_to_wasm_type(symbol.ty) {
-      None => ()
-      Some(I32) => {
-        globals.set(Name(symbol.name), I32)
-        insn.push(SetGlobal(name=Name(symbol.name)))
+    match symbol.thunk {
+      Some(thunk) => {
+        let thunk = self.core.funcs.get(thunk).unwrap()
+        insn.push(Call(target=Label(thunk.name)))
+        match ty_to_wasm_type(symbol.ty) {
+          None => ()
+          Some(I32) => {
+            globals.set(Name(symbol.name), I32)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          Some(F64) => {
+            globals.set(Name(symbol.name), F64)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          _ => self.tracer.abort("Invalid global type")
+        }
       }
-      Some(F64) => {
-        globals.set(Name(symbol.name), F64)
-        insn.push(SetGlobal(name=Name(symbol.name)))
-      }
-      _ => self.tracer.abort("Invalid global type")
+      None =>
+        match symbol.data {
+          Some(@core.Value::Unit) => {
+            insn.push(I32Const(val=0))
+            globals.set(Name(symbol.name), I32)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          Some(@core.Value::Bool(~val)) => {
+            insn.push(I32Const(val=if val { 1 } else { 0 }))
+            globals.set(Name(symbol.name), I32)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          Some(@core.Value::Int32(~val)) => {
+            insn.push(I32Const(~val))
+            globals.set(Name(symbol.name), I32)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          Some(@core.Value::Double(~val)) => {
+            insn.push(F64Const(~val))
+            globals.set(Name(symbol.name), F64)
+            insn.push(SetGlobal(name=Name(symbol.name)))
+          }
+          Some(_) => self.tracer.abort("Invalid global symbol")
+          None => self.tracer.abort("Invalid global symbol")
+        }
     }
   }
   let start_fn = MFn::{ name, args: [], ret: None, locals: [], seq: insn }

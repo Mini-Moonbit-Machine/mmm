@@ -2354,7 +2354,7 @@ fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
 
 pub fn RiscvLoweringCtx::lower_globals(
   self : RiscvLoweringCtx,
-  globals : MutMap[@riscv.Label, Int]
+  globals : MutMap[@riscv.Label, GlobalVar]
 ) -> MFn {
   let core = self.core
   let name = @riscv.Label::Label("minimbt_main")
@@ -2377,48 +2377,65 @@ pub fn RiscvLoweringCtx::lower_globals(
     let symbol = core.global_symbols.get(symbol.1).unwrap()
     let ty_size = symbol.ty.size_of_lp64()
     let rc = ty_to_reg_class(symbol.ty)
-    let thunk = core.funcs.get(symbol.thunk).unwrap()
-    globals.set(
-      @riscv.Label::Label(symbol.name.to_string()),
-      if ty_size == 0 {
-        4
-      } else {
-        ty_size
-      },
-    )
-    let call = MInsn::Call(
-      target=Label(thunk.name.to_string()),
-      num_xregs=0,
-      num_fregs=0,
-    )
-    insns.push(call)
-    insns.push(
-      MInsn::La(rd=@riscv.reg_swap[0], l=Label(symbol.name.to_string())),
-    )
-    match (ty_size, rc) {
-      (4, X) =>
-        insns.push(
-          MInsn::Sw(
-            rs=@riscv.reg_ret,
-            mem={ base: @riscv.reg_swap[0], offset: 0 },
-          ),
-        )
-      (8, X) =>
-        insns.push(
-          MInsn::Sd(
-            rs=@riscv.reg_ret,
-            mem={ base: @riscv.reg_swap[0], offset: 0 },
-          ),
-        )
-      (8, F) =>
-        insns.push(
-          MInsn::Fsd(rs=@riscv.Fa0, mem={ base: @riscv.reg_swap[0], offset: 0 }),
-        )
-      (0, _) => {
-        let _ = insns.unsafe_pop()
-
+    match symbol.thunk {
+      None => {
+        let glb = match symbol.data {
+          Some(Unit) => GlobalVar::Zero(4)
+          Some(Bool(~val)) => GlobalVar::Int(if val { 1 } else { 0 })
+          Some(Int32(~val)) => GlobalVar::Int(val)
+          Some(Double(~val)) => GlobalVar::Double(val)
+          _ => self.tracer.abort("Invalid global data")
+        }
+        globals.set(@riscv.Label::Label(symbol.name.to_string()), glb)
       }
-      _ => self.tracer.abort("Invalid thunk type size")
+      Some(thunk) => {
+        globals.set(
+          @riscv.Label::Label(symbol.name.to_string()),
+          if ty_size == 0 {
+            Zero(4)
+          } else {
+            Zero(ty_size)
+          },
+        )
+        let thunk = core.funcs.get(thunk).unwrap()
+        let call = MInsn::Call(
+          target=Label(thunk.name.to_string()),
+          num_xregs=0,
+          num_fregs=0,
+        )
+        insns.push(call)
+        insns.push(
+          MInsn::La(rd=@riscv.reg_swap[0], l=Label(symbol.name.to_string())),
+        )
+        match (ty_size, rc) {
+          (4, X) =>
+            insns.push(
+              MInsn::Sw(
+                rs=@riscv.reg_ret,
+                mem={ base: @riscv.reg_swap[0], offset: 0 },
+              ),
+            )
+          (8, X) =>
+            insns.push(
+              MInsn::Sd(
+                rs=@riscv.reg_ret,
+                mem={ base: @riscv.reg_swap[0], offset: 0 },
+              ),
+            )
+          (8, F) =>
+            insns.push(
+              MInsn::Fsd(
+                rs=@riscv.Fa0,
+                mem={ base: @riscv.reg_swap[0], offset: 0 },
+              ),
+            )
+          (0, _) => {
+            let _ = insns.unsafe_pop()
+
+          }
+          _ => self.tracer.abort("Invalid thunk type size")
+        }
+      }
     }
   }
   restore_sp(insns)

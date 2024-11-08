@@ -147,7 +147,8 @@ pub struct Symbol {
   id : SymbolRef
   name : String
   ty : Type
-  thunk : FnRef
+  thunk : FnRef?
+  data : Value?
 } derive(Show)
 
 pub enum Type {

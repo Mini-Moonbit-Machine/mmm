@@ -27,6 +27,8 @@ impl BlockInfo {
 
 type FrameLayout
 
+type GlobalVar
+
 pub struct IteratedBlockInfo {
   pub live_in : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
   pub live_out : @hashset.T[@moonbitlang/minimbt/riscv.AnyReg]
@@ -66,7 +68,7 @@ impl MBasicBlock {
 
 pub struct MCore {
   pub funcs : @hashmap.T[@moonbitlang/minimbt/riscv.Label, MFn]
-  pub globals : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]
+  pub globals : @hashmap.T[@moonbitlang/minimbt/riscv.Label, GlobalVar]
   pub liveness : @hashmap.T[@moonbitlang/minimbt/riscv.Label, Liveness]
   pub primitives : @hashset.T[String]
 }
@@ -134,7 +136,7 @@ pub struct RiscvLoweringCtx {
 }
 impl RiscvLoweringCtx {
   lower(Self) -> MCore!Failure
-  lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, Int]) -> MFn
+  lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, GlobalVar]) -> MFn
   new(@core.Core, @util.SubTracer, ~use_xthead : Bool = ..) -> Self
 }
 

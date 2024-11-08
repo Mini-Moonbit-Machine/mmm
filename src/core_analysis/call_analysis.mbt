@@ -86,7 +86,7 @@ pub fn CallAnalysis::compute(self : CallAnalysis) -> FnCallFreq {
   }
   for symbol in self.core.global_symbols {
     let (_, symbol) = symbol
-    add_call(fcf, symbol.thunk)
+    symbol.thunk.map(fn(thunk) { add_call(fcf, thunk) }) |> ignore
   }
   fcf
 }

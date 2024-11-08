@@ -57,16 +57,6 @@ main37:
 
   .p2align 2
   .text
-  .globl T$_59
-  .type T$_59, @function
-# leaf true
-T$_59:
-.T$_59_0:
-  li a0, 5
-  ret
-
-  .p2align 2
-  .text
   .globl T$fixedpoint.52
   .type T$fixedpoint.52, @function
 # leaf false
@@ -108,16 +98,6 @@ T$arr.47:
   ld ra, 0(sp)
   ld s0, 8(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_58
-  .type T$_58, @function
-# leaf true
-T$_58:
-.T$_58_0:
-  mv a0, zero
   ret
 
   .p2align 2
@@ -215,16 +195,6 @@ g18:
 
   .p2align 2
   .text
-  .globl T$_57
-  .type T$_57, @function
-# leaf true
-T$_57:
-.T$_57_0:
-  li a0, 1
-  ret
-
-  .p2align 2
-  .text
   .globl T$_54
   .type T$_54, @function
 # leaf true
@@ -233,7 +203,9 @@ T$_54:
   ld a0, arr.47
   lw a1, _58
   ld a2, fixedpoint.52
-  th.surd a2, a0, a1, 3
+  slliw a1, a1, 3
+  add a0, a0, a1
+  sd a2, 0(a0)
   mv a0, zero
   ret
 
@@ -265,22 +237,13 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$_57
-  la t5, _57
-  sw a0, 0(t5)
   call T$arr.47
   la t5, arr.47
   sd a0, 0(t5)
   call T$fixedpoint.52
   la t5, fixedpoint.52
   sd a0, 0(t5)
-  call T$_58
-  la t5, _58
-  sw a0, 0(t5)
   call T$_54
-  call T$_59
-  la t5, _59
-  sw a0, 0(t5)
   call T$a.33
   la t5, a.33
   sw a0, 0(t5)
@@ -299,46 +262,54 @@ __end_text:
   .type arr.47, @object
 arr.47:
   .zero 8
+
   .p2align 2
-  .bss
+  .rodata
   .globl _57
   .type _57, @object
 _57:
-  .zero 4
+  .word 1
+
   .p2align 2
   .bss
   .globl fixedpoint.52
   .type fixedpoint.52, @object
 fixedpoint.52:
   .zero 8
+
   .p2align 2
   .bss
   .globl a.33
   .type a.33, @object
 a.33:
   .zero 4
+
   .p2align 2
   .bss
   .globl start
   .type start, @object
 start:
   .zero 4
+
   .p2align 2
-  .bss
+  .rodata
   .globl _58
   .type _58, @object
 _58:
-  .zero 4
+  .word 0
+
   .p2align 2
-  .bss
+  .rodata
   .globl _59
   .type _59, @object
 _59:
-  .zero 4
+  .word 5
+
   .p2align 2
   .bss
   .globl _54
   .type _54, @object
 _54:
   .zero 4
+
 

@@ -2,9 +2,15 @@ typealias Label = @riscv.Label
 
 typealias MInsn = @riscv.RvAsm
 
+enum GlobalVar {
+  Zero(Int)
+  Double(Double)
+  Int(Int)
+}
+
 pub struct MCore {
   funcs : MutMap[Label, MFn]
-  globals : MutMap[Label, Int]
+  globals : MutMap[Label, GlobalVar]
   liveness : MutMap[Label, Liveness]
   primitives : MutSet[String]
 }
@@ -116,13 +122,32 @@ pub fn MCore::output(self : MCore, logger : Logger) -> Unit {
   }
   logger.write_string("__end_text:\n")
   for global in self.globals {
-    let (global, sz) = global
-    logger.write_string("  .p2align 2\n")
-    logger.write_string("  .bss\n")
-    logger.write_string("  .globl \{global._}\n")
-    logger.write_string("  .type \{global._}, @object\n")
-    logger.write_string("\{global._}:\n")
-    logger.write_string("  .zero \{sz}\n")
+    match global {
+      (global, Zero(sz)) => {
+        logger.write_string("  .p2align 2\n")
+        logger.write_string("  .bss\n")
+        logger.write_string("  .globl \{global._}\n")
+        logger.write_string("  .type \{global._}, @object\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .zero \{sz}\n\n")
+      }
+      (global, Double(val)) => {
+        logger.write_string("  .p2align 3\n")
+        logger.write_string("  .rodata\n")
+        logger.write_string("  .globl \{global._}\n")
+        logger.write_string("  .type \{global._}, @object\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .double \{val}\n\n")
+      }
+      (global, Int(val)) => {
+        logger.write_string("  .p2align 2\n")
+        logger.write_string("  .rodata\n")
+        logger.write_string("  .globl \{global._}\n")
+        logger.write_string("  .type \{global._}, @object\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .word \{val}\n\n")
+      }
+    }
   }
 }
 
@@ -136,9 +161,26 @@ pub fn MCoreWithRichInfo::output(
     func.print_with_info(logger, self.liveness[func.name].unwrap())
   }
   for global in self.globals {
-    let (global, sz) = global
-    logger.write_string("\{global._}:\n")
-    logger.write_string("  .zero \{sz}\n")
+    match global {
+      (global, Zero(sz)) => {
+        logger.write_string("  .p2align 2\n")
+        logger.write_string("  .bss\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .zero \{sz}\n")
+      }
+      (global, Double(val)) => {
+        logger.write_string("  .p2align 3\n")
+        logger.write_string("  .rodata\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .double \{val}\n")
+      }
+      (global, Int(val)) => {
+        logger.write_string("  .p2align 2\n")
+        logger.write_string("  .rodata\n")
+        logger.write_string("\{global._}:\n")
+        logger.write_string("  .word \{val}\n")
+      }
+    }
   }
 }
 

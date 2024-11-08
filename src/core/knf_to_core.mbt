@@ -199,7 +199,8 @@ fn add_mem(self : CoreEnv, func : Fn, _bb : BasicBlock, mem : Mem) -> MemRef {
 fn add_symbol(
   self : CoreEnv,
   core : Core,
-  thunk : Fn,
+  thunk : Fn?,
+  data : Value?,
   symbol : String,
   ty : Type
 ) -> SymbolRef {
@@ -207,7 +208,13 @@ fn add_symbol(
   self.sym_counter += 1
   core.global_symbols.set(
     sym_ref,
-    Symbol::{ id: sym_ref, name: symbol, ty, thunk: thunk.id },
+    Symbol::{
+      id: sym_ref,
+      name: symbol,
+      ty,
+      thunk: thunk.map(fn(t) { t.id }),
+      data,
+    },
   )
   core.global_names.push((symbol, sym_ref))
   sym_ref
@@ -525,6 +532,17 @@ fn add_basic_block(
   bb
 }
 
+fn build_simple_expr(self : CoreEnv, knf : Knf) -> Value!Failure {
+  let _ = self
+  match knf {
+    Unit => Value::Unit
+    Bool(b) => Value::Bool(val=b)
+    Int(i) => Value::Int32(val=i.to_int())
+    Double(d) => Value::Double(val=d)
+    _ => fail!("not a simple expression")
+  }
+}
+
 fn build_knf_expr(
   self : CoreEnv,
   free_names : FreeNames,
@@ -535,10 +553,8 @@ fn build_knf_expr(
   knf : Knf
 ) -> (Ctx, BasicBlock, Value)!Failure {
   match knf {
-    Unit => (ctx, bb, Value::Unit)
-    Bool(b) => (ctx, bb, Value::Bool(val=b))
-    Int(i) => (ctx, bb, Value::Int32(val=i.to_int()))
-    Double(d) => (ctx, bb, Value::Double(val=d))
+    Unit | Bool(_) | Int(_) | Double(_) =>
+      (ctx, bb, self.build_simple_expr!(knf))
     Neg(n) | FNeg(n) => {
       let (ctx, n_val) = self.build_name!(free_names, ctx, core, func, bb, n)
       let n_ty = self.get_type!(ctx, core, func, bb, n_val)
@@ -899,6 +915,21 @@ fn build_top_level(
   knf : Knf
 ) -> Unit!Failure {
   match knf {
+    Let((x, ty), Double(_) | Int(_) | Bool(_) | Unit as e1, e2) => {
+      let ty = self.lower_type!(ty, false)
+      let ctx = ctx.add_name_ty(x, ty)
+      let ctx = ctx.add_top_sym_value(
+        x,
+        self.add_symbol(
+          core,
+          None,
+          Some(self.build_simple_expr!(e1)),
+          x.to_string(),
+          ty,
+        ),
+      )
+      self.build_top_level!(ctx, core, e2)
+    }
     Let((x, ty), e1, e2) => {
       let thunk_name = "T$" + x.to_string()
       let name = try {
@@ -917,7 +948,7 @@ fn build_top_level(
       let ctx = ctx.add_top_fn_value(fd.name, fref)
       let ty = self.lower_type!(ty, false)
       let ctx = ctx.add_name_ty(x, ty)
-      let sref = self.add_symbol(core, func, x.to_string(), ty)
+      let sref = self.add_symbol(core, Some(func), None, x.to_string(), ty)
       let ctx = ctx.add_top_sym_value(x, sref)
       self.build_top_level!(ctx, core, e2)
     }

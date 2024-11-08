@@ -174,12 +174,24 @@ pub fn CoreInterpreter::interpret(
   for thunk in globals {
     let (name, sref) = thunk
     let symbol = core.global_symbols[sref].unwrap()
-    let func = match funcs.get(symbol.thunk) {
-      Some(func) => func
-      None => return fail!("function not found: \{name}")
+    match symbol.thunk {
+      Some(func) => {
+        let func = match funcs.get(func) {
+          Some(func) => func
+          None => return fail!("function not found: \{name}")
+        }
+        let obj = self.eval_fn!(ctx, func)
+        ctx = ctx.update_global(sref, obj)
+      }
+      None =>
+        match symbol.data {
+          Some(data) => {
+            let obj = CoreInterpreter::eval_value!(ctx, data)
+            ctx = ctx.update_global(sref, obj)
+          }
+          None => fail!("no thunk or data")
+        }
     }
-    let obj = self.eval_fn!(ctx, func)
-    ctx = ctx.update_global(sref, obj)
   }
 }
 
