@@ -91,6 +91,78 @@
     return ()
   }
 }
+.fn skip29.255 #f18 : fn(int32, int32, int32, array[int32]) -> int32
+.freevars ()
+.entry b14 {
+  .bb #b0 (int32, int32, int32, array[int32]) {
+    let %0: bool = le($b0.2, $b0.0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b12($b0.0)
+  }
+  .bb #b2 () {
+    let %1: int32 = load int32 offset($b0.3, $b0.0 * @32)
+    let %3: bool = eq(%1, %2)
+    br %3 b3() b4()
+  }
+  .bb #b3 () {
+    let %4: int32 = add($b0.0, 1)
+    let %5: int32 = add($b0.1, 1)
+    jump b0(%4, %5, $b0.2, $b0.3)
+  }
+  .bb #b4 () {
+    let %8: bool = eq(%1, %7)
+    br %8 b5() b6()
+  }
+  .bb #b5 () {
+    let %9: bool = eq($b0.1, 0)
+    br %9 b7() b8()
+  }
+  .bb #b6 () {
+    let %13: int32 = add($b0.0, 1)
+    jump b0(%13, $b0.1, $b0.2, $b0.3)
+  }
+  .bb #b7 () {
+    jump b9($b0.0)
+  }
+  .bb #b8 () {
+    let %10: int32 = add($b0.0, 1)
+    let %11: int32 = sub($b0.1, 1)
+    jump b0(%10, %11, $b0.2, $b0.3)
+  }
+  .bb #b9 (int32) {
+    jump b10($b9.0)
+  }
+  .bb #b10 (int32) {
+    jump b11($b10.0)
+  }
+  .bb #b11 (int32) {
+    jump b12($b11.0)
+  }
+  .bb #b12 (int32) {
+    return $b12.0
+  }
+  .loop #b13 pre #Some(b14) header #b0 {
+    .block #b6
+    .block #b12
+    .block #b4
+    .block #b8
+    .block #b9
+    .block #b1
+    .block #b10
+    .block #b11
+    .block #b5
+    .block #b2
+    .block #b3
+    .block #b7
+  }
+  .bb #b14 () {
+    let %7: int32 = load_symbol ::7
+    let %2: int32 = load_symbol ::6
+    jump b13($f0, $f1, $f2, $f3)
+  }
+}
 .fn T$read.10 #f12 : fn() -> int32
 .freevars ()
 .entry b0 {
@@ -134,6 +206,39 @@
     return %0
   }
 }
+.fn lp107.257 #f19 : fn(array[int32], int32, int32, array[int32], array[int32], array[int32]) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (array[int32], int32, int32, array[int32], array[int32], array[int32]) {
+    let %0: int32 = load int32 field($b0.0, 0 * @32)
+    let %1: int32 = load int32 offset($b0.4, %0 * @32)
+    let %2: bool = eq(%1, 0)
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    let %3: int32 = add($b0.2, 1)
+    let %4: int32 = call f18(%3, 0, $b0.1, $b0.3)
+    let _ = store int32 field($b0.5, 0 * @32) <- %4
+    jump b3(())
+  }
+  .bb #b2 () {
+    let %6: int32 = add($b0.2, 1)
+    let %7: int32 = call f20(%6, $b0.0, $b0.1, $b0.3, $b0.4, $b0.5)
+    let _ = store int32 field($b0.5, 0 * @32) <- %7
+    jump b0($b0.0, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2, $f3, $f4, $f5)
+  }
+}
 .fn aux46.256 #f20 : fn(int32, array[int32], int32, array[int32], array[int32], array[int32]) -> int32
 .freevars ()
 .entry b29 {
@@ -174,7 +279,8 @@
   }
   .bb #b7 () {
     let %18: int32 = load int32 field($b0.1, 0 * @32)
-    let %20: int32 = load int32 offset($b0.4, %18 * @32)
+    let %19: int32 = load int32 field($b0.1, 0 * @32)
+    let %20: int32 = load int32 offset($b0.4, %19 * @32)
     let %21: int32 = add(%20, 1)
     let _ = store int32 offset($b0.4, %18 * @32) <- %21
     let %23: int32 = add($b0.0, 1)
@@ -186,7 +292,8 @@
   }
   .bb #b9 () {
     let %27: int32 = load int32 field($b0.1, 0 * @32)
-    let %29: int32 = load int32 offset($b0.4, %27 * @32)
+    let %28: int32 = load int32 field($b0.1, 0 * @32)
+    let %29: int32 = load int32 offset($b0.4, %28 * @32)
     let %30: int32 = sub(%29, 1)
     let _ = store int32 offset($b0.4, %27 * @32) <- %30
     let %32: int32 = add($b0.0, 1)
@@ -222,7 +329,10 @@
   }
   .bb #b15 () {
     let _ = store int32 field($b0.5, 0 * @32) <- $b0.0
-    jump b62()
+    let %51: unit = call f19($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
+    let %52: int32 = load int32 field($b0.5, 0 * @32)
+    let %53: int32 = add(%52, 1)
+    jump b0(%53, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
   }
   .bb #b16 () {
     let %56: bool = eq(%1, %55)
@@ -297,110 +407,6 @@
     let %16: int32 = load_symbol ::2
     let %41: int32 = load_symbol ::5
     jump b28($f0, $f1, $f2, $f3, $f4, $f5)
-  }
-  .bb #b30 (unit) {
-    let %52: int32 = load int32 field($b0.5, 0 * @32)
-    let %53: int32 = add(%52, 1)
-    jump b0(%53, $b0.1, $b0.2, $b0.3, $b0.4, $b0.5)
-  }
-  .bb #b57 (array[int32], int32, int32, array[int32], array[int32], array[int32]) {
-    let %57: int32 = load int32 field($b57.0, 0 * @32)
-    let %58: int32 = load int32 offset($b57.4, %57 * @32)
-    let %59: bool = eq(%58, 0)
-    br %59 b58() b59()
-  }
-  .bb #b58 () {
-    let %60: int32 = add($b57.2, 1)
-    jump b80()
-  }
-  .bb #b59 () {
-    let %63: int32 = add($b57.2, 1)
-    let %64: int32 = call f20(%63, $b57.0, $b57.1, $b57.3, $b57.4, $b57.5)
-    let _ = store int32 field($b57.5, 0 * @32) <- %64
-    jump b57($b57.0, $b57.1, $b57.2, $b57.3, $b57.4, $b57.5)
-  }
-  .bb #b60 (unit) {
-    jump b30($b60.0)
-  }
-  .loop #b61 pre #Some(b62) header #b57 {
-    .block #b58
-    .block #b59
-    .block #b60
-  }
-  .bb #b62 () {
-    jump b61($b0.1, $b0.2, $b0.0, $b0.3, $b0.4, $b0.5)
-  }
-  .bb #b63 (int32) {
-    let _ = store int32 field($b57.5, 0 * @32) <- $b63.0
-    jump b60(())
-  }
-  .bb #b66 (int32, int32, int32, array[int32]) {
-    let %66: bool = le($b66.2, $b66.0)
-    br %66 b67() b68()
-  }
-  .bb #b67 () {
-    jump b78($b66.0)
-  }
-  .bb #b68 () {
-    let %67: int32 = load int32 offset($b66.3, $b66.0 * @32)
-    let %69: bool = eq(%67, %68)
-    br %69 b69() b70()
-  }
-  .bb #b69 () {
-    let %70: int32 = add($b66.0, 1)
-    let %71: int32 = add($b66.1, 1)
-    jump b66(%70, %71, $b66.2, $b66.3)
-  }
-  .bb #b70 () {
-    let %74: bool = eq(%67, %73)
-    br %74 b71() b72()
-  }
-  .bb #b71 () {
-    let %75: bool = eq($b66.1, 0)
-    br %75 b73() b74()
-  }
-  .bb #b72 () {
-    let %79: int32 = add($b66.0, 1)
-    jump b66(%79, $b66.1, $b66.2, $b66.3)
-  }
-  .bb #b73 () {
-    jump b75($b66.0)
-  }
-  .bb #b74 () {
-    let %76: int32 = add($b66.0, 1)
-    let %77: int32 = sub($b66.1, 1)
-    jump b66(%76, %77, $b66.2, $b66.3)
-  }
-  .bb #b75 (int32) {
-    jump b76($b75.0)
-  }
-  .bb #b76 (int32) {
-    jump b77($b76.0)
-  }
-  .bb #b77 (int32) {
-    jump b78($b77.0)
-  }
-  .bb #b78 (int32) {
-    jump b63($b78.0)
-  }
-  .loop #b79 pre #Some(b80) header #b66 {
-    .block #b72
-    .block #b78
-    .block #b70
-    .block #b74
-    .block #b75
-    .block #b67
-    .block #b76
-    .block #b77
-    .block #b71
-    .block #b68
-    .block #b69
-    .block #b73
-  }
-  .bb #b80 () {
-    let %73: int32 = load_symbol ::7
-    let %68: int32 = load_symbol ::6
-    jump b79(%60, 0, $b57.1, $b57.3)
   }
 }
 .fn T$increase.7 #f6 : fn() -> int32

@@ -127,8 +127,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      subtracer.set_output_to_console(false)
-      subtracer.set_redirect_to_log(true)
       let parser = @parser.Parser::new(source_code, subtracer)
       let parsed = try {
         parser.parse!()

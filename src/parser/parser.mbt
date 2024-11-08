@@ -230,27 +230,32 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         "Array" => Type::Array(Type::Unit)
         _ => fail!("unexpected type identifier")
       }
-    PairedOpen(po) => {
-      let ty = self.parse_type!()
-      ntokens += ty.ntokens
-      if self.peek_operator(",") {
-        let tys = [ty.inner]
-        while self.peek_operator(",") {
-          self.skip_token()
-          ntokens += 1
-          let ty = self.parse_type!()
-          ntokens += ty.ntokens
-          tys.push(ty.inner)
-        }
-        let _ = self.expect_paired_close!(po)
+    PairedOpen(po) =>
+      if self.peek_token!().inner.tag == PairedClose(po) {
+        self.skip_token()
         ntokens += 1
-        Type::Tuple(tys)
+        Type::Tuple([])
       } else {
-        let _ = self.expect_paired_close!(po)
-        ntokens += 1
-        ty.inner
+        let ty = self.parse_type!()
+        ntokens += ty.ntokens
+        if self.peek_operator(",") {
+          let tys = [ty.inner]
+          while self.peek_operator(",") {
+            self.skip_token()
+            ntokens += 1
+            let ty = self.parse_type!()
+            ntokens += ty.ntokens
+            tys.push(ty.inner)
+          }
+          let _ = self.expect_paired_close!(po)
+          ntokens += 1
+          Type::Tuple(tys)
+        } else {
+          let _ = self.expect_paired_close!(po)
+          ntokens += 1
+          ty.inner
+        }
       }
-    }
     _ => fail!("unexpected token when parsing type: \{lhs_token.inner}")
   }
   while true {

@@ -2243,6 +2243,8 @@ fn RiscvFnLoweringCtx::post_lower(
     seq: mfn.seq,
   }
   // this is accurate
+  self.tracer.println("\{mfn.name} clobbered_x: \{clobbered_x}")
+  self.tracer.println("\{mfn.name} clobbered_f: \{clobbered_f}")
   let x_save = union_array(clobbered_x, @riscv.reg_callee_saved_list)
   let f_save = union_array(clobbered_f, @riscv.freg_callee_saved_list)
   if self.is_leaf == false {

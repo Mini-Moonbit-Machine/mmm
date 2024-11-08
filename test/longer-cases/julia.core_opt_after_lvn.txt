@@ -36,17 +36,14 @@
   .bb #b0 (double, double, int32) {
     let %0: double = mul($b0.0, $b0.0)
     let %1: double = mul($b0.1, $b0.1)
-    let %2: int32 = load_symbol ::2
     let %3: bool = eq($b0.2, %2)
     br %3 b1() b2()
   }
   .bb #b1 () {
-    let %4: int32 = load_symbol ::2
-    jump b6(%4)
+    jump b6(%2)
   }
   .bb #b2 () {
     let %5: double = add(%0, %1)
-    let %6: double = load_symbol ::1
     let %7: bool = le(%6, %5)
     br %7 b3() b4()
   }
@@ -56,10 +53,8 @@
   .bb #b4 () {
     let %8: double = mul(2, $b0.0)
     let %9: double = mul(%8, $b0.1)
-    let %10: double = load_symbol ::5
     let %11: double = add(%9, %10)
     let %12: double = sub(%0, %1)
-    let %13: double = load_symbol ::4
     let %14: double = add(%12, %13)
     let %15: int32 = add($b0.2, 1)
     jump b0(%14, %11, %15)
@@ -79,6 +74,10 @@
     .block #b3
   }
   .bb #b8 () {
+    let %2: int32 = load_symbol ::2
+    let %10: double = load_symbol ::5
+    let %13: double = load_symbol ::4
+    let %6: double = load_symbol ::1
     jump b7($f0, $f1, $f2)
   }
 }

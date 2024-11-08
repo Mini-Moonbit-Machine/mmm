@@ -15,6 +15,45 @@
     return %0
   }
 }
+.fn f9.25 #f1 : fn(int32) -> int32
+.freevars ()
+.entry b8 {
+  .bb #b0 (int32) {
+    let %0: bool = eq(true, true)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: bool = eq(true, true)
+    br %1 b3() b4()
+  }
+  .bb #b2 () {
+    jump b6($b0.0)
+  }
+  .bb #b3 () {
+    jump b0(1)
+  }
+  .bb #b4 () {
+    let %3: int32 = call f0(2, 1)
+    jump b5(%3)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+  .loop #b7 pre #Some(b8) header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0)
+  }
+}
 .fn main19.27 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {

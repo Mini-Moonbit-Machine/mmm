@@ -29,7 +29,9 @@
     jump b3(())
   }
   .bb #b2 () {
-    jump b15()
+    let %1: unit = call f1($b0.2, $b0.0)
+    let %2: int32 = add($b0.0, 1)
+    jump b0(%2, $b0.1, $b0.2)
   }
   .bb #b3 (unit) {
     return $b3.0
@@ -41,52 +43,6 @@
   }
   .bb #b5 () {
     jump b4($f0, $f1, $f2)
-  }
-  .bb #b6 (unit) {
-    let %2: int32 = add($b0.0, 1)
-    jump b0(%2, $b0.1, $b0.2)
-  }
-  .bb #b7 (array[int32], int32) {
-    let %3: bool = eq($b7.1, 0)
-    br %3 b8() b9()
-  }
-  .bb #b8 () {
-    jump b13(())
-  }
-  .bb #b9 () {
-    let %4: int32 = sub($b7.1, 1)
-    let %5: int32 = load int32 offset($b7.0, %4 * @32)
-    let %6: int32 = load int32 offset($b7.0, $b7.1 * @32)
-    let %7: bool = le(%5, %6)
-    br %7 b10() b11()
-  }
-  .bb #b10 () {
-    jump b12(())
-  }
-  .bb #b11 () {
-    let %8: int32 = load int32 offset($b7.0, $b7.1 * @32)
-    let %9: int32 = sub($b7.1, 1)
-    let %10: int32 = load int32 offset($b7.0, %9 * @32)
-    let _ = store int32 offset($b7.0, $b7.1 * @32) <- %10
-    let _ = store int32 offset($b7.0, %9 * @32) <- %8
-    jump b7($b7.0, %9)
-  }
-  .bb #b12 (unit) {
-    jump b13($b12.0)
-  }
-  .bb #b13 (unit) {
-    jump b6($b13.0)
-  }
-  .loop #b14 pre #Some(b15) header #b7 {
-    .block #b13
-    .block #b11
-    .block #b8
-    .block #b12
-    .block #b9
-    .block #b10
-  }
-  .bb #b15 () {
-    jump b14($b0.2, $b0.0)
   }
 }
 .fn aux19.148 #f0 : fn(int32, int32, int32, array[int32]) -> unit
@@ -156,6 +112,54 @@
   .bb #b0 () {
     let %0: unit = call f4()
     return %0
+  }
+}
+.fn insert38.149 #f1 : fn(array[int32], int32) -> unit
+.freevars ()
+.entry b8 {
+  .bb #b0 (array[int32], int32) {
+    let %0: bool = eq($b0.1, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($b0.1, 1)
+    let %2: int32 = load int32 offset($b0.0, %1 * @32)
+    let %3: int32 = load int32 offset($b0.0, $b0.1 * @32)
+    let %4: bool = le(%2, %3)
+    br %4 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(())
+  }
+  .bb #b4 () {
+    let %5: int32 = load int32 offset($b0.0, $b0.1 * @32)
+    let %6: int32 = sub($b0.1, 1)
+    let %7: int32 = load int32 offset($b0.0, %6 * @32)
+    let _ = store int32 offset($b0.0, $b0.1 * @32) <- %7
+    let %9: int32 = sub($b0.1, 1)
+    let _ = store int32 offset($b0.0, %9 * @32) <- %5
+    let %11: int32 = sub($b0.1, 1)
+    jump b0($b0.0, %11)
+  }
+  .bb #b5 (unit) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (unit) {
+    return $b6.0
+  }
+  .loop #b7 pre #Some(b8) header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1)
   }
 }
 .thunk ::0 start
