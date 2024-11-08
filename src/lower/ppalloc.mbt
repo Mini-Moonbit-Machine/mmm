@@ -41,7 +41,7 @@ pub struct PPAllocator[Info] {
   avail : Int // available colors
   spilled : Map[Int, Int] // spilled registers -> spilled slots
   spilled_colors : Set[Int] // spilled colors
-  hints : Map[Int, Int] // reg -> color
+  hints : Map[Int, Set[Int]] // reg -> colors
   mut highest_color : Int
 }
 
@@ -118,7 +118,10 @@ pub fn PPAllocator::to_dot[Info : Show](
     let hinted_color = self.hints.get(reg)
     let hint = match hinted_color {
       Some(c) => {
-        let hint_color_info = self.color_info.get(c).unwrap()
+        let hint_color_info = c
+          .iter()
+          .map(fn(c) { self.color_info.get(c).unwrap() })
+          .to_string()
         " (hint ★ \{hint_color_info})"
       }
       None => ""
@@ -249,7 +252,10 @@ pub fn PPAllocator::add_hint[R : RegToId, Info](
   r : R,
   color : Int
 ) -> Unit {
-  self.hints.set(r.to_reg_id(), color)
+  match self.hints.get(r.to_reg_id()) {
+    Some(hint) => hint.insert(color)
+    None => self.hints.set(r.to_reg_id(), Set::of([color]))
+  }
 }
 
 pub fn PPAllocator::add_edge[R : RegToId, Info](
@@ -352,9 +358,11 @@ fn assign_color[Info : Show](self : PPAllocator[Info]) -> Unit {
     }
 
     let candidate = match self.hints.get(r) {
-      Some(hint) =>
-        if used_colors.contains(hint) == false {
-          hint
+      Some(hints) =>
+        for hint in hints {
+          if used_colors.contains(hint) == false {
+            break hint
+          }
         } else {
           fallback()
         }

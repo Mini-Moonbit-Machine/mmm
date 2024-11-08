@@ -118,7 +118,27 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
       self.tracer.println("defs: \{defs}")
       self.tracer.println("live_set: \{live_set}")
       match move_origin {
-        Some((dst, src)) => self.tracer.println("move: \{dst} <- \{src}")
+        Some((dst, src)) => {
+          self.tracer.println("move: \{dst} <- \{src}")
+          let ctx = match dst.class {
+            X => reg_ctx_x
+            F => reg_ctx_f
+          }
+          let rwd = ctx.record_reg(dst)
+          let rws = ctx.record_reg(src)
+          ctx.allocator.add_single_vertex(rwd)
+          ctx.allocator.add_single_vertex(rws)
+          match rws.pre_colored() {
+            Some(color) =>
+              if (match src.class {
+                  X => @riscv.reg_arg_list.contains(src.to_xreg())
+                  F => @riscv.freg_arg_list.contains(src.to_freg())
+                }) {
+                ctx.allocator.add_hint(rwd, color)
+              }
+            None => ()
+          }
+        }
         None => ()
       }
       for defined in defs {
