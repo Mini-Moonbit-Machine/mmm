@@ -56,6 +56,7 @@ pub trait Context {
   target_color(Self, @core.BlockRef) -> (@lower.ColorSeq, @core.BlockRef)
   not_double(Self, @core.Value) -> @core.Value?
   power_of_two(Self, @core.Value) -> Int?
+  power_of_two_minus_one(Self, Int) -> Int
   lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, @core.Values) -> @riscv.AnyReg
   lower_ext_call(Self, @core.Type, String, @core.Values) -> @riscv.AnyReg
@@ -1951,18 +1952,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Bool => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v82 = C::xreg_new(ctx, v81)
-                          let v88 = constructor_rv_sltiu(ctx, v82, 0x1)
-                          let v89 = C::xreg_to_reg(ctx, v88)
-                          let v90 = C::mark_maybe_aliased(ctx, v89)
-                          let v91 = Some(v90)
-                          // Rule at src/lower/riscv/lower.isle line 281.
-                          return v91
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v113 = C::xreg_new(ctx, v112)
+                          let v119 = constructor_rv_sltiu(ctx, v113, 0x1)
+                          let v120 = C::xreg_to_reg(ctx, v119)
+                          let v121 = C::mark_maybe_aliased(ctx, v120)
+                          let v122 = Some(v121)
+                          // Rule at src/lower/riscv/lower.isle line 306.
+                          return v122
                         }
                         _ => ()
                       }
@@ -1988,13 +1989,13 @@ pub fn constructor_lower[C : Context](
                               let v15 = C::xreg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
                               let v17 = C::xreg_new(ctx, v16)
-                              let v92 = constructor_rv_xor(ctx, v15, v17)
-                              let v93 = constructor_rv_sltiu(ctx, v92, 0x1)
-                              let v94 = C::xreg_to_reg(ctx, v93)
-                              let v95 = C::mark_maybe_aliased(ctx, v94)
-                              let v96 = Some(v95)
-                              // Rule at src/lower/riscv/lower.isle line 287.
-                              return v96
+                              let v123 = constructor_rv_xor(ctx, v15, v17)
+                              let v124 = constructor_rv_sltiu(ctx, v123, 0x1)
+                              let v125 = C::xreg_to_reg(ctx, v124)
+                              let v126 = C::mark_maybe_aliased(ctx, v125)
+                              let v127 = Some(v126)
+                              // Rule at src/lower/riscv/lower.isle line 312.
+                              return v127
                             }
                             _ => ()
                           }
@@ -2004,15 +2005,15 @@ pub fn constructor_lower[C : Context](
                           match v11.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v204 = constructor_rv_feq_d(ctx, v104, v105)
-                              let v205 = C::xreg_to_reg(ctx, v204)
-                              let v206 = C::mark_maybe_aliased(ctx, v205)
-                              let v207 = Some(v206)
-                              // Rule at src/lower/riscv/lower.isle line 378.
-                              return v207
+                              let v136 = C::freg_new(ctx, v16)
+                              let v235 = constructor_rv_feq_d(ctx, v135, v136)
+                              let v236 = C::xreg_to_reg(ctx, v235)
+                              let v237 = C::mark_maybe_aliased(ctx, v236)
+                              let v238 = Some(v237)
+                              // Rule at src/lower/riscv/lower.isle line 403.
+                              return v238
                             }
                             _ => ()
                           }
@@ -2039,15 +2040,15 @@ pub fn constructor_lower[C : Context](
                             @core.Type::Int32 => {
                               let v31 = constructor_lower_value(ctx, v11.0)
                               let v32 = C::xreg_new(ctx, v31)
-                              let v97 = constructor_lower_value(ctx, v8.0)
-                              let v98 = C::xreg_new(ctx, v97)
-                              let v99 = constructor_rv_slt(ctx, v32, v98)
-                              let v100 = constructor_rv_xori(ctx, v99, 0x1)
-                              let v101 = C::xreg_to_reg(ctx, v100)
-                              let v102 = C::mark_maybe_aliased(ctx, v101)
-                              let v103 = Some(v102)
-                              // Rule at src/lower/riscv/lower.isle line 293.
-                              return v103
+                              let v128 = constructor_lower_value(ctx, v8.0)
+                              let v129 = C::xreg_new(ctx, v128)
+                              let v130 = constructor_rv_slt(ctx, v32, v129)
+                              let v131 = constructor_rv_xori(ctx, v130, 0x1)
+                              let v132 = C::xreg_to_reg(ctx, v131)
+                              let v133 = C::mark_maybe_aliased(ctx, v132)
+                              let v134 = Some(v133)
+                              // Rule at src/lower/riscv/lower.isle line 318.
+                              return v134
                             }
                             _ => ()
                           }
@@ -2057,15 +2058,15 @@ pub fn constructor_lower[C : Context](
                           match v11.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v208 = constructor_rv_fle_d(ctx, v104, v105)
-                              let v209 = C::xreg_to_reg(ctx, v208)
-                              let v210 = C::mark_maybe_aliased(ctx, v209)
-                              let v211 = Some(v210)
-                              // Rule at src/lower/riscv/lower.isle line 381.
-                              return v211
+                              let v136 = C::freg_new(ctx, v16)
+                              let v239 = constructor_rv_fle_d(ctx, v135, v136)
+                              let v240 = C::xreg_to_reg(ctx, v239)
+                              let v241 = C::mark_maybe_aliased(ctx, v240)
+                              let v242 = Some(v241)
+                              // Rule at src/lower/riscv/lower.isle line 406.
+                              return v242
                             }
                             _ => ()
                           }
@@ -2160,6 +2161,143 @@ pub fn constructor_lower[C : Context](
                       let v8 = C::has_type(ctx, v6)
                       match v8.1 {
                         @core.Type::Int32 => {
+                          let v11 = C::has_type(ctx, v7)
+                          match v11.1 {
+                            @core.Type::Int32 => {
+                              let v77 = C::insn_once(ctx, v11.0)
+                              match v77 {
+                                Some(v78) => {
+                                  let v79 = C::ref_insn(ctx, v78)
+                                  match v79 {
+                                    @core.Insn::Op(ty=v80, op=v81, args=v82) =>
+                                      match v80 {
+                                        @core.Type::Int32 =>
+                                          match v81 {
+                                            @core.Op::Mul => {
+                                              let v83 = C::values_to_args(
+                                                ctx, v82,
+                                              )
+                                              match v83 {
+                                                Some(v84) =>
+                                                  match v84 {
+                                                    Args::Args2(
+                                                      arg1=v85,
+                                                      arg2=v86
+                                                    ) => {
+                                                      let v87 = C::insn_once(
+                                                        ctx, v85,
+                                                      )
+                                                      match v87 {
+                                                        Some(v88) => {
+                                                          let v89 = C::ref_insn(
+                                                            ctx, v88,
+                                                          )
+                                                          match v89 {
+                                                            @core.Insn::Op(
+                                                              ty=v90,
+                                                              op=v91,
+                                                              args=v92
+                                                            ) =>
+                                                              match v90 {
+                                                                @core.Type::Int32 =>
+                                                                  match v91 {
+                                                                    @core.Op::Div => {
+                                                                      let v93 = C::values_to_args(
+                                                                        ctx, v92,
+                                                                      )
+                                                                      match
+                                                                        v93 {
+                                                                        Some(
+                                                                          v94
+                                                                        ) =>
+                                                                          match
+                                                                            v94 {
+                                                                            Args::Args2(
+                                                                              arg1=v95,
+                                                                              arg2=v96
+                                                                            ) => {
+                                                                              let v97 = C::has_type(
+                                                                                ctx,
+                                                                                v95,
+                                                                              )
+                                                                              match
+                                                                                v97.1 {
+                                                                                @core.Type::Int32 => {
+                                                                                  let v100 = C::has_type(
+                                                                                    ctx,
+                                                                                    v96,
+                                                                                  )
+                                                                                  match
+                                                                                    v100.1 {
+                                                                                    @core.Type::Int32 => {
+                                                                                      let v103 = C::has_type(
+                                                                                        ctx,
+                                                                                        v86,
+                                                                                      )
+                                                                                      match
+                                                                                        v103.1 {
+                                                                                        @core.Type::Int32 =>
+                                                                                          if v8.0 ==
+                                                                                            v97.0 {
+                                                                                            if v100.0 ==
+                                                                                              v103.0 {
+                                                                                              let v106 = constructor_lower_mod(
+                                                                                                ctx,
+                                                                                                v8.0,
+                                                                                                v100.0,
+                                                                                              )
+                                                                                              let v107 = Some(
+                                                                                                v106,
+                                                                                              )
+                                                                                              // Rule at src/lower/riscv/lower.isle line 277.
+                                                                                              return v107
+                                                                                            }
+                                                                                          }
+                                                                                        _ =>
+                                                                                          ()
+                                                                                      }
+                                                                                    }
+                                                                                    _ =>
+                                                                                      ()
+                                                                                  }
+                                                                                }
+                                                                                _ =>
+                                                                                  ()
+                                                                              }
+                                                                            }
+                                                                            _ =>
+                                                                              ()
+                                                                          }
+                                                                        _ => ()
+                                                                      }
+                                                                    }
+                                                                    _ => ()
+                                                                  }
+                                                                _ => ()
+                                                              }
+                                                            _ => ()
+                                                          }
+                                                        }
+                                                        _ => ()
+                                                      }
+                                                    }
+                                                    _ => ()
+                                                  }
+                                                _ => ()
+                                              }
+                                            }
+                                            _ => ()
+                                          }
+                                        _ => ()
+                                      }
+                                    _ => ()
+                                  }
+                                }
+                                _ => ()
+                              }
+                            }
+                            _ => ()
+                          }
                           let v42 = C::imm12_from_neg_val(ctx, v7)
                           match v42 {
                             Some(v43) => {
@@ -2175,7 +2313,6 @@ pub fn constructor_lower[C : Context](
                             }
                             _ => ()
                           }
-                          let v11 = C::has_type(ctx, v7)
                           match v11.1 {
                             @core.Type::Int32 => {
                               let v14 = constructor_lower_value(ctx, v8.0)
@@ -2360,18 +2497,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Int32 => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v82 = C::xreg_new(ctx, v81)
-                          let v83 = constructor_rv_neg(ctx, v82)
-                          let v84 = C::xreg_to_reg(ctx, v83)
-                          let v85 = C::mark_maybe_aliased(ctx, v84)
-                          let v86 = Some(v85)
-                          // Rule at src/lower/riscv/lower.isle line 275.
-                          return v86
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v113 = C::xreg_new(ctx, v112)
+                          let v114 = constructor_rv_neg(ctx, v113)
+                          let v115 = C::xreg_to_reg(ctx, v114)
+                          let v116 = C::mark_maybe_aliased(ctx, v115)
+                          let v117 = Some(v116)
+                          // Rule at src/lower/riscv/lower.isle line 300.
+                          return v117
                         }
                         _ => ()
                       }
@@ -2381,23 +2518,23 @@ pub fn constructor_lower[C : Context](
                 _ => ()
               }
             }
-            @core.Op::D2I(rm=v199) => {
+            @core.Op::D2I(rm=v230) => {
               let v4 = C::values_to_args(ctx, v3)
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Double => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v182 = C::freg_new(ctx, v81)
-                          let v200 = constructor_rv_fcvt_w_d(ctx, v182, v199)
-                          let v201 = C::xreg_to_reg(ctx, v200)
-                          let v202 = C::mark_maybe_aliased(ctx, v201)
-                          let v203 = Some(v202)
-                          // Rule at src/lower/riscv/lower.isle line 373.
-                          return v203
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v213 = C::freg_new(ctx, v112)
+                          let v231 = constructor_rv_fcvt_w_d(ctx, v213, v230)
+                          let v232 = C::xreg_to_reg(ctx, v231)
+                          let v233 = C::mark_maybe_aliased(ctx, v232)
+                          let v234 = Some(v233)
+                          // Rule at src/lower/riscv/lower.isle line 398.
+                          return v234
                         }
                         _ => ()
                       }
@@ -2420,69 +2557,69 @@ pub fn constructor_lower[C : Context](
                       let v8 = C::has_type(ctx, v6)
                       match v8.1 {
                         @core.Type::Double => {
-                          let v144 = C::insn_once(ctx, v7)
-                          match v144 {
-                            Some(v145) => {
-                              let v146 = C::ref_insn(ctx, v145)
-                              match v146 {
-                                @core.Insn::Op(ty=v147, op=v148, args=v149) =>
-                                  match v147 {
+                          let v175 = C::insn_once(ctx, v7)
+                          match v175 {
+                            Some(v176) => {
+                              let v177 = C::ref_insn(ctx, v176)
+                              match v177 {
+                                @core.Insn::Op(ty=v178, op=v179, args=v180) =>
+                                  match v178 {
                                     @core.Type::Double =>
-                                      match v148 {
+                                      match v179 {
                                         @core.Op::Mul => {
-                                          let v150 = C::values_to_args(
-                                            ctx, v149,
+                                          let v181 = C::values_to_args(
+                                            ctx, v180,
                                           )
-                                          match v150 {
-                                            Some(v151) =>
-                                              match v151 {
+                                          match v181 {
+                                            Some(v182) =>
+                                              match v182 {
                                                 Args::Args2(
-                                                  arg1=v152,
-                                                  arg2=v153
+                                                  arg1=v183,
+                                                  arg2=v184
                                                 ) => {
-                                                  let v154 = C::has_type(
-                                                    ctx, v152,
+                                                  let v185 = C::has_type(
+                                                    ctx, v183,
                                                   )
-                                                  match v154.1 {
+                                                  match v185.1 {
                                                     @core.Type::Double => {
-                                                      let v157 = C::has_type(
-                                                        ctx, v153,
+                                                      let v188 = C::has_type(
+                                                        ctx, v184,
                                                       )
-                                                      match v157.1 {
+                                                      match v188.1 {
                                                         @core.Type::Double => {
-                                                          let v160 = constructor_lower_value(
+                                                          let v191 = constructor_lower_value(
                                                             ctx,
-                                                            v154.0,
+                                                            v185.0,
                                                           )
-                                                          let v161 = C::freg_new(
-                                                            ctx, v160,
+                                                          let v192 = C::freg_new(
+                                                            ctx, v191,
                                                           )
-                                                          let v162 = constructor_lower_value(
+                                                          let v193 = constructor_lower_value(
                                                             ctx,
-                                                            v157.0,
+                                                            v188.0,
                                                           )
-                                                          let v163 = C::freg_new(
-                                                            ctx, v162,
+                                                          let v194 = C::freg_new(
+                                                            ctx, v193,
                                                           )
-                                                          let v164 = constructor_lower_value(
+                                                          let v195 = constructor_lower_value(
                                                             ctx,
                                                             v8.0,
                                                           )
-                                                          let v165 = C::freg_new(
-                                                            ctx, v164,
+                                                          let v196 = C::freg_new(
+                                                            ctx, v195,
                                                           )
-                                                          let v166 = constructor_rv_fmadd_d(
-                                                            ctx, v161, v163, v165,
+                                                          let v197 = constructor_rv_fmadd_d(
+                                                            ctx, v192, v194, v196,
                                                           )
-                                                          let v167 = C::freg_to_reg(
-                                                            ctx, v166,
+                                                          let v198 = C::freg_to_reg(
+                                                            ctx, v197,
                                                           )
-                                                          let v168 = C::mark_maybe_aliased(
-                                                            ctx, v167,
+                                                          let v199 = C::mark_maybe_aliased(
+                                                            ctx, v198,
                                                           )
-                                                          let v169 = Some(v168)
-                                                          // Rule at src/lower/riscv/lower.isle line 327.
-                                                          return v169
+                                                          let v200 = Some(v199)
+                                                          // Rule at src/lower/riscv/lower.isle line 352.
+                                                          return v200
                                                         }
                                                         _ => ()
                                                       }
@@ -2510,69 +2647,69 @@ pub fn constructor_lower[C : Context](
                       let v11 = C::has_type(ctx, v7)
                       match v11.1 {
                         @core.Type::Double => {
-                          let v118 = C::insn_once(ctx, v6)
-                          match v118 {
-                            Some(v119) => {
-                              let v120 = C::ref_insn(ctx, v119)
-                              match v120 {
-                                @core.Insn::Op(ty=v121, op=v122, args=v123) =>
-                                  match v121 {
+                          let v149 = C::insn_once(ctx, v6)
+                          match v149 {
+                            Some(v150) => {
+                              let v151 = C::ref_insn(ctx, v150)
+                              match v151 {
+                                @core.Insn::Op(ty=v152, op=v153, args=v154) =>
+                                  match v152 {
                                     @core.Type::Double =>
-                                      match v122 {
+                                      match v153 {
                                         @core.Op::Mul => {
-                                          let v124 = C::values_to_args(
-                                            ctx, v123,
+                                          let v155 = C::values_to_args(
+                                            ctx, v154,
                                           )
-                                          match v124 {
-                                            Some(v125) =>
-                                              match v125 {
+                                          match v155 {
+                                            Some(v156) =>
+                                              match v156 {
                                                 Args::Args2(
-                                                  arg1=v126,
-                                                  arg2=v127
+                                                  arg1=v157,
+                                                  arg2=v158
                                                 ) => {
-                                                  let v128 = C::has_type(
-                                                    ctx, v126,
+                                                  let v159 = C::has_type(
+                                                    ctx, v157,
                                                   )
-                                                  match v128.1 {
+                                                  match v159.1 {
                                                     @core.Type::Double => {
-                                                      let v131 = C::has_type(
-                                                        ctx, v127,
+                                                      let v162 = C::has_type(
+                                                        ctx, v158,
                                                       )
-                                                      match v131.1 {
+                                                      match v162.1 {
                                                         @core.Type::Double => {
-                                                          let v134 = constructor_lower_value(
+                                                          let v165 = constructor_lower_value(
                                                             ctx,
-                                                            v128.0,
+                                                            v159.0,
                                                           )
-                                                          let v135 = C::freg_new(
-                                                            ctx, v134,
+                                                          let v166 = C::freg_new(
+                                                            ctx, v165,
                                                           )
-                                                          let v136 = constructor_lower_value(
+                                                          let v167 = constructor_lower_value(
                                                             ctx,
-                                                            v131.0,
+                                                            v162.0,
                                                           )
-                                                          let v137 = C::freg_new(
-                                                            ctx, v136,
+                                                          let v168 = C::freg_new(
+                                                            ctx, v167,
                                                           )
-                                                          let v138 = constructor_lower_value(
+                                                          let v169 = constructor_lower_value(
                                                             ctx,
                                                             v11.0,
                                                           )
-                                                          let v139 = C::freg_new(
-                                                            ctx, v138,
+                                                          let v170 = C::freg_new(
+                                                            ctx, v169,
                                                           )
-                                                          let v140 = constructor_rv_fmadd_d(
-                                                            ctx, v135, v137, v139,
+                                                          let v171 = constructor_rv_fmadd_d(
+                                                            ctx, v166, v168, v170,
                                                           )
-                                                          let v141 = C::freg_to_reg(
-                                                            ctx, v140,
+                                                          let v172 = C::freg_to_reg(
+                                                            ctx, v171,
                                                           )
-                                                          let v142 = C::mark_maybe_aliased(
-                                                            ctx, v141,
+                                                          let v173 = C::mark_maybe_aliased(
+                                                            ctx, v172,
                                                           )
-                                                          let v143 = Some(v142)
-                                                          // Rule at src/lower/riscv/lower.isle line 320.
-                                                          return v143
+                                                          let v174 = Some(v173)
+                                                          // Rule at src/lower/riscv/lower.isle line 345.
+                                                          return v174
                                                         }
                                                         _ => ()
                                                       }
@@ -2597,15 +2734,15 @@ pub fn constructor_lower[C : Context](
                           match v8.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v106 = constructor_rv_fadd_d(ctx, v104, v105)
-                              let v107 = C::freg_to_reg(ctx, v106)
-                              let v108 = C::mark_maybe_aliased(ctx, v107)
-                              let v109 = Some(v108)
-                              // Rule at src/lower/riscv/lower.isle line 300.
-                              return v109
+                              let v136 = C::freg_new(ctx, v16)
+                              let v137 = constructor_rv_fadd_d(ctx, v135, v136)
+                              let v138 = C::freg_to_reg(ctx, v137)
+                              let v139 = C::mark_maybe_aliased(ctx, v138)
+                              let v140 = Some(v139)
+                              // Rule at src/lower/riscv/lower.isle line 325.
+                              return v140
                             }
                             _ => ()
                           }
@@ -2627,69 +2764,69 @@ pub fn constructor_lower[C : Context](
                       let v8 = C::has_type(ctx, v6)
                       match v8.1 {
                         @core.Type::Double => {
-                          let v144 = C::insn_once(ctx, v7)
-                          match v144 {
-                            Some(v145) => {
-                              let v146 = C::ref_insn(ctx, v145)
-                              match v146 {
-                                @core.Insn::Op(ty=v147, op=v148, args=v149) =>
-                                  match v147 {
+                          let v175 = C::insn_once(ctx, v7)
+                          match v175 {
+                            Some(v176) => {
+                              let v177 = C::ref_insn(ctx, v176)
+                              match v177 {
+                                @core.Insn::Op(ty=v178, op=v179, args=v180) =>
+                                  match v178 {
                                     @core.Type::Double =>
-                                      match v148 {
+                                      match v179 {
                                         @core.Op::Mul => {
-                                          let v150 = C::values_to_args(
-                                            ctx, v149,
+                                          let v181 = C::values_to_args(
+                                            ctx, v180,
                                           )
-                                          match v150 {
-                                            Some(v151) =>
-                                              match v151 {
+                                          match v181 {
+                                            Some(v182) =>
+                                              match v182 {
                                                 Args::Args2(
-                                                  arg1=v152,
-                                                  arg2=v153
+                                                  arg1=v183,
+                                                  arg2=v184
                                                 ) => {
-                                                  let v154 = C::has_type(
-                                                    ctx, v152,
+                                                  let v185 = C::has_type(
+                                                    ctx, v183,
                                                   )
-                                                  match v154.1 {
+                                                  match v185.1 {
                                                     @core.Type::Double => {
-                                                      let v157 = C::has_type(
-                                                        ctx, v153,
+                                                      let v188 = C::has_type(
+                                                        ctx, v184,
                                                       )
-                                                      match v157.1 {
+                                                      match v188.1 {
                                                         @core.Type::Double => {
-                                                          let v160 = constructor_lower_value(
+                                                          let v191 = constructor_lower_value(
                                                             ctx,
-                                                            v154.0,
+                                                            v185.0,
                                                           )
-                                                          let v161 = C::freg_new(
-                                                            ctx, v160,
+                                                          let v192 = C::freg_new(
+                                                            ctx, v191,
                                                           )
-                                                          let v162 = constructor_lower_value(
+                                                          let v193 = constructor_lower_value(
                                                             ctx,
-                                                            v157.0,
+                                                            v188.0,
                                                           )
-                                                          let v163 = C::freg_new(
-                                                            ctx, v162,
+                                                          let v194 = C::freg_new(
+                                                            ctx, v193,
                                                           )
-                                                          let v164 = constructor_lower_value(
+                                                          let v195 = constructor_lower_value(
                                                             ctx,
                                                             v8.0,
                                                           )
-                                                          let v165 = C::freg_new(
-                                                            ctx, v164,
+                                                          let v196 = C::freg_new(
+                                                            ctx, v195,
                                                           )
-                                                          let v174 = constructor_rv_fnmsub_d(
-                                                            ctx, v161, v163, v165,
+                                                          let v205 = constructor_rv_fnmsub_d(
+                                                            ctx, v192, v194, v196,
                                                           )
-                                                          let v175 = C::freg_to_reg(
-                                                            ctx, v174,
+                                                          let v206 = C::freg_to_reg(
+                                                            ctx, v205,
                                                           )
-                                                          let v176 = C::mark_maybe_aliased(
-                                                            ctx, v175,
+                                                          let v207 = C::mark_maybe_aliased(
+                                                            ctx, v206,
                                                           )
-                                                          let v177 = Some(v176)
-                                                          // Rule at src/lower/riscv/lower.isle line 341.
-                                                          return v177
+                                                          let v208 = Some(v207)
+                                                          // Rule at src/lower/riscv/lower.isle line 366.
+                                                          return v208
                                                         }
                                                         _ => ()
                                                       }
@@ -2717,69 +2854,69 @@ pub fn constructor_lower[C : Context](
                       let v11 = C::has_type(ctx, v7)
                       match v11.1 {
                         @core.Type::Double => {
-                          let v118 = C::insn_once(ctx, v6)
-                          match v118 {
-                            Some(v119) => {
-                              let v120 = C::ref_insn(ctx, v119)
-                              match v120 {
-                                @core.Insn::Op(ty=v121, op=v122, args=v123) =>
-                                  match v121 {
+                          let v149 = C::insn_once(ctx, v6)
+                          match v149 {
+                            Some(v150) => {
+                              let v151 = C::ref_insn(ctx, v150)
+                              match v151 {
+                                @core.Insn::Op(ty=v152, op=v153, args=v154) =>
+                                  match v152 {
                                     @core.Type::Double =>
-                                      match v122 {
+                                      match v153 {
                                         @core.Op::Mul => {
-                                          let v124 = C::values_to_args(
-                                            ctx, v123,
+                                          let v155 = C::values_to_args(
+                                            ctx, v154,
                                           )
-                                          match v124 {
-                                            Some(v125) =>
-                                              match v125 {
+                                          match v155 {
+                                            Some(v156) =>
+                                              match v156 {
                                                 Args::Args2(
-                                                  arg1=v126,
-                                                  arg2=v127
+                                                  arg1=v157,
+                                                  arg2=v158
                                                 ) => {
-                                                  let v128 = C::has_type(
-                                                    ctx, v126,
+                                                  let v159 = C::has_type(
+                                                    ctx, v157,
                                                   )
-                                                  match v128.1 {
+                                                  match v159.1 {
                                                     @core.Type::Double => {
-                                                      let v131 = C::has_type(
-                                                        ctx, v127,
+                                                      let v162 = C::has_type(
+                                                        ctx, v158,
                                                       )
-                                                      match v131.1 {
+                                                      match v162.1 {
                                                         @core.Type::Double => {
-                                                          let v134 = constructor_lower_value(
+                                                          let v165 = constructor_lower_value(
                                                             ctx,
-                                                            v128.0,
+                                                            v159.0,
                                                           )
-                                                          let v135 = C::freg_new(
-                                                            ctx, v134,
+                                                          let v166 = C::freg_new(
+                                                            ctx, v165,
                                                           )
-                                                          let v136 = constructor_lower_value(
+                                                          let v167 = constructor_lower_value(
                                                             ctx,
-                                                            v131.0,
+                                                            v162.0,
                                                           )
-                                                          let v137 = C::freg_new(
-                                                            ctx, v136,
+                                                          let v168 = C::freg_new(
+                                                            ctx, v167,
                                                           )
-                                                          let v138 = constructor_lower_value(
+                                                          let v169 = constructor_lower_value(
                                                             ctx,
                                                             v11.0,
                                                           )
-                                                          let v139 = C::freg_new(
-                                                            ctx, v138,
+                                                          let v170 = C::freg_new(
+                                                            ctx, v169,
                                                           )
-                                                          let v170 = constructor_rv_fmsub_d(
-                                                            ctx, v135, v137, v139,
+                                                          let v201 = constructor_rv_fmsub_d(
+                                                            ctx, v166, v168, v170,
                                                           )
-                                                          let v171 = C::freg_to_reg(
-                                                            ctx, v170,
+                                                          let v202 = C::freg_to_reg(
+                                                            ctx, v201,
                                                           )
-                                                          let v172 = C::mark_maybe_aliased(
-                                                            ctx, v171,
+                                                          let v203 = C::mark_maybe_aliased(
+                                                            ctx, v202,
                                                           )
-                                                          let v173 = Some(v172)
-                                                          // Rule at src/lower/riscv/lower.isle line 334.
-                                                          return v173
+                                                          let v204 = Some(v203)
+                                                          // Rule at src/lower/riscv/lower.isle line 359.
+                                                          return v204
                                                         }
                                                         _ => ()
                                                       }
@@ -2804,15 +2941,15 @@ pub fn constructor_lower[C : Context](
                           match v8.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v110 = constructor_rv_fsub_d(ctx, v104, v105)
-                              let v111 = C::freg_to_reg(ctx, v110)
-                              let v112 = C::mark_maybe_aliased(ctx, v111)
-                              let v113 = Some(v112)
-                              // Rule at src/lower/riscv/lower.isle line 306.
-                              return v113
+                              let v136 = C::freg_new(ctx, v16)
+                              let v141 = constructor_rv_fsub_d(ctx, v135, v136)
+                              let v142 = C::freg_to_reg(ctx, v141)
+                              let v143 = C::mark_maybe_aliased(ctx, v142)
+                              let v144 = Some(v143)
+                              // Rule at src/lower/riscv/lower.isle line 331.
+                              return v144
                             }
                             _ => ()
                           }
@@ -2838,15 +2975,15 @@ pub fn constructor_lower[C : Context](
                           match v11.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v114 = constructor_rv_fmul_d(ctx, v104, v105)
-                              let v115 = C::freg_to_reg(ctx, v114)
-                              let v116 = C::mark_maybe_aliased(ctx, v115)
-                              let v117 = Some(v116)
-                              // Rule at src/lower/riscv/lower.isle line 312.
-                              return v117
+                              let v136 = C::freg_new(ctx, v16)
+                              let v145 = constructor_rv_fmul_d(ctx, v135, v136)
+                              let v146 = C::freg_to_reg(ctx, v145)
+                              let v147 = C::mark_maybe_aliased(ctx, v146)
+                              let v148 = Some(v147)
+                              // Rule at src/lower/riscv/lower.isle line 337.
+                              return v148
                             }
                             _ => ()
                           }
@@ -2872,15 +3009,15 @@ pub fn constructor_lower[C : Context](
                           match v11.1 {
                             @core.Type::Double => {
                               let v14 = constructor_lower_value(ctx, v8.0)
-                              let v104 = C::freg_new(ctx, v14)
+                              let v135 = C::freg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
-                              let v105 = C::freg_new(ctx, v16)
-                              let v178 = constructor_rv_fdiv_d(ctx, v104, v105)
-                              let v179 = C::freg_to_reg(ctx, v178)
-                              let v180 = C::mark_maybe_aliased(ctx, v179)
-                              let v181 = Some(v180)
-                              // Rule at src/lower/riscv/lower.isle line 349.
-                              return v181
+                              let v136 = C::freg_new(ctx, v16)
+                              let v209 = constructor_rv_fdiv_d(ctx, v135, v136)
+                              let v210 = C::freg_to_reg(ctx, v209)
+                              let v211 = C::mark_maybe_aliased(ctx, v210)
+                              let v212 = Some(v211)
+                              // Rule at src/lower/riscv/lower.isle line 374.
+                              return v212
                             }
                             _ => ()
                           }
@@ -2898,18 +3035,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Double => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v182 = C::freg_new(ctx, v81)
-                          let v183 = constructor_rv_fneg_d(ctx, v182)
-                          let v184 = C::freg_to_reg(ctx, v183)
-                          let v185 = C::mark_maybe_aliased(ctx, v184)
-                          let v186 = Some(v185)
-                          // Rule at src/lower/riscv/lower.isle line 355.
-                          return v186
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v213 = C::freg_new(ctx, v112)
+                          let v214 = constructor_rv_fneg_d(ctx, v213)
+                          let v215 = C::freg_to_reg(ctx, v214)
+                          let v216 = C::mark_maybe_aliased(ctx, v215)
+                          let v217 = Some(v216)
+                          // Rule at src/lower/riscv/lower.isle line 380.
+                          return v217
                         }
                         _ => ()
                       }
@@ -2924,18 +3061,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Int32 => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v82 = C::xreg_new(ctx, v81)
-                          let v195 = constructor_rv_fcvt_d_w(ctx, v82)
-                          let v196 = C::freg_to_reg(ctx, v195)
-                          let v197 = C::mark_maybe_aliased(ctx, v196)
-                          let v198 = Some(v197)
-                          // Rule at src/lower/riscv/lower.isle line 370.
-                          return v198
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v113 = C::xreg_new(ctx, v112)
+                          let v226 = constructor_rv_fcvt_d_w(ctx, v113)
+                          let v227 = C::freg_to_reg(ctx, v226)
+                          let v228 = C::mark_maybe_aliased(ctx, v227)
+                          let v229 = Some(v228)
+                          // Rule at src/lower/riscv/lower.isle line 395.
+                          return v229
                         }
                         _ => ()
                       }
@@ -2950,18 +3087,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Double => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v182 = C::freg_new(ctx, v81)
-                          let v187 = constructor_rv_fabs_d(ctx, v182)
-                          let v188 = C::freg_to_reg(ctx, v187)
-                          let v189 = C::mark_maybe_aliased(ctx, v188)
-                          let v190 = Some(v189)
-                          // Rule at src/lower/riscv/lower.isle line 360.
-                          return v190
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v213 = C::freg_new(ctx, v112)
+                          let v218 = constructor_rv_fabs_d(ctx, v213)
+                          let v219 = C::freg_to_reg(ctx, v218)
+                          let v220 = C::mark_maybe_aliased(ctx, v219)
+                          let v221 = Some(v220)
+                          // Rule at src/lower/riscv/lower.isle line 385.
+                          return v221
                         }
                         _ => ()
                       }
@@ -2976,18 +3113,18 @@ pub fn constructor_lower[C : Context](
               match v4 {
                 Some(v5) =>
                   match v5 {
-                    Args::Args1(arg1=v77) => {
-                      let v78 = C::has_type(ctx, v77)
-                      match v78.1 {
+                    Args::Args1(arg1=v108) => {
+                      let v109 = C::has_type(ctx, v108)
+                      match v109.1 {
                         @core.Type::Double => {
-                          let v81 = constructor_lower_value(ctx, v78.0)
-                          let v182 = C::freg_new(ctx, v81)
-                          let v191 = constructor_rv_fsqrt_d(ctx, v182)
-                          let v192 = C::freg_to_reg(ctx, v191)
-                          let v193 = C::mark_maybe_aliased(ctx, v192)
-                          let v194 = Some(v193)
-                          // Rule at src/lower/riscv/lower.isle line 365.
-                          return v194
+                          let v112 = constructor_lower_value(ctx, v109.0)
+                          let v213 = C::freg_new(ctx, v112)
+                          let v222 = constructor_rv_fsqrt_d(ctx, v213)
+                          let v223 = C::freg_to_reg(ctx, v222)
+                          let v224 = C::mark_maybe_aliased(ctx, v223)
+                          let v225 = Some(v224)
+                          // Rule at src/lower/riscv/lower.isle line 390.
+                          return v225
                         }
                         _ => ()
                       }
@@ -3001,64 +3138,95 @@ pub fn constructor_lower[C : Context](
           }
         _ => ()
       }
-    @core.Insn::Call(ty=v218, f=v219, args=v220) => {
-      let v221 = C::ref_fn(ctx, v219)
-      let v222 = C::lower_call(ctx, v218, v221, v220)
-      let v223 = C::mark_maybe_aliased(ctx, v222)
-      let v224 = Some(v223)
-      // Rule at src/lower/riscv/lower.isle line 417.
-      return v224
+    @core.Insn::Call(ty=v249, f=v250, args=v251) => {
+      let v252 = C::ref_fn(ctx, v250)
+      let v253 = C::lower_call(ctx, v249, v252, v251)
+      let v254 = C::mark_maybe_aliased(ctx, v253)
+      let v255 = Some(v254)
+      // Rule at src/lower/riscv/lower.isle line 442.
+      return v255
     }
-    @core.Insn::Apply(ty=v225, f=v226, args=v227) => {
-      let v228 = C::lower_apply(ctx, v225, v226, v227)
-      let v229 = C::mark_maybe_aliased(ctx, v228)
-      let v230 = Some(v229)
-      // Rule at src/lower/riscv/lower.isle line 420.
-      return v230
+    @core.Insn::Apply(ty=v256, f=v257, args=v258) => {
+      let v259 = C::lower_apply(ctx, v256, v257, v258)
+      let v260 = C::mark_maybe_aliased(ctx, v259)
+      let v261 = Some(v260)
+      // Rule at src/lower/riscv/lower.isle line 445.
+      return v261
     }
-    @core.Insn::ExtCall(ty=v212, ext_f=v213, args=v214) => {
-      let v215 = C::lower_ext_call(ctx, v212, v213, v214)
-      let v216 = C::mark_maybe_aliased(ctx, v215)
-      let v217 = Some(v216)
-      // Rule at src/lower/riscv/lower.isle line 414.
-      return v217
+    @core.Insn::ExtCall(ty=v243, ext_f=v244, args=v245) => {
+      let v246 = C::lower_ext_call(ctx, v243, v244, v245)
+      let v247 = C::mark_maybe_aliased(ctx, v246)
+      let v248 = Some(v247)
+      // Rule at src/lower/riscv/lower.isle line 439.
+      return v248
     }
-    @core.Insn::LoadSymbol(ty=v231, sref=v232) => {
-      let v233 = C::lower_load_symbol(ctx, v231, v232)
-      let v234 = C::mark_maybe_aliased(ctx, v233)
-      let v235 = Some(v234)
-      // Rule at src/lower/riscv/lower.isle line 423.
-      return v235
+    @core.Insn::LoadSymbol(ty=v262, sref=v263) => {
+      let v264 = C::lower_load_symbol(ctx, v262, v263)
+      let v265 = C::mark_maybe_aliased(ctx, v264)
+      let v266 = Some(v265)
+      // Rule at src/lower/riscv/lower.isle line 448.
+      return v266
     }
-    @core.Insn::Alloc(ty=v247, mref=v248, fills=v249) => {
-      let v250 = C::lower_alloc(ctx, v247, v248, v249)
-      let v251 = C::mark_maybe_aliased(ctx, v250)
-      let v252 = Some(v251)
-      // Rule at src/lower/riscv/lower.isle line 432.
-      return v252
+    @core.Insn::Alloc(ty=v278, mref=v279, fills=v280) => {
+      let v281 = C::lower_alloc(ctx, v278, v279, v280)
+      let v282 = C::mark_maybe_aliased(ctx, v281)
+      let v283 = Some(v282)
+      // Rule at src/lower/riscv/lower.isle line 457.
+      return v283
     }
-    @core.Insn::Store(ty=v236, ma=v237, val=v238) => {
-      let v239 = C::lower_store(ctx, v236, v237, v238)
-      let v240 = C::mark_maybe_aliased(ctx, v239)
-      let v241 = Some(v240)
-      // Rule at src/lower/riscv/lower.isle line 426.
-      return v241
+    @core.Insn::Store(ty=v267, ma=v268, val=v269) => {
+      let v270 = C::lower_store(ctx, v267, v268, v269)
+      let v271 = C::mark_maybe_aliased(ctx, v270)
+      let v272 = Some(v271)
+      // Rule at src/lower/riscv/lower.isle line 451.
+      return v272
     }
-    @core.Insn::Load(ty=v242, ma=v243) => {
-      let v244 = C::lower_load(ctx, v242, v243)
-      let v245 = C::mark_maybe_aliased(ctx, v244)
-      let v246 = Some(v245)
-      // Rule at src/lower/riscv/lower.isle line 429.
-      return v246
+    @core.Insn::Load(ty=v273, ma=v274) => {
+      let v275 = C::lower_load(ctx, v273, v274)
+      let v276 = C::mark_maybe_aliased(ctx, v275)
+      let v277 = Some(v276)
+      // Rule at src/lower/riscv/lower.isle line 454.
+      return v277
     }
-    @core.Insn::ComputeAddress(ma=v253) => {
-      let v254 = C::lower_compute_address(ctx, v253)
-      let v255 = C::mark_maybe_aliased(ctx, v254)
-      let v256 = Some(v255)
-      // Rule at src/lower/riscv/lower.isle line 435.
-      return v256
+    @core.Insn::ComputeAddress(ma=v284) => {
+      let v285 = C::lower_compute_address(ctx, v284)
+      let v286 = C::mark_maybe_aliased(ctx, v285)
+      let v287 = Some(v286)
+      // Rule at src/lower/riscv/lower.isle line 460.
+      return v287
     }
     _ => ()
   }
   None
+}
+
+// Generated as internal constructor for term lower_mod.
+pub fn constructor_lower_mod[C : Context](
+  ctx : C,
+  arg0 : @core.Value,
+  arg1 : @core.Value
+) -> @riscv.AnyReg {
+  let v9 = C::power_of_two(ctx, arg1)
+  match v9 {
+    Some(v10) => {
+      let v2 = constructor_lower_value(ctx, arg0)
+      let v3 = C::xreg_new(ctx, v2)
+      let v11 = C::power_of_two_minus_one(ctx, v10)
+      let v12 = constructor_rv_andi(ctx, v3, v11)
+      let v13 = C::xreg_to_reg(ctx, v12)
+      let v14 = C::mark_maybe_aliased(ctx, v13)
+      // Rule at src/lower/riscv/lower.isle line 295.
+      return v14
+    }
+    _ => ()
+  }
+  let v2 = constructor_lower_value(ctx, arg0)
+  let v3 = C::xreg_new(ctx, v2)
+  let v4 = constructor_lower_value(ctx, arg1)
+  let v5 = C::xreg_new(ctx, v4)
+  let v6 = constructor_rv_rem(ctx, v3, v5)
+  let v7 = C::xreg_to_reg(ctx, v6)
+  let v8 = C::mark_maybe_aliased(ctx, v7)
+  // Rule at src/lower/riscv/lower.isle line 289.
+  return v8
 }

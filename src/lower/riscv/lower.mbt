@@ -376,6 +376,14 @@ fn RiscvFnLoweringCtx::power_of_two(
   }
 }
 
+fn RiscvFnLoweringCtx::power_of_two_minus_one(
+  self : RiscvFnLoweringCtx,
+  n : Int
+) -> Int {
+  let _ = self
+  (1).lsl(n) - 1
+}
+
 fn RiscvFnLoweringCtx::closure_reg(self : RiscvFnLoweringCtx) -> @riscv.Reg {
   V(self.closure_reg)
 }

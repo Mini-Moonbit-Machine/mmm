@@ -19,6 +19,8 @@ fn constructor_lower_f_value[C : Context](C, @core.Value) -> @riscv.FReg
 
 fn constructor_lower_imm[C : Context](C, @core.Type, UInt64) -> @riscv.AnyReg
 
+fn constructor_lower_mod[C : Context](C, @core.Value, @core.Value) -> @riscv.AnyReg
+
 fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg
 
 fn constructor_lower_x_value[C : Context](C, @core.Value) -> @riscv.Reg
@@ -306,6 +308,8 @@ pub trait Context {
   emit_fake_epilogue(Self) -> Unit
   target_color(Self, @core.BlockRef) -> (@lower.ColorSeq, @core.BlockRef)
   not_double(Self, @core.Value) -> @core.Value?
+  power_of_two(Self, @core.Value) -> Int?
+  power_of_two_minus_one(Self, Int) -> Int
   lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
   lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
   lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg

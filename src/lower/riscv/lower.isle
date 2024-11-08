@@ -271,6 +271,31 @@
 (rule 1 (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (power_of_two b))))
   (mr (rv_srai a b)))
 
+;;;; Rules for i32 modulo idiom
+
+;;; m - (m / n) * n -> m % n
+
+(rule 2 (lower (insn_op (ty_int32) (op_sub) (arg2
+  (has_type m (ty_int32))
+  (has_type (insn_once (ref_insn
+    (insn_op (ty_int32) (op_mul)
+      (arg2
+        (insn_once (ref_insn (insn_op (ty_int32) (op_div) (arg2 (has_type m (ty_int32)) (has_type n (ty_int32))))))
+        (has_type n (ty_int32))
+      )))) (ty_int32)))))
+  (lower_mod m n))
+
+(decl lower_mod (Value Value) AnyReg)
+
+(rule (lower_mod m n)
+  (mr (rv_rem m n)))
+
+(decl power_of_two_minus_one (Int32) Int32)
+(extern constructor power_of_two_minus_one power_of_two_minus_one)
+
+(rule 1 (lower_mod m (power_of_two n))
+    (mr (rv_andi m (power_of_two_minus_one n))))
+
 ;;;; Rules for i32 negations
 
 (rule (lower (insn_op (ty_int32) (op_neg) (arg1 (has_type a (ty_int32)))))
