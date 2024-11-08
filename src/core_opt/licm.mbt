@@ -57,7 +57,7 @@ fn FnLICM::handle_block(
   pre_header : @core.BasicBlock,
   count : Ref[Int]
 ) -> Unit {
-  if count.val >= 5 {
+  if count.val >= 8 {
     return
   }
   let mut changed = true

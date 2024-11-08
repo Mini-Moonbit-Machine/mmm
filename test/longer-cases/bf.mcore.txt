@@ -213,7 +213,7 @@ T$start:
 # leaf false
 aux46.256:
 .aux46.256_29:
-  addi sp, sp, -112
+  addi sp, sp, -128
   sd ra, 0(sp)
   sd s0, 8(sp)
   sd s1, 16(sp)
@@ -226,51 +226,57 @@ aux46.256:
   sd s8, 72(sp)
   sd s9, 80(sp)
   sd s10, 88(sp)
-  lw s9, decrease.8
-  lw s7, loop_end.12
-  lw s3, move_right.6
+  lw t5, decrease.8
+  sw t5, 104(sp)
+  lw t5, loop_end.12
+  sw t5, 96(sp)
+  lw s4, move_right.6
   lw s0, increase.7
-  lw s6, read.10
-  mv s4, a0
-  mv s1, a1
-  mv s10, a2
-  mv s2, a3
-  mv s5, a4
-  mv s8, a5
+  lw s7, read.10
+  lw s5, move_left.5
+  lw s1, print.9
+  lw t5, loop_start.11
+  sw t5, 112(sp)
+  mv s2, a0
+  mv s6, a1
+  mv s8, a2
+  mv s10, a3
+  mv s9, a4
+  mv s3, a5
 
 .aux46.256_0:
-  bge s4, s10, .aux46.256_1
+  bge s2, s8, .aux46.256_1
 
 .aux46.256_2:
-  th.lurw a1, s2, s4, 2
-  beq a1, s3, .aux46.256_3
+  th.lurw a0, s10, s2, 2
+  beq a0, s4, .aux46.256_3
 
 .aux46.256_4:
-  lw a0, move_left.5
-  beq a1, a0, .aux46.256_5
+  beq a0, s5, .aux46.256_5
 
 .aux46.256_6:
-  beq a1, s0, .aux46.256_7
+  beq a0, s0, .aux46.256_7
 
 .aux46.256_8:
-  beq a1, s9, .aux46.256_9
+  lw t5, 104(sp)
+  beq a0, t5, .aux46.256_9
 
 .aux46.256_10:
-  lw a0, print.9
-  beq a1, a0, .aux46.256_11
+  beq a0, s1, .aux46.256_11
 
 .aux46.256_12:
-  beq a1, s6, .aux46.256_13
+  beq a0, s7, .aux46.256_13
 
 .aux46.256_14:
-  lw a0, loop_start.11
-  beq a1, a0, .aux46.256_15
+  lw t5, 112(sp)
+  beq a0, t5, .aux46.256_15
 
 .aux46.256_16:
-  bne a1, s7, .aux46.256_18
+  lw t5, 96(sp)
+  bne a0, t5, .aux46.256_18
 
 .aux46.256_17:
-  mv a0, s4
+  mv a0, s2
 
 .aux46.256_19:
 
@@ -301,99 +307,99 @@ aux46.256:
   ld s8, 72(sp)
   ld s9, 80(sp)
   ld s10, 88(sp)
-  addi sp, sp, 112
+  addi sp, sp, 128
   ret
 
 .aux46.256_18:
-  mv a0, s4
+  mv a0, s2
   j .aux46.256_19
 
 .aux46.256_15:
-  sw s4, 0(s8)
+  sw s2, 0(s3)
 
 .aux46.256_62:
 
 .aux46.256_57:
-  lw a0, 0(s1)
-  th.lurw a0, s5, a0, 2
+  lw a0, 0(s6)
+  th.lurw a0, s9, a0, 2
   beq a0, zero, .aux46.256_58
 
 .aux46.256_59:
-  addi a0, s4, 1
-  mv a1, s1
-  mv a2, s10
-  mv a3, s2
-  mv a4, s5
-  mv a5, s8
+  addi a0, s2, 1
+  mv a1, s6
+  mv a2, s8
+  mv a3, s10
+  mv a4, s9
+  mv a5, s3
   call aux46.256
-  sw a0, 0(s8)
+  sw a0, 0(s3)
   j .aux46.256_57
 
 .aux46.256_13:
-  lw t5, 0(s1)
-  sw t5, 96(sp)
+  lw t5, 0(s6)
+  sw t5, 120(sp)
   call read_ch_until_newline_or_eof1.252
-  lw t5, 96(sp)
-  th.surw a0, s5, t5, 2
-  addi a0, s4, 1
-  mv s4, a0
+  lw t5, 120(sp)
+  th.surw a0, s9, t5, 2
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_11:
-  lw a0, 0(s1)
-  th.lurw a0, s5, a0, 2
+  lw a0, 0(s6)
+  th.lurw a0, s9, a0, 2
   call minimbt_print_char
-  addi a0, s4, 1
-  mv s4, a0
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_9:
-  lw a0, 0(s1)
-  th.lurw a1, s5, a0, 2
+  lw a0, 0(s6)
+  th.lurw a1, s9, a0, 2
   addi a1, a1, -1
-  th.surw a1, s5, a0, 2
-  addi a0, s4, 1
-  mv s4, a0
+  th.surw a1, s9, a0, 2
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_7:
-  lw a0, 0(s1)
-  th.lurw a1, s5, a0, 2
+  lw a0, 0(s6)
+  th.lurw a1, s9, a0, 2
   addi a1, a1, 1
-  th.surw a1, s5, a0, 2
-  addi a0, s4, 1
-  mv s4, a0
+  th.surw a1, s9, a0, 2
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_5:
-  lw a0, 0(s1)
+  lw a0, 0(s6)
   addi a0, a0, -1
-  sw a0, 0(s1)
-  addi a0, s4, 1
-  mv s4, a0
+  sw a0, 0(s6)
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_3:
-  lw a0, 0(s1)
+  lw a0, 0(s6)
   addi a0, a0, 1
-  sw a0, 0(s1)
-  addi a0, s4, 1
-  mv s4, a0
+  sw a0, 0(s6)
+  addi a0, s2, 1
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_1:
-  mv a0, s4
+  mv a0, s2
   j .aux46.256_27
 
 .aux46.256_58:
-  addi a1, s4, 1
+  addi a1, s2, 1
 
 .aux46.256_80:
   lw a0, loop_end.12
   lw a2, loop_start.11
   mv a3, zero
-  mv a4, s10
-  mv a5, s2
+  mv a4, s8
+  mv a5, s10
 
 .aux46.256_66:
   bge a1, a4, .aux46.256_67
@@ -425,15 +431,15 @@ aux46.256:
 .aux46.256_78:
 
 .aux46.256_63:
-  sw a0, 0(s8)
+  sw a0, 0(s3)
   mv a0, zero
 
 .aux46.256_60:
 
 .aux46.256_30:
-  lw a0, 0(s8)
+  lw a0, 0(s3)
   addi a0, a0, 1
-  mv s4, a0
+  mv s2, a0
   j .aux46.256_0
 
 .aux46.256_72:
