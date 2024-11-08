@@ -41,6 +41,7 @@ pub struct PPAllocator[Info] {
   avail : Int // available colors
   spilled : Map[Int, Int] // spilled registers -> spilled slots
   spilled_colors : Set[Int] // spilled colors
+  hints : Map[Int, Int] // reg -> color
   mut highest_color : Int
 }
 
@@ -114,20 +115,29 @@ pub fn PPAllocator::to_dot[Info : Show](
     let reg = info.0
     let info = info.1
     let assigned_color = self.assignment.get(reg)
+    let hinted_color = self.hints.get(reg)
+    let hint = match hinted_color {
+      Some(c) => {
+        let hint_color_info = self.color_info.get(c).unwrap()
+        " (hint ★ \{hint_color_info})"
+      }
+      None => ""
+    }
     if self.phy.contains(reg) {
       s += "  r\{reg} [label=\"\{info}\", color=blue];\n"
     } else {
       match assigned_color {
         Some(c) =>
           if c >= self.avail {
-            s += "  r\{reg} [label=\"\{info} ! spill with color \{c}\", color=orange];\n"
+            s += "  r\{reg} [label=\"\{info} ! spill with color \{c}\{hint}\", color=orange];\n"
             asgn += "\{info}<-!\{info};"
           } else {
             let color_info = self.color_info.get(c).unwrap()
-            s += "  r\{reg} [label=\"\{info} ← \{color_info}\", color=green];\n"
+            s += "  r\{reg} [label=\"\{info} ← \{color_info}\{hint}\", color=green];\n"
             asgn += "\{info}<-\{color_info};"
           }
-        None => s += "  r\{reg} [label=\"\{info} ! spilled\", color=red];\n"
+        None =>
+          s += "  r\{reg} [label=\"\{info} ! spilled\{hint}\", color=red];\n"
       }
     }
   }
@@ -164,6 +174,7 @@ pub fn PPAllocator::new[Info](avail : Int) -> PPAllocator[Info] {
     order: [],
     spilled: Map::new(),
     spilled_colors: Set::new(),
+    hints: Map::new(),
   }
 }
 
@@ -231,6 +242,14 @@ fn PPAllocator::prepare_neighbor[Info](
     Some(_) => ()
     None => self.neighbors.set(a, Set::new())
   }
+}
+
+pub fn PPAllocator::add_hint[R : RegToId, Info](
+  self : PPAllocator[Info],
+  r : R,
+  color : Int
+) -> Unit {
+  self.hints.set(r.to_reg_id(), color)
 }
 
 pub fn PPAllocator::add_edge[R : RegToId, Info](
@@ -321,12 +340,25 @@ fn assign_color[Info : Show](self : PPAllocator[Info]) -> Unit {
     }
     let neighbors = self.neighbors.get(r).unwrap()
     let used_colors = self.get_used_color(neighbors)
-    let mut candidate = 0
-    while true {
-      if used_colors.contains(candidate) == false {
-        break
+    fn fallback() {
+      let mut candidate = 0
+      while true {
+        if used_colors.contains(candidate) == false {
+          break
+        }
+        candidate += 1
       }
-      candidate += 1
+      candidate
+    }
+
+    let candidate = match self.hints.get(r) {
+      Some(hint) =>
+        if used_colors.contains(hint) == false {
+          hint
+        } else {
+          fallback()
+        }
+      None => fallback()
     }
     self.highest_color = @math.maximum(self.highest_color, candidate)
     self.assignment.set(r, candidate)

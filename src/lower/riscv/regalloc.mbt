@@ -114,10 +114,13 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     let (_, info) = info
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
-      let move_origin = info.move_origin[i]
+      let move_origin = info.moves[i]
       self.tracer.println("defs: \{defs}")
       self.tracer.println("live_set: \{live_set}")
-      self.tracer.println("move_origin: \{move_origin}")
+      match move_origin {
+        Some((dst, src)) => self.tracer.println("move: \{dst} <- \{src}")
+        None => ()
+      }
       for defined in defs {
         let reg_ctx = match defined.class {
           X => reg_ctx_x
@@ -133,10 +136,18 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           }
           let rw2 = reg_ctx_for_live.record_reg(live)
           reg_ctx_for_live.allocator.add_single_vertex(rw2)
-          if defined.class == live.class &&
-            defined != live &&
-            move_origin.contains(live) == false {
-            reg_ctx.allocator.add_edge(rw1, rw2)
+          if defined.class == live.class && defined != live {
+            match move_origin {
+              Some((dst, src)) =>
+                if not(dst == defined && src == live) {
+                  reg_ctx.allocator.add_edge(rw1, rw2)
+                } else {
+                  self.tracer.println(
+                    "skip edge \{rw1.to_reg_id()} -> \{rw2.to_reg_id()}",
+                  )
+                }
+              None => reg_ctx.allocator.add_edge(rw1, rw2)
+            }
           }
         }
       }

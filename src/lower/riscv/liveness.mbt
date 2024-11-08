@@ -173,7 +173,7 @@ pub struct IteratedBlockInfo {
   live_in : Set[AnyReg]
   live_out : Set[AnyReg]
   block_info : BlockInfo
-  move_origin : Array[Array[AnyReg]]
+  moves : Array[(AnyReg, AnyReg)?]
   defs : Array[Array[AnyReg]]
   live_set : Array[Array[AnyReg]]
 }
@@ -190,16 +190,16 @@ pub fn IteratedBlockInfo::compute_live_set(
 ) -> Unit {
   let live_set = self.live_set
   let defs = self.defs
-  let move_origin = self.move_origin
+  let moves = self.moves
   let live = MutSet::from_iter(self.live_out.iter())
   for insn in block.control.rev() {
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)
     match insn {
-      FmvD(~rs, ..) => move_origin.push([rs.to_any()])
-      Mv(~rs, ..) => move_origin.push([rs.to_any()])
-      _ => move_origin.push([])
+      FmvD(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
+      Mv(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
+      _ => moves.push(None)
     }
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
@@ -210,9 +210,9 @@ pub fn IteratedBlockInfo::compute_live_set(
     let (d, u) = def_use(insn)
     defs.push(d)
     match insn {
-      FmvD(~rs, ..) => move_origin.push([rs.to_any()])
-      Mv(~rs, ..) => move_origin.push([rs.to_any()])
-      _ => move_origin.push([])
+      FmvD(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
+      Mv(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
+      _ => moves.push(None)
     }
     d.each(fn(reg) { live.remove(reg) })
     u.each(fn(reg) { live.insert(reg) })
@@ -220,7 +220,7 @@ pub fn IteratedBlockInfo::compute_live_set(
   }
   live_set.push(live.iter().to_array())
   defs.rev_inplace()
-  move_origin.rev_inplace()
+  moves.rev_inplace()
   live_set.rev_inplace()
 }
 
@@ -281,7 +281,7 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
       live_in: Set::new(),
       live_out: Set::new(),
       block_info: info,
-      move_origin: [],
+      moves: [],
       live_set,
       defs,
     }
