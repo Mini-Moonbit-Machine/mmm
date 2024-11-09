@@ -672,12 +672,14 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   // compute branch table index
   let branch_table_index = MutMap::new()
   let order = self.order.order.rev()
+  let mut index = 0
   let branch_index = []
-  for i, block in order.iter2() {
+  for block in order.iter() {
     match block {
       BasicBlock(~bref) => {
-        branch_table_index.set(bref, LabelIndex(i))
-        branch_index.push(LabelIndex(i))
+        branch_table_index.set(bref, LabelIndex(index))
+        branch_index.push(LabelIndex(index))
+        index = index + 1
       }
       _ => continue
     }
