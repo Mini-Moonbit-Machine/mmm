@@ -32,6 +32,16 @@ fn call_use_precise(num_xregs : Int, num_fregs : Int) -> Array[AnyReg] {
   fregs.to_array() + xregs.to_array()
 }
 
+fn is_control(insn : MInsn) -> Bool {
+  match insn {
+    Beq(..)
+    | Bne(..)
+    | Blt(..) | Bge(..) | Ble(..) | Bgt(..) | Bltu(..) | Bgeu(..) | J(..) =>
+      true
+    _ => false
+  }
+}
+
 pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
   match insn {
     Add(~rd, ~rs1, ~rs2)
@@ -191,8 +201,12 @@ pub fn IteratedBlockInfo::compute_live_set(
   let live_set = self.live_set
   let defs = self.defs
   let moves = self.moves
-  let live = MutSet::from_iter(self.live_out.iter())
+  let mut live = MutSet::from_iter(self.live_out.iter())
+  let init_live = MutSet::from_iter(self.live_out.iter())
   for insn in block.control.rev() {
+    if is_control(insn) {
+      live = MutSet::from_iter(init_live.iter())
+    }
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)

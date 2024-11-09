@@ -17,14 +17,14 @@
 // [Asm] live_set: [zero, v8]
 // [Asm] defined: v8 is X
 // [Asm] defs: [v3]
-// [Asm] live_set: [zero]
+// [Asm] live_set: [zero, v3]
 // [Asm] move: v3 <- v8
 // [Asm] defined: v3 is X
 // [Asm] defs: [v9]
-// [Asm] live_set: [zero, v9]
+// [Asm] live_set: [zero, v9, v3]
 // [Asm] defined: v9 is X
 // [Asm] defs: []
-// [Asm] live_set: []
+// [Asm] live_set: [v3]
 // [Asm] defs: [v10]
 // [Asm] live_set: [v10]
 // [Asm] defined: v10 is X
@@ -93,11 +93,11 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main10.18") clobbered_x: @hashset.of([a0])
+// [Asm] Label("main10.18") clobbered_x: @hashset.of([a1, a0])
 // [Asm] Label("main10.18") clobbered_f: @hashset.of([])
 // [Asm] subst   li v8, 456 ->   li a0, 456
-// [Asm] subst   li v9, 123 ->   li a0, 123
-// [Asm] subst   bge zero, v9, .main10.18_3 ->   bge zero, a0, .main10.18_3
+// [Asm] subst   li v9, 123 ->   li a1, 123
+// [Asm] subst   bge zero, v9, .main10.18_3 ->   bge zero, a1, .main10.18_3
 // [Asm] subst   li v10, 789 ->   li a0, 789
 // [Asm] subst   j .main10.18_3 ->   j .main10.18_3
 // [Asm] subst   addi v4, v3, 123 ->   addi a0, a0, 123
@@ -217,9 +217,9 @@
 // [Asm]   # save_ctx1  # live: [zero]
 // [Asm] # control
 // [Asm]   li v8, 456  # live: [zero, v8]
-// [Asm]   mv v3, v8  # live: [zero]
-// [Asm]   li v9, 123  # live: [zero, v9]
-// [Asm]   bge zero, v9, .main10.18_3  # live: []
+// [Asm]   mv v3, v8  # live: [zero, v3]
+// [Asm]   li v9, 123  # live: [zero, v9, v3]
+// [Asm]   bge zero, v9, .main10.18_3  # live: [v3]
 // [Asm]   li v10, 789  # live: [v10]
 // [Asm]   mv v3, v10  # live: [v3]
 // [Asm]   j .main10.18_3  # live: [v3]
@@ -331,8 +331,8 @@
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   li a0, 456
-// [Main]   li a0, 123
-// [Main]   bge zero, a0, .main10.18_3
+// [Main]   li a1, 123
+// [Main]   bge zero, a1, .main10.18_3
 // [Main]   li a0, 789
 // [Main]   j .main10.18_3
 // [Main] 

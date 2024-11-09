@@ -23,22 +23,22 @@
 // [Asm] move: v2 <- a0
 // [Asm] defined: v2 is X
 // [Asm] defs: [v3]
-// [Asm] live_set: [v2, a2, zero, v3]
+// [Asm] live_set: [v3, a2, zero, v2]
 // [Asm] move: v3 <- a1
 // [Asm] defined: v3 is X
 // [Asm] defs: [v4]
-// [Asm] live_set: [v2, v4, zero, v3]
+// [Asm] live_set: [v3, v4, zero, v2]
 // [Asm] move: v4 <- a2
 // [Asm] defined: v4 is X
 // [Asm] defs: [fv19]
-// [Asm] live_set: [v2, fv19, v4, zero, v3]
+// [Asm] live_set: [v3, fv19, v4, zero, v2]
 // [Asm] defined: fv19 is F
 // [Asm] defs: [fv13]
-// [Asm] live_set: [fv13, v2, v4, zero, v3]
+// [Asm] live_set: [v2, v3, v4, zero, fv13]
 // [Asm] move: fv13 <- fv19
 // [Asm] defined: fv13 is F
 // [Asm] defs: []
-// [Asm] live_set: [fv13, v2, v4, v3]
+// [Asm] live_set: [v2, v3, v4, fv13]
 // [Asm] defs: [fa0]
 // [Asm] live_set: [fa0]
 // [Asm] move: fa0 <- fv13
@@ -483,12 +483,12 @@
 // [Asm] .inprod1.27_0:
 // [Asm]   # save_ctx1  # live: [a2, a1, zero, a0]
 // [Asm]   mv v2, a0  # live: [a2, a1, zero, v2]
-// [Asm]   mv v3, a1  # live: [v2, a2, zero, v3]
-// [Asm]   mv v4, a2  # live: [v2, v4, zero, v3]
+// [Asm]   mv v3, a1  # live: [v3, a2, zero, v2]
+// [Asm]   mv v4, a2  # live: [v3, v4, zero, v2]
 // [Asm] # control
-// [Asm]   fmv.d.x fv19, zero  # live: [v2, fv19, v4, zero, v3]
-// [Asm]   fmv.d fv13, fv19  # live: [fv13, v2, v4, zero, v3]
-// [Asm]   blt v4, zero, .inprod1.27_3  # live: [fv13, v2, v4, v3]
+// [Asm]   fmv.d.x fv19, zero  # live: [v3, fv19, v4, zero, v2]
+// [Asm]   fmv.d fv13, fv19  # live: [v2, v3, v4, zero, fv13]
+// [Asm]   blt v4, zero, .inprod1.27_3  # live: [v2, v3, v4, fv13]
 // [Asm] 
 // [Asm] # block info: defs: [t1, ft0, ft1, fv12, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, v10, ft9, a5, a0, fa4, fv8, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, fv11, ft3, fa0, fv13, t4, t2, fv7], uses: [v2, v10, a0, fv11, fa0, fv8, v4, a2, fv12, a1, fv7, v3], upward_exposed: [v3, v4, v2], params_defs: []
 // [Asm] # live_in: [v2, v4, v3], live_out: [fv13]
