@@ -626,14 +626,16 @@ fn build_knf_expr(
       let else_cont = Control::Jump(target=res_bb.id, args=[else_val])
       then_bb.control = then_cont
       else_bb.control = else_cont
-      let (then_id, then_arg) = if then_bb.id == then_bb_s.id &&
+      let (then_id, then_arg) = if false &&
+        then_bb.id == then_bb_s.id &&
         then_bb.seq.is_empty() {
         func.blocks.remove(then_bb.id)
         (res_bb.id, [then_val])
       } else {
         (then_bb_s.id, [])
       }
-      let (else_id, else_arg) = if else_bb.id == else_bb_s.id &&
+      let (else_id, else_arg) = if false &&
+        else_bb.id == else_bb_s.id &&
         else_bb.seq.is_empty() {
         func.blocks.remove(else_bb.id)
         (res_bb.id, [else_val])

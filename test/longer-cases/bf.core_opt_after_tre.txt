@@ -46,11 +46,20 @@
   .bb #b0 () {
     let %0: int32 = ext_call minimbt_read_char()
     let %1: bool = eq(%0, 10)
-    br %1 b6(-1) b2()
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(-1)
   }
   .bb #b2 () {
     let %2: bool = eq(%0, 13)
-    br %2 b5(-1) b5(%0)
+    br %2 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(-1)
+  }
+  .bb #b4 () {
+    jump b5(%0)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)
@@ -114,7 +123,10 @@
 .entry b14 {
   .bb #b0 (int32, int32, int32, array[int32]) {
     let %0: bool = le($b0.2, $b0.0)
-    br %0 b12($b0.0) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b12($b0.0)
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($b0.3, $b0.0 * @32)
@@ -132,11 +144,14 @@
   }
   .bb #b5 () {
     let %7: bool = eq($b0.1, 0)
-    br %7 b9($b0.0) b8()
+    br %7 b7() b8()
   }
   .bb #b6 () {
     let %11: int32 = add($b0.0, 1)
     jump b0(%11, $b0.1, $b0.2, $b0.3)
+  }
+  .bb #b7 () {
+    jump b9($b0.0)
   }
   .bb #b8 () {
     let %8: int32 = add($b0.0, 1)
@@ -161,11 +176,13 @@
     .block #b4
     .block #b8
     .block #b9
+    .block #b1
     .block #b10
     .block #b11
     .block #b5
     .block #b2
     .block #b3
+    .block #b7
   }
   .bb #b14 () {
     jump b13($f0, $f1, $f2, $f3)
@@ -176,7 +193,10 @@
 .entry b29 {
   .bb #b0 (int32, array[int32], int32, array[int32], array[int32], array[int32]) {
     let %0: bool = le($b0.2, $b0.0)
-    br %0 b27($b0.0) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b27($b0.0)
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($b0.3, $b0.0 * @32)
@@ -262,6 +282,12 @@
   }
   .bb #b16 () {
     let %48: bool = eq(%1, 93)
+    br %48 b17() b18()
+  }
+  .bb #b17 () {
+    jump b19($b0.0)
+  }
+  .bb #b18 () {
     jump b19($b0.0)
   }
   .bb #b19 (int32) {
@@ -300,8 +326,10 @@
     .block #b19
     .block #b26
     .block #b15
+    .block #b1
     .block #b11
     .block #b2
+    .block #b18
     .block #b24
     .block #b21
     .block #b22
@@ -309,6 +337,7 @@
     .block #b6
     .block #b12
     .block #b4
+    .block #b17
     .block #b10
     .block #b25
     .block #b5

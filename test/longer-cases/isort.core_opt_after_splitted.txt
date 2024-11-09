@@ -23,7 +23,10 @@
 .entry b5 {
   .bb #b0 (int32, int32, array[int32]) {
     let %0: bool = eq($b0.0, $b0.1)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: unit = call f1($b0.2, $b0.0)
@@ -33,6 +36,7 @@
     return $b3.0
   }
   .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
     .block #b2
     .block #b3
   }
@@ -49,7 +53,10 @@
 .entry b5 {
   .bb #b0 (int32, int32, int32, array[int32]) {
     let %0: bool = eq($b0.0, $b0.2)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: int32 = mul($b0.1, 75)
@@ -65,6 +72,7 @@
     return $b3.0
   }
   .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
     .block #b2
     .block #b3
   }
@@ -77,7 +85,10 @@
 .entry b5 {
   .bb #b0 (int32, int32, array[int32]) {
     let %0: bool = eq($b0.0, $b0.1)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($b0.2, $b0.0 * @32)
@@ -90,6 +101,7 @@
     return $b3.0
   }
   .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
     .block #b2
     .block #b3
   }
@@ -110,14 +122,20 @@
 .entry b8 {
   .bb #b0 (array[int32], int32) {
     let %0: bool = eq($b0.1, 0)
-    br %0 b6(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
   }
   .bb #b2 () {
     let %1: int32 = sub($b0.1, 1)
     let %2: int32 = load int32 offset($b0.0, %1 * @32)
     let %3: int32 = load int32 offset($b0.0, $b0.1 * @32)
     let %4: bool = le(%2, %3)
-    br %4 b5(()) b4()
+    br %4 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(())
   }
   .bb #b4 () {
     let %5: int32 = load int32 offset($b0.0, $b0.1 * @32)
@@ -138,8 +156,10 @@
   .loop #b7 pre #Some(b8) header #b0 {
     .block #b6
     .block #b4
+    .block #b1
     .block #b5
     .block #b2
+    .block #b3
   }
   .bb #b8 () {
     jump b7($f0, $f1)

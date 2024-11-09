@@ -23,7 +23,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f0, $f1)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: unit = call f1($f2, $f0)
@@ -40,7 +43,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f0, $f2)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: int32 = mul($f1, 75)
@@ -62,7 +68,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f0, $f1)
-    br %0 b3(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(())
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($f2, $f0 * @32)
@@ -89,14 +98,20 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f1, 0)
-    br %0 b6(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
   }
   .bb #b2 () {
     let %1: int32 = sub($f1, 1)
     let %2: int32 = load int32 offset($f0, %1 * @32)
     let %3: int32 = load int32 offset($f0, $f1 * @32)
     let %4: bool = le(%2, %3)
-    br %4 b5(()) b4()
+    br %4 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(())
   }
   .bb #b4 () {
     let %5: int32 = load int32 offset($f0, $f1 * @32)

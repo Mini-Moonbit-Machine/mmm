@@ -14,13 +14,19 @@
     let %0: double = mul($f0, $f0)
     let %1: double = mul($f1, $f1)
     let %2: bool = eq($f2, 300)
-    br %2 b6(300) b2()
+    br %2 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(300)
   }
   .bb #b2 () {
     let %3: double = add(%0, %1)
     let %4: double = load_symbol ::1
     let %5: bool = le(%4, %3)
-    br %5 b5($f2) b4()
+    br %5 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5($f2)
   }
   .bb #b4 () {
     let %6: double = mul(2, $f0)
@@ -46,7 +52,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f3, $f1)
-    br %0 b12(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b12(())
   }
   .bb #b2 () {
     let %1: bool = eq($f2, $f0)
@@ -71,11 +80,20 @@
     let %14: int32 = mul($f3, $f0)
     let %15: int32 = add(%14, $f2)
     let %16: bool = le(%13, 0)
-    br %16 b10(0) b6()
+    br %16 b5() b6()
+  }
+  .bb #b5 () {
+    jump b10(0)
   }
   .bb #b6 () {
     let %17: bool = le(48, %13)
-    br %17 b9(48) b9(%13)
+    br %17 b7() b8()
+  }
+  .bb #b7 () {
+    jump b9(48)
+  }
+  .bb #b8 () {
+    jump b9(%13)
   }
   .bb #b9 (int32) {
     jump b10($b9.0)
@@ -130,7 +148,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = eq($f3, $f1)
-    br %0 b6(()) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
   }
   .bb #b2 () {
     let %1: bool = eq($f2, $f0)

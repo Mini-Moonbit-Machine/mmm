@@ -65,11 +65,11 @@
 // [Asm] Label("T$start") clobbered_f: @hashset.of([])
 // [Asm] subst   call main21.28 ->   call main21.28
 // [Asm] subst   ret ->   ret
-// [Asm] LoweringOrder: [0, 2, 1, 1 -> 5 (0), 4, 5, 6]
-// [Asm] LoweringOrder: [[1, 2], [6], [1 -> 5 (0), 4], [5], [5], [6], []]
-// [Asm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b0, 0)])
-// [Asm] LoweringOrder: [b0, b1, b4, b5, b6, b2]
-// [Asm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b0, 0)])
+// [Asm] LoweringOrder: [0, 2, 1, 4, 3, 5, 6]
+// [Asm] LoweringOrder: [[1, 2], [6], [3, 4], [5], [5], [6], []]
+// [Asm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 0)])
+// [Asm] LoweringOrder: [b0, b1, b4, b5, b6, b3, b2]
+// [Asm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b3, 0), (b0, 0)])
 // [Asm] pre_assigned_registers: Insn(iref=%3) -> v8, BlockParam(bref=b5, bpref=$b.0) -> v9, Self(fref=f0) -> v0, BlockParam(bref=b6, bpref=$b.0) -> v10, Insn(iref=%2) -> v7, Insn(iref=%1) -> v6, FnParam(fref=f0, fpref=$f.0) -> v2, Insn(iref=%5) -> v5, Insn(iref=%0) -> v3, Insn(iref=%4) -> v4
 // [Asm] succs: []
 // [Asm] critical edges for b6: []
@@ -78,11 +78,14 @@
 // [Asm] critical edges for b5: []
 // [Asm] critical color seq for b5: []
 // [Asm] succs: [5]
+// [Asm] critical edges for b3: []
+// [Asm] critical color seq for b3: []
+// [Asm] succs: [5]
 // [Asm] critical edges for b4: []
 // [Asm] critical color seq for b4: []
-// [Asm] succs: [1 -> 5 (0), 4]
-// [Asm] critical edges for b1: [(b1, b5, 0)]
-// [Asm] critical color seq for b1: [{color: 0, seq: 3, critical: []}]
+// [Asm] succs: [3, 4]
+// [Asm] critical edges for b1: []
+// [Asm] critical color seq for b1: []
 // [Asm] skipping Op(ty=Bool, op=Eq, args=[FnParam(fref=f0, fpref=$f.0), Int32(val=0)])
 // [Asm] succs: [6]
 // [Asm] critical edges for b2: []
@@ -91,15 +94,8 @@
 // [Asm] critical edges for b0: []
 // [Asm] critical color seq for b0: []
 // [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=0), FnParam(fref=f0, fpref=$f.0)])
-// [Asm] defs: [v13]
-// [Asm] live_set: [zero, v13, v2]
-// [Asm] defined: v13 is X
-// [Asm] defs: [v9]
-// [Asm] live_set: [v9, zero, v2]
-// [Asm] move: v9 <- v13
-// [Asm] defined: v9 is X
 // [Asm] defs: []
-// [Asm] live_set: [v9, v2]
+// [Asm] live_set: [v2]
 // [Asm] defs: []
 // [Asm] live_set: [zero, a0]
 // [Asm] defs: [v2]
@@ -120,6 +116,15 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
+// [Asm] defs: [v11]
+// [Asm] live_set: [v11]
+// [Asm] defined: v11 is X
+// [Asm] defs: [v9]
+// [Asm] live_set: [v9]
+// [Asm] move: v9 <- v11
+// [Asm] defined: v9 is X
+// [Asm] defs: []
+// [Asm] live_set: [v9]
 // [Asm] defs: [v7]
 // [Asm] live_set: [v7]
 // [Asm] defined: v7 is X
@@ -232,23 +237,23 @@
 // [Asm] defined: v10 is X
 // [Asm] defs: []
 // [Asm] live_set: [v10]
-// [Asm] Label("odd6.27") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("odd6.27") clobbered_x: @hashset.of([a0])
 // [Asm] Label("odd6.27") clobbered_f: @hashset.of([])
-// [Asm] subst   li v13, 456 ->   li a0, 456
-// [Asm] subst   beq v2, zero, .odd6.27_5 ->   beq a1, zero, .odd6.27_5
-// [Asm] subst   mv v2, a0 ->   mv a1, a0
-// [Asm] subst   blt v2, zero, .odd6.27_2 ->   blt a1, zero, .odd6.27_2
+// [Asm] subst   beq v2, zero, .odd6.27_3 ->   beq a0, zero, .odd6.27_3
+// [Asm] subst   blt v2, zero, .odd6.27_2 ->   blt a0, zero, .odd6.27_2
 // [Asm] subst   ret ->   ret
-// [Asm] subst   addi v7, v2, -1 ->   addi a0, a1, -1
+// [Asm] subst   li v11, 456 ->   li a0, 456
+// [Asm] subst   j .odd6.27_5 ->   j .odd6.27_5
+// [Asm] subst   addi v7, v2, -1 ->   addi a0, a0, -1
 // [Asm] subst   call even3.26 ->   call even3.26
-// [Asm] subst   addi v4, v2, 1 ->   addi a0, a1, 1
+// [Asm] subst   addi v4, v2, 1 ->   addi a0, a0, 1
 // [Asm] subst   call even3.26 ->   call even3.26
 // [Asm] subst   j .odd6.27_6 ->   j .odd6.27_6
-// [Asm] LoweringOrder: [0, 2, 1, 1 -> 5 (0), 4, 5, 6]
-// [Asm] LoweringOrder: [[1, 2], [6], [1 -> 5 (0), 4], [5], [5], [6], []]
-// [Asm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b0, 0)])
-// [Asm] LoweringOrder: [b0, b1, b4, b5, b6, b2]
-// [Asm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b0, 0)])
+// [Asm] LoweringOrder: [0, 2, 1, 4, 3, 5, 6]
+// [Asm] LoweringOrder: [[1, 2], [6], [3, 4], [5], [5], [6], []]
+// [Asm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 0)])
+// [Asm] LoweringOrder: [b0, b1, b4, b5, b6, b3, b2]
+// [Asm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b3, 0), (b0, 0)])
 // [Asm] pre_assigned_registers: Insn(iref=%3) -> v8, FnParam(fref=f1, fpref=$f.0) -> v2, BlockParam(bref=b5, bpref=$b.0) -> v9, BlockParam(bref=b6, bpref=$b.0) -> v10, Insn(iref=%2) -> v7, Insn(iref=%1) -> v6, Self(fref=f1) -> v0, Insn(iref=%5) -> v5, Insn(iref=%0) -> v3, Insn(iref=%4) -> v4
 // [Asm] succs: []
 // [Asm] critical edges for b6: []
@@ -257,11 +262,14 @@
 // [Asm] critical edges for b5: []
 // [Asm] critical color seq for b5: []
 // [Asm] succs: [5]
+// [Asm] critical edges for b3: []
+// [Asm] critical color seq for b3: []
+// [Asm] succs: [5]
 // [Asm] critical edges for b4: []
 // [Asm] critical color seq for b4: []
-// [Asm] succs: [1 -> 5 (0), 4]
-// [Asm] critical edges for b1: [(b1, b5, 0)]
-// [Asm] critical color seq for b1: [{color: 0, seq: 3, critical: []}]
+// [Asm] succs: [3, 4]
+// [Asm] critical edges for b1: []
+// [Asm] critical color seq for b1: []
 // [Asm] skipping Op(ty=Bool, op=Eq, args=[FnParam(fref=f1, fpref=$f.0), Int32(val=0)])
 // [Asm] succs: [6]
 // [Asm] critical edges for b2: []
@@ -278,6 +286,15 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
+// [Asm] defs: [v11]
+// [Asm] live_set: [v11]
+// [Asm] defined: v11 is X
+// [Asm] defs: [v9]
+// [Asm] live_set: [v9]
+// [Asm] move: v9 <- v11
+// [Asm] defined: v9 is X
+// [Asm] defs: []
+// [Asm] live_set: [v9]
 // [Asm] defs: [v7]
 // [Asm] live_set: [v7]
 // [Asm] defined: v7 is X
@@ -402,27 +419,20 @@
 // [Asm] defined: v2 is X
 // [Asm] defs: []
 // [Asm] live_set: [zero, v2]
-// [Asm] defs: [v13]
-// [Asm] live_set: [zero, v13, v2]
-// [Asm] defined: v13 is X
-// [Asm] defs: [v9]
-// [Asm] live_set: [v9, zero, v2]
-// [Asm] move: v9 <- v13
-// [Asm] defined: v9 is X
 // [Asm] defs: []
-// [Asm] live_set: [v9, v2]
-// [Asm] Label("even3.26") clobbered_x: @hashset.of([a1, a0])
+// [Asm] live_set: [v2]
+// [Asm] Label("even3.26") clobbered_x: @hashset.of([a0])
 // [Asm] Label("even3.26") clobbered_f: @hashset.of([])
 // [Asm] subst   ret ->   ret
-// [Asm] subst   addi v7, v2, -1 ->   addi a0, a1, -1
+// [Asm] subst   li v11, 123 ->   li a0, 123
+// [Asm] subst   j .even3.26_5 ->   j .even3.26_5
+// [Asm] subst   addi v7, v2, -1 ->   addi a0, a0, -1
 // [Asm] subst   call odd6.27 ->   call odd6.27
-// [Asm] subst   addi v4, v2, 1 ->   addi a0, a1, 1
+// [Asm] subst   addi v4, v2, 1 ->   addi a0, a0, 1
 // [Asm] subst   call odd6.27 ->   call odd6.27
 // [Asm] subst   j .even3.26_6 ->   j .even3.26_6
-// [Asm] subst   mv v2, a0 ->   mv a1, a0
-// [Asm] subst   blt v2, zero, .even3.26_2 ->   blt a1, zero, .even3.26_2
-// [Asm] subst   li v13, 123 ->   li a0, 123
-// [Asm] subst   beq v2, zero, .even3.26_5 ->   beq a1, zero, .even3.26_5
+// [Asm] subst   blt v2, zero, .even3.26_2 ->   blt a0, zero, .even3.26_2
+// [Asm] subst   beq v2, zero, .even3.26_3 ->   beq a0, zero, .even3.26_3
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -597,14 +607,12 @@
 // [Asm] # control
 // [Asm]   blt v2, zero, .even3.26_2  # live: [zero, v2]
 // [Asm] 
-// [Asm] # block info: defs: [v13, v9], uses: [v13, zero, v2], upward_exposed: [zero, v2], params_defs: []
-// [Asm] # live_in: [zero, v2], live_out: [v9, v2]
+// [Asm] # block info: defs: [], uses: [zero, v2], upward_exposed: [zero, v2], params_defs: []
+// [Asm] # live_in: [zero, v2], live_out: [v2]
 // [Asm] # block parameters: []
 // [Asm] .even3.26_1:
 // [Asm] # control
-// [Asm]   li v13, 123  # live: [zero, v13, v2]
-// [Asm]   mv v9, v13  # live: [v9, zero, v2]
-// [Asm]   beq v2, zero, .even3.26_5  # live: [v9, v2]
+// [Asm]   beq v2, zero, .even3.26_3  # live: [v2]
 // [Asm] 
 // [Asm] # block info: defs: [t1, v7, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v7, v8, a0, v2], upward_exposed: [v2], params_defs: []
 // [Asm] # live_in: [v2], live_out: [v9]
@@ -634,6 +642,15 @@
 // [Asm]   mv a0, v10  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # block info: defs: [v11, v9], uses: [v11], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: [v9]
+// [Asm] # block parameters: []
+// [Asm] .even3.26_3:
+// [Asm] # control
+// [Asm]   li v11, 123  # live: [v11]
+// [Asm]   mv v9, v11  # live: [v9]
+// [Asm]   j .even3.26_5  # live: [v9]
 // [Asm] 
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v4, ft7, ft4, v5, ft9, v10, a5, fa4, a0, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v4, v5, a0, v2], upward_exposed: [v2], params_defs: []
 // [Asm] # live_in: [v2], live_out: [v10]
@@ -682,14 +699,12 @@
 // [Asm] # control
 // [Asm]   blt v2, zero, .odd6.27_2  # live: [zero, v2]
 // [Asm] 
-// [Asm] # block info: defs: [v13, v9], uses: [v13, zero, v2], upward_exposed: [zero, v2], params_defs: []
-// [Asm] # live_in: [zero, v2], live_out: [v9, v2]
+// [Asm] # block info: defs: [], uses: [zero, v2], upward_exposed: [zero, v2], params_defs: []
+// [Asm] # live_in: [zero, v2], live_out: [v2]
 // [Asm] # block parameters: []
 // [Asm] .odd6.27_1:
 // [Asm] # control
-// [Asm]   li v13, 456  # live: [zero, v13, v2]
-// [Asm]   mv v9, v13  # live: [v9, zero, v2]
-// [Asm]   beq v2, zero, .odd6.27_5  # live: [v9, v2]
+// [Asm]   beq v2, zero, .odd6.27_3  # live: [v2]
 // [Asm] 
 // [Asm] # block info: defs: [t1, v7, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v7, v8, a0, v2], upward_exposed: [v2], params_defs: []
 // [Asm] # live_in: [v2], live_out: [v9]
@@ -719,6 +734,15 @@
 // [Asm]   mv a0, v10  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # block info: defs: [v11, v9], uses: [v11], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: [v9]
+// [Asm] # block parameters: []
+// [Asm] .odd6.27_3:
+// [Asm] # control
+// [Asm]   li v11, 456  # live: [v11]
+// [Asm]   mv v9, v11  # live: [v9]
+// [Asm]   j .odd6.27_5  # live: [v9]
 // [Asm] 
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v4, ft7, ft4, v5, ft9, v10, a5, fa4, a0, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v4, v5, a0, v2], upward_exposed: [v2], params_defs: []
 // [Asm] # live_in: [v2], live_out: [v10]
@@ -843,15 +867,13 @@
 // [Main] .even3.26_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
-// [Main]   mv a1, a0
-// [Main]   blt a1, zero, .even3.26_2
+// [Main]   blt a0, zero, .even3.26_2
 // [Main] 
 // [Main] .even3.26_1:
-// [Main]   li a0, 123
-// [Main]   beq a1, zero, .even3.26_5
+// [Main]   beq a0, zero, .even3.26_3
 // [Main] 
 // [Main] .even3.26_4:
-// [Main]   addi a0, a1, -1
+// [Main]   addi a0, a0, -1
 // [Main]   call odd6.27
 // [Main] 
 // [Main] .even3.26_5:
@@ -861,8 +883,12 @@
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
+// [Main] .even3.26_3:
+// [Main]   li a0, 123
+// [Main]   j .even3.26_5
+// [Main] 
 // [Main] .even3.26_2:
-// [Main]   addi a0, a1, 1
+// [Main]   addi a0, a0, 1
 // [Main]   call odd6.27
 // [Main]   j .even3.26_6
 // [Main] 
@@ -897,15 +923,13 @@
 // [Main] .odd6.27_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
-// [Main]   mv a1, a0
-// [Main]   blt a1, zero, .odd6.27_2
+// [Main]   blt a0, zero, .odd6.27_2
 // [Main] 
 // [Main] .odd6.27_1:
-// [Main]   li a0, 456
-// [Main]   beq a1, zero, .odd6.27_5
+// [Main]   beq a0, zero, .odd6.27_3
 // [Main] 
 // [Main] .odd6.27_4:
-// [Main]   addi a0, a1, -1
+// [Main]   addi a0, a0, -1
 // [Main]   call even3.26
 // [Main] 
 // [Main] .odd6.27_5:
@@ -915,8 +939,12 @@
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
+// [Main] .odd6.27_3:
+// [Main]   li a0, 456
+// [Main]   j .odd6.27_5
+// [Main] 
 // [Main] .odd6.27_2:
-// [Main]   addi a0, a1, 1
+// [Main]   addi a0, a0, 1
 // [Main]   call even3.26
 // [Main]   j .odd6.27_6
 // [Main] 
@@ -938,17 +966,19 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f2, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
-// [Wasm] LoweringOrder: [0, 2, 1, 1 -> 5 (0), 4, 5, 6]
-// [Wasm] LoweringOrder: [[1, 2], [6], [1 -> 5 (0), 4], [5], [5], [6], []]
-// [Wasm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b0, 0)])
-// [Wasm] LoweringOrder: [b0, b1, b4, b5, b6, b2]
-// [Wasm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b0, 0)])
+// [Wasm] LoweringOrder: [0, 2, 1, 4, 3, 5, 6]
+// [Wasm] LoweringOrder: [[1, 2], [6], [3, 4], [5], [5], [6], []]
+// [Wasm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 0)])
+// [Wasm] LoweringOrder: [b0, b1, b4, b5, b6, b3, b2]
+// [Wasm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b3, 0), (b0, 0)])
 // [Wasm] Lowering function odd6.27
 // [Wasm] Lowering control Return(args=[BlockParam(bref=b6, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b6, bpref=$b.0) -> $b6.$b.0
 // [Wasm] Lowering control Jump(target=b6, args=[BlockParam(bref=b5, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Get Local name BlockParam(bref=b6, bpref=$b.0) -> $b6.$b.0
+// [Wasm] Lowering control Jump(target=b5, args=[Int32(val=456)])
+// [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Lowering insn Op(ty=Int32, op=Sub, args=[FnParam(fref=f0, fpref=$f.0), Int32(val=1)])
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%2) -> $%2
@@ -961,9 +991,8 @@
 // [Wasm] Lowering insn Op(ty=Bool, op=Eq, args=[FnParam(fref=f0, fpref=$f.0), Int32(val=0)])
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%1) -> $%1
-// [Wasm] Lowering control Branch(cond=Insn(iref=%1), t=b5, t_args=[Int32(val=456)], f=b4, f_args=[])
+// [Wasm] Lowering control Branch(cond=Insn(iref=%1), t=b3, t_args=[], f=b4, f_args=[])
 // [Wasm] Get Local name Insn(iref=%1) -> $%1
-// [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Lowering insn Op(ty=Int32, op=Add, args=[FnParam(fref=f0, fpref=$f.0), Int32(val=1)])
 // [Wasm] Get Local name FnParam(fref=f0, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%4) -> $%4
@@ -988,17 +1017,19 @@
 // [Wasm] Local Insn(iref=%0) -> $%0
 // [Wasm] Local Insn(iref=%2) -> $%2
 // [Wasm] Lowered function odd6.27 to wasm
-// [Wasm] LoweringOrder: [0, 2, 1, 1 -> 5 (0), 4, 5, 6]
-// [Wasm] LoweringOrder: [[1, 2], [6], [1 -> 5 (0), 4], [5], [5], [6], []]
-// [Wasm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b0, 0)])
-// [Wasm] LoweringOrder: [b0, b1, b4, b5, b6, b2]
-// [Wasm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b0, 0)])
+// [Wasm] LoweringOrder: [0, 2, 1, 4, 3, 5, 6]
+// [Wasm] LoweringOrder: [[1, 2], [6], [3, 4], [5], [5], [6], []]
+// [Wasm] LoweringOrder: HashMap::of([(b6, 0), (b4, 0), (b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 0)])
+// [Wasm] LoweringOrder: [b0, b1, b4, b5, b6, b3, b2]
+// [Wasm] LoweringOrder: HashMap::of([(b6, 4), (b4, 2), (b1, 1), (b5, 3), (b2, 0), (b3, 0), (b0, 0)])
 // [Wasm] Lowering function even3.26
 // [Wasm] Lowering control Return(args=[BlockParam(bref=b6, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b6, bpref=$b.0) -> $b6.$b.0
 // [Wasm] Lowering control Jump(target=b6, args=[BlockParam(bref=b5, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Get Local name BlockParam(bref=b6, bpref=$b.0) -> $b6.$b.0
+// [Wasm] Lowering control Jump(target=b5, args=[Int32(val=123)])
+// [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Lowering insn Op(ty=Int32, op=Sub, args=[FnParam(fref=f1, fpref=$f.0), Int32(val=1)])
 // [Wasm] Get Local name FnParam(fref=f1, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%2) -> $%2
@@ -1011,9 +1042,8 @@
 // [Wasm] Lowering insn Op(ty=Bool, op=Eq, args=[FnParam(fref=f1, fpref=$f.0), Int32(val=0)])
 // [Wasm] Get Local name FnParam(fref=f1, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%1) -> $%1
-// [Wasm] Lowering control Branch(cond=Insn(iref=%1), t=b5, t_args=[Int32(val=123)], f=b4, f_args=[])
+// [Wasm] Lowering control Branch(cond=Insn(iref=%1), t=b3, t_args=[], f=b4, f_args=[])
 // [Wasm] Get Local name Insn(iref=%1) -> $%1
-// [Wasm] Get Local name BlockParam(bref=b5, bpref=$b.0) -> $b5.$b.0
 // [Wasm] Lowering insn Op(ty=Int32, op=Add, args=[FnParam(fref=f1, fpref=$f.0), Int32(val=1)])
 // [Wasm] Get Local name FnParam(fref=f1, fpref=$f.0) -> $$f.0
 // [Wasm] Get Local name Insn(iref=%4) -> $%4

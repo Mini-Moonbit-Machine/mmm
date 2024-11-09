@@ -78,9 +78,8 @@ fib1.14:
   sd s0, 8(sp)
   sd s1, 16(sp)
   mv s0, a0
-  mv a1, s0
   li a0, 1
-  bge a0, s0, .fib1.14_3
+  bge a0, s0, .fib1.14_1
 
 .fib1.14_2:
   addi a0, s0, -1
@@ -89,15 +88,17 @@ fib1.14:
   addi a0, s0, -2
   call fib1.14
   add a0, s1, a0
-  mv a1, a0
 
 .fib1.14_3:
-  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   addi sp, sp, 32
   ret
+
+.fib1.14_1:
+  mv a0, s0
+  j .fib1.14_3
 
 __end_text:
   .p2align 2

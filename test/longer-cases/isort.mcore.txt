@@ -58,50 +58,55 @@ aux60.150:
   mv a0, a2
   mv a1, a4
   mv a2, a3
+  mv a3, a0
 
 .aux60.150_0:
-  mv a3, zero
-  beq a1, a2, .aux60.150_3
+  bne a1, a2, .aux60.150_2
+
+.aux60.150_1:
+  mv a0, zero
+
+.aux60.150_3:
+  ret
 
 .aux60.150_2:
 
 .aux60.150_15:
-  mv a3, a1
+  mv a0, a1
 
 .aux60.150_7:
-  mv a4, zero
-  beq a3, zero, .aux60.150_13
+  beq a0, zero, .aux60.150_8
 
 .aux60.150_9:
-  addi a4, a3, -1
-  th.lurw a4, a0, a4, 2
-  th.lurw a5, a0, a3, 2
-  mv a6, zero
-  bge a5, a4, .aux60.150_12
+  addi a4, a0, -1
+  th.lurw a4, a3, a4, 2
+  th.lurw a5, a3, a0, 2
+  bge a5, a4, .aux60.150_10
 
 .aux60.150_11:
-  th.lurw a4, a0, a3, 2
-  addi a5, a3, -1
-  th.lurw a6, a0, a5, 2
-  th.surw a6, a0, a3, 2
-  th.surw a4, a0, a5, 2
-  mv a3, a5
+  th.lurw a4, a3, a0, 2
+  addi a5, a0, -1
+  th.lurw a6, a3, a5, 2
+  th.surw a6, a3, a0, 2
+  th.surw a4, a3, a5, 2
+  mv a0, a5
   j .aux60.150_7
 
-.aux60.150_13:
-  mv a3, a4
-
-.aux60.150_6:
-  addi a1, a1, 1
-  j .aux60.150_0
+.aux60.150_10:
+  mv a0, zero
 
 .aux60.150_12:
-  mv a4, a6
-  j .aux60.150_13
 
-.aux60.150_3:
-  mv a0, a3
-  ret
+.aux60.150_13:
+
+.aux60.150_6:
+  addi a0, a1, 1
+  mv a1, a0
+  j .aux60.150_0
+
+.aux60.150_8:
+  mv a0, zero
+  j .aux60.150_13
 
   .p2align 2
   .text
@@ -112,8 +117,7 @@ aux19.148:
 .aux19.148_5:
 
 .aux19.148_0:
-  mv a4, zero
-  beq a0, a2, .aux19.148_3
+  beq a0, a2, .aux19.148_1
 
 .aux19.148_2:
   li a4, 75
@@ -125,8 +129,10 @@ aux19.148:
   addi a0, a0, 1
   j .aux19.148_0
 
+.aux19.148_1:
+  mv a0, zero
+
 .aux19.148_3:
-  mv a0, a4
   ret
 
   .p2align 2
@@ -146,8 +152,7 @@ aux73.151:
   mv s2, a2
 
 .aux73.151_0:
-  mv a0, zero
-  beq s0, s1, .aux73.151_3
+  beq s0, s1, .aux73.151_1
 
 .aux73.151_2:
   th.lurw a0, s2, s0, 2
@@ -157,6 +162,9 @@ aux73.151:
   addi a0, s0, 1
   mv s0, a0
   j .aux73.151_0
+
+.aux73.151_1:
+  mv a0, zero
 
 .aux73.151_3:
   ld ra, 0(sp)

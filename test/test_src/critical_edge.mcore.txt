@@ -23,17 +23,18 @@ main6.12:
 .main6.12_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  li a0, 1
-  li a1, 6
-  bge zero, a1, .main6.12_6
+  li a0, 6
+  bge zero, a0, .main6.12_1
 
 .main6.12_2:
+  li a0, 10
+  li a1, 6
+  blt a0, a1, .main6.12_4
+
+.main6.12_3:
   li a0, 2
-  li a1, 10
-  li a2, 6
-  bge a1, a2, .main6.12_5
-  li a0, 3
-  j .main6.12_5
+
+.main6.12_5:
 
 .main6.12_6:
   call minimbt_print_int
@@ -41,7 +42,12 @@ main6.12:
   addi sp, sp, 16
   ret
 
-.main6.12_5:
+.main6.12_4:
+  li a0, 3
+  j .main6.12_5
+
+.main6.12_1:
+  li a0, 1
   j .main6.12_6
 
   .p2align 2

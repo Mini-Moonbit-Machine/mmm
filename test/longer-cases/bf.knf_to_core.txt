@@ -39,11 +39,20 @@
   .bb #b0 () {
     let %0: int32 = ext_call minimbt_read_char()
     let %1: bool = eq(%0, 10)
-    br %1 b6(-1) b2()
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(-1)
   }
   .bb #b2 () {
     let %2: bool = eq(%0, 13)
-    br %2 b5(-1) b5(%0)
+    br %2 b3() b4()
+  }
+  .bb #b3 () {
+    jump b5(-1)
+  }
+  .bb #b4 () {
+    jump b5(%0)
   }
   .bb #b5 (int32) {
     jump b6($b5.0)
@@ -100,7 +109,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = le($f2, $f0)
-    br %0 b12($f0) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b12($f0)
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($f3, $f0 * @32)
@@ -119,12 +131,15 @@
   }
   .bb #b5 () {
     let %7: bool = eq($f1, 0)
-    br %7 b9($f0) b8()
+    br %7 b7() b8()
   }
   .bb #b6 () {
     let %11: int32 = add($f0, 1)
     let %12: int32 = call f1(%11, $f1, $f2, $f3)
     jump b10(%12)
+  }
+  .bb #b7 () {
+    jump b9($f0)
   }
   .bb #b8 () {
     let %8: int32 = add($f0, 1)
@@ -150,7 +165,10 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = le($f2, $f0)
-    br %0 b27($f0) b2()
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b27($f0)
   }
   .bb #b2 () {
     let %1: int32 = load int32 offset($f3, $f0 * @32)
@@ -243,6 +261,12 @@
   }
   .bb #b16 () {
     let %48: bool = eq(%1, 93)
+    br %48 b17() b18()
+  }
+  .bb #b17 () {
+    jump b19($f0)
+  }
+  .bb #b18 () {
     jump b19($f0)
   }
   .bb #b19 (int32) {
