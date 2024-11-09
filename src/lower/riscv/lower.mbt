@@ -1671,7 +1671,7 @@ fn RiscvFnLoweringCtx::lower_select(
     (targets.length() - 1).to_string(),
   )
   let fallback_label = self.block_label(fallback)
-  @generated.constructor_rv_ble(self, upper, xreg(cond), fallback_label)
+  @generated.constructor_rv_bltu(self, upper, xreg(cond), fallback_label)
   let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
   let base = @generated.constructor_rv_la(self, jtbl_label)
   let addr = @generated.constructor_rv_add(self, base, offset)
