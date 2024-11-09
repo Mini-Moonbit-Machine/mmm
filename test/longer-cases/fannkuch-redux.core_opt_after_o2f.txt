@@ -37,10 +37,7 @@
   .bb #b0 () {
     let %0: int32 = load int32 field($f0, 0 * @32)
     let %1: bool = eq(%0, 1)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(())
+    br %1 b3(()) b2()
   }
   .bb #b2 () {
     let %2: int32 = load int32 field($f0, 0 * @32)
@@ -63,7 +60,7 @@
   .bb #b0 () {
     let %0: int32 = load int32 field($f0, 0 * @32)
     let %1: bool = le(1, %0)
-    br %1 b1() b2()
+    br %1 b1() b6(())
   }
   .bb #b1 () {
     let %2: unit = call f1(0, $f1, $f2, $f3)
@@ -75,17 +72,11 @@
     let %8: int32 = load int32 field($f8, 0 * @32)
     let %9: int32 = load int32 field($f5, 0 * @32)
     let %10: bool = le(%8, %9)
-    br %10 b3() b4()
-  }
-  .bb #b2 () {
-    jump b6(())
+    br %10 b3() b5(())
   }
   .bb #b3 () {
     let %11: int32 = load int32 field($f5, 0 * @32)
     let _ = store int32 field($f8, 0 * @32) <- %11
-    jump b5(())
-  }
-  .bb #b4 () {
     jump b5(())
   }
   .bb #b5 (unit) {
@@ -120,7 +111,7 @@
   .bb #b0 () {
     let %0: int32 = sub($f1, 1)
     let %1: bool = le($f0, %0)
-    br %1 b1() b2()
+    br %1 b1() b3(())
   }
   .bb #b1 () {
     let %2: int32 = load int32 offset($f2, $f0 * @32)
@@ -128,9 +119,6 @@
     let %4: int32 = add($f0, 1)
     let %5: unit = call f1(%4, $f1, $f2, $f3)
     jump b3(%5)
-  }
-  .bb #b2 () {
-    jump b3(())
   }
   .bb #b3 (unit) {
     return $b3.0
@@ -143,7 +131,7 @@
     let %0: int32 = load int32 field($f2, 0 * @32)
     let %1: int32 = div(%0, 2)
     let %2: bool = le($f0, %1)
-    br %2 b1() b2()
+    br %2 b1() b3(())
   }
   .bb #b1 () {
     let %3: int32 = load int32 offset($f3, $f0 * @32)
@@ -160,9 +148,6 @@
     let %14: unit = call f3(%13, $f1, $f2, $f3)
     jump b3(%14)
   }
-  .bb #b2 () {
-    jump b3(())
-  }
   .bb #b3 (unit) {
     return $b3.0
   }
@@ -173,10 +158,7 @@
   .bb #b0 () {
     let %0: int32 = load int32 field($f0, 0 * @32)
     let %1: bool = eq(%0, 0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(())
+    br %1 b3(()) b2()
   }
   .bb #b2 () {
     let _ = alloc <m0: array[int32] heap(1)> <- [..] = 0
@@ -200,7 +182,7 @@
     let %0: int32 = load int32 field($f2, 0 * @32)
     let %1: int32 = sub(%0, 1)
     let %2: bool = le($f0, %1)
-    br %2 b1() b2()
+    br %2 b1() b3(())
   }
   .bb #b1 () {
     let %3: int32 = add($f0, 1)
@@ -208,9 +190,6 @@
     let _ = store int32 offset($f1, $f0 * @32) <- %4
     let %6: int32 = add($f0, 1)
     let %7: unit = call f5(%6, $f1, $f2)
-    jump b3(())
-  }
-  .bb #b2 () {
     jump b3(())
   }
   .bb #b3 (unit) {
@@ -231,15 +210,12 @@
   .bb #b0 () {
     let %0: bool = load bool field($f2, 0 * @32)
     let %1: bool = eq(%0, true)
-    br %1 b1() b2()
+    br %1 b1() b9(())
   }
   .bb #b1 () {
     let %2: int32 = load int32 field($f4, 0 * @32)
     let %3: bool = eq(%2, $f0)
     br %3 b3() b4()
-  }
-  .bb #b2 () {
-    jump b9(())
   }
   .bb #b3 () {
     let _ = store bool field($f2, 0 * @32) <- false
@@ -290,16 +266,13 @@
   .bb #b0 () {
     let %0: int32 = sub($f1, 1)
     let %1: bool = le($f0, %0)
-    br %1 b1() b2()
+    br %1 b1() b3(())
   }
   .bb #b1 () {
     let _ = store int32 offset($f2, $f0 * @32) <- $f0
     let %3: int32 = add($f0, 1)
     let %4: unit = call f0(%3, $f1, $f2)
     jump b3(%4)
-  }
-  .bb #b2 () {
-    jump b3(())
   }
   .bb #b3 (unit) {
     return $b3.0

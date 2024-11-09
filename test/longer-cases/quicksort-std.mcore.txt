@@ -30,7 +30,8 @@ sort_2157.398:
   th.lurw a0, a3, a5, 2
   th.lurw a1, a3, a4, 2
   addi a1, a1, -1
-  blt a1, a0, .sort_2157.398_2
+  mv a2, zero
+  blt a1, a0, .sort_2157.398_3
 
 .sort_2157.398_1:
   mv a0, a3
@@ -40,17 +41,14 @@ sort_2157.398:
   lw a0, 0(s0)
   addi a0, a0, 1
   sw a0, 0(s0)
-  mv a0, zero
+  mv a2, zero
 
 .sort_2157.398_3:
+  mv a0, a2
   ld ra, 0(sp)
   ld s0, 8(sp)
   addi sp, sp, 16
   ret
-
-.sort_2157.398_2:
-  mv a0, zero
-  j .sort_2157.398_3
 
   .p2align 2
   .text
@@ -64,25 +62,24 @@ input243.402:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
-  mv s2, a2
+  mv s0, a0
+  mv s2, a1
+  mv s1, a2
 
 .input243.402_0:
-  addi a0, s2, -1
-  blt a0, s1, .input243.402_2
+  addi a0, s1, -1
+  mv a1, zero
+  blt a0, s0, .input243.402_3
 
 .input243.402_1:
   call minimbt_read_int
-  th.surw a0, s0, s1, 2
-  addi a0, s1, 1
-  mv s1, a0
+  th.surw a0, s2, s0, 2
+  addi a0, s0, 1
+  mv s0, a0
   j .input243.402_0
 
-.input243.402_2:
-  mv a0, zero
-
 .input243.402_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -208,61 +205,64 @@ quick_sort210.395:
   bge a1, a0, .quick_sort210.395_1
 
 .quick_sort210.395_2:
-  addi s3, s11, -4
-  andi s11, s3, -8
-  sw zero, 0(s3)
+  addi s6, s11, -4
+  andi s11, s6, -8
+  sw zero, 0(s6)
   sub a0, s4, s0
   srai a1, a0, 2
   slli a1, a1, 1
   add s1, s0, a1
-  li a1, 8
-  blt a0, a1, .quick_sort210.395_4
+  mv a1, zero
+  li a2, 8
+  blt a0, a2, .quick_sort210.395_8
 
 .quick_sort210.395_3:
   srai a1, a0, 2
-  add s5, s0, a1
+  add s3, s0, a1
   li a2, 3
   mul a1, a1, a2
-  add s6, s0, a1
+  add s5, s0, a1
   addi a0, a0, -1
-  li a1, 50
-  blt a0, a1, .quick_sort210.395_6
+  mv a1, zero
+  li a2, 50
+  blt a0, a2, .quick_sort210.395_7
 
 .quick_sort210.395_5:
-  addi a0, s5, -1
-  addi a2, s5, 1
-  mv a1, s5
-  mv a3, s3
+  addi a0, s3, -1
+  addi a2, s3, 1
+  mv a1, s3
+  mv a3, s6
   mv a4, s2
   call sort_3173.399
   addi a0, s1, -1
   addi a2, s1, 1
   mv a1, s1
-  mv a3, s3
+  mv a3, s6
   mv a4, s2
   call sort_3173.399
-  addi a0, s6, -1
-  addi a2, s6, 1
-  mv a1, s6
-  mv a3, s3
+  addi a0, s5, -1
+  addi a2, s5, 1
+  mv a1, s5
+  mv a3, s6
   mv a4, s2
   call sort_3173.399
+  mv a1, a0
 
 .quick_sort210.395_7:
-  mv a0, s5
+  mv a0, s3
   mv a1, s1
-  mv a2, s6
-  mv a3, s3
+  mv a2, s5
+  mv a3, s6
   mv a4, s2
   call sort_3173.399
+  mv a1, a0
 
 .quick_sort210.395_8:
-  lw a0, 0(s3)
-  bne a0, zero, .quick_sort210.395_10
-
-.quick_sort210.395_9:
-  li a0, 1
-  mv a1, a0
+  lw a0, 0(s6)
+  li a1, 1
+  beq a0, zero, .quick_sort210.395_11
+  mv a1, zero
+  j .quick_sort210.395_11
 
 .quick_sort210.395_11:
   addi a0, s11, -8
@@ -289,16 +289,19 @@ quick_sort210.395:
 
 .quick_sort210.395_51:
   addi a0, s4, -2
-  blt a0, s3, .quick_sort210.395_53
+  mv a1, zero
+  blt a0, s3, .quick_sort210.395_60
 
 .quick_sort210.395_52:
   th.lurw a0, s2, s3, 2
   addi a1, s6, -1
-  blt a1, a0, .quick_sort210.395_55
+  mv a2, zero
+  blt a1, a0, .quick_sort210.395_59
 
 .quick_sort210.395_54:
   lw a0, 0(s1)
-  beq a0, s3, .quick_sort210.395_56
+  mv a1, zero
+  beq a0, s3, .quick_sort210.395_58
 
 .quick_sort210.395_57:
   lw a1, 0(s1)
@@ -306,70 +309,18 @@ quick_sort210.395:
   mv a2, s3
   call swap1.393
   sw zero, 0(s5)
-  mv a0, zero
+  mv a1, zero
 
 .quick_sort210.395_58:
   lw a0, 0(s1)
   addi a0, a0, 1
   sw a0, 0(s1)
-  mv a0, zero
+  mv a2, zero
 
 .quick_sort210.395_59:
   addi a0, s3, 1
   mv s3, a0
   j .quick_sort210.395_51
-
-.quick_sort210.395_56:
-  mv a0, zero
-  j .quick_sort210.395_58
-
-.quick_sort210.395_55:
-  mv a0, zero
-  j .quick_sort210.395_59
-
-.quick_sort210.395_53:
-  mv a0, zero
-
-.quick_sort210.395_60:
-
-.quick_sort210.395_18:
-  lw a1, 0(s1)
-  addi a2, s4, -1
-  mv a0, s2
-  call swap1.393
-  lw a0, 0(s1)
-  lw a1, 0(s5)
-  li a2, 1
-  bne a1, a2, .quick_sort210.395_13
-
-.quick_sort210.395_12:
-  li a1, 1
-
-.quick_sort210.395_14:
-  addi a2, s11, -8
-  andi s11, a2, -8
-  sw a0, 0(a2)
-  sw a1, 4(a2)
-  lw s1, 0(a2)
-  mv a0, s2
-  mv a1, s0
-  mv a2, s1
-  call quick_sort210.395
-  addi a0, s1, 1
-  mv s0, a0
-  j .quick_sort210.395_0
-
-.quick_sort210.395_10:
-  mv a1, zero
-  j .quick_sort210.395_11
-
-.quick_sort210.395_6:
-  mv a0, zero
-  j .quick_sort210.395_7
-
-.quick_sort210.395_4:
-  mv a0, zero
-  j .quick_sort210.395_8
 
 .quick_sort210.395_1:
   addi a0, s0, 1
@@ -390,9 +341,34 @@ quick_sort210.395:
   addi sp, sp, 64
   ret
 
-.quick_sort210.395_13:
-  mv a1, zero
+.quick_sort210.395_60:
+  mv a0, a1
+
+.quick_sort210.395_18:
+  lw a1, 0(s1)
+  addi a2, s4, -1
+  mv a0, s2
+  call swap1.393
+  lw a0, 0(s1)
+  lw a1, 0(s5)
+  li a2, 1
+  beq a1, a2, .quick_sort210.395_14
+  mv a2, zero
   j .quick_sort210.395_14
+
+.quick_sort210.395_14:
+  addi a1, s11, -8
+  andi s11, a1, -8
+  sw a0, 0(a1)
+  sw a2, 4(a1)
+  lw s1, 0(a1)
+  mv a0, s2
+  mv a1, s0
+  mv a2, s1
+  call quick_sort210.395
+  addi a0, s1, 1
+  mv s0, a0
+  j .quick_sort210.395_0
 
   .p2align 2
   .text
@@ -412,7 +388,8 @@ output14.394:
 
 .output14.394_0:
   addi a0, s2, -1
-  blt a0, s1, .output14.394_2
+  mv a1, zero
+  blt a0, s1, .output14.394_3
 
 .output14.394_1:
   th.lurw a0, s0, s1, 2
@@ -422,10 +399,8 @@ output14.394:
   mv s1, a0
   j .output14.394_0
 
-.output14.394_2:
-  mv a0, zero
-
 .output14.394_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -454,7 +429,8 @@ f54.397:
 
 .f54.397_0:
   addi a0, s3, -1
-  blt a0, s2, .f54.397_2
+  mv a1, zero
+  blt a0, s2, .f54.397_3
 
 .f54.397_1:
 
@@ -462,15 +438,17 @@ f54.397:
   mv a1, s2
 
 .f54.397_7:
-  addi a0, s1, 1
-  blt a1, a0, .f54.397_9
+  addi a2, s1, 1
+  mv a0, zero
+  blt a1, a2, .f54.397_13
 
 .f54.397_8:
   th.lurw a0, s0, a1, 2
   addi a2, a1, -1
   th.lurw a2, s0, a2, 2
   addi a2, a2, -1
-  blt a2, a0, .f54.397_11
+  mv a3, zero
+  blt a2, a0, .f54.397_12
 
 .f54.397_10:
   addi s4, a1, -1
@@ -480,11 +458,6 @@ f54.397:
   mv a1, s4
   j .f54.397_7
 
-.f54.397_11:
-  mv a0, zero
-
-.f54.397_12:
-
 .f54.397_13:
 
 .f54.397_6:
@@ -492,14 +465,12 @@ f54.397:
   mv s2, a0
   j .f54.397_0
 
-.f54.397_9:
-  mv a0, zero
+.f54.397_12:
+  mv a0, a3
   j .f54.397_13
 
-.f54.397_2:
-  mv a0, zero
-
 .f54.397_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)

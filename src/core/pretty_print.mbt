@@ -205,7 +205,23 @@ fn print_control(logger : @util.IndentLogger, control : Control) -> Unit {
       print_values(logger, f_args)
       logger.write_string(")\n")
     }
-    Select(..) => abort("Not implemented")
+    Select(~cond, ~targets, ~args) => {
+      logger.write_string("select ")
+      print_value(logger, cond)
+      logger.write_string(" [")
+      let mut first = true
+      for target in targets {
+        if first {
+          first = false
+        } else {
+          logger.write_string(", ")
+        }
+        logger.write_string("\{target}")
+      }
+      logger.write_string("](")
+      print_values(logger, args)
+      logger.write_string(")\n")
+    }
     Panic => logger.write_string("panic\n")
   }
 }

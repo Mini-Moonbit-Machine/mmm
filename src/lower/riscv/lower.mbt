@@ -1410,7 +1410,8 @@ fn RiscvFnLoweringCtx::assign_regs_for_block_params_and_instrs(
 
   for block in order {
     match block {
-      BasicBlock(~bb) => assign(bb)
+      BasicBlock(~bref) =>
+        assign(self.ref_block(bref).bb_or_header_bb(self.func))
       _ => () // skip critical edges
     }
   }
@@ -1649,20 +1650,30 @@ fn RiscvFnLoweringCtx::target_color(
 ) -> (@lower.ColorSeq, @core.BlockRef) {
   let target = self.target_bb(target)
   let color = self.order.color[target].unwrap()
-  let n = self.order.color_seq[target].unwrap()
-  ((color, n), target)
+  let seq = self.order.color_seq[target].unwrap()
+  ({ color, seq, critical: [] }, target)
 }
 
 fn RiscvFnLoweringCtx::lower_block(
   self : RiscvFnLoweringCtx,
   block : @core.BasicBlock,
+  succs : Array[@lower.LoweredBlock],
   color : Int,
-  n : Int
+  seq : Int
 ) -> MBasicBlock!Failure {
   let id = self.block_label(block.id)
-  @generated.constructor_lower_control(self, (color, n), block.control).or_error!(
-    Failure("lower control failed: \{block.control}"),
-  )
+  let critical_edges = succs.iter().flat_map(fn(s) { s.critical_edge().iter() })
+  let critical = critical_edges
+    .map(fn(s) { self.target_color(s.1).0 })
+    .to_array()
+  self.tracer.log("succs: \{succs}")
+  self.tracer.log("critical edges for \{block.id}: \{critical_edges}")
+  self.tracer.log("critical color seq for \{block.id}: \{critical}")
+  @generated.constructor_lower_control(
+    self,
+    { color, seq, critical },
+    block.control,
+  ).or_error!(Failure("lower control failed: \{block.control}"))
   self.finalize_insn()
   let control = self.finalize_basic_block()
   for iref in block.seq.rev() {
@@ -1701,17 +1712,27 @@ fn RiscvFnLoweringCtx::lower(
   self : RiscvFnLoweringCtx
 ) -> (MFn, Liveness)!Failure {
   let blocks = MutMap::new()
-  for block in self.order.order.rev() {
+  let succs = self.order.succs.rev()
+  for i, block in self.order.order.rev() {
     match block {
-      BasicBlock(~bb) => {
-        let color = self.order.color[bb.id].unwrap()
-        let seq_in_color = self.order.color_seq[bb.id].unwrap()
+      BasicBlock(~bref) => {
+        let color = self.order.color[bref].or_else(
+          fn() {
+            self.tracer.abort("No color for \{bref} in \{self.order.color}")
+          },
+        )
+        let seq_in_color = self.order.color_seq[bref].or_else(
+          fn() {
+            self.tracer.abort("No seq for \{bref} in \{self.order.color}")
+          },
+        )
+        let bb = self.ref_block(bref).bb_or_header_bb(self.func)
         blocks.set(
-          self.block_label(bb.id),
-          self.lower_block!(bb, color, seq_in_color),
+          self.block_label(bref),
+          self.lower_block!(bb, succs[i], color, seq_in_color),
         )
       }
-      _ => fail!("Critical edge not supported")
+      _ => ()
     }
   }
   let entry = self.block_label(self.func.entry)

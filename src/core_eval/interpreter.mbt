@@ -659,7 +659,28 @@ fn CoreInterpreter::eval_control(
         _ => fail!("not a boolean condition")
       }
     }
-    Select(..) => fail!("Not implemented")
+    Select(~cond, ~targets, ~args) => {
+      let cond = CoreInterpreter::eval_value!(ctx, cond)
+      match cond {
+        Int32(i) => {
+          let target = if i < 0 {
+            fail!("negative select index")
+          } else if i < targets.length() {
+            targets[i]
+          } else {
+            fail!("select index out of bounds")
+          }
+          let args = CoreInterpreter::eval_values!(ctx, args)
+          let block = match func.blocks.get(target) {
+            Some(block) => block
+            None => return fail!("block not found: \{target}")
+          }
+          let ctx = ctx.set_block_args(target, args)
+          self.eval_block!(ctx, func, block)
+        }
+        _ => fail!("not an integer condition")
+      }
+    }
     Panic => fail!("panic")
   }
 }

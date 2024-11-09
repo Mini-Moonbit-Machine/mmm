@@ -13,9 +13,14 @@ impl ColorFreq {
   op_equal(Self, Self) -> Bool
 }
 
-pub type ColorSeq (Int, Int)
+pub struct ColorSeq {
+  pub color : Int
+  pub seq : Int
+  pub critical : Array[ColorSeq]
+}
 impl ColorSeq {
   op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
 }
 
 pub type Edge (Int, Int)
@@ -26,12 +31,14 @@ impl Edge {
 }
 
 pub enum LoweredBlock {
-  BasicBlock(@core.BasicBlock)
-  CriticalEdge(@core.BasicBlock, @core.BasicBlock, Int)
+  BasicBlock(@core.BlockRef)
+  CriticalEdge(@core.BlockRef, @core.BlockRef, Int)
 }
 impl LoweredBlock {
-  basic_block(Self) -> @core.BasicBlock?
-  critical_edge(Self) -> (@core.BasicBlock, @core.BasicBlock, Int)?
+  basic_block(Self) -> @core.BlockRef?
+  critical_edge(Self) -> (@core.BlockRef, @core.BlockRef, Int)?
+  hash_combine(Self, Hasher) -> Unit
+  op_equal(Self, Self) -> Bool
   to_string(Self) -> String
 }
 
@@ -60,7 +67,7 @@ pub struct PPAllocator {
   pub avail : Int
   pub spilled : @hashmap.T[Int, Int]
   pub spilled_colors : @hashset.T[Int]
-  pub hints : @hashmap.T[Int, Int]
+  pub hints : @hashmap.T[Int, @hashset.T[Int]]
   pub highest_color : Int
 }
 impl PPAllocator {
@@ -95,7 +102,11 @@ pub trait RegToId {
 }
 
 // Extension Methods
+impl Show for ColorSeq
+
 impl Show for Edge
+
+impl Show for LoweredBlock
 
 impl Show for LoweringOrder
 

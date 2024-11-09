@@ -53,13 +53,15 @@ even3.26:
 .even3.26_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  blt a0, zero, .even3.26_2
+  mv a1, a0
+  blt a1, zero, .even3.26_2
 
 .even3.26_1:
-  beq a0, zero, .even3.26_3
+  li a0, 123
+  beq a1, zero, .even3.26_5
 
 .even3.26_4:
-  addi a0, a0, -1
+  addi a0, a1, -1
   call odd6.27
 
 .even3.26_5:
@@ -69,12 +71,8 @@ even3.26:
   addi sp, sp, 16
   ret
 
-.even3.26_3:
-  li a0, 123
-  j .even3.26_5
-
 .even3.26_2:
-  addi a0, a0, 1
+  addi a0, a1, 1
   call odd6.27
   j .even3.26_6
 
@@ -109,13 +107,15 @@ odd6.27:
 .odd6.27_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  blt a0, zero, .odd6.27_2
+  mv a1, a0
+  blt a1, zero, .odd6.27_2
 
 .odd6.27_1:
-  beq a0, zero, .odd6.27_3
+  li a0, 456
+  beq a1, zero, .odd6.27_5
 
 .odd6.27_4:
-  addi a0, a0, -1
+  addi a0, a1, -1
   call even3.26
 
 .odd6.27_5:
@@ -125,12 +125,8 @@ odd6.27:
   addi sp, sp, 16
   ret
 
-.odd6.27_3:
-  li a0, 456
-  j .odd6.27_5
-
 .odd6.27_2:
-  addi a0, a0, 1
+  addi a0, a1, 1
   call even3.26
   j .odd6.27_6
 

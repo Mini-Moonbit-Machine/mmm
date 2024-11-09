@@ -81,7 +81,8 @@ input79.146:
 
 .input79.146_0:
   addi a0, s2, -1
-  blt a0, s1, .input79.146_2
+  mv a1, zero
+  blt a0, s1, .input79.146_3
 
 .input79.146_1:
   call minimbt_read_int
@@ -90,10 +91,8 @@ input79.146:
   mv s1, a0
   j .input79.146_0
 
-.input79.146_2:
-  mv a0, zero
-
 .input79.146_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -127,26 +126,25 @@ output97.147:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
 
 .output97.147_0:
   addi a0, s2, -1
-  blt a0, s1, .output97.147_2
+  mv a1, zero
+  blt a0, s0, .output97.147_3
 
 .output97.147_1:
-  th.lurw a0, s0, s1, 2
+  th.lurw a0, s1, s0, 2
   call minimbt_print_int
   call minimbt_print_endline
-  addi a0, s1, 1
-  mv s1, a0
+  addi a0, s0, 1
+  mv s0, a0
   j .output97.147_0
 
-.output97.147_2:
-  mv a0, zero
-
 .output97.147_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -191,39 +189,42 @@ quicksort59.143:
   sd s3, 32(sp)
   sd s4, 40(sp)
   sd s5, 48(sp)
-  mv s2, a0
-  mv s4, a1
-  mv s3, a2
+  mv s3, a0
+  mv s2, a1
+  mv s4, a2
 
 .quicksort59.143_0:
-  addi a0, s3, -1
-  blt a0, s4, .quicksort59.143_2
+  addi a0, s4, -1
+  mv a1, zero
+  blt a0, s2, .quicksort59.143_3
 
 .quicksort59.143_1:
-  th.lurw a0, s2, s3, 2
-  addi a1, s4, -1
+  th.lurw a0, s3, s4, 2
+  addi a1, s2, -1
   addi s1, s11, -4
   andi s11, s1, -8
   sw a1, 0(s1)
 
 .quicksort59.143_23:
-  mv s0, s4
+  mv s0, s2
   mv s5, a0
 
 .quicksort59.143_15:
-  addi a0, s3, -1
-  blt a0, s0, .quicksort59.143_17
+  addi a0, s4, -1
+  mv a1, zero
+  blt a0, s0, .quicksort59.143_21
 
 .quicksort59.143_16:
-  th.lurw a0, s2, s0, 2
-  blt s5, a0, .quicksort59.143_19
+  th.lurw a1, s3, s0, 2
+  mv a0, zero
+  blt s5, a1, .quicksort59.143_20
 
 .quicksort59.143_18:
   lw a0, 0(s1)
   addi a0, a0, 1
   sw a0, 0(s1)
   lw a1, 0(s1)
-  mv a0, s2
+  mv a0, s3
   mv a2, s0
   call swap1.142
 
@@ -232,36 +233,28 @@ quicksort59.143:
   mv s0, a0
   j .quicksort59.143_15
 
-.quicksort59.143_19:
-  mv a0, zero
-  j .quicksort59.143_20
-
-.quicksort59.143_17:
-  mv a0, zero
-
 .quicksort59.143_21:
+  mv a0, a1
 
 .quicksort59.143_6:
   lw a0, 0(s1)
   addi a0, a0, 1
   sw a0, 0(s1)
   lw a1, 0(s1)
-  mv a0, s2
-  mv a2, s3
+  mv a0, s3
+  mv a2, s4
   call swap1.142
   lw s0, 0(s1)
   addi a2, s0, -1
-  mv a0, s2
-  mv a1, s4
+  mv a0, s3
+  mv a1, s2
   call quicksort59.143
   addi a0, s0, 1
-  mv s4, a0
+  mv s2, a0
   j .quicksort59.143_0
 
-.quicksort59.143_2:
-  mv a0, zero
-
 .quicksort59.143_3:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)

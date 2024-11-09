@@ -118,16 +118,15 @@ do30.85:
   call next9.82
 
 .do30.85_6:
+  mv a2, zero
   li a1, 1
-  bne a0, a1, .do30.85_2
+  bne a0, a1, .do30.85_3
 
 .do30.85_1:
   j .do30.85_0
 
-.do30.85_2:
-  mv a0, zero
-
 .do30.85_3:
+  mv a0, a2
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -154,27 +153,25 @@ next9.82:
 
 .next9.82_0:
   addi a0, s1, -1
-  blt a0, s2, .next9.82_2
+  mv a1, zero
+  blt a0, s2, .next9.82_6
 
 .next9.82_1:
   th.lurw a0, s0, s2, 2
   mv s10, s3
   ld a1, 0(s3)
   jalr a1
+  mv a2, zero
   li a1, 1
-  bne a0, a1, .next9.82_4
+  bne a0, a1, .next9.82_5
 
 .next9.82_3:
   addi a0, s2, 1
   mv s2, a0
   j .next9.82_0
 
-.next9.82_4:
-  mv a0, zero
-
-.next9.82_5:
-
 .next9.82_6:
+  mv a0, a1
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -183,8 +180,8 @@ next9.82:
   addi sp, sp, 48
   ret
 
-.next9.82_2:
-  mv a0, zero
+.next9.82_5:
+  mv a1, a2
   j .next9.82_6
 
   .p2align 2

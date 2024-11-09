@@ -626,13 +626,31 @@ fn build_knf_expr(
       let else_cont = Control::Jump(target=res_bb.id, args=[else_val])
       then_bb.control = then_cont
       else_bb.control = else_cont
-      bb.control = Control::Branch(
-        cond=cond_val,
-        t=then_bb_s.id,
-        t_args=[],
-        f=else_bb_s.id,
-        f_args=[],
-      )
+      let (then_id, then_arg) = if then_bb.id == then_bb_s.id &&
+        then_bb.seq.is_empty() {
+        func.blocks.remove(then_bb.id)
+        (res_bb.id, [then_val])
+      } else {
+        (then_bb_s.id, [])
+      }
+      let (else_id, else_arg) = if else_bb.id == else_bb_s.id &&
+        else_bb.seq.is_empty() {
+        func.blocks.remove(else_bb.id)
+        (res_bb.id, [else_val])
+      } else {
+        (else_bb_s.id, [])
+      }
+      if then_id == else_id && then_arg == else_arg {
+        bb.control = Control::Jump(target=then_id, args=then_arg)
+      } else {
+        bb.control = Control::Branch(
+          cond=cond_val,
+          t=then_id,
+          t_args=then_arg,
+          f=else_id,
+          f_args=else_arg,
+        )
+      }
       (ctx, res_bb, block_param(res_bb.id, 0))
     }
     Let((name, ty), e1, e2) => {

@@ -200,7 +200,8 @@ loop114.233:
   mv s5, a5
 
 .loop114.233_0:
-  blt s0, zero, .loop114.233_2
+  mv a0, zero
+  blt s0, zero, .loop114.233_3
 
 .loop114.233_1:
   addi a2, s3, -1
@@ -214,7 +215,8 @@ loop114.233:
   mv s7, a0
 
 .loop114.233_7:
-  blt s9, zero, .loop114.233_9
+  mv a0, zero
+  blt s9, zero, .loop114.233_10
 
 .loop114.233_8:
   addi a0, s2, -1
@@ -233,18 +235,12 @@ loop114.233:
   mv s9, a0
   j .loop114.233_7
 
-.loop114.233_9:
-  mv a0, zero
-
 .loop114.233_10:
 
 .loop114.233_6:
   addi a0, s0, -1
   mv s0, a0
   j .loop114.233_0
-
-.loop114.233_2:
-  mv a0, zero
 
 .loop114.233_3:
   ld ra, 0(sp)
@@ -270,22 +266,23 @@ init_arr63.232:
 .init_arr63.232_5:
   addi sp, sp, -16
   sd ra, 0(sp)
-  mv a3, a1
-  mv a1, a2
+  mv a3, a0
+  mv a0, a2
+  mv a2, a1
+  mv a1, a0
 
 .init_arr63.232_0:
-  blt a0, zero, .init_arr63.232_2
+  mv a0, zero
+  blt a3, zero, .init_arr63.232_3
 
 .init_arr63.232_1:
-  slliw a2, a1, 3
-  sub a2, s11, a2
-  andi s11, a2, -8
-  th.surd a2, a3, a0, 3
-  addi a0, a0, -1
+  slliw a0, a1, 3
+  sub a0, s11, a0
+  andi s11, a0, -8
+  th.surd a0, a2, a3, 3
+  addi a0, a3, -1
+  mv a3, a0
   j .init_arr63.232_0
-
-.init_arr63.232_2:
-  mv a0, zero
 
 .init_arr63.232_3:
   ld ra, 0(sp)
@@ -335,33 +332,33 @@ minimbt_main:
 # leaf true
 loop322.235:
 .loop322.235_5:
+  mv t4, a0
   mv t3, a1
   mv t2, a2
-  mv a1, a3
   mv t1, a4
   mv a2, a5
-  mv a4, a6
-  mv a6, a7
-  mv a7, t0
-  mv a5, t3
-  mv a3, t2
-  mv t0, t1
+  mv a4, a7
+  mv a0, t0
+  mv a1, t4
+  mv t0, t3
+  mv a5, t2
+  mv a7, a6
+  mv a6, a0
 
 .loop322.235_0:
-  blt a0, zero, .loop322.235_2
+  mv a0, zero
+  blt a1, zero, .loop322.235_3
 
 .loop322.235_1:
-  th.flurd fa0, a6, a2, 3
-  th.flurd fa1, a7, a0, 3
-  th.lurd t1, a3, a0, 3
-  th.flurd fa2, t1, a2, 3
+  th.flurd fa0, a4, a2, 3
+  th.flurd fa1, a6, a1, 3
+  th.lurd a0, a5, a1, 3
+  th.flurd fa2, a0, a2, 3
   fmadd.d fa0, fa1, fa2, fa0
-  th.fsurd fa0, a4, a2, 3
-  addi a0, a0, -1
+  th.fsurd fa0, a7, a2, 3
+  addi a0, a1, -1
+  mv a1, a0
   j .loop322.235_0
-
-.loop322.235_2:
-  mv a0, zero
 
 .loop322.235_3:
   ret

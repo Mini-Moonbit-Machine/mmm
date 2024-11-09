@@ -3,38 +3,44 @@ typealias BlockRef = @core.BlockRef
 typealias BasicBlock = @core.BasicBlock
 
 pub enum LoweredBlock {
-  BasicBlock(~bb : BasicBlock)
-  CriticalEdge(~pred : BasicBlock, ~succ : BasicBlock, ~succ_idx : Int)
-}
+  BasicBlock(~bref : BlockRef)
+  CriticalEdge(~pred : BlockRef, ~succ : BlockRef, ~succ_idx : Int)
+} derive(Hash, Eq)
 
-pub type ColorSeq (Int, Int)
+pub struct ColorSeq {
+  color : Int
+  seq : Int
+  critical : Array[ColorSeq]
+} derive(Show)
 
 pub fn ColorSeq::op_equal(self : ColorSeq, other : ColorSeq) -> Bool {
-  self._.0 == other._.0 && self._.1 < other._.1
+  self.color == other.color &&
+  self.seq < other.seq &&
+  self.critical.filter(fn(cs) { cs.seq == other.seq }).length() == 0
 }
 
 pub fn LoweredBlock::to_string(self : LoweredBlock) -> String {
   match self {
-    LoweredBlock::BasicBlock(~bb) => bb.id.to_string()
+    LoweredBlock::BasicBlock(~bref) => bref.id.to_string()
     LoweredBlock::CriticalEdge(~pred, ~succ, ~succ_idx) =>
       "\{pred.id} -> \{succ.id} (\{succ_idx})"
   }
 }
 
-impl Show for LoweredBlock with output(self, logger) {
+pub impl Show for LoweredBlock with output(self, logger) {
   logger.write_string(LoweredBlock::to_string(self))
 }
 
-pub fn LoweredBlock::basic_block(self : LoweredBlock) -> BasicBlock? {
+pub fn LoweredBlock::basic_block(self : LoweredBlock) -> BlockRef? {
   match self {
-    LoweredBlock::BasicBlock(~bb) => Some(bb)
+    LoweredBlock::BasicBlock(~bref) => Some(bref)
     _ => None
   }
 }
 
 pub fn LoweredBlock::critical_edge(
   self : LoweredBlock
-) -> (BasicBlock, BasicBlock, Int)? {
+) -> (BlockRef, BlockRef, Int)? {
   match self {
     LoweredBlock::CriticalEdge(~pred, ~succ, ~succ_idx) =>
       Some((pred, succ, succ_idx))
@@ -68,13 +74,10 @@ pub fn LoweringOrder::new(
   let block_succs = MutMap::new()
   fn f_bb(bb : @core.BasicBlock) -> Unit {
     let succs = bb.control.successors()
-    let succs = succs.map(
-      fn(bref) {
-        BasicBlock(bb=func.blocks[bref].unwrap().bb_or_header_bb(func))
-      },
-    )
+    let succs = succs.map(fn(bref) { BasicBlock(~bref) })
     for succ in succs {
-      let succ = succ.basic_block().unwrap()
+      let succ_bref = succ.basic_block().unwrap()
+      let succ = func.blocks.get(succ_bref).unwrap().bb_or_header_bb(func)
       block_in_count[succ.id] = block_in_count[succ.id].unwrap() + 1
     }
     block_out_count[bb.id] = block_out_count[bb.id].unwrap() + succs.length()
@@ -83,15 +86,16 @@ pub fn LoweringOrder::new(
 
   ordered_blocks._.each(f_bb)
   for bb in ordered_blocks._ {
-    order.push(BasicBlock(~bb))
+    order.push(BasicBlock(bref=bb.id))
     // This block has multiple successors.
     if block_out_count[bb.id].unwrap() > 1 {
       let succs = block_succs[bb.id].unwrap()
       for succ_idx, succ in succs {
-        let succ = succ.basic_block().unwrap()
+        let succ_bref = succ.basic_block().unwrap()
+        let succ = func.blocks.get(succ_bref).unwrap().bb_or_header_bb(func)
         // The successor has multiple predecessors.
         if block_in_count[succ.id].unwrap() > 1 {
-          let ce = CriticalEdge(pred=bb, ~succ, ~succ_idx)
+          let ce = CriticalEdge(pred=bb.id, succ=succ_bref, ~succ_idx)
           succs[succ_idx] = ce
           order.push(ce)
         }
@@ -99,13 +103,18 @@ pub fn LoweringOrder::new(
     }
   }
   let succs = []
-  for bb in order {
-    match bb {
-      BasicBlock(~bb) => {
-        let t = block_succs[bb.id].unwrap()
+  let succs_map = MutMap::new()
+  for lb in order {
+    match lb {
+      BasicBlock(~bref) => {
+        let t = block_succs[bref].unwrap()
         succs.push(t)
+        succs_map.set(lb, t)
       }
-      CriticalEdge(~succ, ..) => succs.push([BasicBlock(bb=succ)])
+      CriticalEdge(~succ, ..) => {
+        succs.push([BasicBlock(bref=succ)])
+        succs_map.set(lb, [BasicBlock(bref=succ)])
+      }
     }
   }
   fn bb_metric(bb : @core.BasicBlock) -> Int {
@@ -123,39 +132,56 @@ pub fn LoweringOrder::new(
   let colored = MutMap::new()
   let seq = []
   let color_seq = MutMap::new()
-  fn mark_bb(bb : @core.BasicBlock, color : Int, n : Int) {
+  fn mark_bb(bb : BasicBlock, color : Int, n : Int) {
     if colored.contains(bb.id) {
       return
     }
     seq.push(bb.id)
     colored.set(bb.id, color)
     color_seq.set(bb.id, n)
-    let succs = bb.control.successors()
-    let succs = succs.map(
-      fn(bref) { func.blocks[bref].unwrap().bb_or_header_bb(func) },
-    )
+    let succs = succs_map[BasicBlock(bref=bb.id)].unwrap()
     let mut value = -1
     let mut selected_bb = None
     for succ in succs {
-      let succ_value = bb_metric(succ)
-      if succ_value > value && colored.contains(succ.id) == false {
-        value = succ_value
-        selected_bb = Some(succ)
+      match succ {
+        BasicBlock(~bref) => {
+          let succ = func.blocks.get(bref).unwrap().bb_or_header_bb(func)
+          let succ_value = bb_metric(succ)
+          if succ_value > value && colored.contains(succ.id) == false {
+            value = succ_value
+            selected_bb = Some(succ)
+          }
+        }
+        CriticalEdge(~succ, ..) =>
+          if colored.contains(succ) == false {
+            let bb = func.blocks.get(succ).unwrap().bb_or_header_bb(func)
+            worklist.push(bb)
+          }
       }
     }
     match selected_bb {
       Some(sbb) => {
         mark_bb(sbb, color, n + 1)
         for succ in succs {
-          if colored.contains(succ.id) == false && succ.id != sbb.id {
-            worklist.push(succ)
+          match succ {
+            BasicBlock(~bref) =>
+              if colored.contains(bref) == false && bref != sbb.id {
+                let bb = func.blocks.get(bref).unwrap().bb_or_header_bb(func)
+                worklist.push(bb)
+              }
+            _ => ()
           }
         }
       }
       None =>
         for succ in succs {
-          if colored.contains(succ.id) == false {
-            worklist.push(succ)
+          match succ {
+            BasicBlock(~bref) =>
+              if colored.contains(bref) == false {
+                let bb = func.blocks.get(bref).unwrap().bb_or_header_bb(func)
+                worklist.push(bb)
+              }
+            _ => ()
           }
         }
     }
@@ -168,5 +194,10 @@ pub fn LoweringOrder::new(
     mark_bb(bb, used_color, 0)
     used_color += 1
   }
+  tracer.println("LoweringOrder: \{order}")
+  tracer.println("LoweringOrder: \{succs}")
+  tracer.println("LoweringOrder: \{colored}")
+  tracer.println("LoweringOrder: \{seq}")
+  tracer.println("LoweringOrder: \{color_seq}")
   { order, succs, color: colored, seq, color_seq }
 }

@@ -25,39 +25,37 @@ calc_pixel7.113:
   fld fa6, c_re.5, t5
   fld fa7, limit_sq.2, t5
   fmv.d fa4, fa0
+  mv a1, a0
 
 .calc_pixel7.113_0:
   fmul.d fa3, fa4, fa4
   fmul.d fa5, fa1, fa1
-  li a1, 300
-  beq a0, a1, .calc_pixel7.113_1
+  li a0, 300
+  beq a1, a0, .calc_pixel7.113_6
 
 .calc_pixel7.113_2:
   fadd.d fa0, fa3, fa5
-  fle.d a1, fa7, fa0
-  bne a1, zero, .calc_pixel7.113_3
+  fle.d a0, fa7, fa0
+  bne a0, zero, .calc_pixel7.113_5
 
 .calc_pixel7.113_4:
-  li a1, 4611686018427387904
-  fmv.d.x fa0, a1
+  li a0, 4611686018427387904
+  fmv.d.x fa0, a0
   fmul.d fa0, fa0, fa4
   fmadd.d fa0, fa0, fa1, fa2
   fsub.d fa1, fa3, fa5
   fadd.d fa1, fa1, fa6
-  addi a0, a0, 1
+  addi a0, a1, 1
   fmv.d fa4, fa1
   fmv.d fa1, fa0
+  mv a1, a0
   j .calc_pixel7.113_0
-
-.calc_pixel7.113_3:
-
-.calc_pixel7.113_5:
 
 .calc_pixel7.113_6:
   ret
 
-.calc_pixel7.113_1:
-  li a0, 300
+.calc_pixel7.113_5:
+  mv a0, a1
   j .calc_pixel7.113_6
 
   .p2align 2
@@ -85,7 +83,8 @@ main_loop30.114:
   fmv.d fs1, fa1
 
 .main_loop30.114_0:
-  beq s3, s1, .main_loop30.114_1
+  mv a0, zero
+  beq s3, s1, .main_loop30.114_12
 
 .main_loop30.114_2:
   beq s0, s4, .main_loop30.114_3
@@ -112,28 +111,22 @@ main_loop30.114:
   call calc_pixel7.113
   mul a1, s3, s4
   add a1, a1, s0
-  bge zero, a0, .main_loop30.114_5
+  mv a2, zero
+  bge zero, a0, .main_loop30.114_10
 
 .main_loop30.114_6:
   li a2, 48
-  blt a0, a2, .main_loop30.114_8
-
-.main_loop30.114_7:
-  li a0, 48
-
-.main_loop30.114_9:
+  bge a0, a2, .main_loop30.114_9
+  mv a2, a0
+  j .main_loop30.114_9
 
 .main_loop30.114_10:
-  th.surw a0, s2, a1, 2
+  th.surw a2, s2, a1, 2
   addi a0, s0, 1
   mv s0, a0
   j .main_loop30.114_0
 
-.main_loop30.114_8:
-  j .main_loop30.114_9
-
-.main_loop30.114_5:
-  mv a0, zero
+.main_loop30.114_9:
   j .main_loop30.114_10
 
 .main_loop30.114_3:
@@ -141,9 +134,6 @@ main_loop30.114:
   mv s0, zero
   mv s3, a0
   j .main_loop30.114_0
-
-.main_loop30.114_1:
-  mv a0, zero
 
 .main_loop30.114_12:
   ld ra, 0(sp)
@@ -273,7 +263,8 @@ print_loop68.115:
   mv s0, a4
 
 .print_loop68.115_0:
-  beq s1, s3, .print_loop68.115_1
+  mv a0, zero
+  beq s1, s3, .print_loop68.115_6
 
 .print_loop68.115_2:
   beq s4, s2, .print_loop68.115_3
@@ -295,9 +286,6 @@ print_loop68.115:
   mv s4, zero
   mv s1, a0
   j .print_loop68.115_0
-
-.print_loop68.115_1:
-  mv a0, zero
 
 .print_loop68.115_6:
   ld ra, 0(sp)

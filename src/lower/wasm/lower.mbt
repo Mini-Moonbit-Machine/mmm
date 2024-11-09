@@ -675,11 +675,11 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   let branch_index = []
   for i, block in order.iter2() {
     match block {
-      BasicBlock(~bb) => {
-        branch_table_index.set(bb.id, LabelIndex(i))
+      BasicBlock(~bref) => {
+        branch_table_index.set(bref, LabelIndex(i))
         branch_index.push(LabelIndex(i))
       }
-      _ => self.tracer.abort("Critical edge not supported")
+      _ => continue
     }
   }
   // set full through branch
@@ -701,7 +701,7 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   for block in order {
     match block {
       BasicBlock(..) => self.buffer.push(Block)
-      _ => self.tracer.abort("Critical edge not supported")
+      _ => continue
     }
   }
 
@@ -712,11 +712,15 @@ pub fn WasmFnLoweringCtx::lower(self : WasmFnLoweringCtx) -> MFn {
   self.buffer.push(End)
   for block in order {
     match block {
-      BasicBlock(~bb) => {
-        self.emit_wasm(Comment(comment="block \{bb.id}"))
+      BasicBlock(~bref) => {
+        self.emit_wasm(Comment(comment="block \{bref}"))
+        let bb = self.func.blocks
+          .get(bref)
+          .or_else(fn() { self.tracer.abort("Block not found") })
+        let bb = bb.bb_or_header_bb(self.func)
         self.lower_block(bb, branch_table_index)
       }
-      _ => self.tracer.abort("Critical edge not supported")
+      _ => continue
     }
   }
   self.buffer.push(Comment(comment="end loop"))

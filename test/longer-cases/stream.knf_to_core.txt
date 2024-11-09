@@ -103,10 +103,7 @@
     let %1: int32 = load int32 field(%0, 0 * @(@32, @(@32, @32)))
     let %2: int32 = load int32 field(%0, 1 * @(@32, @(@32, @32)))
     let %3: bool = eq(%1, 0)
-    br %3 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3($f2)
+    br %3 b3($f2) b2()
   }
   .bb #b2 () {
     let %4: int32 = apply $f1($f2, %2)
@@ -122,13 +119,7 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = le(^1, $f0)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(0)
-  }
-  .bb #b2 () {
-    jump b3(1)
+    br %0 b3(0) b3(1)
   }
   .bb #b3 (int32) {
     return $b3.0
@@ -139,13 +130,7 @@
 .entry b0 {
   .bb #b0 () {
     let %0: bool = le($f0, ^1)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b3(0)
-  }
-  .bb #b2 () {
-    jump b3(1)
+    br %0 b3(0) b3(1)
   }
   .bb #b3 (int32) {
     return $b3.0

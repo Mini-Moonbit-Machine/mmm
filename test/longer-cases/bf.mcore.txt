@@ -112,28 +112,24 @@ read_ch_until_newline_or_eof1.262:
   addi sp, sp, -16
   sd ra, 0(sp)
   call minimbt_read_char
-  li a1, 10
-  beq a0, a1, .read_ch_until_newline_or_eof1.262_1
+  mv a1, a0
+  li a0, -1
+  li a2, 10
+  beq a1, a2, .read_ch_until_newline_or_eof1.262_6
 
 .read_ch_until_newline_or_eof1.262_2:
-  li a1, 13
-  bne a0, a1, .read_ch_until_newline_or_eof1.262_4
-
-.read_ch_until_newline_or_eof1.262_3:
   li a0, -1
-
-.read_ch_until_newline_or_eof1.262_5:
+  li a0, 13
+  beq a1, a0, .read_ch_until_newline_or_eof1.262_5
+  mv a0, a1
+  j .read_ch_until_newline_or_eof1.262_5
 
 .read_ch_until_newline_or_eof1.262_6:
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
-.read_ch_until_newline_or_eof1.262_4:
-  j .read_ch_until_newline_or_eof1.262_5
-
-.read_ch_until_newline_or_eof1.262_1:
-  li a0, -1
+.read_ch_until_newline_or_eof1.262_5:
   j .read_ch_until_newline_or_eof1.262_6
 
   .p2align 2
@@ -174,18 +170,19 @@ aux46.266:
   sd s4, 40(sp)
   sd s5, 48(sp)
   sd s6, 56(sp)
-  mv s0, a0
-  mv s5, a1
-  mv s2, a2
-  mv s1, a3
-  mv s4, a4
-  mv s3, a5
+  mv s5, a0
+  mv s4, a1
+  mv s1, a2
+  mv s0, a3
+  mv s3, a4
+  mv s2, a5
 
 .aux46.266_0:
-  bge s0, s2, .aux46.266_1
+  mv a0, s5
+  bge s5, s1, .aux46.266_27
 
 .aux46.266_2:
-  th.lurw a1, s1, s0, 2
+  th.lurw a1, s0, s5, 2
   li a0, 62
   beq a1, a0, .aux46.266_3
 
@@ -211,14 +208,71 @@ aux46.266:
 
 .aux46.266_14:
   li a0, 91
-  beq a1, a0, .aux46.266_15
+  bne a1, a0, .aux46.266_16
+
+.aux46.266_15:
+  sw s5, 0(s2)
+
+.aux46.266_54:
+
+.aux46.266_49:
+  lw a0, 0(s4)
+  th.lurw a0, s3, a0, 2
+  beq a0, zero, .aux46.266_50
+
+.aux46.266_51:
+  addi a0, s5, 1
+  mv a1, s4
+  mv a2, s1
+  mv a3, s0
+  mv a4, s3
+  mv a5, s2
+  call aux46.266
+  sw a0, 0(s2)
+  j .aux46.266_49
+
+.aux46.266_27:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  ld s3, 32(sp)
+  ld s4, 40(sp)
+  ld s5, 48(sp)
+  ld s6, 56(sp)
+  addi sp, sp, 64
+  ret
+
+.aux46.266_50:
+  addi a0, s5, 1
+
+.aux46.266_72:
+  mv a1, zero
+  mv a2, s1
+  mv a3, s0
+
+.aux46.266_58:
+  bge a0, a2, .aux46.266_70
+
+.aux46.266_60:
+  th.lurw a4, a3, a0, 2
+  li a5, 91
+  beq a4, a5, .aux46.266_61
+
+.aux46.266_62:
+  li a5, 93
+  bne a4, a5, .aux46.266_64
+
+.aux46.266_63:
+  beq a1, zero, .aux46.266_67
+
+.aux46.266_66:
+  addi a0, a0, 1
+  addi a1, a1, -1
+  j .aux46.266_58
 
 .aux46.266_16:
-  li a0, 93
-  bne a1, a0, .aux46.266_18
-
-.aux46.266_17:
-  mv a0, s0
+  mv a0, s5
 
 .aux46.266_19:
 
@@ -235,147 +289,78 @@ aux46.266:
 .aux46.266_25:
 
 .aux46.266_26:
-
-.aux46.266_27:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  ld s3, 32(sp)
-  ld s4, 40(sp)
-  ld s5, 48(sp)
-  ld s6, 56(sp)
-  addi sp, sp, 64
-  ret
-
-.aux46.266_18:
-  mv a0, s0
-  j .aux46.266_19
-
-.aux46.266_15:
-  sw s0, 0(s3)
-
-.aux46.266_54:
-
-.aux46.266_49:
-  lw a0, 0(s5)
-  th.lurw a0, s4, a0, 2
-  beq a0, zero, .aux46.266_50
-
-.aux46.266_51:
-  addi a0, s0, 1
-  mv a1, s5
-  mv a2, s2
-  mv a3, s1
-  mv a4, s4
-  mv a5, s3
-  call aux46.266
-  sw a0, 0(s3)
-  j .aux46.266_49
+  j .aux46.266_27
 
 .aux46.266_13:
-  lw s6, 0(s5)
+  lw s6, 0(s4)
   call read_ch_until_newline_or_eof1.262
-  th.surw a0, s4, s6, 2
-  addi a0, s0, 1
-  mv s0, a0
+  th.surw a0, s3, s6, 2
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
 .aux46.266_11:
-  lw a0, 0(s5)
-  th.lurw a0, s4, a0, 2
+  lw a0, 0(s4)
+  th.lurw a0, s3, a0, 2
   call minimbt_print_char
-  addi a0, s0, 1
-  mv s0, a0
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
 .aux46.266_9:
-  lw a0, 0(s5)
-  th.lurw a1, s4, a0, 2
+  lw a0, 0(s4)
+  th.lurw a1, s3, a0, 2
   addi a1, a1, -1
-  th.surw a1, s4, a0, 2
-  addi a0, s0, 1
-  mv s0, a0
+  th.surw a1, s3, a0, 2
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
 .aux46.266_7:
-  lw a0, 0(s5)
-  th.lurw a1, s4, a0, 2
+  lw a0, 0(s4)
+  th.lurw a1, s3, a0, 2
   addi a1, a1, 1
-  th.surw a1, s4, a0, 2
-  addi a0, s0, 1
-  mv s0, a0
+  th.surw a1, s3, a0, 2
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
 .aux46.266_5:
-  lw a0, 0(s5)
+  lw a0, 0(s4)
   addi a0, a0, -1
-  sw a0, 0(s5)
-  addi a0, s0, 1
-  mv s0, a0
+  sw a0, 0(s4)
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
 .aux46.266_3:
-  lw a0, 0(s5)
+  lw a0, 0(s4)
   addi a0, a0, 1
-  sw a0, 0(s5)
-  addi a0, s0, 1
-  mv s0, a0
+  sw a0, 0(s4)
+  addi a0, s5, 1
+  mv s5, a0
   j .aux46.266_0
 
-.aux46.266_1:
-  mv a0, s0
-  j .aux46.266_27
+.aux46.266_70:
 
-.aux46.266_50:
-  addi a0, s0, 1
+.aux46.266_55:
+  sw a0, 0(s2)
+  mv a0, zero
 
-.aux46.266_72:
-  mv a1, zero
-  mv a2, s2
-  mv a3, s1
+.aux46.266_52:
 
-.aux46.266_58:
-  bge a0, a2, .aux46.266_59
-
-.aux46.266_60:
-  th.lurw a4, a3, a0, 2
-  li a5, 91
-  beq a4, a5, .aux46.266_61
-
-.aux46.266_62:
-  li a5, 93
-  bne a4, a5, .aux46.266_64
-
-.aux46.266_63:
-  beq a1, zero, .aux46.266_65
-
-.aux46.266_66:
+.aux46.266_30:
+  lw a0, 0(s2)
   addi a0, a0, 1
-  addi a1, a1, -1
-  j .aux46.266_58
-
-.aux46.266_65:
+  mv s5, a0
+  j .aux46.266_0
 
 .aux46.266_67:
 
 .aux46.266_68:
 
 .aux46.266_69:
-
-.aux46.266_70:
-
-.aux46.266_55:
-  sw a0, 0(s3)
-  mv a0, zero
-
-.aux46.266_52:
-
-.aux46.266_30:
-  lw a0, 0(s3)
-  addi a0, a0, 1
-  mv s0, a0
-  j .aux46.266_0
+  j .aux46.266_70
 
 .aux46.266_64:
   addi a0, a0, 1
@@ -385,9 +370,6 @@ aux46.266:
   addi a0, a0, 1
   addi a1, a1, 1
   j .aux46.266_58
-
-.aux46.266_59:
-  j .aux46.266_70
 
 __end_text:
   .p2align 2
