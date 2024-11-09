@@ -54,6 +54,7 @@ pub trait Context {
   emit_block_parameters(Self, @core.BlockRef, @core.Values) -> Unit
   emit_fake_epilogue(Self) -> Unit
   target_color(Self, @core.BlockRef) -> (@lower.ColorSeq, @core.BlockRef)
+  lower_select(Self, @core.Control) -> Unit
   not_double(Self, @core.Value) -> @core.Value?
   power_of_two(Self, @core.Value) -> Int?
   power_of_two_minus_one(Self, Int) -> Int
@@ -1587,202 +1588,202 @@ pub fn constructor_lower_control[C : Context](
   arg1 : @core.Control
 ) -> Unit? {
   match arg1 {
-    @core.Control::Jump(target=v2, args=v3) => {
-      let v8 = C::target_color(ctx, v2)
-      if arg0 == v8.0 {
-        let v11 = C::emit_block_parameters(ctx, v8.1, v3)
-        let v12 = Some(v11)
-        // Rule at src/lower/riscv/lower.isle line 101.
-        return v12
+    @core.Control::Jump(target=v7, args=v8) => {
+      let v13 = C::target_color(ctx, v7)
+      if arg0 == v13.0 {
+        let v16 = C::emit_block_parameters(ctx, v13.1, v8)
+        let v17 = Some(v16)
+        // Rule at src/lower/riscv/lower.isle line 107.
+        return v17
       }
-      let v4 = C::emit_block_parameters(ctx, v2, v3)
-      let v5 = C::block_label(ctx, v2)
-      let v6 = constructor_rv_j(ctx, v5)
-      let v7 = Some(v6)
-      // Rule at src/lower/riscv/lower.isle line 97.
-      return v7
+      let v9 = C::emit_block_parameters(ctx, v7, v8)
+      let v10 = C::block_label(ctx, v7)
+      let v11 = constructor_rv_j(ctx, v10)
+      let v12 = Some(v11)
+      // Rule at src/lower/riscv/lower.isle line 103.
+      return v12
     }
-    @core.Control::Return(args=v13) => {
-      let v14 = C::values_to_args(ctx, v13)
-      match v14 {
-        Some(v15) =>
-          match v15 {
-            Args::Args1(arg1=v22) => {
-              let v23 = C::has_type(ctx, v22)
-              match v23.1 {
+    @core.Control::Return(args=v18) => {
+      let v19 = C::values_to_args(ctx, v18)
+      match v19 {
+        Some(v20) =>
+          match v20 {
+            Args::Args1(arg1=v27) => {
+              let v28 = C::has_type(ctx, v27)
+              match v28.1 {
                 @core.Type::Double => {
-                  let v26 = constructor_lower_value(ctx, v23.0)
-                  let v27 = C::freg_new(ctx, v26)
-                  let v28 = C::float_return_reg(ctx)
-                  let v29 = constructor_rv_fmv_to(ctx, v28, v27)
-                  let v30 = C::emit_fake_epilogue(ctx)
-                  let v31 = constructor_rv_fret(ctx)
-                  let v32 = Some(v31)
-                  // Rule at src/lower/riscv/lower.isle line 109.
-                  return v32
+                  let v31 = constructor_lower_value(ctx, v28.0)
+                  let v32 = C::freg_new(ctx, v31)
+                  let v33 = C::float_return_reg(ctx)
+                  let v34 = constructor_rv_fmv_to(ctx, v33, v32)
+                  let v35 = C::emit_fake_epilogue(ctx)
+                  let v36 = constructor_rv_fret(ctx)
+                  let v37 = Some(v36)
+                  // Rule at src/lower/riscv/lower.isle line 115.
+                  return v37
                 }
                 _ => ()
               }
-              let v33 = constructor_lower_value(ctx, v22)
-              let v34 = C::xreg_new(ctx, v33)
-              let v35 = C::return_reg(ctx)
-              let v36 = constructor_rv_mv_to(ctx, v35, v34)
-              let v30 = C::emit_fake_epilogue(ctx)
-              let v37 = constructor_rv_xret(ctx)
-              let v38 = Some(v37)
-              // Rule at src/lower/riscv/lower.isle line 115.
-              return v38
+              let v38 = constructor_lower_value(ctx, v27)
+              let v39 = C::xreg_new(ctx, v38)
+              let v40 = C::return_reg(ctx)
+              let v41 = constructor_rv_mv_to(ctx, v40, v39)
+              let v35 = C::emit_fake_epilogue(ctx)
+              let v42 = constructor_rv_xret(ctx)
+              let v43 = Some(v42)
+              // Rule at src/lower/riscv/lower.isle line 121.
+              return v43
             }
             Args::Args0 => {
-              let v16 = C::return_reg(ctx)
-              let v17 = C::zero_reg(ctx)
-              let v18 = constructor_rv_mv_to(ctx, v16, v17)
-              let v19 = C::emit_fake_epilogue(ctx)
-              let v20 = constructor_rv_xret(ctx)
-              let v21 = Some(v20)
-              // Rule at src/lower/riscv/lower.isle line 104.
-              return v21
+              let v21 = C::return_reg(ctx)
+              let v22 = C::zero_reg(ctx)
+              let v23 = constructor_rv_mv_to(ctx, v21, v22)
+              let v24 = C::emit_fake_epilogue(ctx)
+              let v25 = constructor_rv_xret(ctx)
+              let v26 = Some(v25)
+              // Rule at src/lower/riscv/lower.isle line 110.
+              return v26
             }
             _ => ()
           }
         _ => ()
       }
     }
-    @core.Control::Branch(cond=v39, t=v40, t_args=v41, f=v42, f_args=v43) => {
-      match v39 {
-        @core.Value::Bool(val=v66) =>
-          match v66 {
+    @core.Control::Branch(cond=v44, t=v45, t_args=v46, f=v47, f_args=v48) => {
+      match v44 {
+        @core.Value::Bool(val=v71) =>
+          match v71 {
             true => {
-              let v58 = C::target_color(ctx, v40)
-              if arg0 == v58.0 {
-                let v71 = C::emit_block_parameters(ctx, v58.1, v41)
-                let v72 = Some(v71)
-                // Rule at src/lower/riscv/lower.isle line 144.
-                return v72
+              let v63 = C::target_color(ctx, v45)
+              if arg0 == v63.0 {
+                let v76 = C::emit_block_parameters(ctx, v63.1, v46)
+                let v77 = Some(v76)
+                // Rule at src/lower/riscv/lower.isle line 150.
+                return v77
               }
-              let v67 = C::emit_block_parameters(ctx, v40, v41)
-              let v68 = C::block_label(ctx, v40)
-              let v69 = constructor_rv_j(ctx, v68)
-              let v70 = Some(v69)
-              // Rule at src/lower/riscv/lower.isle line 140.
-              return v70
+              let v72 = C::emit_block_parameters(ctx, v45, v46)
+              let v73 = C::block_label(ctx, v45)
+              let v74 = constructor_rv_j(ctx, v73)
+              let v75 = Some(v74)
+              // Rule at src/lower/riscv/lower.isle line 146.
+              return v75
             }
             false => {
-              let v53 = C::target_color(ctx, v42)
-              if arg0 == v53.0 {
-                let v74 = C::emit_block_parameters(ctx, v53.1, v43)
-                let v75 = Some(v74)
-                // Rule at src/lower/riscv/lower.isle line 151.
-                return v75
+              let v58 = C::target_color(ctx, v47)
+              if arg0 == v58.0 {
+                let v79 = C::emit_block_parameters(ctx, v58.1, v48)
+                let v80 = Some(v79)
+                // Rule at src/lower/riscv/lower.isle line 157.
+                return v80
               }
-              let v73 = C::emit_block_parameters(ctx, v42, v43)
-              let v68 = C::block_label(ctx, v40)
-              let v69 = constructor_rv_j(ctx, v68)
-              let v70 = Some(v69)
-              // Rule at src/lower/riscv/lower.isle line 147.
-              return v70
+              let v78 = C::emit_block_parameters(ctx, v47, v48)
+              let v73 = C::block_label(ctx, v45)
+              let v74 = constructor_rv_j(ctx, v73)
+              let v75 = Some(v74)
+              // Rule at src/lower/riscv/lower.isle line 153.
+              return v75
             }
             _ => ()
           }
-        @core.Value::Insn(iref=v76) => {
-          let v77 = C::ref_insn(ctx, v76)
-          match v77 {
-            @core.Insn::Op(ty=v78, op=v79, args=v80) =>
-              match v78 {
+        @core.Value::Insn(iref=v81) => {
+          let v82 = C::ref_insn(ctx, v81)
+          match v82 {
+            @core.Insn::Op(ty=v83, op=v84, args=v85) =>
+              match v83 {
                 @core.Type::Bool =>
-                  match v79 {
+                  match v84 {
                     @core.Op::Eq => {
-                      let v81 = C::values_to_args(ctx, v80)
-                      match v81 {
-                        Some(v82) =>
-                          match v82 {
-                            Args::Args2(arg1=v83, arg2=v84) => {
-                              let v85 = C::not_double(ctx, v83)
-                              match v85 {
-                                Some(v86) => {
-                                  let v87 = C::not_double(ctx, v84)
-                                  match v87 {
-                                    Some(v88) => {
-                                      let v53 = C::target_color(ctx, v42)
-                                      if arg0 == v53.0 {
-                                        let v67 = C::emit_block_parameters(
-                                          ctx, v40, v41,
-                                        )
-                                        let v89 = constructor_lower_value(
-                                          ctx, v86,
-                                        )
-                                        let v90 = C::xreg_new(ctx, v89)
-                                        let v91 = constructor_lower_value(
-                                          ctx, v88,
-                                        )
-                                        let v92 = C::xreg_new(ctx, v91)
-                                        let v93 = C::block_label(ctx, v40)
-                                        let v94 = constructor_rv_beq(
-                                          ctx, v90, v92, v93,
-                                        )
-                                        let v103 = C::emit_block_parameters(
-                                          ctx,
-                                          v53.1,
-                                          v43,
-                                        )
-                                        let v104 = C::emit_block_parameters(
-                                          ctx,
-                                          v53.1,
-                                          v43,
-                                        )
-                                        let v105 = Some(v104)
-                                        // Rule at src/lower/riscv/lower.isle line 178.
-                                        return v105
-                                      }
-                                      let v58 = C::target_color(ctx, v40)
+                      let v86 = C::values_to_args(ctx, v85)
+                      match v86 {
+                        Some(v87) =>
+                          match v87 {
+                            Args::Args2(arg1=v88, arg2=v89) => {
+                              let v90 = C::not_double(ctx, v88)
+                              match v90 {
+                                Some(v91) => {
+                                  let v92 = C::not_double(ctx, v89)
+                                  match v92 {
+                                    Some(v93) => {
+                                      let v58 = C::target_color(ctx, v47)
                                       if arg0 == v58.0 {
-                                        let v73 = C::emit_block_parameters(
-                                          ctx, v42, v43,
+                                        let v72 = C::emit_block_parameters(
+                                          ctx, v45, v46,
                                         )
-                                        let v89 = constructor_lower_value(
-                                          ctx, v86,
+                                        let v94 = constructor_lower_value(
+                                          ctx, v91,
                                         )
-                                        let v90 = C::xreg_new(ctx, v89)
-                                        let v91 = constructor_lower_value(
-                                          ctx, v88,
+                                        let v95 = C::xreg_new(ctx, v94)
+                                        let v96 = constructor_lower_value(
+                                          ctx, v93,
                                         )
-                                        let v92 = C::xreg_new(ctx, v91)
-                                        let v99 = C::block_label(ctx, v42)
-                                        let v100 = constructor_rv_bne(
-                                          ctx, v90, v92, v99,
+                                        let v97 = C::xreg_new(ctx, v96)
+                                        let v98 = C::block_label(ctx, v45)
+                                        let v99 = constructor_rv_beq(
+                                          ctx, v95, v97, v98,
                                         )
-                                        let v101 = C::emit_block_parameters(
+                                        let v108 = C::emit_block_parameters(
                                           ctx,
                                           v58.1,
-                                          v41,
+                                          v48,
                                         )
-                                        let v102 = Some(v101)
-                                        // Rule at src/lower/riscv/lower.isle line 169.
-                                        return v102
+                                        let v109 = C::emit_block_parameters(
+                                          ctx,
+                                          v58.1,
+                                          v48,
+                                        )
+                                        let v110 = Some(v109)
+                                        // Rule at src/lower/riscv/lower.isle line 184.
+                                        return v110
                                       }
-                                      let v67 = C::emit_block_parameters(
-                                        ctx, v40, v41,
+                                      let v63 = C::target_color(ctx, v45)
+                                      if arg0 == v63.0 {
+                                        let v78 = C::emit_block_parameters(
+                                          ctx, v47, v48,
+                                        )
+                                        let v94 = constructor_lower_value(
+                                          ctx, v91,
+                                        )
+                                        let v95 = C::xreg_new(ctx, v94)
+                                        let v96 = constructor_lower_value(
+                                          ctx, v93,
+                                        )
+                                        let v97 = C::xreg_new(ctx, v96)
+                                        let v104 = C::block_label(ctx, v47)
+                                        let v105 = constructor_rv_bne(
+                                          ctx, v95, v97, v104,
+                                        )
+                                        let v106 = C::emit_block_parameters(
+                                          ctx,
+                                          v63.1,
+                                          v46,
+                                        )
+                                        let v107 = Some(v106)
+                                        // Rule at src/lower/riscv/lower.isle line 175.
+                                        return v107
+                                      }
+                                      let v72 = C::emit_block_parameters(
+                                        ctx, v45, v46,
                                       )
-                                      let v89 = constructor_lower_value(
-                                        ctx, v86,
+                                      let v94 = constructor_lower_value(
+                                        ctx, v91,
                                       )
-                                      let v90 = C::xreg_new(ctx, v89)
-                                      let v91 = constructor_lower_value(
-                                        ctx, v88,
+                                      let v95 = C::xreg_new(ctx, v94)
+                                      let v96 = constructor_lower_value(
+                                        ctx, v93,
                                       )
-                                      let v92 = C::xreg_new(ctx, v91)
-                                      let v93 = C::block_label(ctx, v40)
-                                      let v94 = constructor_rv_beq(
-                                        ctx, v90, v92, v93,
+                                      let v97 = C::xreg_new(ctx, v96)
+                                      let v98 = C::block_label(ctx, v45)
+                                      let v99 = constructor_rv_beq(
+                                        ctx, v95, v97, v98,
                                       )
-                                      let v95 = C::emit_block_parameters(
-                                        ctx, v42, v43,
+                                      let v100 = C::emit_block_parameters(
+                                        ctx, v47, v48,
                                       )
-                                      let v96 = C::block_label(ctx, v42)
-                                      let v97 = constructor_rv_j(ctx, v96)
-                                      let v98 = Some(v97)
-                                      // Rule at src/lower/riscv/lower.isle line 159.
-                                      return v98
+                                      let v101 = C::block_label(ctx, v47)
+                                      let v102 = constructor_rv_j(ctx, v101)
+                                      let v103 = Some(v102)
+                                      // Rule at src/lower/riscv/lower.isle line 165.
+                                      return v103
                                     }
                                     _ => ()
                                   }
@@ -1796,97 +1797,97 @@ pub fn constructor_lower_control[C : Context](
                       }
                     }
                     @core.Op::Le => {
-                      let v81 = C::values_to_args(ctx, v80)
-                      match v81 {
-                        Some(v82) =>
-                          match v82 {
-                            Args::Args2(arg1=v83, arg2=v84) => {
-                              let v85 = C::not_double(ctx, v83)
-                              match v85 {
-                                Some(v86) => {
-                                  let v87 = C::not_double(ctx, v84)
-                                  match v87 {
-                                    Some(v88) => {
-                                      let v53 = C::target_color(ctx, v42)
-                                      if arg0 == v53.0 {
-                                        let v67 = C::emit_block_parameters(
-                                          ctx, v40, v41,
-                                        )
-                                        let v106 = constructor_lower_value(
-                                          ctx, v88,
-                                        )
-                                        let v107 = C::xreg_new(ctx, v106)
-                                        let v108 = constructor_lower_value(
-                                          ctx, v86,
-                                        )
-                                        let v109 = C::xreg_new(ctx, v108)
-                                        let v93 = C::block_label(ctx, v40)
-                                        let v110 = constructor_rv_bge(
-                                          ctx, v107, v109, v93,
-                                        )
-                                        let v103 = C::emit_block_parameters(
-                                          ctx,
-                                          v53.1,
-                                          v43,
-                                        )
-                                        let v114 = Some(v103)
-                                        // Rule at src/lower/riscv/lower.isle line 210.
-                                        return v114
-                                      }
-                                      let v58 = C::target_color(ctx, v40)
+                      let v86 = C::values_to_args(ctx, v85)
+                      match v86 {
+                        Some(v87) =>
+                          match v87 {
+                            Args::Args2(arg1=v88, arg2=v89) => {
+                              let v90 = C::not_double(ctx, v88)
+                              match v90 {
+                                Some(v91) => {
+                                  let v92 = C::not_double(ctx, v89)
+                                  match v92 {
+                                    Some(v93) => {
+                                      let v58 = C::target_color(ctx, v47)
                                       if arg0 == v58.0 {
-                                        let v73 = C::emit_block_parameters(
-                                          ctx, v42, v43,
+                                        let v72 = C::emit_block_parameters(
+                                          ctx, v45, v46,
                                         )
-                                        let v106 = constructor_lower_value(
-                                          ctx, v88,
+                                        let v111 = constructor_lower_value(
+                                          ctx, v93,
                                         )
-                                        let v107 = C::xreg_new(ctx, v106)
-                                        let v108 = constructor_lower_value(
-                                          ctx, v86,
+                                        let v112 = C::xreg_new(ctx, v111)
+                                        let v113 = constructor_lower_value(
+                                          ctx, v91,
                                         )
-                                        let v109 = C::xreg_new(ctx, v108)
-                                        let v99 = C::block_label(ctx, v42)
-                                        let v111 = constructor_rv_blt(
-                                          ctx, v107, v109, v99,
+                                        let v114 = C::xreg_new(ctx, v113)
+                                        let v98 = C::block_label(ctx, v45)
+                                        let v115 = constructor_rv_bge(
+                                          ctx, v112, v114, v98,
                                         )
-                                        let v101 = C::emit_block_parameters(
+                                        let v108 = C::emit_block_parameters(
                                           ctx,
                                           v58.1,
-                                          v41,
+                                          v48,
                                         )
-                                        let v112 = C::emit_block_parameters(
-                                          ctx,
-                                          v58.1,
-                                          v41,
-                                        )
-                                        let v113 = Some(v112)
-                                        // Rule at src/lower/riscv/lower.isle line 200.
-                                        return v113
+                                        let v119 = Some(v108)
+                                        // Rule at src/lower/riscv/lower.isle line 216.
+                                        return v119
                                       }
-                                      let v67 = C::emit_block_parameters(
-                                        ctx, v40, v41,
+                                      let v63 = C::target_color(ctx, v45)
+                                      if arg0 == v63.0 {
+                                        let v78 = C::emit_block_parameters(
+                                          ctx, v47, v48,
+                                        )
+                                        let v111 = constructor_lower_value(
+                                          ctx, v93,
+                                        )
+                                        let v112 = C::xreg_new(ctx, v111)
+                                        let v113 = constructor_lower_value(
+                                          ctx, v91,
+                                        )
+                                        let v114 = C::xreg_new(ctx, v113)
+                                        let v104 = C::block_label(ctx, v47)
+                                        let v116 = constructor_rv_blt(
+                                          ctx, v112, v114, v104,
+                                        )
+                                        let v106 = C::emit_block_parameters(
+                                          ctx,
+                                          v63.1,
+                                          v46,
+                                        )
+                                        let v117 = C::emit_block_parameters(
+                                          ctx,
+                                          v63.1,
+                                          v46,
+                                        )
+                                        let v118 = Some(v117)
+                                        // Rule at src/lower/riscv/lower.isle line 206.
+                                        return v118
+                                      }
+                                      let v72 = C::emit_block_parameters(
+                                        ctx, v45, v46,
                                       )
-                                      let v106 = constructor_lower_value(
-                                        ctx, v88,
+                                      let v111 = constructor_lower_value(
+                                        ctx, v93,
                                       )
-                                      let v107 = C::xreg_new(ctx, v106)
-                                      let v108 = constructor_lower_value(
-                                        ctx, v86,
+                                      let v112 = C::xreg_new(ctx, v111)
+                                      let v113 = constructor_lower_value(
+                                        ctx, v91,
                                       )
-                                      let v109 = C::xreg_new(ctx, v108)
-                                      let v93 = C::block_label(ctx, v40)
-                                      let v110 = constructor_rv_bge(
-                                        ctx, v107, v109, v93,
+                                      let v114 = C::xreg_new(ctx, v113)
+                                      let v98 = C::block_label(ctx, v45)
+                                      let v115 = constructor_rv_bge(
+                                        ctx, v112, v114, v98,
                                       )
-                                      let v95 = C::emit_block_parameters(
-                                        ctx, v42, v43,
+                                      let v100 = C::emit_block_parameters(
+                                        ctx, v47, v48,
                                       )
-                                      let v96 = C::block_label(ctx, v42)
-                                      let v97 = constructor_rv_j(ctx, v96)
-                                      let v98 = Some(v97)
-                                      // Rule at src/lower/riscv/lower.isle line 190.
-                                      return v98
+                                      let v101 = C::block_label(ctx, v47)
+                                      let v102 = constructor_rv_j(ctx, v101)
+                                      let v103 = Some(v102)
+                                      // Rule at src/lower/riscv/lower.isle line 196.
+                                      return v103
                                     }
                                     _ => ()
                                   }
@@ -1908,41 +1909,47 @@ pub fn constructor_lower_control[C : Context](
         }
         _ => ()
       }
-      let v58 = C::target_color(ctx, v40)
+      let v63 = C::target_color(ctx, v45)
+      if arg0 == v63.0 {
+        let v49 = constructor_lower_value(ctx, v44)
+        let v50 = C::xreg_new(ctx, v49)
+        let v66 = C::emit_block_parameters(ctx, v47, v48)
+        let v67 = C::block_label(ctx, v47)
+        let v68 = constructor_rv_beqz(ctx, v50, v67)
+        let v69 = C::emit_block_parameters(ctx, v63.1, v46)
+        let v70 = Some(v69)
+        // Rule at src/lower/riscv/lower.isle line 140.
+        return v70
+      }
+      let v58 = C::target_color(ctx, v47)
       if arg0 == v58.0 {
-        let v44 = constructor_lower_value(ctx, v39)
-        let v45 = C::xreg_new(ctx, v44)
-        let v61 = C::emit_block_parameters(ctx, v42, v43)
-        let v62 = C::block_label(ctx, v42)
-        let v63 = constructor_rv_beqz(ctx, v45, v62)
-        let v64 = C::emit_block_parameters(ctx, v58.1, v41)
-        let v65 = Some(v64)
+        let v49 = constructor_lower_value(ctx, v44)
+        let v50 = C::xreg_new(ctx, v49)
+        let v51 = C::emit_block_parameters(ctx, v45, v46)
+        let v52 = C::block_label(ctx, v45)
+        let v53 = constructor_rv_bnez(ctx, v50, v52)
+        let v61 = C::emit_block_parameters(ctx, v58.1, v48)
+        let v62 = Some(v61)
         // Rule at src/lower/riscv/lower.isle line 134.
-        return v65
+        return v62
       }
-      let v53 = C::target_color(ctx, v42)
-      if arg0 == v53.0 {
-        let v44 = constructor_lower_value(ctx, v39)
-        let v45 = C::xreg_new(ctx, v44)
-        let v46 = C::emit_block_parameters(ctx, v40, v41)
-        let v47 = C::block_label(ctx, v40)
-        let v48 = constructor_rv_bnez(ctx, v45, v47)
-        let v56 = C::emit_block_parameters(ctx, v53.1, v43)
-        let v57 = Some(v56)
-        // Rule at src/lower/riscv/lower.isle line 128.
-        return v57
-      }
-      let v44 = constructor_lower_value(ctx, v39)
-      let v45 = C::xreg_new(ctx, v44)
-      let v46 = C::emit_block_parameters(ctx, v40, v41)
-      let v47 = C::block_label(ctx, v40)
-      let v48 = constructor_rv_bnez(ctx, v45, v47)
-      let v49 = C::emit_block_parameters(ctx, v42, v43)
-      let v50 = C::block_label(ctx, v42)
-      let v51 = constructor_rv_j(ctx, v50)
-      let v52 = Some(v51)
-      // Rule at src/lower/riscv/lower.isle line 121.
-      return v52
+      let v49 = constructor_lower_value(ctx, v44)
+      let v50 = C::xreg_new(ctx, v49)
+      let v51 = C::emit_block_parameters(ctx, v45, v46)
+      let v52 = C::block_label(ctx, v45)
+      let v53 = constructor_rv_bnez(ctx, v50, v52)
+      let v54 = C::emit_block_parameters(ctx, v47, v48)
+      let v55 = C::block_label(ctx, v47)
+      let v56 = constructor_rv_j(ctx, v55)
+      let v57 = Some(v56)
+      // Rule at src/lower/riscv/lower.isle line 127.
+      return v57
+    }
+    @core.Control::Select(cond=v2, targets=v3, fallback=v4) => {
+      let v5 = C::lower_select(ctx, arg1)
+      let v6 = Some(v5)
+      // Rule at src/lower/riscv/lower.isle line 100.
+      return v6
     }
     _ => ()
   }
@@ -1974,7 +1981,7 @@ pub fn constructor_lower[C : Context](
                           let v120 = C::xreg_to_reg(ctx, v119)
                           let v121 = C::mark_maybe_aliased(ctx, v120)
                           let v122 = Some(v121)
-                          // Rule at src/lower/riscv/lower.isle line 306.
+                          // Rule at src/lower/riscv/lower.isle line 312.
                           return v122
                         }
                         _ => ()
@@ -2006,7 +2013,7 @@ pub fn constructor_lower[C : Context](
                               let v125 = C::xreg_to_reg(ctx, v124)
                               let v126 = C::mark_maybe_aliased(ctx, v125)
                               let v127 = Some(v126)
-                              // Rule at src/lower/riscv/lower.isle line 312.
+                              // Rule at src/lower/riscv/lower.isle line 318.
                               return v127
                             }
                             _ => ()
@@ -2024,7 +2031,7 @@ pub fn constructor_lower[C : Context](
                               let v236 = C::xreg_to_reg(ctx, v235)
                               let v237 = C::mark_maybe_aliased(ctx, v236)
                               let v238 = Some(v237)
-                              // Rule at src/lower/riscv/lower.isle line 403.
+                              // Rule at src/lower/riscv/lower.isle line 409.
                               return v238
                             }
                             _ => ()
@@ -2059,7 +2066,7 @@ pub fn constructor_lower[C : Context](
                               let v132 = C::xreg_to_reg(ctx, v131)
                               let v133 = C::mark_maybe_aliased(ctx, v132)
                               let v134 = Some(v133)
-                              // Rule at src/lower/riscv/lower.isle line 318.
+                              // Rule at src/lower/riscv/lower.isle line 324.
                               return v134
                             }
                             _ => ()
@@ -2077,7 +2084,7 @@ pub fn constructor_lower[C : Context](
                               let v240 = C::xreg_to_reg(ctx, v239)
                               let v241 = C::mark_maybe_aliased(ctx, v240)
                               let v242 = Some(v241)
-                              // Rule at src/lower/riscv/lower.isle line 406.
+                              // Rule at src/lower/riscv/lower.isle line 412.
                               return v242
                             }
                             _ => ()
@@ -2114,7 +2121,7 @@ pub fn constructor_lower[C : Context](
                               let v35 = C::xreg_to_reg(ctx, v34)
                               let v36 = C::mark_maybe_aliased(ctx, v35)
                               let v37 = Some(v36)
-                              // Rule at src/lower/riscv/lower.isle line 232.
+                              // Rule at src/lower/riscv/lower.isle line 238.
                               return v37
                             }
                             _ => ()
@@ -2135,7 +2142,7 @@ pub fn constructor_lower[C : Context](
                               let v26 = C::xreg_to_reg(ctx, v25)
                               let v27 = C::mark_maybe_aliased(ctx, v26)
                               let v28 = Some(v27)
-                              // Rule at src/lower/riscv/lower.isle line 229.
+                              // Rule at src/lower/riscv/lower.isle line 235.
                               return v28
                             }
                             _ => ()
@@ -2150,7 +2157,7 @@ pub fn constructor_lower[C : Context](
                               let v19 = C::xreg_to_reg(ctx, v18)
                               let v20 = C::mark_maybe_aliased(ctx, v19)
                               let v21 = Some(v20)
-                              // Rule at src/lower/riscv/lower.isle line 226.
+                              // Rule at src/lower/riscv/lower.isle line 232.
                               return v21
                             }
                             _ => ()
@@ -2261,7 +2268,7 @@ pub fn constructor_lower[C : Context](
                                                                                               let v107 = Some(
                                                                                                 v106,
                                                                                               )
-                                                                                              // Rule at src/lower/riscv/lower.isle line 277.
+                                                                                              // Rule at src/lower/riscv/lower.isle line 283.
                                                                                               return v107
                                                                                             }
                                                                                           }
@@ -2320,7 +2327,7 @@ pub fn constructor_lower[C : Context](
                               let v46 = C::xreg_to_reg(ctx, v45)
                               let v47 = C::mark_maybe_aliased(ctx, v46)
                               let v48 = Some(v47)
-                              // Rule at src/lower/riscv/lower.isle line 241.
+                              // Rule at src/lower/riscv/lower.isle line 247.
                               return v48
                             }
                             _ => ()
@@ -2335,7 +2342,7 @@ pub fn constructor_lower[C : Context](
                               let v39 = C::xreg_to_reg(ctx, v38)
                               let v40 = C::mark_maybe_aliased(ctx, v39)
                               let v41 = Some(v40)
-                              // Rule at src/lower/riscv/lower.isle line 238.
+                              // Rule at src/lower/riscv/lower.isle line 244.
                               return v41
                             }
                             _ => ()
@@ -2366,7 +2373,7 @@ pub fn constructor_lower[C : Context](
                                   let v31 = constructor_lower_value(ctx, v11.0)
                                   let v67 = C::mark_maybe_aliased(ctx, v31)
                                   let v68 = Some(v67)
-                                  // Rule at src/lower/riscv/lower.isle line 262.
+                                  // Rule at src/lower/riscv/lower.isle line 268.
                                   return v68
                                 }
                                 _ => ()
@@ -2387,7 +2394,7 @@ pub fn constructor_lower[C : Context](
                                   let v14 = constructor_lower_value(ctx, v8.0)
                                   let v65 = C::mark_maybe_aliased(ctx, v14)
                                   let v66 = Some(v65)
-                                  // Rule at src/lower/riscv/lower.isle line 259.
+                                  // Rule at src/lower/riscv/lower.isle line 265.
                                   return v66
                                 }
                                 _ => ()
@@ -2408,7 +2415,7 @@ pub fn constructor_lower[C : Context](
                               let v62 = C::xreg_to_reg(ctx, v61)
                               let v63 = C::mark_maybe_aliased(ctx, v62)
                               let v64 = Some(v63)
-                              // Rule at src/lower/riscv/lower.isle line 256.
+                              // Rule at src/lower/riscv/lower.isle line 262.
                               return v64
                             }
                             _ => ()
@@ -2427,7 +2434,7 @@ pub fn constructor_lower[C : Context](
                               let v56 = C::xreg_to_reg(ctx, v55)
                               let v57 = C::mark_maybe_aliased(ctx, v56)
                               let v58 = Some(v57)
-                              // Rule at src/lower/riscv/lower.isle line 253.
+                              // Rule at src/lower/riscv/lower.isle line 259.
                               return v58
                             }
                             _ => ()
@@ -2442,7 +2449,7 @@ pub fn constructor_lower[C : Context](
                               let v50 = C::xreg_to_reg(ctx, v49)
                               let v51 = C::mark_maybe_aliased(ctx, v50)
                               let v52 = Some(v51)
-                              // Rule at src/lower/riscv/lower.isle line 250.
+                              // Rule at src/lower/riscv/lower.isle line 256.
                               return v52
                             }
                             _ => ()
@@ -2474,7 +2481,7 @@ pub fn constructor_lower[C : Context](
                               let v74 = C::xreg_to_reg(ctx, v73)
                               let v75 = C::mark_maybe_aliased(ctx, v74)
                               let v76 = Some(v75)
-                              // Rule at src/lower/riscv/lower.isle line 270.
+                              // Rule at src/lower/riscv/lower.isle line 276.
                               return v76
                             }
                             _ => ()
@@ -2490,7 +2497,7 @@ pub fn constructor_lower[C : Context](
                               let v70 = C::xreg_to_reg(ctx, v69)
                               let v71 = C::mark_maybe_aliased(ctx, v70)
                               let v72 = Some(v71)
-                              // Rule at src/lower/riscv/lower.isle line 267.
+                              // Rule at src/lower/riscv/lower.isle line 273.
                               return v72
                             }
                             _ => ()
@@ -2519,7 +2526,7 @@ pub fn constructor_lower[C : Context](
                           let v115 = C::xreg_to_reg(ctx, v114)
                           let v116 = C::mark_maybe_aliased(ctx, v115)
                           let v117 = Some(v116)
-                          // Rule at src/lower/riscv/lower.isle line 300.
+                          // Rule at src/lower/riscv/lower.isle line 306.
                           return v117
                         }
                         _ => ()
@@ -2545,7 +2552,7 @@ pub fn constructor_lower[C : Context](
                           let v232 = C::xreg_to_reg(ctx, v231)
                           let v233 = C::mark_maybe_aliased(ctx, v232)
                           let v234 = Some(v233)
-                          // Rule at src/lower/riscv/lower.isle line 398.
+                          // Rule at src/lower/riscv/lower.isle line 404.
                           return v234
                         }
                         _ => ()
@@ -2630,7 +2637,7 @@ pub fn constructor_lower[C : Context](
                                                             ctx, v198,
                                                           )
                                                           let v200 = Some(v199)
-                                                          // Rule at src/lower/riscv/lower.isle line 352.
+                                                          // Rule at src/lower/riscv/lower.isle line 358.
                                                           return v200
                                                         }
                                                         _ => ()
@@ -2720,7 +2727,7 @@ pub fn constructor_lower[C : Context](
                                                             ctx, v172,
                                                           )
                                                           let v174 = Some(v173)
-                                                          // Rule at src/lower/riscv/lower.isle line 345.
+                                                          // Rule at src/lower/riscv/lower.isle line 351.
                                                           return v174
                                                         }
                                                         _ => ()
@@ -2753,7 +2760,7 @@ pub fn constructor_lower[C : Context](
                               let v138 = C::freg_to_reg(ctx, v137)
                               let v139 = C::mark_maybe_aliased(ctx, v138)
                               let v140 = Some(v139)
-                              // Rule at src/lower/riscv/lower.isle line 325.
+                              // Rule at src/lower/riscv/lower.isle line 331.
                               return v140
                             }
                             _ => ()
@@ -2837,7 +2844,7 @@ pub fn constructor_lower[C : Context](
                                                             ctx, v206,
                                                           )
                                                           let v208 = Some(v207)
-                                                          // Rule at src/lower/riscv/lower.isle line 366.
+                                                          // Rule at src/lower/riscv/lower.isle line 372.
                                                           return v208
                                                         }
                                                         _ => ()
@@ -2927,7 +2934,7 @@ pub fn constructor_lower[C : Context](
                                                             ctx, v202,
                                                           )
                                                           let v204 = Some(v203)
-                                                          // Rule at src/lower/riscv/lower.isle line 359.
+                                                          // Rule at src/lower/riscv/lower.isle line 365.
                                                           return v204
                                                         }
                                                         _ => ()
@@ -2960,7 +2967,7 @@ pub fn constructor_lower[C : Context](
                               let v142 = C::freg_to_reg(ctx, v141)
                               let v143 = C::mark_maybe_aliased(ctx, v142)
                               let v144 = Some(v143)
-                              // Rule at src/lower/riscv/lower.isle line 331.
+                              // Rule at src/lower/riscv/lower.isle line 337.
                               return v144
                             }
                             _ => ()
@@ -2994,7 +3001,7 @@ pub fn constructor_lower[C : Context](
                               let v146 = C::freg_to_reg(ctx, v145)
                               let v147 = C::mark_maybe_aliased(ctx, v146)
                               let v148 = Some(v147)
-                              // Rule at src/lower/riscv/lower.isle line 337.
+                              // Rule at src/lower/riscv/lower.isle line 343.
                               return v148
                             }
                             _ => ()
@@ -3028,7 +3035,7 @@ pub fn constructor_lower[C : Context](
                               let v210 = C::freg_to_reg(ctx, v209)
                               let v211 = C::mark_maybe_aliased(ctx, v210)
                               let v212 = Some(v211)
-                              // Rule at src/lower/riscv/lower.isle line 374.
+                              // Rule at src/lower/riscv/lower.isle line 380.
                               return v212
                             }
                             _ => ()
@@ -3057,7 +3064,7 @@ pub fn constructor_lower[C : Context](
                           let v215 = C::freg_to_reg(ctx, v214)
                           let v216 = C::mark_maybe_aliased(ctx, v215)
                           let v217 = Some(v216)
-                          // Rule at src/lower/riscv/lower.isle line 380.
+                          // Rule at src/lower/riscv/lower.isle line 386.
                           return v217
                         }
                         _ => ()
@@ -3083,7 +3090,7 @@ pub fn constructor_lower[C : Context](
                           let v227 = C::freg_to_reg(ctx, v226)
                           let v228 = C::mark_maybe_aliased(ctx, v227)
                           let v229 = Some(v228)
-                          // Rule at src/lower/riscv/lower.isle line 395.
+                          // Rule at src/lower/riscv/lower.isle line 401.
                           return v229
                         }
                         _ => ()
@@ -3109,7 +3116,7 @@ pub fn constructor_lower[C : Context](
                           let v219 = C::freg_to_reg(ctx, v218)
                           let v220 = C::mark_maybe_aliased(ctx, v219)
                           let v221 = Some(v220)
-                          // Rule at src/lower/riscv/lower.isle line 385.
+                          // Rule at src/lower/riscv/lower.isle line 391.
                           return v221
                         }
                         _ => ()
@@ -3135,7 +3142,7 @@ pub fn constructor_lower[C : Context](
                           let v223 = C::freg_to_reg(ctx, v222)
                           let v224 = C::mark_maybe_aliased(ctx, v223)
                           let v225 = Some(v224)
-                          // Rule at src/lower/riscv/lower.isle line 390.
+                          // Rule at src/lower/riscv/lower.isle line 396.
                           return v225
                         }
                         _ => ()
@@ -3155,56 +3162,56 @@ pub fn constructor_lower[C : Context](
       let v253 = C::lower_call(ctx, v249, v252, v251)
       let v254 = C::mark_maybe_aliased(ctx, v253)
       let v255 = Some(v254)
-      // Rule at src/lower/riscv/lower.isle line 442.
+      // Rule at src/lower/riscv/lower.isle line 448.
       return v255
     }
     @core.Insn::Apply(ty=v256, f=v257, args=v258) => {
       let v259 = C::lower_apply(ctx, v256, v257, v258)
       let v260 = C::mark_maybe_aliased(ctx, v259)
       let v261 = Some(v260)
-      // Rule at src/lower/riscv/lower.isle line 445.
+      // Rule at src/lower/riscv/lower.isle line 451.
       return v261
     }
     @core.Insn::ExtCall(ty=v243, ext_f=v244, args=v245) => {
       let v246 = C::lower_ext_call(ctx, v243, v244, v245)
       let v247 = C::mark_maybe_aliased(ctx, v246)
       let v248 = Some(v247)
-      // Rule at src/lower/riscv/lower.isle line 439.
+      // Rule at src/lower/riscv/lower.isle line 445.
       return v248
     }
     @core.Insn::LoadSymbol(ty=v262, sref=v263) => {
       let v264 = C::lower_load_symbol(ctx, v262, v263)
       let v265 = C::mark_maybe_aliased(ctx, v264)
       let v266 = Some(v265)
-      // Rule at src/lower/riscv/lower.isle line 448.
+      // Rule at src/lower/riscv/lower.isle line 454.
       return v266
     }
     @core.Insn::Alloc(ty=v278, mref=v279, fills=v280) => {
       let v281 = C::lower_alloc(ctx, v278, v279, v280)
       let v282 = C::mark_maybe_aliased(ctx, v281)
       let v283 = Some(v282)
-      // Rule at src/lower/riscv/lower.isle line 457.
+      // Rule at src/lower/riscv/lower.isle line 463.
       return v283
     }
     @core.Insn::Store(ty=v267, ma=v268, val=v269) => {
       let v270 = C::lower_store(ctx, v267, v268, v269)
       let v271 = C::mark_maybe_aliased(ctx, v270)
       let v272 = Some(v271)
-      // Rule at src/lower/riscv/lower.isle line 451.
+      // Rule at src/lower/riscv/lower.isle line 457.
       return v272
     }
     @core.Insn::Load(ty=v273, ma=v274) => {
       let v275 = C::lower_load(ctx, v273, v274)
       let v276 = C::mark_maybe_aliased(ctx, v275)
       let v277 = Some(v276)
-      // Rule at src/lower/riscv/lower.isle line 454.
+      // Rule at src/lower/riscv/lower.isle line 460.
       return v277
     }
     @core.Insn::ComputeAddress(ma=v284) => {
       let v285 = C::lower_compute_address(ctx, v284)
       let v286 = C::mark_maybe_aliased(ctx, v285)
       let v287 = Some(v286)
-      // Rule at src/lower/riscv/lower.isle line 460.
+      // Rule at src/lower/riscv/lower.isle line 466.
       return v287
     }
     _ => ()
@@ -3227,7 +3234,7 @@ pub fn constructor_lower_mod[C : Context](
       let v12 = constructor_rv_andi(ctx, v3, v11)
       let v13 = C::xreg_to_reg(ctx, v12)
       let v14 = C::mark_maybe_aliased(ctx, v13)
-      // Rule at src/lower/riscv/lower.isle line 295.
+      // Rule at src/lower/riscv/lower.isle line 301.
       return v14
     }
     _ => ()
@@ -3239,6 +3246,6 @@ pub fn constructor_lower_mod[C : Context](
   let v6 = constructor_rv_rem(ctx, v3, v5)
   let v7 = C::xreg_to_reg(ctx, v6)
   let v8 = C::mark_maybe_aliased(ctx, v7)
-  // Rule at src/lower/riscv/lower.isle line 289.
+  // Rule at src/lower/riscv/lower.isle line 295.
   return v8
 }

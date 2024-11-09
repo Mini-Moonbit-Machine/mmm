@@ -205,7 +205,7 @@ fn print_control(logger : @util.IndentLogger, control : Control) -> Unit {
       print_values(logger, f_args)
       logger.write_string(")\n")
     }
-    Select(~cond, ~targets, ~args) => {
+    Select(~cond, ~targets, ~fallback) => {
       logger.write_string("select ")
       print_value(logger, cond)
       logger.write_string(" [")
@@ -218,9 +218,7 @@ fn print_control(logger : @util.IndentLogger, control : Control) -> Unit {
         }
         logger.write_string("\{target}")
       }
-      logger.write_string("](")
-      print_values(logger, args)
-      logger.write_string(")\n")
+      logger.write_string("] else \{fallback}\n")
     }
     Panic => logger.write_string("panic\n")
   }

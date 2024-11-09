@@ -67,6 +67,8 @@ impl FnInliner {
   split_bb_at_call(Self, @core.BasicBlock, @core.InsnRef, Int) -> @core.BlockRef?
 }
 
+type FnJumpTable
+
 type FnLICM
 
 pub struct FnTailRecElim {
@@ -78,6 +80,11 @@ impl FnTailRecElim {
   update_old_entry_basic_block(Self, @core.BasicBlock) -> Unit
 }
 
+type IfsDesc
+impl IfsDesc {
+  to_string(Self) -> String
+}
+
 pub struct Inliner {
   pub core : @core.Core
   pub fcf : @core_analysis.FnCallFreq
@@ -87,6 +94,8 @@ impl Inliner {
   go(Self) -> Unit
   new(@core.Core, @core_analysis.FnCallFreq, @util.SubTracer) -> Self
 }
+
+type JumpTable
 
 type LICM
 
@@ -127,6 +136,11 @@ impl Renamer {
   shift(Self) -> @core.Fn
 }
 
+type SelectDesc
+impl SelectDesc {
+  to_string(Self) -> String
+}
+
 pub struct TailRecElim {
   pub core : @core.Core
   pub tracer : @util.SubTracer
@@ -141,4 +155,7 @@ impl TailRecElim {
 // Traits
 
 // Extension Methods
+impl Show for IfsDesc
+
+impl Show for SelectDesc
 

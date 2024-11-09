@@ -127,7 +127,7 @@ pub fn def_use(insn : MInsn) -> (Array[AnyReg], Array[AnyReg]) {
     }
     SaveCtx1 | RestoreCtx1 => ([], [])
     SaveCtx2 | RestoreCtx2 => ([], [])
-    Nop | J(..) | Jr(..) | Tail(..) | Label(_) | Comment(_) => ([], [])
+    Nop | J(..) | Jr(..) | Tail(..) | Label(_) | Comment(_) | Raw(_) => ([], [])
     FmvD(~rd, ~rs) =>
       if rd == rs {
         ([], [rs.to_any()])

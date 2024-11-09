@@ -329,7 +329,7 @@ fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
       CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
       Wasm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
       CoreOpt2 => Show::to_string(self.wasm.unwrap())
-      Asm => Show::to_string(self.opt_core_2.unwrap())
+      Asm => Show::to_string(self.opt_core_2.unwrap().to_pretty_print())
       Finished => Show::to_string(self.asm.unwrap())
     }
   }

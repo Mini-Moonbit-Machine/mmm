@@ -63,7 +63,7 @@ pub enum Control {
   Jump(BlockRef, Array[Value])
   Return(Array[Value])
   Branch(Value, BlockRef, Array[Value], BlockRef, Array[Value])
-  Select(Value, Array[BlockRef], Array[Value])
+  Select(Value, Array[BlockRef], BlockRef)
   Panic
 }
 impl Control {
@@ -337,6 +337,7 @@ pub enum Value {
   Self(FnRef)
 }
 impl Value {
+  is_const(Self) -> Bool
   op_equal(Self, Self) -> Bool
   replace_all_uses_with(Self, Fn, BasicBlock, Self) -> Unit
   to_string(Self) -> String

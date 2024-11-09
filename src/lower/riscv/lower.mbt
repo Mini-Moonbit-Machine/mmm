@@ -24,6 +24,7 @@ pub struct RiscvFnLoweringCtx {
   mut is_leaf : Bool
   mut mfn : MFn?
   use_xthead : Bool
+  mut tbl_counter : Int
   tracer : @util.SubTracer
 }
 
@@ -1654,6 +1655,40 @@ fn RiscvFnLoweringCtx::target_color(
   ({ color, seq, critical: [] }, target)
 }
 
+fn RiscvFnLoweringCtx::lower_select(
+  self : RiscvFnLoweringCtx,
+  control : @core.Control
+) -> Unit {
+  guard let @core.Control::Select(~cond, ~targets, ~fallback) = control else {
+    _ => self.tracer.abort("Invalid control")
+  }
+  let jtbl = "." + self.func.name + "_jtbl_\{self.tbl_counter}"
+  let jtbl_label = @riscv.Label::Label(jtbl)
+  self.tbl_counter += 1
+  let cond = @generated.constructor_lower_value(self, cond)
+  let upper = @generated.constructor_rv_li(
+    self,
+    (targets.length() - 1).to_string(),
+  )
+  let fallback_label = self.block_label(fallback)
+  @generated.constructor_rv_ble(self, upper, xreg(cond), fallback_label)
+  let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
+  let base = @generated.constructor_rv_la(self, jtbl_label)
+  let addr = @generated.constructor_rv_add(self, base, offset)
+  let reg = @generated.constructor_rv_lw(self, { base: addr, offset: 0 })
+  @generated.constructor_rv_jr(self, reg)
+  self.emit_risc_v(MInsn::Raw(".p2align 2"))
+  self.emit_risc_v(MInsn::Raw(".rodata"))
+  self.emit_risc_v(MInsn::Label(jtbl))
+  for i in 0..<targets.length() {
+    let target = self.target_bb(targets[i])
+    let label = self.block_label(target)
+    self.emit_risc_v(MInsn::Raw(".word \{label._}"))
+  }
+  self.emit_risc_v(MInsn::Raw(".p2align 2"))
+  self.emit_risc_v(MInsn::Raw(".text"))
+}
+
 fn RiscvFnLoweringCtx::lower_block(
   self : RiscvFnLoweringCtx,
   block : @core.BasicBlock,
@@ -1666,9 +1701,9 @@ fn RiscvFnLoweringCtx::lower_block(
   let critical = critical_edges
     .map(fn(s) { self.target_color(s.1).0 })
     .to_array()
-  self.tracer.log("succs: \{succs}")
-  self.tracer.log("critical edges for \{block.id}: \{critical_edges}")
-  self.tracer.log("critical color seq for \{block.id}: \{critical}")
+  self.tracer.println("succs: \{succs}")
+  self.tracer.println("critical edges for \{block.id}: \{critical_edges}")
+  self.tracer.println("critical color seq for \{block.id}: \{critical}")
   @generated.constructor_lower_control(
     self,
     { color, seq, critical },
@@ -1694,7 +1729,7 @@ fn RiscvFnLoweringCtx::lower_block(
         self.finalize_insn()
       }
     } else {
-      self.tracer.log("skipping \{insn}")
+      self.tracer.println("skipping \{insn}")
     }
   }
   if block.id == self.func.entry {
@@ -1959,6 +1994,7 @@ fn subst_vreg_with_preg_or_spill(
     Tail(~target) => Tail(~target)
     Label(x) => Label(x)
     Comment(x) => Comment(x)
+    Raw(x) => Raw(x)
   }
   for i, x in input_xreg_spilled {
     let slot = alloc
@@ -2333,6 +2369,7 @@ pub fn RiscvFnLoweringCtx::new(
     used_primitive: MutSet::new(),
     use_xthead,
     tracer,
+    tbl_counter: 0,
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
