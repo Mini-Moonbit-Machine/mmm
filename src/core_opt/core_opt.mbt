@@ -59,7 +59,7 @@ pub fn CoreOpt2::go(self : CoreOpt2) -> Unit {
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()
   self.tracer.record("core_opt2_after_lvn", core.to_pretty_print())
-  let jtbl = JumpTable::new(core, self.tracer)
-  jtbl.go()
+  // let jtbl = JumpTable::new(core, self.tracer)
+  // jtbl.go()
   self.tracer.record("core_opt2_after_jtbl", core.to_pretty_print())
 }
