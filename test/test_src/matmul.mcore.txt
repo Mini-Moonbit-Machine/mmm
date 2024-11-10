@@ -41,19 +41,38 @@ gen_arr57.231:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
+  mv s2, a0
   mv s1, a1
-  slliw a0, s0, 3
-  sub s2, s11, a0
-  andi s11, s2, -8
-  mv a1, s0
-  mv a0, s2
-  call memseti64
-  addi a0, s0, -1
+  slliw a0, s2, 3
+  sub s0, s11, a0
+  andi s11, s0, -8
   mv a1, s2
-  mv a2, s1
-  call init_arr63.232
-  mv a0, s2
+  mv a0, s0
+  call memseti64
+  addi a0, s2, -1
+
+.gen_arr57.231_8:
+  mv a2, s0
+  mv a1, s1
+
+.gen_arr57.231_3:
+  blt a0, zero, .gen_arr57.231_5
+
+.gen_arr57.231_4:
+  slliw a3, a1, 3
+  sub a3, s11, a3
+  andi s11, a3, -8
+  th.surd a3, a2, a0, 3
+  addi a0, a0, -1
+  j .gen_arr57.231_3
+
+.gen_arr57.231_5:
+  mv a0, zero
+
+.gen_arr57.231_6:
+
+.gen_arr57.231_1:
+  mv a0, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -259,37 +278,6 @@ loop114.233:
   ld s8, 72(sp)
   ld s9, 80(sp)
   addi sp, sp, 96
-  ret
-
-  .p2align 2
-  .text
-  .globl init_arr63.232
-  .type init_arr63.232, @function
-# leaf false
-init_arr63.232:
-.init_arr63.232_5:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a3, a1
-  mv a1, a2
-
-.init_arr63.232_0:
-  blt a0, zero, .init_arr63.232_2
-
-.init_arr63.232_1:
-  slliw a2, a1, 3
-  sub a2, s11, a2
-  andi s11, a2, -8
-  th.surd a2, a3, a0, 3
-  addi a0, a0, -1
-  j .init_arr63.232_0
-
-.init_arr63.232_2:
-  mv a0, zero
-
-.init_arr63.232_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 2

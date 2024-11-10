@@ -22,8 +22,7 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let fcf = calls.compute()
   self.tracer.println("Call frequnce: \{fcf}")
   let inliner = Inliner::new(core, fcf, self.tracer)
-  inliner.go()
-  self.tracer.record("core_opt_after_inline", core.to_pretty_print())
+  inliner.go(0)
   let calls = @core_analysis.CallAnalysis::new(core, self.tracer)
   let fcf = calls.compute()
   let old_funcs = core.funcs.iter().collect()
@@ -35,7 +34,7 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
       core.names.remove(func.name)
     }
   }
-  self.tracer.record("core_opt_after_dfe", core.to_pretty_print())
+  self.tracer.record("core_opt_after_dfe_0", core.to_pretty_print())
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()
   self.tracer.record("core_opt_after_lvn", core.to_pretty_print())

@@ -118,6 +118,33 @@ fn get_type(self : LambdaLiftEnv, name : Name) -> Type {
   }
 }
 
+fn count_let_rec(knf : Knf) -> Int {
+  match knf {
+    Unit
+    | Bool(_)
+    | Int(_)
+    | Double(_)
+    | Neg(_)
+    | Add(_, _)
+    | Sub(_, _)
+    | Mul(_, _)
+    | Div(_, _) | FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
+      0
+    IfEq(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
+    IfLe(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
+    Let((_, _), c, d) => count_let_rec(c) + count_let_rec(d)
+    Var(_) => 0
+    LetRec(f, e) => 1 + count_let_rec(e) + count_let_rec(f.body)
+    Apply(_, _) => 0
+    Tuple(_) => 0
+    LetTuple(_, _, e) => count_let_rec(e)
+    Get(_, _) => 0
+    Put(_, _, _) => 0
+    ExternalArray(_) => 0
+    ExternalFunctionApplication(_, _) => 0
+  }
+}
+
 fn LambdaLifter::lift(
   self : LambdaLifter,
   env : LambdaLiftEnv,
@@ -278,30 +305,158 @@ fn LambdaLifter::lift(
   }
 }
 
-fn count_let_rec(knf : Knf) -> Int {
+fn LambdaLifter::lift_non_fvars(
+  self : LambdaLifter,
+  env : LambdaLiftEnv,
+  knf : Knf,
+  top : Bool
+) -> (LetList, Knf) {
   match knf {
-    Unit
-    | Bool(_)
-    | Int(_)
-    | Double(_)
-    | Neg(_)
-    | Add(_, _)
+    // we assume that the names here are non-function, otherwise it tends to be a type error
+    Unit | Bool(_) | Int(_) | Double(_) => ([], knf)
+    Neg(_) | FNeg(_) => ([], knf)
+    Add(_, _)
     | Sub(_, _)
-    | Mul(_, _)
-    | Div(_, _) | FNeg(_) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
-      0
-    IfEq(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
-    IfLe(_, _, c, d) => count_let_rec(c) + count_let_rec(d)
-    Let((_, _), c, d) => count_let_rec(c) + count_let_rec(d)
-    Var(_) => 0
-    LetRec(f, e) => 1 + count_let_rec(e) + count_let_rec(f.body)
-    Apply(_, _) => 0
-    Tuple(_) => 0
-    LetTuple(_, _, e) => count_let_rec(e)
-    Get(_, _) => 0
-    Put(_, _, _) => 0
-    ExternalArray(_) => 0
-    ExternalFunctionApplication(_, _) => 0
+    | Mul(_, _) | Div(_, _) | FAdd(_, _) | FSub(_, _) | FMul(_, _) | FDiv(_, _) =>
+      ([], knf)
+    IfEq(x, y, k1, k2) => {
+      let (l1, k1) = self.lift_non_fvars(env, k1, top)
+      let (l2, k2) = self.lift_non_fvars(env, k2, top)
+      let k1 = bind_all((k1, Unit, l1))
+      let k2 = bind_all((k2, Unit, l2))
+      ([], IfEq(x, y, k1, k2))
+    }
+    IfLe(x, y, k1, k2) => {
+      let (l1, k1) = self.lift_non_fvars(env, k1, top)
+      let (l2, k2) = self.lift_non_fvars(env, k2, top)
+      let k1 = bind_all((k1, Unit, l1))
+      let k2 = bind_all((k2, Unit, l2))
+      ([], IfLe(x, y, k1, k2))
+    }
+    Let((x, ty), e1, e2) => {
+      let (l, e1) = self.lift_non_fvars(env, e1, false)
+      l.push(Binding::Let(x, ty, e1))
+      let env = env.add_name_type(x, ty)
+      if top {
+        self.top_bindings.append(l)
+        self.top_names.insert(x)
+        self.lift_non_fvars(env, e2, top)
+      } else {
+        let (l2, e2) = self.lift_non_fvars(env, e2, top)
+        l.append(l2)
+        (l, e2)
+      }
+    }
+    LetTuple(xts, y, k) => {
+      let env = xts.fold(
+        init=env,
+        fn(env, xt) { env.add_name_type(xt.0, xt.1) },
+      )
+      if top {
+        self.top_bindings.push(Binding::LetTuple(xts, y))
+        self.lift_non_fvars(env, k, top)
+      } else {
+        let l = [Binding::LetTuple(xts, y)]
+        let (l2, k) = self.lift_non_fvars(env, k, top)
+        l.append(l2)
+        (l, k)
+      }
+    }
+    ExternalArray(x) => {
+      let (l, x, _) = env.eta_expand(x)
+      (l, ExternalArray(x))
+    }
+    Tuple(xs) => {
+      let (l, ys, _) = env.eta_expand_names(xs)
+      (l, Tuple(ys))
+    }
+    Get(_, _) => ([], knf)
+    Put(a, b, x) => {
+      let (l, x, _) = env.eta_expand(x)
+      (l, Put(a, b, x))
+    }
+    Var(x) => {
+      let (l, x, _) = env.eta_expand(x)
+      (l, Var(x))
+    }
+    ExternalFunctionApplication(f, xs) => {
+      let (l, ys, _) = env.eta_expand_names(xs)
+      (l, ExternalFunctionApplication(f, ys))
+    }
+    Apply(f, xs) => {
+      let (l, ys, env) = env.eta_expand_names(xs)
+      match env.name_ctx.find(f) {
+        Some((new_name, _, fvars, _)) => (l, Apply(new_name, ys + fvars))
+        None => {
+          let (l1, f, _) = env.eta_expand(f)
+          l.append(l1)
+          (l, Apply(f, ys))
+        }
+      }
+    }
+    LetRec(fdef, e) => {
+      let fvars = self.free_set_closure
+        .get(fdef.name)
+        .or_else(
+          fn() { self.tracer.abort("failed to find free set for \{fdef.name}") },
+        )
+      self.top_names.each(fn(name) { fvars.remove(name) })
+      fvars.remove(fdef.name)
+      let fvars = fvars.iter().collect()
+      fvars.sort()
+      let old_fun_type = Type::Fun(
+        fdef.args.iter().map(fn(arg) { arg.1 }).collect(),
+        fdef.ty,
+      )
+      let fvars_with_type = fvars.map(fn(name) { (name, env.get_type(name)) })
+      let new_args = fdef.args + fvars_with_type
+      if fvars.is_empty() {
+        let env = env.add_name_type(fdef.name, old_fun_type)
+        let body_env = fdef.args.fold(
+          init=env,
+          fn(env, arg) { env.add_name_type(arg.0, arg.1) },
+        )
+        let (l, body_e) = self.lift_non_fvars(body_env, fdef.body, false)
+        let fdef = FuncDef::{
+          name: fdef.name,
+          ty: fdef.ty,
+          args: fdef.args,
+          body: bind_all((body_e, Unit, l)),
+        }
+        if top {
+          self.top_names.insert(fdef.name)
+          self.top_bindings.push(LetRec(fdef))
+          self.lift_non_fvars(env, e, top)
+        } else {
+          let l = [Binding::LetRec(fdef)]
+          let (l2, e) = self.lift_non_fvars(env, e, top)
+          l.append(l2)
+          (l, e)
+        }
+      } else {
+        self.top_names.insert(fdef.name)
+        let (new_name, env) = env.add_lifted_name(
+          fdef.name,
+          fdef.args.map(fn(arg) { arg.0 }),
+          fvars,
+          Fun(fdef.args.iter().map(fn(arg) { arg.1 }).collect(), fdef.ty),
+        )
+        let env = env.add_name_type(new_name, old_fun_type)
+        let body_env = new_args.fold(
+          init=env,
+          fn(env, arg) { env.add_name_type(arg.0, arg.1) },
+        )
+        let (l, body_e) = self.lift_non_fvars(body_env, fdef.body, false)
+        let fdef = FuncDef::{
+          name: new_name,
+          ty: fdef.ty,
+          args: new_args,
+          body: bind_all((body_e, Unit, l)),
+        }
+        self.top_bindings.push(LetRec(fdef))
+        self.lift_non_fvars(env, e, top)
+      }
+    }
   }
 }
 

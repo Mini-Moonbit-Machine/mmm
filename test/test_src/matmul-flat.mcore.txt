@@ -124,55 +124,43 @@ make_arr103.243:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
+  mv s2, a0
   mv s1, a1
-  slliw a0, s0, 3
-  sub s2, s11, a0
-  andi s11, s2, -8
-  mv a1, s0
-  mv a0, s2
+  slliw a0, s2, 3
+  sub s0, s11, a0
+  andi s11, s0, -8
+  mv a1, s2
+  mv a0, s0
   call memseti64
-  addi a0, s0, -1
+  addi a0, s2, -1
+
+.make_arr103.243_8:
   mv a1, s1
-  mv a2, s2
-  call init_arr89.242
-  mv a0, s2
+  mv a3, s0
+
+.make_arr103.243_3:
+  blt a0, zero, .make_arr103.243_5
+
+.make_arr103.243_4:
+  slliw a2, a1, 3
+  sub a2, s11, a2
+  andi s11, a2, -8
+  th.surd a2, a3, a0, 3
+  addi a0, a0, -1
+  j .make_arr103.243_3
+
+.make_arr103.243_5:
+  mv a0, zero
+
+.make_arr103.243_6:
+
+.make_arr103.243_1:
+  mv a0, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
   ld s2, 24(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl init_arr89.242
-  .type init_arr89.242, @function
-# leaf false
-init_arr89.242:
-.init_arr89.242_5:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a3, a0
-
-.init_arr89.242_0:
-  blt a3, zero, .init_arr89.242_2
-
-.init_arr89.242_1:
-  slliw a0, a1, 3
-  sub a0, s11, a0
-  andi s11, a0, -8
-  th.surd a0, a2, a3, 3
-  addi a0, a3, -1
-  mv a3, a0
-  j .init_arr89.242_0
-
-.init_arr89.242_2:
-  mv a0, zero
-
-.init_arr89.242_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 2

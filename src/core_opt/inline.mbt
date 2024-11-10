@@ -12,7 +12,7 @@ pub fn Inliner::new(
   { core, fcf, tracer }
 }
 
-pub fn Inliner::go(self : Inliner) -> Unit {
+pub fn Inliner::go(self : Inliner, n : Int) -> Unit {
   let inliners = []
   for func in self.core.funcs {
     let (_, func) = func
@@ -24,11 +24,15 @@ pub fn Inliner::go(self : Inliner) -> Unit {
     let splitted = inliner.split()
     s.push(splitted)
   }
-  self.tracer.record("core_opt_after_splitted", self.core.to_pretty_print())
+  self.tracer.record(
+    "core_opt_after_splitted_\{n}",
+    self.core.to_pretty_print(),
+  )
   for i, inliner in inliners {
     let splitted = s[i]
     inliner.inline(splitted)
   }
+  self.tracer.record("core_opt_after_inline_\{n}", self.core.to_pretty_print())
 }
 
 pub struct FnInliner {
@@ -62,10 +66,18 @@ pub fn FnInliner::split_bb_at_call(
   guard self.fcf._.get(f).unwrap() == @core_analysis.CallFrequncy::Once else {
     self.tracer.abort("expected call frequency to be Once")
   }
-  if call_idx == bb.seq.length() - 1 {
+  if call_idx == bb.seq.length() - 1 &&
+    (match bb.control {
+      @core.Control::Jump(..) => true
+      _ => false
+    }) {
     return None
   }
-  let new_seq = bb.seq.drain(call_idx + 1, bb.seq.length())
+  let new_seq = if call_idx == bb.seq.length() - 1 {
+    []
+  } else {
+    bb.seq.drain(call_idx + 1, bb.seq.length())
+  }
   let post_bb = @core.BasicBlock::{
     id,
     seq: new_seq,
@@ -91,17 +103,21 @@ pub fn FnInliner::split_bb_at_call(
 fn allow_inline(
   self : FnInliner,
   call_iref : @core.InsnRef,
-  f : @core.FnRef,
+  fref : @core.FnRef,
   memo : @hashset.T[@core.InsnRef]
 ) -> Bool {
-  let not_main = not(self.func.name.contains("main"))
-  let call_once = self.fcf._.get(f).unwrap() ==
-    @core_analysis.CallFrequncy::Once &&
-    not(memo.contains(call_iref))
-  let f = self.core.funcs.get(f).unwrap()
+  let f = self.core.funcs.get(fref).unwrap()
+  let not_main = not(self.func.name.contains("main")) &&
+    not(f.name.contains("main"))
+  let call_once = self.fcf._.get(fref).unwrap() ==
+    @core_analysis.CallFrequncy::Once
+  let not_splitted_yet = not(memo.contains(call_iref))
   let _very_small = f.blocks.size() == 1 &&
     f.blocks.iter().all(fn(b) { b.1.bb_or_header_bb(f).seq.length() <= 5 })
-  not_main && call_once
+  self.tracer.println(
+    "allow_inline: \{not_main && call_once && not_splitted_yet} \{call_iref} \{f.name} \{not_main} \{call_once} \{not_splitted_yet}",
+  )
+  not_main && call_once && not_splitted_yet
 }
 
 fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {
@@ -125,7 +141,7 @@ fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {
                 splitted.insert(iref)
                 break
               }
-              None => ()
+              None => splitted.insert(iref)
             }
           }
         _ => ()
@@ -234,14 +250,13 @@ fn FnInliner::replace_call(
   }
   // call has been ensured that it's the last instruction in the block and there must be a jump
   guard let Jump(~target, ~args) = bb.control else {
-    _ => self.tracer.abort("expected jump instruction")
+    _ => self.tracer.abort("expected jump instruction but got \{bb.control}")
   }
   if args.length() != 1 {
     self.tracer.abort("expected one argument in jump instruction")
   }
   bb.seq.pop() |> ignore // remove the call instruction
   bb.control = @core.Control::Jump(target=callee.entry, args=[])
-  // self.fix_entry(callee)
   self.fix_return_to_jump(callee, kont=target)
   self.fix_fn_parameters_and_mems(callee, call_args)
   callee.blocks.each(fn(bref, blk) { self.func.blocks.set(bref, blk) })

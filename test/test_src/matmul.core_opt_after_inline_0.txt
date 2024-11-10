@@ -13,8 +13,34 @@
   .bb #b0 () {
     let _ = alloc <m0: array[array[double]] heap($f0)> <- [..] = $f2
     let %1: int32 = sub($f0, 1)
-    let %2: unit = call f0(%1, f1.m0, $f1)
+    jump b8()
+  }
+  .bb #b1 (unit) {
     return f1.m0
+  }
+  .bb #b3 (int32, array[array[double]], int32) {
+    let %3: bool = le(0, $b3.0)
+    br %3 b4() b5()
+  }
+  .bb #b4 () {
+    let _ = alloc <m3: array[double] heap($b3.2)> <- [..] = 0
+    let _ = store array[double] offset($b3.1, $b3.0 * @ptr) <- f1.m3
+    let %6: int32 = sub($b3.0, 1)
+    jump b3(%6, $b3.1, $b3.2)
+  }
+  .bb #b5 () {
+    jump b6(())
+  }
+  .bb #b6 (unit) {
+    jump b1($b6.0)
+  }
+  .loop #b7 pre #Some(b8) header #b3 {
+    .block #b4
+    .block #b5
+    .block #b6
+  }
+  .bb #b8 () {
+    jump b7(%1, f1.m0, $f1)
   }
 }
 .fn loop218.234 #f3 : fn(int32, int32, array[array[double]], array[array[double]], array[array[double]], int32, array[double], array[double], array[double]) -> unit

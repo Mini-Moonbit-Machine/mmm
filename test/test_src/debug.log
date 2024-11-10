@@ -9,37 +9,6 @@
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Asm] LoweringOrder: [b0]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] pre_assigned_registers: Self(fref=f0) -> v0, FnParam(fref=f0, fpref=$f.1) -> v3, FnParam(fref=f0, fpref=$f.0) -> v2
-// [Asm] succs: []
-// [Asm] critical edges for b0: []
-// [Asm] critical color seq for b0: []
-// [Asm] defs: []
-// [Asm] live_set: [a1, a0]
-// [Asm] defs: [v2]
-// [Asm] live_set: [a1]
-// [Asm] move: v2 <- a0
-// [Asm] defined: v2 is X
-// [Asm] defs: [v3]
-// [Asm] live_set: [v3]
-// [Asm] move: v3 <- a1
-// [Asm] defined: v3 is X
-// [Asm] defs: [a0]
-// [Asm] live_set: [a0]
-// [Asm] move: a0 <- v3
-// [Asm] defined: a0 is X
-// [Asm] defs: []
-// [Asm] live_set: [a0]
-// [Asm] defs: []
-// [Asm] live_set: []
-// [Asm] Label("g12.54") clobbered_x: @hashset.of([a1, a0])
-// [Asm] Label("g12.54") clobbered_f: @hashset.of([])
-// [Asm] subst   mv a0, v3 ->   mv a0, a1
-// [Asm] subst   ret ->   ret
-// [Asm] LoweringOrder: [0]
-// [Asm] LoweringOrder: [[]]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] LoweringOrder: [b0]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Asm] pre_assigned_registers: Self(fref=f2) -> v0
 // [Asm] succs: []
 // [Asm] critical edges for b0: []
@@ -67,20 +36,6 @@
 // [Asm]   # save_ctx1  # live: [zero]
 // [Asm] # control
 // [Asm]   mv a0, zero  # live: [a0]
-// [Asm]   # restore_ctx1  # live: [a0]
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf true
-// [Asm] g12.54:
-// [Asm] # block info: defs: [v3, a0, v2], uses: [a1, a0, v3], upward_exposed: [a1, a0], params_defs: []
-// [Asm] # live_in: [a1, a0], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .g12.54_0:
-// [Asm]   # save_ctx1  # live: [a1, a0]
-// [Asm]   mv v2, a0  # live: [a1]
-// [Asm]   mv v3, a1  # live: [v3]
-// [Asm] # control
-// [Asm]   mv a0, v3  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
 // [Asm] 
@@ -158,16 +113,6 @@
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl g12.54
-// [Main]   .type g12.54, @function
-// [Main] # leaf true
-// [Main] g12.54:
-// [Main] .g12.54_0:
-// [Main]   mv a0, a1
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
 // [Main]   .globl minimbt_main
 // [Main]   .type minimbt_main, @function
 // [Main] # leaf false
@@ -206,17 +151,6 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function g12.54
-// [Wasm] Lowering control Return(args=[FnParam(fref=f0, fpref=$f.1)])
-// [Wasm] Get Local name FnParam(fref=f0, fpref=$f.1) -> $$f.1
-// [Wasm] Get Local name FnParam(fref=f0, fpref=$f.0) -> $$f.0
-// [Wasm] Get Local name FnParam(fref=f0, fpref=$f.1) -> $$f.1
-// [Wasm] Lowered function g12.54 to wasm
-// [Wasm] LoweringOrder: [0]
-// [Wasm] LoweringOrder: [[]]
-// [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] LoweringOrder: [b0]
-// [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] Lowering function main19.55
 // [Wasm] Lowering control Return(args=[Unit])
 // [Wasm] Lowered function main19.55 to wasm
@@ -233,4 +167,18 @@
 // [Parser] flags: []
 // [CoreOpt] eliminated tail rec call %8: Call(ty=Int32, f=f1, args=[Int32(val=1)])
 // [CoreOpt] Call frequnce: FnCallFreq({f6: Once, f0: Once, f1: Never, f2: Once})
+// [CoreOpt] allow_inline: false %0 main19.55 false true true
+// [CoreOpt] allow_inline: true %9 g12.54 true true true
+// [CoreOpt] allow_inline: false %0 main19.55 false true true
+// [CoreOpt] allow_inline: true %9 g12.54 true true true
+// [CoreOpt] f9.53 is inlining Call(ty=Int32, f=f0, args=[Int32(val=2), Int32(val=1)])
+// [CoreOpt] shifted callee .fn g12.54 #f0 : fn(int32, int32) -> int32
+// [CoreOpt] .freevars ()
+// [CoreOpt] .entry b27 {
+// [CoreOpt]   .bb #b27 () {
+// [CoreOpt]     return $f1
+// [CoreOpt]   }
+// [CoreOpt] }
+// [CoreOpt] 
+// [CoreOpt] Remove dead function: f0
 // [CoreOpt] Remove dead function: f1
