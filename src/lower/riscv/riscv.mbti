@@ -11,6 +11,12 @@ fn def_use(@moonbitlang/minimbt/riscv.RvAsm) -> (Array[@moonbitlang/minimbt/risc
 
 fn fn_block_name(@core.Fn, @core.BlockRef) -> String
 
+fn pre_allocate_for_stack(Array[@moonbitlang/minimbt/riscv.RvAsm]) -> Unit
+
+fn restore_sp(Array[@moonbitlang/minimbt/riscv.RvAsm]) -> Unit
+
+fn save_sp(Array[@moonbitlang/minimbt/riscv.RvAsm]) -> Unit
+
 // Types and methods
 type AnyRegInfo
 
@@ -137,7 +143,7 @@ pub struct RiscvLoweringCtx {
 }
 impl RiscvLoweringCtx {
   lower(Self) -> MCore!Failure
-  lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, GlobalVar]) -> MFn
+  lower_globals(Self, @hashmap.T[@moonbitlang/minimbt/riscv.Label, GlobalVar], Map[String, String]) -> MFn
   new(@core.Core, @util.SubTracer, ~use_xthead : Bool = ..) -> Self
 }
 
