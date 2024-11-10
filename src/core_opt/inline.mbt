@@ -65,7 +65,8 @@ pub fn FnInliner::split_bb_at_call(
   }
   if call_idx == bb.seq.length() - 1 &&
     (match bb.control {
-      @core.Control::Jump(..) => true
+      @core.Control::Jump(args=[@core.Value::Insn(~iref)], ..) =>
+        iref == call_iref
       _ => false
     }) {
     return None
@@ -111,16 +112,22 @@ fn allow_inline(
   let not_splitted_yet = not(memo.contains(call_iref))
   let very_small = f.blocks.size() == 1 &&
     f.blocks.iter().all(fn(b) { b.1.bb_or_header_bb(f).seq.length() <= 5 })
-  let cond = not_main && (call_once || very_small) && not_splitted_yet
+  let not_a_closure = match f.ty {
+    @core.Type::DirectFn(..) => true
+    _ => true
+  }
+  let cond = not_main &&
+    (call_once || very_small) &&
+    not_splitted_yet &&
+    not_a_closure
   self.tracer.println(
-    "allow_inline: \{cond} \{call_iref} \{f.name} \{not_main} \{call_once} \{not_splitted_yet} \{very_small}",
+    "allow_inline: \{cond} \{call_iref} \{f.name} \{not_main} \{call_once} \{not_splitted_yet} \{very_small} \{not_a_closure}",
   )
   cond
 }
 
 fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {
   let split_mem = @hashset.new()
-  let splitted = @hashset.new()
   fn do(block : @core.Block) {
     let mut changed = false
     let bb = block.bb_or_header_bb(self.func)
@@ -136,10 +143,9 @@ fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {
                 // we have modified self.func.blocks
                 // so we need to break and restart the loop
                 changed = true
-                splitted.insert(iref)
                 break
               }
-              None => splitted.insert(iref)
+              None => ()
             }
           }
         _ => ()
@@ -162,7 +168,7 @@ fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {
       }
     }
   }
-  splitted
+  split_mem
 }
 
 fn FnInliner::fix_return_to_jump(
