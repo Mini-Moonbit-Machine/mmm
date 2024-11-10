@@ -2432,11 +2432,11 @@ pub fn RiscvLoweringCtx::new(
   { core, tracer, use_xthead }
 }
 
-fn save_sp(insns : Array[MInsn]) -> Unit {
+pub fn save_sp(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Mv(rd=@riscv.Fp, rs=@riscv.Sp))
 }
 
-fn restore_sp(insns : Array[MInsn]) -> Unit {
+pub fn restore_sp(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::Mv(rd=@riscv.Sp, rs=@riscv.Fp))
 }
 
@@ -2444,7 +2444,7 @@ fn pre_allocate(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::La(rd=@riscv.reg_alloc, l=Label("large_heap_end")))
 }
 
-fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
+pub fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
   insns.push(MInsn::La(rd=@riscv.Sp, l=Label("large_stack_end")))
 }
 
@@ -2458,7 +2458,7 @@ pub fn RiscvLoweringCtx::lower_globals(
   let entry = @riscv.Label::Label(".minimbt_main_b0")
   let blocks = MutMap::new()
   let insns = []
-  let save_list = [@riscv.Ra, @riscv.Fp, @riscv.S11]
+  let save_list = [@riscv.Ra, @riscv.S11]
   let mut len = save_list.length() * 8
   if len % 16 != 0 {
     len += 8
@@ -2468,8 +2468,8 @@ pub fn RiscvLoweringCtx::lower_globals(
     store_to_sp_offset(reg.to_any(), i * 8, insns)
   }
   pre_allocate(insns)
-  save_sp(insns)
-  pre_allocate_for_stack(insns)
+  // save_sp(insns)
+  // pre_allocate_for_stack(insns)
   for symbol in core.global_names {
     let symbol = core.global_symbols.get(symbol.1).unwrap()
     let ty_size = symbol.ty.size_of_lp64()
@@ -2543,7 +2543,7 @@ pub fn RiscvLoweringCtx::lower_globals(
       }
     }
   }
-  restore_sp(insns)
+  // restore_sp(insns)
   for i, reg in save_list {
     load_to_sp_offset(reg.to_any(), i * 8, insns)
   }
