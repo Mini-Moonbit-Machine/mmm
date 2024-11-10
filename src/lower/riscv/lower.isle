@@ -272,7 +272,7 @@
 ;;;; Rules for i32 divisions
 
 (rule (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (has_type b (ty_int32)))))
-  (mr (rv_div a b)))
+  (mr (rv_divw a b)))
 
 (rule 1 (lower (insn_op (ty_int32) (op_div) (arg2 (has_type a (ty_int32)) (power_of_two b))))
   (mr (rv_srai a b)))
@@ -294,7 +294,7 @@
 (decl lower_mod (Value Value) AnyReg)
 
 (rule (lower_mod m n)
-  (mr (rv_rem m n)))
+  (mr (rv_remw m n)))
 
 (decl power_of_two_minus_one (Int32) Int32)
 (extern constructor power_of_two_minus_one power_of_two_minus_one)

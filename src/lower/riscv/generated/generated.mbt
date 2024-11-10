@@ -2493,7 +2493,7 @@ pub fn constructor_lower[C : Context](
                               let v15 = C::xreg_new(ctx, v14)
                               let v16 = constructor_lower_value(ctx, v11.0)
                               let v17 = C::xreg_new(ctx, v16)
-                              let v69 = constructor_rv_div(ctx, v15, v17)
+                              let v69 = constructor_rv_divw(ctx, v15, v17)
                               let v70 = C::xreg_to_reg(ctx, v69)
                               let v71 = C::mark_maybe_aliased(ctx, v70)
                               let v72 = Some(v71)
@@ -3243,7 +3243,7 @@ pub fn constructor_lower_mod[C : Context](
   let v3 = C::xreg_new(ctx, v2)
   let v4 = constructor_lower_value(ctx, arg1)
   let v5 = C::xreg_new(ctx, v4)
-  let v6 = constructor_rv_rem(ctx, v3, v5)
+  let v6 = constructor_rv_remw(ctx, v3, v5)
   let v7 = C::xreg_to_reg(ctx, v6)
   let v8 = C::mark_maybe_aliased(ctx, v7)
   // Rule at src/lower/riscv/lower.isle line 295.
