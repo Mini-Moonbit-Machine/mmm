@@ -58,13 +58,10 @@ pub fn FnInliner::split_bb_at_call(
   call_idx : Int
 ) -> @core.BlockRef? {
   let id = self.func.next_block_id()
-  guard let @core.Insn::Call(~ty, ~f, ..) = self.func.insns
+  guard let @core.Insn::Call(~ty, ..) = self.func.insns
     .get(bb.seq[call_idx])
     .unwrap() else {
     _ => self.tracer.abort("expected call instruction")
-  }
-  guard self.fcf._.get(f).unwrap() == @core_analysis.CallFrequncy::Once else {
-    self.tracer.abort("expected call frequency to be Once")
   }
   if call_idx == bb.seq.length() - 1 &&
     (match bb.control {
@@ -112,12 +109,13 @@ fn allow_inline(
   let call_once = self.fcf._.get(fref).unwrap() ==
     @core_analysis.CallFrequncy::Once
   let not_splitted_yet = not(memo.contains(call_iref))
-  let _very_small = f.blocks.size() == 1 &&
+  let very_small = f.blocks.size() == 1 &&
     f.blocks.iter().all(fn(b) { b.1.bb_or_header_bb(f).seq.length() <= 5 })
+  let cond = not_main && (call_once || very_small) && not_splitted_yet
   self.tracer.println(
-    "allow_inline: \{not_main && call_once && not_splitted_yet} \{call_iref} \{f.name} \{not_main} \{call_once} \{not_splitted_yet}",
+    "allow_inline: \{cond} \{call_iref} \{f.name} \{not_main} \{call_once} \{not_splitted_yet} \{very_small}",
   )
-  not_main && call_once && not_splitted_yet
+  cond
 }
 
 fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {

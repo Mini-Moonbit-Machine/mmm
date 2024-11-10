@@ -20,21 +20,6 @@
     return %5
   }
 }
-.fn swap1.142 #f0 : fn(array[int32], int32, int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %13: ptr = compute_address unit offset(0, $f1 * @32)
-    let %0: int32 = load int32 raw($f0, %13)
-    let %12: ptr = compute_address unit offset(0, $f2 * @32)
-    let %1: int32 = load int32 raw($f0, %12)
-    let %10: ptr = compute_address unit offset(0, $f1 * @32)
-    let _ = store int32 raw($f0, %10) <- %1
-    let %7: ptr = compute_address unit offset(0, $f2 * @32)
-    let _ = store int32 raw($f0, %7) <- %0
-    return ()
-  }
-}
 .fn input79.146 #f3 : fn(int32, array[int32], int32) -> unit
 .freevars ()
 .entry b5 {
@@ -113,11 +98,11 @@
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let %26: ptr = compute_address unit offset(0, $b0.2 * @32)
-    let %2: int32 = load int32 raw($b0.0, %26)
+    let %43: ptr = compute_address unit offset(0, $b0.2 * @32)
+    let %2: int32 = load int32 raw($b0.0, %43)
     let %3: int32 = sub($b0.1, 1)
     let _ = alloc <m0: array[int32] heap(1)> <- [..] = %3
-    jump b23()
+    jump b27()
   }
   .bb #b2 () {
     jump b3(())
@@ -138,55 +123,78 @@
     let %7: int32 = add(%6, 1)
     let _ = store int32 field(f2.m0, 0 * @32) <- %7
     let %9: int32 = load int32 field(f2.m0, 0 * @32)
-    let %10: unit = call f0($b0.0, %9, $b0.2)
+    jump b15()
+  }
+  .bb #b7 (unit) {
     let %11: int32 = load int32 field(f2.m0, 0 * @32)
     let %12: int32 = sub(%11, 1)
     let %13: unit = call f2($b0.0, $b0.1, %12)
     let %14: int32 = add(%11, 1)
     jump b0($b0.0, %14, $b0.2)
   }
-  .bb #b15 (int32, array[int32], array[int32], int32, int32) {
-    let %15: int32 = sub($b15.4, 1)
-    let %16: bool = le($b15.0, %15)
-    br %16 b16() b17()
+  .bb #b15 () {
+    let %42: ptr = compute_address unit offset(0, %9 * @32)
+    let %15: int32 = load int32 raw($b0.0, %42)
+    let %41: ptr = compute_address unit offset(0, $b0.2 * @32)
+    let %16: int32 = load int32 raw($b0.0, %41)
+    let %39: ptr = compute_address unit offset(0, %9 * @32)
+    let _ = store int32 raw($b0.0, %39) <- %16
+    let %36: ptr = compute_address unit offset(0, $b0.2 * @32)
+    let _ = store int32 raw($b0.0, %36) <- %15
+    jump b7(())
   }
-  .bb #b16 () {
-    let %25: ptr = compute_address unit offset(0, $b15.0 * @32)
-    let %17: int32 = load int32 raw($b15.2, %25)
-    let %18: bool = le(%17, $b15.3)
-    br %18 b18() b19()
+  .bb #b19 (int32, array[int32], array[int32], int32, int32) {
+    let %19: int32 = sub($b19.4, 1)
+    let %20: bool = le($b19.0, %19)
+    br %20 b20() b21()
   }
-  .bb #b17 () {
-    jump b21(())
+  .bb #b20 () {
+    let %44: ptr = compute_address unit offset(0, $b19.0 * @32)
+    let %21: int32 = load int32 raw($b19.2, %44)
+    let %22: bool = le(%21, $b19.3)
+    br %22 b22() b23()
   }
-  .bb #b18 () {
-    let %19: int32 = load int32 field($b15.1, 0 * @32)
-    let %20: int32 = add(%19, 1)
-    let _ = store int32 field($b15.1, 0 * @32) <- %20
-    let %22: int32 = load int32 field($b15.1, 0 * @32)
-    let %23: unit = call f0($b15.2, %22, $b15.0)
-    jump b20(%23)
+  .bb #b21 () {
+    jump b25(())
   }
-  .bb #b19 () {
-    jump b20(())
-  }
-  .bb #b20 (unit) {
-    let %24: int32 = add($b15.0, 1)
-    jump b15(%24, $b15.1, $b15.2, $b15.3, $b15.4)
-  }
-  .bb #b21 (unit) {
-    jump b6($b21.0)
-  }
-  .loop #b22 pre #Some(b23) header #b15 {
-    .block #b21
-    .block #b19
-    .block #b16
-    .block #b20
-    .block #b17
-    .block #b18
+  .bb #b22 () {
+    let %23: int32 = load int32 field($b19.1, 0 * @32)
+    let %24: int32 = add(%23, 1)
+    let _ = store int32 field($b19.1, 0 * @32) <- %24
+    let %26: int32 = load int32 field($b19.1, 0 * @32)
+    jump b29()
   }
   .bb #b23 () {
-    jump b22($b0.1, f2.m0, $b0.0, %2, $b0.2)
+    jump b24(())
+  }
+  .bb #b24 (unit) {
+    let %28: int32 = add($b19.0, 1)
+    jump b19(%28, $b19.1, $b19.2, $b19.3, $b19.4)
+  }
+  .bb #b25 (unit) {
+    jump b6($b25.0)
+  }
+  .loop #b26 pre #Some(b27) header #b19 {
+    .block #b25
+    .block #b23
+    .block #b20
+    .block #b24
+    .block #b21
+    .block #b22
+  }
+  .bb #b27 () {
+    jump b26($b0.1, f2.m0, $b0.0, %2, $b0.2)
+  }
+  .bb #b29 () {
+    let %54: ptr = compute_address unit offset(0, %26 * @32)
+    let %29: int32 = load int32 raw($b19.2, %54)
+    let %53: ptr = compute_address unit offset(0, $b19.0 * @32)
+    let %30: int32 = load int32 raw($b19.2, %53)
+    let %51: ptr = compute_address unit offset(0, %26 * @32)
+    let _ = store int32 raw($b19.2, %51) <- %30
+    let %48: ptr = compute_address unit offset(0, $b19.0 * @32)
+    let _ = store int32 raw($b19.2, %48) <- %29
+    jump b24(())
   }
 }
 .thunk ::0 start
