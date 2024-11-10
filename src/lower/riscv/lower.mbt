@@ -1743,6 +1743,44 @@ fn RiscvFnLoweringCtx::lower_block(
   { id, insns, control, params }
 }
 
+fn RiscvFnLoweringCtx::try_lower_trivial(
+  self : RiscvFnLoweringCtx
+) -> (String, String)? {
+  if self.order.order.length() == 0 {
+    return None
+  }
+  if self.order.order.length() == 1 {
+    match self.order.order[0] {
+      BasicBlock(~bref) => {
+        let bb = self.ref_block(bref).bb_or_header_bb(self.func)
+        let control_is_return = match bb.control {
+          @core.Control::Return(~args) =>
+            if args.length() == 1 {
+              Some(args[0])
+            } else {
+              None
+            }
+          _ => None
+        }
+        if bb.seq.length() == 1 &&
+          Some(@core.Value::Insn(iref=bb.seq[0])) == control_is_return {
+          let insn = self.ref_insn(bb.seq[0])
+          match insn {
+            @core.Insn::Call(~f, ~args, ..) =>
+              if args.length() == 0 {
+                let f = self.ref_fn(f)
+                return Some((self.func.name, f.name))
+              }
+            _ => ()
+          }
+        }
+      }
+      _ => ()
+    }
+  }
+  None
+}
+
 fn RiscvFnLoweringCtx::lower(
   self : RiscvFnLoweringCtx
 ) -> (MFn, Liveness)!Failure {
@@ -2412,7 +2450,8 @@ fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
 
 pub fn RiscvLoweringCtx::lower_globals(
   self : RiscvLoweringCtx,
-  globals : MutMap[@riscv.Label, GlobalVar]
+  globals : MutMap[@riscv.Label, GlobalVar],
+  remap : Map[String, String]
 ) -> MFn {
   let core = self.core
   let name = @riscv.Label::Label("minimbt_main")
@@ -2444,11 +2483,11 @@ pub fn RiscvLoweringCtx::lower_globals(
           Some(Double(~val)) => GlobalVar::Double(val)
           _ => self.tracer.abort("Invalid global data")
         }
-        globals.set(@riscv.Label::Label(symbol.name.to_string()), glb)
+        globals.set(@riscv.Label::Label(symbol.name), glb)
       }
       Some(thunk) => {
         globals.set(
-          @riscv.Label::Label(symbol.name.to_string()),
+          @riscv.Label::Label(symbol.name),
           if ty_size == 0 {
             Zero(4)
           } else {
@@ -2456,8 +2495,16 @@ pub fn RiscvLoweringCtx::lower_globals(
           },
         )
         let thunk = core.funcs.get(thunk).unwrap()
+        let mut thunk_name = thunk.name
+        let mut flag = true
+        while flag {
+          match remap.get(thunk_name) {
+            Some(new_name) => thunk_name = new_name
+            None => flag = false
+          }
+        }
         let call = MInsn::Call(
-          target=Label(thunk.name.to_string()),
+          target=Label(thunk_name),
           num_xregs=0,
           num_fregs=0,
         )
@@ -2521,6 +2568,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     liveness: MutMap::new(),
     primitives: MutSet::new(),
   }
+  let remap = {}
   for func in self.core.funcs {
     let (_, func) = func
     let lower_ctx = RiscvFnLoweringCtx::new(
@@ -2529,23 +2577,28 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.tracer,
       use_xthead=self.use_xthead,
     )
-    let (mfn, liveness) = lower_ctx.lower!()
-    let lbl = @riscv.Label::Label(func.name)
-    before_colored.funcs.set(lbl, mfn)
-    before_colored.liveness.set(lbl, liveness)
-    lower_ctx.used_primitive.each(
-      fn(p) {
-        before_colored.primitives.insert(p)
-        after_colored.primitives.insert(p)
-      },
-    )
-    let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
-    regalloc.assign()
-    let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
-    after_colored.funcs.set(lbl, final_mfn)
+    match lower_ctx.try_lower_trivial() {
+      Some((original, now)) => remap.set(original, now)
+      _ => {
+        let (mfn, liveness) = lower_ctx.lower!()
+        let lbl = @riscv.Label::Label(func.name)
+        before_colored.funcs.set(lbl, mfn)
+        before_colored.liveness.set(lbl, liveness)
+        lower_ctx.used_primitive.each(
+          fn(p) {
+            before_colored.primitives.insert(p)
+            after_colored.primitives.insert(p)
+          },
+        )
+        let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
+        regalloc.assign()
+        let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
+        after_colored.funcs.set(lbl, final_mfn)
+      }
+    }
   }
   {
-    let init = self.lower_globals(globals)
+    let init = self.lower_globals(globals, remap)
     before_colored.funcs.set(init.name, init)
     after_colored.funcs.set(init.name, init)
     let l = Liveness::new(None, init, self.tracer)
