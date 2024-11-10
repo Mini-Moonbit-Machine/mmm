@@ -1,0 +1,397 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn sort_2157.398 #f4 : fn(int32, int32, array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %10: ptr = compute_address unit offset(0, $f1 * @32)
+    let %0: int32 = load int32 raw($f3, %10)
+    let %9: ptr = compute_address unit offset(0, $f0 * @32)
+    let %1: int32 = load int32 raw($f3, %9)
+    let %2: int32 = sub(%1, 1)
+    let %3: bool = le(%0, %2)
+    br %3 b1() b2()
+  }
+  .bb #b1 () {
+    let %4: unit = call f0($f3, $f0, $f1)
+    let %5: int32 = load int32 field($f2, 0 * @32)
+    let %6: int32 = add(%5, 1)
+    let _ = store int32 field($f2, 0 * @32) <- %6
+    jump b3(())
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+}
+.fn input243.402 #f8 : fn(int32, array[int32], int32) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (int32, array[int32], int32) {
+    let %0: int32 = sub($b0.2, 1)
+    let %1: bool = le($b0.0, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = ext_call minimbt_read_int()
+    let %5: ptr = compute_address unit offset(0, $b0.0 * @32)
+    let _ = store int32 raw($b0.1, %5) <- %2
+    let %4: int32 = add($b0.0, 1)
+    jump b0(%4, $b0.1, $b0.2)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2)
+  }
+}
+.fn main239.401 #f9 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
+    let %2: unit = call f8(0, f9.m0, %0)
+    let %3: unit = call f7(f9.m0, 0, %0)
+    let %4: unit = call f1(f9.m0, 0, %0)
+    return %4
+  }
+}
+.fn sort_3173.399 #f5 : fn(int32, int32, int32, array[int32], array[int32]) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f4($f0, $f1, $f3, $f4)
+    let %1: unit = call f4($f1, $f2, $f3, $f4)
+    let %2: unit = call f4($f0, $f1, $f3, $f4)
+    return %2
+  }
+}
+.fn swap1.393 #f0 : fn(array[int32], int32, int32) -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %13: ptr = compute_address unit offset(0, $f1 * @32)
+    let %0: int32 = load int32 raw($f0, %13)
+    let %12: ptr = compute_address unit offset(0, $f2 * @32)
+    let %1: int32 = load int32 raw($f0, %12)
+    let _ = store int32 raw($f0, %13) <- %1
+    let _ = store int32 raw($f0, %12) <- %0
+    return ()
+  }
+}
+.fn quick_sort210.395 #f7 : fn(array[int32], int32, int32) -> unit
+.freevars ()
+.entry b17 {
+  .bb #b0 (array[int32], int32, int32) {
+    let %0: int32 = sub($b0.2, $b0.1)
+    let %1: bool = le(%0, 16)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = add($b0.1, 1)
+    let %3: unit = call f3(%2, $b0.0, $b0.1, $b0.2)
+    jump b15(%3)
+  }
+  .bb #b2 () {
+    let _ = alloc <m0: array[int32] heap(1)> <- [..] = 0
+    let %5: int32 = sub($b0.2, $b0.1)
+    let %6: int32 = div(%5, 4)
+    let %7: int32 = mul(%6, 2)
+    let %8: int32 = add($b0.1, %7)
+    let %9: bool = le(8, %5)
+    br %9 b3() b4()
+  }
+  .bb #b3 () {
+    let %10: int32 = div(%5, 4)
+    let %11: int32 = mul(%10, 1)
+    let %12: int32 = add($b0.1, %11)
+    let %14: int32 = mul(%10, 3)
+    let %15: int32 = add($b0.1, %14)
+    let %16: int32 = sub(%5, 1)
+    let %17: bool = le(50, %16)
+    br %17 b5() b6()
+  }
+  .bb #b4 () {
+    jump b8(())
+  }
+  .bb #b5 () {
+    let %18: int32 = sub(%12, 1)
+    let %19: int32 = add(%12, 1)
+    let %20: unit = call f5(%18, %12, %19, f7.m0, $b0.0)
+    let %21: int32 = sub(%8, 1)
+    let %22: int32 = add(%8, 1)
+    let %23: unit = call f5(%21, %8, %22, f7.m0, $b0.0)
+    let %24: int32 = sub(%15, 1)
+    let %25: int32 = add(%15, 1)
+    let %26: unit = call f5(%24, %15, %25, f7.m0, $b0.0)
+    jump b7(%26)
+  }
+  .bb #b6 () {
+    jump b7(())
+  }
+  .bb #b7 (unit) {
+    let %27: unit = call f5(%12, %8, %15, f7.m0, $b0.0)
+    jump b8(%27)
+  }
+  .bb #b8 (unit) {
+    let %28: int32 = load int32 field(f7.m0, 0 * @32)
+    let %29: bool = eq(%28, 0)
+    br %29 b9() b10()
+  }
+  .bb #b9 () {
+    jump b11(true)
+  }
+  .bb #b10 () {
+    jump b11(false)
+  }
+  .bb #b11 (bool) {
+    let _ = alloc <m1: (int32, bool) heap(2)> <- [0] = %8, [1] = $b11.0
+    let %31: int32 = load int32 field(f7.m1, 0 * @(@32, @(@32, @32)))
+    let %32: bool = load bool field(f7.m1, 1 * @(@32, @(@32, @32)))
+    let %33: int32 = sub($b0.2, 1)
+    let %34: unit = call f0($b0.0, %31, %33)
+    let %65: ptr = compute_address unit offset(0, %33 * @32)
+    let %36: int32 = load int32 raw($b0.0, %65)
+    let _ = alloc <m2: array[int32] heap(1)> <- [..] = $b0.1
+    let _ = alloc <m3: array[int32] heap(1)> <- [..] = 1
+    jump b62()
+  }
+  .bb #b12 () {
+    jump b14(true)
+  }
+  .bb #b13 () {
+    jump b14(false)
+  }
+  .bb #b14 (bool) {
+    let _ = alloc <m4: (int32, bool) heap(2)> <- [0] = %43, [1] = $b14.0
+    let %47: int32 = load int32 field(f7.m4, 0 * @(@32, @(@32, @32)))
+    let %48: bool = load bool field(f7.m4, 1 * @(@32, @(@32, @32)))
+    let %49: unit = call f7($b0.0, $b0.1, %47)
+    let %50: int32 = add(%47, 1)
+    jump b0($b0.0, %50, $b0.2)
+  }
+  .bb #b15 (unit) {
+    return $b15.0
+  }
+  .loop #b16 pre #Some(b17) header #b0 {
+    .block #b6
+    .block #b12
+    .block #b4
+    .block #b8
+    .block #b9
+    .block #b13
+    .block #b15
+    .block #b1
+    .block #b10
+    .block #b11
+    .block #b5
+    .block #b2
+    .block #b3
+    .block #b14
+    .block #b7
+  }
+  .bb #b17 () {
+    jump b16($f0, $f1, $f2)
+  }
+  .bb #b18 (unit) {
+    let %40: int32 = load int32 field(f7.m2, 0 * @32)
+    let %41: int32 = sub($b0.2, 1)
+    let %42: unit = call f0($b0.0, %40, %41)
+    let %43: int32 = load int32 field(f7.m2, 0 * @32)
+    let %44: int32 = load int32 field(f7.m3, 0 * @32)
+    let %45: bool = eq(%44, 1)
+    br %45 b12() b13()
+  }
+  .bb #b51 (int32, array[int32], int32, array[int32], int32, array[int32]) {
+    let %51: int32 = sub($b51.4, 2)
+    let %52: bool = le($b51.0, %51)
+    br %52 b52() b53()
+  }
+  .bb #b52 () {
+    let %66: ptr = compute_address unit offset(0, $b51.0 * @32)
+    let %53: int32 = load int32 raw($b51.3, %66)
+    let %54: int32 = sub($b51.2, 1)
+    let %55: bool = le(%53, %54)
+    br %55 b54() b55()
+  }
+  .bb #b53 () {
+    jump b60(())
+  }
+  .bb #b54 () {
+    let %56: int32 = load int32 field($b51.1, 0 * @32)
+    let %57: bool = eq(%56, $b51.0)
+    br %57 b56() b57()
+  }
+  .bb #b55 () {
+    jump b59(())
+  }
+  .bb #b56 () {
+    jump b58(())
+  }
+  .bb #b57 () {
+    let %58: int32 = load int32 field($b51.1, 0 * @32)
+    let %59: unit = call f0($b51.3, %58, $b51.0)
+    let _ = store int32 field($b51.5, 0 * @32) <- 0
+    jump b58(())
+  }
+  .bb #b58 (unit) {
+    let %61: int32 = load int32 field($b51.1, 0 * @32)
+    let %62: int32 = add(%61, 1)
+    let _ = store int32 field($b51.1, 0 * @32) <- %62
+    jump b59(())
+  }
+  .bb #b59 (unit) {
+    let %64: int32 = add($b51.0, 1)
+    jump b51(%64, $b51.1, $b51.2, $b51.3, $b51.4, $b51.5)
+  }
+  .bb #b60 (unit) {
+    jump b18($b60.0)
+  }
+  .loop #b61 pre #Some(b62) header #b51 {
+    .block #b57
+    .block #b55
+    .block #b59
+    .block #b60
+    .block #b52
+    .block #b56
+    .block #b53
+    .block #b54
+    .block #b58
+  }
+  .bb #b62 () {
+    jump b61($b0.1, f7.m2, %36, $b0.0, $b0.2, f7.m3)
+  }
+}
+.fn output14.394 #f1 : fn(array[int32], int32, int32) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (array[int32], int32, int32) {
+    let %0: int32 = sub($b0.2, 1)
+    let %1: bool = le($b0.1, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %6: ptr = compute_address unit offset(0, $b0.1 * @32)
+    let %2: int32 = load int32 raw($b0.0, %6)
+    let %3: unit = ext_call minimbt_print_int(%2)
+    let %4: unit = ext_call minimbt_print_endline()
+    let %5: int32 = add($b0.1, 1)
+    jump b0($b0.0, %5, $b0.2)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2)
+  }
+}
+.fn f54.397 #f3 : fn(int32, array[int32], int32, int32) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (int32, array[int32], int32, int32) {
+    let %0: int32 = sub($b0.3, 1)
+    let %1: bool = le($b0.0, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    jump b15()
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2, $f3)
+  }
+  .bb #b6 (unit) {
+    let %3: int32 = add($b0.0, 1)
+    jump b0(%3, $b0.1, $b0.2, $b0.3)
+  }
+  .bb #b7 (int32, array[int32], int32) {
+    let %4: int32 = add(1, $b7.2)
+    let %5: bool = le(%4, $b7.0)
+    br %5 b8() b9()
+  }
+  .bb #b8 () {
+    let %15: ptr = compute_address unit offset(0, $b7.0 * @32)
+    let %6: int32 = load int32 raw($b7.1, %15)
+    let %7: int32 = sub($b7.0, 1)
+    let %14: ptr = compute_address unit offset(0, %7 * @32)
+    let %8: int32 = load int32 raw($b7.1, %14)
+    let %9: int32 = sub(%8, 1)
+    let %10: bool = le(%6, %9)
+    br %10 b10() b11()
+  }
+  .bb #b9 () {
+    jump b13(())
+  }
+  .bb #b10 () {
+    let %11: int32 = sub($b7.0, 1)
+    let %12: unit = call f0($b7.1, $b7.0, %11)
+    jump b7(%11, $b7.1, $b7.2)
+  }
+  .bb #b11 () {
+    jump b12(())
+  }
+  .bb #b12 (unit) {
+    jump b13($b12.0)
+  }
+  .bb #b13 (unit) {
+    jump b6($b13.0)
+  }
+  .loop #b14 pre #Some(b15) header #b7 {
+    .block #b13
+    .block #b11
+    .block #b8
+    .block #b12
+    .block #b9
+    .block #b10
+  }
+  .bb #b15 () {
+    jump b14($b0.0, $b0.1, $b0.2)
+  }
+}
+.fn T$start #f20 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f9()
+    return %0
+  }
+}
+.thunk ::0 start
+

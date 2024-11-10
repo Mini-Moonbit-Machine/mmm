@@ -93,7 +93,13 @@
 (decl target_color (ColorSeq BlockRef) BlockRef)
 (extern extractor infallible target_color target_color)
 
+(decl lower_select (Control) Unit)
+(extern constructor lower_select lower_select)
+
 (decl partial lower_control (ColorSeq Control) Unit)
+
+(rule (lower_control _ s@(control_select _ _ _))
+  (lower_select s))
 
 (rule (lower_control _ (control_jump target args))
   (let ((_ Unit (emit_block_parameters target args)))

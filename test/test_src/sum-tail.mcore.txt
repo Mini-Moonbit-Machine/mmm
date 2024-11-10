@@ -37,14 +37,17 @@ sum1.14:
 
   .p2align 2
   .text
-  .globl T$start
-  .type T$start, @function
+  .globl main10.15
+  .type main10.15, @function
 # leaf false
-T$start:
-.T$start_0:
+main10.15:
+.main10.15_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call main10.15
+  mv a0, zero
+  li a1, 10000
+  call sum1.14
+  call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -63,29 +66,12 @@ minimbt_main:
   la s11, large_heap_end
   mv s0, sp
   la sp, large_stack_end
-  call T$start
+  call main10.15
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl main10.15
-  .type main10.15, @function
-# leaf false
-main10.15:
-.main10.15_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, zero
-  li a1, 10000
-  call sum1.14
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
 __end_text:

@@ -106,6 +106,7 @@ pub enum RvAsm {
   RestoreCtx2 // call epilogue
   // Comments
   Label(Label)
+  Raw(String)
   Comment(String)
 }
 
@@ -361,6 +362,7 @@ pub impl Show for RvAsm with output(self, logger) {
       logger.write_string(label._)
       logger.write_string(":")
     }
+    Raw(raw) => logger.write_string(raw)
     Comment(comment) => {
       logger.write_string("# ")
       logger.write_string(comment)

@@ -66,48 +66,12 @@ inc13:
 
   .p2align 2
   .text
-  .globl T$start
-  .type T$start, @function
-# leaf false
-T$start:
-.T$start_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main21
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl dbl10
   .type dbl10, @function
 # leaf true
 dbl10:
 .dbl10_0:
   add a0, a0, a0
-  ret
-
-  .p2align 2
-  .text
-  .globl minimbt_main
-  .type minimbt_main, @function
-# leaf false
-minimbt_main:
-.minimbt_main_b0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s11, 16(sp)
-  la s11, large_heap_end
-  mv s0, sp
-  la sp, large_stack_end
-  call T$start
-  mv sp, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s11, 16(sp)
-  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -151,6 +115,28 @@ main21:
 dec17:
 .dec17_0:
   addi a0, a0, -1
+  ret
+
+  .p2align 2
+  .text
+  .globl minimbt_main
+  .type minimbt_main, @function
+# leaf false
+minimbt_main:
+.minimbt_main_b0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s11, 16(sp)
+  la s11, large_heap_end
+  mv s0, sp
+  la sp, large_stack_end
+  call main21
+  mv sp, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s11, 16(sp)
+  addi sp, sp, 32
   ret
 
 __end_text:

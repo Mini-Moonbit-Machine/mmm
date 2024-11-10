@@ -85,13 +85,13 @@ fn shift_control(self : Renamer, control : @core.Control) -> @core.Control {
         f=f._.shift(self.counter.block_counter),
         f_args=f_args.map(fn(arg) { self.shift_value(arg) }),
       )
-    Select(~cond, ~targets, ~args) =>
+    Select(~cond, ~targets, ~fallback) =>
       Select(
         cond=self.shift_value(cond),
         targets=targets.map(
           fn(target) { target._.shift(self.counter.block_counter) },
         ),
-        args=args.map(fn(arg) { self.shift_value(arg) }),
+        fallback=fallback._.shift(self.counter.block_counter),
       )
     Panic => Panic
   }

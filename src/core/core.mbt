@@ -249,7 +249,7 @@ pub enum Control {
     ~f : BlockRef,
     ~f_args : Values
   )
-  Select(~cond : Value, ~targets : Array[BlockRef], ~args : Values)
+  Select(~cond : Value, ~targets : Array[BlockRef], ~fallback : BlockRef)
   Panic
 } derive(Show, Eq)
 
@@ -478,7 +478,7 @@ pub fn Control::successors(self : Control) -> Array[BlockRef] {
     Jump(~target, ..) => [target]
     Return(_) => []
     Branch(~t, ~f, ..) => [t, f]
-    Select(~targets, ..) => targets
+    Select(~targets, ..) => targets.copy()
     Panic => []
   }
 }
@@ -560,8 +560,8 @@ pub fn replace(self : Control, map : (Value) -> Value) -> Control {
         ~t,
         ~f,
       )
-    Select(~cond, ~targets, ~args) =>
-      Select(cond=map(cond), ~targets, args=args.map(map))
+    Select(~cond, ~targets, ~fallback) =>
+      Select(cond=map(cond), ~targets, ~fallback)
     Panic => Panic
   }
 }
@@ -776,4 +776,15 @@ pub fn block_param(bb : BlockRef, index : Int) -> Value {
 
 pub fn fn_param(f : FnRef, index : Int) -> Value {
   FnParam(fref=f, fpref=FnParamRef({ id: index }))
+}
+
+pub fn is_const(self : Value) -> Bool {
+  match self {
+    Unit => true
+    Bool(_) => true
+    Int32(_) => true
+    Int64(_) => true
+    Double(_) => true
+    _ => false
+  }
 }

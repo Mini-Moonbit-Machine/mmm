@@ -24,6 +24,7 @@ pub struct RiscvFnLoweringCtx {
   mut is_leaf : Bool
   mut mfn : MFn?
   use_xthead : Bool
+  mut tbl_counter : Int
   tracer : @util.SubTracer
 }
 
@@ -1654,6 +1655,40 @@ fn RiscvFnLoweringCtx::target_color(
   ({ color, seq, critical: [] }, target)
 }
 
+fn RiscvFnLoweringCtx::lower_select(
+  self : RiscvFnLoweringCtx,
+  control : @core.Control
+) -> Unit {
+  guard let @core.Control::Select(~cond, ~targets, ~fallback) = control else {
+    _ => self.tracer.abort("Invalid control")
+  }
+  let jtbl = "." + self.func.name + "_jtbl_\{self.tbl_counter}"
+  let jtbl_label = @riscv.Label::Label(jtbl)
+  self.tbl_counter += 1
+  let cond = @generated.constructor_lower_value(self, cond)
+  let upper = @generated.constructor_rv_li(
+    self,
+    (targets.length() - 1).to_string(),
+  )
+  let fallback_label = self.block_label(fallback)
+  @generated.constructor_rv_bltu(self, upper, xreg(cond), fallback_label)
+  let base = @generated.constructor_rv_la(self, jtbl_label)
+  let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
+  let addr = @generated.constructor_rv_add(self, base, offset)
+  let reg = @generated.constructor_rv_lw(self, { base: addr, offset: 0 })
+  @generated.constructor_rv_jr(self, reg)
+  self.emit_risc_v(MInsn::Raw(".p2align 2"))
+  self.emit_risc_v(MInsn::Raw(".rodata"))
+  self.emit_risc_v(MInsn::Label(jtbl))
+  for i in 0..<targets.length() {
+    let target = self.target_bb(targets[i])
+    let label = self.block_label(target)
+    self.emit_risc_v(MInsn::Raw(".word \{label._}"))
+  }
+  self.emit_risc_v(MInsn::Raw(".p2align 2"))
+  self.emit_risc_v(MInsn::Raw(".text"))
+}
+
 fn RiscvFnLoweringCtx::lower_block(
   self : RiscvFnLoweringCtx,
   block : @core.BasicBlock,
@@ -1666,9 +1701,9 @@ fn RiscvFnLoweringCtx::lower_block(
   let critical = critical_edges
     .map(fn(s) { self.target_color(s.1).0 })
     .to_array()
-  self.tracer.log("succs: \{succs}")
-  self.tracer.log("critical edges for \{block.id}: \{critical_edges}")
-  self.tracer.log("critical color seq for \{block.id}: \{critical}")
+  self.tracer.println("succs: \{succs}")
+  self.tracer.println("critical edges for \{block.id}: \{critical_edges}")
+  self.tracer.println("critical color seq for \{block.id}: \{critical}")
   @generated.constructor_lower_control(
     self,
     { color, seq, critical },
@@ -1694,7 +1729,7 @@ fn RiscvFnLoweringCtx::lower_block(
         self.finalize_insn()
       }
     } else {
-      self.tracer.log("skipping \{insn}")
+      self.tracer.println("skipping \{insn}")
     }
   }
   if block.id == self.func.entry {
@@ -1706,6 +1741,44 @@ fn RiscvFnLoweringCtx::lower_block(
   let insns = self.finalize_basic_block()
   let params = self.block_params_assignment[block.id].unwrap()
   { id, insns, control, params }
+}
+
+fn RiscvFnLoweringCtx::try_lower_trivial(
+  self : RiscvFnLoweringCtx
+) -> (String, String)? {
+  if self.order.order.length() == 0 {
+    return None
+  }
+  if self.order.order.length() == 1 {
+    match self.order.order[0] {
+      BasicBlock(~bref) => {
+        let bb = self.ref_block(bref).bb_or_header_bb(self.func)
+        let control_is_return = match bb.control {
+          @core.Control::Return(~args) =>
+            if args.length() == 1 {
+              Some(args[0])
+            } else {
+              None
+            }
+          _ => None
+        }
+        if bb.seq.length() == 1 &&
+          Some(@core.Value::Insn(iref=bb.seq[0])) == control_is_return {
+          let insn = self.ref_insn(bb.seq[0])
+          match insn {
+            @core.Insn::Call(~f, ~args, ..) =>
+              if args.length() == 0 {
+                let f = self.ref_fn(f)
+                return Some((self.func.name, f.name))
+              }
+            _ => ()
+          }
+        }
+      }
+      _ => ()
+    }
+  }
+  None
 }
 
 fn RiscvFnLoweringCtx::lower(
@@ -1959,6 +2032,7 @@ fn subst_vreg_with_preg_or_spill(
     Tail(~target) => Tail(~target)
     Label(x) => Label(x)
     Comment(x) => Comment(x)
+    Raw(x) => Raw(x)
   }
   for i, x in input_xreg_spilled {
     let slot = alloc
@@ -2333,6 +2407,7 @@ pub fn RiscvFnLoweringCtx::new(
     used_primitive: MutSet::new(),
     use_xthead,
     tracer,
+    tbl_counter: 0,
   }
   lower_ctx.assign_reg_for_closure_ptr()
   lower_ctx.assign_regs_for_function_parameters()
@@ -2375,7 +2450,8 @@ fn pre_allocate_for_stack(insns : Array[MInsn]) -> Unit {
 
 pub fn RiscvLoweringCtx::lower_globals(
   self : RiscvLoweringCtx,
-  globals : MutMap[@riscv.Label, GlobalVar]
+  globals : MutMap[@riscv.Label, GlobalVar],
+  remap : Map[String, String]
 ) -> MFn {
   let core = self.core
   let name = @riscv.Label::Label("minimbt_main")
@@ -2407,11 +2483,11 @@ pub fn RiscvLoweringCtx::lower_globals(
           Some(Double(~val)) => GlobalVar::Double(val)
           _ => self.tracer.abort("Invalid global data")
         }
-        globals.set(@riscv.Label::Label(symbol.name.to_string()), glb)
+        globals.set(@riscv.Label::Label(symbol.name), glb)
       }
       Some(thunk) => {
         globals.set(
-          @riscv.Label::Label(symbol.name.to_string()),
+          @riscv.Label::Label(symbol.name),
           if ty_size == 0 {
             Zero(4)
           } else {
@@ -2419,8 +2495,16 @@ pub fn RiscvLoweringCtx::lower_globals(
           },
         )
         let thunk = core.funcs.get(thunk).unwrap()
+        let mut thunk_name = thunk.name
+        let mut flag = true
+        while flag {
+          match remap.get(thunk_name) {
+            Some(new_name) => thunk_name = new_name
+            None => flag = false
+          }
+        }
         let call = MInsn::Call(
-          target=Label(thunk.name.to_string()),
+          target=Label(thunk_name),
           num_xregs=0,
           num_fregs=0,
         )
@@ -2484,14 +2568,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     liveness: MutMap::new(),
     primitives: MutSet::new(),
   }
-  {
-    let init = self.lower_globals(globals)
-    before_colored.funcs.set(init.name, init)
-    after_colored.funcs.set(init.name, init)
-    let l = Liveness::new(None, init, self.tracer)
-    l.compute_block_liveness()
-    before_colored.liveness.set(init.name, l)
-  }
+  let remap = {}
   for func in self.core.funcs {
     let (_, func) = func
     let lower_ctx = RiscvFnLoweringCtx::new(
@@ -2500,20 +2577,33 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.tracer,
       use_xthead=self.use_xthead,
     )
-    let (mfn, liveness) = lower_ctx.lower!()
-    let lbl = @riscv.Label::Label(func.name)
-    before_colored.funcs.set(lbl, mfn)
-    before_colored.liveness.set(lbl, liveness)
-    lower_ctx.used_primitive.each(
-      fn(p) {
-        before_colored.primitives.insert(p)
-        after_colored.primitives.insert(p)
-      },
-    )
-    let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
-    regalloc.assign()
-    let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
-    after_colored.funcs.set(lbl, final_mfn)
+    match lower_ctx.try_lower_trivial() {
+      Some((original, now)) => remap.set(original, now)
+      _ => {
+        let (mfn, liveness) = lower_ctx.lower!()
+        let lbl = @riscv.Label::Label(func.name)
+        before_colored.funcs.set(lbl, mfn)
+        before_colored.liveness.set(lbl, liveness)
+        lower_ctx.used_primitive.each(
+          fn(p) {
+            before_colored.primitives.insert(p)
+            after_colored.primitives.insert(p)
+          },
+        )
+        let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
+        regalloc.assign()
+        let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
+        after_colored.funcs.set(lbl, final_mfn)
+      }
+    }
+  }
+  {
+    let init = self.lower_globals(globals, remap)
+    before_colored.funcs.set(init.name, init)
+    after_colored.funcs.set(init.name, init)
+    let l = Liveness::new(None, init, self.tracer)
+    l.compute_block_liveness()
+    before_colored.liveness.set(init.name, l)
   }
   self.tracer.println(
     "before colored: \{Show::to_string(before_colored.to_rich_info())}",

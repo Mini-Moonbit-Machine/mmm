@@ -45,9 +45,9 @@ pub fn find_all_defs_of_value(
           handle_jump(t, bref, bpref, t_args)
           handle_jump(f, bref, bpref, f_args)
         }
-        Select(~targets, ~args, ..) =>
+        Select(~targets, ..) =>
           for target in targets {
-            handle_jump(target, bref, bpref, args)
+            handle_jump(target, bref, bpref, [])
           }
         Panic(..) => ()
         Return(..) => ()

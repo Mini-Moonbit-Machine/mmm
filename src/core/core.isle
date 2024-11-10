@@ -302,7 +302,7 @@
     (Jump (target BlockRef) (args Values))
     (Return (args Values))
     (Branch (cond Value) (t BlockRef) (t_args Values) (f BlockRef) (f_args Values))
-    (Select (cond Value) (targets BlockRefs) (args Values))
+    (Select (cond Value) (targets BlockRefs) (fallback BlockRef))
     Panic))
 
 (decl pure control_jump (BlockRef Values) Control)
@@ -314,8 +314,8 @@
 (decl pure control_branch (Value BlockRef Values BlockRef Values) Control)
 (extractor (control_branch cond t t_args f f_args) (Control.Branch cond t t_args f f_args))
 
-(decl pure control_select (Value BlockRefs Values) Control)
-(extractor (control_select cond targets args) (Control.Select cond targets args))
+(decl pure control_select (Value BlockRefs BlockRef) Control)
+(extractor (control_select cond targets fallback) (Control.Select cond targets fallback))
 
 (decl pure control_panic () Control)
 (extractor (control_panic) Control.Panic)

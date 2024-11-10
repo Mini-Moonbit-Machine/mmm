@@ -31,16 +31,26 @@ memseti32:
 
   .p2align 2
   .text
-  .globl T$_45
-  .type T$_45, @function
-# leaf true
-T$_45:
-.T$_45_0:
-  ld a0, len.3
-  lw a1, _57
-  lw a2, _58
-  th.surw a2, a0, a1, 2
-  mv a0, zero
+  .globl T$len.3
+  .type T$len.3, @function
+# leaf false
+T$len.3:
+.T$len.3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  lw a0, _55
+  lw a2, _56
+  slliw a1, a0, 2
+  sub s0, s11, a1
+  andi s11, s0, -8
+  mv a1, a0
+  mv a0, s0
+  call memseti32
+  mv a0, s0
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -66,26 +76,16 @@ main32.67:
 
   .p2align 2
   .text
-  .globl T$len.3
-  .type T$len.3, @function
-# leaf false
-T$len.3:
-.T$len.3_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  lw a0, _55
-  lw a2, _56
-  slliw a1, a0, 2
-  sub s0, s11, a1
-  andi s11, s0, -8
-  mv a1, a0
-  mv a0, s0
-  call memseti32
-  mv a0, s0
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
+  .globl T$_45
+  .type T$_45, @function
+# leaf true
+T$_45:
+.T$_45_0:
+  ld a0, len.3
+  lw a1, _57
+  lw a2, _58
+  th.surw a2, a0, a1, 2
+  mv a0, zero
   ret
 
   .p2align 2
@@ -118,16 +118,16 @@ T$_54:
 
   .p2align 2
   .text
-  .globl T$start
-  .type T$start, @function
-# leaf false
-T$start:
-.T$start_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  call main32.67
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl T$_48
+  .type T$_48, @function
+# leaf true
+T$_48:
+.T$_48_0:
+  ld a0, len2.13
+  lw a1, _61
+  lw a2, _62
+  th.surw a2, a0, a1, 2
+  mv a0, zero
   ret
 
   .p2align 2
@@ -154,26 +154,12 @@ minimbt_main:
   call T$_48
   call T$_51
   call T$_54
-  call T$start
+  call main32.67
   mv sp, s0
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s11, 16(sp)
   addi sp, sp, 32
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_48
-  .type T$_48, @function
-# leaf true
-T$_48:
-.T$_48_0:
-  ld a0, len2.13
-  lw a1, _61
-  lw a2, _62
-  th.surw a2, a0, a1, 2
-  mv a0, zero
   ret
 
   .p2align 2
