@@ -397,7 +397,7 @@ fn alpha_rename(knf_env : KnfEnv, env : Env[Name], knf : Knf) -> Knf {
 pub fn InlineEnv::inline(
   self : InlineEnv,
   freq : Map[Name, CallFreq],
-  env : Env[(Array[(Name, Type)], Knf)],
+  env : Env[FuncDef],
   knf : Knf
 ) -> Knf {
   match knf {
@@ -421,24 +421,24 @@ pub fn InlineEnv::inline(
       LetTuple(xts, y, e)
     }
     LetRec(fundef, e) => {
-      let env = env.add(fundef.name, (fundef.args, fundef.body))
+      let env = env.add(fundef.name, fundef)
       let fundef = {
         name: fundef.name,
         ty: fundef.ty,
         args: fundef.args,
         body: self.inline(freq, env, fundef.body),
       }
-      let env = env.add(fundef.name, (fundef.args, fundef.body))
+      let env = env.add(fundef.name, fundef)
       let e = self.inline(freq, env, e)
       LetRec(fundef, e)
     }
     Apply(f, xs) => {
       fn replace() {
         match env.find(f) {
-          Some((params, body)) => {
+          Some({ args, body, .. }) => {
             self.tracer.println("Knf inline \{f.name}")
             let mut env = Env::new()
-            for i, param in params {
+            for i, param in args {
               env = env.add(param.0, xs[i])
             }
             alpha_rename(self.knf_env, env, body)
@@ -457,9 +457,17 @@ pub fn InlineEnv::inline(
           Some(Once) => replace()
           Some(Many(n)) =>
             match env.find(f) {
-              Some((_, body)) => {
+              Some({ args, body, ty, .. } as fundef) => {
+                let fn_like_args = args
+                  .filter(fn(x) { x.1.is_fn_like() })
+                  .length() +
+                  ty.is_fn_like().to_int()
+                self.tracer.println("Fn like \{fn_like_args}")
                 self.tracer.println("Inline threshold \{n} \{size(body)}")
-                if size(body) < 5 && n < 5 {
+                let small_size_and_freq = size(body) < 5 && n < 5
+                let closure_with_non_rec = fn_like_args > 0 &&
+                  not(is_loop(fundef))
+                if small_size_and_freq || closure_with_non_rec {
                   self.tracer.println("Inline decision accepted")
                   replace()
                 } else {

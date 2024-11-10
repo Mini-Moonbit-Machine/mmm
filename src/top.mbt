@@ -74,6 +74,18 @@ pub fn Type::is_float_like(self : Type) -> Bool {
   }
 }
 
+pub fn Type::is_fn_like(self : Type) -> Bool {
+  match self {
+    Fun(_, _) => true
+    Var(t) =>
+      match t.val {
+        Some(t) => t.is_fn_like()
+        None => false
+      }
+    _ => false
+  }
+}
+
 pub fn Type::size_of(self : Type, size_of_ptr : Int) -> Int {
   match self {
     Unit => 0
