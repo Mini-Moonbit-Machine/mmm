@@ -2521,14 +2521,6 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     liveness: MutMap::new(),
     primitives: MutSet::new(),
   }
-  {
-    let init = self.lower_globals(globals)
-    before_colored.funcs.set(init.name, init)
-    after_colored.funcs.set(init.name, init)
-    let l = Liveness::new(None, init, self.tracer)
-    l.compute_block_liveness()
-    before_colored.liveness.set(init.name, l)
-  }
   for func in self.core.funcs {
     let (_, func) = func
     let lower_ctx = RiscvFnLoweringCtx::new(
@@ -2551,6 +2543,14 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
     regalloc.assign()
     let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
     after_colored.funcs.set(lbl, final_mfn)
+  }
+  {
+    let init = self.lower_globals(globals)
+    before_colored.funcs.set(init.name, init)
+    after_colored.funcs.set(init.name, init)
+    let l = Liveness::new(None, init, self.tracer)
+    l.compute_block_liveness()
+    before_colored.liveness.set(init.name, l)
   }
   self.tracer.println(
     "before colored: \{Show::to_string(before_colored.to_rich_info())}",

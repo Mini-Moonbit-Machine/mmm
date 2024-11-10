@@ -362,6 +362,21 @@
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
 // [Asm] 
+// [Asm] # leaf true
+// [Asm] adder4.23:
+// [Asm] # block info: defs: [v3, v4, a0, v2], uses: [v2, v4, a1, a0, v3], upward_exposed: [a1, a0], params_defs: []
+// [Asm] # live_in: [a1, a0], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .adder4.23_0:
+// [Asm]   # save_ctx1  # live: [a1, a0]
+// [Asm]   mv v2, a0  # live: [a1, v2]
+// [Asm]   mv v3, a1  # live: [v2, v3]
+// [Asm]   add v4, v3, v2  # live: [v4]
+// [Asm] # control
+// [Asm]   mv a0, v4  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
 // [Asm] # leaf false
 // [Asm] minimbt_main:
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, s0, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, s0, ra, s11, a0], upward_exposed: [s0, ra, s11], params_defs: []
@@ -382,21 +397,6 @@
 // [Asm]   ld s11, 16(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 32  # live: [a0]
 // [Asm] # control
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf true
-// [Asm] adder4.23:
-// [Asm] # block info: defs: [v3, v4, a0, v2], uses: [v2, v4, a1, a0, v3], upward_exposed: [a1, a0], params_defs: []
-// [Asm] # live_in: [a1, a0], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .adder4.23_0:
-// [Asm]   # save_ctx1  # live: [a1, a0]
-// [Asm]   mv v2, a0  # live: [a1, v2]
-// [Asm]   mv v3, a1  # live: [v2, v3]
-// [Asm]   add v4, v3, v2  # live: [v4]
-// [Asm] # control
-// [Asm]   mv a0, v4  # live: [a0]
-// [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm] # leaf false
@@ -507,6 +507,16 @@
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
+// [Main]   .globl adder4.23
+// [Main]   .type adder4.23, @function
+// [Main] # leaf true
+// [Main] adder4.23:
+// [Main] .adder4.23_0:
+// [Main]   add a0, a1, a0
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
 // [Main]   .globl minimbt_main
 // [Main]   .type minimbt_main, @function
 // [Main] # leaf false
@@ -525,16 +535,6 @@
 // [Main]   ld s0, 8(sp)
 // [Main]   ld s11, 16(sp)
 // [Main]   addi sp, sp, 32
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl adder4.23
-// [Main]   .type adder4.23, @function
-// [Main] # leaf true
-// [Main] adder4.23:
-// [Main] .adder4.23_0:
-// [Main]   add a0, a1, a0
 // [Main]   ret
 // [Main] 
 // [Main]   .p2align 2
