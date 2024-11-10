@@ -94,9 +94,14 @@ fn allow_inline(
   f : @core.FnRef,
   memo : @hashset.T[@core.InsnRef]
 ) -> Bool {
-  self.fcf._.get(f).unwrap() == @core_analysis.CallFrequncy::Once &&
-  not(memo.contains(call_iref)) &&
-  self.func.name.contains("main") == false
+  let not_main = not(self.func.name.contains("main"))
+  let call_once = self.fcf._.get(f).unwrap() ==
+    @core_analysis.CallFrequncy::Once &&
+    not(memo.contains(call_iref))
+  let f = self.core.funcs.get(f).unwrap()
+  let _very_small = f.blocks.size() == 1 &&
+    f.blocks.iter().all(fn(b) { b.1.bb_or_header_bb(f).seq.length() <= 5 })
+  not_main && call_once
 }
 
 fn FnInliner::split(self : FnInliner) -> @hashset.T[@core.InsnRef] {

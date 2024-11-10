@@ -466,7 +466,8 @@ pub fn InlineEnv::inline(
                 self.tracer.println("Inline threshold \{n} \{size(body)}")
                 let small_size_and_freq = size(body) < 5 && n < 5
                 let closure_with_non_rec = fn_like_args > 0 &&
-                  not(is_loop(fundef))
+                  not(is_loop(fundef)) &&
+                  size(body) < 30
                 if small_size_and_freq || closure_with_non_rec {
                   self.tracer.println("Inline decision accepted")
                   replace()
