@@ -1,0 +1,90 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn even3.26 #f1 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: bool = eq($f0, 0)
+    br %1 b3() b4()
+  }
+  .bb #b2 () {
+    let %4: int32 = add($f0, 1)
+    let %5: int32 = call f0(%4)
+    jump b6(%5)
+  }
+  .bb #b3 () {
+    jump b5(123)
+  }
+  .bb #b4 () {
+    let %2: int32 = sub($f0, 1)
+    let %3: int32 = call f0(%2)
+    jump b5(%3)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+}
+.fn T$start #f6 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f2()
+    return %0
+  }
+}
+.fn main21.28 #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f1(789)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    return %1
+  }
+}
+.fn odd6.27 #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = le(0, $f0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    let %1: bool = eq($f0, 0)
+    br %1 b3() b4()
+  }
+  .bb #b2 () {
+    let %4: int32 = add($f0, 1)
+    let %5: int32 = call f1(%4)
+    jump b6(%5)
+  }
+  .bb #b3 () {
+    jump b5(456)
+  }
+  .bb #b4 () {
+    let %2: int32 = sub($f0, 1)
+    let %3: int32 = call f1(%2)
+    jump b5(%3)
+  }
+  .bb #b5 (int32) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (int32) {
+    return $b6.0
+  }
+}
+.thunk ::0 start
+

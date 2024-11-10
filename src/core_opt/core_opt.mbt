@@ -7,6 +7,22 @@ pub fn CoreOpt::new(core : @core.Core, tracer : @util.SubTracer) -> CoreOpt {
   { core, tracer }
 }
 
+fn CoreOpt::dfe(self : CoreOpt, id : Int) -> Unit {
+  let core = self.core
+  let calls = @core_analysis.CallAnalysis::new(core, self.tracer)
+  let fcf = calls.compute()
+  let old_funcs = core.funcs.iter().collect()
+  for func in old_funcs {
+    let (fref, func) = func
+    if fcf._.get(fref).unwrap() == @core_analysis.CallFrequncy::Never {
+      self.tracer.println("Remove dead function: \{fref}")
+      core.funcs.remove(fref)
+      core.names.remove(func.name)
+    }
+  }
+  self.tracer.record("core_opt_after_dfe_\{id}", core.to_pretty_print())
+}
+
 pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   let core = self.core
   let o2f = Offset2Field::new(core)
@@ -23,18 +39,13 @@ pub fn CoreOpt::go(self : CoreOpt) -> Unit {
   self.tracer.println("Call frequnce: \{fcf}")
   let inliner = Inliner::new(core, fcf, self.tracer)
   inliner.go(0)
-  let calls = @core_analysis.CallAnalysis::new(core, self.tracer)
-  let fcf = calls.compute()
-  let old_funcs = core.funcs.iter().collect()
-  for func in old_funcs {
-    let (fref, func) = func
-    if fcf._.get(fref).unwrap() == @core_analysis.CallFrequncy::Never {
-      self.tracer.println("Remove dead function: \{fref}")
-      core.funcs.remove(fref)
-      core.names.remove(func.name)
-    }
-  }
-  self.tracer.record("core_opt_after_dfe_0", core.to_pretty_print())
+  self.dfe(0)
+  let inliner = Inliner::new(core, fcf, self.tracer)
+  inliner.go(1)
+  self.dfe(1)
+  let inliner = Inliner::new(core, fcf, self.tracer)
+  inliner.go(2)
+  self.dfe(2)
   let lvn = LocalValueNumbering::new(core, self.tracer)
   lvn.go()
   self.tracer.record("core_opt_after_lvn", core.to_pretty_print())

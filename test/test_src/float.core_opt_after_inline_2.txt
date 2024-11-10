@@ -1,0 +1,39 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn T$start #f2 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f0()
+    return %0
+  }
+}
+.fn main1.20 #f0 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: double = neg(12.3)
+    let %1: double = abs(%0)
+    let %2: double = sqrt(%1)
+    let %3: double = ext_call minimbt_cos(%2)
+    let %4: double = ext_call minimbt_sin(%3)
+    let %5: double = add(%4, 4.5)
+    let %6: double = mul(6.7, 8.9)
+    let %7: double = div(%6, 1.23456789)
+    let %8: double = sub(%5, %7)
+    let %9: double = conv.i2d(1000000)
+    let %10: double = mul(%8, %9)
+    let %11: int32 = conv.d2i.rtz(%10)
+    let %12: unit = ext_call minimbt_print_int(%11)
+    return %12
+  }
+}
+.thunk ::0 start
+

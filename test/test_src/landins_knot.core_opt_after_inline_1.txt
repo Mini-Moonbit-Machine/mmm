@@ -1,0 +1,99 @@
+# name conventions used in the core ir:
+# - functions: f<id>
+# - blocks: b<id>
+# - instructions: %<id>
+# - memory: m<id>
+# - free variables: ^<id>
+# - function parameters: $f<pid>
+# - block parameters: $b<bid>.<pid>
+.core
+.fn dummy1 #f0 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    return $f0
+  }
+}
+.fn T$a.33 #f8 : fn() -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load_symbol ::4
+    let %1: int32 = call f4(%0)
+    return %1
+  }
+}
+.fn main37 #f10 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = call f4(5)
+    let %1: unit = ext_call minimbt_print_int(%0)
+    let %2: int32 = load_symbol ::5
+    let %3: int32 = add(10, %2)
+    let %4: unit = ext_call minimbt_print_int(%3)
+    let %5: int32 = load_symbol ::5
+    let %6: int32 = add(31, %5)
+    let %7: unit = ext_call minimbt_print_int(%6)
+    return %7
+  }
+}
+.fn T$_54 #f6 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: array[closure(int32) -> int32] = load_symbol ::1
+    let %1: int32 = load_symbol ::2
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f4
+    let _ = store closure(int32) -> int32 offset(%0, %1 * @ptr) <- f6.m0
+    return ()
+  }
+}
+.fn T$start #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f10()
+    return %0
+  }
+}
+.fn T$arr.47 #f2 : fn() -> array[closure(int32) -> int32]
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = load_symbol ::0
+    let _ = alloc <m0: closure(int32) -> int32 heap(1)> <- [0] = f0
+    let _ = alloc <m1: array[closure(int32) -> int32] heap(%0)> <- [..] = f2.m0
+    return f2.m1
+  }
+}
+.fn h21.60 #f4 : fn(int32) -> int32
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: bool = eq($f0, 0)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b3(1)
+  }
+  .bb #b2 () {
+    let %1: int32 = sub($f0, 1)
+    let %2: array[closure(int32) -> int32] = load_symbol ::1
+    let %3: closure(int32) -> int32 = load closure(int32) -> int32 field(%2, 0 * @ptr)
+    let %4: int32 = apply %3(%1)
+    let %5: int32 = mul($f0, %4)
+    jump b3(%5)
+  }
+  .bb #b3 (int32) {
+    return $b3.0
+  }
+}
+.thunk ::0 _71
+.thunk ::1 arr.47
+.thunk ::2 _72
+.thunk ::3 _54
+.thunk ::4 _73
+.thunk ::5 a.33
+.thunk ::6 start
+
