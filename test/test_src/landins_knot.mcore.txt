@@ -31,6 +31,30 @@ memseti64:
 
   .p2align 2
   .text
+  .globl dummy1
+  .type dummy1, @function
+# leaf true
+dummy1:
+.dummy1_0:
+  ret
+
+  .p2align 2
+  .text
+  .globl T$a.33
+  .type T$a.33, @function
+# leaf false
+T$a.33:
+.T$a.33_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  lw a0, _73
+  call h21.60
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
   .globl main37
   .type main37, @function
 # leaf false
@@ -39,11 +63,8 @@ main37:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  ld a0, fixedpoint.52
-  mv s10, a0
-  ld a1, 0(a0)
   li a0, 5
-  jalr a1
+  call h21.60
   call minimbt_print_int
   lw s0, a.33
   addi a0, s0, 10
@@ -57,20 +78,19 @@ main37:
 
   .p2align 2
   .text
-  .globl T$fixedpoint.52
-  .type T$fixedpoint.52, @function
-# leaf false
-T$fixedpoint.52:
-.T$fixedpoint.52_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  addi a0, s11, -8
-  andi s11, a0, -8
-  la a1, aux9.48
-  sd a1, 0(a0)
-  call g18
-  ld ra, 0(sp)
-  addi sp, sp, 16
+  .globl T$_54
+  .type T$_54, @function
+# leaf true
+T$_54:
+.T$_54_0:
+  ld a0, arr.47
+  lw a1, _72
+  addi a2, s11, -8
+  andi s11, a2, -8
+  la a3, h21.60
+  sd a3, 0(a2)
+  th.surd a2, a0, a1, 3
+  mv a0, zero
   ret
 
   .p2align 2
@@ -83,7 +103,7 @@ T$arr.47:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  lw a0, _57
+  lw a0, _71
   addi a2, s11, -8
   andi s11, a2, -8
   la a1, dummy1
@@ -102,113 +122,6 @@ T$arr.47:
 
   .p2align 2
   .text
-  .globl dummy1
-  .type dummy1, @function
-# leaf true
-dummy1:
-.dummy1_0:
-  ret
-
-  .p2align 2
-  .text
-  .globl T$a.33
-  .type T$a.33, @function
-# leaf false
-T$a.33:
-.T$a.33_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  ld a0, fixedpoint.52
-  lw a1, _59
-  mv s10, a0
-  ld a2, 0(a0)
-  mv a0, a1
-  jalr a2
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl aux9.48
-  .type aux9.48, @function
-# leaf false
-aux9.48:
-.aux9.48_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  ld a1, arr.47
-  ld a1, 0(a1)
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl h21
-  .type h21, @function
-# leaf false
-h21:
-.h21_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a1, s10
-  mv s0, a0
-  ld a1, 8(a1)
-  beq s0, zero, .h21_1
-
-.h21_2:
-  addi a0, s0, -1
-  mv s10, a1
-  ld a1, 0(a1)
-  jalr a1
-  mul a0, s0, a0
-
-.h21_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.h21_1:
-  li a0, 1
-  j .h21_3
-
-  .p2align 2
-  .text
-  .globl g18
-  .type g18, @function
-# leaf true
-g18:
-.g18_0:
-  addi a1, s11, -16
-  andi s11, a1, -8
-  la a2, h21
-  sd a2, 0(a1)
-  sd a0, 8(a1)
-  mv a0, a1
-  ret
-
-  .p2align 2
-  .text
-  .globl T$_54
-  .type T$_54, @function
-# leaf true
-T$_54:
-.T$_54_0:
-  ld a0, arr.47
-  lw a1, _58
-  ld a2, fixedpoint.52
-  th.surd a2, a0, a1, 3
-  mv a0, zero
-  ret
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -221,9 +134,6 @@ minimbt_main:
   call T$arr.47
   la t5, arr.47
   sd a0, 0(t5)
-  call T$fixedpoint.52
-  la t5, fixedpoint.52
-  sd a0, 0(t5)
   call T$_54
   call T$a.33
   la t5, a.33
@@ -234,26 +144,51 @@ minimbt_main:
   addi sp, sp, 16
   ret
 
+  .p2align 2
+  .text
+  .globl h21.60
+  .type h21.60, @function
+# leaf false
+h21.60:
+.h21.60_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, a0
+  beq s0, zero, .h21.60_1
+
+.h21.60_2:
+  addi a0, s0, -1
+  ld a1, arr.47
+  ld a1, 0(a1)
+  mv s10, a1
+  ld a1, 0(a1)
+  jalr a1
+  mul a0, s0, a0
+
+.h21.60_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.h21.60_1:
+  li a0, 1
+  j .h21.60_3
+
 __end_text:
+  .p2align 2
+  .rodata
+  .globl _71
+  .type _71, @object
+_71:
+  .word 1
+
   .p2align 2
   .bss
   .globl arr.47
   .type arr.47, @object
 arr.47:
-  .zero 8
-
-  .p2align 2
-  .rodata
-  .globl _57
-  .type _57, @object
-_57:
-  .word 1
-
-  .p2align 2
-  .bss
-  .globl fixedpoint.52
-  .type fixedpoint.52, @object
-fixedpoint.52:
   .zero 8
 
   .p2align 2
@@ -272,16 +207,16 @@ start:
 
   .p2align 2
   .rodata
-  .globl _58
-  .type _58, @object
-_58:
+  .globl _72
+  .type _72, @object
+_72:
   .word 0
 
   .p2align 2
   .rodata
-  .globl _59
-  .type _59, @object
-_59:
+  .globl _73
+  .type _73, @object
+_73:
   .word 5
 
   .p2align 2

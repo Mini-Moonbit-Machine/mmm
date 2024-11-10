@@ -39,23 +39,33 @@ range58:
 # leaf false
 aux6.154:
 .aux6.154_0:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
+  sd s1, 16(sp)
   mv a2, s10
   ld a1, 8(a2)
   ld s0, 16(a2)
+  lw s1, 24(a2)
   mv s10, a1
   ld a1, 0(a1)
   jalr a1
   lw a1, 0(a0)
   lw a0, 4(a0)
-  beq a1, zero, .aux6.154_1
+  bne a1, zero, .aux6.154_2
 
-.aux6.154_2:
+.aux6.154_1:
   mv s10, s0
   ld a1, 0(s0)
   jalr a1
+
+.aux6.154_3:
+  lw a1, 0(a0)
+  lw a0, 4(a0)
+  beq a1, zero, .aux6.154_4
+
+.aux6.154_5:
+  add a0, s1, a0
   addi a1, s11, -8
   andi s11, a1, -8
   li a2, 1
@@ -63,58 +73,28 @@ aux6.154:
   sw a0, 4(a1)
   mv a0, a1
 
-.aux6.154_3:
+.aux6.154_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
-  addi sp, sp, 16
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
-.aux6.154_1:
+.aux6.154_4:
   addi a0, s11, -8
   andi s11, a0, -8
   sw zero, 0(a0)
   sw zero, 4(a0)
-  j .aux6.154_3
+  j .aux6.154_6
 
-  .p2align 2
-  .text
-  .globl aux46.143
-  .type aux46.143, @function
-# leaf false
-aux46.143:
-.aux46.143_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv a1, s10
-  ld a2, 8(a1)
-  ld s0, 16(a1)
-  mv s10, a2
-  ld a1, 0(a2)
-  jalr a1
-  lw a1, 0(a0)
-  lw a0, 4(a0)
-  bne a1, zero, .aux46.143_2
-
-.aux46.143_1:
-  mv s10, s0
-  ld a1, 0(s0)
-  jalr a1
-
-.aux46.143_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.aux46.143_2:
+.aux6.154_2:
   addi a1, s11, -8
   andi s11, a1, -8
   li a2, 1
   sw a2, 0(a1)
   sw a0, 4(a1)
   mv a0, a1
-  j .aux46.143_3
+  j .aux6.154_3
 
   .p2align 2
   .text
@@ -307,18 +287,6 @@ add102.169:
 
   .p2align 2
   .text
-  .globl aux81.152
-  .type aux81.152, @function
-# leaf true
-aux81.152:
-.aux81.152_0:
-  mv a1, s10
-  lw a1, 8(a1)
-  add a0, a1, a0
-  ret
-
-  .p2align 2
-  .text
   .globl main120
   .type main120, @function
 # leaf false
@@ -334,31 +302,22 @@ main120:
   mv a0, zero
   li a1, 1000
   call range58
-  addi a1, s11, -24
+  addi a1, s11, -32
   andi s11, a1, -8
-  la a2, aux46.143
+  la a2, aux6.154
   sd a2, 0(a1)
   sd s0, 8(a1)
   sd a0, 16(a1)
-  addi a0, s11, -16
-  andi s11, a0, -8
-  la a2, aux81.152
-  sd a2, 0(a0)
-  li a2, 1
-  sd a2, 8(a0)
-  addi a2, s11, -24
+  li a0, 1
+  sd a0, 24(a1)
+  addi a2, s11, -16
   andi s11, a2, -8
-  la a3, aux6.154
-  sd a3, 0(a2)
-  sd a1, 8(a2)
-  sd a0, 16(a2)
-  addi a1, s11, -16
-  andi s11, a1, -8
   la a0, aux111.165
-  sd a0, 0(a1)
+  sd a0, 0(a2)
   li a0, 50
-  sd a0, 8(a1)
-  mv a0, a2
+  sd a0, 8(a2)
+  mv a0, a1
+  mv a1, a2
   call filter20
   addi a1, s11, -16
   andi s11, a1, -8

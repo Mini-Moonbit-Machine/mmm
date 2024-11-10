@@ -7,50 +7,25 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main33.80 #f5 : fn() -> unit
+.fn main33.91 #f2 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(5)> <- [..] = 1
-    let _ = store int32 field(f5.m0, 0 * @32) <- 1
-    let _ = store int32 field(f5.m0, 1 * @32) <- 2
-    let _ = store int32 field(f5.m0, 2 * @32) <- 3
-    let _ = store int32 field(f5.m0, 3 * @32) <- 4
-    let _ = store int32 field(f5.m0, 4 * @32) <- 5
-    let %6: unit = call f4(5, f5.m0)
+    let _ = store int32 field(f2.m0, 0 * @32) <- 1
+    let _ = store int32 field(f2.m0, 1 * @32) <- 2
+    let _ = store int32 field(f2.m0, 2 * @32) <- 3
+    let _ = store int32 field(f2.m0, 3 * @32) <- 4
+    let _ = store int32 field(f2.m0, 4 * @32) <- 5
+    let %6: unit = call f1(5, f2.m0)
     return %6
   }
 }
-.fn print59.83 #f2 : fn(int32) -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = ext_call minimbt_print_int($f0)
-    return %0
-  }
-}
-.fn yield25.86 #f11 : closure(int32) -> bool
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: bool = call f3($f0)
-    return %0
-  }
-}
-.fn yield25.84 #f3 : fn(int32) -> bool
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f2($f0)
-    return true
-  }
-}
-.fn do30.85 #f4 : fn(int32, array[int32]) -> unit
+.fn do30.92 #f1 : fn(int32, array[int32]) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, array[int32]) {
-    let _ = alloc <m0: closure(int32) -> bool heap(1)> <- [0] = f11
-    jump b7()
+    jump b15()
   }
   .bb #b1 () {
     jump b0($b0.0, $b0.1)
@@ -70,62 +45,54 @@
     jump b4($f0, $f1)
   }
   .bb #b6 (bool) {
-    let %2: bool = eq($b6.0, true)
-    br %2 b1() b2()
-  }
-  .bb #b7 () {
-    let %3: bool = call f0(0, $b0.0, $b0.1, f4.m0)
-    jump b6(%3)
-  }
-}
-.fn next9.82 #f0 : fn(int32, int32, array[int32], closure(int32) -> bool) -> bool
-.freevars ()
-.entry b8 {
-  .bb #b0 (int32, int32, array[int32], closure(int32) -> bool) {
-    let %0: int32 = sub($b0.1, 1)
-    let %1: bool = le($b0.0, %0)
+    let %1: bool = eq($b6.0, true)
     br %1 b1() b2()
   }
-  .bb #b1 () {
-    let %6: ptr = compute_address unit offset(0, $b0.0 * @32)
-    let %2: int32 = load int32 raw($b0.2, %6)
-    let %3: bool = apply $b0.3(%2)
-    let %4: bool = eq(%3, true)
-    br %4 b3() b4()
-  }
-  .bb #b2 () {
-    jump b6(false)
-  }
-  .bb #b3 () {
-    let %5: int32 = add($b0.0, 1)
-    jump b0(%5, $b0.1, $b0.2, $b0.3)
-  }
-  .bb #b4 () {
-    jump b5(false)
-  }
-  .bb #b5 (bool) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (bool) {
-    return $b6.0
-  }
-  .loop #b7 pre #Some(b8) header #b0 {
-    .block #b6
-    .block #b4
-    .block #b1
-    .block #b5
-    .block #b2
-    .block #b3
+  .bb #b7 (int32, int32, array[int32]) {
+    let %2: int32 = sub($b7.1, 1)
+    let %3: bool = le($b7.0, %2)
+    br %3 b8() b9()
   }
   .bb #b8 () {
-    jump b7($f0, $f1, $f2, $f3)
+    let %8: ptr = compute_address unit offset(0, $b7.0 * @32)
+    let %4: int32 = load int32 raw($b7.2, %8)
+    let %5: unit = ext_call minimbt_print_int(%4)
+    let %6: bool = eq(true, true)
+    br %6 b10() b11()
+  }
+  .bb #b9 () {
+    jump b13(false)
+  }
+  .bb #b10 () {
+    let %7: int32 = add($b7.0, 1)
+    jump b7(%7, $b7.1, $b7.2)
+  }
+  .bb #b11 () {
+    jump b12(false)
+  }
+  .bb #b12 (bool) {
+    jump b13($b12.0)
+  }
+  .bb #b13 (bool) {
+    jump b6($b13.0)
+  }
+  .loop #b14 pre #Some(b15) header #b7 {
+    .block #b13
+    .block #b11
+    .block #b8
+    .block #b12
+    .block #b9
+    .block #b10
+  }
+  .bb #b15 () {
+    jump b14(0, $b0.0, $b0.1)
   }
 }
-.fn T$start #f14 : fn() -> unit
+.fn T$start #f6 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f5()
+    let %0: unit = call f2()
     return %0
   }
 }

@@ -7,78 +7,63 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn memed8.61 #f5 : closure(int32) -> int32
-.freevars (array[int32])
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = call f1($f0, ^1)
-    return %0
-  }
-}
-.fn main33.59 #f2 : fn() -> unit
+.fn main33.65 #f1 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
     let %0: int32 = ext_call minimbt_read_int()
     let %1: int32 = add(%0, 1)
     let _ = alloc <m0: array[int32] heap(%1)> <- [..] = -1919810
-    let %3: int32 = call f1(%0, f2.m0)
+    let %3: int32 = call f0(%0, f1.m0)
     let %4: unit = ext_call minimbt_print_int(%3)
     let %5: unit = ext_call minimbt_print_char(10)
     return ()
   }
 }
-.fn T$start #f8 : fn() -> unit
+.fn T$start #f4 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: unit = call f2()
+    let %0: unit = call f1()
     return %0
   }
 }
-.fn memed8.60 #f1 : fn(int32, array[int32]) -> int32
+.fn memed8.66 #f0 : fn(int32, array[int32]) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %13: ptr = compute_address unit offset(0, $f0 * @32)
-    let %0: int32 = load int32 raw($f1, %13)
+    let %12: ptr = compute_address unit offset(0, $f0 * @32)
+    let %0: int32 = load int32 raw($f1, %12)
     let %1: bool = eq(%0, -1919810)
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let _ = alloc <m0: closure(int32) -> int32 heap(2)> <- [0] = f5, [1] = $f1
-    jump b6()
+    let %2: bool = le($f0, 1)
+    br %2 b3() b4()
   }
   .bb #b2 () {
-    let %14: ptr = compute_address unit offset(0, $f0 * @32)
-    let %5: int32 = load int32 raw($f1, %14)
-    jump b3(%5)
+    let %11: ptr = compute_address unit offset(0, $f0 * @32)
+    let %9: int32 = load int32 raw($f1, %11)
+    jump b6(%9)
   }
-  .bb #b3 (int32) {
-    return $b3.0
+  .bb #b3 () {
+    jump b5($f0)
   }
-  .bb #b4 (int32) {
-    let %12: ptr = compute_address unit offset(0, $f0 * @32)
-    let _ = store int32 raw($f1, %12) <- $b4.0
-    jump b3($b4.0)
+  .bb #b4 () {
+    let %3: int32 = sub($f0, 1)
+    let %4: int32 = call f0(%3, $f1)
+    let %5: int32 = sub($f0, 2)
+    let %6: int32 = call f0(%5, $f1)
+    let %7: int32 = add(%4, %6)
+    jump b5(%7)
   }
-  .bb #b6 () {
-    let %6: bool = le($f0, 1)
-    br %6 b7() b8()
+  .bb #b5 (int32) {
+    let %10: ptr = compute_address unit offset(0, $f0 * @32)
+    let _ = store int32 raw($f1, %10) <- $b5.0
+    jump b6($b5.0)
   }
-  .bb #b7 () {
-    jump b9($f0)
-  }
-  .bb #b8 () {
-    let %7: int32 = sub($f0, 1)
-    let %8: int32 = apply f1.m0(%7)
-    let %9: int32 = sub($f0, 2)
-    let %10: int32 = apply f1.m0(%9)
-    let %11: int32 = add(%8, %10)
-    jump b9(%11)
-  }
-  .bb #b9 (int32) {
-    jump b4($b9.0)
+  .bb #b6 (int32) {
+    return $b6.0
   }
 }
 .thunk ::0 start

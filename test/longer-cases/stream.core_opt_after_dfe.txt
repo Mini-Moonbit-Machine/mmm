@@ -16,31 +16,8 @@
     return f1.m1
   }
 }
-.fn aux6.154 #f16 : closure(unit) -> (int32, int32)
-.freevars (closure(unit) -> (int32, int32), closure(int32) -> int32)
-.entry b0 {
-  .bb #b0 () {
-    let %0: (int32, int32) = apply ^1(())
-    let %1: int32 = load int32 field(%0, 0 * @(@32, @(@32, @32)))
-    let %2: int32 = load int32 field(%0, 1 * @(@32, @(@32, @32)))
-    let %3: bool = eq(%1, 0)
-    br %3 b1() b2()
-  }
-  .bb #b1 () {
-    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
-    jump b3(f16.m0)
-  }
-  .bb #b2 () {
-    let %5: int32 = apply ^2(%2)
-    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %5
-    jump b3(f16.m1)
-  }
-  .bb #b3 ((int32, int32)) {
-    return $b3.0
-  }
-}
-.fn aux46.143 #f12 : closure(unit) -> (int32, int32)
-.freevars (closure(unit) -> (int32, int32), closure(unit) -> (int32, int32))
+.fn aux6.154 #f12 : closure(unit) -> (int32, int32)
+.freevars (closure(unit) -> (int32, int32), closure(unit) -> (int32, int32), int32)
 .entry b0 {
   .bb #b0 () {
     let %0: (int32, int32) = apply ^1(())
@@ -58,7 +35,22 @@
     jump b3(f12.m0)
   }
   .bb #b3 ((int32, int32)) {
-    return $b3.0
+    let %6: int32 = load int32 field($b3.0, 0 * @(@32, @(@32, @32)))
+    let %7: int32 = load int32 field($b3.0, 1 * @(@32, @(@32, @32)))
+    let %8: bool = eq(%6, 0)
+    br %8 b4() b5()
+  }
+  .bb #b4 () {
+    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
+    jump b6(f12.m1)
+  }
+  .bb #b5 () {
+    let %10: int32 = add(^3, %7)
+    let _ = alloc <m2: (int32, int32) heap(2)> <- [0] = 1, [1] = %10
+    jump b6(f12.m2)
+  }
+  .bb #b6 ((int32, int32)) {
+    return $b6.0
   }
 }
 .fn aux25 #f5 : closure(unit) -> (int32, int32)
@@ -134,7 +126,7 @@
     jump b4($f0, $f1, $f2)
   }
 }
-.fn aux111.165 #f18 : closure(int32) -> int32
+.fn aux111.165 #f14 : closure(int32) -> int32
 .freevars (int32)
 .entry b0 {
   .bb #b0 () {
@@ -151,7 +143,7 @@
     return $b3.0
   }
 }
-.fn aux117.167 #f20 : closure(int32) -> int32
+.fn aux117.167 #f16 : closure(int32) -> int32
 .freevars (int32)
 .entry b0 {
   .bb #b0 () {
@@ -190,7 +182,7 @@
     return $b3.0
   }
 }
-.fn add102.169 #f22 : closure(int32, int32) -> int32
+.fn add102.169 #f18 : closure(int32, int32) -> int32
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -198,15 +190,7 @@
     return %0
   }
 }
-.fn aux81.152 #f14 : closure(int32) -> int32
-.freevars (int32)
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = add(^1, $f0)
-    return %0
-  }
-}
-.fn T$start #f24 : fn() -> unit
+.fn T$start #f20 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -220,17 +204,15 @@
   .bb #b0 () {
     let %0: closure(unit) -> (int32, int32) = call f1(0, 100)
     let %1: closure(unit) -> (int32, int32) = call f1(0, 1000)
-    let _ = alloc <m0: closure(unit) -> (int32, int32) heap(3)> <- [0] = f12, [1] = %0, [2] = %1
-    let _ = alloc <m1: closure(int32) -> int32 heap(2)> <- [0] = f14, [1] = 1
-    let _ = alloc <m2: closure(unit) -> (int32, int32) heap(3)> <- [0] = f16, [1] = f3.m0, [2] = f3.m1
-    let _ = alloc <m3: closure(int32) -> int32 heap(2)> <- [0] = f18, [1] = 50
-    let %6: closure(unit) -> (int32, int32) = call f0(f3.m2, f3.m3)
-    let _ = alloc <m4: closure(int32) -> int32 heap(2)> <- [0] = f20, [1] = 1200
-    let %8: closure(unit) -> (int32, int32) = call f0(%6, f3.m4)
-    let _ = alloc <m5: closure(int32, int32) -> int32 heap(1)> <- [0] = f22
-    let %10: int32 = call f2(%8, f3.m5, 0)
-    let %11: unit = ext_call minimbt_print_int(%10)
-    let %12: unit = ext_call minimbt_print_char(10)
+    let _ = alloc <m0: closure(unit) -> (int32, int32) heap(4)> <- [0] = f12, [1] = %0, [2] = %1, [3] = 1
+    let _ = alloc <m1: closure(int32) -> int32 heap(2)> <- [0] = f14, [1] = 50
+    let %4: closure(unit) -> (int32, int32) = call f0(f3.m0, f3.m1)
+    let _ = alloc <m2: closure(int32) -> int32 heap(2)> <- [0] = f16, [1] = 1200
+    let %6: closure(unit) -> (int32, int32) = call f0(%4, f3.m2)
+    let _ = alloc <m3: closure(int32, int32) -> int32 heap(1)> <- [0] = f18
+    let %8: int32 = call f2(%6, f3.m3, 0)
+    let %9: unit = ext_call minimbt_print_int(%8)
+    let %10: unit = ext_call minimbt_print_char(10)
     return ()
   }
 }

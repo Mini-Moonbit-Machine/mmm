@@ -16,36 +16,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl adder4.18
-  .type adder4.18, @function
-# leaf true
-adder4.18:
-.adder4.18_0:
-  fcvt.d.w fa1, a0
-  fadd.d fa0, fa0, fa1
-  ret
-
-  .p2align 2
-  .text
-  .globl main8.17
-  .type main8.17, @function
-# leaf false
-main8.17:
-.main8.17_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 1
-  li a1, 4612001270401303839
-  fmv.d.x fa0, a1
-  call adder4.18
-  fcvt.w.d a0, fa0, rtz
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -55,9 +25,29 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main8.17
+  call main8.18
   ld ra, 0(sp)
   ld s11, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main8.18
+  .type main8.18, @function
+# leaf false
+main8.18:
+.main8.18_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 1
+  fcvt.d.w fa0, a0
+  li a0, 4612001270401303839
+  fmv.d.x fa1, a0
+  fadd.d fa0, fa1, fa0
+  fcvt.w.d a0, fa0, rtz
+  call minimbt_print_int
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 

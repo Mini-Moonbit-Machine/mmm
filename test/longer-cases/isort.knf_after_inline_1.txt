@@ -1,0 +1,80 @@
+let rec main85: Var({val: Some(Unit)}) = () {
+  let n.86: Int = Int(100)
+  let _87: Int = Int(0)
+  let arr.88: Array(Int) = ExtApply(minimbt_create_array, [n.86, _87, ])
+  let rec aux19.98: Unit = (i20.99: Int, state22.100: Int) {
+    if (i20.99 == n.86) then {
+      Unit
+    } else {
+      let _102: Int = Int(75)
+      let _103: Int = Mul(state22.100, _102)
+      let _104: Int = Int(74)
+      let new_state.101: Int = Add(_103, _104)
+      let _105: Int = Int(65537)
+      let q.107: Int = Div(new_state.101, _105)
+      let _108: Int = Mul(q.107, _105)
+      let res.106: Int = Sub(new_state.101, _108)
+      let _109: Unit = Put arr.88[i20.99] = res.106
+      let _110: Int = Int(1)
+      let _111: Int = Add(i20.99, _110)
+      Apply(aux19.98, [_111, res.106, ])
+    }
+  }
+  let _112: Int = Int(0)
+  let _113: Int = Int(12345)
+  let _90: Unit = Apply(aux19.98, [_112, _113, ])
+  let rec insert38.114: Unit = (arr39.115: Array(Int), i41.116: Int) {
+    let _117: Int = Int(0)
+    if (i41.116 == _117) then {
+      Unit
+    } else {
+      let _118: Int = Int(1)
+      let _119: Int = Sub(i41.116, _118)
+      let _120: Int = Get arr39.115[_119]
+      let _121: Int = Get arr39.115[i41.116]
+      if (_120 <= _121) then {
+        Unit
+      } else {
+        let tmp.122: Int = Get arr39.115[i41.116]
+        let _123: Int = Int(1)
+        let _124: Int = Sub(i41.116, _123)
+        let _125: Int = Get arr39.115[_124]
+        let _126: Unit = Put arr39.115[i41.116] = _125
+        let _127: Int = Int(1)
+        let _128: Int = Sub(i41.116, _127)
+        let _129: Unit = Put arr39.115[_128] = tmp.122
+        let _130: Int = Int(1)
+        let _131: Int = Sub(i41.116, _130)
+        Apply(insert38.114, [arr39.115, _131, ])
+      }
+    }
+  }
+  let rec aux60.132: Unit = (i61.133: Int) {
+    if (i61.133 == n.86) then {
+      Unit
+    } else {
+      let _134: Unit = Apply(insert38.114, [arr.88, i61.133, ])
+      let _135: Int = Int(1)
+      let _136: Int = Add(i61.133, _135)
+      Apply(aux60.132, [_136, ])
+    }
+  }
+  let _137: Int = Int(1)
+  let _92: Unit = Apply(aux60.132, [_137, ])
+  let rec aux73.138: Unit = (i74.139: Int) {
+    if (i74.139 == n.86) then {
+      Unit
+    } else {
+      let _140: Int = Get arr.88[i74.139]
+      let _141: Unit = ExtApply(minimbt_print_int, [_140, ])
+      let _142: Int = Int(32)
+      let _143: Unit = ExtApply(minimbt_print_char, [_142, ])
+      let _144: Int = Int(1)
+      let _145: Int = Add(i74.139, _144)
+      Apply(aux73.138, [_145, ])
+    }
+  }
+  let _146: Int = Int(0)
+  Apply(aux73.138, [_146, ])
+}
+Apply(main85, [])
