@@ -224,15 +224,8 @@ let raw_memsetf64 =
   #|  .globl memsetf64
   #|  .type memsetf64, @function
   #|memsetf64:
-  #|  blez a1, .memsetf64_b1
-  #|  slli a1, a1, 3
-  #|  add a1, a1, a0
-  #|.memsetf64_b0:
-  #|  fsd fa0, 0(a0)
-  #|  addi a0, a0, 8
-  #|  bne a0, a1, .memsetf64_b0
-  #|.memsetf64_b1:
-  #|  ret
+  #|  fmv.x.d a2, fa0
+  #|  tail memseti64
   #|
 
 let raw_memset0e4 =

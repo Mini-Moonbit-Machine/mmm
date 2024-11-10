@@ -970,19 +970,27 @@ fn RiscvFnLoweringCtx::lower_load(
 
 fn RiscvFnLoweringCtx::do_fill_with_memset_set_reg_length(
   self : RiscvFnLoweringCtx,
-  len : @riscv.Reg
+  len : @riscv.Reg,
+  fill : @core.Fill
 ) -> Unit {
   let _ = self
+  if fill == Zero {
+    return
+  }
   @generated.constructor_rv_mv_to(self, @riscv.A1, len)
 }
 
 fn RiscvFnLoweringCtx::do_fill_with_memset_set_imm_length(
   self : RiscvFnLoweringCtx,
-  len : Int
+  len : Int,
+  fill : @core.Fill
 ) -> Unit {
   let _ = self
+  if fill == Zero {
+    return
+  }
   let len = @generated.constructor_rv_li(self, len.to_string())
-  self.do_fill_with_memset_set_reg_length(len)
+  self.do_fill_with_memset_set_reg_length(len, fill)
 }
 
 fn RiscvFnLoweringCtx::do_fill_with_memset(
@@ -998,24 +1006,26 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
     Init(..) =>
       match (elem_sz, init_rc) {
         (4, X) => {
-          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("memseti32"), 3, 0)
           self.used_primitive.insert("memseti32")
         }
         (8, X) => {
-          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
           @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
           self.used_primitive.insert("memseti64")
         }
         (8, F) => {
-          @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
           // A1 is assumed to be the length of the buffer
+          @generated.constructor_rv_mv_to(self, @riscv.A2, @riscv.Zero)
           @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
-          @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
+          @generated.constructor_rv_call(self, Label("memsetf64"), 3, 0)
+          self.used_primitive.insert("memsetf64")
           self.used_primitive.insert("memseti64")
         }
         _ => self.tracer.abort("Invalid fill")
@@ -1108,7 +1118,7 @@ fn RiscvFnLoweringCtx::do_fill(
               )
             }
           } else {
-            self.do_fill_with_memset_set_imm_length(len)
+            self.do_fill_with_memset_set_imm_length(len, fill)
             self.do_fill_with_memset(fill, ptr, elem_sz, init_rc, init_reg)
           }
         }
@@ -1120,7 +1130,7 @@ fn RiscvFnLoweringCtx::do_fill(
           match fill {
             Zero | Init(..) => {
               let (init_rc, init_reg) = self.get_init_reg_with_class(fill)
-              self.do_fill_with_memset_set_reg_length(xreg(reg))
+              self.do_fill_with_memset_set_reg_length(xreg(reg), fill)
               self.do_fill_with_memset(fill, ptr, elem_sz, init_rc, init_reg)
             }
             Field(~index, ..) => self.do_fill_field(fill, ptr, elem_sz, index)
