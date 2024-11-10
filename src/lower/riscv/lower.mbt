@@ -2554,6 +2554,65 @@ pub fn RiscvLoweringCtx::lower_globals(
   { name, entry, blocks, leaf: false, seq: [entry] }
 }
 
+fn peephole_block(block : MBasicBlock) -> Unit {
+  let mut changed = true
+  let windows_size = 2
+  fn fetch_n(i) -> MInsn {
+    if i < block.insns.length() {
+      block.insns[i]
+    } else {
+      block.control[i - block.insns.length()]
+    }
+  }
+
+  fn set_n(i, insn : MInsn) -> Unit {
+    if i < block.insns.length() {
+      block.insns[i] = insn
+    } else {
+      block.control[i - block.insns.length()] = insn
+    }
+  }
+
+  fn remove_n(i) -> Unit {
+    (if i < block.insns.length() {
+      block.insns.remove(i)
+    } else {
+      block.control.remove(i - block.insns.length())
+    })
+    |> ignore
+  }
+
+  while changed {
+    changed = false
+    let mut i = 0
+    while i <= block.insns.length() + block.control.length() - windows_size {
+      let insn = fetch_n(i)
+      let next_insn = fetch_n(i + 1)
+      match insn {
+        Addi(~rd, ~rs1, ~imm) =>
+          match next_insn {
+            Mv(rd=rd2, rs=rs2) =>
+              if rd == rs2 {
+                set_n(i, MInsn::Addi(rd=rd2, ~rs1, ~imm))
+                remove_n(i + 1)
+                changed = true
+                break
+              }
+            _ => ()
+          }
+        _ => ()
+      }
+      i += 1
+    }
+  }
+}
+
+fn peephole_func(func : MFn) -> Unit {
+  for block in func.blocks {
+    peephole_block(block.1)
+  }
+}
+
 pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
   let globals = MutMap::new()
   let before_colored = {
@@ -2593,6 +2652,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
         let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
         regalloc.assign()
         let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
+        peephole_func(final_mfn)
         after_colored.funcs.set(lbl, final_mfn)
       }
     }

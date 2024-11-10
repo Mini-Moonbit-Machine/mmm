@@ -7,6 +7,7 @@
 // [Asm] succs: []
 // [Asm] critical edges for b0: []
 // [Asm] critical color seq for b0: []
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%1), width=@64))
 // [Asm] defs: []
 // [Asm] live_set: [s11, zero]
@@ -22,11 +23,17 @@
 // [Asm] defs: [s11]
 // [Asm] live_set: [v3, v4, zero, v2]
 // [Asm] defined: s11 is X
-// [Asm] defs: [v9]
-// [Asm] live_set: [v3, v4, zero, v9, v2]
-// [Asm] defined: v9 is X
+// [Asm] defs: [v11]
+// [Asm] live_set: [v3, v11, v4, zero, v2]
+// [Asm] defined: v11 is X
 // [Asm] defs: []
 // [Asm] live_set: [v3, v4, zero, v2]
+// [Asm] defs: [v8]
+// [Asm] live_set: [v3, v8, zero, v2]
+// [Asm] defined: v8 is X
+// [Asm] defs: [v9]
+// [Asm] live_set: [zero, v9, v2]
+// [Asm] defined: v9 is X
 // [Asm] defs: []
 // [Asm] live_set: [zero]
 // [Asm] defs: [a0]
@@ -43,9 +50,11 @@
 // [Asm] subst   lw v4, _72 ->   lw a1, _72
 // [Asm] subst   addi v2, s11, -8 ->   addi a2, s11, -8
 // [Asm] subst   andi s11, v2, -8 ->   andi s11, a2, -8
-// [Asm] subst   la v9, h21.60 ->   la a3, h21.60
-// [Asm] subst   sd v9, 0(v2) ->   sd a3, 0(a2)
-// [Asm] subst   th.surd v2, v3, v4, 3 ->   th.surd a2, a0, a1, 3
+// [Asm] subst   la v11, h21.60 ->   la a3, h21.60
+// [Asm] subst   sd v11, 0(v2) ->   sd a3, 0(a2)
+// [Asm] subst   slliw v8, v4, 3 ->   slliw a1, a1, 3
+// [Asm] subst   add v9, v3, v8 ->   add a0, a0, a1
+// [Asm] subst   sd v2, 0(v9) ->   sd a2, 0(a0)
 // [Asm] subst   mv a0, zero ->   mv a0, zero
 // [Asm] subst   ret ->   ret
 // [Asm] LoweringOrder: [0]
@@ -694,7 +703,7 @@
 // [Asm] 
 // [Asm] # leaf true
 // [Asm] T$_54:
-// [Asm] # block info: defs: [v2, v4, s11, v9, a0, v3], uses: [v2, zero, a0, v4, s11, v9, v3], upward_exposed: [s11, zero], params_defs: []
+// [Asm] # block info: defs: [v3, v11, a0, v8, v4, s11, v9, v2], uses: [v2, v11, zero, a0, v8, v4, s11, v9, v3], upward_exposed: [s11, zero], params_defs: []
 // [Asm] # live_in: [s11, zero], live_out: []
 // [Asm] # block parameters: []
 // [Asm] .T$_54_0:
@@ -703,9 +712,11 @@
 // [Asm]   lw v4, _72  # live: [v4, s11, zero, v3]
 // [Asm]   addi v2, s11, -8  # live: [v3, v4, zero, v2]
 // [Asm]   andi s11, v2, -8  # live: [v3, v4, zero, v2]
-// [Asm]   la v9, h21.60  # live: [v3, v4, zero, v9, v2]
-// [Asm]   sd v9, 0(v2)  # live: [v3, v4, zero, v2]
-// [Asm]   th.surd v2, v3, v4, 3  # live: [zero]
+// [Asm]   la v11, h21.60  # live: [v3, v11, v4, zero, v2]
+// [Asm]   sd v11, 0(v2)  # live: [v3, v4, zero, v2]
+// [Asm]   slliw v8, v4, 3  # live: [v3, v8, zero, v2]
+// [Asm]   add v9, v3, v8  # live: [zero, v9, v2]
+// [Asm]   sd v2, 0(v9)  # live: [zero]
 // [Asm] # control
 // [Asm]   mv a0, zero  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
@@ -1008,7 +1019,9 @@
 // [Main]   andi s11, a2, -8
 // [Main]   la a3, h21.60
 // [Main]   sd a3, 0(a2)
-// [Main]   th.surd a2, a0, a1, 3
+// [Main]   slliw a1, a1, 3
+// [Main]   add a0, a0, a1
+// [Main]   sd a2, 0(a0)
 // [Main]   mv a0, zero
 // [Main]   ret
 // [Main] 

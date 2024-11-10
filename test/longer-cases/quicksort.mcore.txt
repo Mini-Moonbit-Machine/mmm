@@ -61,19 +61,20 @@ input79.146:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
 
 .input79.146_0:
   addi a0, s2, -1
-  blt a0, s1, .input79.146_2
+  blt a0, s0, .input79.146_2
 
 .input79.146_1:
   call minimbt_read_int
-  th.surw a0, s0, s1, 2
-  addi a0, s1, 1
-  mv s1, a0
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
+  addi s0, s0, 1
   j .input79.146_0
 
 .input79.146_2:
@@ -99,20 +100,21 @@ output97.147:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   mv s2, a2
 
 .output97.147_0:
   addi a0, s2, -1
-  blt a0, s1, .output97.147_2
+  blt a0, s0, .output97.147_2
 
 .output97.147_1:
-  th.lurw a0, s0, s1, 2
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
   call minimbt_print_int
   call minimbt_print_endline
-  addi a0, s1, 1
-  mv s1, a0
+  addi s0, s0, 1
   j .output97.147_0
 
 .output97.147_2:
@@ -165,7 +167,9 @@ quicksort59.143:
   blt a0, a2, .quicksort59.143_2
 
 .quicksort59.143_1:
-  th.lurw a0, s1, s0, 2
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
   addi a3, a2, -1
   addi a1, s11, -4
   andi s11, a1, -8
@@ -182,7 +186,9 @@ quicksort59.143:
   blt a0, a3, .quicksort59.143_21
 
 .quicksort59.143_20:
-  th.lurw a0, a5, a3, 2
+  slliw a0, a3, 2
+  add a0, a5, a0
+  lw a0, 0(a0)
   blt a4, a0, .quicksort59.143_23
 
 .quicksort59.143_22:
@@ -192,15 +198,20 @@ quicksort59.143:
   lw a0, 0(a1)
 
 .quicksort59.143_29:
-  th.lurw a7, a5, a0, 2
-  th.lurw t0, a5, a3, 2
-  th.surw t0, a5, a0, 2
-  th.surw a7, a5, a3, 2
+  slliw a0, a0, 2
+  add a7, a5, a0
+  lw a7, 0(a7)
+  slliw t0, a3, 2
+  add t1, a5, t0
+  lw t1, 0(t1)
+  add a0, a5, a0
+  sw t1, 0(a0)
+  add a0, a5, t0
+  sw a7, 0(a0)
   mv a0, zero
 
 .quicksort59.143_24:
-  addi a0, a3, 1
-  mv a3, a0
+  addi a3, a3, 1
   j .quicksort59.143_19
 
 .quicksort59.143_23:
@@ -219,10 +230,16 @@ quicksort59.143:
   lw a0, 0(a1)
 
 .quicksort59.143_15:
-  th.lurw a3, s1, a0, 2
-  th.lurw a4, s1, s0, 2
-  th.surw a4, s1, a0, 2
-  th.surw a3, s1, s0, 2
+  slliw a0, a0, 2
+  add a3, s1, a0
+  lw a3, 0(a3)
+  slliw a4, s0, 2
+  add a5, s1, a4
+  lw a5, 0(a5)
+  add a0, s1, a0
+  sw a5, 0(a0)
+  add a0, s1, a4
+  sw a3, 0(a0)
   mv a0, zero
 
 .quicksort59.143_7:
@@ -232,8 +249,7 @@ quicksort59.143:
   mv a1, a2
   mv a2, a3
   call quicksort59.143
-  addi a0, s2, 1
-  mv a2, a0
+  addi a2, s2, 1
   j .quicksort59.143_0
 
 .quicksort59.143_2:

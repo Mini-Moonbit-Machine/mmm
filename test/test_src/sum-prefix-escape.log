@@ -7,7 +7,6 @@
 // [Asm] succs: [0]
 // [Asm] critical edges for b1: []
 // [Asm] critical color seq for b1: []
-// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b0, bpref=$b.1), width=@32))
 // [Asm] succs: []
 // [Asm] critical edges for b3: []
 // [Asm] critical color seq for b3: []
@@ -76,12 +75,21 @@
 // [Asm] live_set: [v7, v11, v10, zero, v9, v8]
 // [Asm] move: v11 <- v6
 // [Asm] defined: v11 is X
+// [Asm] defs: [v15]
+// [Asm] live_set: [v11, v10, zero, v8, v7, v15, v9]
+// [Asm] defined: v15 is X
+// [Asm] defs: [v23]
+// [Asm] live_set: [v11, v10, zero, v23, v8, v7, v15, v9]
+// [Asm] defined: v23 is X
 // [Asm] defs: [v16]
-// [Asm] live_set: [v11, v16, v10, zero, v8, v7, v9]
+// [Asm] live_set: [v11, v16, v10, zero, v8, v7, v15, v9]
 // [Asm] defined: v16 is X
 // [Asm] defs: [v17]
-// [Asm] live_set: [v11, v10, zero, v8, v17, v9]
+// [Asm] live_set: [v11, v10, zero, v8, v17, v15, v9]
 // [Asm] defined: v17 is X
+// [Asm] defs: [v21]
+// [Asm] live_set: [v11, v10, v21, zero, v8, v17, v9]
+// [Asm] defined: v21 is X
 // [Asm] defs: []
 // [Asm] live_set: [v11, v10, zero, v8, v17, v9]
 // [Asm] defs: [v19]
@@ -124,11 +132,14 @@
 // [Asm] subst   mv v9, v4 ->   mv a5, a2
 // [Asm] subst   mv v10, v5 ->   mv a2, a1
 // [Asm] subst   mv v11, v6 ->   mv a1, a0
-// [Asm] subst   th.lurw v16, v10, v8, 2 ->   th.lurw a0, a2, a4, 2
-// [Asm] subst   add v17, v7, v16 ->   add a0, a3, a0
-// [Asm] subst   th.surw v17, v11, v8, 2 ->   th.surw a0, a1, a4, 2
-// [Asm] subst   addi v19, v8, 1 ->   addi a4, a4, 1
-// [Asm] subst   mv v7, v17 ->   mv a3, a0
+// [Asm] subst   slliw v15, v8, 2 ->   slliw a0, a4, 2
+// [Asm] subst   add v23, v10, v15 ->   add a6, a2, a0
+// [Asm] subst   lw v16, 0(v23) ->   lw a6, 0(a6)
+// [Asm] subst   add v17, v7, v16 ->   add a3, a3, a6
+// [Asm] subst   add v21, v11, v15 ->   add a0, a1, a0
+// [Asm] subst   sw v17, 0(v21) ->   sw a3, 0(a0)
+// [Asm] subst   addi v19, v8, 1 ->   addi a0, a4, 1
+// [Asm] subst   mv v8, v19 ->   mv a4, a0
 // [Asm] subst   j .sum_nested8.49_0 ->   j .sum_nested8.49_0
 // [Asm] subst   mv v14, zero ->   mv a0, zero
 // [Asm] LoweringOrder: [0]
@@ -393,13 +404,16 @@
 // [Asm] # control
 // [Asm]   blt v12, v8, .sum_nested8.49_2  # live: [v7, v11, v10, zero, v9, v8]
 // [Asm] 
-// [Asm] # block info: defs: [v8, v19, v16, v17, v7], uses: [v11, v16, v10, v7, v8, v19, v17, v9], upward_exposed: [v7, v11, v10, v9, v8], params_defs: []
+// [Asm] # block info: defs: [v16, v21, v23, v7, v8, v19, v17, v15], uses: [v11, v16, v10, v21, v23, v7, v8, v19, v17, v15, v9], upward_exposed: [v7, v11, v10, v9, v8], params_defs: []
 // [Asm] # live_in: [v11, v10, zero, v8, v7, v9], live_out: [v11, v10, zero, v8, v7, v9]
 // [Asm] # block parameters: []
 // [Asm] .sum_nested8.49_1:
-// [Asm]   th.lurw v16, v10, v8, 2  # live: [v11, v16, v10, zero, v8, v7, v9]
-// [Asm]   add v17, v7, v16  # live: [v11, v10, zero, v8, v17, v9]
-// [Asm]   th.surw v17, v11, v8, 2  # live: [v11, v10, zero, v8, v17, v9]
+// [Asm]   slliw v15, v8, 2  # live: [v11, v10, zero, v8, v7, v15, v9]
+// [Asm]   add v23, v10, v15  # live: [v11, v10, zero, v23, v8, v7, v15, v9]
+// [Asm]   lw v16, 0(v23)  # live: [v11, v16, v10, zero, v8, v7, v15, v9]
+// [Asm]   add v17, v7, v16  # live: [v11, v10, zero, v8, v17, v15, v9]
+// [Asm]   add v21, v11, v15  # live: [v11, v10, v21, zero, v8, v17, v9]
+// [Asm]   sw v17, 0(v21)  # live: [v11, v10, zero, v8, v17, v9]
 // [Asm]   addi v19, v8, 1  # live: [v11, v10, zero, v19, v17, v9]
 // [Asm] # control
 // [Asm]   mv v7, v17  # live: [v11, v10, zero, v7, v19, v9]
@@ -588,11 +602,13 @@
 // [Main]   blt a0, a4, .sum_nested8.49_2
 // [Main] 
 // [Main] .sum_nested8.49_1:
-// [Main]   th.lurw a0, a2, a4, 2
-// [Main]   add a0, a3, a0
-// [Main]   th.surw a0, a1, a4, 2
+// [Main]   slliw a0, a4, 2
+// [Main]   add a6, a2, a0
+// [Main]   lw a6, 0(a6)
+// [Main]   add a3, a3, a6
+// [Main]   add a0, a1, a0
+// [Main]   sw a3, 0(a0)
 // [Main]   addi a4, a4, 1
-// [Main]   mv a3, a0
 // [Main]   j .sum_nested8.49_0
 // [Main] 
 // [Main] .sum_nested8.49_2:
