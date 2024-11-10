@@ -36,85 +36,69 @@ memseti64:
 # leaf true
 loop148.240:
 .loop148.240_5:
-  addi sp, sp, -48
+  addi sp, sp, -32
   sd s0, 0(sp)
   sd s1, 8(sp)
   sd s2, 16(sp)
-  sd s3, 24(sp)
-  sd s4, 32(sp)
-  mv a7, a0
-  mv t1, a1
-  mv t2, a2
-  mv t0, a3
-  mv a6, a4
-  mv a1, a5
+  mv a6, a0
+  mv a0, a5
+  mv t0, a1
+  mv t1, a2
+  mv a7, a3
+  mv a5, a4
 
 .loop148.240_0:
-  blt a7, zero, .loop148.240_2
+  blt a6, zero, .loop148.240_2
 
 .loop148.240_1:
-  addi a3, t2, -1
-  slliw a0, a7, 3
-  add a2, a1, a0
-  ld a2, 0(a2)
-  add a0, t0, a0
-  ld a0, 0(a0)
+  addi a3, t1, -1
+  th.lurd a2, a0, a6, 3
+  th.lurd a1, a7, a6, 3
 
 .loop148.240_12:
-  mv a4, a3
-  mv a3, a2
-  mv a5, a2
-  mv a2, a0
+  mv a4, a2
 
 .loop148.240_7:
-  blt a4, zero, .loop148.240_9
+  blt a3, zero, .loop148.240_9
 
 .loop148.240_8:
-  addi a0, t1, -1
+  addi t2, t0, -1
 
 .loop148.240_19:
-  mv s2, a7
-  mv t3, a0
-  mv t4, t0
-  mv s0, a6
-  mv s3, a1
+  mv s1, a6
+  mv t3, a7
+  mv t4, a5
+  mv s2, a0
 
 .loop148.240_14:
-  blt t3, zero, .loop148.240_16
+  blt t2, zero, .loop148.240_16
 
 .loop148.240_15:
-  slliw a0, a4, 3
-  add s1, a5, a0
-  fld fa0, 0(s1)
-  slliw s1, t3, 3
-  add s4, a2, s1
-  fld fa1, 0(s4)
-  add s1, s0, s1
-  ld s1, 0(s1)
-  add s1, s1, a0
-  fld fa2, 0(s1)
+  th.flurd fa0, a4, a3, 3
+  th.flurd fa1, a1, t2, 3
+  th.lurd s0, t4, t2, 3
+  th.flurd fa2, s0, a3, 3
   fmadd.d fa0, fa1, fa2, fa0
-  add a0, a3, a0
-  fsd fa0, 0(a0)
-  addi t3, t3, -1
+  th.fsurd fa0, a2, a3, 3
+  addi t2, t2, -1
   j .loop148.240_14
 
 .loop148.240_16:
-  mv a0, zero
+  mv t2, zero
 
 .loop148.240_17:
 
 .loop148.240_13:
-  addi a4, a4, -1
+  addi a3, a3, -1
   j .loop148.240_7
 
 .loop148.240_9:
-  mv a0, zero
+  mv a1, zero
 
 .loop148.240_10:
 
 .loop148.240_6:
-  addi a7, a7, -1
+  addi a6, a6, -1
   j .loop148.240_0
 
 .loop148.240_2:
@@ -124,9 +108,7 @@ loop148.240:
   ld s0, 0(sp)
   ld s1, 8(sp)
   ld s2, 16(sp)
-  ld s3, 24(sp)
-  ld s4, 32(sp)
-  addi sp, sp, 48
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -162,9 +144,7 @@ make_arr103.243:
   slliw a2, a1, 3
   sub a2, s11, a2
   andi s11, a2, -8
-  slliw a4, a0, 3
-  add a4, a3, a4
-  sd a2, 0(a4)
+  th.surd a2, a3, a0, 3
   addi a0, a0, -1
   j .make_arr103.243_3
 

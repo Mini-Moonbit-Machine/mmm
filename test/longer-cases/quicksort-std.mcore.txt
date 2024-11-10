@@ -21,28 +21,19 @@ __begin_text:
 # leaf true
 sort_2157.398:
 .sort_2157.398_0:
-  slliw a4, a1, 2
-  add a4, a3, a4
-  lw a4, 0(a4)
-  slliw a5, a0, 2
-  add a5, a3, a5
-  lw a5, 0(a5)
+  mv a4, a0
+  th.lurw a0, a3, a1, 2
+  th.lurw a5, a3, a4, 2
   addi a5, a5, -1
-  blt a5, a4, .sort_2157.398_2
+  blt a5, a0, .sort_2157.398_2
 
 .sort_2157.398_1:
 
 .sort_2157.398_8:
-  slliw a0, a0, 2
-  add a4, a3, a0
-  lw a4, 0(a4)
-  slliw a1, a1, 2
-  add a5, a3, a1
-  lw a5, 0(a5)
-  add a0, a3, a0
-  sw a5, 0(a0)
-  add a0, a3, a1
-  sw a4, 0(a0)
+  th.lurw a0, a3, a4, 2
+  th.lurw a5, a3, a1, 2
+  th.surw a5, a3, a4, 2
+  th.surw a0, a3, a1, 2
   mv a0, zero
 
 .sort_2157.398_4:
@@ -70,20 +61,18 @@ input243.402:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
+  mv s1, a0
+  mv s0, a1
   mv s2, a2
 
 .input243.402_0:
   addi a0, s2, -1
-  blt a0, s0, .input243.402_2
+  blt a0, s1, .input243.402_2
 
 .input243.402_1:
   call minimbt_read_int
-  slliw a1, s0, 2
-  add a1, s1, a1
-  sw a0, 0(a1)
-  addi s0, s0, 1
+  th.surw a0, s0, s1, 2
+  addi s1, s1, 1
   j .input243.402_0
 
 .input243.402_2:
@@ -118,9 +107,7 @@ output14.394:
   blt a0, s1, .output14.394_2
 
 .output14.394_1:
-  slliw a0, s1, 2
-  add a0, s0, a0
-  lw a0, 0(a0)
+  th.lurw a0, s0, s1, 2
   call minimbt_print_int
   call minimbt_print_endline
   addi s1, s1, 1
@@ -319,23 +306,15 @@ quick_sort210.395:
   addi a1, s2, -1
 
 .quick_sort210.395_79:
-  slliw a0, a0, 2
-  add a2, s1, a0
-  lw a2, 0(a2)
-  slliw a1, a1, 2
-  add a3, s1, a1
-  lw a3, 0(a3)
-  add a0, s1, a0
-  sw a3, 0(a0)
-  add a0, s1, a1
-  sw a2, 0(a0)
+  th.lurw a2, s1, a0, 2
+  th.lurw a3, s1, a1, 2
+  th.surw a3, s1, a0, 2
+  th.surw a2, s1, a1, 2
   mv a0, zero
 
 .quick_sort210.395_18:
   addi a0, s2, -1
-  slliw a0, a0, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
+  th.lurw a0, s1, a0, 2
   addi a3, s11, -4
   andi s11, a3, -8
   sw s0, 0(a3)
@@ -355,9 +334,7 @@ quick_sort210.395:
   blt a0, a2, .quick_sort210.395_85
 
 .quick_sort210.395_84:
-  slliw a0, a2, 2
-  add a0, a6, a0
-  lw a0, 0(a0)
+  th.lurw a0, a6, a2, 2
   addi a7, a1, -1
   blt a7, a0, .quick_sort210.395_87
 
@@ -369,16 +346,10 @@ quick_sort210.395:
   lw a0, 0(a3)
 
 .quick_sort210.395_97:
-  slliw a0, a0, 2
-  add a7, a6, a0
-  lw a7, 0(a7)
-  slliw t0, a2, 2
-  add t1, a6, t0
-  lw t1, 0(t1)
-  add a0, a6, a0
-  sw t1, 0(a0)
-  add a0, a6, t0
-  sw a7, 0(a0)
+  th.lurw a7, a6, a0, 2
+  th.lurw t0, a6, a2, 2
+  th.surw t0, a6, a0, 2
+  th.surw a7, a6, a2, 2
   mv a0, zero
 
 .quick_sort210.395_95:
@@ -413,16 +384,10 @@ quick_sort210.395:
   addi a1, s2, -1
 
 .quick_sort210.395_51:
-  slliw a0, a0, 2
-  add a2, s1, a0
-  lw a2, 0(a2)
-  slliw a1, a1, 2
-  add a5, s1, a1
-  lw a5, 0(a5)
-  add a0, s1, a0
-  sw a5, 0(a0)
-  add a0, s1, a1
-  sw a2, 0(a0)
+  th.lurw a2, s1, a0, 2
+  th.lurw a5, s1, a1, 2
+  th.surw a5, s1, a0, 2
+  th.surw a2, s1, a1, 2
   mv a0, zero
 
 .quick_sort210.395_20:
@@ -481,13 +446,9 @@ quick_sort210.395:
   blt a5, a4, .quick_sort210.395_64
 
 .quick_sort210.395_63:
-  slliw a4, a5, 2
-  add a4, a1, a4
-  lw a4, 0(a4)
+  th.lurw a4, a1, a5, 2
   addi a6, a5, -1
-  slliw a6, a6, 2
-  add a6, a1, a6
-  lw a6, 0(a6)
+  th.lurw a6, a1, a6, 2
   addi a6, a6, -1
   blt a6, a4, .quick_sort210.395_66
 
@@ -495,16 +456,10 @@ quick_sort210.395:
   addi a6, a5, -1
 
 .quick_sort210.395_72:
-  slliw a4, a5, 2
-  add a7, a1, a4
-  lw a7, 0(a7)
-  slliw a6, a6, 2
-  add t0, a1, a6
-  lw t0, 0(t0)
-  add a4, a1, a4
-  sw t0, 0(a4)
-  add a4, a1, a6
-  sw a7, 0(a4)
+  th.lurw a4, a1, a5, 2
+  th.lurw a7, a1, a6, 2
+  th.surw a7, a1, a5, 2
+  th.surw a4, a1, a6, 2
   mv a4, zero
 
 .quick_sort210.395_71:

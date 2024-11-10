@@ -39,7 +39,6 @@
 // [Asm] critical edges for b8: []
 // [Asm] critical color seq for b8: []
 // [Asm] skipping Op(ty=Bool, op=Eq, args=[Bool(val=true), Bool(val=true)])
-// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b7, bpref=$b.0), width=@32))
 // [Asm] succs: [13]
 // [Asm] critical edges for b9: []
@@ -107,12 +106,6 @@
 // [Asm] move: v8 <- v5
 // [Asm] defined: v8 is X
 // [Asm] skip edge 11 -> 6
-// [Asm] defs: [v25]
-// [Asm] live_set: [v25, v5, zero, v8, v7, v4, v6]
-// [Asm] defined: v25 is X
-// [Asm] defs: [v26]
-// [Asm] live_set: [v5, zero, v26, v8, v7, v4, v6]
-// [Asm] defined: v26 is X
 // [Asm] defs: [v12]
 // [Asm] live_set: [v5, zero, v8, v7, v4, v6, v12]
 // [Asm] defined: v12 is X
@@ -224,9 +217,7 @@
 // [Asm] subst   j .do30.92_0 ->   j .do30.92_0
 // [Asm] subst   mv v15, zero ->   mv a0, zero
 // [Asm] subst   mv v6, zero ->   mv s2, zero
-// [Asm] subst   slliw v25, v6, 2 ->   slliw a0, s2, 2
-// [Asm] subst   add v26, v8, v25 ->   add a0, s1, a0
-// [Asm] subst   lw v12, 0(v26) ->   lw a0, 0(a0)
+// [Asm] subst   th.lurw v12, v8, v6, 2 ->   th.lurw a0, s1, s2, 2
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   li v23, 1 ->   li a0, 1
 // [Asm] subst   bne v23, v23, .do30.92_11 ->   bne a0, a0, .do30.92_11
@@ -456,13 +447,11 @@
 // [Asm] # control
 // [Asm]   blt v9, v6, .do30.92_9  # live: [v7, v4, v5, v6, zero, v8]
 // [Asm] 
-// [Asm] # block info: defs: [v25, t1, v26, v13, ft0, ft1, a1, v12, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, v23, fa0, t4, t2], uses: [v25, v26, a0, v23, v8, v6, v12], upward_exposed: [v6, v8], params_defs: []
+// [Asm] # block info: defs: [t1, v13, ft0, ft1, a1, v12, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, v23, fa0, t4, t2], uses: [v6, v12, a0, v23, v8], upward_exposed: [v6, v8], params_defs: []
 // [Asm] # live_in: [v5, zero, v7, v8, v4, v6], live_out: [v5, zero, v8, v7, v4, v6]
 // [Asm] # block parameters: []
 // [Asm] .do30.92_8:
-// [Asm]   slliw v25, v6, 2  # live: [v25, v5, zero, v8, v7, v4, v6]
-// [Asm]   add v26, v8, v25  # live: [v5, zero, v26, v8, v7, v4, v6]
-// [Asm]   lw v12, 0(v26)  # live: [v5, zero, v8, v7, v4, v6, v12]
+// [Asm]   th.lurw v12, v8, v6, 2  # live: [v5, zero, v8, v7, v4, v6, v12]
 // [Asm]   # save_ctx2  # live: [v5, zero, v8, v7, v4, v6, v12]
 // [Asm]   mv a0, v12  # live: [v5, zero, a0, v8, v7, v4, v6]
 // [Asm]   call minimbt_print_int  # live: [v5, zero, a0, v8, v7, v4, v6]
@@ -730,9 +719,7 @@
 // [Main]   blt a0, s2, .do30.92_9
 // [Main] 
 // [Main] .do30.92_8:
-// [Main]   slliw a0, s2, 2
-// [Main]   add a0, s1, a0
-// [Main]   lw a0, 0(a0)
+// [Main]   th.lurw a0, s1, s2, 2
 // [Main]   call minimbt_print_int
 // [Main]   li a0, 1
 // [Main]   bne a0, a0, .do30.92_11
