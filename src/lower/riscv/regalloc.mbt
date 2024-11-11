@@ -115,6 +115,15 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
     for i, defs in info.defs {
       let live_set = info.live_set[i + 1]
       let move_origin = info.moves[i]
+      let uses = info.uses[i]
+      for r in uses + defs {
+        let reg_ctx = match r.class {
+          X => reg_ctx_x
+          F => reg_ctx_f
+        }
+        let rw = reg_ctx.record_reg(r)
+        reg_ctx.allocator.add_use(rw)
+      }
       self.tracer.println("defs: \{defs}")
       self.tracer.println("live_set: \{live_set}")
       match move_origin {

@@ -11,7 +11,6 @@
 // [Asm] critical edges for b1: []
 // [Asm] critical color seq for b1: []
 // [Asm] skipping Op(ty=Double, op=Mul, args=[Insn(iref=%1), Insn(iref=%2)])
-// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=FnParam(fref=f0, fpref=$f.2), width=@64))
 // [Asm] succs: [3]
 // [Asm] critical edges for b2: []
 // [Asm] critical color seq for b2: []
@@ -43,9 +42,18 @@
 // [Asm] live_set: [fa0]
 // [Asm] defs: []
 // [Asm] live_set: []
+// [Asm] defs: [v6]
+// [Asm] live_set: [v2, v4, v6, v3]
+// [Asm] defined: v6 is X
+// [Asm] defs: [v19]
+// [Asm] live_set: [v2, v19, v4, v6, v3]
+// [Asm] defined: v19 is X
 // [Asm] defs: [fv7]
-// [Asm] live_set: [v2, v4, fv7, v3]
+// [Asm] live_set: [v2, v4, v6, fv7, v3]
 // [Asm] defined: fv7 is F
+// [Asm] defs: [v17]
+// [Asm] live_set: [v2, v4, v17, fv7, v3]
+// [Asm] defined: v17 is X
 // [Asm] defs: [fv8]
 // [Asm] live_set: [v3, v2, v4, fv7, fv8]
 // [Asm] defined: fv8 is F
@@ -115,25 +123,28 @@
 // [Asm] live_set: [fv13]
 // [Asm] move: fv13 <- fv12
 // [Asm] defined: fv13 is F
-// [Asm] defs: [fv19]
-// [Asm] live_set: [fv19]
-// [Asm] defined: fv19 is F
+// [Asm] defs: [fv22]
+// [Asm] live_set: [fv22]
+// [Asm] defined: fv22 is F
 // [Asm] defs: [fv13]
 // [Asm] live_set: [fv13]
-// [Asm] move: fv13 <- fv19
+// [Asm] move: fv13 <- fv22
 // [Asm] defined: fv13 is F
 // [Asm] defs: []
 // [Asm] live_set: [fv13]
-// [Asm] Label("inprod1.27") clobbered_x: @hashset.of([a2, a1, a0])
+// [Asm] Label("inprod1.27") clobbered_x: @hashset.of([a2, a1, a3, a0, a4])
 // [Asm] Label("inprod1.27") clobbered_f: @hashset.of([fs1, fs0, fa0])
 // [Asm] subst   blt v4, zero, .inprod1.27_2 ->   blt a2, zero, .inprod1.27_2
 // [Asm] subst   ret ->   ret
-// [Asm] subst   th.flurd fv7, v2, v4, 3 ->   th.flurd fs0, a0, a2, 3
-// [Asm] subst   th.flurd fv8, v3, v4, 3 ->   th.flurd fs1, a1, a2, 3
+// [Asm] subst   slliw v6, v4, 3 ->   slliw a3, a2, 3
+// [Asm] subst   add v19, v2, v6 ->   add a4, a0, a3
+// [Asm] subst   fld fv7, 0(v19) ->   fld fs0, 0(a4)
+// [Asm] subst   add v17, v3, v6 ->   add a3, a1, a3
+// [Asm] subst   fld fv8, 0(v17) ->   fld fs1, 0(a3)
 // [Asm] subst   addi v10, v4, -1 ->   addi a2, a2, -1
 // [Asm] subst   call inprod1.27 ->   call inprod1.27
 // [Asm] subst   fmadd.d fv12, fv7, fv8, fv11 ->   fmadd.d fa0, fs0, fs1, fa0
-// [Asm] subst   fmv.d.x fv19, zero ->   fmv.d.x fa0, zero
+// [Asm] subst   fmv.d.x fv22, zero ->   fmv.d.x fa0, zero
 // [Asm] subst   j .inprod1.27_3 ->   j .inprod1.27_3
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
@@ -395,12 +406,15 @@
 // [Asm] # control
 // [Asm]   blt v4, zero, .inprod1.27_2  # live: [v3, v4, zero, v2]
 // [Asm] 
-// [Asm] # block info: defs: [t1, ft0, ft1, fv12, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, v10, ft9, a5, a0, fa4, fv8, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, fv11, ft3, fa0, fv13, t4, t2, fv7], uses: [v2, v10, a0, fv11, fa0, fv8, v4, a2, fv12, a1, fv7, v3], upward_exposed: [v3, v4, v2], params_defs: []
+// [Asm] # block info: defs: [t1, ft0, ft1, fv12, a1, fa1, fa2, ft6, a4, fa6, v19, a6, ft5, ft10, v6, ft7, ft4, v10, ft9, a5, a0, fa4, fv8, ft2, a2, v17, a3, ft8, t3, a7, fa7, t0, fa5, fa3, fv11, ft3, fa0, fv13, t4, t2, fv7], uses: [v3, v10, a0, fv8, a2, fv12, v17, a1, fv11, fa0, v19, v4, v6, fv7, v2], upward_exposed: [v3, v4, v2], params_defs: []
 // [Asm] # live_in: [v2, v4, v3], live_out: [fv13]
 // [Asm] # block parameters: []
 // [Asm] .inprod1.27_1:
-// [Asm]   th.flurd fv7, v2, v4, 3  # live: [v2, v4, fv7, v3]
-// [Asm]   th.flurd fv8, v3, v4, 3  # live: [v3, v2, v4, fv7, fv8]
+// [Asm]   slliw v6, v4, 3  # live: [v2, v4, v6, v3]
+// [Asm]   add v19, v2, v6  # live: [v2, v19, v4, v6, v3]
+// [Asm]   fld fv7, 0(v19)  # live: [v2, v4, v6, fv7, v3]
+// [Asm]   add v17, v3, v6  # live: [v2, v4, v17, fv7, v3]
+// [Asm]   fld fv8, 0(v17)  # live: [v3, v2, v4, fv7, fv8]
 // [Asm]   addi v10, v4, -1  # live: [v3, v2, v10, fv7, fv8]
 // [Asm]   # save_ctx2  # live: [v3, v2, v10, fv7, fv8]
 // [Asm]   mv a0, v2  # live: [v3, v10, a0, fv7, fv8]
@@ -422,13 +436,13 @@
 // [Asm]   # restore_ctx1  # live: [fa0]
 // [Asm]   ret  # live: []
 // [Asm] 
-// [Asm] # block info: defs: [fv19, fv13], uses: [fv19, zero], upward_exposed: [zero], params_defs: []
+// [Asm] # block info: defs: [fv22, fv13], uses: [fv22, zero], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: [fv13]
 // [Asm] # block parameters: []
 // [Asm] .inprod1.27_2:
 // [Asm] # control
-// [Asm]   fmv.d.x fv19, zero  # live: [fv19]
-// [Asm]   fmv.d fv13, fv19  # live: [fv13]
+// [Asm]   fmv.d.x fv22, zero  # live: [fv22]
+// [Asm]   fmv.d fv13, fv22  # live: [fv13]
 // [Asm]   j .inprod1.27_3  # live: [fv13]
 // [Asm] 
 // [Asm] # leaf false
@@ -557,8 +571,11 @@
 // [Main]   blt a2, zero, .inprod1.27_2
 // [Main] 
 // [Main] .inprod1.27_1:
-// [Main]   th.flurd fs0, a0, a2, 3
-// [Main]   th.flurd fs1, a1, a2, 3
+// [Main]   slliw a3, a2, 3
+// [Main]   add a4, a0, a3
+// [Main]   fld fs0, 0(a4)
+// [Main]   add a3, a1, a3
+// [Main]   fld fs1, 0(a3)
 // [Main]   addi a2, a2, -1
 // [Main]   call inprod1.27
 // [Main]   fmadd.d fa0, fs0, fs1, fa0

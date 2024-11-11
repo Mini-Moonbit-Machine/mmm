@@ -62,8 +62,11 @@ inprod1.27:
   blt a2, zero, .inprod1.27_2
 
 .inprod1.27_1:
-  th.flurd fs0, a0, a2, 3
-  th.flurd fs1, a1, a2, 3
+  slliw a3, a2, 3
+  add a4, a0, a3
+  fld fs0, 0(a4)
+  add a3, a1, a3
+  fld fs1, 0(a3)
   addi a2, a2, -1
   call inprod1.27
   fmadd.d fa0, fs0, fs1, fa0

@@ -42,6 +42,7 @@ pub struct PPAllocator[Info] {
   spilled : Map[Int, Int] // spilled registers -> spilled slots
   spilled_colors : Set[Int] // spilled colors
   hints : Map[Int, Set[Int]] // reg -> colors
+  uses_count : Map[Int, Int] // reg -> freq
   mut highest_color : Int
 }
 
@@ -126,21 +127,23 @@ pub fn PPAllocator::to_dot[Info : Show](
       }
       None => ""
     }
+    let count = self.uses_count.get(reg).or(0)
+    let count = " (count - \{count})"
     if self.phy.contains(reg) {
       s += "  r\{reg} [label=\"\{info}\", color=blue];\n"
     } else {
       match assigned_color {
         Some(c) =>
           if c >= self.avail {
-            s += "  r\{reg} [label=\"\{info} ! spill with color \{c}\{hint}\", color=orange];\n"
+            s += "  r\{reg} [label=\"\{info} ! spill with color \{c}\{hint}\{count}\", color=orange];\n"
             asgn += "\{info}<-!\{info};"
           } else {
             let color_info = self.color_info.get(c).unwrap()
-            s += "  r\{reg} [label=\"\{info} ← \{color_info}\{hint}\", color=green];\n"
+            s += "  r\{reg} [label=\"\{info} ← \{color_info}\{hint}\{count}\", color=green];\n"
             asgn += "\{info}<-\{color_info};"
           }
         None =>
-          s += "  r\{reg} [label=\"\{info} ! spilled\{hint}\", color=red];\n"
+          s += "  r\{reg} [label=\"\{info} ! spilled\{hint}\{count}\", color=red];\n"
       }
     }
   }
@@ -178,6 +181,7 @@ pub fn PPAllocator::new[Info](avail : Int) -> PPAllocator[Info] {
     spilled: Map::new(),
     spilled_colors: Set::new(),
     hints: Map::new(),
+    uses_count: Map::new(),
   }
 }
 
@@ -258,6 +262,14 @@ pub fn PPAllocator::add_hint[R : RegToId, Info](
   }
 }
 
+pub fn PPAllocator::add_use[R : RegToId, Info](
+  self : PPAllocator[Info],
+  reg : R
+) -> Unit {
+  let reg_id = reg.to_reg_id()
+  self.uses_count.set(reg_id, self.uses_count.get(reg_id).or(0) + 1)
+}
+
 pub fn PPAllocator::add_edge[R : RegToId, Info](
   self : PPAllocator[Info],
   a : R,
@@ -283,12 +295,17 @@ pub fn PPAllocator::add_single_vertex[R : RegToId, Info](
 
 // Maximum cardinality search
 
-type V (Int, Int) derive(Eq, Show) // (weight, vertex)
+type V (Int, Int, Int) derive(Eq, Show) // (weight, count, vertex)
 
 impl Compare for V with compare(self, other) {
   let cmp = self._.0.compare(other._.0)
   if cmp == 0 {
-    -self._.1.compare(other._.1) // prefer the lower vertex
+    let cmp = self._.1.compare(other._.1) // prefer the higher count
+    if cmp == 0 {
+      -self._.2.compare(other._.2) // prefer the lower vertex
+    } else {
+      cmp
+    }
   } else {
     cmp // prefer the higher weight
   }
@@ -299,21 +316,21 @@ fn mcs[Info](self : PPAllocator[Info]) -> Unit {
   let wt = []
   let remained = Set::new()
   for v in 0..<self.vertex_count {
-    wt.push(V((0, v)))
+    wt.push(V((0, self.uses_count.get_or_default(v, 0), v)))
     remained.insert(v)
   }
   let r = self.order
   fn update_wt(us : Set[Int]) {
     for i, v in wt {
-      if us.contains(v._.1) {
-        wt[i] = V((v._.0 + 1, v._.1))
+      if us.contains(v._.2) {
+        wt[i] = V((v._.0 + 1, self.uses_count.get_or_default(v._.1, 0), v._.2))
       }
     }
   }
 
   for _ in 0..<self.vertex_count {
     wt.sort()
-    let (_, v) = wt.pop().unwrap()._
+    let (_, _, v) = wt.pop().unwrap()._
     remained.remove(v)
     r.push(v)
     let nr = self.neighbors.get(v).unwrap().intersection(remained)

@@ -184,6 +184,7 @@ pub struct IteratedBlockInfo {
   live_out : Set[AnyReg]
   block_info : BlockInfo
   moves : Array[(AnyReg, AnyReg)?]
+  uses : Array[Array[AnyReg]]
   defs : Array[Array[AnyReg]]
   live_set : Array[Array[AnyReg]]
 }
@@ -201,6 +202,7 @@ pub fn IteratedBlockInfo::compute_live_set(
   let live_set = self.live_set
   let defs = self.defs
   let moves = self.moves
+  let uses = self.uses
   let mut live = MutSet::from_iter(self.live_out.iter())
   let init_live = MutSet::from_iter(self.live_out.iter())
   for insn in block.control.rev() {
@@ -210,6 +212,7 @@ pub fn IteratedBlockInfo::compute_live_set(
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)
+    uses.push(u)
     match insn {
       FmvD(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
       Mv(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
@@ -223,6 +226,7 @@ pub fn IteratedBlockInfo::compute_live_set(
     live_set.push(live.iter().to_array())
     let (d, u) = def_use(insn)
     defs.push(d)
+    uses.push(u)
     match insn {
       FmvD(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
       Mv(~rs, ~rd) => moves.push(Some((rd.to_any(), rs.to_any())))
@@ -235,6 +239,7 @@ pub fn IteratedBlockInfo::compute_live_set(
   live_set.push(live.iter().to_array())
   defs.rev_inplace()
   moves.rev_inplace()
+  uses.rev_inplace()
   live_set.rev_inplace()
 }
 
@@ -296,6 +301,7 @@ pub fn Liveness::compute_block_liveness(self : Liveness) -> Unit {
       live_out: Set::new(),
       block_info: info,
       moves: [],
+      uses: [],
       live_set,
       defs,
     }

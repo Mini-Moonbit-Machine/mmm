@@ -29,23 +29,23 @@ yloop7.135:
   fsd fs0, 32(sp)
   fsd fs1, 40(sp)
   fsd fs2, 48(sp)
-  mv s1, a0
-  mv s0, a1
+  mv s0, a0
+  mv s1, a1
   fmv.d fs1, fa0
   fmv.d fs0, fa1
 
 .yloop7.135_0:
-  bge s1, s0, .yloop7.135_1
+  bge s0, s1, .yloop7.135_1
 
 .yloop7.135_2:
-  fcvt.d.w fa0, s1
+  fcvt.d.w fa0, s0
 
 .yloop7.135_12:
   mv s2, zero
   fmv.d fs2, fa0
 
 .yloop7.135_7:
-  bge s2, s0, .yloop7.135_8
+  bge s2, s1, .yloop7.135_8
 
 .yloop7.135_9:
   fcvt.d.w fa0, s2
@@ -53,35 +53,35 @@ yloop7.135:
   fdiv.d fa0, fa0, fs1
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
-  fsub.d fa3, fa0, fa1
+  fsub.d fa1, fa0, fa1
   fadd.d fa0, fs2, fs2
   fdiv.d fa0, fa0, fs0
   li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa1, fa0, fa1
+  fmv.d.x fa2, a0
+  fsub.d fa2, fa0, fa2
 
 .yloop7.135_26:
   li a0, 1000
   fmv.d.x fa0, zero
-  fmv.d fa4, fa0
-  fmv.d fa2, fa0
   fmv.d fa5, fa0
+  fmv.d fa4, fa0
+  fmv.d fa3, fa0
 
 .yloop7.135_18:
   beq a0, zero, .yloop7.135_19
 
 .yloop7.135_20:
-  fsub.d fa0, fa0, fa5
-  fadd.d fa0, fa0, fa3
-  fadd.d fa4, fa4, fa4
-  fmadd.d fa2, fa4, fa2, fa1
-  fmul.d fa5, fa0, fa0
-  fmul.d fa6, fa2, fa2
+  fsub.d fa0, fa0, fa3
+  fadd.d fa0, fa0, fa1
+  fadd.d fa3, fa5, fa5
+  fmadd.d fa4, fa3, fa4, fa2
+  fmul.d fa6, fa0, fa0
+  fmul.d fa3, fa4, fa4
   li a1, 4611686018427387904
-  fmv.d.x fa4, a1
-  fmul.d fa4, fa4, fa4
-  fadd.d fa7, fa5, fa6
-  fle.d a1, fa4, fa7
+  fmv.d.x fa5, a1
+  fmul.d fa5, fa5, fa5
+  fadd.d fa7, fa6, fa3
+  fle.d a1, fa5, fa7
   beq a1, zero, .yloop7.135_22
 
 .yloop7.135_21:
@@ -98,9 +98,8 @@ yloop7.135:
 
 .yloop7.135_22:
   addi a0, a0, -1
-  fmv.d fa4, fa0
-  fmv.d fa0, fa5
-  fmv.d fa5, fa6
+  fmv.d fa5, fa0
+  fmv.d fa0, fa6
   j .yloop7.135_18
 
 .yloop7.135_19:
@@ -115,7 +114,7 @@ yloop7.135:
 .yloop7.135_10:
 
 .yloop7.135_6:
-  addi s1, s1, 1
+  addi s0, s0, 1
   j .yloop7.135_0
 
 .yloop7.135_1:
