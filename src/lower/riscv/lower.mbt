@@ -1479,12 +1479,24 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
         let param_reg = self.value_regs[param].unwrap()
         @generated.constructor_rv_mv_to(self, xreg(param_reg), reg)
       }
-      F => {
-        let reg = @generated.constructor_lower_f_value(self, arg)
-        let param = @core.block_param(target.id, id)
-        let param_reg = self.value_regs[param].unwrap()
-        @generated.constructor_rv_fmv_to(self, freg(param_reg), reg)
-      }
+      F =>
+        match arg {
+          @core.Value::Int32(val=0) | Int64(val=0) | Double(val=0) => {
+            let param = @core.block_param(target.id, id)
+            let param_reg = self.value_regs[param].unwrap()
+            @generated.constructor_rv_fmv_dx_to(
+              self,
+              freg(param_reg),
+              self.zero_reg(),
+            )
+          }
+          _ => {
+            let reg = @generated.constructor_lower_f_value(self, arg)
+            let param = @core.block_param(target.id, id)
+            let param_reg = self.value_regs[param].unwrap()
+            @generated.constructor_rv_fmv_to(self, freg(param_reg), reg)
+          }
+        }
     }
   }
 }
