@@ -1052,6 +1052,9 @@ fn RiscvFnLoweringCtx::do_fill_at_small_offset(
 ) -> Unit {
   let base = xreg(ptr)
   let offset = index
+  if init_reg == self.zero_reg().to_any() {
+    return
+  }
   match (elem_sz, init_rc) {
     (4, X) =>
       @generated.constructor_rv_sw(self, xreg(init_reg), { base, offset })
