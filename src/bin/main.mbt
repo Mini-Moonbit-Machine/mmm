@@ -590,10 +590,8 @@ fn main {
     let out_string = status.output(opts.json)
     mt.println(out_string)
     if false &&
-      (
-        opts.out_file.contains("speed/matmul-flat-big") ||
-        opts.out_file.contains("speed/iters")
-      ) {
+      opts.out_file.contains("speed") &&
+      opts.out_file.contains("speed/fannkuch_redux") == false {
       mt.abort(
         "we skip it because it seems to affect the performance of other tests",
       )
