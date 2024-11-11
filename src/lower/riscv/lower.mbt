@@ -2674,7 +2674,12 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
             after_colored.primitives.insert(p)
           },
         )
-        let regalloc = RegAllocator::new(mfn, liveness, self.tracer)
+        let regalloc = RegAllocator::new(
+          mfn,
+          liveness,
+          self.tracer,
+          lower_ctx.is_leaf,
+        )
         regalloc.assign()
         let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
         peephole_func(final_mfn)

@@ -21,7 +21,11 @@ struct RegWrapper {
   r : AnyReg
 } derive(Show)
 
-fn RegWrapper::new(r : AnyReg, counter : Ref[Int]) -> RegWrapper {
+fn RegWrapper::new(
+  r : AnyReg,
+  counter : Ref[Int],
+  _is_leaf : Bool
+) -> RegWrapper {
   let id = counter.val
   counter.val += 1
   let color = match r.class {
@@ -56,10 +60,11 @@ fn RegWrapper::pre_colored(self : RegWrapper) -> Int? {
 fn RegAllocator::new(
   mfn : MFn,
   liveness : Liveness,
-  tracer : @util.SubTracer
+  tracer : @util.SubTracer,
+  is_leaf : Bool
 ) -> RegAllocator {
-  let xctx = RegAllocCtx::new(@riscv.preferred_reg_list.length())
-  let fctx = RegAllocCtx::new(@riscv.preferred_freg_list.length())
+  let xctx = RegAllocCtx::new(@riscv.preferred_reg_list.length(), is_leaf)
+  let fctx = RegAllocCtx::new(@riscv.preferred_freg_list.length(), is_leaf)
   for i, r in @riscv.preferred_reg_list {
     xctx.allocator.set_color_info(i, r.to_any())
   }
@@ -71,6 +76,7 @@ fn RegAllocator::new(
 }
 
 struct RegAllocCtx {
+  is_leaf : Bool
   counter : Ref[Int]
   reg_memo : MutMap[AnyReg, RegWrapper]
   allocator : UnderlyingAllocator
@@ -80,7 +86,7 @@ fn record_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper {
   match self.reg_memo.get(reg) {
     Some(rw) => rw
     None => {
-      let rw = RegWrapper::new(reg, self.counter)
+      let rw = RegWrapper::new(reg, self.counter, self.is_leaf)
       self.reg_memo.set(reg, rw)
       rw
     }
@@ -91,9 +97,10 @@ fn retrive_reg(self : RegAllocCtx, reg : AnyReg) -> RegWrapper? {
   self.reg_memo.get(reg)
 }
 
-fn RegAllocCtx::new(avail : Int) -> RegAllocCtx {
+fn RegAllocCtx::new(avail : Int, is_leaf : Bool) -> RegAllocCtx {
   let graph = UnderlyingAllocator::new(avail)
   RegAllocCtx::{
+    is_leaf,
     counter: Ref::new(0),
     reg_memo: MutMap::new(),
     allocator: graph,
