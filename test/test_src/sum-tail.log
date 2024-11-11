@@ -68,17 +68,13 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] move: v5 <- v3
 // [Asm] defined: v5 is X
-// [Asm] Label("sum1.14") clobbered_x: @hashset.of([a2, a1, a0])
+// [Asm] Label("sum1.14") clobbered_x: @hashset.of([a1, a0])
 // [Asm] Label("sum1.14") clobbered_f: @hashset.of([])
 // [Asm] subst   ret ->   ret
-// [Asm] subst   add v7, v4, v5 ->   add a1, a1, a0
-// [Asm] subst   addi v8, v5, -1 ->   addi a0, a0, -1
+// [Asm] subst   add v7, v4, v5 ->   add a0, a0, a1
+// [Asm] subst   addi v8, v5, -1 ->   addi a1, a1, -1
 // [Asm] subst   j .sum1.14_0 ->   j .sum1.14_0
-// [Asm] subst   bge zero, v5, .sum1.14_1 ->   bge zero, a0, .sum1.14_1
-// [Asm] subst   mv v9, v4 ->   mv a0, a1
-// [Asm] subst   mv v2, a0 ->   mv a2, a0
-// [Asm] subst   mv v3, a1 ->   mv a0, a1
-// [Asm] subst   mv v4, v2 ->   mv a1, a2
+// [Asm] subst   bge zero, v5, .sum1.14_1 ->   bge zero, a1, .sum1.14_1
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -351,20 +347,16 @@
 // [Main] # leaf true
 // [Main] sum1.14:
 // [Main] .sum1.14_5:
-// [Main]   mv a2, a0
-// [Main]   mv a0, a1
-// [Main]   mv a1, a2
 // [Main] 
 // [Main] .sum1.14_0:
-// [Main]   bge zero, a0, .sum1.14_1
+// [Main]   bge zero, a1, .sum1.14_1
 // [Main] 
 // [Main] .sum1.14_2:
-// [Main]   add a1, a1, a0
-// [Main]   addi a0, a0, -1
+// [Main]   add a0, a0, a1
+// [Main]   addi a1, a1, -1
 // [Main]   j .sum1.14_0
 // [Main] 
 // [Main] .sum1.14_1:
-// [Main]   mv a0, a1
 // [Main] 
 // [Main] .sum1.14_3:
 // [Main]   ret

@@ -88,17 +88,15 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] Label("gcd1.13") clobbered_x: @hashset.of([a2, a1, a0])
 // [Asm] Label("gcd1.13") clobbered_f: @hashset.of([])
-// [Asm] subst   beq v4, zero, .gcd1.13_1 ->   beq a1, zero, .gcd1.13_1
-// [Asm] subst   mv v2, a0 ->   mv a2, a0
-// [Asm] subst   mv v3, a1 ->   mv a0, a1
-// [Asm] subst   mv v4, v2 ->   mv a1, a2
+// [Asm] subst   beq v4, zero, .gcd1.13_1 ->   beq a0, zero, .gcd1.13_1
 // [Asm] subst   ret ->   ret
-// [Asm] subst   sub v9, v5, v4 ->   sub a0, a0, a1
+// [Asm] subst   sub v9, v5, v4 ->   sub a1, a1, a0
 // [Asm] subst   j .gcd1.13_0 ->   j .gcd1.13_0
-// [Asm] subst   blt v5, v4, .gcd1.13_4 ->   blt a0, a1, .gcd1.13_4
-// [Asm] subst   sub v8, v4, v5 ->   sub a2, a1, a0
-// [Asm] subst   mv v4, v5 ->   mv a1, a0
-// [Asm] subst   mv v5, v8 ->   mv a0, a2
+// [Asm] subst   mv v10, v5 ->   mv a0, a1
+// [Asm] subst   blt v5, v4, .gcd1.13_4 ->   blt a1, a0, .gcd1.13_4
+// [Asm] subst   sub v8, v4, v5 ->   sub a2, a0, a1
+// [Asm] subst   mv v4, v5 ->   mv a0, a1
+// [Asm] subst   mv v5, v8 ->   mv a1, a2
 // [Asm] subst   j .gcd1.13_0 ->   j .gcd1.13_0
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
@@ -399,27 +397,25 @@
 // [Main] # leaf true
 // [Main] gcd1.13:
 // [Main] .gcd1.13_8:
-// [Main]   mv a2, a0
-// [Main]   mv a0, a1
-// [Main]   mv a1, a2
 // [Main] 
 // [Main] .gcd1.13_0:
-// [Main]   beq a1, zero, .gcd1.13_1
+// [Main]   beq a0, zero, .gcd1.13_1
 // [Main] 
 // [Main] .gcd1.13_2:
-// [Main]   blt a0, a1, .gcd1.13_4
+// [Main]   blt a1, a0, .gcd1.13_4
 // [Main] 
 // [Main] .gcd1.13_3:
-// [Main]   sub a0, a0, a1
+// [Main]   sub a1, a1, a0
 // [Main]   j .gcd1.13_0
 // [Main] 
 // [Main] .gcd1.13_4:
-// [Main]   sub a2, a1, a0
-// [Main]   mv a1, a0
-// [Main]   mv a0, a2
+// [Main]   sub a2, a0, a1
+// [Main]   mv a0, a1
+// [Main]   mv a1, a2
 // [Main]   j .gcd1.13_0
 // [Main] 
 // [Main] .gcd1.13_1:
+// [Main]   mv a0, a1
 // [Main] 
 // [Main] .gcd1.13_6:
 // [Main]   ret

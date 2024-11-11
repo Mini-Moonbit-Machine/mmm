@@ -148,21 +148,26 @@
 // [Asm] defined: v5 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
-// [Asm] Label("ack1.21") clobbered_x: @hashset.of([s0, a1, a0])
+// [Asm] Label("ack1.21") clobbered_x: @hashset.of([a2, s0, a1, a0])
 // [Asm] Label("ack1.21") clobbered_f: @hashset.of([])
-// [Asm] subst   bge zero, v5, .ack1.21_3 ->   bge zero, a1, .ack1.21_3
+// [Asm] subst   bge zero, v5, .ack1.21_3 ->   bge zero, a0, .ack1.21_3
 // [Asm] subst   ret ->   ret
-// [Asm] subst   addi v11, v4, -1 ->   addi a0, a0, -1
-// [Asm] subst   li v15, 1 ->   li a1, 1
+// [Asm] subst   addi v11, v4, -1 ->   addi a0, a1, -1
+// [Asm] subst   mv v4, v11 ->   mv a1, a0
+// [Asm] subst   li v15, 1 ->   li a0, 1
 // [Asm] subst   j .ack1.21_0 ->   j .ack1.21_0
-// [Asm] subst   addi v8, v4, -1 ->   addi s0, a0, -1
-// [Asm] subst   addi v9, v5, -1 ->   addi a1, a1, -1
+// [Asm] subst   addi v8, v4, -1 ->   addi s0, a1, -1
+// [Asm] subst   addi v9, v5, -1 ->   addi a2, a0, -1
+// [Asm] subst   mv a0, v4 ->   mv a0, a1
+// [Asm] subst   mv a1, v9 ->   mv a1, a2
 // [Asm] subst   call ack1.21 ->   call ack1.21
-// [Asm] subst   mv v10, a0 ->   mv a1, a0
-// [Asm] subst   mv v4, v8 ->   mv a0, s0
+// [Asm] subst   mv v4, v8 ->   mv a1, s0
 // [Asm] subst   j .ack1.21_0 ->   j .ack1.21_0
-// [Asm] subst   addi v12, v5, 1 ->   addi a0, a1, 1
-// [Asm] subst   bge zero, v4, .ack1.21_1 ->   bge zero, a0, .ack1.21_1
+// [Asm] subst   addi v12, v5, 1 ->   addi a0, a0, 1
+// [Asm] subst   mv v3, a1 ->   mv a2, a1
+// [Asm] subst   mv v4, v2 ->   mv a1, a0
+// [Asm] subst   mv v5, v3 ->   mv a0, a2
+// [Asm] subst   bge zero, v4, .ack1.21_1 ->   bge zero, a1, .ack1.21_1
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -498,28 +503,32 @@
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s0, 8(sp)
+// [Main]   mv a2, a1
+// [Main]   mv a1, a0
+// [Main]   mv a0, a2
 // [Main] 
 // [Main] .ack1.21_0:
-// [Main]   bge zero, a0, .ack1.21_1
+// [Main]   bge zero, a1, .ack1.21_1
 // [Main] 
 // [Main] .ack1.21_2:
-// [Main]   bge zero, a1, .ack1.21_3
+// [Main]   bge zero, a0, .ack1.21_3
 // [Main] 
 // [Main] .ack1.21_4:
-// [Main]   addi s0, a0, -1
-// [Main]   addi a1, a1, -1
+// [Main]   addi s0, a1, -1
+// [Main]   addi a2, a0, -1
+// [Main]   mv a0, a1
+// [Main]   mv a1, a2
 // [Main]   call ack1.21
-// [Main]   mv a1, a0
-// [Main]   mv a0, s0
+// [Main]   mv a1, s0
 // [Main]   j .ack1.21_0
 // [Main] 
 // [Main] .ack1.21_3:
-// [Main]   addi a0, a0, -1
-// [Main]   li a1, 1
+// [Main]   addi a1, a1, -1
+// [Main]   li a0, 1
 // [Main]   j .ack1.21_0
 // [Main] 
 // [Main] .ack1.21_1:
-// [Main]   addi a0, a1, 1
+// [Main]   addi a0, a0, 1
 // [Main] 
 // [Main] .ack1.21_6:
 // [Main]   ld ra, 0(sp)

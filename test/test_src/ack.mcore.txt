@@ -41,28 +41,32 @@ ack1.21:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
+  mv a2, a1
+  mv a1, a0
+  mv a0, a2
 
 .ack1.21_0:
-  bge zero, a0, .ack1.21_1
+  bge zero, a1, .ack1.21_1
 
 .ack1.21_2:
-  bge zero, a1, .ack1.21_3
+  bge zero, a0, .ack1.21_3
 
 .ack1.21_4:
-  addi s0, a0, -1
-  addi a1, a1, -1
+  addi s0, a1, -1
+  addi a2, a0, -1
+  mv a0, a1
+  mv a1, a2
   call ack1.21
-  mv a1, a0
-  mv a0, s0
+  mv a1, s0
   j .ack1.21_0
 
 .ack1.21_3:
-  addi a0, a0, -1
-  li a1, 1
+  addi a1, a1, -1
+  li a0, 1
   j .ack1.21_0
 
 .ack1.21_1:
-  addi a0, a1, 1
+  addi a0, a0, 1
 
 .ack1.21_6:
   ld ra, 0(sp)

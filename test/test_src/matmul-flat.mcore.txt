@@ -36,69 +36,56 @@ memseti64:
 # leaf true
 loop148.240:
 .loop148.240_5:
-  addi sp, sp, -48
+  addi sp, sp, -32
   sd s0, 0(sp)
   sd s1, 8(sp)
   sd s2, 16(sp)
-  sd s3, 24(sp)
-  sd s4, 32(sp)
-  mv t2, a1
-  mv t3, a2
-  mv t1, a3
-  mv a7, a4
-  mv a3, a5
+  mv a6, a0
+  mv a0, a5
+  mv t0, a1
+  mv t1, a2
+  mv a7, a3
+  mv a5, a4
+  mv a2, a0
 
 .loop148.240_0:
-  blt a0, zero, .loop148.240_2
+  blt a6, zero, .loop148.240_2
 
 .loop148.240_1:
-  addi a1, t3, -1
-  slliw a2, a0, 3
-  add a4, a3, a2
-  ld a4, 0(a4)
-  add a2, t1, a2
-  ld a2, 0(a2)
+  addi a1, t1, -1
+  th.lurd a0, a2, a6, 3
+  th.lurd a3, a7, a6, 3
 
 .loop148.240_12:
-  mv a5, a4
-  mv a6, a4
-  mv a4, a2
+  mv a4, a0
 
 .loop148.240_7:
   blt a1, zero, .loop148.240_9
 
 .loop148.240_8:
-  addi a2, t2, -1
+  addi t2, t0, -1
 
 .loop148.240_19:
-  mv t0, a0
-  mv t4, a2
-  mv s0, t1
-  mv s1, a7
-  mv s3, a3
+  mv s1, a6
+  mv t3, a7
+  mv t4, a5
+  mv s2, a2
 
 .loop148.240_14:
-  blt t4, zero, .loop148.240_16
+  blt t2, zero, .loop148.240_16
 
 .loop148.240_15:
-  slliw a2, a1, 3
-  add s2, a6, a2
-  fld fa0, 0(s2)
-  slliw s2, t4, 3
-  add s4, a4, s2
-  fld fa1, 0(s4)
-  add s2, s1, s2
-  ld s2, 0(s2)
-  add s2, s2, a2
-  fld fa2, 0(s2)
+  th.flurd fa0, a0, a1, 3
+  th.flurd fa1, a3, t2, 3
+  th.lurd s0, t4, t2, 3
+  th.flurd fa2, s0, a1, 3
   fmadd.d fa0, fa1, fa2, fa0
-  add a2, a5, a2
-  fsd fa0, 0(a2)
-  addi t4, t4, -1
+  th.fsurd fa0, a4, a1, 3
+  addi t2, t2, -1
   j .loop148.240_14
 
 .loop148.240_16:
-  mv a2, zero
+  mv t2, zero
 
 .loop148.240_17:
 
@@ -107,12 +94,12 @@ loop148.240:
   j .loop148.240_7
 
 .loop148.240_9:
-  mv a1, zero
+  mv a0, zero
 
 .loop148.240_10:
 
 .loop148.240_6:
-  addi a0, a0, -1
+  addi a6, a6, -1
   j .loop148.240_0
 
 .loop148.240_2:
@@ -122,9 +109,7 @@ loop148.240:
   ld s0, 0(sp)
   ld s1, 8(sp)
   ld s2, 16(sp)
-  ld s3, 24(sp)
-  ld s4, 32(sp)
-  addi sp, sp, 48
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -160,9 +145,7 @@ make_arr103.243:
   slliw a2, a1, 3
   sub a2, s11, a2
   andi s11, a2, -8
-  slliw a4, a0, 3
-  add a4, a3, a4
-  sd a2, 0(a4)
+  th.surd a2, a3, a0, 3
   addi a0, a0, -1
   j .make_arr103.243_3
 
@@ -192,95 +175,94 @@ main85.241:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  addi s2, s11, 0
-  andi s11, s2, -8
+  addi s0, s11, 0
+  andi s11, s0, -8
   li a0, 2
   li a1, 3
-  mv a2, s2
-  call make_arr103.243
-  mv s0, a0
-  li a0, 3
-  li a1, 2
-  mv a2, s2
+  mv a2, s0
   call make_arr103.243
   mv s1, a0
-  li a0, 2
-  mv a1, a0
-  mv a2, s2
+  li a0, 3
+  li a1, 2
+  mv a2, s0
   call make_arr103.243
   mv s2, a0
-  ld a0, 0(s0)
+  li a0, 2
+  mv a1, a0
+  mv a2, s0
+  call make_arr103.243
+  mv s0, a0
+  ld a0, 0(s1)
   li a1, 4607182418800017408
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 0(s0)
+  ld a0, 0(s1)
   li a1, 4611686018427387904
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 0(s0)
+  ld a0, 0(s1)
   li a1, 4613937818241073152
   fmv.d.x fa0, a1
   fsd fa0, 16(a0)
-  ld a0, 8(s0)
+  ld a0, 8(s1)
   li a1, 4616189618054758400
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 8(s0)
+  ld a0, 8(s1)
   li a1, 4617315517961601024
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 8(s0)
+  ld a0, 8(s1)
   li a1, 4618441417868443648
   fmv.d.x fa0, a1
   fsd fa0, 16(a0)
-  ld a0, 0(s1)
+  ld a0, 0(s2)
   li a1, 4619567317775286272
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 0(s1)
+  ld a0, 0(s2)
   li a1, 4620693217682128896
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 8(s1)
+  ld a0, 8(s2)
   li a1, 4621256167635550208
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 8(s1)
+  ld a0, 8(s2)
   li a1, 4621819117588971520
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  ld a0, 16(s1)
+  ld a0, 16(s2)
   li a1, 4622382067542392832
   fmv.d.x fa0, a1
   fsd fa0, 0(a0)
-  ld a0, 16(s1)
+  ld a0, 16(s2)
   li a1, 4622945017495814144
   fmv.d.x fa0, a1
   fsd fa0, 8(a0)
-  li a0, 2
-  addi a0, a0, -1
+  li a0, 1
   li a1, 3
   li a2, 2
-  mv a3, s0
-  mv a4, s1
-  mv a5, s2
+  mv a3, s1
+  mv a4, s2
+  mv a5, s0
   call loop148.240
-  ld a0, 0(s2)
+  ld a0, 0(s0)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 0(s2)
+  ld a0, 0(s0)
   fld fa0, 8(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 8(s2)
+  ld a0, 8(s0)
   fld fa0, 0(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int
   call minimbt_print_endline
-  ld a0, 8(s2)
+  ld a0, 8(s0)
   fld fa0, 8(a0)
   fcvt.w.d a0, fa0, rtz
   call minimbt_print_int

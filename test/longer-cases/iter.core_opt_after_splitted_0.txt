@@ -17,19 +17,19 @@
     let _ = store int32 field(f2.m0, 2 * @32) <- 3
     let _ = store int32 field(f2.m0, 3 * @32) <- 4
     let _ = store int32 field(f2.m0, 4 * @32) <- 5
-    let %6: unit = call f1(5, f2.m0)
+    let %6: unit = call f1(f2.m0)
     return %6
   }
 }
-.fn do30.92 #f1 : fn(int32, array[int32]) -> unit
+.fn do30.92 #f1 : fn(array[int32]) -> unit
 .freevars ()
 .entry b5 {
-  .bb #b0 (int32, array[int32]) {
-    let %0: bool = call f0(0, $b0.0, $b0.1)
+  .bb #b0 (array[int32]) {
+    let %0: bool = call f0(0, $b0.0)
     jump b6(%0)
   }
   .bb #b1 () {
-    jump b0($b0.0, $b0.1)
+    jump b0($b0.0)
   }
   .bb #b2 () {
     jump b3(())
@@ -43,7 +43,7 @@
     .block #b3
   }
   .bb #b5 () {
-    jump b4($f0, $f1)
+    jump b4($f0)
   }
   .bb #b6 (bool) {
     let %1: bool = eq($b6.0, true)
@@ -58,26 +58,25 @@
     return %0
   }
 }
-.fn next9.93 #f0 : fn(int32, int32, array[int32]) -> bool
+.fn next9.93 #f0 : fn(int32, array[int32]) -> bool
 .freevars ()
 .entry b8 {
-  .bb #b0 (int32, int32, array[int32]) {
-    let %0: int32 = sub($b0.1, 1)
-    let %1: bool = le($b0.0, %0)
-    br %1 b1() b2()
+  .bb #b0 (int32, array[int32]) {
+    let %0: bool = le($b0.0, 4)
+    br %0 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset($b0.2, $b0.0 * @32)
-    let %3: unit = ext_call minimbt_print_int(%2)
-    let %4: bool = eq(true, true)
-    br %4 b3() b4()
+    let %1: int32 = load int32 offset($b0.1, $b0.0 * @32)
+    let %2: unit = ext_call minimbt_print_int(%1)
+    let %3: bool = eq(true, true)
+    br %3 b3() b4()
   }
   .bb #b2 () {
     jump b6(false)
   }
   .bb #b3 () {
-    let %5: int32 = add($b0.0, 1)
-    jump b0(%5, $b0.1, $b0.2)
+    let %4: int32 = add($b0.0, 1)
+    jump b0(%4, $b0.1)
   }
   .bb #b4 () {
     jump b5(false)
@@ -97,7 +96,7 @@
     .block #b3
   }
   .bb #b8 () {
-    jump b7($f0, $f1, $f2)
+    jump b7($f0, $f1)
   }
 }
 .thunk ::0 start

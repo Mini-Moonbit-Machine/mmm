@@ -15,21 +15,20 @@
     return %0
   }
 }
-.fn sum_nested8.49 #f0 : fn(int32, int32, int32, array[int32], array[int32]) -> unit
+.fn sum_nested8.49 #f0 : fn(int32, int32, array[int32], array[int32]) -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
-    let %0: int32 = sub($f2, 1)
-    let %1: bool = le($f1, %0)
-    br %1 b1() b2()
+    let %0: bool = le($f1, 9)
+    br %0 b1() b2()
   }
   .bb #b1 () {
-    let %2: int32 = load int32 offset($f3, $f1 * @32)
-    let %3: int32 = add($f0, %2)
-    let _ = store int32 offset($f4, $f1 * @32) <- %3
-    let %5: int32 = add($f1, 1)
-    let %6: unit = call f0(%3, %5, $f2, $f3, $f4)
-    jump b3(%6)
+    let %1: int32 = load int32 offset($f2, $f1 * @32)
+    let %2: int32 = add($f0, %1)
+    let _ = store int32 offset($f3, $f1 * @32) <- %2
+    let %4: int32 = add($f1, 1)
+    let %5: unit = call f0(%2, %4, $f2, $f3)
+    jump b3(%5)
   }
   .bb #b2 () {
     jump b3(())
@@ -44,7 +43,7 @@
   .bb #b0 () {
     let _ = alloc <m0: array[int32] heap(10)> <- [..] = 4
     let _ = alloc <m1: array[int32] heap(10)> <- [..] = 0
-    let %2: unit = call f0(0, 0, 10, f1.m0, f1.m1)
+    let %2: unit = call f0(0, 0, f1.m0, f1.m1)
     let %3: int32 = load int32 offset(f1.m1, 0 * @32)
     let %4: unit = ext_call minimbt_print_int(%3)
     return %4

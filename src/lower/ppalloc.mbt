@@ -301,7 +301,7 @@ impl Compare for V with compare(self, other) {
   let cmp = self._.0.compare(other._.0)
   if cmp == 0 {
     let cmp = self._.1.compare(other._.1) // prefer the higher count
-    if cmp == 0 {
+    if true { // removed because negative effect on size
       -self._.2.compare(other._.2) // prefer the lower vertex
     } else {
       cmp

@@ -21,24 +21,21 @@ __begin_text:
 # leaf true
 sum_nested8.49:
 .sum_nested8.49_5:
-  mv a5, a0
-  mv a0, a1
-  mv a1, a4
-  mv a4, a3
-  mv a3, a1
+  mv a4, a0
+  mv a0, a3
+  mv a3, a4
+  mv a4, a0
 
 .sum_nested8.49_0:
-  addi a1, a2, -1
-  blt a1, a0, .sum_nested8.49_2
+  li a0, 9
+  blt a0, a1, .sum_nested8.49_2
 
 .sum_nested8.49_1:
-  slliw a1, a0, 2
-  add a6, a4, a1
-  lw a6, 0(a6)
-  add a5, a5, a6
-  add a1, a3, a1
-  sw a5, 0(a1)
-  addi a0, a0, 1
+  th.lurw a0, a2, a1, 2
+  add a0, a3, a0
+  th.surw a0, a4, a1, 2
+  addi a1, a1, 1
+  mv a3, a0
   j .sum_nested8.49_0
 
 .sum_nested8.49_2:
@@ -57,19 +54,19 @@ main25.48:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
-  addi a3, s11, -40
-  andi s11, a3, -8
+  addi a2, s11, -40
+  andi s11, a2, -8
   li a0, 4
-  sw a0, 0(a3)
-  sw a0, 4(a3)
-  sw a0, 8(a3)
-  sw a0, 12(a3)
-  sw a0, 16(a3)
-  sw a0, 20(a3)
-  sw a0, 24(a3)
-  sw a0, 28(a3)
-  sw a0, 32(a3)
-  sw a0, 36(a3)
+  sw a0, 0(a2)
+  sw a0, 4(a2)
+  sw a0, 8(a2)
+  sw a0, 12(a2)
+  sw a0, 16(a2)
+  sw a0, 20(a2)
+  sw a0, 24(a2)
+  sw a0, 28(a2)
+  sw a0, 32(a2)
+  sw a0, 36(a2)
   addi s0, s11, -40
   andi s11, s0, -8
   sw zero, 0(s0)
@@ -84,8 +81,7 @@ main25.48:
   sw zero, 36(s0)
   mv a0, zero
   mv a1, zero
-  li a2, 10
-  mv a4, s0
+  mv a3, s0
   call sum_nested8.49
   lw a0, 0(s0)
   call minimbt_print_int

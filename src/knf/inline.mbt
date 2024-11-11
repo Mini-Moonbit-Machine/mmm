@@ -82,6 +82,102 @@ fn assoc(knf : Knf) -> Knf {
   }
 }
 
+fn const_fold(knf : Knf, env : Env[Knf]) -> Knf {
+  fn memi(x : Name) -> Int64? {
+    match env.find(x) {
+      Some(Int(i)) => Some(i)
+      _ => None
+    }
+  }
+
+  fn memf(x : Name) -> Double? {
+    match env.find(x) {
+      Some(Double(d)) => Some(d)
+      _ => None
+    }
+  }
+
+  match knf {
+    Var(x) =>
+      match memi(x) {
+        Some(i) => Int(i)
+        None =>
+          match memf(x) {
+            Some(d) => Double(d)
+            None => knf
+          }
+      }
+    Neg(x) =>
+      match memi(x) {
+        Some(i) => Int(-i)
+        None => knf
+      }
+    Add(x, y) =>
+      match (memi(x), memi(y)) {
+        (Some(i), Some(j)) => Int(i + j)
+        _ => knf
+      }
+    Sub(x, y) =>
+      match (memi(x), memi(y)) {
+        (Some(i), Some(j)) => Int(i - j)
+        _ => knf
+      }
+    Mul(x, y) =>
+      match (memi(x), memi(y)) {
+        (Some(i), Some(j)) => Int(i * j)
+        _ => knf
+      }
+    Div(x, y) =>
+      match (memi(x), memi(y)) {
+        (Some(i), Some(j)) => Int(i / j)
+        _ => knf
+      }
+    FNeg(x) =>
+      match memf(x) {
+        Some(d) => Double(-d)
+        None => knf
+      }
+    FAdd(x, y) =>
+      match (memf(x), memf(y)) {
+        (Some(d), Some(e)) => Double(d + e)
+        _ => knf
+      }
+    FSub(x, y) =>
+      match (memf(x), memf(y)) {
+        (Some(d), Some(e)) => Double(d - e)
+        _ => knf
+      }
+    FMul(x, y) =>
+      match (memf(x), memf(y)) {
+        (Some(d), Some(e)) => Double(d * e)
+        _ => knf
+      }
+    FDiv(x, y) =>
+      match (memf(x), memf(y)) {
+        (Some(d), Some(e)) => Double(d / e)
+        _ => knf
+      }
+    IfEq(x, y, e1, e2) => IfEq(x, y, const_fold(e1, env), const_fold(e2, env))
+    IfLe(x, y, e1, e2) => IfLe(x, y, const_fold(e1, env), const_fold(e2, env))
+    Let((x, xt), e1, e2) => {
+      let e1 = const_fold(e1, env)
+      let env = env.add(x, e1)
+      Let((x, xt), e1, const_fold(e2, env))
+    }
+    LetRec(fundef, e) => {
+      let fundef = {
+        name: fundef.name,
+        ty: fundef.ty,
+        args: fundef.args,
+        body: const_fold(fundef.body, env),
+      }
+      LetRec(fundef, const_fold(e, env))
+    }
+    LetTuple(xts, y, e) => LetTuple(xts, y, const_fold(e, env))
+    _ => knf
+  }
+}
+
 fn call_freq(knf : Knf, env : Env[Unit], freq : Map[Name, CallFreq]) -> Unit {
   fn deal_closure(xs : Array[Name]) -> Unit {
     for x in xs {
@@ -538,12 +634,14 @@ pub fn InlineEnv::go(self : InlineEnv, knf : Knf, n : Int) -> Knf {
   self.tracer.println("freq: \{freq}")
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
+  let knf = const_fold(knf, Env::new())
   let knf = self.inline(freq, Env::new(), knf)
   let freq = Map::new()
   call_freq(knf, env, freq)
   let knf = self.dfe(freq, Env::new(), knf)
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
+  let knf = const_fold(knf, Env::new())
   let knf = beta_reduce(Env::new(), knf)
   let knf = assoc(knf)
   let knf = top_int_reduce(self.knf_env, Env::new(), knf, true)
