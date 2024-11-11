@@ -626,12 +626,12 @@ fn RiscvFnLoweringCtx::lower_apply(
 ) -> AnyReg {
   self.is_leaf = false
   let closure_addr = @generated.constructor_lower_value(self, f)
-  @generated.constructor_rv_mv_to(self, @riscv.reg_closure, xreg(closure_addr))
   let func_ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
     base: xreg(closure_addr),
     offset: 0,
   }
   let fp = @generated.constructor_rv_ld(self, func_ma)
+  @generated.constructor_rv_mv_to(self, @riscv.reg_closure, xreg(closure_addr))
   @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
   @generated.constructor_rv_jalr(self, fp, nx, nf)

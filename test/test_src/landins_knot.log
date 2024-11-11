@@ -82,14 +82,13 @@
 // [Asm] defs: [v6]
 // [Asm] live_set: [v4, v6, v2]
 // [Asm] defined: v6 is X
+// [Asm] defs: [v12]
+// [Asm] live_set: [v4, v6, v12, v2]
+// [Asm] defined: v12 is X
 // [Asm] defs: [s10]
-// [Asm] live_set: [v4, v6, v2]
+// [Asm] live_set: [v4, v12, v2]
 // [Asm] move: s10 <- v6
 // [Asm] defined: s10 is X
-// [Asm] skip edge 4 -> 3
-// [Asm] defs: [v12]
-// [Asm] live_set: [v4, v12, v2]
-// [Asm] defined: v12 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v12, v2]
 // [Asm] defs: [a0]
@@ -170,14 +169,14 @@
 // [Asm] defined: v2 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2]
-// [Asm] Label("h21.60") clobbered_x: @hashset.of([s0, a1, a0])
+// [Asm] Label("h21.60") clobbered_x: @hashset.of([a2, s0, a1, a0])
 // [Asm] Label("h21.60") clobbered_f: @hashset.of([])
 // [Asm] subst   addi v4, v2, -1 ->   addi a0, s0, -1
 // [Asm] subst   ld v5, arr.47 ->   ld a1, arr.47
 // [Asm] subst   ld v6, 0(v5) ->   ld a1, 0(a1)
+// [Asm] subst   ld v12, 0(v6) ->   ld a2, 0(a1)
 // [Asm] subst   mv s10, v6 ->   mv s10, a1
-// [Asm] subst   ld v12, 0(v6) ->   ld a1, 0(a1)
-// [Asm] subst   jalr v12 ->   jalr a1
+// [Asm] subst   jalr v12 ->   jalr a2
 // [Asm] subst   mul v8, v2, v7 ->   mul a0, s0, a0
 // [Asm] subst   li v10, 1 ->   li a0, 1
 // [Asm] subst   j .h21.60_3 ->   j .h21.60_3
@@ -777,8 +776,8 @@
 // [Asm]   addi v4, v2, -1  # live: [v4, v2]
 // [Asm]   ld v5, arr.47  # live: [v4, v5, v2]
 // [Asm]   ld v6, 0(v5)  # live: [v4, v6, v2]
-// [Asm]   mv s10, v6  # live: [v4, v6, v2]
-// [Asm]   ld v12, 0(v6)  # live: [v4, v12, v2]
+// [Asm]   ld v12, 0(v6)  # live: [v4, v6, v12, v2]
+// [Asm]   mv s10, v6  # live: [v4, v12, v2]
 // [Asm]   # save_ctx2  # live: [v4, v12, v2]
 // [Asm]   mv a0, v4  # live: [v12, a0, v2]
 // [Asm]   jalr v12  # live: [a0, v2]
@@ -1080,9 +1079,9 @@
 // [Main]   addi a0, s0, -1
 // [Main]   ld a1, arr.47
 // [Main]   ld a1, 0(a1)
+// [Main]   ld a2, 0(a1)
 // [Main]   mv s10, a1
-// [Main]   ld a1, 0(a1)
-// [Main]   jalr a1
+// [Main]   jalr a2
 // [Main]   mul a0, s0, a0
 // [Main] 
 // [Main] .h21.60_3:

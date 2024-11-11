@@ -105,14 +105,13 @@
 // [Asm] defs: [v10]
 // [Asm] live_set: [v10, v9]
 // [Asm] defined: v10 is X
+// [Asm] defs: [v13]
+// [Asm] live_set: [v10, v13, v9]
+// [Asm] defined: v13 is X
 // [Asm] defs: [s10]
-// [Asm] live_set: [v10, v9]
+// [Asm] live_set: [v10, v13]
 // [Asm] move: s10 <- v9
 // [Asm] defined: s10 is X
-// [Asm] skip edge 23 -> 21
-// [Asm] defs: [v13]
-// [Asm] live_set: [v10, v13]
-// [Asm] defined: v13 is X
 // [Asm] defs: []
 // [Asm] live_set: [v10, v13]
 // [Asm] defs: [a0]
@@ -188,11 +187,11 @@
 // [Asm] subst   andi s11, v4, -8 ->   andi s11, a1, -8
 // [Asm] subst   sd v3, 0(v4) ->   sd a0, 0(a1)
 // [Asm] subst   ld v9, 0(v4) ->   ld a0, 0(a1)
-// [Asm] subst   addi v10, v2, -1 ->   addi a1, s0, -1
+// [Asm] subst   addi v10, v2, -1 ->   addi a2, s0, -1
+// [Asm] subst   ld v13, 0(v9) ->   ld a1, 0(a0)
 // [Asm] subst   mv s10, v9 ->   mv s10, a0
-// [Asm] subst   ld v13, 0(v9) ->   ld a2, 0(a0)
-// [Asm] subst   mv a0, v10 ->   mv a0, a1
-// [Asm] subst   jalr v13 ->   jalr a2
+// [Asm] subst   mv a0, v10 ->   mv a0, a2
+// [Asm] subst   jalr v13 ->   jalr a1
 // [Asm] subst   mv v2, a0 ->   mv s0, a0
 // [Asm] subst   blt v2, zero, .f1_2 ->   blt s0, zero, .f1_2
 // [Asm] LoweringOrder: [0]
@@ -305,8 +304,8 @@
 // [Asm]   sd v3, 0(v4)  # live: [v4, v2]
 // [Asm]   ld v9, 0(v4)  # live: [v9, v2]
 // [Asm]   addi v10, v2, -1  # live: [v10, v9]
-// [Asm]   mv s10, v9  # live: [v10, v9]
-// [Asm]   ld v13, 0(v9)  # live: [v10, v13]
+// [Asm]   ld v13, 0(v9)  # live: [v10, v13, v9]
+// [Asm]   mv s10, v9  # live: [v10, v13]
 // [Asm]   # save_ctx2  # live: [v10, v13]
 // [Asm]   mv a0, v10  # live: [a0, v13]
 // [Asm]   jalr v13  # live: [a0]
@@ -440,11 +439,11 @@
 // [Main]   andi s11, a1, -8
 // [Main]   sd a0, 0(a1)
 // [Main]   ld a0, 0(a1)
-// [Main]   addi a1, s0, -1
+// [Main]   addi a2, s0, -1
+// [Main]   ld a1, 0(a0)
 // [Main]   mv s10, a0
-// [Main]   ld a2, 0(a0)
-// [Main]   mv a0, a1
-// [Main]   jalr a2
+// [Main]   mv a0, a2
+// [Main]   jalr a1
 // [Main] 
 // [Main] .f1_3:
 // [Main]   ld ra, 0(sp)
