@@ -68,12 +68,14 @@ pub struct PPAllocator {
   pub spilled : @hashmap.T[Int, Int]
   pub spilled_colors : @hashset.T[Int]
   pub hints : @hashmap.T[Int, @hashset.T[Int]]
+  pub uses_count : @hashmap.T[Int, Int]
   pub highest_color : Int
 }
 impl PPAllocator {
   add_edge[R : RegToId, Info](Self[Info], R, R) -> Unit
   add_hint[R : RegToId, Info](Self[Info], R, Int) -> Unit
   add_single_vertex[R : RegToId, Info](Self[Info], R) -> Unit
+  add_use[R : RegToId, Info](Self[Info], R) -> Unit
   go[Info : Show](Self[Info]) -> Unit
   new[Info](Int) -> Self[Info]
   query_all_clobbered[Info](Self[Info]) -> Array[Info]
