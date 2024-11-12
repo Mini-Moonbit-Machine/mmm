@@ -212,17 +212,16 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
         let arm_env = Typer::check_and_bind_pattern!(pattern, et, action, env)
         Typer::check!(action, ty, arm_env)
       }
-      
     }
     _ => fail!("check: mismatched types \{node} and \{ty}")
   }
 }
 
 fn Typer::check_and_bind_pattern(
-  pattern: Pattern,
-  pt: Type,
-  action: Syntax,
-  env: TyEnv
+  pattern : Pattern,
+  pt : Type,
+  action : Syntax,
+  env : TyEnv
 ) -> TyEnv!Failure {
   match pattern {
     Pattern::Wildcard => env
@@ -246,7 +245,7 @@ fn Typer::check_and_bind_pattern(
       let env = env.add(x, pt)
       env
     }
-    Pattern::Tuple(ps) => {
+    Pattern::Tuple(ps) =>
       match pt {
         Type::Tuple(ts) => {
           if ps.length() != ts.length() {
@@ -260,7 +259,6 @@ fn Typer::check_and_bind_pattern(
         }
         _ => fail!("check pattern: \{pattern} not a tuple")
       }
-    }
     _ => fail!("ctor app are not supported yet")
   }
 }

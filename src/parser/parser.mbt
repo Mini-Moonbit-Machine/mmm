@@ -12,6 +12,10 @@ typealias Type = @types.Type
 
 typealias Syntax = @types.Syntax
 
+typealias Pattern = @types.Pattern
+
+typealias MatchArm = @types.MatchArm
+
 typealias Op = @types.Op
 
 pub struct Parser {
@@ -404,6 +408,62 @@ pub fn Parser::parse_expr_with_level(
           } else {
             Syntax::If(cond.inner, then.inner, Syntax::Unit)
           }
+        }
+        Keyword::Match => {
+          let scrutinee = self.parse_expr!()
+          ntokens += scrutinee.ntokens
+          let lookhead = self.peek_token!()
+          if lookhead.inner.tag != PairedOpen(Brace) {
+            fail!("expected matched block")
+          }
+          self.skip_token()
+          ntokens += 1
+          // parse match arms
+          fn syntax_to_pattern(node : Syntax) -> Pattern!Failure {
+            match node {
+              Syntax::Var("_") => Pattern::Wildcard
+              Syntax::Unit => Pattern::Unit
+              Syntax::Bool(b) => Pattern::Bool(b)
+              Syntax::Int(n) => Pattern::Int(n)
+              Syntax::Double(n) => Pattern::Double(n)
+              Syntax::Var(name) => Pattern::Var(name)
+              Syntax::Tuple(exprs) => {
+                let ts = []
+                for expr in exprs {
+                  ts.push(syntax_to_pattern!(expr))
+                }
+                Pattern::Tuple(ts)
+              }
+              Syntax::App(Syntax::Var(_) as ctor, exprs) => {
+                let args = []
+                for expr in exprs {
+                  args.push(syntax_to_pattern!(expr))
+                }
+                Pattern::CtorApp(ctor, args)
+              }
+              _ => fail!("unexpected syntax in pattern")
+            }
+          }
+
+          let mut lookhead2 = self.peek_token!()
+          let match_arms = []
+          while lookhead2.inner.tag != PairedClose(Brace) {
+            let pat_expr = self.parse_expr!()
+            ntokens += pat_expr.ntokens
+            let pat = syntax_to_pattern!(pat_expr.inner)
+            let _ = self.expect_operator!("=>")
+            ntokens += 1
+            let action_expr = self.parse_expr!()
+            ntokens += action_expr.ntokens
+            let action = action_expr.inner
+            let _ = self.expect_operator!(";")
+            ntokens += 1
+            match_arms.push(@types.MatchArm::{ pat, action })
+            lookhead2 = self.peek_token!()
+          }
+          self.skip_token()
+          ntokens += 1
+          Syntax::Match(scrutinee.inner, match_arms)
         }
         _ => fail!("keyword not supported in expression: \{kw}")
       }

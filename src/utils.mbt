@@ -121,6 +121,20 @@ pub fn Fundef::from_json(json : Json) -> Fundef!Error {
   }
 }
 
+pub fn to_json(self : Pattern) -> Json {
+  match self {
+    Unit => "Unit"
+    Bool(b) => ["Bool", if b { true } else { false }]
+    Int(i) => ["Int", Json::Number(i.to_double())]
+    Double(f) => ["Float", Json::Number(f)]
+    Tuple(ps) => ["Tuple", ps.map(Pattern::to_json) |> Json::Array]
+    Wildcard => "Wildcard"
+    Var(id) => ["Var", id |> Json::String]
+    CtorApp(name, ps) =>
+      ["CtorApp", [name.to_json()], ps.map(Pattern::to_json) |> Json::Array]
+  }
+}
+
 pub fn to_json(self : Syntax) -> Json {
   match self {
     Unit => "Unit"
@@ -154,6 +168,17 @@ pub fn to_json(self : Syntax) -> Json {
     Get(arr, idx) => ["Get", arr.to_json(), idx.to_json()]
     Put(arr, idx, value) =>
       ["Put", arr.to_json(), idx.to_json(), value.to_json()]
+    Match(e, arms) =>
+      [
+        "Match",
+        e.to_json(),
+        arms.map(
+          fn(arm) {
+            { "pat": arm.pat.to_json(), "action": arm.action.to_json() }
+          },
+        )
+        |> Json::Array,
+      ]
   }
 }
 

@@ -217,6 +217,12 @@ test "parse expr" {
     ,
     6,
   )
+  test_parse_expr!(
+    "match e { (Nil, _) => 0; (_, Nil) => 1; (Cons(x, xs), Cons(y, _)) => 2; }",
+    #|["Match",["Var","e"],[{"pat":["Tuple",[["Var","Nil"],"Wildcard"]],"action":["Int",0]},{"pat":["Tuple",["Wildcard",["Var","Nil"]]],"action":["Int",1]},{"pat":["Tuple",[["CtorApp",[["Var","Cons"]],[["Var","x"],["Var","xs"]]],["CtorApp",[["Var","Cons"]],[["Var","y"],"Wildcard"]]]],"action":["Int",2]}]]
+    ,
+    38,
+  )
 }
 
 test "parse stmt" {

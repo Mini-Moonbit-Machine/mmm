@@ -21,6 +21,7 @@ pub enum Keyword {
   Let
   If
   Else
+  Match
 } derive(Hash, Eq, Show)
 
 pub enum Paired {
@@ -50,6 +51,7 @@ fn init {
   keywords["let"] = Keyword::Let
   keywords["if"] = Keyword::If
   keywords["else"] = Keyword::Else
+  keywords["match"] = Keyword::Match
 }
 
 pub struct Token {

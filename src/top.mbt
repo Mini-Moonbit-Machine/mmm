@@ -22,15 +22,15 @@ pub enum Syntax {
 } derive(Show)
 
 pub struct MatchArm {
-  pat: Pattern
-  action: Syntax
+  pat : Pattern
+  action : Syntax
 } derive(Show)
 
 pub enum Pattern {
   Wildcard
   Unit
   Bool(Bool)
-  Int(Int)
+  Int(Int64)
   Double(Double)
   Var(String)
   Tuple(Array[Pattern])
