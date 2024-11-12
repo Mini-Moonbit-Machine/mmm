@@ -18,6 +18,23 @@ pub enum Syntax {
   LetRec(Fundef, Syntax) // fn f() {} ; _
   LetTuple(Array[(String, Type)], Syntax, Syntax) // let (_ , _) : (_, _)= _; _
   Put(Syntax, Syntax, Syntax) // _[_] = _
+  Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
+} derive(Show)
+
+pub struct MatchArm {
+  pat: Pattern
+  action: Syntax
+} derive(Show)
+
+pub enum Pattern {
+  Wildcard
+  Unit
+  Bool(Bool)
+  Int(Int)
+  Double(Double)
+  Var(String)
+  Tuple(Array[Pattern])
+  CtorApp(Syntax, Array[Pattern])
 } derive(Show)
 
 pub enum Kind {

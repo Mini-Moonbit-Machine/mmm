@@ -1,5 +1,7 @@
 typealias Syntax = @types.Syntax
 
+typealias Pattern = @types.Pattern
+
 typealias Type = @types.Type
 
 typealias Kind = @types.Kind
@@ -202,7 +204,64 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
       Typer::check!(idx, Type::Int, env)
       Typer::check!(x, ty, env)
     }
+    (Syntax::Match(e, arms), ty) => {
+      let et = Typer::infer!(e, env)
+      for arm in arms {
+        let pattern = arm.pat
+        let action = arm.action
+        let arm_env = Typer::check_and_bind_pattern!(pattern, et, action, env)
+        Typer::check!(action, ty, arm_env)
+      }
+      
+    }
     _ => fail!("check: mismatched types \{node} and \{ty}")
+  }
+}
+
+fn Typer::check_and_bind_pattern(
+  pattern: Pattern,
+  pt: Type,
+  action: Syntax,
+  env: TyEnv
+) -> TyEnv!Failure {
+  match pattern {
+    Pattern::Wildcard => env
+    Pattern::Unit => {
+      Typer::unify!(pt, Type::Unit, action)
+      env
+    }
+    Pattern::Bool(_) => {
+      Typer::unify!(pt, Type::Bool, action)
+      env
+    }
+    Pattern::Int(_) => {
+      Typer::unify!(pt, Type::Int, action)
+      env
+    }
+    Pattern::Double(_) => {
+      Typer::unify!(pt, Type::Double, action)
+      env
+    }
+    Pattern::Var(x) => {
+      let env = env.add(x, pt)
+      env
+    }
+    Pattern::Tuple(ps) => {
+      match pt {
+        Type::Tuple(ts) => {
+          if ps.length() != ts.length() {
+            fail!("check_pattern: different number of elements")
+          }
+          let mut new_env = env
+          for i, p in ps {
+            new_env = Typer::check_and_bind_pattern!(p, ts[i], action, new_env)
+          }
+          env
+        }
+        _ => fail!("check pattern: \{pattern} not a tuple")
+      }
+    }
+    _ => fail!("ctor app are not supported yet")
   }
 }
 
