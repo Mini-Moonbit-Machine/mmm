@@ -74,6 +74,8 @@ pub fn Unbox::new(tracer : @util.SubTracer, knf : Knf) -> Unbox {
   { tracer, knf }
 }
 
+let unbox_threshold = 5
+
 pub fn go(self : Unbox) -> Knf {
   let knf = self.knf
   let freq = Map::new()
@@ -86,7 +88,7 @@ pub fn go(self : Unbox) -> Knf {
       IfLe(x, y, e1, e2) =>
         IfLe(x, y, aux(e1, env, unbox_tail), aux(e2, env, unbox_tail))
       Let((x, t), e1, e2) =>
-        if freq.get(x) == Some(Destructed) && is_tail_tuple(e1, 4) {
+        if freq.get(x) == Some(Destructed) && is_tail_tuple(e1, unbox_threshold) {
           Let((x, t), aux(e1, env, true), aux(e2, env.add(x, ()), unbox_tail))
         } else {
           Let((x, t), aux(e1, env, unbox_tail), aux(e2, env, unbox_tail))
@@ -98,7 +100,7 @@ pub fn go(self : Unbox) -> Knf {
       LetTuple(xts, y, e) =>
         if freq.get(y) == Some(Destructed) &&
           env.find(y) == Some(()) &&
-          xts.length() < 4 {
+          xts.length() < unbox_threshold {
           LetUnboxedTuple(xts, y, aux(e, env, unbox_tail))
         } else {
           LetTuple(xts, y, aux(e, env, unbox_tail))

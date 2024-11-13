@@ -194,7 +194,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let knf = licm.go(1)
       let licm = @knf.LICM::new(tracer, knf)
       let knf = licm.go(2)
-      if self.end_stage != Stages::Wasm {
+      if self.end_stage != Stages::Wasm.next() {
         let unbox = @knf.Unbox::new(tracer, knf)
         let knf = unbox.go()
         self.opt_knf = Some(knf)
@@ -249,7 +249,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      if self.end_stage == Wasm {
+      if self.end_stage == Wasm.next() {
         let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
         let wasm = lower_ctx.lower()
         self.wasm = Some(wasm)
