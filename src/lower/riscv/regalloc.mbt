@@ -154,6 +154,16 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
               }
             None => ()
           }
+          match rwd.pre_colored() {
+            Some(color) =>
+              if (match dst.class {
+                  X => @riscv.reg_arg_list.contains(dst.to_xreg())
+                  F => @riscv.freg_arg_list.contains(dst.to_freg())
+                }) {
+                ctx.allocator.add_hint(rws, color)
+              }
+            None => ()
+          }
         }
         None => ()
       }
