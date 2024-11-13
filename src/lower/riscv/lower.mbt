@@ -2156,7 +2156,8 @@ fn RiscvFnLoweringCtx::post_lower_block(
   alloc : RegAllocator,
   mbb : MBasicBlock,
   ibi : IteratedBlockInfo,
-  frame : FrameLayout
+  frame : FrameLayout,
+  retarget : Map[Label, Label]
 ) -> MBasicBlock {
   let _ = self
   let new_mbb = { id: mbb.id, insns: [], control: [], params: mbb.params }
@@ -2232,6 +2233,12 @@ fn RiscvFnLoweringCtx::post_lower_block(
       }
       _ =>
         self.subst_vreg_with_preg_or_spill(alloc, frame, insn, new_mbb.control)
+    }
+  }
+  if new_mbb.control.length() == 1 && new_mbb.insns.length() == 0 {
+    match new_mbb.control {
+      [J(~target)] => retarget.set(new_mbb.id, target)
+      _ => ()
     }
   }
   new_mbb
@@ -2351,7 +2358,8 @@ fn RiscvFnLoweringCtx::scan_for_max_lives(
 fn RiscvFnLoweringCtx::post_lower(
   self : RiscvFnLoweringCtx,
   alloc : RegAllocator,
-  liveness : Liveness
+  liveness : Liveness,
+  retarget : Map[Label, Label]
 ) -> MFn!Failure {
   let mfn = self.mfn.or_error!(Failure("No mfn"))
   let (clobbered_x, clobbered_f) = alloc.get_clobbered_regs()
@@ -2389,7 +2397,7 @@ fn RiscvFnLoweringCtx::post_lower(
     let ibi = liveness.iter_block_info
       .get(block.0._)
       .or_error!(Failure("No block info for \{block.0}"))
-    let mbb = self.post_lower_block(alloc, block.1, ibi, frame)
+    let mbb = self.post_lower_block(alloc, block.1, ibi, frame, retarget)
     new_mfn.blocks.set(block.0, mbb)
   }
   new_mfn
@@ -2638,6 +2646,73 @@ fn peephole_func(func : MFn) -> Unit {
   }
 }
 
+fn retarget_block(
+  block : MBasicBlock,
+  retarget : Map[Label, Label]
+) -> @hashset.T[Label] {
+  let used_label = @hashset.new()
+  for i, insn in block.control {
+    match insn {
+      J(~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = J(target=new_target)
+        used_label.insert(new_target)
+      }
+      Beq(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Beq(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      Bne(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Bne(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      Blt(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Blt(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      Bge(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Bge(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      Bltu(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Bltu(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      Bgeu(~rs1, ~rs2, ~target) => {
+        let new_target = retarget.get_or_default(target, target)
+        block.control[i] = Bgeu(~rs1, ~rs2, target=new_target)
+        used_label.insert(new_target)
+      }
+      _ => ()
+    }
+  }
+  used_label
+}
+
+fn retarget_func(func : MFn, retarget : Map[Label, Label]) -> Unit {
+  let used_label = @hashset.new()
+  for block in func.blocks {
+    let used = retarget_block(block.1, retarget)
+    used.each(fn(l) { used_label.insert(l) })
+    if block.1.insns.length() + block.1.control.length() != 0 {
+      used_label.insert(block.0)
+    }
+  }
+  let cleaned = []
+  for block in func.seq {
+    if used_label.contains(block) {
+      cleaned.push(block)
+    }
+  }
+  func.seq.clear()
+  func.seq.append(cleaned)
+}
+
 pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
   let globals = MutMap::new()
   let before_colored = {
@@ -2661,6 +2736,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.tracer,
       use_xthead=self.use_xthead,
     )
+    let retarget = {}
     match lower_ctx.try_lower_trivial() {
       Some((original, now)) => remap.set(original, now)
       _ => {
@@ -2681,7 +2757,27 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
           lower_ctx.is_leaf,
         )
         regalloc.assign()
-        let final_mfn = lower_ctx.post_lower!(regalloc, liveness)
+        let final_mfn = lower_ctx.post_lower!(regalloc, liveness, retarget)
+        // calculate the transitive closure of retarget
+        (fn() {
+          let mut changed = true
+          while changed {
+            changed = false
+            for pair in retarget {
+              let (k, v) = pair
+              let new_v = retarget.get_or_default(v, v)
+              if new_v != v {
+                retarget.set(k, new_v)
+                changed = true
+                break
+              }
+            }
+          }
+        })()
+        if retarget.is_empty() == false {
+          self.tracer.println("retarget: \{retarget}")
+          retarget_func(final_mfn, retarget)
+        }
         peephole_func(final_mfn)
         after_colored.funcs.set(lbl, final_mfn)
       }

@@ -483,6 +483,18 @@ pub fn Control::successors(self : Control) -> Array[BlockRef] {
   }
 }
 
+pub fn replace_target(self : Control, map : (BlockRef) -> BlockRef) -> Control {
+  match self {
+    Jump(~target, ~args) => Jump(target=map(target), ~args)
+    Return(~args) => Return(~args)
+    Branch(~cond, ~t_args, ~f_args, ~t, ~f) =>
+      Branch(~cond, ~t_args, ~f_args, t=map(t), f=map(f))
+    Select(~cond, ~targets, ~fallback) =>
+      Select(~cond, targets=targets.map(map), fallback=map(fallback))
+    Panic => Panic
+  }
+}
+
 fn Op::from_knf(knf : @knf.Knf) -> Op? {
   match knf {
     Add(_, _) | FAdd(_, _) => Some(Op::Add)
