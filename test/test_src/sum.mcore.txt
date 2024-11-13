@@ -16,47 +16,19 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main8.12
-  .type main8.12, @function
+  .globl main.12
+  .type main.12, @function
 # leaf false
-main8.12:
-.main8.12_0:
+main.12:
+.main.12_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   li a0, 10000
-  call sum1.11
+  call sum.11
   call minimbt_print_int
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl sum1.11
-  .type sum1.11, @function
-# leaf false
-sum1.11:
-.sum1.11_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  bge zero, s0, .sum1.11_1
-
-.sum1.11_2:
-  addi a0, s0, -1
-  call sum1.11
-  add a0, a0, s0
-
-.sum1.11_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.sum1.11_1:
-  mv a0, zero
-  j .sum1.11_3
 
   .p2align 2
   .text
@@ -69,11 +41,39 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main8.12
+  call main.12
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
   ret
+
+  .p2align 2
+  .text
+  .globl sum.11
+  .type sum.11, @function
+# leaf false
+sum.11:
+.sum.11_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, a0
+  bge zero, s0, .sum.11_1
+
+.sum.11_2:
+  addi a0, s0, -1
+  call sum.11
+  add a0, a0, s0
+
+.sum.11_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.sum.11_1:
+  mv a0, zero
+  j .sum.11_3
 
 __end_text:
   .p2align 2

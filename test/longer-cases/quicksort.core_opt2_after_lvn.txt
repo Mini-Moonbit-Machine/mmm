@@ -7,58 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main75.145 #f5 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: int32 = ext_call minimbt_read_int()
-    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
-    let %2: unit = call f3(0, f5.m0, %0)
-    let %3: int32 = sub(%0, 1)
-    let %4: unit = call f2(f5.m0, 0, %3)
-    let %5: unit = call f4(0, f5.m0, %0)
-    return %5
-  }
-}
-.fn input79.146 #f3 : fn(int32, array[int32], int32) -> unit
-.freevars ()
-.entry b5 {
-  .bb #b0 (int32, array[int32], int32) {
-    let %0: int32 = sub($b0.2, 1)
-    let %1: bool = le($b0.0, %0)
-    br %1 b1() b2()
-  }
-  .bb #b1 () {
-    let %2: int32 = ext_call minimbt_read_int()
-    let %5: ptr = compute_address unit offset(0, $b0.0 * @32)
-    let _ = store int32 raw($b0.1, %5) <- %2
-    let %4: int32 = add($b0.0, 1)
-    jump b0(%4, $b0.1, $b0.2)
-  }
-  .bb #b2 () {
-    jump b3(())
-  }
-  .bb #b3 (unit) {
-    return $b3.0
-  }
-  .loop #b4 pre #Some(b5) header #b0 {
-    .block #b1
-    .block #b2
-    .block #b3
-  }
-  .bb #b5 () {
-    jump b4($f0, $f1, $f2)
-  }
-}
-.fn T$start #f12 : fn() -> unit
-.freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f5()
-    return %0
-  }
-}
-.fn output97.147 #f4 : fn(int32, array[int32], int32) -> unit
+.fn output.147 #f4 : fn(int32, array[int32], int32) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (int32, array[int32], int32) {
@@ -89,7 +38,37 @@
     jump b4($f0, $f1, $f2)
   }
 }
-.fn quicksort59.143 #f2 : fn(array[int32], int32, int32) -> unit
+.fn input.146 #f3 : fn(int32, array[int32], int32) -> unit
+.freevars ()
+.entry b5 {
+  .bb #b0 (int32, array[int32], int32) {
+    let %0: int32 = sub($b0.2, 1)
+    let %1: bool = le($b0.0, %0)
+    br %1 b1() b2()
+  }
+  .bb #b1 () {
+    let %2: int32 = ext_call minimbt_read_int()
+    let %5: ptr = compute_address unit offset(0, $b0.0 * @32)
+    let _ = store int32 raw($b0.1, %5) <- %2
+    let %4: int32 = add($b0.0, 1)
+    jump b0(%4, $b0.1, $b0.2)
+  }
+  .bb #b2 () {
+    jump b3(())
+  }
+  .bb #b3 (unit) {
+    return $b3.0
+  }
+  .loop #b4 pre #Some(b5) header #b0 {
+    .block #b1
+    .block #b2
+    .block #b3
+  }
+  .bb #b5 () {
+    jump b4($f0, $f1, $f2)
+  }
+}
+.fn quicksort.143 #f2 : fn(array[int32], int32, int32) -> unit
 .freevars ()
 .entry b5 {
   .bb #b0 (array[int32], int32, int32) {
@@ -142,14 +121,14 @@
     jump b7(())
   }
   .bb #b19 (int32, array[int32], array[int32], int32, int32) {
-    let %19: int32 = sub($b19.4, 1)
+    let %19: int32 = sub($b19.3, 1)
     let %20: bool = le($b19.0, %19)
     br %20 b20() b21()
   }
   .bb #b20 () {
     let %44: ptr = compute_address unit offset(0, $b19.0 * @32)
     let %21: int32 = load int32 raw($b19.2, %44)
-    let %22: bool = le(%21, $b19.3)
+    let %22: bool = le(%21, $b19.4)
     br %22 b22() b23()
   }
   .bb #b21 () {
@@ -181,7 +160,7 @@
     .block #b22
   }
   .bb #b27 () {
-    jump b26($b0.1, f2.m0, $b0.0, %2, $b0.2)
+    jump b26($b0.1, f2.m0, $b0.0, $b0.2, %2)
   }
   .bb #b29 () {
     let %54: ptr = compute_address unit offset(0, %26 * @32)
@@ -191,6 +170,27 @@
     let _ = store int32 raw($b19.2, %54) <- %30
     let _ = store int32 raw($b19.2, %53) <- %29
     jump b24(())
+  }
+}
+.fn T$start #f12 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f5()
+    return %0
+  }
+}
+.fn main.145 #f5 : fn() -> unit
+.freevars ()
+.entry b0 {
+  .bb #b0 () {
+    let %0: int32 = ext_call minimbt_read_int()
+    let _ = alloc <m0: array[int32] heap(%0)> <- [..] = 0
+    let %2: unit = call f3(0, f5.m0, %0)
+    let %3: int32 = sub(%0, 1)
+    let %4: unit = call f2(f5.m0, 0, %3)
+    let %5: unit = call f4(0, f5.m0, %0)
+    return %5
   }
 }
 .thunk ::0 start

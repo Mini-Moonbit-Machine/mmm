@@ -16,21 +16,6 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main1.3
-  .type main1.3, @function
-# leaf false
-main1.3:
-.main1.3_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  mv a0, zero
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -40,9 +25,24 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main1.3
+  call main.3
   ld ra, 0(sp)
   ld s11, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.3
+  .type main.3, @function
+# leaf false
+main.3:
+.main.3_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  mv a0, zero
+  call minimbt_print_int
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 

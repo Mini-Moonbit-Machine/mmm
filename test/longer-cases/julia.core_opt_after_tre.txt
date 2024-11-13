@@ -7,7 +7,7 @@
 # - function parameters: $f<pid>
 # - block parameters: $b<bid>.<pid>
 .core
-.fn main94.115 #f3 : fn() -> unit
+.fn main.115 #f3 : fn() -> unit
 .freevars ()
 .entry b0 {
   .bb #b0 () {
@@ -22,7 +22,7 @@
     return ()
   }
 }
-.fn main_loop30.113 #f1 : fn(int32, int32, int32, int32, array[int32], double, double) -> unit
+.fn main_loop.113 #f1 : fn(int32, int32, int32, int32, array[int32], double, double) -> unit
 .freevars ()
 .entry b14 {
   .bb #b0 (int32, int32, int32, int32, array[int32], double, double) {
@@ -101,15 +101,53 @@
     jump b13($f0, $f1, $f2, $f3, $f4, $f5, $f6)
   }
 }
-.fn T$start #f8 : fn() -> unit
+.fn print_loop.114 #f2 : fn(int32, int32, int32, int32, array[int32]) -> unit
 .freevars ()
-.entry b0 {
-  .bb #b0 () {
-    let %0: unit = call f3()
-    return %0
+.entry b8 {
+  .bb #b0 (int32, int32, int32, int32, array[int32]) {
+    let %0: bool = eq($b0.3, $b0.1)
+    br %0 b1() b2()
+  }
+  .bb #b1 () {
+    jump b6(())
+  }
+  .bb #b2 () {
+    let %1: bool = eq($b0.2, $b0.0)
+    br %1 b3() b4()
+  }
+  .bb #b3 () {
+    let %2: unit = ext_call minimbt_print_char(10)
+    let %3: int32 = add($b0.3, 1)
+    jump b0($b0.0, $b0.1, 0, %3, $b0.4)
+  }
+  .bb #b4 () {
+    let %5: int32 = mul($b0.3, $b0.0)
+    let %6: int32 = add(%5, $b0.2)
+    let %7: int32 = load int32 offset($b0.4, %6 * @32)
+    let %8: int32 = add(48, %7)
+    let %9: unit = ext_call minimbt_print_char(%8)
+    let %10: int32 = add($b0.2, 1)
+    jump b0($b0.0, $b0.1, %10, $b0.3, $b0.4)
+  }
+  .bb #b5 (unit) {
+    jump b6($b5.0)
+  }
+  .bb #b6 (unit) {
+    return $b6.0
+  }
+  .loop #b7 pre #Some(b8) header #b0 {
+    .block #b6
+    .block #b4
+    .block #b1
+    .block #b5
+    .block #b2
+    .block #b3
+  }
+  .bb #b8 () {
+    jump b7($f0, $f1, $f2, $f3, $f4)
   }
 }
-.fn calc_pixel7.112 #f0 : fn(double, double, int32) -> int32
+.fn calc_pixel.112 #f0 : fn(double, double, int32) -> int32
 .freevars ()
 .entry b8 {
   .bb #b0 (double, double, int32) {
@@ -159,50 +197,12 @@
     jump b7($f0, $f1, $f2)
   }
 }
-.fn print_loop68.114 #f2 : fn(int32, int32, int32, int32, array[int32]) -> unit
+.fn T$start #f8 : fn() -> unit
 .freevars ()
-.entry b8 {
-  .bb #b0 (int32, int32, int32, int32, array[int32]) {
-    let %0: bool = eq($b0.3, $b0.1)
-    br %0 b1() b2()
-  }
-  .bb #b1 () {
-    jump b6(())
-  }
-  .bb #b2 () {
-    let %1: bool = eq($b0.2, $b0.0)
-    br %1 b3() b4()
-  }
-  .bb #b3 () {
-    let %2: unit = ext_call minimbt_print_char(10)
-    let %3: int32 = add($b0.3, 1)
-    jump b0($b0.0, $b0.1, 0, %3, $b0.4)
-  }
-  .bb #b4 () {
-    let %5: int32 = mul($b0.3, $b0.0)
-    let %6: int32 = add(%5, $b0.2)
-    let %7: int32 = load int32 offset($b0.4, %6 * @32)
-    let %8: int32 = add(48, %7)
-    let %9: unit = ext_call minimbt_print_char(%8)
-    let %10: int32 = add($b0.2, 1)
-    jump b0($b0.0, $b0.1, %10, $b0.3, $b0.4)
-  }
-  .bb #b5 (unit) {
-    jump b6($b5.0)
-  }
-  .bb #b6 (unit) {
-    return $b6.0
-  }
-  .loop #b7 pre #Some(b8) header #b0 {
-    .block #b6
-    .block #b4
-    .block #b1
-    .block #b5
-    .block #b2
-    .block #b3
-  }
-  .bb #b8 () {
-    jump b7($f0, $f1, $f2, $f3, $f4)
+.entry b0 {
+  .bb #b0 () {
+    let %0: unit = call f3()
+    return %0
   }
 }
 .thunk ::0 limit.1

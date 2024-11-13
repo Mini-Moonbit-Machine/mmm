@@ -68,8 +68,8 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main21.40") clobbered_x: @hashset.of([a0])
-// [Asm] Label("main21.40") clobbered_f: @hashset.of([])
+// [Asm] Label("main.40") clobbered_x: @hashset.of([a0])
+// [Asm] Label("main.40") clobbered_f: @hashset.of([])
 // [Asm] subst   li v3, 247 ->   li a0, 247
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   ret ->   ret
@@ -80,28 +80,11 @@
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Asm] pre_assigned_registers: Self(fref=f2) -> v0, Insn(iref=%0) -> v2
 // [Asm] before colored: # leaf false
-// [Asm] minimbt_main:
-// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
-// [Asm] # live_in: [ra, s11], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .minimbt_main_b0:
-// [Asm]   addi sp, sp, -16  # live: [s11, ra]
-// [Asm]   sd ra, 0(sp)  # live: [s11]
-// [Asm]   sd s11, 8(sp)  # live: []
-// [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main21.40  # live: [a0]
-// [Asm]   ld ra, 0(sp)  # live: [a0]
-// [Asm]   ld s11, 8(sp)  # live: [a0]
-// [Asm]   addi sp, sp, 16  # live: [a0]
-// [Asm] # control
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf false
-// [Asm] main21.40:
+// [Asm] main.40:
 // [Asm] # block info: defs: [v2, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v3], uses: [v2, a0, v3], upward_exposed: [], params_defs: []
 // [Asm] # live_in: [], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main21.40_0:
+// [Asm] .main.40_0:
 // [Asm]   # save_ctx1  # live: []
 // [Asm]   # save_ctx2  # live: []
 // [Asm]   li v3, 247  # live: [v3]
@@ -112,6 +95,23 @@
 // [Asm] # control
 // [Asm]   mv a0, v2  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] minimbt_main:
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
+// [Asm] # live_in: [ra, s11], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .minimbt_main_b0:
+// [Asm]   addi sp, sp, -16  # live: [s11, ra]
+// [Asm]   sd ra, 0(sp)  # live: [s11]
+// [Asm]   sd s11, 8(sp)  # live: []
+// [Asm]   la s11, large_heap_end  # live: []
+// [Asm]   call main.40  # live: [a0]
+// [Asm]   ld ra, 0(sp)  # live: [a0]
+// [Asm]   ld s11, 8(sp)  # live: [a0]
+// [Asm]   addi sp, sp, 16  # live: [a0]
+// [Asm] # control
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm]   .p2align 2
@@ -154,8 +154,8 @@
 // [Knf] build_knf: Int(123)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
-// [Main] beta reduce _22 = composed6.26
-// [Main] beta reduce h.23 = composed6.29
+// [Main] beta reduce _22 = composed.26
+// [Main] beta reduce h.23 = composed.29
 // [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
 // [Main]   .p2align 4
 // [Main]   .bss
@@ -174,6 +174,21 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
+// [Main]   .globl main.40
+// [Main]   .type main.40, @function
+// [Main] # leaf false
+// [Main] main.40:
+// [Main] .main.40_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 247
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
 // [Main]   .globl minimbt_main
 // [Main]   .type minimbt_main, @function
 // [Main] # leaf false
@@ -183,24 +198,9 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main21.40
+// [Main]   call main.40
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
-// [Main]   addi sp, sp, 16
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl main21.40
-// [Main]   .type main21.40, @function
-// [Main] # leaf false
-// [Main] main21.40:
-// [Main] .main21.40_0:
-// [Main]   addi sp, sp, -16
-// [Main]   sd ra, 0(sp)
-// [Main]   li a0, 247
-// [Main]   call minimbt_print_int
-// [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
@@ -218,10 +218,10 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function main21.40
+// [Wasm] Lowering function main.40
 // [Wasm] Lowering insn ExtCall(ty=Unit, ext_f="minimbt_print_int", args=[Int32(val=247)])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
-// [Wasm] Lowered function main21.40 to wasm
+// [Wasm] Lowered function main.40 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -231,28 +231,28 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
-// [KnfOpt] freq: {compose1: Many(2), composed6: AsClosure, dbl10: AsClosure, inc13: AsClosure, dec17: AsClosure, main21: Once}
+// [KnfOpt] freq: {compose.1: Many(2), composed.6: AsClosure, dbl.10: AsClosure, inc.13: AsClosure, dec.17: AsClosure, main.21: Once}
 // [KnfOpt] Fn like 3
 // [KnfOpt] Inline threshold 2 5
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(compose1)
+// [KnfOpt] Knf inline Some(compose)
 // [KnfOpt] Fn like 3
 // [KnfOpt] Inline threshold 2 5
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(compose1)
-// [KnfOpt] freq: {dbl10: Once, inc13: Once, dec17: Once, main21: Once, composed6.26: Once, composed6.29: Once}
-// [KnfOpt] Knf inline Some(dbl10)
-// [KnfOpt] Knf inline Some(dec17)
-// [KnfOpt] Knf inline Some(inc13)
-// [KnfOpt] Knf inline Some(composed6)
-// [KnfOpt] Knf inline Some(composed6)
-// [KnfOpt] freq: {main21: Once}
+// [KnfOpt] Knf inline Some(compose)
+// [KnfOpt] freq: {dbl.10: Once, inc.13: Once, dec.17: Once, main.21: Once, composed.26: Once, composed.29: Once}
+// [KnfOpt] Knf inline Some(dbl)
+// [KnfOpt] Knf inline Some(dec)
+// [KnfOpt] Knf inline Some(inc)
+// [KnfOpt] Knf inline Some(composed)
+// [KnfOpt] Knf inline Some(composed)
+// [KnfOpt] freq: {main.21: Once}
 // [KnfOpt] Numbers of let rec: 1 1 0
 // [Parser] flags: []
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f2: Once})
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
-// [CoreOpt] allow_inline: false %0 main21.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true
+// [CoreOpt] allow_inline: false %0 main.40 false true true true true

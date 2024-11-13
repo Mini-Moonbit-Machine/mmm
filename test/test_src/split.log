@@ -20,25 +20,15 @@
 // [Asm] succs: [4]
 // [Asm] critical edges for b5: []
 // [Asm] critical color seq for b5: []
-// [Asm] defs: [v6]
-// [Asm] live_set: [v6]
-// [Asm] move: v6 <- zero
-// [Asm] defined: v6 is X
-// [Asm] defs: []
-// [Asm] live_set: [zero, a0]
-// [Asm] defs: [v2]
-// [Asm] live_set: [zero, v2]
-// [Asm] move: v2 <- a0
-// [Asm] defined: v2 is X
-// [Asm] defs: [v3]
-// [Asm] live_set: [zero, v3]
-// [Asm] move: v3 <- v2
-// [Asm] defined: v3 is X
 // [Asm] defs: [v8]
 // [Asm] live_set: [v8, zero, v3]
 // [Asm] defined: v8 is X
 // [Asm] defs: []
 // [Asm] live_set: [zero, v3]
+// [Asm] defs: [v6]
+// [Asm] live_set: [v6]
+// [Asm] move: v6 <- zero
+// [Asm] defined: v6 is X
 // [Asm] defs: [v5]
 // [Asm] live_set: [v5, zero]
 // [Asm] defined: v5 is X
@@ -56,14 +46,26 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("rec2.30") clobbered_x: @hashset.of([a1, a0])
-// [Asm] Label("rec2.30") clobbered_f: @hashset.of([])
+// [Asm] defs: []
+// [Asm] live_set: [zero, a0]
+// [Asm] defs: [v2]
+// [Asm] live_set: [zero, v2]
+// [Asm] move: v2 <- a0
+// [Asm] defined: v2 is X
+// [Asm] defs: [v3]
+// [Asm] live_set: [zero, v3]
+// [Asm] move: v3 <- v2
+// [Asm] defined: v3 is X
+// [Asm] Label("rec.30") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("rec.30") clobbered_f: @hashset.of([])
+// [Asm] subst   li v8, 42 ->   li a0, 42
+// [Asm] subst   beq v3, v8, .rec.30_1 ->   beq a1, a0, .rec.30_1
 // [Asm] subst   mv v6, zero ->   mv a0, zero
-// [Asm] subst   li v8, 42 ->   li a1, 42
-// [Asm] subst   beq v3, v8, .rec2.30_1 ->   beq a0, a1, .rec2.30_1
-// [Asm] subst   addi v5, v3, 1 ->   addi a0, a0, 1
-// [Asm] subst   j .rec2.30_0 ->   j .rec2.30_0
+// [Asm] subst   addi v5, v3, 1 ->   addi a0, a1, 1
+// [Asm] subst   mv v3, v5 ->   mv a1, a0
+// [Asm] subst   j .rec.30_0 ->   j .rec.30_0
 // [Asm] subst   ret ->   ret
+// [Asm] subst   mv v3, v2 ->   mv a1, a0
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -137,17 +139,17 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main21.31") clobbered_x: @hashset.of([a0])
-// [Asm] Label("main21.31") clobbered_f: @hashset.of([])
+// [Asm] Label("main.31") clobbered_x: @hashset.of([a0])
+// [Asm] Label("main.31") clobbered_f: @hashset.of([])
 // [Asm] subst   mv a0, zero ->   mv a0, zero
-// [Asm] subst   call rec2.30 ->   call rec2.30
+// [Asm] subst   call rec.30 ->   call rec.30
 // [Asm] subst   ret ->   ret
 // [Asm] before colored: # leaf true
-// [Asm] rec2.30:
+// [Asm] rec.30:
 // [Asm] # block info: defs: [v3, v2], uses: [a0, v2], upward_exposed: [a0], params_defs: []
 // [Asm] # live_in: [a0, zero], live_out: [zero, v3]
 // [Asm] # block parameters: []
-// [Asm] .rec2.30_5:
+// [Asm] .rec.30_5:
 // [Asm]   # save_ctx1  # live: [zero, a0]
 // [Asm]   mv v2, a0  # live: [zero, v2]
 // [Asm] # control
@@ -156,46 +158,46 @@
 // [Asm] # block info: defs: [v8], uses: [v8, v3], upward_exposed: [v3], params_defs: [v3]
 // [Asm] # live_in: [zero, v3], live_out: [zero, v3]
 // [Asm] # block parameters: [v3]
-// [Asm] .rec2.30_0:
+// [Asm] .rec.30_0:
 // [Asm] # control
 // [Asm]   li v8, 42  # live: [v8, zero, v3]
-// [Asm]   beq v3, v8, .rec2.30_1  # live: [zero, v3]
+// [Asm]   beq v3, v8, .rec.30_1  # live: [zero, v3]
 // [Asm] 
 // [Asm] # block info: defs: [v5, v3], uses: [v5, v3], upward_exposed: [v3], params_defs: []
 // [Asm] # live_in: [zero, v3], live_out: [zero, v3]
 // [Asm] # block parameters: []
-// [Asm] .rec2.30_2:
+// [Asm] .rec.30_2:
 // [Asm]   addi v5, v3, 1  # live: [v5, zero]
 // [Asm] # control
 // [Asm]   mv v3, v5  # live: [zero, v3]
-// [Asm]   j .rec2.30_0  # live: [zero, v3]
+// [Asm]   j .rec.30_0  # live: [zero, v3]
 // [Asm] 
 // [Asm] # block info: defs: [v6], uses: [zero], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: [v6]
 // [Asm] # block parameters: []
-// [Asm] .rec2.30_1:
+// [Asm] .rec.30_1:
 // [Asm] # control
 // [Asm]   mv v6, zero  # live: [v6]
 // [Asm] 
 // [Asm] # block info: defs: [a0], uses: [v6, a0], upward_exposed: [v6], params_defs: [v6]
 // [Asm] # live_in: [v6], live_out: []
 // [Asm] # block parameters: [v6]
-// [Asm] .rec2.30_3:
+// [Asm] .rec.30_3:
 // [Asm] # control
 // [Asm]   mv a0, v6  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm] # leaf false
-// [Asm] main21.31:
+// [Asm] main.31:
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v2], uses: [zero, a0, v2], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main21.31_0:
+// [Asm] .main.31_0:
 // [Asm]   # save_ctx1  # live: [zero]
 // [Asm]   # save_ctx2  # live: [zero]
 // [Asm]   mv a0, zero  # live: [a0]
-// [Asm]   call rec2.30  # live: [a0]
+// [Asm]   call rec.30  # live: [a0]
 // [Asm]   mv v2, a0  # live: [v2]
 // [Asm]   # restore_ctx2  # live: [v2]
 // [Asm] # control
@@ -213,7 +215,7 @@
 // [Asm]   sd ra, 0(sp)  # live: [s11]
 // [Asm]   sd s11, 8(sp)  # live: []
 // [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main21.31  # live: [a0]
+// [Asm]   call main.31  # live: [a0]
 // [Asm]   ld ra, 0(sp)  # live: [a0]
 // [Asm]   ld s11, 8(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 16  # live: [a0]
@@ -284,37 +286,38 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl rec2.30
-// [Main]   .type rec2.30, @function
+// [Main]   .globl rec.30
+// [Main]   .type rec.30, @function
 // [Main] # leaf true
-// [Main] rec2.30:
-// [Main] .rec2.30_5:
+// [Main] rec.30:
+// [Main] .rec.30_5:
+// [Main]   mv a1, a0
 // [Main] 
-// [Main] .rec2.30_0:
-// [Main]   li a1, 42
-// [Main]   beq a0, a1, .rec2.30_1
+// [Main] .rec.30_0:
+// [Main]   li a0, 42
+// [Main]   beq a1, a0, .rec.30_1
 // [Main] 
-// [Main] .rec2.30_2:
-// [Main]   addi a0, a0, 1
-// [Main]   j .rec2.30_0
+// [Main] .rec.30_2:
+// [Main]   addi a1, a1, 1
+// [Main]   j .rec.30_0
 // [Main] 
-// [Main] .rec2.30_1:
+// [Main] .rec.30_1:
 // [Main]   mv a0, zero
 // [Main] 
-// [Main] .rec2.30_3:
+// [Main] .rec.30_3:
 // [Main]   ret
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl main21.31
-// [Main]   .type main21.31, @function
+// [Main]   .globl main.31
+// [Main]   .type main.31, @function
 // [Main] # leaf false
-// [Main] main21.31:
-// [Main] .main21.31_0:
+// [Main] main.31:
+// [Main] .main.31_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   mv a0, zero
-// [Main]   call rec2.30
+// [Main]   call rec.30
 // [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
@@ -330,7 +333,7 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main21.31
+// [Main]   call main.31
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
 // [Main]   addi sp, sp, 16
@@ -350,7 +353,7 @@
 // [Wasm] LoweringOrder: HashMap::of([(b1, 1), (b5, 0), (b2, 0), (b3, 1), (b0, 0)])
 // [Wasm] LoweringOrder: [b5, b0, b2, b1, b3]
 // [Wasm] LoweringOrder: HashMap::of([(b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 1)])
-// [Wasm] Lowering function rec2.30
+// [Wasm] Lowering function rec.30
 // [Wasm] Lowering control Return(args=[BlockParam(bref=b3, bpref=$b.0)])
 // [Wasm] Lowering control Jump(target=b3, args=[Unit])
 // [Wasm] Lowering insn Op(ty=Int32, op=Add, args=[BlockParam(bref=b0, bpref=$b.0), Int32(val=1)])
@@ -371,7 +374,7 @@
 // [Wasm] Local Insn(iref=%1) -> $%1
 // [Wasm] Local BlockParam(bref=b0, bpref=$b.0) -> $b0.$b.0
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function rec2.30 to wasm
+// [Wasm] Lowered function rec.30 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -386,50 +389,50 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function main21.31
+// [Wasm] Lowering function main.31
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[Int32(val=0)])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
-// [Wasm] Lowered function main21.31 to wasm
-// [KnfOpt] freq: {small1: Many(6), rec2: Many(2), dummy10: Once, main21: Once}
+// [Wasm] Lowered function main.31 to wasm
+// [KnfOpt] freq: {small.1: Many(6), rec.2: Many(2), dummy.10: Once, main.21: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
+// [KnfOpt] Knf inline Some(small)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
+// [KnfOpt] Knf inline Some(small)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
+// [KnfOpt] Knf inline Some(small)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
+// [KnfOpt] Knf inline Some(small)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
+// [KnfOpt] Knf inline Some(small)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 6 1
 // [KnfOpt] Inline decision accepted
-// [KnfOpt] Knf inline Some(small1)
-// [KnfOpt] Knf inline Some(dummy10)
+// [KnfOpt] Knf inline Some(small)
+// [KnfOpt] Knf inline Some(dummy)
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {rec2: Many(2), main21: Once}
+// [KnfOpt] freq: {rec.2: Many(2), main.21: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {rec2: Many(2), main21: Once}
+// [KnfOpt] freq: {rec.2: Many(2), main.21: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
@@ -440,15 +443,15 @@
 // [Parser] flags: []
 // [CoreOpt] eliminated tail rec call %2: Call(ty=Unit, f=f0, args=[Insn(iref=%1)])
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f4: Once, f1: Once})
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
-// [CoreOpt] allow_inline: false %0 main21.31 false true true true true
-// [CoreOpt] allow_inline: false %0 rec2.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true true true
+// [CoreOpt] allow_inline: false %0 rec.30 false true true false true

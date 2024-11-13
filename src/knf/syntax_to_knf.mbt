@@ -105,17 +105,13 @@ fn materialize_knf_with_name(
   }
 }
 
-fn make_name(self : KnfEnv, name : String) -> Name!Failure {
-  try {
-    if name == "_" {
-      self.new_temp()
-    } else {
-      let new_id = self.counter
-      self.counter += 1
-      Name::from_string!(name + new_id.to_string())
-    }
-  } catch {
-    _ => fail!("invalid variable name: \{name}")
+fn make_name(self : KnfEnv, name : String) -> Name {
+  if name == "_" {
+    self.new_temp()
+  } else {
+    let new_id = self.counter
+    self.counter += 1
+    Name::name_and_slot(name, new_id)
   }
 }
 
@@ -353,7 +349,7 @@ fn build_knf(
     LetRec({ name, args, body }, e) => {
       let ty = name.1
       let orig_name = name.0
-      let name = self.make_name!(orig_name)
+      let name = self.make_name(orig_name)
       let mut env = env
       let mut ty_env = ty_env
       env = env.add(orig_name, name)
@@ -367,7 +363,7 @@ fn build_knf(
       let inner_let_list = []
       for item in args {
         let (x, ty) = item
-        let x_name = self.make_name!(x)
+        let x_name = self.make_name(x)
         let tmp = self.new_named_temp(x_name)
         new_binders.push((tmp, ty))
         env2 = env2.add(x, tmp)
@@ -387,7 +383,7 @@ fn build_knf(
       let new_binders = []
       for item in xs {
         let (x, ty) = item
-        let x_name = self.make_name!(x)
+        let x_name = self.make_name(x)
         let tmp = self.new_named_temp(x_name)
         new_binders.push((tmp, ty))
         env2 = env2.add(x, tmp)

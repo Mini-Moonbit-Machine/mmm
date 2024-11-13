@@ -16,11 +16,30 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl yloop7.135
-  .type yloop7.135, @function
+  .globl main.134
+  .type main.134, @function
 # leaf false
-yloop7.135:
-.yloop7.135_5:
+main.134:
+.main.134_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 40
+  fcvt.d.w fa0, a0
+  mv a0, zero
+  li a1, 40
+  fmv.d fa1, fa0
+  call yloop.135
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl yloop.135
+  .type yloop.135, @function
+# leaf false
+yloop.135:
+.yloop.135_5:
   addi sp, sp, -64
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -29,97 +48,96 @@ yloop7.135:
   fsd fs0, 32(sp)
   fsd fs1, 40(sp)
   fsd fs2, 48(sp)
-  mv s0, a0
+  mv s2, a0
   mv s1, a1
-  fmv.d fs1, fa0
-  fmv.d fs0, fa1
+  fmv.d fs0, fa0
+  fmv.d fs2, fa1
 
-.yloop7.135_0:
-  bge s0, s1, .yloop7.135_1
+.yloop.135_0:
+  bge s2, s1, .yloop.135_1
 
-.yloop7.135_2:
-  fcvt.d.w fa0, s0
-
-.yloop7.135_12:
-  mv s2, zero
-  fmv.d fs2, fa0
-
-.yloop7.135_7:
-  bge s2, s1, .yloop7.135_8
-
-.yloop7.135_9:
+.yloop.135_2:
   fcvt.d.w fa0, s2
+
+.yloop.135_12:
+  mv s0, zero
+  fmv.d fs1, fa0
+
+.yloop.135_7:
+  bge s0, s1, .yloop.135_8
+
+.yloop.135_9:
+  fcvt.d.w fa0, s0
   fadd.d fa0, fa0, fa0
-  fdiv.d fa0, fa0, fs1
+  fdiv.d fa0, fa0, fs0
   li a0, 4609434218613702656
   fmv.d.x fa1, a0
-  fsub.d fa4, fa0, fa1
-  fadd.d fa0, fs2, fs2
-  fdiv.d fa0, fa0, fs0
-  li a0, 4607182418800017408
-  fmv.d.x fa1, a0
-  fsub.d fa2, fa0, fa1
-
-.yloop7.135_26:
-  li a0, 1000
-  fmv.d.x fa5, zero
-  fmv.d.x fa3, zero
-  fmv.d.x fa0, zero
-  fmv.d.x fa1, zero
-
-.yloop7.135_18:
-  beq a0, zero, .yloop7.135_19
-
-.yloop7.135_20:
   fsub.d fa0, fa0, fa1
-  fadd.d fa0, fa0, fa4
-  fadd.d fa1, fa5, fa5
-  fmadd.d fa3, fa1, fa3, fa2
-  fmul.d fa6, fa0, fa0
-  fmul.d fa1, fa3, fa3
-  fadd.d fa5, fa6, fa1
+  fadd.d fa1, fs1, fs1
+  fdiv.d fa1, fa1, fs2
+  li a0, 4607182418800017408
+  fmv.d.x fa2, a0
+  fsub.d fa1, fa1, fa2
+
+.yloop.135_26:
+  li a0, 1000
+  fmv.d.x fa2, zero
+  fmv.d.x fa3, zero
+  fmv.d.x fa4, zero
+  fmv.d.x fa5, zero
+
+.yloop.135_18:
+  beq a0, zero, .yloop.135_19
+
+.yloop.135_20:
+  fsub.d fa4, fa4, fa5
+  fadd.d fa6, fa4, fa0
+  fadd.d fa2, fa2, fa2
+  fmadd.d fa3, fa2, fa3, fa1
+  fmul.d fa4, fa6, fa6
+  fmul.d fa5, fa3, fa3
+  fadd.d fa2, fa4, fa5
   li a1, 4616189618054758400
   fmv.d.x fa7, a1
-  fle.d a1, fa7, fa5
-  beq a1, zero, .yloop7.135_22
+  fle.d a1, fa7, fa2
+  beq a1, zero, .yloop.135_22
 
-.yloop7.135_21:
+.yloop.135_21:
   mv a0, zero
   call minimbt_print_int
 
-.yloop7.135_23:
+.yloop.135_23:
 
-.yloop7.135_24:
+.yloop.135_24:
 
-.yloop7.135_13:
-  addi s2, s2, 1
-  j .yloop7.135_7
+.yloop.135_13:
+  addi s0, s0, 1
+  j .yloop.135_7
 
-.yloop7.135_22:
+.yloop.135_22:
   addi a0, a0, -1
-  fmv.d fa5, fa0
-  fmv.d fa0, fa6
-  j .yloop7.135_18
+  fmv.d fa2, fa6
+  j .yloop.135_18
 
-.yloop7.135_19:
+.yloop.135_19:
   li a0, 1
   call minimbt_print_int
-  j .yloop7.135_24
+  j .yloop.135_24
 
-.yloop7.135_8:
+.yloop.135_8:
   call minimbt_print_endline
   mv a0, zero
 
-.yloop7.135_10:
+.yloop.135_10:
 
-.yloop7.135_6:
-  addi s0, s0, 1
-  j .yloop7.135_0
+.yloop.135_6:
+  addi s2, s2, 1
+  j .yloop.135_0
 
-.yloop7.135_1:
+.yloop.135_1:
   mv a0, zero
 
-.yloop7.135_3:
+.yloop.135_3:
   ld ra, 0(sp)
   ld s0, 8(sp)
   ld s1, 16(sp)
@@ -128,25 +146,6 @@ yloop7.135:
   fld fs1, 40(sp)
   fld fs2, 48(sp)
   addi sp, sp, 64
-  ret
-
-  .p2align 2
-  .text
-  .globl main75.134
-  .type main75.134, @function
-# leaf false
-main75.134:
-.main75.134_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 40
-  fcvt.d.w fa0, a0
-  mv a0, zero
-  li a1, 40
-  fmv.d fa1, fa0
-  call yloop7.135
-  ld ra, 0(sp)
-  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -160,7 +159,7 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main75.134
+  call main.134
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16

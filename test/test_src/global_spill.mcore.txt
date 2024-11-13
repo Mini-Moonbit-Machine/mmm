@@ -31,36 +31,17 @@ memseti32:
 
   .p2align 2
   .text
-  .globl print39.79
-  .type print39.79, @function
+  .globl main.80
+  .type main.80, @function
 # leaf false
-print39.79:
-.print39.79_5:
-  addi sp, sp, -32
+main.80:
+.main.80_0:
+  addi sp, sp, -16
   sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  ld s0, dummy.32
-  mv s1, a0
-
-.print39.79_0:
-  beq s1, zero, .print39.79_1
-
-.print39.79_2:
-  sw zero, 0(s0)
-  li a0, 120
-  call minimbt_print_int
-  addi s1, s1, -1
-  j .print39.79_0
-
-.print39.79_1:
-  mv a0, zero
-
-.print39.79_3:
+  li a0, 10
+  call print.79
   ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  addi sp, sp, 32
+  addi sp, sp, 16
   ret
 
   .p2align 2
@@ -88,21 +69,6 @@ T$dummy.32:
 
   .p2align 2
   .text
-  .globl main64.80
-  .type main64.80, @function
-# leaf false
-main64.80:
-.main64.80_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 10
-  call print39.79
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -115,10 +81,44 @@ minimbt_main:
   call T$dummy.32
   la t5, dummy.32
   sd a0, 0(t5)
-  call main64.80
+  call main.80
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl print.79
+  .type print.79, @function
+# leaf false
+print.79:
+.print.79_5:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  ld s1, dummy.32
+  mv s0, a0
+
+.print.79_0:
+  beq s0, zero, .print.79_1
+
+.print.79_2:
+  sw zero, 0(s1)
+  li a0, 120
+  call minimbt_print_int
+  addi s0, s0, -1
+  j .print.79_0
+
+.print.79_1:
+  mv a0, zero
+
+.print.79_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  addi sp, sp, 32
   ret
 
 __end_text:

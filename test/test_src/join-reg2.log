@@ -17,13 +17,6 @@
 // [Asm] critical edges for b0: []
 // [Asm] critical color seq for b0: []
 // [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=123), Int32(val=0)])
-// [Asm] defs: []
-// [Asm] live_set: [zero]
-// [Asm] defs: [v8]
-// [Asm] live_set: [zero, v8]
-// [Asm] defined: v8 is X
-// [Asm] defs: []
-// [Asm] live_set: []
 // [Asm] defs: [v6]
 // [Asm] live_set: [v6]
 // [Asm] defined: v6 is X
@@ -31,6 +24,22 @@
 // [Asm] live_set: [v3]
 // [Asm] move: v3 <- v6
 // [Asm] defined: v3 is X
+// [Asm] defs: []
+// [Asm] live_set: [zero]
+// [Asm] defs: [v8]
+// [Asm] live_set: [zero, v8]
+// [Asm] defined: v8 is X
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v7]
+// [Asm] live_set: [v7]
+// [Asm] defined: v7 is X
+// [Asm] defs: [v3]
+// [Asm] live_set: [v3]
+// [Asm] move: v3 <- v7
+// [Asm] defined: v3 is X
+// [Asm] defs: []
+// [Asm] live_set: [v3]
 // [Asm] defs: []
 // [Asm] live_set: [v3]
 // [Asm] defs: [a0]
@@ -87,24 +96,15 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] defs: [v7]
-// [Asm] live_set: [v7]
-// [Asm] defined: v7 is X
-// [Asm] defs: [v3]
-// [Asm] live_set: [v3]
-// [Asm] move: v3 <- v7
-// [Asm] defined: v3 is X
-// [Asm] defs: []
-// [Asm] live_set: [v3]
-// [Asm] Label("main10.20") clobbered_x: @hashset.of([a0])
-// [Asm] Label("main10.20") clobbered_f: @hashset.of([])
-// [Asm] subst   li v8, 123 ->   li a0, 123
-// [Asm] subst   blt zero, v8, .main10.20_2 ->   blt zero, a0, .main10.20_2
+// [Asm] Label("main.20") clobbered_x: @hashset.of([a0])
+// [Asm] Label("main.20") clobbered_f: @hashset.of([])
 // [Asm] subst   li v6, 579 ->   li a0, 579
+// [Asm] subst   li v8, 123 ->   li a0, 123
+// [Asm] subst   blt zero, v8, .main.20_2 ->   blt zero, a0, .main.20_2
+// [Asm] subst   li v7, 789 ->   li a0, 789
+// [Asm] subst   j .main.20_3 ->   j .main.20_3
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   ret ->   ret
-// [Asm] subst   li v7, 789 ->   li a0, 789
-// [Asm] subst   j .main10.20_3 ->   j .main10.20_3
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -112,20 +112,20 @@
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Asm] pre_assigned_registers: Self(fref=f2) -> v0, Insn(iref=%0) -> v2
 // [Asm] before colored: # leaf false
-// [Asm] main10.20:
+// [Asm] main.20:
 // [Asm] # block info: defs: [v8], uses: [zero, v8], upward_exposed: [zero], params_defs: []
 // [Asm] # live_in: [zero], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main10.20_0:
+// [Asm] .main.20_0:
 // [Asm]   # save_ctx1  # live: [zero]
 // [Asm] # control
 // [Asm]   li v8, 123  # live: [zero, v8]
-// [Asm]   blt zero, v8, .main10.20_2  # live: []
+// [Asm]   blt zero, v8, .main.20_2  # live: []
 // [Asm] 
 // [Asm] # block info: defs: [v6, v3], uses: [v6], upward_exposed: [], params_defs: []
 // [Asm] # live_in: [], live_out: [v3]
 // [Asm] # block parameters: []
-// [Asm] .main10.20_1:
+// [Asm] .main.20_1:
 // [Asm] # control
 // [Asm]   li v6, 579  # live: [v6]
 // [Asm]   mv v3, v6  # live: [v3]
@@ -133,7 +133,7 @@
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v4, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v4, a0, v3], upward_exposed: [v3], params_defs: [v3]
 // [Asm] # live_in: [v3], live_out: []
 // [Asm] # block parameters: [v3]
-// [Asm] .main10.20_3:
+// [Asm] .main.20_3:
 // [Asm]   # save_ctx2  # live: [v3]
 // [Asm]   mv a0, v3  # live: [a0]
 // [Asm]   call minimbt_print_int  # live: [a0]
@@ -147,11 +147,11 @@
 // [Asm] # block info: defs: [v3, v7], uses: [v7], upward_exposed: [], params_defs: []
 // [Asm] # live_in: [], live_out: [v3]
 // [Asm] # block parameters: []
-// [Asm] .main10.20_2:
+// [Asm] .main.20_2:
 // [Asm] # control
 // [Asm]   li v7, 789  # live: [v7]
 // [Asm]   mv v3, v7  # live: [v3]
-// [Asm]   j .main10.20_3  # live: [v3]
+// [Asm]   j .main.20_3  # live: [v3]
 // [Asm] 
 // [Asm] # leaf false
 // [Asm] minimbt_main:
@@ -163,7 +163,7 @@
 // [Asm]   sd ra, 0(sp)  # live: [s11]
 // [Asm]   sd s11, 8(sp)  # live: []
 // [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main10.20  # live: [a0]
+// [Asm]   call main.20  # live: [a0]
 // [Asm]   ld ra, 0(sp)  # live: [a0]
 // [Asm]   ld s11, 8(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 16  # live: [a0]
@@ -222,28 +222,28 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl main10.20
-// [Main]   .type main10.20, @function
+// [Main]   .globl main.20
+// [Main]   .type main.20, @function
 // [Main] # leaf false
-// [Main] main10.20:
-// [Main] .main10.20_0:
+// [Main] main.20:
+// [Main] .main.20_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   li a0, 123
-// [Main]   blt zero, a0, .main10.20_2
+// [Main]   blt zero, a0, .main.20_2
 // [Main] 
-// [Main] .main10.20_1:
+// [Main] .main.20_1:
 // [Main]   li a0, 579
 // [Main] 
-// [Main] .main10.20_3:
+// [Main] .main.20_3:
 // [Main]   call minimbt_print_int
 // [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
-// [Main] .main10.20_2:
+// [Main] .main.20_2:
 // [Main]   li a0, 789
-// [Main]   j .main10.20_3
+// [Main]   j .main.20_3
 // [Main] 
 // [Main]   .p2align 2
 // [Main]   .text
@@ -256,7 +256,7 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main10.20
+// [Main]   call main.20
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
 // [Main]   addi sp, sp, 16
@@ -276,7 +276,7 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0), (b1, 0), (b2, 1), (b3, 0)])
 // [Wasm] LoweringOrder: [b0, b1, b3, b2]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0), (b1, 1), (b2, 0), (b3, 2)])
-// [Wasm] Lowering function main10.20
+// [Wasm] Lowering function main.20
 // [Wasm] Lowering insn ExtCall(ty=Unit, ext_f="minimbt_print_int", args=[BlockParam(bref=b3, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b3, bpref=$b.0) -> $b3.$b.0
 // [Wasm] Lowering control Return(args=[Insn(iref=%1)])
@@ -290,7 +290,7 @@
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Local BlockParam(bref=b3, bpref=$b.0) -> $b3.$b.0
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function main10.20 to wasm
+// [Wasm] Lowered function main.20 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -300,18 +300,18 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
-// [KnfOpt] freq: {f1: Once, g4: Once, h7: Once, main10: Once}
-// [KnfOpt] Knf inline Some(f1)
-// [KnfOpt] Knf inline Some(g4)
-// [KnfOpt] Knf inline Some(h7)
-// [KnfOpt] freq: {main10: Once}
-// [KnfOpt] freq: {main10: Once}
+// [KnfOpt] freq: {f.1: Once, g.4: Once, h.7: Once, main.10: Once}
+// [KnfOpt] Knf inline Some(f)
+// [KnfOpt] Knf inline Some(g)
+// [KnfOpt] Knf inline Some(h)
+// [KnfOpt] freq: {main.10: Once}
+// [KnfOpt] freq: {main.10: Once}
 // [KnfOpt] Numbers of let rec: 1 1 0
 // [Parser] flags: []
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f2: Once})
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true
+// [CoreOpt] allow_inline: false %0 main.20 false true true false true

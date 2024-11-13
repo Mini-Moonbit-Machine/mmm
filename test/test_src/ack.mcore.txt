@@ -16,28 +16,11 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main17.22
-  .type main17.22, @function
+  .globl ack.21
+  .type ack.21, @function
 # leaf false
-main17.22:
-.main17.22_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  li a0, 3
-  li a1, 8
-  call ack1.21
-  call minimbt_print_int
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl ack1.21
-  .type ack1.21, @function
-# leaf false
-ack1.21:
-.ack1.21_8:
+ack.21:
+.ack.21_8:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -45,32 +28,49 @@ ack1.21:
   mv a1, a0
   mv a0, a2
 
-.ack1.21_0:
-  bge zero, a1, .ack1.21_1
+.ack.21_0:
+  bge zero, a1, .ack.21_1
 
-.ack1.21_2:
-  bge zero, a0, .ack1.21_3
+.ack.21_2:
+  bge zero, a0, .ack.21_3
 
-.ack1.21_4:
+.ack.21_4:
   addi s0, a1, -1
   addi a2, a0, -1
   mv a0, a1
   mv a1, a2
-  call ack1.21
+  call ack.21
   mv a1, s0
-  j .ack1.21_0
+  j .ack.21_0
 
-.ack1.21_3:
+.ack.21_3:
   addi a1, a1, -1
   li a0, 1
-  j .ack1.21_0
+  j .ack.21_0
 
-.ack1.21_1:
+.ack.21_1:
   addi a0, a0, 1
 
-.ack1.21_6:
+.ack.21_6:
   ld ra, 0(sp)
   ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+  .p2align 2
+  .text
+  .globl main.22
+  .type main.22, @function
+# leaf false
+main.22:
+.main.22_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  li a0, 3
+  li a1, 8
+  call ack.21
+  call minimbt_print_int
+  ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
@@ -85,7 +85,7 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main17.22
+  call main.22
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16

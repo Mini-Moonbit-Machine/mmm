@@ -68,8 +68,8 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main7.12") clobbered_x: @hashset.of([a0])
-// [Asm] Label("main7.12") clobbered_f: @hashset.of([])
+// [Asm] Label("main.12") clobbered_x: @hashset.of([a0])
+// [Asm] Label("main.12") clobbered_f: @hashset.of([])
 // [Asm] subst   li v3, 10 ->   li a0, 10
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   ret ->   ret
@@ -80,11 +80,11 @@
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Asm] pre_assigned_registers: Self(fref=f2) -> v0, Insn(iref=%0) -> v2
 // [Asm] before colored: # leaf false
-// [Asm] main7.12:
+// [Asm] main.12:
 // [Asm] # block info: defs: [v2, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v3], uses: [v2, a0, v3], upward_exposed: [], params_defs: []
 // [Asm] # live_in: [], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main7.12_0:
+// [Asm] .main.12_0:
 // [Asm]   # save_ctx1  # live: []
 // [Asm]   # save_ctx2  # live: []
 // [Asm]   li v3, 10  # live: [v3]
@@ -107,7 +107,7 @@
 // [Asm]   sd ra, 0(sp)  # live: [s11]
 // [Asm]   sd s11, 8(sp)  # live: []
 // [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main7.12  # live: [a0]
+// [Asm]   call main.12  # live: [a0]
 // [Asm]   ld ra, 0(sp)  # live: [a0]
 // [Asm]   ld s11, 8(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 16  # live: [a0]
@@ -134,7 +134,7 @@
 // [Knf] build_knf: Int(7)
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
-// [Main] beta reduce _9 = adder4.12
+// [Main] beta reduce _9 = adder.12
 // [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
 // [Main]   .p2align 4
 // [Main]   .bss
@@ -153,11 +153,11 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl main7.12
-// [Main]   .type main7.12, @function
+// [Main]   .globl main.12
+// [Main]   .type main.12, @function
 // [Main] # leaf false
-// [Main] main7.12:
-// [Main] .main7.12_0:
+// [Main] main.12:
+// [Main] .main.12_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   li a0, 10
@@ -177,7 +177,7 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main7.12
+// [Main]   call main.12
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
 // [Main]   addi sp, sp, 16
@@ -197,10 +197,10 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function main7.12
+// [Wasm] Lowering function main.12
 // [Wasm] Lowering insn ExtCall(ty=Unit, ext_f="minimbt_print_int", args=[Int32(val=10)])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
-// [Wasm] Lowered function main7.12 to wasm
+// [Wasm] Lowered function main.12 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -210,17 +210,17 @@
 // [Wasm] Lowering insn Call(ty=Unit, f=f0, args=[])
 // [Wasm] Lowering control Return(args=[Insn(iref=%0)])
 // [Wasm] Lowered function T$start to wasm
-// [KnfOpt] freq: {make_adder1: Once, adder4: AsClosure, main7: Once}
-// [KnfOpt] Knf inline Some(make_adder1)
-// [KnfOpt] freq: {main7: Once, adder4.12: Once}
-// [KnfOpt] Knf inline Some(adder4)
-// [KnfOpt] freq: {main7: Once}
+// [KnfOpt] freq: {make_adder.1: Once, adder.4: AsClosure, main.7: Once}
+// [KnfOpt] Knf inline Some(make_adder)
+// [KnfOpt] freq: {main.7: Once, adder.12: Once}
+// [KnfOpt] Knf inline Some(adder)
+// [KnfOpt] freq: {main.7: Once}
 // [KnfOpt] Numbers of let rec: 1 1 0
 // [Parser] flags: []
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f2: Once})
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
-// [CoreOpt] allow_inline: false %0 main7.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true
+// [CoreOpt] allow_inline: false %0 main.12 false true true true true

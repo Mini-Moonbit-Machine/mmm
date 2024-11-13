@@ -29,14 +29,6 @@
 // [Asm] critical color seq for b8: []
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
-// [Asm] defs: [a0]
-// [Asm] live_set: [a0]
-// [Asm] move: a0 <- v13
-// [Asm] defined: a0 is X
-// [Asm] defs: []
-// [Asm] live_set: [a0]
-// [Asm] defs: []
-// [Asm] live_set: []
 // [Asm] defs: [v11]
 // [Asm] live_set: [v11, zero]
 // [Asm] defined: v11 is X
@@ -53,6 +45,21 @@
 // [Asm] defined: v5 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v13
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v12]
+// [Asm] live_set: [v12]
+// [Asm] defined: v12 is X
+// [Asm] defs: [v13]
+// [Asm] live_set: [v13]
+// [Asm] move: v13 <- v12
+// [Asm] defined: v13 is X
 // [Asm] defs: [v8]
 // [Asm] live_set: [v4, v5, zero, v8]
 // [Asm] defined: v8 is X
@@ -121,13 +128,8 @@
 // [Asm] defined: v5 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
-// [Asm] defs: [v12]
-// [Asm] live_set: [v12]
-// [Asm] defined: v12 is X
-// [Asm] defs: [v13]
-// [Asm] live_set: [v13]
-// [Asm] move: v13 <- v12
-// [Asm] defined: v13 is X
+// [Asm] defs: []
+// [Asm] live_set: [v4, v5, zero]
 // [Asm] defs: []
 // [Asm] live_set: [a1, zero, a0]
 // [Asm] defs: [v2]
@@ -146,28 +148,26 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] move: v5 <- v3
 // [Asm] defined: v5 is X
-// [Asm] defs: []
-// [Asm] live_set: [v4, v5, zero]
-// [Asm] Label("ack1.21") clobbered_x: @hashset.of([a2, s0, a1, a0])
-// [Asm] Label("ack1.21") clobbered_f: @hashset.of([])
-// [Asm] subst   bge zero, v5, .ack1.21_3 ->   bge zero, a0, .ack1.21_3
-// [Asm] subst   ret ->   ret
+// [Asm] Label("ack.21") clobbered_x: @hashset.of([a2, s0, a1, a0])
+// [Asm] Label("ack.21") clobbered_f: @hashset.of([])
+// [Asm] subst   bge zero, v5, .ack.21_3 ->   bge zero, a0, .ack.21_3
 // [Asm] subst   addi v11, v4, -1 ->   addi a0, a1, -1
 // [Asm] subst   mv v4, v11 ->   mv a1, a0
 // [Asm] subst   li v15, 1 ->   li a0, 1
-// [Asm] subst   j .ack1.21_0 ->   j .ack1.21_0
+// [Asm] subst   j .ack.21_0 ->   j .ack.21_0
+// [Asm] subst   ret ->   ret
+// [Asm] subst   addi v12, v5, 1 ->   addi a0, a0, 1
 // [Asm] subst   addi v8, v4, -1 ->   addi s0, a1, -1
 // [Asm] subst   addi v9, v5, -1 ->   addi a2, a0, -1
 // [Asm] subst   mv a0, v4 ->   mv a0, a1
 // [Asm] subst   mv a1, v9 ->   mv a1, a2
-// [Asm] subst   call ack1.21 ->   call ack1.21
+// [Asm] subst   call ack.21 ->   call ack.21
 // [Asm] subst   mv v4, v8 ->   mv a1, s0
-// [Asm] subst   j .ack1.21_0 ->   j .ack1.21_0
-// [Asm] subst   addi v12, v5, 1 ->   addi a0, a0, 1
+// [Asm] subst   j .ack.21_0 ->   j .ack.21_0
+// [Asm] subst   bge zero, v4, .ack.21_1 ->   bge zero, a1, .ack.21_1
 // [Asm] subst   mv v3, a1 ->   mv a2, a1
 // [Asm] subst   mv v4, v2 ->   mv a1, a0
 // [Asm] subst   mv v5, v3 ->   mv a0, a2
-// [Asm] subst   bge zero, v4, .ack1.21_1 ->   bge zero, a1, .ack1.21_1
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -299,26 +299,98 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main17.22") clobbered_x: @hashset.of([a1, a0])
-// [Asm] Label("main17.22") clobbered_f: @hashset.of([])
+// [Asm] Label("main.22") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("main.22") clobbered_f: @hashset.of([])
 // [Asm] subst   li v5, 3 ->   li a0, 3
 // [Asm] subst   li v6, 8 ->   li a1, 8
-// [Asm] subst   call ack1.21 ->   call ack1.21
+// [Asm] subst   call ack.21 ->   call ack.21
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   ret ->   ret
 // [Asm] before colored: # leaf false
-// [Asm] main17.22:
+// [Asm] ack.21:
+// [Asm] # block info: defs: [v3, v4, v5, v2], uses: [v3, a1, a0, v2], upward_exposed: [a1, a0], params_defs: []
+// [Asm] # live_in: [a1, a0, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_8:
+// [Asm]   # save_ctx1  # live: [a1, zero, a0]
+// [Asm]   mv v2, a0  # live: [a1, zero, v2]
+// [Asm]   mv v3, a1  # live: [v2, zero, v3]
+// [Asm] # control
+// [Asm]   mv v4, v2  # live: [v4, zero, v3]
+// [Asm]   mv v5, v3  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [], uses: [v4, zero], upward_exposed: [v4, zero], params_defs: [v4, v5]
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: [v4, v5]
+// [Asm] .ack.21_0:
+// [Asm] # control
+// [Asm]   bge zero, v4, .ack.21_1  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [], uses: [v5, zero], upward_exposed: [v5, zero], params_defs: []
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_2:
+// [Asm] # control
+// [Asm]   bge zero, v5, .ack.21_3  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, v4, ft7, ft4, v5, ft9, v10, a5, fa4, a0, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v5, v10, a0, v8, v4, a1, v9], upward_exposed: [v4, v5], params_defs: []
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_4:
+// [Asm]   addi v8, v4, -1  # live: [v4, v5, zero, v8]
+// [Asm]   addi v9, v5, -1  # live: [v4, zero, v9, v8]
+// [Asm]   # save_ctx2  # live: [v4, zero, v9, v8]
+// [Asm]   mv a0, v4  # live: [v8, zero, a0, v9]
+// [Asm]   mv a1, v9  # live: [a1, zero, a0, v8]
+// [Asm]   call ack.21  # live: [zero, a0, v8]
+// [Asm]   mv v10, a0  # live: [v10, zero, v8]
+// [Asm]   # restore_ctx2  # live: [v10, zero, v8]
+// [Asm] # control
+// [Asm]   mv v4, v8  # live: [v4, v10, zero]
+// [Asm]   mv v5, v10  # live: [v4, v5, zero]
+// [Asm]   j .ack.21_0  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [v11, v4, v5, v15], uses: [v11, v4, v15], upward_exposed: [v4], params_defs: []
+// [Asm] # live_in: [v4, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_3:
+// [Asm]   addi v11, v4, -1  # live: [v11, zero]
+// [Asm] # control
+// [Asm]   mv v4, v11  # live: [v4, zero]
+// [Asm]   li v15, 1  # live: [v4, v15, zero]
+// [Asm]   mv v5, v15  # live: [v4, v5, zero]
+// [Asm]   j .ack.21_0  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [v12, v13], uses: [v5, v12], upward_exposed: [v5], params_defs: []
+// [Asm] # live_in: [v5], live_out: [v13]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_1:
+// [Asm]   addi v12, v5, 1  # live: [v12]
+// [Asm] # control
+// [Asm]   mv v13, v12  # live: [v13]
+// [Asm] 
+// [Asm] # block info: defs: [a0], uses: [v13, a0], upward_exposed: [v13], params_defs: [v13]
+// [Asm] # live_in: [v13], live_out: []
+// [Asm] # block parameters: [v13]
+// [Asm] .ack.21_6:
+// [Asm] # control
+// [Asm]   mv a0, v13  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] main.22:
 // [Asm] # block info: defs: [v3, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v6, ft7, ft4, v5, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v2], uses: [v2, v5, a0, v6, a1, v3], upward_exposed: [], params_defs: []
 // [Asm] # live_in: [], live_out: []
 // [Asm] # block parameters: []
-// [Asm] .main17.22_0:
+// [Asm] .main.22_0:
 // [Asm]   # save_ctx1  # live: []
 // [Asm]   # save_ctx2  # live: []
 // [Asm]   li v5, 3  # live: [v5]
 // [Asm]   mv a0, v5  # live: [a0]
 // [Asm]   li v6, 8  # live: [v6, a0]
 // [Asm]   mv a1, v6  # live: [a1, a0]
-// [Asm]   call ack1.21  # live: [a0]
+// [Asm]   call ack.21  # live: [a0]
 // [Asm]   mv v2, a0  # live: [v2]
 // [Asm]   # restore_ctx2  # live: [v2]
 // [Asm]   # save_ctx2  # live: [v2]
@@ -332,78 +404,6 @@
 // [Asm]   ret  # live: []
 // [Asm] 
 // [Asm] # leaf false
-// [Asm] ack1.21:
-// [Asm] # block info: defs: [v3, v4, v5, v2], uses: [v3, a1, a0, v2], upward_exposed: [a1, a0], params_defs: []
-// [Asm] # live_in: [a1, a0, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_8:
-// [Asm]   # save_ctx1  # live: [a1, zero, a0]
-// [Asm]   mv v2, a0  # live: [a1, zero, v2]
-// [Asm]   mv v3, a1  # live: [v2, zero, v3]
-// [Asm] # control
-// [Asm]   mv v4, v2  # live: [v4, zero, v3]
-// [Asm]   mv v5, v3  # live: [v4, v5, zero]
-// [Asm] 
-// [Asm] # block info: defs: [], uses: [v4, zero], upward_exposed: [v4, zero], params_defs: [v4, v5]
-// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: [v4, v5]
-// [Asm] .ack1.21_0:
-// [Asm] # control
-// [Asm]   bge zero, v4, .ack1.21_1  # live: [v4, v5, zero]
-// [Asm] 
-// [Asm] # block info: defs: [], uses: [v5, zero], upward_exposed: [v5, zero], params_defs: []
-// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_2:
-// [Asm] # control
-// [Asm]   bge zero, v5, .ack1.21_3  # live: [v4, v5, zero]
-// [Asm] 
-// [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, v4, ft7, ft4, v5, ft9, v10, a5, fa4, a0, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v5, v10, a0, v8, v4, a1, v9], upward_exposed: [v4, v5], params_defs: []
-// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_4:
-// [Asm]   addi v8, v4, -1  # live: [v4, v5, zero, v8]
-// [Asm]   addi v9, v5, -1  # live: [v4, zero, v9, v8]
-// [Asm]   # save_ctx2  # live: [v4, zero, v9, v8]
-// [Asm]   mv a0, v4  # live: [v8, zero, a0, v9]
-// [Asm]   mv a1, v9  # live: [a1, zero, a0, v8]
-// [Asm]   call ack1.21  # live: [zero, a0, v8]
-// [Asm]   mv v10, a0  # live: [v10, zero, v8]
-// [Asm]   # restore_ctx2  # live: [v10, zero, v8]
-// [Asm] # control
-// [Asm]   mv v4, v8  # live: [v4, v10, zero]
-// [Asm]   mv v5, v10  # live: [v4, v5, zero]
-// [Asm]   j .ack1.21_0  # live: [v4, v5, zero]
-// [Asm] 
-// [Asm] # block info: defs: [v11, v4, v5, v15], uses: [v11, v4, v15], upward_exposed: [v4], params_defs: []
-// [Asm] # live_in: [v4, zero], live_out: [v4, v5, zero]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_3:
-// [Asm]   addi v11, v4, -1  # live: [v11, zero]
-// [Asm] # control
-// [Asm]   mv v4, v11  # live: [v4, zero]
-// [Asm]   li v15, 1  # live: [v4, v15, zero]
-// [Asm]   mv v5, v15  # live: [v4, v5, zero]
-// [Asm]   j .ack1.21_0  # live: [v4, v5, zero]
-// [Asm] 
-// [Asm] # block info: defs: [v12, v13], uses: [v5, v12], upward_exposed: [v5], params_defs: []
-// [Asm] # live_in: [v5], live_out: [v13]
-// [Asm] # block parameters: []
-// [Asm] .ack1.21_1:
-// [Asm]   addi v12, v5, 1  # live: [v12]
-// [Asm] # control
-// [Asm]   mv v13, v12  # live: [v13]
-// [Asm] 
-// [Asm] # block info: defs: [a0], uses: [v13, a0], upward_exposed: [v13], params_defs: [v13]
-// [Asm] # live_in: [v13], live_out: []
-// [Asm] # block parameters: [v13]
-// [Asm] .ack1.21_6:
-// [Asm] # control
-// [Asm]   mv a0, v13  # live: [a0]
-// [Asm]   # restore_ctx1  # live: [a0]
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf false
 // [Asm] minimbt_main:
 // [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
 // [Asm] # live_in: [ra, s11], live_out: []
@@ -413,7 +413,7 @@
 // [Asm]   sd ra, 0(sp)  # live: [s11]
 // [Asm]   sd s11, 8(sp)  # live: []
 // [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main17.22  # live: [a0]
+// [Asm]   call main.22  # live: [a0]
 // [Asm]   ld ra, 0(sp)  # live: [a0]
 // [Asm]   ld s11, 8(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 16  # live: [a0]
@@ -478,28 +478,11 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl main17.22
-// [Main]   .type main17.22, @function
+// [Main]   .globl ack.21
+// [Main]   .type ack.21, @function
 // [Main] # leaf false
-// [Main] main17.22:
-// [Main] .main17.22_0:
-// [Main]   addi sp, sp, -16
-// [Main]   sd ra, 0(sp)
-// [Main]   li a0, 3
-// [Main]   li a1, 8
-// [Main]   call ack1.21
-// [Main]   call minimbt_print_int
-// [Main]   ld ra, 0(sp)
-// [Main]   addi sp, sp, 16
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl ack1.21
-// [Main]   .type ack1.21, @function
-// [Main] # leaf false
-// [Main] ack1.21:
-// [Main] .ack1.21_8:
+// [Main] ack.21:
+// [Main] .ack.21_8:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s0, 8(sp)
@@ -507,32 +490,49 @@
 // [Main]   mv a1, a0
 // [Main]   mv a0, a2
 // [Main] 
-// [Main] .ack1.21_0:
-// [Main]   bge zero, a1, .ack1.21_1
+// [Main] .ack.21_0:
+// [Main]   bge zero, a1, .ack.21_1
 // [Main] 
-// [Main] .ack1.21_2:
-// [Main]   bge zero, a0, .ack1.21_3
+// [Main] .ack.21_2:
+// [Main]   bge zero, a0, .ack.21_3
 // [Main] 
-// [Main] .ack1.21_4:
+// [Main] .ack.21_4:
 // [Main]   addi s0, a1, -1
 // [Main]   addi a2, a0, -1
 // [Main]   mv a0, a1
 // [Main]   mv a1, a2
-// [Main]   call ack1.21
+// [Main]   call ack.21
 // [Main]   mv a1, s0
-// [Main]   j .ack1.21_0
+// [Main]   j .ack.21_0
 // [Main] 
-// [Main] .ack1.21_3:
+// [Main] .ack.21_3:
 // [Main]   addi a1, a1, -1
 // [Main]   li a0, 1
-// [Main]   j .ack1.21_0
+// [Main]   j .ack.21_0
 // [Main] 
-// [Main] .ack1.21_1:
+// [Main] .ack.21_1:
 // [Main]   addi a0, a0, 1
 // [Main] 
-// [Main] .ack1.21_6:
+// [Main] .ack.21_6:
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main.22
+// [Main]   .type main.22, @function
+// [Main] # leaf false
+// [Main] main.22:
+// [Main] .main.22_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 3
+// [Main]   li a1, 8
+// [Main]   call ack.21
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
 // [Main]   ret
 // [Main] 
@@ -547,7 +547,7 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main17.22
+// [Main]   call main.22
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
 // [Main]   addi sp, sp, 16
@@ -567,7 +567,7 @@
 // [Wasm] LoweringOrder: HashMap::of([(b6, 2), (b4, 0), (b1, 2), (b8, 0), (b2, 0), (b3, 1), (b0, 0)])
 // [Wasm] LoweringOrder: [b8, b0, b2, b4, b3, b1, b6]
 // [Wasm] LoweringOrder: HashMap::of([(b6, 1), (b4, 3), (b1, 0), (b8, 0), (b2, 2), (b3, 0), (b0, 1)])
-// [Wasm] Lowering function ack1.21
+// [Wasm] Lowering function ack.21
 // [Wasm] Lowering control Return(args=[BlockParam(bref=b6, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b6, bpref=$b.0) -> $b6.$b.0
 // [Wasm] Lowering insn Op(ty=Int32, op=Add, args=[BlockParam(bref=b0, bpref=$b.1), Int32(val=1)])
@@ -625,7 +625,7 @@
 // [Wasm] Local Insn(iref=%6) -> $%6
 // [Wasm] Local Insn(iref=%5) -> $%5
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function ack1.21 to wasm
+// [Wasm] Lowered function ack.21 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -640,15 +640,15 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function main17.22
+// [Wasm] Lowering function main.22
 // [Wasm] Lowering insn Call(ty=Int32, f=f0, args=[Int32(val=3), Int32(val=8)])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Lowering insn ExtCall(ty=Unit, ext_f="minimbt_print_int", args=[Insn(iref=%0)])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Lowering control Return(args=[Insn(iref=%1)])
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function main17.22 to wasm
-// [KnfOpt] freq: {ack1: Many(4), main17: Once}
+// [Wasm] Lowered function main.22 to wasm
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 4 27
 // [KnfOpt] Inline decision rejected
@@ -661,7 +661,7 @@
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 4 27
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {ack1: Many(4), main17: Once}
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 4 27
 // [KnfOpt] Inline decision rejected
@@ -674,7 +674,7 @@
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 4 27
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {ack1: Many(4), main17: Once}
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 4 27
 // [KnfOpt] Inline decision rejected
@@ -692,21 +692,21 @@
 // [CoreOpt] eliminated tail rec call %8: Call(ty=Int32, f=f0, args=[Insn(iref=%5), Insn(iref=%7)])
 // [CoreOpt] eliminated tail rec call %4: Call(ty=Int32, f=f0, args=[Insn(iref=%3), Int32(val=1)])
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Multiple, f4: Once, f1: Once})
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
-// [CoreOpt] allow_inline: false %7 ack1.21 true false true false true
-// [CoreOpt] allow_inline: false %0 main17.22 false true true true true
-// [CoreOpt] allow_inline: false %0 ack1.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true

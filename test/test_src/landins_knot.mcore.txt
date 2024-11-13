@@ -31,15 +31,6 @@ memseti64:
 
   .p2align 2
   .text
-  .globl dummy1
-  .type dummy1, @function
-# leaf true
-dummy1:
-.dummy1_0:
-  ret
-
-  .p2align 2
-  .text
   .globl T$a.33
   .type T$a.33, @function
 # leaf false
@@ -48,23 +39,32 @@ T$a.33:
   addi sp, sp, -16
   sd ra, 0(sp)
   lw a0, _73
-  call h21.60
+  call h.60
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
 
   .p2align 2
   .text
-  .globl main37
-  .type main37, @function
+  .globl dummy.1
+  .type dummy.1, @function
+# leaf true
+dummy.1:
+.dummy.1_0:
+  ret
+
+  .p2align 2
+  .text
+  .globl main.37
+  .type main.37, @function
 # leaf false
-main37:
-.main37_0:
+main.37:
+.main.37_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   sd s0, 8(sp)
   li a0, 5
-  call h21.60
+  call h.60
   call minimbt_print_int
   lw s0, a.33
   addi a0, s0, 10
@@ -78,6 +78,38 @@ main37:
 
   .p2align 2
   .text
+  .globl h.60
+  .type h.60, @function
+# leaf false
+h.60:
+.h.60_0:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  mv s0, a0
+  beq s0, zero, .h.60_1
+
+.h.60_2:
+  addi a0, s0, -1
+  ld a1, arr.47
+  ld a2, 0(a1)
+  ld a1, 0(a2)
+  mv s10, a2
+  jalr a1
+  mulw a0, s0, a0
+
+.h.60_3:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  addi sp, sp, 16
+  ret
+
+.h.60_1:
+  li a0, 1
+  j .h.60_3
+
+  .p2align 2
+  .text
   .globl T$_54
   .type T$_54, @function
 # leaf true
@@ -87,7 +119,7 @@ T$_54:
   lw a1, _72
   addi a2, s11, -8
   andi s11, a2, -8
-  la a3, h21.60
+  la a3, h.60
   sd a3, 0(a2)
   th.surd a2, a0, a1, 3
   mv a0, zero
@@ -106,7 +138,7 @@ T$arr.47:
   lw a1, _71
   addi a2, s11, -8
   andi s11, a2, -8
-  la a0, dummy1
+  la a0, dummy.1
   sd a0, 0(a2)
   slliw a0, a1, 3
   sub s0, s11, a0
@@ -137,43 +169,11 @@ minimbt_main:
   call T$a.33
   la t5, a.33
   sw a0, 0(t5)
-  call main37
+  call main.37
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl h21.60
-  .type h21.60, @function
-# leaf false
-h21.60:
-.h21.60_0:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  mv s0, a0
-  beq s0, zero, .h21.60_1
-
-.h21.60_2:
-  addi a0, s0, -1
-  ld a1, arr.47
-  ld a1, 0(a1)
-  ld a2, 0(a1)
-  mv s10, a1
-  jalr a2
-  mulw a0, s0, a0
-
-.h21.60_3:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  addi sp, sp, 16
-  ret
-
-.h21.60_1:
-  li a0, 1
-  j .h21.60_3
 
 __end_text:
   .p2align 2

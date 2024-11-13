@@ -16,11 +16,34 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl main17.31
-  .type main17.31, @function
+  .globl inprod.30
+  .type inprod.30, @function
+# leaf true
+inprod.30:
+.inprod.30_5:
+
+.inprod.30_0:
+  blt a2, zero, .inprod.30_2
+
+.inprod.30_1:
+  th.flurd fa1, a0, a2, 3
+  th.flurd fa2, a1, a2, 3
+  fmadd.d fa0, fa1, fa2, fa0
+  addi a2, a2, -1
+  j .inprod.30_0
+
+.inprod.30_2:
+
+.inprod.30_3:
+  ret
+
+  .p2align 2
+  .text
+  .globl main.31
+  .type main.31, @function
 # leaf false
-main17.31:
-.main17.31_0:
+main.31:
+.main.31_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   addi a0, s11, -24
@@ -39,7 +62,7 @@ main17.31:
   fsd fa0, 16(a1)
   fmv.d.x fa0, zero
   li a2, 2
-  call inprod1.30
+  call inprod.30
   li a0, 4696837146684686336
   fmv.d.x fa1, a0
   fmul.d fa0, fa1, fa0
@@ -60,39 +83,10 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main17.31
+  call main.31
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl inprod1.30
-  .type inprod1.30, @function
-# leaf true
-inprod1.30:
-.inprod1.30_5:
-  mv a3, a1
-  mv a1, a2
-  mv a2, a3
-  fmv.d fa1, fa0
-
-.inprod1.30_0:
-  blt a1, zero, .inprod1.30_2
-
-.inprod1.30_1:
-  th.flurd fa0, a0, a1, 3
-  th.flurd fa2, a2, a1, 3
-  fmadd.d fa0, fa0, fa2, fa1
-  addi a1, a1, -1
-  fmv.d fa1, fa0
-  j .inprod1.30_0
-
-.inprod1.30_2:
-  fmv.d fa0, fa1
-
-.inprod1.30_3:
   ret
 
 __end_text:

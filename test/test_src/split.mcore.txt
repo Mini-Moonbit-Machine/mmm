@@ -16,37 +16,38 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl rec2.30
-  .type rec2.30, @function
+  .globl rec.30
+  .type rec.30, @function
 # leaf true
-rec2.30:
-.rec2.30_5:
+rec.30:
+.rec.30_5:
+  mv a1, a0
 
-.rec2.30_0:
-  li a1, 42
-  beq a0, a1, .rec2.30_1
+.rec.30_0:
+  li a0, 42
+  beq a1, a0, .rec.30_1
 
-.rec2.30_2:
-  addi a0, a0, 1
-  j .rec2.30_0
+.rec.30_2:
+  addi a1, a1, 1
+  j .rec.30_0
 
-.rec2.30_1:
+.rec.30_1:
   mv a0, zero
 
-.rec2.30_3:
+.rec.30_3:
   ret
 
   .p2align 2
   .text
-  .globl main21.31
-  .type main21.31, @function
+  .globl main.31
+  .type main.31, @function
 # leaf false
-main21.31:
-.main21.31_0:
+main.31:
+.main.31_0:
   addi sp, sp, -16
   sd ra, 0(sp)
   mv a0, zero
-  call rec2.30
+  call rec.30
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -62,7 +63,7 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main21.31
+  call main.31
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16

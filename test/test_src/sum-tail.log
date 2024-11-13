@@ -20,14 +20,6 @@
 // [Asm] succs: [4]
 // [Asm] critical edges for b5: []
 // [Asm] critical color seq for b5: []
-// [Asm] defs: [a0]
-// [Asm] live_set: [a0]
-// [Asm] move: a0 <- v9
-// [Asm] defined: a0 is X
-// [Asm] defs: []
-// [Asm] live_set: [a0]
-// [Asm] defs: []
-// [Asm] live_set: []
 // [Asm] defs: [v7]
 // [Asm] live_set: [v5, zero, v7]
 // [Asm] defined: v7 is X
@@ -46,10 +38,6 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
-// [Asm] defs: [v9]
-// [Asm] live_set: [v9]
-// [Asm] move: v9 <- v4
-// [Asm] defined: v9 is X
 // [Asm] defs: []
 // [Asm] live_set: [a1, zero, a0]
 // [Asm] defs: [v2]
@@ -68,13 +56,25 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] move: v5 <- v3
 // [Asm] defined: v5 is X
-// [Asm] Label("sum1.14") clobbered_x: @hashset.of([a1, a0])
-// [Asm] Label("sum1.14") clobbered_f: @hashset.of([])
-// [Asm] subst   ret ->   ret
+// [Asm] defs: [v9]
+// [Asm] live_set: [v9]
+// [Asm] move: v9 <- v4
+// [Asm] defined: v9 is X
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v9
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] Label("sum.14") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("sum.14") clobbered_f: @hashset.of([])
 // [Asm] subst   add v7, v4, v5 ->   add a0, a0, a1
 // [Asm] subst   addi v8, v5, -1 ->   addi a1, a1, -1
-// [Asm] subst   j .sum1.14_0 ->   j .sum1.14_0
-// [Asm] subst   bge zero, v5, .sum1.14_1 ->   bge zero, a1, .sum1.14_1
+// [Asm] subst   j .sum.14_0 ->   j .sum.14_0
+// [Asm] subst   bge zero, v5, .sum.14_1 ->   bge zero, a1, .sum.14_1
+// [Asm] subst   ret ->   ret
 // [Asm] LoweringOrder: [0]
 // [Asm] LoweringOrder: [[]]
 // [Asm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -203,19 +203,43 @@
 // [Asm] live_set: [a0]
 // [Asm] defs: []
 // [Asm] live_set: []
-// [Asm] Label("main10.15") clobbered_x: @hashset.of([a1, a0])
-// [Asm] Label("main10.15") clobbered_f: @hashset.of([])
+// [Asm] Label("main.15") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("main.15") clobbered_f: @hashset.of([])
 // [Asm] subst   mv a0, zero ->   mv a0, zero
 // [Asm] subst   li v5, 10000 ->   li a1, 10000
-// [Asm] subst   call sum1.14 ->   call sum1.14
+// [Asm] subst   call sum.14 ->   call sum.14
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   ret ->   ret
-// [Asm] before colored: # leaf true
-// [Asm] sum1.14:
+// [Asm] before colored: # leaf false
+// [Asm] main.15:
+// [Asm] # block info: defs: [v3, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, v5, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v2], uses: [v2, v5, zero, a0, a1, v3], upward_exposed: [zero], params_defs: []
+// [Asm] # live_in: [zero], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .main.15_0:
+// [Asm]   # save_ctx1  # live: [zero]
+// [Asm]   # save_ctx2  # live: [zero]
+// [Asm]   mv a0, zero  # live: [a0]
+// [Asm]   li v5, 10000  # live: [v5, a0]
+// [Asm]   mv a1, v5  # live: [a1, a0]
+// [Asm]   call sum.14  # live: [a0]
+// [Asm]   mv v2, a0  # live: [v2]
+// [Asm]   # restore_ctx2  # live: [v2]
+// [Asm]   # save_ctx2  # live: [v2]
+// [Asm]   mv a0, v2  # live: [a0]
+// [Asm]   call minimbt_print_int  # live: [a0]
+// [Asm]   mv v3, a0  # live: [v3]
+// [Asm]   # restore_ctx2  # live: [v3]
+// [Asm] # control
+// [Asm]   mv a0, v3  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf true
+// [Asm] sum.14:
 // [Asm] # block info: defs: [v3, v4, v5, v2], uses: [v3, a1, a0, v2], upward_exposed: [a1, a0], params_defs: []
 // [Asm] # live_in: [a1, a0, zero], live_out: [v4, v5, zero]
 // [Asm] # block parameters: []
-// [Asm] .sum1.14_5:
+// [Asm] .sum.14_5:
 // [Asm]   # save_ctx1  # live: [a1, zero, a0]
 // [Asm]   mv v2, a0  # live: [a1, zero, v2]
 // [Asm]   mv v3, a1  # live: [v2, zero, v3]
@@ -226,58 +250,34 @@
 // [Asm] # block info: defs: [], uses: [v5, zero], upward_exposed: [v5, zero], params_defs: [v4, v5]
 // [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
 // [Asm] # block parameters: [v4, v5]
-// [Asm] .sum1.14_0:
+// [Asm] .sum.14_0:
 // [Asm] # control
-// [Asm]   bge zero, v5, .sum1.14_1  # live: [v4, v5, zero]
+// [Asm]   bge zero, v5, .sum.14_1  # live: [v4, v5, zero]
 // [Asm] 
 // [Asm] # block info: defs: [v8, v4, v5, v7], uses: [v8, v4, v5, v7], upward_exposed: [v4, v5], params_defs: []
 // [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
 // [Asm] # block parameters: []
-// [Asm] .sum1.14_2:
+// [Asm] .sum.14_2:
 // [Asm]   add v7, v4, v5  # live: [v5, zero, v7]
 // [Asm]   addi v8, v5, -1  # live: [v7, zero, v8]
 // [Asm] # control
 // [Asm]   mv v4, v7  # live: [v4, zero, v8]
 // [Asm]   mv v5, v8  # live: [v4, v5, zero]
-// [Asm]   j .sum1.14_0  # live: [v4, v5, zero]
+// [Asm]   j .sum.14_0  # live: [v4, v5, zero]
 // [Asm] 
 // [Asm] # block info: defs: [v9], uses: [v4], upward_exposed: [v4], params_defs: []
 // [Asm] # live_in: [v4], live_out: [v9]
 // [Asm] # block parameters: []
-// [Asm] .sum1.14_1:
+// [Asm] .sum.14_1:
 // [Asm] # control
 // [Asm]   mv v9, v4  # live: [v9]
 // [Asm] 
 // [Asm] # block info: defs: [a0], uses: [v9, a0], upward_exposed: [v9], params_defs: [v9]
 // [Asm] # live_in: [v9], live_out: []
 // [Asm] # block parameters: [v9]
-// [Asm] .sum1.14_3:
+// [Asm] .sum.14_3:
 // [Asm] # control
 // [Asm]   mv a0, v9  # live: [a0]
-// [Asm]   # restore_ctx1  # live: [a0]
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf false
-// [Asm] main10.15:
-// [Asm] # block info: defs: [v3, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, v5, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v2], uses: [v2, v5, zero, a0, a1, v3], upward_exposed: [zero], params_defs: []
-// [Asm] # live_in: [zero], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .main10.15_0:
-// [Asm]   # save_ctx1  # live: [zero]
-// [Asm]   # save_ctx2  # live: [zero]
-// [Asm]   mv a0, zero  # live: [a0]
-// [Asm]   li v5, 10000  # live: [v5, a0]
-// [Asm]   mv a1, v5  # live: [a1, a0]
-// [Asm]   call sum1.14  # live: [a0]
-// [Asm]   mv v2, a0  # live: [v2]
-// [Asm]   # restore_ctx2  # live: [v2]
-// [Asm]   # save_ctx2  # live: [v2]
-// [Asm]   mv a0, v2  # live: [a0]
-// [Asm]   call minimbt_print_int  # live: [a0]
-// [Asm]   mv v3, a0  # live: [v3]
-// [Asm]   # restore_ctx2  # live: [v3]
-// [Asm] # control
-// [Asm]   mv a0, v3  # live: [a0]
 // [Asm]   # restore_ctx1  # live: [a0]
 // [Asm]   ret  # live: []
 // [Asm] 
@@ -291,7 +291,7 @@
 // [Asm]   sd ra, 0(sp)  # live: [s11]
 // [Asm]   sd s11, 8(sp)  # live: []
 // [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main10.15  # live: [a0]
+// [Asm]   call main.15  # live: [a0]
 // [Asm]   ld ra, 0(sp)  # live: [a0]
 // [Asm]   ld s11, 8(sp)  # live: [a0]
 // [Asm]   addi sp, sp, 16  # live: [a0]
@@ -342,40 +342,40 @@
 // [Main] __begin_text:
 // [Main]   .p2align 2
 // [Main]   .text
-// [Main]   .globl sum1.14
-// [Main]   .type sum1.14, @function
-// [Main] # leaf true
-// [Main] sum1.14:
-// [Main] .sum1.14_5:
-// [Main] 
-// [Main] .sum1.14_0:
-// [Main]   bge zero, a1, .sum1.14_1
-// [Main] 
-// [Main] .sum1.14_2:
-// [Main]   add a0, a0, a1
-// [Main]   addi a1, a1, -1
-// [Main]   j .sum1.14_0
-// [Main] 
-// [Main] .sum1.14_1:
-// [Main] 
-// [Main] .sum1.14_3:
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl main10.15
-// [Main]   .type main10.15, @function
+// [Main]   .globl main.15
+// [Main]   .type main.15, @function
 // [Main] # leaf false
-// [Main] main10.15:
-// [Main] .main10.15_0:
+// [Main] main.15:
+// [Main] .main.15_0:
 // [Main]   addi sp, sp, -16
 // [Main]   sd ra, 0(sp)
 // [Main]   mv a0, zero
 // [Main]   li a1, 10000
-// [Main]   call sum1.14
+// [Main]   call sum.14
 // [Main]   call minimbt_print_int
 // [Main]   ld ra, 0(sp)
 // [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl sum.14
+// [Main]   .type sum.14, @function
+// [Main] # leaf true
+// [Main] sum.14:
+// [Main] .sum.14_5:
+// [Main] 
+// [Main] .sum.14_0:
+// [Main]   bge zero, a1, .sum.14_1
+// [Main] 
+// [Main] .sum.14_2:
+// [Main]   add a0, a0, a1
+// [Main]   addi a1, a1, -1
+// [Main]   j .sum.14_0
+// [Main] 
+// [Main] .sum.14_1:
+// [Main] 
+// [Main] .sum.14_3:
 // [Main]   ret
 // [Main] 
 // [Main]   .p2align 2
@@ -389,7 +389,7 @@
 // [Main]   sd ra, 0(sp)
 // [Main]   sd s11, 8(sp)
 // [Main]   la s11, large_heap_end
-// [Main]   call main10.15
+// [Main]   call main.15
 // [Main]   ld ra, 0(sp)
 // [Main]   ld s11, 8(sp)
 // [Main]   addi sp, sp, 16
@@ -409,7 +409,7 @@
 // [Wasm] LoweringOrder: HashMap::of([(b1, 1), (b5, 0), (b2, 0), (b3, 1), (b0, 0)])
 // [Wasm] LoweringOrder: [b5, b0, b2, b1, b3]
 // [Wasm] LoweringOrder: HashMap::of([(b1, 0), (b5, 0), (b2, 2), (b3, 1), (b0, 1)])
-// [Wasm] Lowering function sum1.14
+// [Wasm] Lowering function sum.14
 // [Wasm] Lowering control Return(args=[BlockParam(bref=b3, bpref=$b.0)])
 // [Wasm] Get Local name BlockParam(bref=b3, bpref=$b.0) -> $b3.$b.0
 // [Wasm] Lowering control Jump(target=b3, args=[BlockParam(bref=b0, bpref=$b.0)])
@@ -445,7 +445,7 @@
 // [Wasm] Local BlockParam(bref=b0, bpref=$b.1) -> $b0.$b.1
 // [Wasm] Local BlockParam(bref=b3, bpref=$b.0) -> $b3.$b.0
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function sum1.14 to wasm
+// [Wasm] Lowered function sum.14 to wasm
 // [Wasm] LoweringOrder: [0]
 // [Wasm] LoweringOrder: [[]]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
@@ -460,29 +460,29 @@
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
 // [Wasm] LoweringOrder: [b0]
 // [Wasm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Wasm] Lowering function main10.15
+// [Wasm] Lowering function main.15
 // [Wasm] Lowering insn Call(ty=Int32, f=f0, args=[Int32(val=0), Int32(val=10000)])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Lowering insn ExtCall(ty=Unit, ext_f="minimbt_print_int", args=[Insn(iref=%0)])
 // [Wasm] Get Local name Insn(iref=%0) -> $%0
 // [Wasm] Lowering control Return(args=[Insn(iref=%1)])
 // [Wasm] Local Insn(iref=%0) -> $%0
-// [Wasm] Lowered function main10.15 to wasm
-// [KnfOpt] freq: {sum1: Many(2), main10: Once}
+// [Wasm] Lowered function main.15 to wasm
+// [KnfOpt] freq: {sum.1: Many(2), main.10: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {sum1: Many(2), main10: Once}
+// [KnfOpt] freq: {sum.1: Many(2), main.10: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
-// [KnfOpt] freq: {sum1: Many(2), main10: Once}
+// [KnfOpt] freq: {sum.1: Many(2), main.10: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11
 // [KnfOpt] Inline decision rejected
@@ -493,15 +493,15 @@
 // [Parser] flags: []
 // [CoreOpt] eliminated tail rec call %3: Call(ty=Int32, f=f0, args=[Insn(iref=%1), Insn(iref=%2)])
 // [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f4: Once, f1: Once})
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
-// [CoreOpt] allow_inline: false %0 main10.15 false true true true true
-// [CoreOpt] allow_inline: false %0 sum1.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true
+// [CoreOpt] allow_inline: false %0 main.15 false true true true true
+// [CoreOpt] allow_inline: false %0 sum.14 false true true false true

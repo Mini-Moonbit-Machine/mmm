@@ -16,6 +16,33 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
+  .globl f.8
+  .type f.8, @function
+# leaf false
+f.8:
+.f.8_5:
+  addi sp, sp, -16
+  sd ra, 0(sp)
+
+.f.8_0:
+  call minimbt_read_int
+  li a1, -2147483648
+  bne a0, a1, .f.8_2
+
+.f.8_1:
+  call minimbt_print_int
+
+.f.8_3:
+  ld ra, 0(sp)
+  addi sp, sp, 16
+  ret
+
+.f.8_2:
+  call minimbt_print_int
+  j .f.8_0
+
+  .p2align 2
+  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -25,38 +52,11 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call f2.8
+  call f.8
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
   ret
-
-  .p2align 2
-  .text
-  .globl f2.8
-  .type f2.8, @function
-# leaf false
-f2.8:
-.f2.8_5:
-  addi sp, sp, -16
-  sd ra, 0(sp)
-
-.f2.8_0:
-  call minimbt_read_int
-  li a1, -2147483648
-  bne a0, a1, .f2.8_2
-
-.f2.8_1:
-  call minimbt_print_int
-
-.f2.8_3:
-  ld ra, 0(sp)
-  addi sp, sp, 16
-  ret
-
-.f2.8_2:
-  call minimbt_print_int
-  j .f2.8_0
 
 __end_text:
   .p2align 2

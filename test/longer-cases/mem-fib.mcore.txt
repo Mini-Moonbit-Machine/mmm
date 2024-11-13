@@ -31,11 +31,62 @@ memseti32:
 
   .p2align 2
   .text
-  .globl main33.65
-  .type main33.65, @function
+  .globl memed.66
+  .type memed.66, @function
 # leaf false
-main33.65:
-.main33.65_0:
+memed.66:
+.memed.66_0:
+  addi sp, sp, -32
+  sd ra, 0(sp)
+  sd s0, 8(sp)
+  sd s1, 16(sp)
+  sd s2, 24(sp)
+  mv s0, a0
+  mv s1, a1
+  th.lurw a0, s1, s0, 2
+  li a1, -1919810
+  bne a0, a1, .memed.66_2
+
+.memed.66_1:
+  li a0, 1
+  bge a0, s0, .memed.66_3
+
+.memed.66_4:
+  addi a0, s0, -1
+  mv a1, s1
+  call memed.66
+  mv s2, a0
+  addi a0, s0, -2
+  mv a1, s1
+  call memed.66
+  add a0, s2, a0
+
+.memed.66_5:
+  th.surw a0, s1, s0, 2
+
+.memed.66_6:
+  ld ra, 0(sp)
+  ld s0, 8(sp)
+  ld s1, 16(sp)
+  ld s2, 24(sp)
+  addi sp, sp, 32
+  ret
+
+.memed.66_3:
+  mv a0, s0
+  j .memed.66_5
+
+.memed.66_2:
+  th.lurw a0, s1, s0, 2
+  j .memed.66_6
+
+  .p2align 2
+  .text
+  .globl main.65
+  .type main.65, @function
+# leaf false
+main.65:
+.main.65_0:
   addi sp, sp, -32
   sd ra, 0(sp)
   sd s0, 8(sp)
@@ -51,7 +102,7 @@ main33.65:
   call memseti32
   mv a0, s0
   mv a1, s1
-  call memed8.66
+  call memed.66
   call minimbt_print_int
   li a0, 10
   call minimbt_print_char
@@ -64,57 +115,6 @@ main33.65:
 
   .p2align 2
   .text
-  .globl memed8.66
-  .type memed8.66, @function
-# leaf false
-memed8.66:
-.memed8.66_0:
-  addi sp, sp, -32
-  sd ra, 0(sp)
-  sd s0, 8(sp)
-  sd s1, 16(sp)
-  sd s2, 24(sp)
-  mv s0, a0
-  mv s1, a1
-  th.lurw a0, s1, s0, 2
-  li a1, -1919810
-  bne a0, a1, .memed8.66_2
-
-.memed8.66_1:
-  li a0, 1
-  bge a0, s0, .memed8.66_3
-
-.memed8.66_4:
-  addi a0, s0, -1
-  mv a1, s1
-  call memed8.66
-  mv s2, a0
-  addi a0, s0, -2
-  mv a1, s1
-  call memed8.66
-  add a0, s2, a0
-
-.memed8.66_5:
-  th.surw a0, s1, s0, 2
-
-.memed8.66_6:
-  ld ra, 0(sp)
-  ld s0, 8(sp)
-  ld s1, 16(sp)
-  ld s2, 24(sp)
-  addi sp, sp, 32
-  ret
-
-.memed8.66_3:
-  mv a0, s0
-  j .memed8.66_5
-
-.memed8.66_2:
-  th.lurw a0, s1, s0, 2
-  j .memed8.66_6
-
-  .p2align 2
-  .text
   .globl minimbt_main
   .type minimbt_main, @function
 # leaf false
@@ -124,7 +124,7 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main33.65
+  call main.65
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
