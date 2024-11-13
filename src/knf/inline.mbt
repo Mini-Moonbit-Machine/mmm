@@ -560,7 +560,7 @@ pub fn InlineEnv::inline(
                   ty.is_fn_like().to_int()
                 self.tracer.println("Fn like \{fn_like_args}")
                 self.tracer.println("Inline threshold \{n} \{size(body)}")
-                let small_size_and_freq = size(body) < 5 && n < 5
+                let small_size_and_freq = size(body) < 5 && n < 10
                 let closure_with_non_rec = fn_like_args > 0 &&
                   not(is_loop(fundef)) &&
                   size(body) < 30

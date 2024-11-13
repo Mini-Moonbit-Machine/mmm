@@ -16,30 +16,37 @@ large_stack_end:
 __begin_text:
   .p2align 2
   .text
-  .globl small1.30
-  .type small1.30, @function
+  .globl rec2.30
+  .type rec2.30, @function
 # leaf true
-small1.30:
-.small1.30_0:
-  li a0, 5
+rec2.30:
+.rec2.30_5:
+
+.rec2.30_0:
+  li a1, 42
+  beq a0, a1, .rec2.30_1
+
+.rec2.30_2:
+  addi a0, a0, 1
+  j .rec2.30_0
+
+.rec2.30_1:
+  mv a0, zero
+
+.rec2.30_3:
   ret
 
   .p2align 2
   .text
-  .globl main21.32
-  .type main21.32, @function
+  .globl main21.31
+  .type main21.31, @function
 # leaf false
-main21.32:
-.main21.32_0:
+main21.31:
+.main21.31_0:
   addi sp, sp, -16
   sd ra, 0(sp)
-  call small1.30
-  call small1.30
-  call small1.30
-  call small1.30
-  call small1.30
   mv a0, zero
-  call rec2.31
+  call rec2.30
   ld ra, 0(sp)
   addi sp, sp, 16
   ret
@@ -55,37 +62,10 @@ minimbt_main:
   sd ra, 0(sp)
   sd s11, 8(sp)
   la s11, large_heap_end
-  call main21.32
+  call main21.31
   ld ra, 0(sp)
   ld s11, 8(sp)
   addi sp, sp, 16
-  ret
-
-  .p2align 2
-  .text
-  .globl rec2.31
-  .type rec2.31, @function
-# leaf true
-rec2.31:
-.rec2.31_5:
-
-.rec2.31_0:
-  li a1, 42
-  beq a0, a1, .rec2.31_1
-
-.rec2.31_2:
-  addi a0, a0, 1
-  j .rec2.31_0
-
-.rec2.31_1:
-
-.rec2.31_7:
-  li a0, 5
-
-.rec2.31_6:
-  mv a0, zero
-
-.rec2.31_3:
   ret
 
 __end_text:
