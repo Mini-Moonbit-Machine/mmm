@@ -565,6 +565,7 @@ pub fn WasmFnLoweringCtx::lower_insn(
     }
     ComputeAddress(..) =>
       self.tracer.abort("ComputeAddress should not appear in wasm backend")
+    _ => self.tracer.abort("Unsupported instruction")
   }
 }
 

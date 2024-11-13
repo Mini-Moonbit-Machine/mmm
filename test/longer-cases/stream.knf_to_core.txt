@@ -38,18 +38,18 @@
     br %1 b1() b2()
   }
   .bb #b1 () {
-    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
-    jump b3(f4.m0)
+    let %2: #(int32, int32) = pack 0, 0
+    jump b3(%2)
   }
   .bb #b2 () {
     let %3: int32 = add(%0, 1)
     let _ = store int32 offset(^1, 0 * @32) <- %3
-    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %0
-    jump b3(f4.m1)
+    let %5: #(int32, int32) = pack 1, %0
+    jump b3(%5)
   }
-  .bb #b3 ((int32, int32)) {
-    let %6: int32 = load int32 field($b3.0, 0 * @(@32, @(@32, @32)))
-    let %7: int32 = load int32 field($b3.0, 1 * @(@32, @(@32, @32)))
+  .bb #b3 (#(int32, int32)) {
+    let %6: int32 = extract $b3.0 0
+    let %7: int32 = extract $b3.0 1
     let %8: bool = eq(%6, 0)
     br %8 b4() b5()
   }
@@ -59,46 +59,46 @@
     br %10 b6() b7()
   }
   .bb #b5 () {
-    let _ = alloc <m4: (int32, int32) heap(2)> <- [0] = 1, [1] = %7
-    jump b9(f4.m4)
+    let %15: #(int32, int32) = pack 1, %7
+    jump b9(%15)
   }
   .bb #b6 () {
-    let _ = alloc <m2: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
-    jump b8(f4.m2)
+    let %11: #(int32, int32) = pack 0, 0
+    jump b8(%11)
   }
   .bb #b7 () {
     let %12: int32 = add(%9, 1)
     let _ = store int32 offset(^3, 0 * @32) <- %12
-    let _ = alloc <m3: (int32, int32) heap(2)> <- [0] = 1, [1] = %9
-    jump b8(f4.m3)
+    let %14: #(int32, int32) = pack 1, %9
+    jump b8(%14)
   }
-  .bb #b8 ((int32, int32)) {
+  .bb #b8 (#(int32, int32)) {
     jump b9($b8.0)
   }
-  .bb #b9 ((int32, int32)) {
-    let %16: int32 = load int32 field($b9.0, 0 * @(@32, @(@32, @32)))
-    let %17: int32 = load int32 field($b9.0, 1 * @(@32, @(@32, @32)))
+  .bb #b9 (#(int32, int32)) {
+    let %16: int32 = extract $b9.0 0
+    let %17: int32 = extract $b9.0 1
     let %18: bool = eq(%16, 0)
     br %18 b10() b11()
   }
   .bb #b10 () {
-    let _ = alloc <m5: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
-    jump b12(f4.m5)
+    let %19: #(int32, int32) = pack 0, 0
+    jump b12(%19)
   }
   .bb #b11 () {
     let %20: int32 = add(^5, %17)
-    let _ = alloc <m6: (int32, int32) heap(2)> <- [0] = 1, [1] = %20
-    jump b12(f4.m6)
+    let %21: #(int32, int32) = pack 1, %20
+    jump b12(%21)
   }
-  .bb #b12 ((int32, int32)) {
-    let %22: int32 = load int32 field($b12.0, 0 * @(@32, @(@32, @32)))
-    let %23: int32 = load int32 field($b12.0, 1 * @(@32, @(@32, @32)))
+  .bb #b12 (#(int32, int32)) {
+    let %22: int32 = extract $b12.0 0
+    let %23: int32 = extract $b12.0 1
     let %24: bool = eq(%22, 0)
     br %24 b13() b14()
   }
   .bb #b13 () {
-    let _ = alloc <m7: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
-    jump b21(f4.m7)
+    let _ = alloc <m0: (int32, int32) heap(2)> <- [0] = 0, [1] = 0
+    jump b21(f4.m0)
   }
   .bb #b14 () {
     let %26: bool = le(^6, %23)
@@ -115,8 +115,8 @@
     br %27 b18() b19()
   }
   .bb #b18 () {
-    let _ = alloc <m8: (int32, int32) heap(2)> <- [0] = 1, [1] = %23
-    jump b20(f4.m8)
+    let _ = alloc <m1: (int32, int32) heap(2)> <- [0] = 1, [1] = %23
+    jump b20(f4.m1)
   }
   .bb #b19 () {
     let %29: (int32, int32) = apply self(())

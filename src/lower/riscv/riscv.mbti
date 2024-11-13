@@ -64,7 +64,7 @@ impl Liveness {
 
 pub struct MBasicBlock {
   pub id : @moonbitlang/minimbt/riscv.Label
-  pub params : Array[@moonbitlang/minimbt/riscv.AnyReg]
+  pub params : Array[@moonbitlang/minimbt/riscv.RegPack]
   pub insns : Array[@moonbitlang/minimbt/riscv.RvAsm]
   pub control : Array[@moonbitlang/minimbt/riscv.RvAsm]
 }
@@ -116,7 +116,7 @@ pub struct RiscvFnLoweringCtx {
   pub reg_classes : Array[@moonbitlang/minimbt/riscv.RegClass]
   pub uses : Map[@core.InsnRef, Int]
   pub value_ref_count : @hashmap.T[@core.Value, Int]
-  pub value_regs : @hashmap.T[@core.Value, @moonbitlang/minimbt/riscv.AnyReg]
+  pub value_regs : @hashmap.T[@core.Value, @moonbitlang/minimbt/riscv.RegPack]
   pub closure_reg : @moonbitlang/minimbt/riscv.AnyReg
   pub alloc_reg : @moonbitlang/minimbt/riscv.AnyReg
   pub order : @lower.LoweringOrder
@@ -125,7 +125,7 @@ pub struct RiscvFnLoweringCtx {
   pub ialias : Array[@moonbitlang/minimbt/riscv.AnyReg]
   pub iimm : @hashmap.T[UInt64, @moonbitlang/minimbt/riscv.AnyReg]
   pub iimm_life : @hashmap.T[UInt64, Int]
-  pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.AnyReg]]
+  pub block_params_assignment : @hashmap.T[@core.BlockRef, Array[@moonbitlang/minimbt/riscv.RegPack]]
   pub used_primitive : @hashset.T[String]
   pub is_leaf : Bool
   pub mfn : MFn?

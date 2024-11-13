@@ -125,7 +125,8 @@ fn build_closure(
       let r2 = self.build_closure!(k2, func_def_list, let_k2, ty_env)
       (IfLe(x, y, bind_all(r1), bind_all(r2)), func_def_list, let_list)
     }
-    Tuple(fields) => (MakeTuple(fields), func_def_list, let_list)
+    Tuple(fields) | UnboxedTuple(fields) =>
+      (MakeTuple(fields), func_def_list, let_list)
     Get(array, index) => (ArrayGet(array, index), func_def_list, let_list)
     Put(array, index, value) =>
       (ArrayPut(array, index, value), func_def_list, let_list)
@@ -135,7 +136,7 @@ fn build_closure(
     Var(x) => (Var(x), func_def_list, let_list)
     Apply(function, args) =>
       (CallClosure(function, args), func_def_list, let_list)
-    LetTuple(xts, y, k) => {
+    LetTuple(xts, y, k) | LetUnboxedTuple(xts, y, k) => {
       let new_binder = xts.map(fn(xt) { (xt.0, self.type_to_lowtype(xt.1)) })
       let_list.push(Binding::LetTuple(new_binder, y))
       // update type environment

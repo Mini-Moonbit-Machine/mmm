@@ -220,6 +220,8 @@
     (Apply (ty Type) (f Value) (args Values))
     (ExtCall (ty Type) (ext_f String) (args Values))
     (LoadSymbol (ty Type) (sref SymbolRef))
+    (Pack (ty Type) (vals Values))
+    (Extract (ty Type) (val Value) (index Int32))
     (Alloc (ty Type) (mref MemRef) (fills Fills))
     (Store (ty Type) (ma Address) (val Value))
     (Load (ty Type) (ma Address))
@@ -239,6 +241,12 @@
 
 (decl pure insn_load_symbol (Type SymbolRef) Insn)
 (extractor (insn_load_symbol ty sym) (Insn.LoadSymbol ty sym))
+
+(decl pure insn_pack (Type Values) Insn)
+(extractor (insn_pack ty args) (Insn.Pack ty args))
+
+(decl pure insn_extract (Type Value Int32) Insn)
+(extractor (insn_extract ty val index) (Insn.Extract ty val index))
 
 (decl pure insn_alloc (Type MemRef Fills) Insn)
 (extractor (insn_alloc ty mref fills) (Insn.Alloc ty mref fills))

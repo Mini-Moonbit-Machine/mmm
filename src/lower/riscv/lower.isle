@@ -1,12 +1,12 @@
 ;;;; Rules for immediate values
 
-(decl lower_imm (Type UInt64) AnyReg)
+(decl lower_imm (Type UInt64) RegPack)
 
 (rule 1 (lower_imm (ty_double) 0)
   (rv_fmv_dx (zero_reg)))
 
 (rule (lower_imm (ty_double) c)
-  (let ((c1 AnyReg (lower_imm (ty_int64) c)))
+  (let ((c1 RegPack (lower_imm (ty_int64) c)))
     (rv_fmv_dx c1)))
 
 (rule 1 (lower_imm (ty_int32) 0)
@@ -23,11 +23,11 @@
   (let ((i64_imm Int64 (i64_sext_u64 (ty_int64) c)))
     (rv_li i64_imm)))
 
-(decl lower_recent_imm (Type UInt64) AnyReg)
+(decl lower_recent_imm (Type UInt64) RegPack)
 (extern constructor lower_recent_imm lower_recent_imm)
 
-(decl lower_value (Value) AnyReg)
-(convert Value AnyReg lower_value)
+(decl lower_value (Value) RegPack)
+(convert Value RegPack lower_value)
 
 (decl lower_x_value (Value) XReg)
 (rule (lower_x_value x) (xreg_new x))
@@ -37,10 +37,10 @@
 (rule (lower_f_value x) (freg_new x))
 (convert Value FReg lower_value)
 
-(decl mr (AnyReg) AnyReg)
+(decl mr (RegPack) RegPack)
 (extern constructor mr mark_maybe_aliased)
 
-(decl put_in_reg (Value) AnyReg)
+(decl put_in_reg (Value) RegPack)
 (extern constructor put_in_reg put_in_reg)
 
 (decl block_label (BlockRef) Label)
@@ -225,7 +225,7 @@
 
 ;;;; Lower instructions
 
-(decl partial lower (Insn) AnyReg)
+(decl partial lower (Insn) RegPack)
 
 ;;;; Rules for i32 additions
 ;;;; Notice: the official template uses 64b instructions for 32b operations
@@ -291,7 +291,7 @@
       )))) (ty_int32)))))
   (lower_mod m n))
 
-(decl lower_mod (Value Value) AnyReg)
+(decl lower_mod (Value Value) RegPack)
 
 (rule (lower_mod m n)
   (mr (rv_remw m n)))
@@ -422,31 +422,37 @@
 
 ;;;; Rules for other instructions
 
-(decl lower_load_fn (FnRef) AnyReg)
+(decl lower_load_fn (FnRef) RegPack)
 (extern constructor lower_load_fn lower_load_fn)
 
-(decl lower_call (Type Fn Values) AnyReg)
+(decl lower_call (Type Fn Values) RegPack)
 (extern constructor lower_call lower_call)
 
-(decl lower_ext_call (Type String Values) AnyReg)
+(decl lower_ext_call (Type String Values) RegPack)
 (extern constructor lower_ext_call lower_ext_call)
 
-(decl lower_apply (Type Value Values) AnyReg)
+(decl lower_apply (Type Value Values) RegPack)
 (extern constructor lower_apply lower_apply)
 
-(decl lower_load_symbol (Type SymbolRef) AnyReg)
+(decl lower_load_symbol (Type SymbolRef) RegPack)
 (extern constructor lower_load_symbol lower_load_symbol)
 
-(decl lower_store (Type Address Value) AnyReg)
+(decl lower_store (Type Address Value) RegPack)
 (extern constructor lower_store lower_store)
 
-(decl lower_load (Type Address) AnyReg)
+(decl lower_load (Type Address) RegPack)
 (extern constructor lower_load lower_load)
 
-(decl lower_alloc (Type MemRef Fills) AnyReg)
+(decl lower_alloc (Type MemRef Fills) RegPack)
 (extern constructor lower_alloc lower_alloc)
 
-(decl lower_compute_address (Address) AnyReg)
+(decl lower_pack (Type Values) RegPack)
+(extern constructor lower_pack lower_pack)
+
+(decl lower_extract (Type Value Int32) RegPack)
+(extern constructor lower_extract lower_extract)
+
+(decl lower_compute_address (Address) RegPack)
 (extern constructor lower_compute_address lower_compute_address)
 
 (rule (lower (insn_ext_call ty f args))
@@ -469,6 +475,12 @@
 
 (rule (lower (insn_alloc ty mref fills))
   (mr (lower_alloc ty mref fills)))
+
+(rule (lower (insn_pack ty vals))
+  (mr (lower_pack ty vals)))
+
+(rule (lower (insn_extract ty val index))
+  (mr (lower_extract ty val index)))
 
 (rule (lower (insn_compute_address ma))
   (mr (lower_compute_address ma)))

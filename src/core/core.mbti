@@ -69,6 +69,7 @@ pub enum Control {
 impl Control {
   op_equal(Self, Self) -> Bool
   replace(Self, (Value) -> Value) -> Self
+  replace_target(Self, (BlockRef) -> BlockRef) -> Self
   successors(Self) -> Array[BlockRef]
   to_string(Self) -> String
 }
@@ -183,6 +184,8 @@ pub enum Insn {
   ExtCall(Type, String, Array[Value])
   LoadSymbol(Type, SymbolRef)
   Alloc(Type, MemRef, Array[Fill])
+  Pack(Type, Array[Value])
+  Extract(Type, Value, Int)
   Store(Type, Address, Value)
   Load(Type, Address)
   ComputeAddress(Address)
@@ -308,6 +311,7 @@ pub enum Type {
   ClosureFn(Array[Type], Type)
   DirectFn(Array[Type], Type)
   Tuple(Array[Type])
+  UnboxedTuple(Array[Type])
   Array(Type)
   Ptr
 }

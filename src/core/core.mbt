@@ -160,6 +160,7 @@ pub enum Type {
   ClosureFn(~params : Array[Type], ~ty : Type) // (fn_ptr, closure_args...)
   DirectFn(~params : Array[Type], ~ty : Type) // fn_ptr itself
   Tuple(~fields : Array[Type])
+  UnboxedTuple(~fields : Array[Type])
   Array(~elem : Type)
   Ptr
 } derive(Show, Eq)
@@ -209,6 +210,8 @@ pub enum Insn {
   ExtCall(~ty : Type, ~ext_f : String, ~args : Values)
   LoadSymbol(~ty : Type, ~sref : SymbolRef)
   Alloc(~ty : Type, ~mref : MemRef, ~fills : Fills)
+  Pack(~ty : Type, ~vals : Values)
+  Extract(~ty : Type, ~val : Value, ~index : Int)
   Store(~ty : Type, ~ma : Address, ~val : Value)
   Load(~ty : Type, ~ma : Address)
   ComputeAddress(~ma : Address)
@@ -272,8 +275,9 @@ pub fn Insn::ty(self : Insn) -> Type {
     Op(~ty, ..)
     | Call(~ty, ..)
     | Apply(~ty, ..)
-    | ExtCall(~ty, ..) | LoadSymbol(~ty, ..) | Alloc(~ty, ..) | Load(~ty, ..) =>
-      ty
+    | ExtCall(~ty, ..)
+    | LoadSymbol(~ty, ..)
+    | Alloc(~ty, ..) | Load(~ty, ..) | Pack(~ty, ..) | Extract(~ty, ..) => ty
     Store(..) => Type::Unit
     ComputeAddress(..) => Type::Ptr
   }
@@ -309,6 +313,7 @@ pub fn Type::width(self : Type) -> Width {
     ClosureFn(..) => WidthPtr
     DirectFn(..) => WidthPtr
     Tuple(..) => WidthPtr
+    UnboxedTuple(..) => WidthPtr
     Array(..) => WidthPtr
     Ptr => WidthPtr
   }
@@ -337,6 +342,7 @@ pub fn Type::size_of_lp64(self : Type) -> Int {
     ClosureFn(..) => 8
     DirectFn(..) => 8
     Tuple(..) => 8
+    UnboxedTuple(..) => 8
     Array(..) => 8
     Ptr => 8
   }
@@ -352,6 +358,7 @@ pub fn Type::size_of_ilp32(self : Type) -> Int {
     ClosureFn(..) => 4
     DirectFn(..) => 4
     Tuple(..) => 4
+    UnboxedTuple(..) => 4
     Array(..) => 4
     Ptr => 4
   }
@@ -552,6 +559,8 @@ pub fn replace(self : Insn, map : (Value) -> Value) -> Insn {
     Apply(~ty, ~f, ~args) => Apply(~ty, f=map(f), args=args.map(map))
     ExtCall(~ty, ~ext_f, ~args) => ExtCall(~ty, ~ext_f, args=args.map(map))
     LoadSymbol(..) => self
+    Pack(~ty, ~vals) => Pack(~ty, vals=vals.map(map))
+    Extract(~ty, ~val, ~index) => Extract(~ty, val=map(val), ~index)
     Alloc(~ty, ~mref, ~fills) =>
       Alloc(~ty, ~mref, fills=fills.map(fn(rf) { rf.replace(map) }))
     Store(~ty, ~ma, ~val) => Store(~ty, ma=ma.replace(map), val=map(val))
@@ -733,8 +742,20 @@ pub impl Hash for Insn with hash_combine(self, hasher) {
       hasher.combine_int(5)
       hasher.combine(sref)
     }
-    Alloc(~mref, ~fills, ..) => {
+    Pack(~vals, ..) => {
       hasher.combine_int(6)
+      hasher.combine(vals.length())
+      for val in vals {
+        hasher.combine(val)
+      }
+    }
+    Extract(~val, ~index, ..) => {
+      hasher.combine_int(7)
+      hasher.combine(val)
+      hasher.combine(index)
+    }
+    Alloc(~mref, ~fills, ..) => {
+      hasher.combine_int(8)
       hasher.combine(mref)
       hasher.combine(fills.length())
       for fill in fills {
@@ -742,16 +763,16 @@ pub impl Hash for Insn with hash_combine(self, hasher) {
       }
     }
     Store(~ma, ~val, ..) => {
-      hasher.combine_int(7)
+      hasher.combine_int(9)
       hasher.combine(ma)
       hasher.combine(val)
     }
     Load(~ma, ..) => {
-      hasher.combine_int(8)
+      hasher.combine_int(10)
       hasher.combine(ma)
     }
     ComputeAddress(~ma, ..) => {
-      hasher.combine_int(9)
+      hasher.combine_int(11)
       hasher.combine(ma)
     }
   }

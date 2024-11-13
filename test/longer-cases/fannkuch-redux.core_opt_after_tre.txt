@@ -200,9 +200,9 @@
     let %9: unit = call f7(f8.m7, 9, f8.m0, f8.m1, f8.m2, f8.m3, f8.m6, f8.m5, f8.m4)
     let %10: int32 = load int32 field(f8.m4, 0 * @32)
     let %11: int32 = load int32 field(f8.m5, 0 * @32)
-    let _ = alloc <m8: (int32, int32) heap(2)> <- [0] = %10, [1] = %11
-    let %13: int32 = load int32 field(f8.m8, 0 * @(@32, @(@32, @32)))
-    let %14: int32 = load int32 field(f8.m8, 1 * @(@32, @(@32, @32)))
+    let %12: #(int32, int32) = pack %10, %11
+    let %13: int32 = extract %12 0
+    let %14: int32 = extract %12 1
     let %15: unit = ext_call minimbt_print_int(%14)
     let %16: unit = ext_call minimbt_print_int(%13)
     return %16

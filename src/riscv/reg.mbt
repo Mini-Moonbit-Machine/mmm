@@ -8,16 +8,47 @@ pub type Label String derive(Show, Eq, Hash)
 pub enum RegClass {
   X
   F
+  P
 } derive(Eq, Compare, Hash, Show)
 
 pub trait ToAnyReg {
   to_any(Self) -> AnyReg
 }
 
+pub enum RegPack {
+  Single(AnyReg)
+  Pack(Array[AnyReg])
+} derive(Eq)
+
 pub struct AnyReg {
   mut reg : Int
   class : RegClass
-} derive(Eq, Compare, Hash)
+} derive(Eq, Hash, Compare)
+
+pub fn RegPack::get_single(self : RegPack) -> AnyReg {
+  match self {
+    Single(r) => r
+    Pack(_) => @util.t.abort("not a single register")
+  }
+}
+
+pub fn RegPack::get_pack(self : RegPack) -> Array[AnyReg] {
+  match self {
+    Single(_) => @util.t.abort("not a register pack")
+    Pack(rs) => rs
+  }
+}
+
+pub fn RegPack::all(self : RegPack) -> Array[AnyReg] {
+  match self {
+    Single(r) => [r]
+    Pack(rs) => rs
+  }
+}
+
+pub fn AnyReg::pack(self : AnyReg) -> RegPack {
+  Single(self)
+}
 
 pub fn AnyReg::to_any(self : AnyReg) -> AnyReg {
   self
@@ -45,7 +76,19 @@ pub fn AnyReg::pretty(self : AnyReg) -> String {
       } else {
         "fv\{self.reg}"
       }
+    P => @util.t.abort("invalid register class")
   }
+}
+
+pub fn RegPack::to_string(self : RegPack) -> String {
+  match self {
+    Single(r) => r.to_string()
+    Pack(rs) => rs.to_string()
+  }
+}
+
+pub fn RegPack::output(self : RegPack, logger : Logger) -> Unit {
+  logger.write_string(self.to_string())
 }
 
 pub fn any_reg(reg : Int, class : RegClass) -> AnyReg {

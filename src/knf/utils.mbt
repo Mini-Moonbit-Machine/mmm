@@ -58,6 +58,18 @@ pub fn knf_max_counter(knf : Knf) -> Int {
           knf_max_counter(e),
         ),
       )
+    UnboxedTuple(xs) =>
+      xs.map(fn(x) { x.slot }).fold(init=0, fn(a, b) { @math.maximum(a, b) })
+    LetUnboxedTuple(xts, n, e) =>
+      @math.maximum(
+        n.slot,
+        @math.maximum(
+          xts
+          .map(fn(x) { x.0.slot })
+          .fold(init=0, fn(a, b) { @math.maximum(a, b) }),
+          knf_max_counter(e),
+        ),
+      )
     Get(x, y) => @math.maximum(x.slot, y.slot)
     Put(x, y, z) => @math.maximum(x.slot, @math.maximum(y.slot, z.slot))
     ExternalFunctionApplication(_, xs) =>

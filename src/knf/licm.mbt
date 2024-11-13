@@ -65,6 +65,7 @@ pub fn loop_inv(knf : Knf, env : ImmutNameSet) -> Bool {
     IfEq(_, _, _, _) | IfLe(_, _, _, _) => false
     Let(_, _, _) => false
     LetTuple(_, _, _) => false
+    LetUnboxedTuple(_, _, _) => false
     LetRec(_, _) => false
     Unit | Bool(_) | Int(_) | Double(_) => false
     Neg(_) | Add(_, _) | Sub(_, _) | Mul(_, _) | Div(_, _) => false
@@ -75,6 +76,7 @@ pub fn loop_inv(knf : Knf, env : ImmutNameSet) -> Bool {
     ExternalFunctionApplication(f, xs) =>
       xs.iter().all(fn(x) { env.contains(x) }) && loop_inv_ext_map.contains(f)
     Tuple(_) => false
+    UnboxedTuple(_) => false
     Var(x) => env.contains(x)
     Get(_, _) => false
   }
@@ -85,6 +87,7 @@ pub fn loop_inv_2(knf : Knf, env : ImmutNameSet) -> Bool {
     IfEq(_, _, _, _) | IfLe(_, _, _, _) => false
     Let(_, _, _) => false
     LetTuple(_, _, _) => false
+    LetUnboxedTuple(_, _, _) => false
     LetRec(_, _) => false
     Unit | Bool(_) | Int(_) | Double(_) => false
     Neg(_) | Add(_, _) | Sub(_, _) | Mul(_, _) | Div(_, _) => false
@@ -94,6 +97,7 @@ pub fn loop_inv_2(knf : Knf, env : ImmutNameSet) -> Bool {
     ExternalArray(_) => false
     ExternalFunctionApplication(_, _) => false
     Tuple(_) => false
+    UnboxedTuple(_) => false
     Var(_) => false
     Get(x, y) => env.contains(x) && env.contains(y)
   }

@@ -30,6 +30,7 @@ pub fn knf_free_vars(k : Knf) -> FreeSet {
       fv
     }
     Tuple(fields) => FreeSet::from_array(fields)
+    UnboxedTuple(fields) => FreeSet::from_array(fields)
     Let((x, _), e1, e2) => {
       let fv1 = knf_free_vars(e1)
       let fv2 = knf_free_vars(e2)
@@ -46,6 +47,13 @@ pub fn knf_free_vars(k : Knf) -> FreeSet {
       fv
     }
     LetTuple(xts, y, k) => {
+      let fv = knf_free_vars(k)
+      // xts is bounded
+      xts.each(fn(xt) { fv.remove(xt.0) })
+      fv.insert(y)
+      fv
+    }
+    LetUnboxedTuple(xts, y, k) => {
       let fv = knf_free_vars(k)
       // xts is bounded
       xts.each(fn(xt) { fv.remove(xt.0) })
@@ -147,6 +155,7 @@ pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {
         }
       }
     Tuple(fields) => FreeSet::from_array(fields)
+    UnboxedTuple(fields) => FreeSet::from_array(fields)
     Let((x, _), e1, e2) => {
       let fv1 = self.knf_free_vars_closure(e1)
       let fv2 = self.knf_free_vars_closure(e2)
@@ -163,6 +172,13 @@ pub fn knf_free_vars_closure(self : FreeSetClosure, k : Knf) -> FreeSet {
       fv
     }
     LetTuple(xts, y, k) => {
+      let fv = self.knf_free_vars_closure(k)
+      // xts is bounded
+      xts.each(fn(xt) { fv.remove(xt.0) })
+      fv.insert(y)
+      fv
+    }
+    LetUnboxedTuple(xts, y, k) => {
       let fv = self.knf_free_vars_closure(k)
       // xts is bounded
       xts.each(fn(xt) { fv.remove(xt.0) })

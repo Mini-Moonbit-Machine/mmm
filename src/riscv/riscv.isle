@@ -1,4 +1,5 @@
 (type AnyReg (primitive `@riscv.AnyReg`))
+(type RegPack (primitive `@riscv.RegPack`))
 (type XReg (primitive `@riscv.Reg`))
 (type FReg (primitive `@riscv.FReg`))
 (type Label (primitive `@riscv.Label`))
@@ -114,21 +115,21 @@
 (decl emit_risc_v (RvAsm) Unit)
 (extern constructor emit_risc_v emit_risc_v)
 
-(decl xreg_new (AnyReg) XReg)
+(decl xreg_new (RegPack) XReg)
 (extern constructor xreg_new xreg_new)
-(convert AnyReg XReg xreg_new)
+(convert RegPack XReg xreg_new)
 
-(decl freg_new (AnyReg) FReg)
+(decl freg_new (RegPack) FReg)
 (extern constructor freg_new freg_new)
-(convert AnyReg FReg freg_new)
+(convert RegPack FReg freg_new)
 
-(decl pure xreg_to_reg (XReg) AnyReg)
+(decl pure xreg_to_reg (XReg) RegPack)
 (extern constructor xreg_to_reg xreg_to_reg)
-(convert XReg AnyReg xreg_to_reg)
+(convert XReg RegPack xreg_to_reg)
 
-(decl pure freg_to_reg (FReg) AnyReg)
+(decl pure freg_to_reg (FReg) RegPack)
 (extern constructor freg_to_reg freg_to_reg)
-(convert FReg AnyReg freg_to_reg)
+(convert FReg RegPack freg_to_reg)
 
 (decl rv_add (XReg XReg) XReg)
 (rule (rv_add x y)

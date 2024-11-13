@@ -47,6 +47,7 @@ enum Object {
   Double(Double)
   FnPtr(FnRef)
   Mem(mut ~fields : Array[Object])
+  Multi(mut ~fields : Array[Object])
 } derive(Show)
 
 pub struct Ctx {
@@ -502,6 +503,22 @@ fn CoreInterpreter::eval_insn(
         None => return fail!("symbol not found")
       }
       (ctx, obj)
+    }
+    Pack(~vals, ..) => {
+      let objs = CoreInterpreter::eval_values!(ctx, vals)
+      (ctx, Object::Multi(fields=objs))
+    }
+    Extract(~val, ~index, ..) => {
+      let obj = CoreInterpreter::eval_value!(ctx, val)
+      match obj {
+        Multi(~fields) =>
+          if index < fields.length() {
+            (ctx, fields[index])
+          } else {
+            fail!("field index out of bounds")
+          }
+        _ => fail!("not a multi-value object")
+      }
     }
     Alloc(~mref, ~fills, ..) => {
       let mut ctx = ctx

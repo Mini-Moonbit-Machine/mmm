@@ -84,6 +84,21 @@ fn PrettyKnf::print_one_level(
       logger.write_string(") = \{y}\n")
       self.print_one_level(logger, e)
     }
+    LetUnboxedTuple(name_types, y, e) => {
+      logger.write_string("let unboxed (")
+      let mut first = true
+      for nt in name_types {
+        if first {
+          first = false
+        } else {
+          logger.write_string(", ")
+        }
+        let (name, ty) = nt
+        logger.write_string("\{name}: \{ty}")
+      }
+      logger.write_string(") = \{y}\n")
+      self.print_one_level(logger, e)
+    }
     LetRec(fundef, e) => {
       let { name, ty, args, body } = fundef
       logger.write_string("let rec \{name}: \{ty} = (")
@@ -115,6 +130,14 @@ fn PrettyKnf::print_one_level(
     }
     Tuple(es) => {
       logger.write_string("Tuple([")
+      for e in es {
+        logger.write_string(e.to_string())
+        logger.write_string(", ")
+      }
+      logger.write_string("])")
+    }
+    UnboxedTuple(es) => {
+      logger.write_string("UnboxedTuple([")
       for e in es {
         logger.write_string(e.to_string())
         logger.write_string(", ")

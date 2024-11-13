@@ -31,7 +31,7 @@ pub struct MFn {
 
 pub struct MBasicBlock {
   id : Label
-  params : Array[AnyReg]
+  params : Array[RegPack]
   insns : Array[MInsn]
   control : Array[MInsn]
 }

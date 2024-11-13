@@ -341,8 +341,14 @@ fn top_int_reduce(
     }
     Var(x) => f(x, fn(x) { Var(x) })
     Tuple(xs) => fs(xs, fn(xs) { Tuple(xs) })
+    UnboxedTuple(xs) => fs(xs, fn(xs) { UnboxedTuple(xs) })
     LetTuple(xts, y, e) =>
       f(y, fn(y) { LetTuple(xts, y, top_int_reduce(knf_env, env, e, top)) })
+    LetUnboxedTuple(xts, y, e) =>
+      f(
+        y,
+        fn(y) { LetUnboxedTuple(xts, y, top_int_reduce(knf_env, env, e, top)) },
+      )
     Get(x, y) => f(x, fn(x) { f(y, fn(y) { Get(x, y) }) })
     Put(x, y, z) => f(x, fn(x) { f(y, fn(y) { f(z, fn(z) { Put(x, y, z) }) }) })
     Apply(func, xs) => f(func, fn(func) { fs(xs, fn(xs) { Apply(func, xs) }) })
@@ -392,7 +398,10 @@ fn beta_reduce(env : Env[Name], knf : Knf) -> Knf {
     }
     Var(x) => Var(f(x))
     Tuple(xs) => Tuple(xs.map(f))
+    UnboxedTuple(xs) => UnboxedTuple(xs.map(f))
     LetTuple(xts, y, e) => LetTuple(xts, f(y), beta_reduce(env, e))
+    LetUnboxedTuple(xts, y, e) =>
+      LetUnboxedTuple(xts, f(y), beta_reduce(env, e))
     Get(x, y) => Get(f(x), f(y))
     Put(x, y, z) => Put(f(x), f(y), f(z))
     Apply(func, xs) => Apply(f(func), xs.map(f))
@@ -471,6 +480,7 @@ fn alpha_rename(knf_env : KnfEnv, env : Env[Name], knf : Knf) -> Knf {
     }
     Apply(func, xs) => Apply(f(func), xs.map(f))
     Tuple(xs) => Tuple(xs.map(f))
+    UnboxedTuple(xs) => UnboxedTuple(xs.map(f))
     LetTuple(xts, y, e) => {
       let new_xts = []
       let mut env = env
@@ -481,6 +491,17 @@ fn alpha_rename(knf_env : KnfEnv, env : Env[Name], knf : Knf) -> Knf {
         env = env.add(x, new_xt.0)
       }
       LetTuple(new_xts, f(y), alpha_rename(knf_env, env, e))
+    }
+    LetUnboxedTuple(xts, y, e) => {
+      let new_xts = []
+      let mut env = env
+      for xt in xts {
+        let (x, t) = xt
+        let new_xt = (knf_env.new_named_temp(x), t)
+        new_xts.push(new_xt)
+        env = env.add(x, new_xt.0)
+      }
+      LetUnboxedTuple(new_xts, f(y), alpha_rename(knf_env, env, e))
     }
     Get(x, y) => Get(f(x), f(y))
     Put(x, y, z) => Put(f(x), f(y), f(z))

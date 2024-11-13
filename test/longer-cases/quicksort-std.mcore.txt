@@ -142,31 +142,31 @@ quick_sort.395:
   sd s6, 56(sp)
   sd s7, 64(sp)
   sd s8, 72(sp)
-  mv s1, a0
-  mv s0, a1
-  mv s3, a2
+  mv s2, a0
+  mv s3, a1
+  mv s0, a2
 
 .quick_sort.395_0:
-  sub a0, s3, s0
+  sub a0, s0, s3
   li a1, 16
   bge a1, a0, .quick_sort.395_1
 
 .quick_sort.395_2:
-  addi s6, s11, -4
-  andi s11, s6, -8
-  sub a0, s3, s0
+  addi s5, s11, -4
+  andi s11, s5, -8
+  sub a0, s0, s3
   srai a1, a0, 2
   slli a1, a1, 1
-  add s2, s0, a1
+  add s1, s3, a1
   li a1, 8
   blt a0, a1, .quick_sort.395_4
 
 .quick_sort.395_3:
   srai a1, a0, 2
-  add s4, s0, a1
+  add s4, s3, a1
   li a2, 3
   mulw a1, a1, a2
-  add s5, s0, a1
+  add s6, s3, a1
   addi a0, a0, -1
   li a1, 50
   blt a0, a1, .quick_sort.395_6
@@ -178,141 +178,135 @@ quick_sort.395:
 .quick_sort.395_76:
   mv a0, s7
   mv a1, s4
-  mv a2, s1
-  mv a3, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
   mv a0, s4
   mv a1, s8
-  mv a2, s1
-  mv a3, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
   mv a0, s7
   mv a1, s4
-  mv a2, s1
-  mv a3, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
 
 .quick_sort.395_21:
-  addi s7, s2, -1
-  addi s8, s2, 1
+  addi s7, s1, -1
+  addi s8, s1, 1
 
 .quick_sort.395_101:
   mv a0, s7
-  mv a1, s2
-  mv a2, s1
-  mv a3, s6
+  mv a1, s1
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
-  mv a0, s2
+  mv a0, s1
   mv a1, s8
-  mv a2, s1
-  mv a3, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
   mv a0, s7
-  mv a1, s2
-  mv a2, s1
-  mv a3, s6
+  mv a1, s1
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
 
 .quick_sort.395_22:
-  addi s7, s5, -1
-  addi s8, s5, 1
+  addi s7, s6, -1
+  addi s8, s6, 1
 
 .quick_sort.395_73:
   mv a0, s7
-  mv a1, s5
-  mv a2, s1
-  mv a3, s6
+  mv a1, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
-  mv a0, s5
+  mv a0, s6
   mv a1, s8
-  mv a2, s1
-  mv a3, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
   mv a0, s7
-  mv a1, s5
-  mv a2, s1
-  mv a3, s6
+  mv a1, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
 
 .quick_sort.395_7:
 
 .quick_sort.395_104:
   mv a0, s4
-  mv a1, s2
-  mv a2, s1
-  mv a3, s6
+  mv a1, s1
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
-  mv a0, s2
-  mv a1, s5
-  mv a2, s1
-  mv a3, s6
+  mv a0, s1
+  mv a1, s6
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
   mv a0, s4
-  mv a1, s2
-  mv a2, s1
-  mv a3, s6
+  mv a1, s1
+  mv a2, s2
+  mv a3, s5
   call sort_2.398
 
 .quick_sort.395_8:
-  lw a0, 0(s6)
+  lw a0, 0(s5)
   bne a0, zero, .quick_sort.395_10
 
 .quick_sort.395_9:
   li a0, 1
-  mv a1, a0
 
 .quick_sort.395_11:
-  addi a0, s11, -8
-  andi s11, a0, -8
-  sw s2, 0(a0)
-  sw a1, 4(a0)
-  lw a0, 0(a0)
-  addi a1, s3, -1
+  addi a0, s0, -1
 
 .quick_sort.395_79:
-  th.lurw a2, s1, a0, 2
-  th.lurw a3, s1, a1, 2
-  th.surw a3, s1, a0, 2
-  th.surw a2, s1, a1, 2
+  th.lurw a1, s2, s1, 2
+  th.lurw a2, s2, a0, 2
+  th.surw a2, s2, s1, 2
+  th.surw a1, s2, a0, 2
   mv a0, zero
 
 .quick_sort.395_18:
-  addi a0, s3, -1
-  th.lurw a3, s1, a0, 2
-  addi a2, s11, -4
-  andi s11, a2, -8
-  sw s0, 0(a2)
+  addi a0, s0, -1
+  th.lurw a2, s2, a0, 2
+  addi a1, s11, -4
+  andi s11, a1, -8
+  sw s3, 0(a1)
   addi a0, s11, -4
   andi s11, a0, -8
-  li a1, 1
-  sw a1, 0(a0)
+  li a3, 1
+  sw a3, 0(a0)
 
 .quick_sort.395_94:
-  mv a1, s0
-  mv a5, s1
-  mv a6, s3
+  mv a3, s3
+  mv a6, s2
+  mv a5, s0
 
 .quick_sort.395_83:
-  addi a4, a6, -2
-  blt a4, a1, .quick_sort.395_85
+  addi a4, a5, -2
+  blt a4, a3, .quick_sort.395_85
 
 .quick_sort.395_84:
-  th.lurw a4, a5, a1, 2
-  addi a7, a3, -1
+  th.lurw a4, a6, a3, 2
+  addi a7, a2, -1
   blt a7, a4, .quick_sort.395_87
 
 .quick_sort.395_86:
-  lw a4, 0(a2)
-  beq a4, a1, .quick_sort.395_88
+  lw a4, 0(a1)
+  beq a4, a3, .quick_sort.395_88
 
 .quick_sort.395_89:
-  lw a4, 0(a2)
+  lw a4, 0(a1)
 
 .quick_sort.395_97:
-  th.lurw a7, a5, a4, 2
-  th.lurw t0, a5, a1, 2
-  th.surw t0, a5, a4, 2
-  th.surw a7, a5, a1, 2
+  th.lurw a7, a6, a4, 2
+  th.lurw t0, a6, a3, 2
+  th.surw t0, a6, a4, 2
+  th.surw a7, a6, a3, 2
   mv a4, zero
 
 .quick_sort.395_95:
@@ -320,13 +314,13 @@ quick_sort.395:
   mv a4, zero
 
 .quick_sort.395_90:
-  lw a4, 0(a2)
+  lw a4, 0(a1)
   addi a4, a4, 1
-  sw a4, 0(a2)
+  sw a4, 0(a1)
   mv a4, zero
 
 .quick_sort.395_91:
-  addi a1, a1, 1
+  addi a3, a3, 1
   j .quick_sort.395_83
 
 .quick_sort.395_88:
@@ -338,45 +332,40 @@ quick_sort.395:
   j .quick_sort.395_91
 
 .quick_sort.395_85:
-  mv a1, zero
+  mv a2, zero
 
 .quick_sort.395_92:
 
 .quick_sort.395_19:
-  lw a1, 0(a2)
-  addi a4, s3, -1
+  lw a2, 0(a1)
+  addi a4, s0, -1
 
 .quick_sort.395_51:
-  th.lurw a3, s1, a1, 2
-  th.lurw a5, s1, a4, 2
-  th.surw a5, s1, a1, 2
-  th.surw a3, s1, a4, 2
-  mv a1, zero
+  th.lurw a3, s2, a2, 2
+  th.lurw a5, s2, a4, 2
+  th.surw a5, s2, a2, 2
+  th.surw a3, s2, a4, 2
+  mv a2, zero
 
 .quick_sort.395_20:
-  lw a1, 0(a2)
+  lw s1, 0(a1)
   lw a0, 0(a0)
-  li a2, 1
-  bne a0, a2, .quick_sort.395_13
+  li a1, 1
+  bne a0, a1, .quick_sort.395_13
 
 .quick_sort.395_12:
   li a0, 1
 
 .quick_sort.395_14:
-  addi a2, s11, -8
-  andi s11, a2, -8
-  sw a1, 0(a2)
-  sw a0, 4(a2)
-  lw s2, 0(a2)
-  mv a0, s1
-  mv a1, s0
-  mv a2, s2
+  mv a0, s2
+  mv a1, s3
+  mv a2, s1
   call quick_sort.395
-  addi s0, s2, 1
+  addi s3, s1, 1
   j .quick_sort.395_0
 
 .quick_sort.395_10:
-  mv a1, zero
+  mv a0, zero
   j .quick_sort.395_11
 
 .quick_sort.395_6:
@@ -388,12 +377,12 @@ quick_sort.395:
   j .quick_sort.395_8
 
 .quick_sort.395_1:
-  addi a0, s0, 1
+  addi a0, s3, 1
 
 .quick_sort.395_60:
-  mv a1, s1
-  mv a2, s0
-  mv a5, s3
+  mv a1, s2
+  mv a2, s3
+  mv a5, s0
 
 .quick_sort.395_55:
   addi a3, a5, -1

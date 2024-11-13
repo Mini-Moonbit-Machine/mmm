@@ -194,7 +194,13 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let knf = licm.go(1)
       let licm = @knf.LICM::new(tracer, knf)
       let knf = licm.go(2)
-      self.opt_knf = Some(knf)
+      if self.end_stage != Stages::Wasm {
+        let unbox = @knf.Unbox::new(tracer, knf)
+        let knf = unbox.go()
+        self.opt_knf = Some(knf)
+      } else {
+        self.opt_knf = Some(knf)
+      }
     }
     Js => {
       let knf = self.knf.unwrap()
@@ -243,12 +249,13 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
-      let wasm = lower_ctx.lower()
-      self.wasm = Some(wasm)
+      if self.end_stage == Wasm {
+        let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
+        let wasm = lower_ctx.lower()
+        self.wasm = Some(wasm)
+      }
     }
     CoreOpt2 => {
-      let _core_env = self.core_env.unwrap()
       let subtracer = tracer.new_subtracer(
         "CoreOpt2",
         opts.output_to_console,
@@ -257,7 +264,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let core = self.opt_core.unwrap()
       let opt = @core_opt.CoreOpt2::new(core, subtracer)
       opt.go()
-      self.core_env = Some(_core_env)
       self.opt_core_2 = Some(core)
     }
     Closure => {

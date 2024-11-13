@@ -216,14 +216,14 @@ pub fn KnfInterpreter::eval(
         _ => fail!("type mismatch, apply expects Closure or ExternFn")
       }
     }
-    Tuple(xs) => {
+    Tuple(xs) | UnboxedTuple(xs) => {
       let vs = []
       for x in xs {
         vs.push(find!(env, x))
       }
       Tuple(vs)
     }
-    LetTuple(xts, y, e) => {
+    LetTuple(xts, y, e) | LetUnboxedTuple(xts, y, e) => {
       let mut new_env = env
       let y = find!(env, y)
       match y {

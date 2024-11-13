@@ -48,6 +48,7 @@ enum Binding {
   Let(Name, Type, Knf)
   LetRec(FuncDef)
   LetTuple(Array[(Name, Type)], Name)
+  LetUnboxedTuple(Array[(Name, Type)], Name)
 }
 
 typealias LetList = Array[Binding]
@@ -63,6 +64,7 @@ fn bind_all(kr : KnfResult) -> Knf {
       Binding::Let(x, ty, e) => Let((x, ty), e, ret)
       Binding::LetRec(f) => LetRec(f, ret)
       Binding::LetTuple(xs, y) => LetTuple(xs, y, ret)
+      Binding::LetUnboxedTuple(xs, y) => LetUnboxedTuple(xs, y, ret)
     }
   }
   ret

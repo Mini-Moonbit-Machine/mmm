@@ -709,6 +709,31 @@ fn build_knf_expr(
       let val = self.add_insn(func, bb, insn)
       (ctx, bb, val)
     }
+    UnboxedTuple(xs) => {
+      let (ctx, xs_val) = self.build_names!(free_names, ctx, core, func, bb, xs)
+      let tys = []
+      for x in xs_val {
+        tys.push(self.get_type!(ctx, core, func, bb, x))
+      }
+      let ty = Type::UnboxedTuple(fields=tys)
+      let tup = self.add_insn(func, bb, Insn::Pack(~ty, vals=xs_val))
+      (ctx, bb, tup)
+    }
+    LetUnboxedTuple(fields, x, e) => {
+      let (ctx, x_val) = self.build_name!(free_names, ctx, core, func, bb, x)
+      let mut ctx = ctx
+      for i, field in fields {
+        let (name, field_ty) = field
+        let ty = self.lower_type!(field_ty, false)
+        let field_val = self.add_insn(
+          func,
+          bb,
+          Insn::Extract(~ty, val=x_val, index=i),
+        )
+        ctx = ctx.add_local_name_value_ty(name, field_val, ty)
+      }
+      self.build_knf_expr!(free_names, ctx, core, func, bb, e)
+    }
     Tuple(xs) => {
       let (ctx, xs_val) = self.build_names!(free_names, ctx, core, func, bb, xs)
       let tys = []

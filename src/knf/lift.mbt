@@ -138,6 +138,8 @@ fn count_let_rec(knf : Knf) -> Int {
     Apply(_, _) => 0
     Tuple(_) => 0
     LetTuple(_, _, e) => count_let_rec(e)
+    UnboxedTuple(_) => 0
+    LetUnboxedTuple(_, _, e) => count_let_rec(e)
     Get(_, _) => 0
     Put(_, _, _) => 0
     ExternalArray(_) => 0
@@ -202,6 +204,21 @@ fn LambdaLifter::lift(
         (l, k)
       }
     }
+    LetUnboxedTuple(xts, y, k) => {
+      let env = xts.fold(
+        init=env,
+        fn(env, xt) { env.add_name_type(xt.0, xt.1) },
+      )
+      if top {
+        self.top_bindings.push(Binding::LetUnboxedTuple(xts, y))
+        self.lift(env, k, top)
+      } else {
+        let l = [Binding::LetUnboxedTuple(xts, y)]
+        let (l2, k) = self.lift(env, k, top)
+        l.append(l2)
+        (l, k)
+      }
+    }
     ExternalArray(x) => {
       let (l, x, _) = env.eta_expand(x)
       (l, ExternalArray(x))
@@ -209,6 +226,10 @@ fn LambdaLifter::lift(
     Tuple(xs) => {
       let (l, ys, _) = env.eta_expand_names(xs)
       (l, Tuple(ys))
+    }
+    UnboxedTuple(xs) => {
+      let (l, ys, _) = env.eta_expand_names(xs)
+      (l, UnboxedTuple(ys))
     }
     Get(_, _) => ([], knf)
     Put(a, b, x) => {
@@ -362,6 +383,21 @@ fn LambdaLifter::lift_non_fvars(
         (l, k)
       }
     }
+    LetUnboxedTuple(xts, y, k) => {
+      let env = xts.fold(
+        init=env,
+        fn(env, xt) { env.add_name_type(xt.0, xt.1) },
+      )
+      if top {
+        self.top_bindings.push(Binding::LetUnboxedTuple(xts, y))
+        self.lift_non_fvars(env, k, top)
+      } else {
+        let l = [Binding::LetUnboxedTuple(xts, y)]
+        let (l2, k) = self.lift_non_fvars(env, k, top)
+        l.append(l2)
+        (l, k)
+      }
+    }
     ExternalArray(x) => {
       let (l, x, _) = env.eta_expand(x)
       (l, ExternalArray(x))
@@ -369,6 +405,10 @@ fn LambdaLifter::lift_non_fvars(
     Tuple(xs) => {
       let (l, ys, _) = env.eta_expand_names(xs)
       (l, Tuple(ys))
+    }
+    UnboxedTuple(xs) => {
+      let (l, ys, _) = env.eta_expand_names(xs)
+      (l, UnboxedTuple(ys))
     }
     Get(_, _) => ([], knf)
     Put(a, b, x) => {

@@ -149,7 +149,7 @@ pub fn BlockInfo::compute(mbb : MBasicBlock) -> BlockInfo {
   let upward_exposed = Set::new()
   let params_defs = Set::new()
   for param in mbb.params {
-    params_defs.insert(param)
+    param.all().each(fn(reg) { params_defs.insert(reg) })
   }
   // still SSA? no kills
   for insn in mbb.insns {

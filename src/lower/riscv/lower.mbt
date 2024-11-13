@@ -4,13 +4,15 @@ typealias MutSet[K] = @hashset.T[K]
 
 typealias RegClass = @riscv.RegClass
 
+typealias RegPack = @riscv.RegPack
+
 pub struct RiscvFnLoweringCtx {
   core : @core.Core
   func : @core.Fn
   reg_classes : Array[RegClass]
   uses : Map[@core.InsnRef, Int]
   value_ref_count : MutMap[@core.Value, Int]
-  value_regs : MutMap[@core.Value, AnyReg]
+  value_regs : MutMap[@core.Value, RegPack]
   closure_reg : AnyReg
   alloc_reg : AnyReg
   order : @lower.LoweringOrder
@@ -19,7 +21,7 @@ pub struct RiscvFnLoweringCtx {
   ialias : Array[AnyReg]
   iimm : MutMap[UInt64, AnyReg]
   iimm_life : MutMap[UInt64, Int]
-  block_params_assignment : MutMap[@core.BlockRef, Array[AnyReg]]
+  block_params_assignment : MutMap[@core.BlockRef, Array[RegPack]]
   used_primitive : MutSet[String]
   mut is_leaf : Bool
   mut mfn : MFn?
@@ -31,7 +33,7 @@ pub struct RiscvFnLoweringCtx {
 fn RiscvFnLoweringCtx::value_regs_to_string(
   self : RiscvFnLoweringCtx
 ) -> String {
-  fn pretty_reg(kv : (@core.Value, AnyReg)) -> String {
+  fn pretty_reg(kv : (@core.Value, RegPack)) -> String {
     "\{kv.0} -> \{kv.1}"
   }
 
@@ -216,58 +218,58 @@ fn RiscvFnLoweringCtx::emit_risc_v(
   self.ibuffer.push(insn)
 }
 
-fn xreg(r : AnyReg) -> @riscv.Reg {
-  r.to_xreg()
+fn xreg(r : RegPack) -> @riscv.Reg {
+  r.get_single().to_xreg()
 }
 
-fn freg(r : AnyReg) -> @riscv.FReg {
-  r.to_freg()
+fn freg(r : RegPack) -> @riscv.FReg {
+  r.get_single().to_freg()
 }
 
 fn RiscvFnLoweringCtx::xreg_new(
   self : RiscvFnLoweringCtx,
-  r : AnyReg
+  r : RegPack
 ) -> @riscv.Reg {
   let _ = self
-  r |> xreg
+  r.get_single().to_xreg()
 }
 
 fn RiscvFnLoweringCtx::freg_new(
   self : RiscvFnLoweringCtx,
-  r : AnyReg
+  r : RegPack
 ) -> @riscv.FReg {
   let _ = self
-  r |> freg
+  r.get_single().to_freg()
 }
 
-fn xreg_to(r : @riscv.Reg) -> AnyReg {
-  r.to_any()
+fn xreg_to(r : @riscv.Reg) -> RegPack {
+  r.to_any().pack()
 }
 
-fn freg_to(r : @riscv.FReg) -> AnyReg {
-  r.to_any()
+fn freg_to(r : @riscv.FReg) -> RegPack {
+  r.to_any().pack()
 }
 
 fn RiscvFnLoweringCtx::xreg_to_reg(
   self : RiscvFnLoweringCtx,
   r : @riscv.Reg
-) -> AnyReg {
+) -> RegPack {
   let _ = self
-  r |> xreg_to
+  r.to_any().pack()
 }
 
 fn RiscvFnLoweringCtx::freg_to_reg(
   self : RiscvFnLoweringCtx,
   r : @riscv.FReg
-) -> AnyReg {
+) -> RegPack {
   let _ = self
-  r |> freg_to
+  r.to_any().pack()
 }
 
 fn RiscvFnLoweringCtx::put_in_reg(
   self : RiscvFnLoweringCtx,
   v : @core.Value
-) -> AnyReg {
+) -> RegPack {
   let r = self.value_regs[v].or_else(
     fn() { self.tracer.abort("No reg assigned for value \{v}") },
   )
@@ -510,10 +512,10 @@ fn RiscvFnLoweringCtx::lower_recent_imm(
   self : RiscvFnLoweringCtx,
   ty : @core.Type,
   i64 : UInt64
-) -> AnyReg {
+) -> RegPack {
   fn gen() {
     let reg = @generated.constructor_lower_imm(self, ty, i64)
-    self.iimm.set(i64, reg)
+    self.iimm.set(i64, reg.get_single())
     self.iimm_life.set(i64, 0)
     reg
   }
@@ -521,11 +523,11 @@ fn RiscvFnLoweringCtx::lower_recent_imm(
   match self.iimm[i64] {
     Some(reg) =>
       match (ty, reg.class) {
-        (Unit, X) => reg
-        (Bool, X) => reg
-        (Int32, X) => reg
-        (Int64, X) => reg
-        (Double, F) => reg
+        (Unit, X) => reg.pack()
+        (Bool, X) => reg.pack()
+        (Int32, X) => reg.pack()
+        (Int64, X) => reg.pack()
+        (Double, F) => reg.pack()
         _ => gen()
       }
     None => gen()
@@ -538,31 +540,52 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
 ) -> (Int, Int) {
   let mut used_xarg = 0
   let mut used_farg = 0
+  fn mv_xarg(r) {
+    @generated.constructor_rv_mv_to(
+      self,
+      @riscv.reg_arg_list[used_xarg],
+      xreg(r),
+    )
+    used_xarg += 1
+    if used_xarg >= @riscv.reg_arg_list.length() {
+      self.tracer.abort("Too many arguments")
+    }
+  }
+
+  fn mv_farg(r) {
+    @generated.constructor_rv_fmv_to(
+      self,
+      @riscv.freg_arg_list[used_farg],
+      freg(r),
+    )
+    used_farg += 1
+    if used_farg >= @riscv.freg_arg_list.length() {
+      self.tracer.abort("Too many arguments")
+    }
+  }
+
   for arg in args {
     let ty = self.type_of(arg)
     let argc = ty_to_reg_class_opt(ty)
     let r = @generated.constructor_lower_value(self, arg)
     match argc {
-      Some(X) => {
-        @generated.constructor_rv_mv_to(
-          self,
-          @riscv.reg_arg_list[used_xarg],
-          xreg(r),
-        )
-        used_xarg += 1
-        if used_xarg >= @riscv.reg_arg_list.length() {
-          self.tracer.abort("Too many arguments")
+      Some(X) => mv_xarg(r)
+      Some(F) => mv_farg(r)
+      Some(P) => {
+        guard let @core.Type::UnboxedTuple(~fields) = ty else {
+          _ => self.tracer.abort("Invalid type")
         }
-      }
-      Some(F) => {
-        @generated.constructor_rv_fmv_to(
-          self,
-          @riscv.freg_arg_list[used_farg],
-          freg(r),
-        )
-        used_farg += 1
-        if used_farg >= @riscv.freg_arg_list.length() {
-          self.tracer.abort("Too many arguments")
+        match r {
+          Pack(rs) =>
+            for i, r in rs {
+              let ty = fields[i]
+              match ty_to_reg_class_opt(ty) {
+                Some(X) => mv_xarg(r.pack())
+                Some(F) => mv_farg(r.pack())
+                _ => self.tracer.abort("Invalid value")
+              }
+            }
+          _ => self.tracer.abort("Invalid value")
         }
       }
       None => {
@@ -579,10 +602,11 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
 fn RiscvFnLoweringCtx::copy_return_value(
   self : RiscvFnLoweringCtx,
   ty : @core.Type
-) -> AnyReg {
+) -> RegPack {
   match ty_to_reg_class_opt(ty) {
     Some(X) => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
     Some(F) => freg_to(@generated.constructor_rv_fmv_d(self, @riscv.freg_ret))
+    Some(P) => self.tracer.abort("Invalid return type")
     None => xreg_to(@generated.constructor_rv_mv(self, @riscv.reg_ret))
   }
 }
@@ -592,7 +616,7 @@ fn RiscvFnLoweringCtx::lower_call(
   ty : @core.Type,
   f : @core.Fn,
   args : Array[@core.Value]
-) -> AnyReg {
+) -> RegPack {
   self.is_leaf = false
   @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
@@ -607,7 +631,7 @@ fn RiscvFnLoweringCtx::lower_ext_call(
   ty : @core.Type,
   f : String,
   args : Array[@core.Value]
-) -> AnyReg {
+) -> RegPack {
   self.is_leaf = false
   @generated.constructor_rv_save_ctx2(self)
   let (nx, nf) = self.copy_call_arguments(args)
@@ -623,7 +647,7 @@ fn RiscvFnLoweringCtx::lower_apply(
   ty : @core.Type,
   f : @core.Value,
   args : Array[@core.Value]
-) -> AnyReg {
+) -> RegPack {
   self.is_leaf = false
   let closure_addr = @generated.constructor_lower_value(self, f)
   let func_ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
@@ -643,7 +667,7 @@ fn RiscvFnLoweringCtx::lower_apply(
 fn RiscvFnLoweringCtx::lower_load_fn(
   self : RiscvFnLoweringCtx,
   func : @core.FnRef
-) -> AnyReg {
+) -> RegPack {
   @generated.constructor_rv_la(self, self.ref_fn(func).name) |> xreg_to
 }
 
@@ -651,7 +675,7 @@ fn RiscvFnLoweringCtx::lower_load_symbol(
   self : RiscvFnLoweringCtx,
   ty : @core.Type,
   sym : @core.SymbolRef
-) -> AnyReg {
+) -> RegPack {
   match ty_to_reg_class_opt(ty) {
     Some(c) =>
       match (ty.size_of_lp64(), c) {
@@ -816,7 +840,7 @@ fn RiscvFnLoweringCtx::lower_store(
   ty : @core.Type,
   addr : @core.Address,
   val : @core.Value
-) -> AnyReg {
+) -> RegPack {
   let r = @generated.constructor_lower_value(self, val)
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
@@ -901,7 +925,7 @@ fn RiscvFnLoweringCtx::lower_load(
   self : RiscvFnLoweringCtx,
   ty : @core.Type,
   addr : @core.Address
-) -> AnyReg {
+) -> RegPack {
   match ty_to_reg_class_opt(ty) {
     Some(c) => {
       fn fallback() {
@@ -1006,24 +1030,24 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
     Init(..) =>
       match (elem_sz, init_rc) {
         (4, X) => {
-          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, ptr.to_xreg())
           // A1 is assumed to be the length of the buffer
-          @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
+          @generated.constructor_rv_mv_to(self, @riscv.A2, init_reg.to_xreg())
           @generated.constructor_rv_call(self, Label("memseti32"), 3, 0)
           self.used_primitive.insert("memseti32")
         }
         (8, X) => {
-          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, ptr.to_xreg())
           // A1 is assumed to be the length of the buffer
-          @generated.constructor_rv_mv_to(self, @riscv.A2, xreg(init_reg))
+          @generated.constructor_rv_mv_to(self, @riscv.A2, init_reg.to_xreg())
           @generated.constructor_rv_call(self, Label("memseti64"), 3, 0)
           self.used_primitive.insert("memseti64")
         }
         (8, F) => {
-          @generated.constructor_rv_mv_to(self, @riscv.A0, xreg(ptr))
+          @generated.constructor_rv_mv_to(self, @riscv.A0, ptr.to_xreg())
           // A1 is assumed to be the length of the buffer
           @generated.constructor_rv_mv_to(self, @riscv.A2, @riscv.Zero)
-          @generated.constructor_rv_fmv_to(self, @riscv.Fa0, freg(init_reg))
+          @generated.constructor_rv_fmv_to(self, @riscv.Fa0, init_reg.to_freg())
           @generated.constructor_rv_call(self, Label("memsetf64"), 3, 0)
           self.used_primitive.insert("memsetf64")
           self.used_primitive.insert("memseti64")
@@ -1034,7 +1058,7 @@ fn RiscvFnLoweringCtx::do_fill_with_memset(
       if true {
         return
       }
-      @generated.constructor_rv_mv_to(self, @riscv.reg_ret, xreg(ptr))
+      @generated.constructor_rv_mv_to(self, @riscv.reg_ret, ptr.to_xreg())
       @generated.constructor_rv_call(self, Label("memset0e\{elem_sz}"), 2, 0)
       self.used_primitive.insert("memset0e\{elem_sz}")
     }
@@ -1050,18 +1074,18 @@ fn RiscvFnLoweringCtx::do_fill_at_small_offset(
   init_rc : RegClass,
   init_reg : AnyReg
 ) -> Unit {
-  let base = xreg(ptr)
+  let base = ptr.to_xreg()
   let offset = index
   if init_reg == self.zero_reg().to_any() {
     return
   }
   match (elem_sz, init_rc) {
     (4, X) =>
-      @generated.constructor_rv_sw(self, xreg(init_reg), { base, offset })
+      @generated.constructor_rv_sw(self, init_reg.to_xreg(), { base, offset })
     (8, X) =>
-      @generated.constructor_rv_sd(self, xreg(init_reg), { base, offset })
+      @generated.constructor_rv_sd(self, init_reg.to_xreg(), { base, offset })
     (8, F) =>
-      @generated.constructor_rv_fsd(self, freg(init_reg), { base, offset })
+      @generated.constructor_rv_fsd(self, init_reg.to_freg(), { base, offset })
     _ => self.tracer.abort("Invalid type size")
   }
 }
@@ -1071,11 +1095,11 @@ fn RiscvFnLoweringCtx::get_init_reg_with_class(
   fill : @core.Fill
 ) -> (RegClass, AnyReg) {
   match fill {
-    Zero => (X, self.zero_reg() |> xreg_to)
+    Zero => (X, self.zero_reg().to_any())
     Init(~val) | Field(~val, ..) => {
       let rc = ty_to_reg_class(self.type_of(val))
       let reg = @generated.constructor_lower_value(self, val)
-      (rc, reg)
+      (rc, reg.get_single())
     }
   }
 }
@@ -1133,7 +1157,7 @@ fn RiscvFnLoweringCtx::do_fill(
           match fill {
             Zero | Init(..) => {
               let (init_rc, init_reg) = self.get_init_reg_with_class(fill)
-              self.do_fill_with_memset_set_reg_length(xreg(reg), fill)
+              self.do_fill_with_memset_set_reg_length(reg.to_xreg(), fill)
               self.do_fill_with_memset(fill, ptr, elem_sz, init_rc, init_reg)
             }
             Field(~index, ..) => self.do_fill_field(fill, ptr, elem_sz, index)
@@ -1147,7 +1171,7 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
   self : RiscvFnLoweringCtx,
   mref : @core.MemRef,
   fills : @core.Fills
-) -> AnyReg {
+) -> RegPack {
   let mem = self.ref_mem(mref)
   match mem {
     Stack(..) => self.tracer.abort("Stack allocation not supported")
@@ -1164,22 +1188,22 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
             Some(imm12) =>
               @generated.constructor_rv_addi(
                 self,
-                xreg(self.alloc_reg),
+                self.alloc_reg.to_xreg(),
                 -imm12._,
               )
             None => {
               let imm = @generated.constructor_rv_li(self, size.to_string())
-              @generated.constructor_rv_sub(self, self.alloc_reg |> xreg, imm)
+              @generated.constructor_rv_sub(self, self.alloc_reg.to_xreg(), imm)
             }
           }
           @generated.constructor_rv_andi_to(
             self,
-            self.alloc_reg |> xreg,
+            self.alloc_reg.to_xreg(),
             aligned_ptr,
             -8,
           )
           for fill in fills {
-            self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, Some(len), None)
+            self.do_fill(fill, aligned_ptr.to_any(), elem_sz, Some(len), None)
           }
           aligned_ptr |> xreg_to
         }
@@ -1196,17 +1220,23 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
           )
           let aligned_ptr = @generated.constructor_rv_sub(
             self,
-            xreg(self.alloc_reg),
+            self.alloc_reg.to_xreg(),
             size,
           )
           @generated.constructor_rv_andi_to(
             self,
-            self.alloc_reg |> xreg,
+            self.alloc_reg.to_xreg(),
             aligned_ptr,
             -8,
           )
           for fill in fills {
-            self.do_fill(fill, aligned_ptr |> xreg_to, elem_sz, None, Some(len))
+            self.do_fill(
+              fill,
+              aligned_ptr.to_any(),
+              elem_sz,
+              None,
+              Some(len.get_single()),
+            )
           }
           aligned_ptr |> xreg_to
         }
@@ -1215,12 +1245,36 @@ fn RiscvFnLoweringCtx::do_alloc_and_fill(
   }
 }
 
+fn RiscvFnLoweringCtx::lower_pack(
+  self : RiscvFnLoweringCtx,
+  _ty : @core.Type,
+  vals : Array[@core.Value]
+) -> RegPack {
+  let regs = Array::new()
+  for val in vals {
+    let reg = @generated.constructor_lower_value(self, val)
+    regs.push(reg.get_single())
+  }
+  RegPack::Pack(regs)
+}
+
+fn RiscvFnLoweringCtx::lower_extract(
+  self : RiscvFnLoweringCtx,
+  _ty : @core.Type,
+  val : @core.Value,
+  index : Int
+) -> RegPack {
+  let reg = @generated.constructor_lower_value(self, val)
+  let reg = reg.get_pack()
+  reg[index].pack()
+}
+
 fn RiscvFnLoweringCtx::lower_alloc(
   self : RiscvFnLoweringCtx,
   _ty : @core.Type,
   mref : @core.MemRef,
   fills : @core.Fills
-) -> AnyReg {
+) -> RegPack {
   let ptr = self.do_alloc_and_fill(mref, fills)
   let pre_assigned = self.value_regs[@core.Value::Mem(fref=self.func.id, ~mref)].unwrap()
   let _ = self.mark_maybe_aliased(ptr)
@@ -1231,7 +1285,7 @@ fn RiscvFnLoweringCtx::lower_alloc(
 fn RiscvFnLoweringCtx::lower_compute_address(
   self : RiscvFnLoweringCtx,
   addr : @core.Address
-) -> AnyReg {
+) -> RegPack {
   let ma = self.lower_address(addr)
   if ma.offset._ == 0 {
     xreg_to(ma.base)
@@ -1304,6 +1358,7 @@ fn RiscvFnLoweringCtx::imm12_from_neg_val(
 fn ty_to_reg_class(ty : @core.Type) -> RegClass {
   match ty {
     @core.Type::Double => F
+    @core.Type::UnboxedTuple(..) => P
     _ => X
   }
 }
@@ -1311,6 +1366,7 @@ fn ty_to_reg_class(ty : @core.Type) -> RegClass {
 fn ty_to_reg_class_opt(ty : @core.Type) -> RegClass? {
   match ty {
     @core.Type::Double => Some(F)
+    @core.Type::UnboxedTuple(..) => Some(P)
     @core.Type::Unit => None
     _ => Some(X)
   }
@@ -1319,7 +1375,7 @@ fn ty_to_reg_class_opt(ty : @core.Type) -> RegClass? {
 fn RiscvFnLoweringCtx::assign_reg(
   self : RiscvFnLoweringCtx,
   val : @core.Value,
-  reg : AnyReg
+  reg : RegPack
 ) -> Unit {
   self.value_regs.set(val, reg)
   self.value_ref_count.set(val, 0)
@@ -1330,7 +1386,7 @@ fn RiscvFnLoweringCtx::assign_regs_for_mem(self : RiscvFnLoweringCtx) -> Unit {
     let (mref, _mem) = mem
     let mval = @core.Value::Mem(fref=self.func.id, ~mref)
     let reg = self.next_reg(X)
-    self.assign_reg(mval, reg)
+    self.assign_reg(mval, reg.pack())
   }
 }
 
@@ -1338,7 +1394,7 @@ fn RiscvFnLoweringCtx::assign_reg_for_closure_ptr(
   self : RiscvFnLoweringCtx
 ) -> Unit {
   let self_val = @core.Value::Self(fref=self.func.id)
-  self.assign_reg(self_val, self.closure_reg)
+  self.assign_reg(self_val, self.closure_reg.pack())
 }
 
 fn RiscvFnLoweringCtx::assign_regs_for_free_variables(
@@ -1348,27 +1404,39 @@ fn RiscvFnLoweringCtx::assign_regs_for_free_variables(
     let id = id + 1 // 0 is reserved for the closure pointer
     let reg = self.next_reg(ty_to_reg_class(fv_type))
     let val = @core.Value::FreeVar(fvref={ id, })
-    self.assign_reg(val, reg)
+    self.assign_reg(val, reg.pack())
   }
 }
 
 fn RiscvFnLoweringCtx::alias_reg(
   self : RiscvFnLoweringCtx,
-  pre_assigned_reg : AnyReg,
-  actual_reg : AnyReg
+  pre_assigned_reg : RegPack,
+  actual_reg : RegPack
 ) -> Unit {
-  for reg in self.ialias {
-    if reg == actual_reg {
-      reg.reg = pre_assigned_reg.reg
-    }
+  match (actual_reg, pre_assigned_reg) {
+    (Single(actual), Single(pre_assigned)) =>
+      for reg in self.ialias {
+        if reg == actual {
+          reg.reg = pre_assigned.reg
+        }
+      }
+    (Pack(actual), Pack(pre_assigned)) =>
+      for reg in self.ialias {
+        for i, actual in actual {
+          if reg == actual {
+            reg.reg = pre_assigned[i].reg
+          }
+        }
+      }
+    _ => self.tracer.abort("Invalid aliasing")
   }
   self.ialias.clear()
 }
 
 fn RiscvFnLoweringCtx::finalize_insn_with_reg_aliasing(
   self : RiscvFnLoweringCtx,
-  pre_assigned_reg : AnyReg,
-  actual_reg : AnyReg
+  pre_assigned_reg : RegPack,
+  actual_reg : RegPack
 ) -> Unit {
   self.alias_reg(pre_assigned_reg, actual_reg)
   self.finalize_insn()
@@ -1408,17 +1476,45 @@ fn RiscvFnLoweringCtx::assign_regs_for_block_params_and_instrs(
   fn assign(bb : @core.BasicBlock) {
     let assignment = []
     for id, param in bb.params {
-      let reg = self.next_reg(ty_to_reg_class(param))
       let val = @core.block_param(bb.id, id)
-      self.assign_reg(val, reg)
-      assignment.push(reg)
+      match param {
+        @core.Type::UnboxedTuple(~fields) => {
+          let regs = []
+          for field in fields {
+            let reg = self.next_reg(ty_to_reg_class(field))
+            regs.push(reg)
+          }
+          let pack = RegPack::Pack(regs)
+          self.assign_reg(val, pack)
+          assignment.push(pack)
+        }
+        _ => {
+          let reg = self.next_reg(ty_to_reg_class(param))
+          self.assign_reg(val, reg.pack())
+          assignment.push(reg.pack())
+        }
+      }
     }
     self.block_params_assignment.set(bb.id, assignment)
     for iref in bb.seq {
       let ty = self.ref_insn(iref).ty()
-      let reg = self.next_reg(ty_to_reg_class(ty))
-      let val = @core.Value::Insn(~iref)
-      self.assign_reg(val, reg)
+      match ty {
+        @core.Type::UnboxedTuple(~fields) => {
+          let regs = []
+          for field in fields {
+            let reg = self.next_reg(ty_to_reg_class(field))
+            regs.push(reg)
+          }
+          let pack = RegPack::Pack(regs)
+          let val = @core.Value::Insn(~iref)
+          self.assign_reg(val, pack)
+        }
+        _ => {
+          let reg = self.next_reg(ty_to_reg_class(ty))
+          let val = @core.Value::Insn(~iref)
+          self.assign_reg(val, reg.pack())
+        }
+      }
     }
   }
 
@@ -1437,7 +1533,7 @@ fn RiscvFnLoweringCtx::assign_regs_for_function_parameters(
   fn assign_with_ty(id : Int, ty : @core.Type) {
     let reg = self.next_reg(ty_to_reg_class(ty))
     let val = @core.Value::FnParam(fref=self.func.id, fpref={ id, })
-    self.assign_reg(val, reg)
+    self.assign_reg(val, reg.pack())
   }
 
   match self.func.ty {
@@ -1497,6 +1593,32 @@ fn RiscvFnLoweringCtx::emit_block_parameters(
             @generated.constructor_rv_fmv_to(self, freg(param_reg), reg)
           }
         }
+      P => {
+        let rpack = @generated.constructor_lower_value(self, arg)
+        let param = @core.block_param(target.id, id)
+        let param_reg = self.value_regs[param].unwrap().get_pack()
+        guard let @core.Type::UnboxedTuple(~fields) = ty else {
+          _ => self.tracer.abort("Invalid block parameter type")
+        }
+        for i, reg in rpack.get_pack() {
+          let param_reg = param_reg[i].pack()
+          match ty_to_reg_class(fields[i]) {
+            X =>
+              @generated.constructor_rv_mv_to(
+                self,
+                xreg(param_reg),
+                reg.to_xreg(),
+              )
+            F =>
+              @generated.constructor_rv_fmv_to(
+                self,
+                freg(param_reg),
+                reg.to_freg(),
+              )
+            _ => self.tracer.abort("Invalid block parameter type")
+          }
+        }
+      }
     }
   }
 }
@@ -1561,9 +1683,12 @@ fn RiscvFnLoweringCtx::has_result(
 
 fn RiscvFnLoweringCtx::mark_maybe_aliased(
   self : RiscvFnLoweringCtx,
-  reg : AnyReg
-) -> AnyReg {
-  self.ialias.push(reg)
+  reg : RegPack
+) -> RegPack {
+  match reg {
+    Single(r) => self.ialias.push(r)
+    Pack(rs) => self.ialias.append(rs)
+  }
   reg
 }
 
@@ -1595,6 +1720,7 @@ fn RiscvFnLoweringCtx::load_params(self : RiscvFnLoweringCtx) -> Unit {
         )
         used_farg += 1
       }
+      P => self.tracer.abort("Invalid function parameter type")
     }
   }
   self.finalize_insn()
@@ -1605,7 +1731,7 @@ fn RiscvFnLoweringCtx::load_closure_pointer(self : RiscvFnLoweringCtx) -> Unit {
     @core.Type::ClosureFn(..) => {
       @generated.constructor_rv_mv_to(
         self,
-        self.closure_reg |> xreg,
+        self.closure_reg.to_xreg(),
         @riscv.reg_closure,
       )
       self.finalize_insn()
@@ -1630,7 +1756,7 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
     let val = @core.Value::FreeVar(fvref={ id: index })
     let pre_assigned_reg = self.value_regs[val].unwrap()
     let ma : @riscv.MemAccess[@riscv.Reg, @riscv.Imm12] = {
-      base: xreg(base),
+      base: base.to_xreg(),
       offset: index * 8, // hard encoded as closure field is always 8 bytes even if there's an i32
     }
     let size = ty.size_of_lp64()
@@ -1638,7 +1764,7 @@ fn RiscvFnLoweringCtx::load_freevar_regs(self : RiscvFnLoweringCtx) -> Unit {
       (X, 0) =>
         @generated.constructor_rv_mv_to(
           self,
-          pre_assigned_reg.to_xreg(),
+          pre_assigned_reg |> xreg,
           self.zero_reg(),
         )
       (X, 4) => {
@@ -2114,6 +2240,7 @@ fn load_to_sp_offset(
     X => insns.push(MInsn::Ld(rd=rd.to_xreg(), mem={ base: @riscv.Sp, offset }))
     F =>
       insns.push(MInsn::Fld(rd=rd.to_freg(), mem={ base: @riscv.Sp, offset }))
+    P => @util.t.abort("unreachable: P register")
   }
 }
 
@@ -2126,6 +2253,7 @@ fn store_to_sp_offset(
     X => insns.push(MInsn::Sd(rs=rs.to_xreg(), mem={ base: @riscv.Sp, offset }))
     F =>
       insns.push(MInsn::Fsd(rs=rs.to_freg(), mem={ base: @riscv.Sp, offset }))
+    P => @util.t.abort("unreachable: P register")
   }
 }
 
@@ -2145,6 +2273,7 @@ fn need_to_be_saved(r : AnyReg, alloc : RegAllocator) -> Bool {
       F =>
         @riscv.freg_caller_saved_list.contains(r.to_freg()) &&
         r != @riscv.freg_ret.to_any()
+      P => @util.t.abort("unreachable: P register")
     }
   } else {
     false
@@ -2195,6 +2324,7 @@ fn RiscvFnLoweringCtx::post_lower_block(
             match r.class {
               X => last_save_x.push(r)
               F => last_save_f.push(r)
+              _ => self.tracer.abort("unreachable: P register")
             }
           }
         }

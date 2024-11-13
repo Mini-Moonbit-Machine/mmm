@@ -67,6 +67,7 @@ impl AnyReg {
   is_phy_xreg(Self) -> Bool
   op_equal(Self, Self) -> Bool
   output(Self, Logger) -> Unit
+  pack(Self) -> RegPack
   pretty(Self) -> String
   to_any(Self) -> Self
   to_freg(Self) -> FReg
@@ -195,11 +196,25 @@ impl Reg {
 pub enum RegClass {
   X
   F
+  P
 }
 impl RegClass {
   compare(Self, Self) -> Int
   hash_combine(Self, Hasher) -> Unit
   op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub enum RegPack {
+  Single(AnyReg)
+  Pack(Array[AnyReg])
+}
+impl RegPack {
+  all(Self) -> Array[AnyReg]
+  get_pack(Self) -> Array[AnyReg]
+  get_single(Self) -> AnyReg
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
   to_string(Self) -> String
 }
 

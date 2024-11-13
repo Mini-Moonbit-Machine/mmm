@@ -41,6 +41,7 @@ fn RegWrapper::new(
       } else {
         None
       }
+    P => @util.t.abort("invalid register class")
   }
   RegWrapper::{ id, r, color }
 }
@@ -127,6 +128,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
         let reg_ctx = match r.class {
           X => reg_ctx_x
           F => reg_ctx_f
+          P => self.tracer.abort("invalid register class")
         }
         let rw = reg_ctx.record_reg(r)
         reg_ctx.allocator.add_use(rw)
@@ -139,6 +141,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           let ctx = match dst.class {
             X => reg_ctx_x
             F => reg_ctx_f
+            P => self.tracer.abort("invalid register class")
           }
           let rwd = ctx.record_reg(dst)
           let rws = ctx.record_reg(src)
@@ -149,6 +152,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
               if (match src.class {
                   X => @riscv.reg_arg_list.contains(src.to_xreg())
                   F => @riscv.freg_arg_list.contains(src.to_freg())
+                  P => self.tracer.abort("invalid register class")
                 }) {
                 ctx.allocator.add_hint(rwd, color)
               }
@@ -159,6 +163,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
               if (match dst.class {
                   X => @riscv.reg_arg_list.contains(dst.to_xreg())
                   F => @riscv.freg_arg_list.contains(dst.to_freg())
+                  P => self.tracer.abort("invalid register class")
                 }) {
                 ctx.allocator.add_hint(rws, color)
               }
@@ -171,6 +176,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
         let reg_ctx = match defined.class {
           X => reg_ctx_x
           F => reg_ctx_f
+          P => self.tracer.abort("invalid register class")
         }
         self.tracer.println("defined: \{defined} is \{defined.class}")
         let rw1 = reg_ctx.record_reg(defined)
@@ -179,6 +185,7 @@ fn RegAllocator::assign(self : RegAllocator) -> Unit {
           let reg_ctx_for_live = match live.class {
             X => reg_ctx_x
             F => reg_ctx_f
+            P => self.tracer.abort("invalid register class")
           }
           let rw2 = reg_ctx_for_live.record_reg(live)
           reg_ctx_for_live.allocator.add_single_vertex(rw2)

@@ -50,6 +50,11 @@ fn print_type(logger : @util.IndentLogger, ty : Type) -> Unit {
       logger.write_string(") -> ")
       print_type(logger, ty)
     }
+    UnboxedTuple(~fields) => {
+      logger.write_string("#(")
+      print_types(logger, fields)
+      logger.write_string(")")
+    }
     Tuple(~fields) => {
       logger.write_string("(")
       print_types(logger, fields)
@@ -267,6 +272,20 @@ fn print_insn(
       logger.write_string("let \{ir}: ")
       print_type(logger, ty)
       logger.write_string(" = load_symbol \{sym}\n")
+    }
+    Pack(~ty, ~vals) => {
+      logger.write_string("let \{ir}: ")
+      print_type(logger, ty)
+      logger.write_string(" = pack ")
+      print_values(logger, vals)
+      logger.write_string("\n")
+    }
+    Extract(~ty, ~val, ~index) => {
+      logger.write_string("let \{ir}: ")
+      print_type(logger, ty)
+      logger.write_string(" = extract ")
+      print_value(logger, val)
+      logger.write_string(" \{index}\n")
     }
     Alloc(~mref, ~fills, ..) => {
       logger.write_string("let _ = alloc ")

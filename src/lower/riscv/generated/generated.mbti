@@ -11,17 +11,17 @@ fn constructor_arg1[C : Context](C, @core.Value) -> Args
 
 fn constructor_arg2[C : Context](C, @core.Value, @core.Value) -> Args
 
-fn constructor_lower[C : Context](C, @core.Insn) -> @riscv.AnyReg?
+fn constructor_lower[C : Context](C, @core.Insn) -> @riscv.RegPack?
 
 fn constructor_lower_control[C : Context](C, @lower.ColorSeq, @core.Control) -> Unit?
 
 fn constructor_lower_f_value[C : Context](C, @core.Value) -> @riscv.FReg
 
-fn constructor_lower_imm[C : Context](C, @core.Type, UInt64) -> @riscv.AnyReg
+fn constructor_lower_imm[C : Context](C, @core.Type, UInt64) -> @riscv.RegPack
 
-fn constructor_lower_mod[C : Context](C, @core.Value, @core.Value) -> @riscv.AnyReg
+fn constructor_lower_mod[C : Context](C, @core.Value, @core.Value) -> @riscv.RegPack
 
-fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.AnyReg
+fn constructor_lower_value[C : Context](C, @core.Value) -> @riscv.RegPack
 
 fn constructor_lower_x_value[C : Context](C, @core.Value) -> @riscv.Reg
 
@@ -280,10 +280,10 @@ pub trait Context {
   next_virtual_xreg(Self) -> @riscv.Reg
   next_virtual_freg(Self) -> @riscv.FReg
   emit_risc_v(Self, @riscv.RvAsm) -> Unit
-  xreg_new(Self, @riscv.AnyReg) -> @riscv.Reg
-  freg_new(Self, @riscv.AnyReg) -> @riscv.FReg
-  xreg_to_reg(Self, @riscv.Reg) -> @riscv.AnyReg
-  freg_to_reg(Self, @riscv.FReg) -> @riscv.AnyReg
+  xreg_new(Self, @riscv.RegPack) -> @riscv.Reg
+  freg_new(Self, @riscv.RegPack) -> @riscv.FReg
+  xreg_to_reg(Self, @riscv.Reg) -> @riscv.RegPack
+  freg_to_reg(Self, @riscv.FReg) -> @riscv.RegPack
   is_zero_reg(Self, @riscv.Reg) -> Unit?
   zero_reg(Self) -> @riscv.Reg
   is_closure_reg(Self, @riscv.Reg) -> Unit?
@@ -300,9 +300,9 @@ pub trait Context {
   imm12_to_i32(Self, @riscv.Imm12) -> Int
   imm32_to_string(Self, Int) -> String
   imm64_to_string(Self, Int64) -> String
-  lower_recent_imm(Self, @core.Type, UInt64) -> @riscv.AnyReg
-  mark_maybe_aliased(Self, @riscv.AnyReg) -> @riscv.AnyReg
-  put_in_reg(Self, @core.Value) -> @riscv.AnyReg
+  lower_recent_imm(Self, @core.Type, UInt64) -> @riscv.RegPack
+  mark_maybe_aliased(Self, @riscv.RegPack) -> @riscv.RegPack
+  put_in_reg(Self, @core.Value) -> @riscv.RegPack
   block_label(Self, @core.BlockRef) -> @riscv.Label
   imm12_from_val(Self, @core.Value) -> @riscv.Imm12?
   imm12_from_neg_val(Self, @core.Value) -> @riscv.Imm12?
@@ -313,15 +313,17 @@ pub trait Context {
   not_double(Self, @core.Value) -> @core.Value?
   power_of_two(Self, @core.Value) -> Int?
   power_of_two_minus_one(Self, Int) -> Int
-  lower_load_fn(Self, @core.FnRef) -> @riscv.AnyReg
-  lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.AnyReg
-  lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.AnyReg
-  lower_apply(Self, @core.Type, @core.Value, Array[@core.Value]) -> @riscv.AnyReg
-  lower_load_symbol(Self, @core.Type, @core.SymbolRef) -> @riscv.AnyReg
-  lower_store(Self, @core.Type, @core.Address, @core.Value) -> @riscv.AnyReg
-  lower_load(Self, @core.Type, @core.Address) -> @riscv.AnyReg
-  lower_alloc(Self, @core.Type, @core.MemRef, Array[@core.Fill]) -> @riscv.AnyReg
-  lower_compute_address(Self, @core.Address) -> @riscv.AnyReg
+  lower_load_fn(Self, @core.FnRef) -> @riscv.RegPack
+  lower_call(Self, @core.Type, @core.Fn, Array[@core.Value]) -> @riscv.RegPack
+  lower_ext_call(Self, @core.Type, String, Array[@core.Value]) -> @riscv.RegPack
+  lower_apply(Self, @core.Type, @core.Value, Array[@core.Value]) -> @riscv.RegPack
+  lower_load_symbol(Self, @core.Type, @core.SymbolRef) -> @riscv.RegPack
+  lower_store(Self, @core.Type, @core.Address, @core.Value) -> @riscv.RegPack
+  lower_load(Self, @core.Type, @core.Address) -> @riscv.RegPack
+  lower_alloc(Self, @core.Type, @core.MemRef, Array[@core.Fill]) -> @riscv.RegPack
+  lower_pack(Self, @core.Type, Array[@core.Value]) -> @riscv.RegPack
+  lower_extract(Self, @core.Type, @core.Value, Int) -> @riscv.RegPack
+  lower_compute_address(Self, @core.Address) -> @riscv.RegPack
 }
 
 // Extension Methods

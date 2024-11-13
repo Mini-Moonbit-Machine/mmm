@@ -106,7 +106,7 @@ fn JsLoweringCtx::lower_expr(
         self.lower_expr(v, id_kont),
         self.lower_expr(b, kont),
       )
-    LetTuple(xs, y, b) =>
+    LetTuple(xs, y, b) | LetUnboxedTuple(xs, y, b) =>
       LetTuple(
         xs.map(fn(n) { self.to_js_name(n.0) }),
         self.to_js_var(y),
@@ -121,7 +121,8 @@ fn JsLoweringCtx::lower_expr(
       args.push(Var("k"))
       Call(f, args) |> thunk
     }
-    Tuple(elems) => Tuple(elems.map(fn(n) { self.to_js_name(n) })) |> kont
+    Tuple(elems) | UnboxedTuple(elems) =>
+      Tuple(elems.map(fn(n) { self.to_js_name(n) })) |> kont
     ExternalArray(_) => self.tracer.abort("ExternalArray not supported")
     ExternalFunctionApplication(f, args) =>
       // we need to force the arguments to ensure they are evaluated

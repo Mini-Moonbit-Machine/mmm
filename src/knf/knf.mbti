@@ -98,6 +98,8 @@ pub enum Knf {
   Apply(@minimbt.Name, Array[@minimbt.Name])
   Tuple(Array[@minimbt.Name])
   LetTuple(Array[(@minimbt.Name, @minimbt.Type)], @minimbt.Name, Knf)
+  UnboxedTuple(Array[@minimbt.Name])
+  LetUnboxedTuple(Array[(@minimbt.Name, @minimbt.Type)], @minimbt.Name, Knf)
   Get(@minimbt.Name, @minimbt.Name)
   Put(@minimbt.Name, @minimbt.Name, @minimbt.Name)
   ExternalArray(@minimbt.Name)
@@ -154,6 +156,21 @@ impl LambdaLifter {
 
 type PrettyKnf
 
+type TupleFreq
+impl TupleFreq {
+  op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct Unbox {
+  pub tracer : @util.SubTracer
+  pub knf : Knf
+}
+impl Unbox {
+  go(Self) -> Knf
+  new(@util.SubTracer, Knf) -> Self
+}
+
 // Type aliases
 pub typealias LocalEnv = @hashmap.T[String, @minimbt.Type]
 
@@ -173,4 +190,6 @@ impl Show for FuncDef
 impl Show for Knf
 
 impl Show for PrettyKnf
+
+impl Show for TupleFreq
 

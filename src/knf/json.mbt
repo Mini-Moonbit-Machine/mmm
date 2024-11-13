@@ -32,6 +32,15 @@ pub fn Knf::to_json(self : Knf) -> Json {
       }
       ["LetTuple", n_ts_res.to_json(), n.to_json(), k.to_json()]
     }
+    UnboxedTuple(ns) => ["UnboxedTuple", ns.to_json()]
+    LetUnboxedTuple(n_ts, n, k) => {
+      let n_ts_res = []
+      for it in n_ts {
+        let (n, t) = it
+        n_ts_res.push([n.to_json(), t.to_json()])
+      }
+      ["LetUnboxedTuple", n_ts_res.to_json(), n.to_json(), k.to_json()]
+    }
     Get(n1, n2) => ["Get", n1.to_json(), n2.to_json()]
     Put(n1, n2, n3) => ["Put", n1.to_json(), n2.to_json(), n3.to_json()]
     ExternalArray(n) => ["ExternalArray", n.to_json()]

@@ -25,6 +25,8 @@ pub enum Knf {
   Apply(Name, Array[Name])
   Tuple(Array[Name])
   LetTuple(Array[(Name, Type)], Name, Knf)
+  UnboxedTuple(Array[Name])
+  LetUnboxedTuple(Array[(Name, Type)], Name, Knf)
   Get(Name, Name)
   Put(Name, Name, Name)
   ExternalArray(Name)

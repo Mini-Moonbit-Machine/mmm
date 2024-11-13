@@ -1,0 +1,133 @@
+let rec fold.84: Int = (stream.86: Fun([Unit], Tuple([Int, Int])), f.88: Fun([Int, Int], Int), acc.90: Int) {
+  let _91: Unit = Unit
+  let _92: Tuple([Int, Int]) = Apply(stream.86, [_91, ])
+  let (ok.94: Var({val: Some(Int)}), val.96: Var({val: Some(Int)})) = _92
+  let _97: Int = Int(0)
+  if (ok.94 == _97) then {
+    Var(acc.90)
+  } else {
+    let _98: Int = Apply(f.88, [acc.90, val.96, ])
+    Apply(fold.84, [stream.86, f.88, _98, ])
+  }
+}
+let rec main.120: Var({val: Some(Unit)}) = () {
+  let _121: Int = Int(0)
+  let _122: Int = Int(100)
+  let _143: Int = Int(1)
+  let state.144: Array(Int) = ExtApply(minimbt_create_array, [_143, _121, ])
+  let _124: Int = Int(0)
+  let _125: Int = Int(1000)
+  let _156: Int = Int(1)
+  let state.157: Array(Int) = ExtApply(minimbt_create_array, [_156, _124, ])
+  let _128: Int = Int(1)
+  let _131: Int = Int(50)
+  let rec aux.193: Tuple([Int, Int]) = (u.194: Var({val: Some(Unit)})) {
+    let _195: Unit = Unit
+    let _268: Unit = Unit
+    let _270: Unit = Unit
+    let _272: Int = Int(0)
+    let val.273: Int = Get state.144[_272]
+    let _271: Tuple([Int, Int]) = if (val.273 == _122) then {
+      let _274: Int = Int(0)
+      let _275: Int = Int(0)
+      UnboxedTuple([_274, _275, ])
+    } else {
+      let _276: Int = Int(0)
+      let _277: Int = Int(1)
+      let _278: Int = Add(val.273, _277)
+      let _279: Unit = Put state.144[_276] = _278
+      let _280: Int = Int(1)
+      UnboxedTuple([_280, val.273, ])
+    }
+    let unboxed (ok.281: Var({val: Some(Int)}), val.282: Var({val: Some(Int)})) = _271
+    let _283: Int = Int(0)
+    let _269: Tuple([Int, Int]) = if (ok.281 == _283) then {
+      let _284: Unit = Unit
+      let _285: Int = Int(0)
+      let val.286: Int = Get state.157[_285]
+      if (val.286 == _125) then {
+        let _287: Int = Int(0)
+        let _288: Int = Int(0)
+        UnboxedTuple([_287, _288, ])
+      } else {
+        let _289: Int = Int(0)
+        let _290: Int = Int(1)
+        let _291: Int = Add(val.286, _290)
+        let _292: Unit = Put state.157[_289] = _291
+        let _293: Int = Int(1)
+        UnboxedTuple([_293, val.286, ])
+      }
+    } else {
+      let _294: Int = Int(1)
+      UnboxedTuple([_294, val.282, ])
+    }
+    let unboxed (ok.295: Var({val: Some(Int)}), val.296: Var({val: Some(Int)})) = _269
+    let _297: Int = Int(0)
+    let _196: Tuple([Int, Int]) = if (ok.295 == _297) then {
+      let _298: Int = Int(0)
+      let _299: Int = Int(0)
+      UnboxedTuple([_298, _299, ])
+    } else {
+      let _300: Int = Int(1)
+      let _301: Int = Add(_128, val.296)
+      UnboxedTuple([_300, _301, ])
+    }
+    let unboxed (ok.197: Var({val: Some(Int)}), val.198: Var({val: Some(Int)})) = _196
+    let _199: Int = Int(0)
+    if (ok.197 == _199) then {
+      let _200: Int = Int(0)
+      let _201: Int = Int(0)
+      Tuple([_200, _201, ])
+    } else {
+      let r.202: Int = if (_131 <= val.198) then {
+        Int(0)
+      } else {
+        Int(1)
+      }
+      let _203: Int = Int(0)
+      if (r.202 == _203) then {
+        let _204: Int = Int(1)
+        Tuple([_204, val.198, ])
+      } else {
+        let _205: Unit = Unit
+        Apply(aux.193, [_205, ])
+      }
+    }
+  }
+  let _134: Int = Int(1200)
+  let rec aux.208: Tuple([Int, Int]) = (u.209: Var({val: Some(Unit)})) {
+    let _210: Unit = Unit
+    let _211: Tuple([Int, Int]) = Apply(aux.193, [_210, ])
+    let (ok.212: Var({val: Some(Int)}), val.213: Var({val: Some(Int)})) = _211
+    let _214: Int = Int(0)
+    if (ok.212 == _214) then {
+      let _215: Int = Int(0)
+      let _216: Int = Int(0)
+      Tuple([_215, _216, ])
+    } else {
+      let r.217: Int = if (val.213 <= _134) then {
+        Int(0)
+      } else {
+        Int(1)
+      }
+      let _218: Int = Int(0)
+      if (r.217 == _218) then {
+        let _219: Int = Int(1)
+        Tuple([_219, val.213, ])
+      } else {
+        let _220: Unit = Unit
+        Apply(aux.208, [_220, ])
+      }
+    }
+  }
+  let rec add.221: Int = (x.222: Int, y.223: Int) {
+    Add(x.222, y.223)
+  }
+  let _224: Int = Int(0)
+  let sum.137: Int = Apply(fold.84, [aux.208, add.221, _224, ])
+  let _139: Unit = ExtApply(minimbt_print_int, [sum.137, ])
+  let _140: Int = Int(10)
+  let _142: Unit = ExtApply(minimbt_print_char, [_140, ])
+  Unit
+}
+Apply(main.120, [])
