@@ -1822,11 +1822,15 @@ fn RiscvFnLoweringCtx::lower_select(
     (targets.length() - 1).to_string(),
   )
   let fallback_label = self.block_label(fallback)
-  @generated.constructor_rv_bltu(self, upper, xreg(cond), fallback_label)
   let base = @generated.constructor_rv_la(self, jtbl_label)
-  let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
-  let addr = @generated.constructor_rv_add(self, base, offset)
-  let reg = @generated.constructor_rv_lw(self, { base: addr, offset: 0 })
+  @generated.constructor_rv_bltu(self, upper, xreg(cond), fallback_label)
+  let reg = if self.use_xthead == false {
+    let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
+    let addr = @generated.constructor_rv_add(self, base, offset)
+    @generated.constructor_rv_lw(self, { base: addr, offset: 0 })
+  } else {
+    @generated.constructor_rv_th_lurw(self, base, xreg(cond), 2)
+  }
   @generated.constructor_rv_jr(self, reg)
   self.emit_risc_v(MInsn::Raw(".p2align 2"))
   self.emit_risc_v(MInsn::Raw(".rodata"))
