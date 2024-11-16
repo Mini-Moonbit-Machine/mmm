@@ -1,5 +1,7 @@
 pub typealias MutMap[K, V] = @hashmap.T[K, V]
 
+pub typealias MutSet[K] = @hashset.T[K]
+
 pub struct Occurrence {
   order : Array[Int]
 } derive(Show, Eq)
@@ -58,7 +60,21 @@ pub enum SubPatSpec {
   DoubleLit(~dval : Double)
   Ctor(~name : String, ~csize : Int)
   Tuple(~tsize : Int)
-} derive(Show)
+} derive(Show, Eq)
+
+impl Hash for SubPatSpec with hash_combine(self, hasher) {
+  match self {
+    Unit => hasher.combine_int(0)
+    BoolLit(~bval) => hasher.combine_bool(bval)
+    IntLit(~ival) => hasher.combine_int64(ival)
+    DoubleLit(~dval) => hasher.combine_double(dval)
+    Ctor(~name, ~csize) => {
+      hasher.combine_string(name)
+      hasher.combine_int(csize)
+    }
+    Tuple(~tsize) => hasher.combine_int(tsize)
+  }
+}
 
 fn SubPatSpec::from_pat(pat : @types.Pattern) -> SubPatSpec? {
   match pat {
@@ -240,7 +256,7 @@ fn PatternMatcher::default_row(
     Int(_) | Bool(_) | Double(_) | Unit =>
       self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
     Var(_) => Some(())
-    Tuple(pats) => None
+    Tuple(_) => None
     CtorApp(_, _) => self.tracer.abort("CtorApp is not supported currently")
   }
   match discard_subpat {
@@ -272,9 +288,72 @@ fn PatternMatcher::default_matrix(
   PatMatrix::{ arity: new_arity, occurs: new_occurs, rows: new_rows }
 }
 
-fn PatternMatcher::selected_col(self : PatternMatcher, mat : PatMatrix) -> Int {
-  // fallback strategy: select the first column
-  0
+fn PatternMatcher::select_by_column_ctor_prefix(
+  mat : PatMatrix,
+  col : Int
+) -> Int {
+  let mut score = 0
+  for row in mat.rows {
+    let subpat = row.patterns[col]
+    match subpat {
+      CtorApp(_, _) => score += 1
+      _ => break
+    }
+  }
+  score
+}
+
+fn PatternMatcher::select_by_small_branching_factor(
+  mat : PatMatrix,
+  col : Int
+) -> Int {
+  let ctors = MutSet::new()
+  for row in mat.rows {
+    let subpat = SubPatSpec::from_pat(row.patterns[col])
+    match subpat {
+      Some(pat) => ctors.insert(pat)
+      _ => ()
+    }
+  }
+  -ctors.size()
+}
+
+fn PatternMatcher::select_by_small_arity(mat : PatMatrix, col : Int) -> Int {
+  let mut score = 0
+  for row in mat.rows {
+    let subpat = SubPatSpec::from_pat(row.patterns[col])
+    match subpat {
+      Some(Ctor(~csize, ..)) => score += csize
+      Some(Tuple(~tsize)) => score += tsize
+      _ => ()
+    }
+  }
+  -score
+}
+
+fn PatternMatcher::selected_col(mat : PatMatrix) -> Int {
+  let heuristic = [
+    fn(mat, col) { select_by_column_ctor_prefix(mat, col) },
+    fn(mat, col) { select_by_small_branching_factor(mat, col) },
+    fn(mat, col) { select_by_small_arity(mat, col) },
+  ]
+  let mut columns = Array::makei(mat.arity, fn(i) { i })
+  let mut choose_column = columns[0]
+  for f in heuristic {
+    let scores = columns.map(fn(col) { f(mat, col) })
+    let mut best_score = scores[0]
+    for score in scores {
+      if score > best_score {
+        best_score = score
+      }
+    }
+    columns = columns.filter(fn(col) { scores[col] == best_score })
+    if columns.is_empty() {
+      break
+    }
+    choose_column = columns[0]
+  }
+  choose_column
 }
 
 fn PatternMatcher::clause_matrixs_to_decison_tree(
@@ -291,7 +370,7 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
   }
   // Select a column and then switching
   let pattern_actions = []
-  let selected_col = self.selected_col(mat)
+  let selected_col = selected_col(mat)
   for row in mat.rows {
     let selected_pattern = row.patterns[selected_col]
     guard let Some(subpatsepc) = SubPatSpec::from_pat(selected_pattern) else {
