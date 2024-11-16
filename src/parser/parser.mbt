@@ -434,7 +434,7 @@ pub fn Parser::parse_expr_with_level(
                 }
                 Pattern::Tuple(ts)
               }
-              Syntax::App(Syntax::Var(_) as ctor, exprs) => {
+              Syntax::CtorApp(Syntax::Var(_) as ctor, exprs) => {
                 let args = []
                 for expr in exprs {
                   args.push(syntax_to_pattern!(expr))
@@ -542,6 +542,12 @@ pub fn Parser::parse_expr_with_level(
                 (Syntax::Var("not"), [expr]) => lhs = Syntax::Not(expr)
                 (Syntax::Var("<Array::make>"), [e1, e2]) =>
                   lhs = Syntax::Array(e1, e2)
+                (Syntax::Var(f), es) =>
+                  if f[0] >= 'A' && f[0] <= 'Z' {
+                    lhs = Syntax::CtorApp(lhs, es)
+                  } else {
+                    lhs = Syntax::App(lhs, exprs)
+                  }
                 _ => lhs = Syntax::App(lhs, exprs)
               }
             }

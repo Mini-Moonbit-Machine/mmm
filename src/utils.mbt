@@ -168,6 +168,8 @@ pub fn to_json(self : Syntax) -> Json {
     Get(arr, idx) => ["Get", arr.to_json(), idx.to_json()]
     Put(arr, idx, value) =>
       ["Put", arr.to_json(), idx.to_json(), value.to_json()]
+    CtorApp(name, ps) =>
+      ["CtorApp", [name.to_json()], ps.map(Syntax::to_json) |> Json::Array]
     Match(e, arms) =>
       [
         "Match",
