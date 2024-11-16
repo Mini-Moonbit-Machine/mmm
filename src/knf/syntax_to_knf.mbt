@@ -284,9 +284,25 @@ fn decision_tree_to_knf(
               _ => self.tracer.abort("not an enum type")
             }
           }
-          Tuple(~tsize) =>
+          Tuple(~tsize) => {
             // unpack occurrences and bind name
-            fail!("TODO: bind name in tuple")
+            let x = match bind_env.find(occur) {
+              Some(x) => x
+              None => fail!("unbound occurrence: \{occur}")
+            }
+            let new_binders = []
+            for i in 0..<tsize {
+              let tmp = self.new_temp()
+              let dyn_ty = Type::Var(Ref::new(None))
+              new_binders.push((tmp, dyn_ty))
+              bind_env2 = bind_env2.add(occur, (tmp, dyn_ty))
+            }
+            let_list.push(Binding::LetTuple(new_binders, x.0))
+            let subtreek = self.decision_tree_to_knf!(
+              subtree, let_list, bind_env2, env, ty_env,
+            )
+            (bind_all(subtreek), subtreek.1, let_list)
+          }
         }
         switchks = checkk
       }
