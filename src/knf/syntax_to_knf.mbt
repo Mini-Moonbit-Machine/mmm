@@ -2,7 +2,7 @@ pub typealias LocalEnv = @immut/hashmap.T[String, Type]
 
 pub typealias NameEnv = @immut/hashmap.T[String, Name]
 
-pub typealias BindEnv = @immut/hashmap.T[Occurrence, Name]
+pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
 
 struct KnfEnv {
   mut counter : Int
@@ -36,10 +36,14 @@ fn KnfEnv::new_named_temp(self : KnfEnv, name : Name) -> Name {
   { ..name, slot: counter }
 }
 
-pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
+pub fn KnfEnv::to_knf(
+  self : KnfEnv,
+  named_ty_env : LocalEnv,
+  s : @types.Syntax
+) -> Knf!Failure {
   let let_list = []
   let name_env = NameEnv::new()
-  let local_env = @typer.externals()
+  let local_env = named_ty_env
   let r = self.build_knf!(s, let_list, name_env, local_env)
   let knf = bind_all(r)
   self.tracer.record("knf", knf.to_pretty_print())
@@ -129,19 +133,30 @@ fn decision_tree_to_knf(
 ) -> KnfResult!Failure {
   self.tracer.println("decision_tree_to_knf: \{tree}")
   match tree {
-    Succeed(~action) => {
+    Succeed(~binds, ~action) => {
+      let mut env2 = env
+      let mut ty_env2 = ty_env
+      let new_binders = []
+      for occnm in binds {
+        let (occ, name) = occnm
+        let (knf_name, ty) = bind_env
+          .find(occ)
+          .or_else(self.tracer.abort("unbound occurrence: \{occ}"))
+        env2 = env2.add(name, knf_name)
+        ty_env2 = ty_env2.add(name, ty)
+      }
       let r = self.build_knf!(action, let_list, env, ty_env)
       r
     }
-    Fail => self.tracer.abort("decision tree contains fail branch!")
+    Fail =>
+      // fallthrough
+      (Unit, Unit, let_list)
     Switch(~occur, ~cases, ~default) => {
       let defaultk = self.decision_tree_to_knf!(
         default, let_list, bind_env, env, ty_env,
       )
       let mut switchks = defaultk
-      let bind_env2 = bind_env
-      let env2 = env
-      let ty_env2 = ty_env
+      let mut bind_env2 = bind_env
       // fold from inner match cases
       for case in cases.rev() {
         let (subpat, subtree) = case
@@ -154,10 +169,14 @@ fn decision_tree_to_knf(
             let r = self.build_knf!(Unit, [], env, ty_env)
             let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
-              subtree, let_list, bind_env, env, ty_env,
+              subtree,
+              [],
+              bind_env,
+              env,
+              ty_env,
             )
             (
-              IfEq(x, o, bind_all(subtreek), bind_all(switchks)),
+              IfEq(x.0, o, bind_all(subtreek), bind_all(switchks)),
               subtreek.1,
               let_list,
             )
@@ -170,10 +189,14 @@ fn decision_tree_to_knf(
             let r = self.build_knf!(Bool(bval), [], env, ty_env)
             let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
-              subtree, let_list, bind_env, env, ty_env,
+              subtree,
+              [],
+              bind_env,
+              env,
+              ty_env,
             )
             (
-              IfEq(x, o, bind_all(subtreek), bind_all(switchks)),
+              IfEq(x.0, o, bind_all(subtreek), bind_all(switchks)),
               subtreek.1,
               let_list,
             )
@@ -186,10 +209,14 @@ fn decision_tree_to_knf(
             let r = self.build_knf!(Int(ival), [], env, ty_env)
             let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
-              subtree, let_list, bind_env, env, ty_env,
+              subtree,
+              [],
+              bind_env,
+              env,
+              ty_env,
             )
             (
-              IfEq(x, o, bind_all(subtreek), bind_all(switchks)),
+              IfEq(x.0, o, bind_all(subtreek), bind_all(switchks)),
               subtreek.1,
               let_list,
             )
@@ -202,17 +229,61 @@ fn decision_tree_to_knf(
             let r = self.build_knf!(Double(dval), [], env, ty_env)
             let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
-              subtree, let_list, bind_env, env, ty_env,
+              subtree,
+              [],
+              bind_env,
+              env,
+              ty_env,
             )
             (
-              IfEq(x, o, bind_all(subtreek), bind_all(switchks)),
+              IfEq(x.0, o, bind_all(subtreek), bind_all(switchks)),
               subtreek.1,
               let_list,
             )
           }
-          Ctor(~name, ~csize) =>
+          Ctor(~name, ~csize) => {
             // unpack occurrences and bind name
-            fail!("TODO: bind name in ctor")
+            let ctor_ty = ty_env.find(name).unwrap()
+            match ctor_ty {
+              @types.Type::Enum(_, variants) => {
+                let variant_id = variants
+                  .search_by(fn(ctor) { name == ctor.0 })
+                  .unwrap()
+                let (_, args_ty) = variants[variant_id]
+                let x = match bind_env.find(occur) {
+                  Some(x) => x
+                  None => fail!("unbound occurrence: \{occur}")
+                }
+                // ctor id: variant index
+                let r = self.build_knf!(
+                  Int(variant_id.to_int64()),
+                  [],
+                  env,
+                  ty_env,
+                )
+                let o = self.materialize_knf(r, [])
+                let class_id_tmp = self.new_temp()
+                let class_id_ty = @types.Type::Int
+                let new_binders = [(class_id_tmp, class_id_ty)]
+                for arg_ty in args_ty {
+                  let tmp = self.new_temp()
+                  new_binders.push((tmp, arg_ty))
+                  bind_env2 = bind_env2.add(occur, (tmp, arg_ty))
+                }
+                let_list.push(Binding::LetTuple(new_binders, x.0))
+                // unpack ctor arguments
+                let subtreek = self.decision_tree_to_knf!(
+                  subtree, let_list, bind_env2, env, ty_env,
+                )
+                (
+                  IfEq(class_id_tmp, o, bind_all(subtreek), bind_all(switchks)),
+                  subtreek.1,
+                  let_list,
+                )
+              }
+              _ => self.tracer.abort("not an enum type")
+            }
+          }
           Tuple(~tsize) =>
             // unpack occurrences and bind name
             fail!("TODO: bind name in tuple")
@@ -455,18 +526,40 @@ fn build_knf(
       let r2 = self.build_knf!(e2, let_list, env, ty_env)
       (r2.0, r2.1, let_list)
     }
-    CtorApp(name, args) =>
-      // fill in ctor field
-      fail!("TODO: need ctx mapping from ctor to ctor id")
-    Match(e, arms) as matcher => {
+    CtorApp(Var(f), xs) => {
+      let ctor_ty = ty_env.find(f).unwrap()
+      match ctor_ty {
+        @types.Type::Enum(_, variants) => {
+          let variant_id = variants.search_by(fn(ctor) { f == ctor.0 }).unwrap()
+          let idk = self.build_knf!(
+            Int(variant_id.to_int64()),
+            let_list,
+            env,
+            ty_env,
+          )
+          let idn = self.materialize_knf(idk, let_list)
+          let args = [idn]
+          for x in xs {
+            let r = self.build_knf!(x, let_list, env, ty_env)
+            let tmp = self.materialize_knf(r, let_list)
+            args.push(tmp)
+          }
+          (Tuple(args), ctor_ty, let_list)
+        }
+        _ => self.tracer.abort("not an enum type")
+      }
+    }
+    Match(e, _) as matcher => {
       let r = self.build_knf!(e, let_list, env, ty_env)
       let scrutinee = self.materialize_knf(r, let_list)
-      let matcher = PatternMatcher::new(matcher, self.tracer)
-      let tree = matcher.run()
-      let bind_env = BindEnv::new()
+      let tree = PatternMatcher::new(matcher, self.tracer).run()
+      let bind_env = BindEnv::of([(Occurrence::empty(), (scrutinee, r.1))])
       let r = self.decision_tree_to_knf!(tree, let_list, bind_env, env, ty_env)
       r
     }
+    LetEnum(_, e) =>
+      // assume named type environment is already handled in typer.
+      self.build_knf!(e, let_list, env, ty_env)
     LetRec({ name, args, body }, e) => {
       let ty = name.1
       let orig_name = name.0
@@ -523,5 +616,6 @@ fn build_knf(
       let src = self.materialize_knf(r3, let_list)
       (Put(dst, idx, src), Unit, let_list)
     }
+    _ => self.tracer.abort("syntax_to_knf: unreachable syntax")
   }
 }

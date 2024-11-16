@@ -6,15 +6,16 @@ typealias Type = @types.Type
 
 typealias Kind = @types.Kind
 
-typealias TyEnv = @immut/hashmap.T[String, Type]
+pub typealias TyEnv = @immut/hashmap.T[String, Type]
 
 pub struct Typer {
+  mut named_ty_env : TyEnv
   syntax : @types.Syntax
   tracer : @util.SubTracer
 }
 
 pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
-  Typer::{ syntax, tracer }
+  Typer::{ named_ty_env: TyEnv::new(), syntax, tracer }
 }
 
 fn Typer::find(ty1 : Type) -> Type {

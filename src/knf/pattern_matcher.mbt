@@ -114,8 +114,10 @@ fn SubPatSpec::get_subpattern_arity(self : SubPatSpec) -> Int {
   }
 }
 
+pub typealias BindCtx = @immut/hashmap.T[Occurrence, String]
+
 pub enum DecisionTree {
-  Succeed(~action : @types.Syntax)
+  Succeed(~binds : BindCtx, ~action : @types.Syntax)
   Fail
   Switch(
     ~occur : Occurrence,
@@ -125,6 +127,7 @@ pub enum DecisionTree {
 } derive(Show)
 
 struct PatMatrixRow {
+  binds : BindCtx
   patterns : Array[@types.Pattern]
   action : @types.Syntax
 }
@@ -155,7 +158,13 @@ fn PatMatrix::new(match_arms : Array[@types.MatchArm]) -> PatMatrix {
   let arity = 1
   let occurs = Occurrences::root()
   let rows = match_arms.map(
-    fn(arm) { PatMatrixRow::{ patterns: [arm.pat], action: arm.action } },
+    fn(arm) {
+      PatMatrixRow::{
+        binds: BindCtx::new(),
+        patterns: [arm.pat],
+        action: arm.action,
+      }
+    },
   )
   PatMatrix::{ arity, occurs, rows }
 }
@@ -184,6 +193,7 @@ pub fn PatternMatcher::run(self : PatternMatcher) -> DecisionTree {
 fn PatternMatcher::specialize_row(
   self : PatternMatcher,
   ctor : SubPatSpec,
+  occ : Occurrence,
   selected_col : Int,
   row : PatMatrixRow
 ) -> PatMatrixRow? {
@@ -191,17 +201,20 @@ fn PatternMatcher::specialize_row(
   // try unpack nth col ctor
   let selected_subpat = row.patterns[selected_col]
   let unpack_subpat = match selected_subpat {
-    Wildcard => Some([@types.Wildcard].repeat(subpat_arity))
+    Wildcard => Some(([@types.Wildcard].repeat(subpat_arity), None))
     Int(_) | Bool(_) | Double(_) | Unit => {
       if ctor.is_compatible_with(selected_subpat) && subpat_arity != 0 {
         self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
       }
-      Some([])
+      Some(([], None))
     }
-    Var(_) => Some([@types.Wildcard].repeat(subpat_arity))
+    Var(name) =>
+      Some(
+        ([@types.Wildcard].repeat(subpat_arity), Some(row.binds.add(occ, name))),
+      )
     Tuple(pats) =>
       if ctor.is_compatible_with(selected_subpat) {
-        Some(pats)
+        Some((pats, None))
       } else {
         None
       }
@@ -210,7 +223,7 @@ fn PatternMatcher::specialize_row(
   let new_pat_vec = []
   match unpack_subpat {
     None => None
-    Some(subpat) => {
+    Some((subpat, bind)) => {
       for i, pat in row.patterns {
         if i == selected_col {
           new_pat_vec.append(subpat)
@@ -218,7 +231,17 @@ fn PatternMatcher::specialize_row(
           new_pat_vec.push(pat)
         }
       }
-      Some(PatMatrixRow::{ patterns: new_pat_vec, action: row.action })
+      let new_bind = match bind {
+        None => row.binds
+        Some(bind) => bind
+      }
+      Some(
+        PatMatrixRow::{
+          binds: new_bind,
+          patterns: new_pat_vec,
+          action: row.action,
+        },
+      )
     }
   }
 }
@@ -236,7 +259,8 @@ fn PatternMatcher::specialize_matrix(
   let new_rows = []
   for row in mat.rows {
     // filter rows and unpack constructor occurence & patterns
-    match self.specialize_row(ctor, selected_col, row) {
+    let occ = new_occurs.occurs[selected_col]
+    match self.specialize_row(ctor, occ, selected_col, row) {
       None => continue
       Some(new_row) => new_rows.push(new_row)
     }
@@ -244,27 +268,45 @@ fn PatternMatcher::specialize_matrix(
   PatMatrix::{ arity: new_arity, occurs: new_occurs, rows: new_rows }
 }
 
+fn PatternMatcher::pattern_identifier(pat : @types.Pattern) -> String? {
+  match pat {
+    Var(name) => Some(name)
+    _ => None
+  }
+}
+
 fn PatternMatcher::default_row(
   self : PatternMatcher,
+  occ : Occurrence,
   selected_col : Int,
   row : PatMatrixRow
 ) -> PatMatrixRow? {
   // try to discard unmatched selected column
   let selected_subpat = row.patterns[selected_col]
   let discard_subpat = match selected_subpat {
-    Wildcard => Some(())
+    Wildcard => Some(None)
     Int(_) | Bool(_) | Double(_) | Unit =>
       self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
-    Var(_) => Some(())
+    Var(_) => Some(pattern_identifier(selected_subpat))
     Tuple(_) => None
     CtorApp(_, _) => self.tracer.abort("CtorApp is not supported currently")
   }
   match discard_subpat {
     None => None
-    Some(_) => {
+    Some(bind) => {
       let new_pat_vec = row.patterns.copy()
       let _ = new_pat_vec.remove(selected_col)
-      Some(PatMatrixRow::{ patterns: new_pat_vec, action: row.action })
+      let new_bind = match bind {
+        None => row.binds
+        Some(name) => row.binds.add(Occurrence::empty(), name)
+      }
+      Some(
+        PatMatrixRow::{
+          binds: new_bind,
+          patterns: new_pat_vec,
+          action: row.action,
+        },
+      )
     }
   }
 }
@@ -279,8 +321,9 @@ fn PatternMatcher::default_matrix(
   let new_arity = mat.arity - 1
   let new_rows = []
   for row in mat.rows {
+    let occ = new_occurs.occurs[selected_col]
     // filter rows and match wildcard pattern
-    match self.default_row(selected_col, row) {
+    match self.default_row(occ, selected_col, row) {
       None => continue
       Some(new_row) => new_rows.push(new_row)
     }
@@ -366,7 +409,14 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
   }
   // If the first row of P exists and is constituted by wildcards, then matching always succeeds and yields the first action.
   if mat.rows[0].all_wildcards() {
-    return DecisionTree::Succeed(action=mat.rows[0].action)
+    let mut binds = mat.rows[0].binds
+    for subpat in mat.rows[0].patterns {
+      match pattern_identifier(subpat) {
+        Some(name) => binds = binds.add(Occurrence::empty(), name)
+        None => ()
+      }
+    }
+    return DecisionTree::Succeed(~binds, action=mat.rows[0].action)
   }
   // Select a column and then switching
   let pattern_actions = []
