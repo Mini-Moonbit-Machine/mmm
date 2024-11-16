@@ -2,22 +2,34 @@ pub typealias MutMap[K, V] = @hashmap.T[K, V]
 
 pub struct Occurrence {
   order : Array[Int]
-} derive(Show)
+} derive(Show, Eq)
+
+pub impl Hash for Occurrence with hash_combine(self, hasher) {
+  for i in self.order {
+    hasher.combine_int(i)
+  }
+}
 
 pub struct Occurrences {
   occurs : Array[Occurrence]
 } derive(Show)
 
 /// empty, written as 'Λ' occurence.
-fn Occurrence::empty() -> Occurrence {
+pub fn Occurrence::empty() -> Occurrence {
   Occurrence::{ order: [] }
 }
 
-fn Occurrences::root() -> Occurrences {
+pub fn Occurrence::destruct(self : Occurrence, suborder : Int) -> Occurrence {
+  let order = self.order.copy()
+  order.push(suborder)
+  Occurrence::{ order, }
+}
+
+pub fn Occurrences::root() -> Occurrences {
   Occurrences::{ occurs: [Occurrence::empty()] }
 }
 
-fn Occurrences::unpack_col(
+pub fn Occurrences::unpack_col(
   self : Occurrences,
   nth : Int,
   arity : Int
@@ -33,7 +45,7 @@ fn Occurrences::unpack_col(
   Occurrences::{ occurs: new_occurs }
 }
 
-fn Occurrences::remove_col(self : Occurrences, nth : Int) -> Occurrences {
+pub fn Occurrences::remove_col(self : Occurrences, nth : Int) -> Occurrences {
   let new_occurs = self.occurs.copy()
   let _ = new_occurs.remove(nth)
   Occurrences::{ occurs: new_occurs }
@@ -44,6 +56,7 @@ pub enum SubPatSpec {
   BoolLit(~bval : Bool)
   IntLit(~ival : Int64)
   DoubleLit(~dval : Double)
+  Ctor(~name : String, ~csize : Int)
   Tuple(~tsize : Int)
 } derive(Show)
 
@@ -53,6 +66,7 @@ fn SubPatSpec::from_pat(pat : @types.Pattern) -> SubPatSpec? {
     Bool(bval) => Some(BoolLit(~bval))
     Int(ival) => Some(IntLit(~ival))
     Double(dval) => Some(DoubleLit(~dval))
+    CtorApp(name, pats) => Some(Ctor(~name, csize=pats.length()))
     Tuple(ts) => Some(Tuple(tsize=ts.length()))
     Wildcard | Var(_) => None
   }
@@ -67,6 +81,7 @@ fn SubPatSpec::is_compatible_with(
     (BoolLit(~bval), Bool(b)) => bval == b
     (IntLit(~ival), Int(i)) => ival == i
     (DoubleLit(~dval), Double(d)) => dval == d
+    (Ctor(~name, ~csize), CtorApp(n, ps)) => name == n && csize == ps.length()
     (Tuple(~tsize), Tuple(ts)) => tsize == ts.length()
     _ => false
   }
@@ -78,6 +93,7 @@ fn SubPatSpec::get_subpattern_arity(self : SubPatSpec) -> Int {
     BoolLit(_) => 0
     IntLit(_) => 0
     DoubleLit(_) => 0
+    Ctor(~csize, ..) => csize
     Tuple(~tsize) => tsize
   }
 }
