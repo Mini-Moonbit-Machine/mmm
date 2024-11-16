@@ -20,6 +20,7 @@ pub enum Syntax {
   Put(Syntax, Syntax, Syntax) // _[_] = _
   CtorApp(Syntax, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
+  LetEnum(Type, Syntax) // enum {..}; _
 } derive(Show)
 
 pub struct MatchArm {
@@ -56,6 +57,50 @@ pub struct Fundef {
   body : Syntax
 } derive(Show)
 
+pub enum Either[A, B] {
+  Left(A)
+  Right(B)
+} derive(Show)
+
+pub typealias NamedTyId = Int
+
+pub struct NamedTyCtx {
+  named_ctx : Map[String, (NamedType, NamedTyId)]
+  mut counter : Int
+}
+
+pub fn NamedTyCtx::new() -> NamedTyCtx {
+  { named_ctx: Map::new(), counter: 0 }
+}
+
+pub fn NamedTyCtx::new_named_ty(
+  self : NamedTyCtx,
+  name : String,
+  ty : NamedType
+) -> NamedTyId {
+  let id = self.counter
+  self.named_ctx.set(name, (ty, id))
+  self.counter += 1
+  id
+}
+
+pub fn NamedTyCtx::name_to_ty(
+  self : NamedTyCtx,
+  name : String
+) -> (NamedType, NamedTyId) {
+  match self.named_ctx.get(name) {
+    Some(t) => t
+    None => abort("unknown type \{name}")
+  }
+}
+
+pub typealias MutMap[K, V] = @hashmap.T[K, V]
+
+pub enum NamedType {
+  Enum(String, MutMap[String, Array[Type]]) // enum _ {_; _(_, _); }
+  Named(String)
+} derive(Show)
+
 pub enum Type {
   Unit
   Bool
@@ -66,6 +111,7 @@ pub enum Type {
   Array(Type) // Array[_]
   Var(Ref[Type?])
   Ptr
+  Named(Ref[NamedType])
 } derive(Show)
 
 pub fn Type::is_ptr_like(self : Type) -> Bool {

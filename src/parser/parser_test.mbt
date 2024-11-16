@@ -32,6 +32,22 @@ fn test_parse_expr(
   assert_eq!(last.inner.tag, @lexer.TokenTag::Eof)
 }
 
+fn test_parse_stmt(
+  source : String,
+  expected_str : String,
+  expected_ntokens : Int
+) -> Unit!Error {
+  let tracer = @util.Tracer::new()
+  let subtracer = tracer.new_subtracer("Test", true, false)
+  let parser = Parser::new(source, subtracer)
+  let expr = parser.parse_stmt!(true)
+  let expr_ntokens = expr.ntokens
+  assert_eq!(expr.inner.to_json().stringify(), expected_str)
+  assert_eq!(expr_ntokens, expected_ntokens)
+  let last = parser.next_token!()
+  assert_eq!(last.inner.tag, @lexer.TokenTag::Eof)
+}
+
 test "parse type" {
   test_parse_type!(
     "Unit",
@@ -219,9 +235,18 @@ test "parse expr" {
   )
   test_parse_expr!(
     "match e { (Nil, _) => 0; (_, Nil) => 1; (Cons(x, xs), Cons(y, _)) => 2; }",
-    #|["Match",["Var","e"],[{"pat":["Tuple",[["Var","Nil"],"Wildcard"]],"action":["Int",0]},{"pat":["Tuple",["Wildcard",["Var","Nil"]]],"action":["Int",1]},{"pat":["Tuple",[["CtorApp",[["Var","Cons"]],[["Var","x"],["Var","xs"]]],["CtorApp",[["Var","Cons"]],[["Var","y"],"Wildcard"]]]],"action":["Int",2]}]]
+    #|["Match",["Var","e"],[{"pat":["Tuple",[["Var","Nil"],"Wildcard"]],"action":["Int",0]},{"pat":["Tuple",["Wildcard",["Var","Nil"]]],"action":["Int",1]},{"pat":["Tuple",[["CtorApp",["Cons"],[["Var","x"],["Var","xs"]]],["CtorApp",["Cons"],[["Var","y"],"Wildcard"]]]],"action":["Int",2]}]]
     ,
     38,
+  )
+}
+
+test "parse enum" {
+  test_parse_stmt!(
+    "enum List { Nil; Cons(Int, List); }",
+    #|["LetEnum",["Enum","List",["Cons","Nil"]],"Unit"]
+    ,
+    21,
   )
 }
 

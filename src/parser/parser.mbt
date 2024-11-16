@@ -10,6 +10,8 @@ typealias Keyword = @lexer.Keyword
 
 typealias Type = @types.Type
 
+typealias NamedType = @types.NamedType
+
 typealias Syntax = @types.Syntax
 
 typealias Pattern = @types.Pattern
@@ -17,6 +19,8 @@ typealias Pattern = @types.Pattern
 typealias MatchArm = @types.MatchArm
 
 typealias Op = @types.Op
+
+typealias MutMap[K, V] = @hashmap.T[K, V]
 
 pub struct Parser {
   tokenizer : Lexer
@@ -232,7 +236,12 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         "Double" => Type::Double
         "Bool" => Type::Bool
         "Array" => Type::Array(Type::Unit)
-        _ => fail!("unexpected type identifier")
+        named =>
+          if named[0] >= 'A' && named[0] <= 'Z' {
+            Type::Named(Ref::new(NamedType::Named(named)))
+          } else {
+            fail!("unexpected type identifier")
+          }
       }
     PairedOpen(po) =>
       if self.peek_token!().inner.tag == PairedClose(po) {
@@ -434,7 +443,7 @@ pub fn Parser::parse_expr_with_level(
                 }
                 Pattern::Tuple(ts)
               }
-              Syntax::CtorApp(Syntax::Var(_) as ctor, exprs) => {
+              Syntax::CtorApp(Syntax::Var(ctor), exprs) => {
                 let args = []
                 for expr in exprs {
                   args.push(syntax_to_pattern!(expr))
@@ -608,10 +617,59 @@ fn Parser::bind_type(name : String, ty : Type?) -> (String, Type) {
   (name, ty.or(Type::Var(Ref::new(None))))
 }
 
-fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
+pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
   let lookahead = self.peek_token!()
   let mut ntokens = 0
   let expr = match lookahead.inner.tag {
+    Kw(Keyword::Enum) => {
+      self.skip_token()
+      ntokens += 1
+      if not(top) || lookahead.inner.loc.column != 1 {
+        fail!(
+          "enum definition must be at the top level and the beginning of the line, but got enum at \{lookahead.inner.loc}",
+        )
+      }
+      let ident = self.next_token!()
+      ntokens += ident.ntokens
+      if ident.inner.tag != Identifer {
+        fail!("expected enum identifier")
+      }
+      let _ = self.expect_paired_open!(Paired::Brace)
+      ntokens += 1
+      // collect ctors
+      let ctors = MutMap::new()
+      while self.peek_token!().inner.tag != PairedClose(Brace) {
+        let ctor = self.next_token!()
+        ntokens += ctor.ntokens
+        if ctor.inner.tag != Identifer {
+          fail!("expected constructor identifier")
+        }
+        let lookahead3 = self.peek_token!()
+        let args = if lookahead3.inner.tag == PairedOpen(Parenthesis) {
+          let ty = self.parse_type!()
+          ntokens += ty.ntokens
+          guard let Type::Tuple(tys) = ty.inner else {
+            _ => fail!("expected a tuple")
+          }
+          tys
+        } else {
+          []
+        }
+        let _ = self.expect_operator!(";")
+        ntokens += 1
+        ctors.set(ctor.inner.span, args)
+      }
+      let _ = self.next_token!()
+      ntokens += 1
+      let enum_ty = Type::Named(Ref::new(Enum(ident.inner.span, ctors)))
+      if self.reach_eof() == false {
+        let stmt = self.parse_stmt!(top)
+        ntokens += stmt.ntokens
+        Syntax::LetEnum(enum_ty, stmt.inner)
+      } else {
+        Syntax::LetEnum(enum_ty, Syntax::Unit)
+      }
+    }
     Kw(Keyword::Let) => {
       self.skip_token()
       ntokens += 1

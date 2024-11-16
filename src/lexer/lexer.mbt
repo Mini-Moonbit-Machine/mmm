@@ -22,6 +22,7 @@ pub enum Keyword {
   If
   Else
   Match
+  Enum
 } derive(Hash, Eq, Show)
 
 pub enum Paired {
@@ -52,6 +53,7 @@ fn init {
   keywords["if"] = Keyword::If
   keywords["else"] = Keyword::Else
   keywords["match"] = Keyword::Match
+  keywords["enum"] = Keyword::Enum
 }
 
 pub struct Token {
