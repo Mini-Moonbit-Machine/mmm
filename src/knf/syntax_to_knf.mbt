@@ -139,9 +139,9 @@ fn decision_tree_to_knf(
         default, let_list, bind_env, env, ty_env,
       )
       let mut switchks = defaultk
-      let mut bind_env2 = bind_env
-      let mut env2 = env
-      let mut ty_env2 = ty_env
+      let bind_env2 = bind_env
+      let env2 = env
+      let ty_env2 = ty_env
       // fold from inner match cases
       for case in cases.rev() {
         let (subpat, subtree) = case
@@ -151,7 +151,8 @@ fn decision_tree_to_knf(
               Some(x) => x
               None => fail!("unbound occurrence: \{occur}")
             }
-            let o = self.materialize_knf(@Knf.Unit, [])
+            let r = self.build_knf!(Unit, [], env, ty_env)
+            let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
               subtree, let_list, bind_env, env, ty_env,
             )
@@ -166,7 +167,8 @@ fn decision_tree_to_knf(
               Some(x) => x
               None => fail!("unbound occurrence: \{occur}")
             }
-            let o = self.materialize_knf(@Knf.Bool(bval), [])
+            let r = self.build_knf!(Bool(bval), [], env, ty_env)
+            let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
               subtree, let_list, bind_env, env, ty_env,
             )
@@ -181,7 +183,8 @@ fn decision_tree_to_knf(
               Some(x) => x
               None => fail!("unbound occurrence: \{occur}")
             }
-            let o = self.materialize_knf(@Knf.Int(ival), [])
+            let r = self.build_knf!(Int(ival), [], env, ty_env)
+            let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
               subtree, let_list, bind_env, env, ty_env,
             )
@@ -196,7 +199,8 @@ fn decision_tree_to_knf(
               Some(x) => x
               None => fail!("unbound occurrence: \{occur}")
             }
-            let o = self.materialize_knf(@Knf.Double(~dval), [])
+            let r = self.build_knf!(Double(dval), [], env, ty_env)
+            let o = self.materialize_knf(r, [])
             let subtreek = self.decision_tree_to_knf!(
               subtree, let_list, bind_env, env, ty_env,
             )
@@ -213,8 +217,7 @@ fn decision_tree_to_knf(
             // unpack occurrences and bind name
             fail!("TODO: bind name in tuple")
         }
-        let subtreek = checkk
-
+        switchks = checkk
       }
       switchks
     }
