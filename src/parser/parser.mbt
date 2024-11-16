@@ -10,8 +10,6 @@ typealias Keyword = @lexer.Keyword
 
 typealias Type = @types.Type
 
-typealias NamedType = @types.NamedType
-
 typealias Syntax = @types.Syntax
 
 typealias Pattern = @types.Pattern
@@ -238,7 +236,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         "Array" => Type::Array(Type::Unit)
         named =>
           if named[0] >= 'A' && named[0] <= 'Z' {
-            Type::Named(Ref::new(NamedType::Named(named)))
+            Type::Var(Ref::new(Some(Named(named))))
           } else {
             fail!("unexpected type identifier")
           }
@@ -637,7 +635,7 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       let _ = self.expect_paired_open!(Paired::Brace)
       ntokens += 1
       // collect ctors
-      let ctors = MutMap::new()
+      let ctors = []
       while self.peek_token!().inner.tag != PairedClose(Brace) {
         let ctor = self.next_token!()
         ntokens += ctor.ntokens
@@ -657,11 +655,11 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         }
         let _ = self.expect_operator!(";")
         ntokens += 1
-        ctors.set(ctor.inner.span, args)
+        ctors.push((ctor.inner.span, args))
       }
       let _ = self.next_token!()
       ntokens += 1
-      let enum_ty = Type::Named(Ref::new(Enum(ident.inner.span, ctors)))
+      let enum_ty = Type::Enum(ident.inner.span, ctors)
       if self.reach_eof() == false {
         let stmt = self.parse_stmt!(top)
         ntokens += stmt.ntokens

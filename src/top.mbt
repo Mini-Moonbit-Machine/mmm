@@ -57,15 +57,10 @@ pub struct Fundef {
   body : Syntax
 } derive(Show)
 
-pub enum Either[A, B] {
-  Left(A)
-  Right(B)
-} derive(Show)
-
 pub typealias NamedTyId = Int
 
 pub struct NamedTyCtx {
-  named_ctx : Map[String, (NamedType, NamedTyId)]
+  named_ctx : Map[String, (Type, NamedTyId)]
   mut counter : Int
 }
 
@@ -76,7 +71,7 @@ pub fn NamedTyCtx::new() -> NamedTyCtx {
 pub fn NamedTyCtx::new_named_ty(
   self : NamedTyCtx,
   name : String,
-  ty : NamedType
+  ty : Type
 ) -> NamedTyId {
   let id = self.counter
   self.named_ctx.set(name, (ty, id))
@@ -87,7 +82,7 @@ pub fn NamedTyCtx::new_named_ty(
 pub fn NamedTyCtx::name_to_ty(
   self : NamedTyCtx,
   name : String
-) -> (NamedType, NamedTyId) {
+) -> (Type, NamedTyId) {
   match self.named_ctx.get(name) {
     Some(t) => t
     None => abort("unknown type \{name}")
@@ -95,11 +90,6 @@ pub fn NamedTyCtx::name_to_ty(
 }
 
 pub typealias MutMap[K, V] = @hashmap.T[K, V]
-
-pub enum NamedType {
-  Enum(String, MutMap[String, Array[Type]]) // enum _ {_; _(_, _); }
-  Named(String)
-} derive(Show)
 
 pub enum Type {
   Unit
@@ -111,7 +101,8 @@ pub enum Type {
   Array(Type) // Array[_]
   Var(Ref[Type?])
   Ptr
-  Named(Ref[NamedType])
+  Named(String)
+  Enum(String, Array[(String, Array[Type])]) // enum _ {_; _(_, _); }
 } derive(Show)
 
 pub fn Type::is_ptr_like(self : Type) -> Bool {
