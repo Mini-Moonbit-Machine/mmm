@@ -6,16 +6,16 @@ pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
 
 struct KnfEnv {
   mut counter : Int
-  named_tys : LocalEnv
+  mut named_tys : LocalEnv
   externals : LocalEnv
   tracer : @util.SubTracer
 }
 
 pub fn KnfEnv::new(
-  named_tys : @immut/hashmap.T[String, Type],
+  externals : @immut/hashmap.T[String, Type],
   tracer : @util.SubTracer
 ) -> KnfEnv {
-  { counter: 1, named_tys, externals: @typer.externals(), tracer }
+  { counter: 1, named_tys: LocalEnv::new(), externals, tracer }
 }
 
 pub fn KnfEnv::init_counter_from_existing(
@@ -39,12 +39,14 @@ fn KnfEnv::new_named_temp(self : KnfEnv, name : Name) -> Name {
 
 pub fn KnfEnv::to_knf(
   self : KnfEnv,
-  named_ty_env : LocalEnv,
+  named_tys : LocalEnv,
   s : @types.Syntax
 ) -> Knf!Failure {
   let let_list = []
   let name_env = NameEnv::new()
-  let local_env = named_ty_env
+  // externals are handled by @typer.externals()
+  let local_env = LocalEnv::new()
+  self.named_tys = named_tys
   let r = self.build_knf!(s, let_list, name_env, local_env)
   let knf = bind_all(r)
   self.tracer.record("knf", knf.to_pretty_print())
@@ -544,7 +546,7 @@ fn build_knf(
       (r2.0, r2.1, let_list)
     }
     CtorApp(Var(f), xs) => {
-      let ctor_ty = ty_env.find(f).unwrap()
+      let ctor_ty = self.named_tys.find(f).unwrap()
       match ctor_ty {
         @types.Type::Enum(_, variants) => {
           let variant_id = variants.search_by(fn(ctor) { f == ctor.0 }).unwrap()
@@ -574,9 +576,30 @@ fn build_knf(
       let r = self.decision_tree_to_knf!(tree, let_list, bind_env, env, ty_env)
       r
     }
-    LetEnum(_, e) =>
-      // assume named type environment is already handled in typer.
-      self.build_knf!(e, let_list, env, ty_env)
+    LetEnum(enumty, e) => {
+      let mut new_env = env
+      let mut new_ty_env = ty_env
+      guard let Type::Enum(_, variants) = enumty else {
+        _ => fail!("check: \{enumty} is not an enum type")
+        // named_tys = named_tys.add(name, enumty)
+      }
+      for variant in variants {
+        let (cname, args_ty) = variant
+        // Add constructors to type scheme environment.
+        // This is for constructors such as 'None' and 'Nil'.
+        // This can be generalized to generic ADTs.
+        if args_ty.length() > 0 {
+          let variant_ty = Type::Fun(args_ty, enumty)
+          new_ty_env = new_ty_env.add(cname, variant_ty)
+        } else {
+          // placeholder Name for 0 arity constructors.
+          let tmp = self.new_temp()
+          new_env = new_env.add(cname, tmp)
+          new_ty_env = new_ty_env.add(cname, enumty)
+        }
+      }
+      self.build_knf!(e, let_list, new_env, new_ty_env)
+    }
     LetRec({ name, args, body, .. }, e) => {
       let ty = name.1
       let orig_name = name.0

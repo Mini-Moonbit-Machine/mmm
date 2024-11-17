@@ -112,6 +112,10 @@ fn Typer::unify(
       if x != y {
         fail!("unify: different type names \{x} and \{y}")
       }
+    (Enum(x, _), Enum(y, _)) =>
+      if x != y {
+        fail!("unify: enums \{x} and \{y}")
+      }
     (Type::Var(_), _) => self.union!(ty1, ty2)
     (_, Type::Var(_)) => self.union!(ty1, ty2)
     _ =>
