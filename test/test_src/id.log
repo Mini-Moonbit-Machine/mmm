@@ -15,22 +15,32 @@
 // [Knf] build_knf: Var("main")
 // [Main] function thunk_main(k) {
 // [Main]   function f_1(x_3, k) {
-// [Main]     return k(x_3)
+// [Main]     return $thunk(() => k(x_3))
 // [Main]   }
 // [Main]   function main_4(k) {
 // [Main]     const _5 = 1000;
 // [Main]     return $thunk(() => f_1(_5, function (_6) {
-// [Main]       const _8 = minimbt_print_int($force(_6));
-// [Main]       const _9 = 1000;
-// [Main]       return $thunk(() => f_1(_9, function (_10) {
-// [Main]         const _11 = minimbt_int_of_float($force(_10));
-// [Main]         return $thunk(() => $thunk(() => k(minimbt_print_int($force(_11)))))
+// [Main]       return $thunk(() => $external(minimbt_print_int, function (_8) {
+// [Main]         const _9 = 1000;
+// [Main]         return $thunk(() => f_1(_9, function (_10) {
+// [Main]           return $thunk(() => $external(minimbt_int_of_float, function (_11) {
+// [Main]             return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]               return $thunk(() => k(x))
+// [Main]             }
+// [Main]             , _11))
+// [Main]           }
+// [Main]           , _10))
+// [Main]         }
+// [Main]         ))
 // [Main]       }
-// [Main]       ))
+// [Main]       , _6))
 // [Main]     }
 // [Main]     ))
 // [Main]   }
-// [Main]   return $thunk(() => main_4(k))
+// [Main]   return $thunk(() => main_4(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
 // [Main] }
 // [Main] 
 // [Main] function $thunk(lambda) {
@@ -44,6 +54,10 @@
 // [Main]     x = x.thunk();
 // [Main]   }
 // [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
 // [Main] }
 // [Main] function $trampoline(f, ...args) {
 // [Main]   let x = f(...args);
@@ -95,4 +109,4 @@
 // [Typer] unify: Unit and Var({val: None})
 // [Typer] union: Unit and Var({val: None})
 // [Typer] check: Unit against Unit
-// [Parser] flags: []
+// [Parser] flags: ["extension"]

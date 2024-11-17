@@ -14,9 +14,16 @@ typealias Syntax = @types.Syntax
 
 typealias Op = @types.Op
 
+struct UserOp {
+  assoc_left : Bool
+  prec : Int
+  func : String
+}
+
 pub struct Parser {
   tokenizer : Lexer
   tracer : @util.SubTracer
+  op : Map[String, UserOp]
   mut token : Token?
 }
 
@@ -47,14 +54,16 @@ fn Parser::prefix_start() -> Int {
   1000
 }
 
-fn Parser::prefix(op : String) -> (Int, Int)? {
+fn Parser::prefix(self : Parser, op : String) -> (Int, Int)? {
+  let _ = self
   match op {
     "-" => Some((Parser::level_none(), Parser::prefix_start() + 1))
     _ => None
   }
 }
 
-fn Parser::postfix(op : String) -> (Int, Int)? {
+fn Parser::postfix(self : Parser, op : String) -> (Int, Int)? {
+  let _ = self
   match op {
     "(" => Some((Parser::postfix_start() + 1, Parser::level_none()))
     "[" => Some((Parser::postfix_start() + 1, Parser::level_none()))
@@ -62,7 +71,7 @@ fn Parser::postfix(op : String) -> (Int, Int)? {
   }
 }
 
-fn Parser::infix(op : String) -> (Int, Int)? {
+fn Parser::infix(self : Parser, op : String) -> (Int, Int)? {
   match op {
     "<=" => Some((Parser::infix_start() + 1, Parser::infix_start() + 2))
     "==" => Some((Parser::infix_start() + 1, Parser::infix_start() + 2))
@@ -70,11 +79,23 @@ fn Parser::infix(op : String) -> (Int, Int)? {
     "-" => Some((Parser::infix_start() + 3, Parser::infix_start() + 4))
     "*" => Some((Parser::infix_start() + 5, Parser::infix_start() + 6))
     "/" => Some((Parser::infix_start() + 5, Parser::infix_start() + 6))
-    _ => None
+    _ =>
+      match self.op.get(op) {
+        Some({ assoc_left, prec, .. }) =>
+          if assoc_left {
+            let prec = prec + Parser::infix_start()
+            Some((prec, prec + 1))
+          } else {
+            let prec = prec + Parser::infix_start()
+            Some((prec + 1, prec))
+          }
+        None => None
+      }
   }
 }
 
-fn Parser::type_postfix(op : String) -> (Int, Int)? {
+fn Parser::type_postfix(self : Parser, op : String) -> (Int, Int)? {
+  let _ = self
   match op {
     "(" => Some((Parser::postfix_start() + 1, Parser::level_none()))
     "[" => Some((Parser::postfix_start() + 1, Parser::level_none()))
@@ -82,7 +103,8 @@ fn Parser::type_postfix(op : String) -> (Int, Int)? {
   }
 }
 
-fn Parser::type_infix(op : String) -> (Int, Int)? {
+fn Parser::type_infix(self : Parser, op : String) -> (Int, Int)? {
+  let _ = self
   match op {
     "->" => Some((Parser::infix_start() + 2, Parser::infix_start() + 1))
     _ => None
@@ -90,7 +112,7 @@ fn Parser::type_infix(op : String) -> (Int, Int)? {
 }
 
 pub fn Parser::new(input : String, tracer : @util.SubTracer) -> Parser {
-  { tokenizer: Lexer::new(input), tracer, token: None }
+  { tokenizer: Lexer::new(input), tracer, token: None, op: {} }
 }
 
 pub fn Parser::get_flags(self : Parser) -> Array[String] {
@@ -213,6 +235,14 @@ fn Parser::expect_operator(self : Parser, op : String) -> PToken!Failure {
   }
 }
 
+fn Parser::expect_int(self : Parser) -> PResult[Int64]!Failure {
+  match self.next_token!() {
+    { inner: { tag: TokenTag::IntLiteral(n), .. }, .. } =>
+      { inner: n, ntokens: 1 }
+    tok => fail!("expected int, got \{tok.inner}")
+  }
+}
+
 pub fn Parser::parse_type(self : Parser) -> PType!Failure {
   self.parse_type_with_level!(0)
 }
@@ -281,7 +311,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
       DoubleLiteral(_) => break
       _ => fail!("unexpected token when parsing type")
     }
-    match Parser::type_postfix(op_str) {
+    match self.type_postfix(op_str) {
       Some((laff, _)) => {
         if laff < level {
           break
@@ -305,7 +335,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
       }
       None => ()
     }
-    match Parser::type_infix(op_str) {
+    match self.type_infix(op_str) {
       Some((laff, raff)) => {
         if laff < level {
           break
@@ -413,7 +443,7 @@ pub fn Parser::parse_expr_with_level(
         _ => fail!("keyword not supported in expression: \{kw}")
       }
     Op(op) =>
-      match Parser::prefix(op) {
+      match self.prefix(op) {
         Some((_, raff)) => {
           let rhs = self.parse_expr_with_level!(raff)
           ntokens += rhs.ntokens
@@ -442,7 +472,7 @@ pub fn Parser::parse_expr_with_level(
       _ =>
         fail!("unexpected trailing token when parsing expr \{op_token.inner}")
     }
-    match Parser::postfix(op_str) {
+    match self.postfix(op_str) {
       Some((laff, _)) => {
         if laff < level {
           break
@@ -496,7 +526,7 @@ pub fn Parser::parse_expr_with_level(
       }
       None => ()
     }
-    match Parser::infix(op_str) {
+    match self.infix(op_str) {
       Some((laff, raff)) => {
         if laff < level {
           break
@@ -512,7 +542,12 @@ pub fn Parser::parse_expr_with_level(
           "-" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Sub, kind=None)
           "*" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Mul, kind=None)
           "/" => lhs = Syntax::Prim(lhs, rhs.inner, Op::Div, kind=None)
-          _ => fail!("unexpected operator in infix expression")
+          _ =>
+            match self.op.get(op_str) {
+              Some({ func, .. }) =>
+                lhs = Syntax::App(Syntax::Var(func), [lhs, rhs.inner])
+              None => fail!("unexpected operator in infix expression")
+            }
         }
         continue
       }
@@ -551,6 +586,39 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
   let lookahead = self.peek_token!()
   let mut ntokens = 0
   let expr = match lookahead.inner.tag {
+    Kw(Keyword::Infix) => {
+      self.skip_token()
+      ntokens += 1
+      let assoc_left = if self.peek_keyword(Left) {
+        true
+      } else if self.peek_keyword(Right) {
+        false
+      } else {
+        fail!("expected left or right after infix")
+      }
+      self.skip_token()
+      ntokens += 1
+      let prec = self.expect_int!()
+      ntokens += prec.ntokens
+      let prec = prec.inner.to_int()
+      let op = self.next_token!()
+      ntokens += op.ntokens
+      match op {
+        { inner: { tag: Op(op), .. }, .. } => {
+          let ident = self.next_token!()
+          ntokens += ident.ntokens
+          if ident.inner.tag != Identifer {
+            fail!("expected identifier for op")
+          }
+          let func = ident.inner.span
+          self.op.set(op, { assoc_left, prec, func })
+          let _ = self.expect_operator!(";")
+          ntokens += 1
+          return self.parse_stmt!(top)
+        }
+        _ => fail!("expected operator after infix left/right")
+      }
+    }
     Kw(Keyword::Let) => {
       self.skip_token()
       ntokens += 1

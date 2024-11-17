@@ -1,3 +1,4 @@
+//:has_read
 fn read_ch_until_newline_or_eof() -> Int {
   let c = read_char();
   if c == 10 {

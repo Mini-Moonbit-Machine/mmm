@@ -17,6 +17,7 @@ pub enum JsExpr {
   Lit(String)
   Thunk(JsExpr)
   Fn(JsFn)
+  LetFn(JsFn, JsExpr)
   LetRec(JsFn, JsExpr)
   Let(String, JsExpr, JsExpr)
   LetTuple(Array[String], JsExpr, JsExpr)
@@ -45,6 +46,10 @@ pub fn JsCore::output(self : JsCore, logger : Logger) -> Unit {
     #|    x = x.thunk();
     #|  }
     #|  return x;
+    #|}
+    #|function $external(f, k, ...args) {
+    #|  let x = f(...args);
+    #|  return $thunk(() => k(x));
     #|}
     #|function $trampoline(f, ...args) {
     #|  let x = f(...args);
@@ -96,6 +101,10 @@ pub fn JsExpr::output_with_tail_return(
       logger.write_string("return ")
       func.output(logger)
     }
+    LetFn(func, body) => {
+      func.output(logger)
+      body.output_with_tail_return(logger)
+    }
     LetRec(lhs, rhs) => {
       lhs.output(logger)
       rhs.output_with_tail_return(logger)
@@ -110,7 +119,7 @@ pub fn JsExpr::output_with_tail_return(
       let destruct = names.join(", ")
       logger.write_string("const [\{destruct}] = ")
       tuple.output_as_expr(logger)
-      logger.write_string(";")
+      logger.write_string(";\n")
       body.output_with_tail_return(logger)
     }
     Get(obj, key) => logger.write_string("return \{obj}[\{key}]")
@@ -165,6 +174,10 @@ pub fn JsExpr::output_as_expr(
       logger.write_string(")")
     }
     Fn(func) => func.output(logger)
+    LetFn(func, body) => {
+      func.output(logger)
+      body.output_as_expr(logger)
+    }
     LetRec(lhs, rhs) => {
       lhs.output(logger)
       rhs.output_as_expr(logger)
@@ -187,7 +200,7 @@ pub fn JsExpr::output_as_expr(
     UnOp(op, expr) => logger.write_string("\{op}\{expr}")
     BinOp(op, lhs, rhs) => logger.write_string("\{lhs} \{op} \{rhs}")
     If(cond, then, els) => {
-      logger.write_string("$force((() => {\n")
+      logger.write_string("(() => {\n")
       logger.indent()
       logger.write_string("if (")
       cond.output_as_expr(logger)
@@ -201,7 +214,7 @@ pub fn JsExpr::output_as_expr(
       logger.outdent()
       logger.write_string("\n}")
       logger.outdent()
-      logger.write_string("\n})())")
+      logger.write_string("\n})()")
     }
     Call(name, args) => {
       logger.write_string("\{name}(")

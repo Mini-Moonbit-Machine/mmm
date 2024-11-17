@@ -1,0 +1,14 @@
+let rec pow: (x: Int, n: Int) -> Int {
+  if (Eq(Var("n"), Int(0))) then {
+    Int(1)
+  } else {
+    Var("x") * App(Var("pow"), [Var("x"), Prim(Var("n"), Int(1), Sub, kind=Some(Int))])
+  }
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("pow"), [Int(2), App(Var("pow"), [Int(2), Int(3)])]), ])
+  let _: Var({val: Some(Unit)}) = Apply(Var("print_char"), [Int(10), ])
+  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("pow"), [App(Var("pow"), [Int(2), Int(2)]), Int(3)]), ])
+  Unit
+}
+Unit

@@ -1,3 +1,5 @@
+//:has_read
+
 fn main {
   fn f() {
     let x = read_int();

@@ -21,6 +21,9 @@ pub enum Keyword {
   Let
   If
   Else
+  Infix
+  Left
+  Right
 } derive(Hash, Eq, Show)
 
 pub enum Paired {
@@ -50,6 +53,9 @@ fn init {
   keywords["let"] = Keyword::Let
   keywords["if"] = Keyword::If
   keywords["else"] = Keyword::Else
+  keywords["infix"] = Keyword::Infix
+  keywords["left"] = Keyword::Left
+  keywords["right"] = Keyword::Right
 }
 
 pub struct Token {
@@ -210,6 +216,7 @@ fn Lexer::skip_comment(self : Lexer) -> Unit {
       self.index += 1
       has_flag = true
       self.flag().each(fn(f) { self.flags.insert(f) })
+      continue
     }
     self.index += 1
   }

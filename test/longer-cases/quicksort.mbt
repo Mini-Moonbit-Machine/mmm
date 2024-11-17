@@ -1,3 +1,5 @@
+//:has_read
+
 fn swap(arr: Array[Int], i: Int, j: Int) -> Unit {
   let tmp = arr[i];
   arr[i] = arr[j];

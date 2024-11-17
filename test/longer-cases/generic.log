@@ -147,20 +147,26 @@
 // [Main]             if (_15 === _18) {
 // [Main]               const _16 = 1;
 // [Main]               const _17 = i_11 + _16;
-// [Main]               return $thunk(() => next_9(_17, k))
+// [Main]               return $thunk(() => next_9(_17, function (x) {
+// [Main]                 return $thunk(() => k(x))
+// [Main]               }
+// [Main]               ))
 // [Main]             } else {
 // [Main]               return $thunk(() => k(false))
 // [Main]             }
 // [Main]           }
 // [Main]           ))
 // [Main]         } else {
-// [Main]           return k(false)
+// [Main]           return $thunk(() => k(false))
 // [Main]         }
 // [Main]       }
 // [Main]       const _19 = 0;
-// [Main]       return $thunk(() => next_9(_19, k))
+// [Main]       return $thunk(() => next_9(_19, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       ))
 // [Main]     }
-// [Main]     return k(do_6)
+// [Main]     return $thunk(() => k(do_6))
 // [Main]   }
 // [Main]   function each_20(iter_22, f_24, k) {
 // [Main]     function yield_25(x_27, k) {
@@ -173,76 +179,100 @@
 // [Main]       return $thunk(() => iter_22(yield_25, function (_31) {
 // [Main]         const _32 = true;
 // [Main]         if (_31 === _32) {
-// [Main]           return $thunk(() => do_30(k))
+// [Main]           return $thunk(() => do_30(function (x) {
+// [Main]             return $thunk(() => k(x))
+// [Main]           }
+// [Main]           ))
 // [Main]         } else {
 // [Main]           return $thunk(() => k(null))
 // [Main]         }
 // [Main]       }
 // [Main]       ))
 // [Main]     }
-// [Main]     return $thunk(() => do_30(k))
+// [Main]     return $thunk(() => do_30(function (x) {
+// [Main]       return $thunk(() => k(x))
+// [Main]     }
+// [Main]     ))
 // [Main]   }
 // [Main]   function main_33(k) {
 // [Main]     const _34 = 5;
 // [Main]     const _35 = 1;
-// [Main]     const arr_36 = minimbt_create_array($force(_34), $force(_35));
-// [Main]     const _37 = 0;
-// [Main]     const _38 = 1;
-// [Main]     const _40 = arr_36[_37] = _38;
-// [Main]     const _41 = 1;
-// [Main]     const _42 = 2;
-// [Main]     const _44 = arr_36[_41] = _42;
-// [Main]     const _45 = 2;
-// [Main]     const _46 = 3;
-// [Main]     const _48 = arr_36[_45] = _46;
-// [Main]     const _49 = 3;
-// [Main]     const _50 = 4;
-// [Main]     const _52 = arr_36[_49] = _50;
-// [Main]     const _53 = 4;
-// [Main]     const _54 = 5;
-// [Main]     const _56 = arr_36[_53] = _54;
-// [Main]     const _57 = 5;
-// [Main]     return $thunk(() => iter_1(arr_36, _57, function (int_arr_iter_58) {
-// [Main]       function print_i_59(x_61, k) {
-// [Main]         return k(minimbt_print_int($force(x_61)))
-// [Main]       }
-// [Main]       return $thunk(() => each_20(int_arr_iter_58, print_i_59, function (_63) {
-// [Main]         const _64 = 6;
-// [Main]         const _65 = 0;
-// [Main]         const arr_66 = minimbt_create_float_array($force(_64), $force(_65));
-// [Main]         const _67 = 0;
-// [Main]         const _68 = 1;
-// [Main]         const _70 = arr_66[_67] = _68;
-// [Main]         const _71 = 1;
-// [Main]         const _72 = 2;
-// [Main]         const _74 = arr_66[_71] = _72;
-// [Main]         const _75 = 2;
-// [Main]         const _76 = 3;
-// [Main]         const _78 = arr_66[_75] = _76;
-// [Main]         const _79 = 3;
-// [Main]         const _80 = 4;
-// [Main]         const _82 = arr_66[_79] = _80;
-// [Main]         const _83 = 4;
-// [Main]         const _84 = 5;
-// [Main]         const _86 = arr_66[_83] = _84;
-// [Main]         const _87 = 5;
-// [Main]         const _88 = 6;
-// [Main]         const _90 = arr_66[_87] = _88;
-// [Main]         const _91 = 6;
-// [Main]         return $thunk(() => iter_1(arr_66, _91, function (double_arr_iter_92) {
-// [Main]           function print_d_93(x_95, k) {
-// [Main]             const _96 = minimbt_int_of_float($force(x_95));
-// [Main]             return k(minimbt_print_int($force(_96)))
+// [Main]     return $thunk(() => $external(minimbt_create_array, function (arr_36) {
+// [Main]       const _37 = 0;
+// [Main]       const _38 = 1;
+// [Main]       const _40 = arr_36[_37] = _38;
+// [Main]       const _41 = 1;
+// [Main]       const _42 = 2;
+// [Main]       const _44 = arr_36[_41] = _42;
+// [Main]       const _45 = 2;
+// [Main]       const _46 = 3;
+// [Main]       const _48 = arr_36[_45] = _46;
+// [Main]       const _49 = 3;
+// [Main]       const _50 = 4;
+// [Main]       const _52 = arr_36[_49] = _50;
+// [Main]       const _53 = 4;
+// [Main]       const _54 = 5;
+// [Main]       const _56 = arr_36[_53] = _54;
+// [Main]       const _57 = 5;
+// [Main]       return $thunk(() => iter_1(arr_36, _57, function (int_arr_iter_58) {
+// [Main]         function print_i_59(x_61, k) {
+// [Main]           return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]             return $thunk(() => k(x))
 // [Main]           }
-// [Main]           return $thunk(() => each_20(double_arr_iter_92, print_d_93, k))
+// [Main]           , x_61))
+// [Main]         }
+// [Main]         return $thunk(() => each_20(int_arr_iter_58, print_i_59, function (_63) {
+// [Main]           const _64 = 6;
+// [Main]           const _65 = 0;
+// [Main]           return $thunk(() => $external(minimbt_create_float_array, function (arr_66) {
+// [Main]             const _67 = 0;
+// [Main]             const _68 = 1;
+// [Main]             const _70 = arr_66[_67] = _68;
+// [Main]             const _71 = 1;
+// [Main]             const _72 = 2;
+// [Main]             const _74 = arr_66[_71] = _72;
+// [Main]             const _75 = 2;
+// [Main]             const _76 = 3;
+// [Main]             const _78 = arr_66[_75] = _76;
+// [Main]             const _79 = 3;
+// [Main]             const _80 = 4;
+// [Main]             const _82 = arr_66[_79] = _80;
+// [Main]             const _83 = 4;
+// [Main]             const _84 = 5;
+// [Main]             const _86 = arr_66[_83] = _84;
+// [Main]             const _87 = 5;
+// [Main]             const _88 = 6;
+// [Main]             const _90 = arr_66[_87] = _88;
+// [Main]             const _91 = 6;
+// [Main]             return $thunk(() => iter_1(arr_66, _91, function (double_arr_iter_92) {
+// [Main]               function print_d_93(x_95, k) {
+// [Main]                 return $thunk(() => $external(minimbt_int_of_float, function (_96) {
+// [Main]                   return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]                     return $thunk(() => k(x))
+// [Main]                   }
+// [Main]                   , _96))
+// [Main]                 }
+// [Main]                 , x_95))
+// [Main]               }
+// [Main]               return $thunk(() => each_20(double_arr_iter_92, print_d_93, function (x) {
+// [Main]                 return $thunk(() => k(x))
+// [Main]               }
+// [Main]               ))
+// [Main]             }
+// [Main]             ))
+// [Main]           }
+// [Main]           , _64, _65))
 // [Main]         }
 // [Main]         ))
 // [Main]       }
 // [Main]       ))
 // [Main]     }
-// [Main]     ))
+// [Main]     , _34, _35))
 // [Main]   }
-// [Main]   return $thunk(() => main_33(k))
+// [Main]   return $thunk(() => main_33(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
 // [Main] }
 // [Main] 
 // [Main] function $thunk(lambda) {
@@ -256,6 +286,10 @@
 // [Main]     x = x.thunk();
 // [Main]   }
 // [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
 // [Main] }
 // [Main] function $trampoline(f, ...args) {
 // [Main]   let x = f(...args);
@@ -611,4 +645,4 @@
 // [Typer] unify: Unit and Var({val: None})
 // [Typer] union: Unit and Var({val: None})
 // [Typer] check: Unit against Unit
-// [Parser] flags: []
+// [Parser] flags: ["extension"]

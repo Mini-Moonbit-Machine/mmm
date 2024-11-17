@@ -43,24 +43,27 @@
 // [Main]       function g_7(z_9, k) {
 // [Main]         return $thunk(() => x_3(z_9, function (_10) {
 // [Main]           return $thunk(() => y_6(z_9, function (_11) {
-// [Main]             return $thunk(() => _10(_11, k))
+// [Main]             return $thunk(() => _10(_11, function (x) {
+// [Main]               return $thunk(() => k(x))
+// [Main]             }
+// [Main]             ))
 // [Main]           }
 // [Main]           ))
 // [Main]         }
 // [Main]         ))
 // [Main]       }
-// [Main]       return k(g_7)
+// [Main]       return $thunk(() => k(g_7))
 // [Main]     }
-// [Main]     return k(f_4)
+// [Main]     return $thunk(() => k(f_4))
 // [Main]   }
 // [Main]   function k_12(x_14, k) {
 // [Main]     function f_15(y_17, k) {
-// [Main]       return k(x_14)
+// [Main]       return $thunk(() => k(x_14))
 // [Main]     }
-// [Main]     return k(f_15)
+// [Main]     return $thunk(() => k(f_15))
 // [Main]   }
 // [Main]   function i_18(x_20, k) {
-// [Main]     return k(x_20)
+// [Main]     return $thunk(() => k(x_20))
 // [Main]   }
 // [Main]   function main_21(k) {
 // [Main]     return $thunk(() => s_1(i_18, function (_22) {
@@ -68,11 +71,17 @@
 // [Main]         return $thunk(() => s_1(_23, function (_24) {
 // [Main]           return $thunk(() => _24(k_12, function (rev_apply_25) {
 // [Main]             function printi_26(x_28, k) {
-// [Main]               return k(minimbt_print_int($force(x_28)))
+// [Main]               return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]                 return $thunk(() => k(x))
+// [Main]               }
+// [Main]               , x_28))
 // [Main]             }
 // [Main]             const _29 = 2;
 // [Main]             return $thunk(() => rev_apply_25(_29, function (_30) {
-// [Main]               return $thunk(() => _30(printi_26, k))
+// [Main]               return $thunk(() => _30(printi_26, function (x) {
+// [Main]                 return $thunk(() => k(x))
+// [Main]               }
+// [Main]               ))
 // [Main]             }
 // [Main]             ))
 // [Main]           }
@@ -84,7 +93,10 @@
 // [Main]     }
 // [Main]     ))
 // [Main]   }
-// [Main]   return $thunk(() => main_21(k))
+// [Main]   return $thunk(() => main_21(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
 // [Main] }
 // [Main] 
 // [Main] function $thunk(lambda) {
@@ -98,6 +110,10 @@
 // [Main]     x = x.thunk();
 // [Main]   }
 // [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
 // [Main] }
 // [Main] function $trampoline(f, ...args) {
 // [Main]   let x = f(...args);
@@ -243,4 +259,4 @@
 // [Typer] unify: Unit and Var({val: None})
 // [Typer] union: Unit and Var({val: None})
 // [Typer] check: Unit against Unit
-// [Parser] flags: []
+// [Parser] flags: ["extension"]

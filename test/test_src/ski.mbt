@@ -1,3 +1,5 @@
+//:extension
+
 fn s[X, Y, Z](x : (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
   fn f(y : (Z) -> Y) {
     fn g(z : Z) {
