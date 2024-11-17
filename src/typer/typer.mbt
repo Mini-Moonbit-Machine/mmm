@@ -4,27 +4,66 @@ typealias Pattern = @types.Pattern
 
 typealias Type = @types.Type
 
+typealias TypeScheme = @types.TypeScheme
+
 typealias Kind = @types.Kind
 
-pub typealias TyEnv = @immut/hashmap.T[String, Type]
+type TyVEnv @immut/hashmap.T[String, Type]
+
+typealias TySEnv = @immut/hashmap.T[String, TypeScheme]
 
 pub struct Typer {
-  mut named_ty_env : TyEnv
+  mut named_tys : @immut/hashmap.T[String, Type] // metadata of named aggregate named types.
   syntax : @types.Syntax
   tracer : @util.SubTracer
 }
 
 pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
-  Typer::{ named_ty_env: TyEnv::new(), syntax, tracer }
+  Typer::{ syntax, named_tys: @immut/hashmap.T::new(), tracer }
 }
 
-fn Typer::find(ty1 : Type) -> Type {
-  ty1.repr()
+fn Typer::find(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
+  let _ = self
+  fn m(name) {
+    match tenv._.find(name) {
+      Some(Named(t2) as t) =>
+        if name == t2 {
+          Type::Named(name)
+        } else {
+          t.map_named(m)
+        }
+      Some(t) => t.map_named(m)
+      None => Type::Named(name)
+    }
+  }
+
+  ty1.map_named(m)
 }
 
-fn Typer::union(ty1 : Type, ty2 : Type) -> Unit!Failure {
+fn Typer::subst(self : Typer, ty1 : Type) -> Type {
+  fn aux(t : Type) {
+    let repr = t.repr()
+    match repr {
+      Type::Var(_) => self.tracer.abort("unknown type variable")
+      Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
+      Tuple(xs) => Tuple(xs.map(aux))
+      Array(x) => Array(aux(x))
+      _ => repr
+    }
+  }
+
+  aux(ty1)
+}
+
+fn Typer::union(self : Typer, ty1 : Type, ty2 : Type) -> Unit!Failure {
+  self.tracer.println("union: \{ty1} and \{ty2}")
   match (ty1, ty2) {
-    (Type::Var(t1), Type::Var(_)) => t1.val = Some(ty2)
+    (Type::Var(t1), Type::Var(_)) =>
+      if physical_equal(ty1, ty2) {
+        return
+      } else {
+        t1.val = Some(ty2)
+      }
     (Type::Var(t), _) => t.val = Some(ty2)
     (_, Type::Var(t)) => t.val = Some(ty1)
     _ =>
@@ -32,9 +71,16 @@ fn Typer::union(ty1 : Type, ty2 : Type) -> Unit!Failure {
   }
 }
 
-fn Typer::unify(ty1 : Type, ty2 : Type, node : Syntax) -> Unit!Failure {
-  let ty1 = Typer::find(ty1)
-  let ty2 = Typer::find(ty2)
+fn Typer::unify(
+  self : Typer,
+  ty1 : Type,
+  ty2 : Type,
+  tenv : TyVEnv,
+  node : Syntax
+) -> Unit!Failure {
+  self.tracer.println("unify: \{ty1} and \{ty2}")
+  let ty1 = self.find(ty1, tenv)
+  let ty2 = self.find(ty2, tenv)
   match (ty1, ty2) {
     (Type::Unit, Type::Unit) => ()
     (Type::Bool, Type::Bool) => ()
@@ -45,39 +91,69 @@ fn Typer::unify(ty1 : Type, ty2 : Type, node : Syntax) -> Unit!Failure {
         fail!("unify: different number of arguments")
       }
       for i, x in args1 {
-        Typer::unify!(x, args2[i], node)
+        self.unify!(x, args2[i], tenv, node)
       }
-      Typer::unify!(ret1, ret2, node)
+      self.unify!(ret1, ret2, tenv, node)
     }
     (Type::Tuple(xs), Type::Tuple(ys)) => {
       if xs.length() != ys.length() {
         fail!("unify: different number of elements")
       }
       for i, x in xs {
-        Typer::unify!(x, ys[i], node)
+        self.unify!(x, ys[i], tenv, node)
       }
     }
-    (Type::Array(x), Type::Array(y)) => Typer::unify!(x, y, node)
-    (Type::Var(_), _) => Typer::union!(ty1, ty2)
-    (_, Type::Var(_)) => Typer::union!(ty1, ty2)
+    (Type::Array(x), Type::Array(y)) => self.unify!(x, y, tenv, node)
+    (Type::Named(x), Type::Named(y)) =>
+      if x != y {
+        fail!("unify: different type names \{x} and \{y}")
+      }
+    (Type::Named(x), Type::Enum(y, _)) | (Type::Enum(y, _), Type::Named(x)) =>
+      if x != y {
+        fail!("unify: different type names \{x} and \{y}")
+      }
+    (Type::Var(_), _) => self.union!(ty1, ty2)
+    (_, Type::Var(_)) => self.union!(ty1, ty2)
     _ =>
       fail!("unify: mismatched types \{ty1} and \{ty2}, when handling \{node}")
   }
 }
 
-fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
-  let ty = Typer::find(ty)
+fn Typer::inst(self : Typer, ts : TypeScheme, envt : TyVEnv) -> Type {
+  self.tracer.println("inst: \{ts}")
+  let (tyvars, ty) = ts._
+  let mut env = envt._
+  for t in tyvars {
+    env = env.add(t, Type::new_var())
+  }
+  let ty = self.find(ty, env)
+  self.tracer.println("inst result: \{ty}")
+  ty
+}
+
+fn Typer::check(
+  self : Typer,
+  node : Syntax,
+  ty : Type,
+  envt : TyVEnv,
+  envs : TySEnv
+) -> Unit!Failure {
+  self.tracer.println("check: \{node} against \{ty}")
+  let ty = self.find(ty, envt)
   if ty.is_unknown() {
-    fail!("check \{node} against unknown type")
+    fail!("check \{node} against unknown type \{ty}")
   }
   match (node, ty) {
     (Syntax::Unit, Type::Unit) => ()
     (Syntax::Bool(_), Type::Bool) => ()
     (Syntax::Int(_), Type::Int) => ()
     (Syntax::Double(_), Type::Double) => ()
-    (Syntax::Var(x), ty) =>
-      match env.find(x) {
-        Some(t) => Typer::unify!(t, ty, node)
+    (Syntax::Var(x), ty2) =>
+      match envs.find(x) {
+        Some(t) => {
+          let ty1 = self.inst(t, envt)
+          self.unify!(ty1, ty2, envt, node)
+        }
         None => fail!("unbound variable: \{x}")
       }
     (Syntax::Tuple(xs), Type::Tuple(ys)) => {
@@ -85,102 +161,143 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
         fail!("check: different number of elements")
       }
       for i, x in xs {
-        Typer::check!(x, ys[i], env)
+        self.check!(x, ys[i], envt, envs)
       }
     }
-    (Syntax::Not(x), Type::Bool) => Typer::check!(x, Type::Bool, env)
+    (Syntax::Not(x), Type::Bool) => self.check!(x, Type::Bool, envt, envs)
     (Syntax::Array(len, elem), Type::Array(y)) => {
-      Typer::check!(elem, y, env)
-      Typer::check!(len, Type::Int, env)
+      self.check!(elem, y, envt, envs)
+      self.check!(len, Type::Int, envt, envs)
     }
     (Syntax::Neg(x, kind=None | Some(Kind::Int)) as r, Type::Int) => {
-      Typer::check!(x, Type::Int, env)
+      self.check!(x, Type::Int, envt, envs)
       r.kind = Some(Kind::Int)
     }
     (Syntax::Neg(x, kind=None | Some(Kind::Double)) as r, Type::Double) => {
-      Typer::check!(x, Type::Double, env)
+      self.check!(x, Type::Double, envt, envs)
       r.kind = Some(Kind::Double)
+    }
+    (Syntax::CtorApp(f, args), ty) => {
+      let args_ty = []
+      for arg in args {
+        let arg_ty = self.infer!(arg, envt, envs)
+        args_ty.push(arg_ty)
+      }
+      let expected_fun_ty = Type::Fun(args_ty, ty)
+      self.check!(f, expected_fun_ty, envt, envs)
     }
     (Syntax::App(f, args), ty) => {
       let args_ty = []
       for arg in args {
-        let arg_ty = Typer::infer!(arg, env)
+        let arg_ty = self.infer!(arg, envt, envs)
         args_ty.push(arg_ty)
       }
       let expected_fun_ty = Type::Fun(args_ty, ty)
-      Typer::check!(f, expected_fun_ty, env)
+      self.check!(f, expected_fun_ty, envt, envs)
     }
     (Syntax::Get(arr, idx), ty) => {
-      Typer::check!(arr, Type::Array(ty), env)
-      Typer::check!(idx, Type::Int, env)
+      self.check!(arr, Type::Array(ty), envt, envs)
+      self.check!(idx, Type::Int, envt, envs)
     }
     (Syntax::If(cond, t, f), ty) => {
-      Typer::check!(cond, Type::Bool, env)
-      Typer::check!(t, ty, env)
-      Typer::check!(f, ty, env)
+      self.check!(cond, Type::Bool, envt, envs)
+      self.check!(t, ty, envt, envs)
+      self.check!(f, ty, envt, envs)
     }
     (Syntax::Prim(x, y, _, kind=None | Some(Kind::Int)) as r, Type::Int) => {
-      Typer::check!(x, Type::Int, env)
-      Typer::check!(y, Type::Int, env)
+      self.check!(x, Type::Int, envt, envs)
+      self.check!(y, Type::Int, envt, envs)
       r.kind = Some(Kind::Int)
     }
     (Syntax::Prim(x, y, _, kind=None | Some(Kind::Double)) as r, Type::Double) => {
-      Typer::check!(x, Type::Double, env)
-      Typer::check!(y, Type::Double, env)
+      self.check!(x, Type::Double, envt, envs)
+      self.check!(y, Type::Double, envt, envs)
       r.kind = Some(Kind::Double)
     }
     (Syntax::Eq(x, y), Type::Bool) => {
-      let t1 = Typer::infer!(x, env)
-      let t2 = Typer::infer!(y, env)
-      Typer::unify!(t1, t2, node)
+      let t1 = self.infer!(x, envt, envs)
+      let t2 = self.infer!(y, envt, envs)
+      self.unify!(t1, t2, envt, node)
     }
     (Syntax::LE(x, y), Type::Bool) => {
-      let t1 = Typer::infer!(x, env)
-      let t2 = Typer::infer!(y, env)
-      Typer::unify!(t1, t2, node)
+      let t1 = self.infer!(x, envt, envs)
+      let t2 = self.infer!(y, envt, envs)
+      self.unify!(t1, t2, envt, node)
+    }
+    (Syntax::LetEnum(enumty, e), ty) => {
+      let mut named_tys = self.named_tys
+      let mut new_envs = envs
+      guard let Type::Enum(_, variants) = enumty else {
+        _ => fail!("check: \{enumty} is not an enum type")
+        // named_tys = named_tys.add(name, enumty)
+      }
+      for variant in variants {
+        let (cname, args_ty) = variant
+        // TODO: resolve named type
+        named_tys = named_tys.add(cname, enumty)
+        // Add constructors to type scheme environment.
+        // This is for constructors such as 'None' and 'Nil'.
+        // This can be generalized to generic ADTs.
+        if args_ty.length() > 0 {
+          let variant_ty = Type::Fun(args_ty, enumty)
+          new_envs = new_envs.add(cname, variant_ty.to_scheme())
+        } else {
+          new_envs = new_envs.add(cname, enumty.to_scheme())
+        }
+      }
+      self.named_tys = named_tys
+      self.check!(e, ty, envt, new_envs)
     }
     (Syntax::Let((x, t), e1, e2), ty) => {
       let t = if t.is_unknown() {
-        let inferred = Typer::infer!(e1, env)
-        Typer::unify!(t, inferred, node)
+        let inferred = self.infer!(e1, envt, envs)
+        self.unify!(t, inferred, envt, node)
         t
       } else {
-        Typer::check!(e1, t, env)
+        self.check!(e1, t, envt, envs)
         t
       }
-      let env = env.add(x, t)
-      Typer::check!(e2, ty, env)
+      let envs = envs.add(x, t.to_scheme())
+      self.check!(e2, ty, envt, envs)
     }
-    (Syntax::LetRec(fundef, e), ty) => {
+    (Syntax::LetRec({ args, name, tyvars, body }, e), ty) => {
       let guessed_ty = Type::Fun(
-        fundef.args.iter().map(fn(x) { x.1 }).collect(),
-        fundef.name.1,
+        args.iter().map(fn(x) { x.1 }).collect(),
+        name.1,
       )
-      let env = env.add(fundef.name.0, guessed_ty)
-      let old_env = env
-      let mut env = env
-      for xt in fundef.args {
-        env = env.add(xt.0, xt.1)
+      let guessed_ty = (tyvars, guessed_ty)
+      let envs = envs.add(name.0, guessed_ty)
+      let old_envs = envs
+      let old_envt = envt
+      let mut envs = envs
+      let mut envt = envt
+      self.tracer.println("typevars: \{tyvars}")
+      for t in tyvars {
+        let tv = Type::new_named(t)
+        envt = envt._.add(t, tv)
       }
-      if fundef.name.1.is_unknown() {
-        let t = Typer::infer!(fundef.body, env)
-        Typer::unify!(t, fundef.name.1, node)
+      for xt in args {
+        envs = envs.add(xt.0, xt.1.to_scheme())
+      }
+      if name.1.is_unknown() {
+        let t = self.infer!(body, envt, envs)
+        self.unify!(t, name.1, envt, node)
       } else {
-        Typer::check!(fundef.body, fundef.name.1, env)
+        self.check!(body, name.1, envt, envs)
       }
-      Typer::check!(e, ty, old_env)
+      self.check!(e, ty, old_envt, old_envs)
     }
     (Syntax::LetTuple(xts, e1, e2), t2) =>
       if xts.iter().all(fn(xt) { xt.1.is_unknown() == false }) {
         let t1 = Type::Tuple(xts.iter().map(fn(xt) { xt.1 }).collect())
-        Typer::check!(e1, t1, env)
-        let mut env = env
+        self.check!(e1, t1, envt, envs)
+        let mut envs = envs
         for xt in xts {
-          env = env.add(xt.0, Typer::find(xt.1))
+          envs = envs.add(xt.0, self.find(xt.1, envt).to_scheme())
         }
-        Typer::check!(e2, t2, env)
+        self.check!(e2, t2, envt, envs)
       } else {
-        let t1 = Typer::infer!(e1, env)
+        let t1 = self.infer!(e1, envt, envs)
         match t1 {
           Type::Tuple(ts) => {
             if xts.length() != ts.length() {
@@ -188,30 +305,32 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
             }
             for i, xt in xts {
               match xt {
-                (_, t) => Typer::unify!(t, ts[i], node)
+                (_, t) => self.unify!(t, ts[i], envt, node)
               }
             }
-            let mut env = env
+            let mut envs = envs
             for i, xt in xts {
-              env = env.add(xt.0, Typer::find(ts[i]))
+              envs = envs.add(xt.0, self.find(ts[i], envt).to_scheme())
             }
-            Typer::check!(e2, t2, env)
+            self.check!(e2, t2, envt, envs)
           }
           _ => fail!("check: not a tuple")
         }
       }
     (Syntax::Put(arr, idx, x), Type::Unit) => {
-      Typer::check!(arr, Type::Array(ty), env)
-      Typer::check!(idx, Type::Int, env)
-      Typer::check!(x, ty, env)
+      self.check!(arr, Type::Array(ty), envt, envs)
+      self.check!(idx, Type::Int, envt, envs)
+      self.check!(x, ty, envt, envs)
     }
     (Syntax::Match(e, arms), ty) => {
-      let et = Typer::infer!(e, env)
+      let et = self.infer!(e, envt, envs)
       for arm in arms {
         let pattern = arm.pat
         let action = arm.action
-        let arm_env = Typer::check_and_bind_pattern!(pattern, et, action, env)
-        Typer::check!(action, ty, arm_env)
+        let arm_env = self.check_and_bind_pattern!(
+          pattern, et, action, envt, envs,
+        )
+        self.check!(action, ty, arm_env, envs)
       }
     }
     _ => fail!("check: mismatched types \{node} and \{ty}")
@@ -219,32 +338,34 @@ fn Typer::check(node : Syntax, ty : Type, env : TyEnv) -> Unit!Failure {
 }
 
 fn Typer::check_and_bind_pattern(
+  self : Typer,
   pattern : Pattern,
   pt : Type,
   action : Syntax,
-  env : TyEnv
-) -> TyEnv!Failure {
+  envt : TyVEnv,
+  envs : TySEnv
+) -> TyVEnv!Failure {
   match pattern {
-    Pattern::Wildcard => env
+    Pattern::Wildcard => envt
     Pattern::Unit => {
-      Typer::unify!(pt, Type::Unit, action)
-      env
+      self.unify!(pt, Type::Unit, envt, action)
+      envt
     }
     Pattern::Bool(_) => {
-      Typer::unify!(pt, Type::Bool, action)
-      env
+      self.unify!(pt, Type::Bool, envt, action)
+      envt
     }
     Pattern::Int(_) => {
-      Typer::unify!(pt, Type::Int, action)
-      env
+      self.unify!(pt, Type::Int, envt, action)
+      envt
     }
     Pattern::Double(_) => {
-      Typer::unify!(pt, Type::Double, action)
-      env
+      self.unify!(pt, Type::Double, envt, action)
+      envt
     }
     Pattern::Var(x) => {
-      let env = env.add(x, pt)
-      env
+      let envt = envt._.add(x, pt)
+      envt
     }
     Pattern::Tuple(ps) =>
       match pt {
@@ -252,11 +373,17 @@ fn Typer::check_and_bind_pattern(
           if ps.length() != ts.length() {
             fail!("check_pattern: different number of elements")
           }
-          let mut new_env = env
+          let mut new_envt = envt
           for i, p in ps {
-            new_env = Typer::check_and_bind_pattern!(p, ts[i], action, new_env)
+            new_envt = self.check_and_bind_pattern!(
+              p,
+              ts[i],
+              action,
+              new_envt,
+              envs,
+            )
           }
-          env
+          new_envt
         }
         _ => fail!("check pattern: \{pattern} not a tuple")
       }
@@ -264,35 +391,41 @@ fn Typer::check_and_bind_pattern(
   }
 }
 
-fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
+fn Typer::infer(
+  self : Typer,
+  node : Syntax,
+  envt : TyVEnv,
+  envs : TySEnv
+) -> Type!Failure {
+  self.tracer.println("infer: \{node}")
   match node {
     Syntax::Unit => Type::Unit
     Syntax::Bool(_) => Type::Bool
     Syntax::Int(_) => Type::Int
     Syntax::Double(_) => Type::Double
     Syntax::Var(x) =>
-      match env.find(x) {
-        Some(t) => Typer::find(t)
+      match envs.find(x) {
+        Some(t) => self.inst(t, envt)
         None => fail!("unbound variable: \{x}")
       }
     Syntax::Tuple(xs) => {
       let ts = []
       for x in xs {
-        ts.push(Typer::infer!(x, env))
+        ts.push(self.infer!(x, envt, envs))
       }
       Type::Tuple(ts)
     }
     Syntax::Not(x) => {
-      Typer::check!(x, Type::Bool, env)
+      self.check!(x, Type::Bool, envt, envs)
       Type::Bool
     }
     Syntax::Array(len, elem) => {
-      let elem_ty = Typer::infer!(elem, env)
-      Typer::check!(len, Type::Int, env)
+      let elem_ty = self.infer!(elem, envt, envs)
+      self.check!(len, Type::Int, envt, envs)
       Type::Array(elem_ty)
     }
     Syntax::Neg(x, kind=None) as r => {
-      let ty = Typer::infer!(x, env)
+      let ty = self.infer!(x, envt, envs)
       let ty = match ty {
         Type::Int => {
           r.kind = Some(Kind::Int)
@@ -307,61 +440,89 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       ty
     }
     Syntax::Neg(x, kind=Some(Kind::Int)) => {
-      Typer::check!(x, Type::Int, env)
+      self.check!(x, Type::Int, envt, envs)
       Type::Int
     }
     Syntax::Neg(x, kind=Some(Kind::Double)) => {
-      Typer::check!(x, Type::Double, env)
+      self.check!(x, Type::Double, envt, envs)
       Type::Double
     }
-    Syntax::App(f, args) => {
-      let inferred_fun_ty = Typer::infer!(f, env)
+    Syntax::CtorApp(f, args) => {
+      let inferred_fun_ty = self.infer!(f, envt, envs)
       match inferred_fun_ty {
         Type::Fun(args_ty, ret_ty) => {
           if args.length() != args_ty.length() {
             fail!("infer: different number of arguments")
           }
           for i, arg in args {
-            Typer::check!(arg, args_ty[i], env)
+            if args_ty[i].is_unknown() {
+              let arg_ty = self.infer!(arg, envt, envs)
+              self.unify!(args_ty[i], arg_ty, envt, node)
+            } else {
+              self.check!(arg, args_ty[i], envt, envs)
+            }
           }
-          Typer::find(ret_ty)
+          self.find(ret_ty, envt)
+        }
+        _ =>
+          fail!(
+            "infer: constructor not a known function type: \{inferred_fun_ty}",
+          )
+      }
+    }
+    Syntax::App(f, args) => {
+      let inferred_fun_ty = self.infer!(f, envt, envs)
+      match inferred_fun_ty {
+        Type::Fun(args_ty, ret_ty) => {
+          if args.length() != args_ty.length() {
+            fail!("infer: different number of arguments")
+          }
+          for i, arg in args {
+            if args_ty[i].is_unknown() {
+              let arg_ty = self.infer!(arg, envt, envs)
+              self.unify!(args_ty[i], arg_ty, envt, node)
+            } else {
+              self.check!(arg, args_ty[i], envt, envs)
+            }
+          }
+          self.find(ret_ty, envt)
         }
         Type::Var({ val: None }) => {
-          let guessed_ret_ty = Type::Var(Ref::new(None))
+          let guessed_ret_ty = Type::new_var()
           let args_ty = []
           for arg in args {
-            let arg_ty = Typer::infer!(arg, env)
+            let arg_ty = self.infer!(arg, envt, envs)
             args_ty.push(arg_ty)
           }
           let guessed_fun_ty = Type::Fun(args_ty, guessed_ret_ty)
-          Typer::unify!(inferred_fun_ty, guessed_fun_ty, node)
-          Typer::find(guessed_ret_ty)
+          self.unify!(inferred_fun_ty, guessed_fun_ty, envt, node)
+          self.find(guessed_ret_ty, envt)
         }
         _ => fail!("infer: not a function type: \{inferred_fun_ty}")
       }
     }
     Syntax::Get(arr, idx) => {
-      let arr_ty = Typer::infer!(arr, env)
+      let arr_ty = self.infer!(arr, envt, envs)
       match arr_ty {
         Type::Array(ty) => {
-          Typer::check!(idx, Type::Int, env)
-          Typer::find(ty)
+          self.check!(idx, Type::Int, envt, envs)
+          self.find(ty, envt)
         }
         _ => fail!("infer: not an array")
       }
     }
     Syntax::If(cond, t, f) => {
-      Typer::check!(cond, Type::Bool, env)
-      let ty1 = Typer::infer!(t, env)
-      let ty2 = Typer::infer!(f, env)
-      Typer::unify!(ty1, ty2, node)
-      Typer::find(ty1)
+      self.check!(cond, Type::Bool, envt, envs)
+      let ty1 = self.infer!(t, envt, envs)
+      let ty2 = self.infer!(f, envt, envs)
+      self.unify!(ty1, ty2, envt, node)
+      self.find(ty1, envt)
     }
     Syntax::Prim(x, y, _, kind=None) as r => {
-      let ty1 = Typer::infer!(x, env)
-      let ty2 = Typer::infer!(y, env)
-      Typer::unify!(ty1, ty2, node)
-      let ty1 = Typer::find(ty1)
+      let ty1 = self.infer!(x, envt, envs)
+      let ty2 = self.infer!(y, envt, envs)
+      self.unify!(ty1, ty2, envt, node)
+      let ty1 = self.find(ty1, envt)
       match ty1 {
         Type::Int => {
           r.kind = Some(Kind::Int)
@@ -375,68 +536,77 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
       }
     }
     Syntax::Prim(x, y, _, kind=Some(Kind::Int)) => {
-      Typer::check!(x, Type::Int, env)
-      Typer::check!(y, Type::Int, env)
+      self.check!(x, Type::Int, envt, envs)
+      self.check!(y, Type::Int, envt, envs)
       Type::Int
     }
     Syntax::Prim(x, y, _, kind=Some(Kind::Double)) => {
-      Typer::check!(x, Type::Double, env)
-      Typer::check!(y, Type::Double, env)
+      self.check!(x, Type::Double, envt, envs)
+      self.check!(y, Type::Double, envt, envs)
       Type::Double
     }
     Syntax::Eq(x, y) => {
-      let ty1 = Typer::infer!(x, env)
+      let ty1 = self.infer!(x, envt, envs)
       if ty1.is_unknown() {
-        let ty2 = Typer::infer!(y, env)
-        Typer::unify!(ty1, ty2, node)
+        let ty2 = self.infer!(y, envt, envs)
+        self.unify!(ty1, ty2, envt, node)
       } else {
-        Typer::check!(y, ty1, env)
+        self.check!(y, ty1, envt, envs)
       }
       Type::Bool
     }
     Syntax::LE(x, y) => {
-      let ty1 = Typer::infer!(x, env)
+      let ty1 = self.infer!(x, envt, envs)
       if ty1.is_unknown() {
-        let ty2 = Typer::infer!(y, env)
-        Typer::unify!(ty1, ty2, node)
+        let ty2 = self.infer!(y, envt, envs)
+        self.unify!(ty1, ty2, envt, node)
       } else {
-        Typer::check!(y, ty1, env)
+        self.check!(y, ty1, envt, envs)
       }
       Type::Bool
     }
     Syntax::Let((x, t), e1, e2) => {
       let t = if t.is_unknown() {
-        let inferred = Typer::infer!(e1, env)
-        Typer::unify!(t, inferred, node)
+        let inferred = self.infer!(e1, envt, envs)
+        self.unify!(t, inferred, envt, node)
         t
       } else {
-        Typer::check!(e1, t, env)
+        self.check!(e1, t, envt, envs)
         t
       }
-      let env = env.add(x, t)
-      Typer::infer!(e2, env)
+      let envs = envs.add(x, t.to_scheme())
+      self.infer!(e2, envt, envs)
     }
-    Syntax::LetRec(fundef, e) => {
+    Syntax::LetEnum(_, _) => self.tracer.abort("infer: enum is not be inferred")
+    Syntax::LetRec({ args, name, tyvars, body }, e) => {
       let guessed_ty = Type::Fun(
-        fundef.args.iter().map(fn(x) { x.1 }).collect(),
-        fundef.name.1,
+        args.iter().map(fn(x) { x.1 }).collect(),
+        name.1,
       )
-      let env = env.add(fundef.name.0, guessed_ty)
-      let old_env = env
-      let mut env = env
-      for xt in fundef.args {
-        env = env.add(xt.0, xt.1)
+      let guessed_ty = (tyvars, guessed_ty)
+      let envs = envs.add(name.0, guessed_ty)
+      let old_envs = envs
+      let old_envt = envt
+      let mut envs = envs
+      let mut envt = envt
+      self.tracer.println("typevars: \{tyvars}")
+      for t in tyvars {
+        let tv = Type::new_named(t)
+        envt = envt._.add(t, tv)
       }
-      if fundef.name.1.is_unknown() {
-        let t = Typer::infer!(fundef.body, env)
-        Typer::unify!(fundef.name.1, t, node)
+      for xt in args {
+        envs = envs.add(xt.0, xt.1.to_scheme())
+      }
+      if name.1.is_unknown() {
+        let t = self.infer!(body, envt, envs)
+        self.unify!(t, name.1, envt, node)
       } else {
-        Typer::check!(fundef.body, fundef.name.1, env)
+        self.check!(body, name.1, envt, envs)
       }
-      Typer::infer!(e, old_env)
+      self.infer!(e, old_envt, old_envs)
     }
     Syntax::LetTuple(xts, e1, e2) => {
-      let t1 = Typer::infer!(e1, env)
+      let t1 = self.infer!(e1, envt, envs)
       match t1 {
         Type::Tuple(ts) => {
           if xts.length() != ts.length() {
@@ -444,24 +614,76 @@ fn Typer::infer(node : Syntax, env : TyEnv) -> Type!Failure {
           }
           for i, xt in xts {
             match xt {
-              (_, t) => Typer::unify!(t, ts[i], node)
+              (_, t) => self.unify!(t, ts[i], envt, node)
             }
           }
-          let mut env = env
+          let mut envs = envs
           for i, xt in xts {
-            env = env.add(xt.0, Typer::find(ts[i]))
+            envs = envs.add(xt.0, self.find(ts[i], envt).to_scheme())
           }
-          Typer::infer!(e2, env)
+          self.infer!(e2, envt, envs)
         }
         _ => fail!("infer: not a tuple")
       }
     }
     Syntax::Put(arr, idx, x) => {
-      Typer::check!(arr, Type::Array(Typer::infer!(x, env)), env)
-      Typer::check!(idx, Type::Int, env)
+      self.check!(arr, Type::Array(self.infer!(x, envt, envs)), envt, envs)
+      self.check!(idx, Type::Int, envt, envs)
       Type::Unit
     }
+    Syntax::Match(e, arms) => {
+      let et = self.infer!(e, envt, envs)
+      let actions_ty = []
+      let n = arms.length()
+      for arm in arms {
+        let pattern = arm.pat
+        let action = arm.action
+        let arm_env = self.check_and_bind_pattern!(
+          pattern, et, action, envt, envs,
+        )
+        let action_ty = self.infer!(action, arm_env, envs)
+        actions_ty.push(action_ty)
+      }
+      // ring unify
+      for i in 1..<n {
+        self.unify!(actions_ty[i - 1], actions_ty[i], envt, node)
+      }
+      self.unify!(actions_ty[n - 1], actions_ty[0], envt, node)
+      actions_ty[0]
+    }
   }
+}
+
+pub fn Typer::simplify(self : Typer, syntax : Syntax) -> Syntax {
+  let _ = self
+  fn aux(syn : Syntax) {
+    match syn {
+      Tuple(xs) => Syntax::Tuple(xs.map(aux))
+      Not(x) => Not(aux(x))
+      Array(len, elem) => Array(aux(len), aux(elem))
+      Neg(x, ~kind) => Neg(aux(x), ~kind)
+      App(f, args) => App(aux(f), args.map(aux))
+      Get(arr, idx) => Get(aux(arr), aux(idx))
+      If(cond, t, f) => If(aux(cond), aux(t), aux(f))
+      Prim(x, y, op, ~kind) => Prim(aux(x), aux(y), op, ~kind)
+      Eq(x, y) => Eq(aux(x), aux(y))
+      LE(x, y) => LE(aux(x), aux(y))
+      Let((x, t), e1, e2) => Let((x, self.subst(t)), aux(e1), aux(e2))
+      LetRec({ args, name, tyvars, body }, e) => {
+        let args = args.map(fn(xt) { (xt.0, self.subst(xt.1)) })
+        let name = (name.0, self.subst(name.1))
+        LetRec({ args, name, tyvars, body: aux(body) }, aux(e))
+      }
+      LetTuple(xts, e1, e2) => {
+        let xts = xts.map(fn(xt) { (xt.0, self.subst(xt.1)) })
+        LetTuple(xts, aux(e1), aux(e2))
+      }
+      Put(arr, idx, x) => Put(aux(arr), aux(idx), aux(x))
+      _ => syn
+    }
+  }
+
+  aux(syntax)
 }
 
 pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
@@ -489,6 +711,14 @@ pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
   .add("float_of_int", @types.Fun([Int], Double))
 }
 
-pub fn Typer::check_all(self : Typer) -> Unit!Failure {
-  Typer::check!(self.syntax, Type::Unit, externals())
+pub fn Typer::check_all(self : Typer) -> Syntax!Failure {
+  let mut envs = @immut/hashmap.T::new()
+  for ext in externals() {
+    envs = envs.add(ext.0, ext.1.to_scheme())
+  }
+  self.check!(self.syntax, Type::Unit, @immut/hashmap.T::new(), envs)
+  self.tracer.record("typer", self.syntax.to_pretty_print())
+  let syn = self.simplify(self.syntax)
+  self.tracer.record("typer_simplified", syn.to_pretty_print())
+  syn
 }

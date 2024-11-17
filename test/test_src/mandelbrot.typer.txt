@@ -1,0 +1,46 @@
+let rec mandelbrot: (w: Int) -> Unit {
+  let rec dbl: (f: Double) -> Double {
+    Var("f") + Var("f")
+  }
+  let rec yloop: (y: Int) -> Unit {
+    if (LE(Var("w"), Var("y"))) then {
+      Unit
+    } else {
+      let rec xloop: (x: Int, y: Int) -> Unit {
+        if (LE(Var("w"), Var("x"))) then {
+          let _: Var({val: Some(Unit)}) = Apply(Var("print_endline"), [])
+          Unit
+        } else {
+          let cr: Var({val: Some(Double)}) = Prim(App(Var("dbl"), [App(Var("float_of_int"), [Var("x")])]), App(Var("float_of_int"), [Var("w")]), Div, kind=Some(Double)) - Double(1.5)
+          let ci: Var({val: Some(Double)}) = Prim(App(Var("dbl"), [App(Var("float_of_int"), [Var("y")])]), App(Var("float_of_int"), [Var("w")]), Div, kind=Some(Double)) - Double(1)
+          let rec iloop: (i: Int, zr: Double, zi: Double, zr2: Double, zi2: Double, cr: Double, ci: Double) -> Unit {
+            if (Eq(Var("i"), Int(0))) then {
+              Apply(Var("print_int"), [Int(1), ])
+            } else {
+              let tr: Var({val: Some(Double)}) = Prim(Var("zr2"), Var("zi2"), Sub, kind=Some(Double)) + Var("cr")
+              let ti: Var({val: Some(Double)}) = Prim(App(Var("dbl"), [Var("zr")]), Var("zi"), Mul, kind=Some(Double)) + Var("ci")
+              let zr: Var({val: Some(Double)}) = Var(tr)
+              let zi: Var({val: Some(Double)}) = Var(ti)
+              let zr2: Var({val: Some(Double)}) = Var("zr") * Var("zr")
+              let zi2: Var({val: Some(Double)}) = Var("zi") * Var("zi")
+              if (LE(Prim(Double(2), Double(2), Mul, kind=Some(Double)), Prim(Var("zr2"), Var("zi2"), Add, kind=Some(Double)))) then {
+                Apply(Var("print_int"), [Int(0), ])
+              } else {
+                Apply(Var("iloop"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int)), Var("zr"), Var("zi"), Var("zr2"), Var("zi2"), Var("cr"), Var("ci"), ])
+              }
+            }
+          }
+          let _: Var({val: Some(Unit)}) = Apply(Var("iloop"), [Int(1000), Double(0), Double(0), Double(0), Double(0), Var("cr"), Var("ci"), ])
+          Apply(Var("xloop"), [Prim(Var("x"), Int(1), Add, kind=Some(Int)), Var("y"), ])
+        }
+      }
+      let _: Var({val: Some(Unit)}) = Apply(Var("xloop"), [Int(0), Var("y"), ])
+      Apply(Var("yloop"), [Prim(Var("y"), Int(1), Add, kind=Some(Int)), ])
+    }
+  }
+  Apply(Var("yloop"), [Int(0), ])
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  Apply(Var("mandelbrot"), [Int(40), ])
+}
+Unit

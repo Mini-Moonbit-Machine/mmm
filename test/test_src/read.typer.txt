@@ -1,0 +1,13 @@
+let rec main: () -> Var({val: Some(Unit)}) {
+  let rec f: () -> Var({val: Some(Unit)}) {
+    let x: Var({val: Some(Int)}) = Apply(Var("read_int"), [])
+    if (Eq(Var("x"), Neg(Int(2147483648), kind=Some(Int)))) then {
+      Apply(Var("print_int"), [Var("x"), ])
+    } else {
+      let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [Var("x"), ])
+      Apply(Var("f"), [])
+    }
+  }
+  Apply(Var("f"), [])
+}
+Unit

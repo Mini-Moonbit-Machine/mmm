@@ -1,0 +1,33 @@
+let rec s.1: Fun([Fun([Named("Z")], Named("Y"))], Fun([Named("Z")], Named("X"))) = (x.3: Fun([Named("Z")], Fun([Named("Y")], Named("X")))) {
+  let rec f.4: Fun([Named("Z")], Named("X")) = (y.6: Fun([Named("Z")], Named("Y"))) {
+    let rec g.7: Named("X") = (z.9: Named("Z")) {
+      let _10: Fun([Named("Y")], Named("X")) = Apply(x.3, [z.9, ])
+      let _11: Named("Y") = Apply(y.6, [z.9, ])
+      Apply(_10, [_11, ])
+    }
+    Var(g.7)
+  }
+  Var(f.4)
+}
+let rec k.12: Fun([Named("Y")], Named("X")) = (x.14: Named("X")) {
+  let rec f.15: Named("X") = (y.17: Named("Y")) {
+    Var(x.14)
+  }
+  Var(f.15)
+}
+let rec i.18: Named("X") = (x.20: Named("X")) {
+  Var(x.20)
+}
+let rec main.21: Unit = () {
+  let _22: Fun([Fun([Named("Z")], Named("Y"))], Fun([Named("Z")], Named("X"))) = Apply(s.1, [i.18, ])
+  let _23: Fun([Named("Y")], Named("X")) = Apply(k.12, [_22, ])
+  let _24: Fun([Fun([Named("Z")], Named("Y"))], Fun([Named("Z")], Named("X"))) = Apply(s.1, [_23, ])
+  let rev_apply.25: Fun([Named("Z")], Named("X")) = Apply(_24, [k.12, ])
+  let rec printi.26: Unit = (x.28: Int) {
+    ExtApply(minimbt_print_int, [x.28, ])
+  }
+  let _29: Int = Int(2)
+  let _30: Fun([Fun([Int], Unit)], Unit) = Apply(rev_apply.25, [_29, ])
+  Apply(_30, [printi.26, ])
+}
+Apply(main.21, [])

@@ -1,0 +1,129 @@
+// [Knf] build_knf: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), Let(("_", Int), App(Var("f"), [Neg(Int(1), kind=Some(Int))]), Int(1)), Neg(Int(1), kind=Some(Int)))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=Some(Int))])]), Unit))}, App(Var("main"), [])))
+// [Knf] build_knf: If(LE(Int(0), Var("x")), Let(("_", Int), App(Var("f"), [Neg(Int(1), kind=Some(Int))]), Int(1)), Neg(Int(1), kind=Some(Int)))
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Let(("_", Int), App(Var("f"), [Neg(Int(1), kind=Some(Int))]), Int(1))
+// [Knf] build_knf: App(Var("f"), [Neg(Int(1), kind=Some(Int))])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Neg(Int(1), kind=Some(Int))
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Neg(Int(1), kind=Some(Int))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=Some(Int))])]), Unit))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=Some(Int))])]), Unit))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("f"), [Int(10)])])
+// [Knf] build_knf: App(Var("f"), [Int(10)])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Int(10)
+// [Knf] build_knf: Let(("_", Unit), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=Some(Int))])]), Unit)
+// [Knf] build_knf: App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=Some(Int))])])
+// [Knf] build_knf: App(Var("f"), [Neg(Int(10), kind=Some(Int))])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Neg(Int(10), kind=Some(Int))
+// [Knf] build_knf: Unit
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main] function thunk_main(k) {
+// [Main]   function f_1(x_3, k) {
+// [Main]     const _4 = 0;
+// [Main]     if (_4 <= x_3) {
+// [Main]       const _5 = -1;
+// [Main]       return $thunk(() => f_1(_5, function (_7) {
+// [Main]         return $thunk(() => k(1))
+// [Main]       }
+// [Main]       ))
+// [Main]     } else {
+// [Main]       return k(-1)
+// [Main]     }
+// [Main]   }
+// [Main]   function main_8(k) {
+// [Main]     const _9 = 10;
+// [Main]     return $thunk(() => f_1(_9, function (_10) {
+// [Main]       const _12 = minimbt_print_int($force(_10));
+// [Main]       const _13 = -10;
+// [Main]       return $thunk(() => f_1(_13, function (_14) {
+// [Main]         const _16 = minimbt_print_int($force(_14));
+// [Main]         return $thunk(() => $thunk(() => k(null)))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   return $thunk(() => main_8(k))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: If(LE(Int(0), Var("x")), Let(("_", Var({val: None})), App(Var("f"), [Neg(Int(1), kind=None)]), Int(1)), Neg(Int(1), kind=None))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=None)])]), Unit))}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: If(LE(Int(0), Var("x")), Let(("_", Var({val: None})), App(Var("f"), [Neg(Int(1), kind=None)]), Int(1)), Neg(Int(1), kind=None)) against Int
+// [Typer] check: LE(Int(0), Var("x")) against Bool
+// [Typer] infer: Int(0)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Let(("_", Var({val: None})), App(Var("f"), [Neg(Int(1), kind=None)]), Int(1)) against Int
+// [Typer] infer: App(Var("f"), [Neg(Int(1), kind=None)])
+// [Typer] infer: Var("f")
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] check: Neg(Int(1), kind=None) against Int
+// [Typer] check: Int(1) against Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: Int(1) against Int
+// [Typer] check: Neg(Int(1), kind=None) against Int
+// [Typer] check: Int(1) against Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=None)])]), Unit))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Int(10)])]), Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=None)])]), Unit))
+// [Typer] infer: App(Var("print_int"), [App(Var("f"), [Int(10)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("f"), [Int(10)]) against Int
+// [Typer] infer: Int(10)
+// [Typer] check: Var("f") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=None)])]), Unit)
+// [Typer] infer: App(Var("print_int"), [App(Var("f"), [Neg(Int(10), kind=None)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("f"), [Neg(Int(10), kind=None)]) against Int
+// [Typer] infer: Neg(Int(10), kind=None)
+// [Typer] infer: Int(10)
+// [Typer] check: Var("f") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
+// [Parser] flags: []

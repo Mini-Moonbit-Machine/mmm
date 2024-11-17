@@ -4,7 +4,7 @@ fn test_tychk(source : String) -> Unit!Error {
   let parser = @parser.Parser::new(source, subtracer)
   let ast = parser.parse!()
   let typer = @typer.Typer::new(ast.inner, subtracer)
-  typer.check_all!()
+  typer.check_all!() |> ignore
 }
 
 test "tychk1" {

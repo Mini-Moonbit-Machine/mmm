@@ -1,0 +1,14 @@
+let rec f: (n: Int) -> Unit {
+  if (Not(LE(Int(0), Var("n")))) then {
+    Unit
+  } else {
+    let t1: Var({val: Some(Unit)}) = Apply(Var("print_int"), [Var("n"), ])
+    let a: Var({val: Some(Array(Fun([Int], Unit)))}) = Array::make(Int(1), Var("f"))
+    let a0: Var({val: Some(Fun([Int], Unit))}) = Get Var("a")[Int(0)]
+    Apply(Var("a0"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int)), ])
+  }
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  Apply(Var("f"), [Int(9), ])
+}
+Unit

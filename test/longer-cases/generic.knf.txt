@@ -1,0 +1,96 @@
+let rec iter.1: Fun([Fun([Named("T")], Bool)], Bool) = (arr.3: Array(Named("T")), len.5: Int) {
+  let rec do.6: Bool = (yield.8: Fun([Named("T")], Bool)) {
+    let rec next.9: Bool = (i.11: Int) {
+      let _12: Int = Int(1)
+      let _13: Int = Sub(len.5, _12)
+      if (i.11 <= _13) then {
+        let _14: Named("T") = Get arr.3[i.11]
+        let _15: Bool = Apply(yield.8, [_14, ])
+        let _18: Bool = Bool(true)
+        if (_15 == _18) then {
+          let _16: Int = Int(1)
+          let _17: Int = Add(i.11, _16)
+          Apply(next.9, [_17, ])
+        } else {
+          Bool(false)
+        }
+      } else {
+        Bool(false)
+      }
+    }
+    let _19: Int = Int(0)
+    Apply(next.9, [_19, ])
+  }
+  Var(do.6)
+}
+let rec each.20: Unit = (iter.22: Fun([Fun([Named("T")], Bool)], Bool), f.24: Fun([Named("T")], Unit)) {
+  let rec yield.25: Bool = (x.27: Named("T")) {
+    let _29: Unit = Apply(f.24, [x.27, ])
+    Bool(true)
+  }
+  let rec do.30: Unit = () {
+    let _31: Bool = Apply(iter.22, [yield.25, ])
+    let _32: Bool = Bool(true)
+    if (_31 == _32) then {
+      Apply(do.30, [])
+    } else {
+      Unit
+    }
+  }
+  Apply(do.30, [])
+}
+let rec main.33: Unit = () {
+  let _34: Int = Int(5)
+  let _35: Int = Int(1)
+  let arr.36: Array(Int) = ExtApply(minimbt_create_array, [_34, _35, ])
+  let _37: Int = Int(0)
+  let _38: Int = Int(1)
+  let _40: Unit = Put arr.36[_37] = _38
+  let _41: Int = Int(1)
+  let _42: Int = Int(2)
+  let _44: Unit = Put arr.36[_41] = _42
+  let _45: Int = Int(2)
+  let _46: Int = Int(3)
+  let _48: Unit = Put arr.36[_45] = _46
+  let _49: Int = Int(3)
+  let _50: Int = Int(4)
+  let _52: Unit = Put arr.36[_49] = _50
+  let _53: Int = Int(4)
+  let _54: Int = Int(5)
+  let _56: Unit = Put arr.36[_53] = _54
+  let _57: Int = Int(5)
+  let int_arr_iter.58: Fun([Fun([Named("T")], Bool)], Bool) = Apply(iter.1, [arr.36, _57, ])
+  let rec print_i.59: Unit = (x.61: Int) {
+    ExtApply(minimbt_print_int, [x.61, ])
+  }
+  let _63: Unit = Apply(each.20, [int_arr_iter.58, print_i.59, ])
+  let _64: Int = Int(6)
+  let _65: Double = Double(0)
+  let arr.66: Array(Double) = ExtApply(minimbt_create_float_array, [_64, _65, ])
+  let _67: Int = Int(0)
+  let _68: Double = Double(1)
+  let _70: Unit = Put arr.66[_67] = _68
+  let _71: Int = Int(1)
+  let _72: Double = Double(2)
+  let _74: Unit = Put arr.66[_71] = _72
+  let _75: Int = Int(2)
+  let _76: Double = Double(3)
+  let _78: Unit = Put arr.66[_75] = _76
+  let _79: Int = Int(3)
+  let _80: Double = Double(4)
+  let _82: Unit = Put arr.66[_79] = _80
+  let _83: Int = Int(4)
+  let _84: Double = Double(5)
+  let _86: Unit = Put arr.66[_83] = _84
+  let _87: Int = Int(5)
+  let _88: Double = Double(6)
+  let _90: Unit = Put arr.66[_87] = _88
+  let _91: Int = Int(6)
+  let double_arr_iter.92: Fun([Fun([Named("T")], Bool)], Bool) = Apply(iter.1, [arr.66, _91, ])
+  let rec print_d.93: Unit = (x.95: Double) {
+    let _96: Int = ExtApply(minimbt_int_of_float, [x.95, ])
+    ExtApply(minimbt_print_int, [_96, ])
+  }
+  Apply(each.20, [double_arr_iter.92, print_d.93, ])
+}
+Apply(main.33, [])

@@ -6,15 +6,16 @@ pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
 
 struct KnfEnv {
   mut counter : Int
+  named_tys : LocalEnv
   externals : LocalEnv
   tracer : @util.SubTracer
 }
 
 pub fn KnfEnv::new(
-  externals : @immut/hashmap.T[String, Type],
+  named_tys : @immut/hashmap.T[String, Type],
   tracer : @util.SubTracer
 ) -> KnfEnv {
-  { counter: 1, externals, tracer }
+  { counter: 1, named_tys, externals: @typer.externals(), tracer }
 }
 
 pub fn KnfEnv::init_counter_from_existing(
@@ -576,7 +577,7 @@ fn build_knf(
     LetEnum(_, e) =>
       // assume named type environment is already handled in typer.
       self.build_knf!(e, let_list, env, ty_env)
-    LetRec({ name, args, body }, e) => {
+    LetRec({ name, args, body, .. }, e) => {
       let ty = name.1
       let orig_name = name.0
       let name = self.make_name(orig_name)

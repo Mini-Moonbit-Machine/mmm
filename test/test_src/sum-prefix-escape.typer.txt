@@ -1,0 +1,19 @@
+let rec sum_prefix: (arr: Array(Int), len: Int) -> Array(Int) {
+  let res: Var({val: Some(Array(Int))}) = Array::make(Var("len"), Int(0))
+  let rec sum_nested: (acc: Int, x: Int) -> Unit {
+    if (LE(Var("x"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
+      let s: Var({val: Some(Int)}) = Var("acc") + Get(Var("arr"), Var("x"))
+      let _: Var({val: Some(Unit)}) = Put Var("res")[Var("x")] = Var("s")
+      Apply(Var("sum_nested"), [Var("s"), Prim(Var("x"), Int(1), Add, kind=Some(Int)), ])
+    } else {
+      Unit
+    }
+  }
+  let _: Var({val: Some(Unit)}) = Apply(Var("sum_nested"), [Int(0), Int(0), ])
+  Var(res)
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  let arr: Var({val: Some(Array(Int))}) = Array::make(Int(10), Int(4))
+  Apply(Var("print_int"), [Get(App(Var("sum_prefix"), [Var("arr"), Int(10)]), Int(0)), ])
+}
+Unit

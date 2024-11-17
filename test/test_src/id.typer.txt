@@ -1,0 +1,8 @@
+let rec f: forall ["T"] . (x: Named("T")) -> Named("T") {
+  Var(x)
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("f"), [Int(1000)]), ])
+  Apply(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])]), ])
+}
+Unit

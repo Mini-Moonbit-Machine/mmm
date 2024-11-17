@@ -11,7 +11,6 @@ pub fn to_json(self : Type) -> Json {
     Var({ val: None }) => ["Var", "None"]
     Var({ val: Some(t) }) => ["Var", ["Some", t.to_json()]]
     Ptr => "Ptr"
-    Named(name) => name |> Json::String
     Enum(name, variants) =>
       [
         "Enum",
@@ -24,6 +23,7 @@ pub fn to_json(self : Type) -> Json {
         )
         |> Json::Array,
       ]
+    Named(x) => ["Named", x.to_json()]
   }
 }
 
@@ -125,7 +125,7 @@ pub fn Fundef::from_json(json : Json) -> Fundef!Error {
       let ty = ty |> Type::from_json!()
       let args = from_json!(args)
       let body = body |> Syntax::from_json!()
-      Fundef::{ name: (name, ty), args, body }
+      Fundef::{ tyvars: [], name: (name, ty), args, body }
     }
     _ =>
       fail!(

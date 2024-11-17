@@ -511,7 +511,8 @@ fn lower_type(self : CoreEnv, ty : @knf.Type, native : Bool) -> Type!Failure {
         Type::ClosureFn(params=tys, ty=res_ty)
       }
     }
-    Var(_) => fail!("uninstantiated type variable")
+    Var(_) | Named(_) => fail!("uninstantiated type variable")
+    Enum(_, _) => fail!("enum type is not supported")
   }
 }
 

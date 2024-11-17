@@ -1,0 +1,614 @@
+// [Knf] build_knf: LetRec({tyvars: ["T"], name: ("iter", Fun([Fun([Named("T")], Bool)], Bool)), args: [("arr", Array(Named("T"))), ("len", Int)], body: LetRec({tyvars: [], name: ("do", Bool), args: [("yield", Fun([Named("T")], Bool))], body: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)]))}, Var("do"))}, LetRec({tyvars: ["T"], name: ("each", Unit), args: [("iter", Fun([Fun([Named("T")], Bool)], Bool)), ("f", Fun([Named("T")], Unit))], body: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Named("T"))], body: Let(("_", Unit), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Unit), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("arr", Array(Int)), Array(Int(5), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(0), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, App(Var("main"), []))))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("do", Bool), args: [("yield", Fun([Named("T")], Bool))], body: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)]))}, Var("do"))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)]))
+// [Knf] build_knf: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int))), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]), Bool(false)), Bool(false))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Prim(Var("len"), Int(1), Sub, kind=Some(Int))
+// [Knf] build_knf: Var("len")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))]), Bool(false))
+// [Knf] build_knf: App(Var("yield"), [Get(Var("arr"), Var("i"))])
+// [Knf] build_knf: Var("yield")
+// [Knf] build_knf: Get(Var("arr"), Var("i"))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int))])
+// [Knf] build_knf: Var("next")
+// [Knf] build_knf: Prim(Var("i"), Int(1), Add, kind=Some(Int))
+// [Knf] build_knf: Var("i")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Bool(false)
+// [Knf] build_knf: Bool(true)
+// [Knf] build_knf: Bool(false)
+// [Knf] build_knf: App(Var("next"), [Int(0)])
+// [Knf] build_knf: Var("next")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Var("do")
+// [Knf] build_knf: LetRec({tyvars: ["T"], name: ("each", Unit), args: [("iter", Fun([Fun([Named("T")], Bool)], Bool)), ("f", Fun([Named("T")], Unit))], body: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Named("T"))], body: Let(("_", Unit), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Unit), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("arr", Array(Int)), Array(Int(5), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(0), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Named("T"))], body: Let(("_", Unit), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Unit), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])))
+// [Knf] build_knf: Let(("_", Unit), App(Var("f"), [Var("x")]), Bool(true))
+// [Knf] build_knf: App(Var("f"), [Var("x")])
+// [Knf] build_knf: Var("f")
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Bool(true)
+// [Knf] build_knf: LetRec({tyvars: [], name: ("do", Unit), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), []))
+// [Knf] build_knf: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)
+// [Knf] build_knf: App(Var("iter"), [Var("yield")])
+// [Knf] build_knf: Var("iter")
+// [Knf] build_knf: Var("yield")
+// [Knf] build_knf: App(Var("do"), [])
+// [Knf] build_knf: Var("do")
+// [Knf] build_knf: Unit
+// [Knf] build_knf: Bool(true)
+// [Knf] build_knf: App(Var("do"), [])
+// [Knf] build_knf: Var("do")
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("arr", Array(Int)), Array(Int(5), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(0), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("arr", Array(Int)), Array(Int(5), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(0), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))
+// [Knf] build_knf: Array(Int(5), Int(1))
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(0), Int(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(0), Int(1))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(1), Int(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(1), Int(2))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(2), Int(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(2), Int(3))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(3), Int(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(3), Int(4))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(4), Int(5))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: Let(("int_arr_iter", Fun([Fun([Int], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))
+// [Knf] build_knf: App(Var("iter"), [Var("arr"), Int(5)])
+// [Knf] build_knf: Var("iter")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))
+// [Knf] build_knf: App(Var("print_int"), [Var("x")])
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: Let(("_", Unit), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))
+// [Knf] build_knf: App(Var("each"), [Var("int_arr_iter"), Var("print_i")])
+// [Knf] build_knf: Var("each")
+// [Knf] build_knf: Var("int_arr_iter")
+// [Knf] build_knf: Var("print_i")
+// [Knf] build_knf: Let(("arr", Array(Double)), Array(Int(6), Double(0)), Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))
+// [Knf] build_knf: Array(Int(6), Double(0))
+// [Knf] build_knf: Int(6)
+// [Knf] build_knf: Double(0)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(0), Double(1)), Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(0), Double(1))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(0)
+// [Knf] build_knf: Double(1)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(1), Double(2)), Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))
+// [Knf] build_knf: Put(Var("arr"), Int(1), Double(2))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(1)
+// [Knf] build_knf: Double(2)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(2), Double(3)), Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))
+// [Knf] build_knf: Put(Var("arr"), Int(2), Double(3))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(2)
+// [Knf] build_knf: Double(3)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(3), Double(4)), Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))
+// [Knf] build_knf: Put(Var("arr"), Int(3), Double(4))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(3)
+// [Knf] build_knf: Double(4)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(4), Double(5)), Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))
+// [Knf] build_knf: Put(Var("arr"), Int(4), Double(5))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(4)
+// [Knf] build_knf: Double(5)
+// [Knf] build_knf: Let(("_", Unit), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))
+// [Knf] build_knf: Put(Var("arr"), Int(5), Double(6))
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(5)
+// [Knf] build_knf: Double(6)
+// [Knf] build_knf: Let(("double_arr_iter", Fun([Fun([Double], Bool)], Bool)), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))
+// [Knf] build_knf: App(Var("iter"), [Var("arr"), Int(6)])
+// [Knf] build_knf: Var("iter")
+// [Knf] build_knf: Var("arr")
+// [Knf] build_knf: Int(6)
+// [Knf] build_knf: LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Double)], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))
+// [Knf] build_knf: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])
+// [Knf] build_knf: App(Var("int_of_float"), [Var("x")])
+// [Knf] build_knf: Var("x")
+// [Knf] build_knf: App(Var("each"), [Var("double_arr_iter"), Var("print_d")])
+// [Knf] build_knf: Var("each")
+// [Knf] build_knf: Var("double_arr_iter")
+// [Knf] build_knf: Var("print_d")
+// [Knf] build_knf: App(Var("main"), [])
+// [Knf] build_knf: Var("main")
+// [Main] function thunk_main(k) {
+// [Main]   function iter_1(arr_3, len_5, k) {
+// [Main]     function do_6(yield_8, k) {
+// [Main]       function next_9(i_11, k) {
+// [Main]         const _12 = 1;
+// [Main]         const _13 = len_5 - _12;
+// [Main]         if (i_11 <= _13) {
+// [Main]           const _14 = arr_3[i_11];
+// [Main]           return $thunk(() => yield_8(_14, function (_15) {
+// [Main]             const _18 = true;
+// [Main]             if (_15 === _18) {
+// [Main]               const _16 = 1;
+// [Main]               const _17 = i_11 + _16;
+// [Main]               return $thunk(() => next_9(_17, k))
+// [Main]             } else {
+// [Main]               return $thunk(() => k(false))
+// [Main]             }
+// [Main]           }
+// [Main]           ))
+// [Main]         } else {
+// [Main]           return k(false)
+// [Main]         }
+// [Main]       }
+// [Main]       const _19 = 0;
+// [Main]       return $thunk(() => next_9(_19, k))
+// [Main]     }
+// [Main]     return k(do_6)
+// [Main]   }
+// [Main]   function each_20(iter_22, f_24, k) {
+// [Main]     function yield_25(x_27, k) {
+// [Main]       return $thunk(() => f_24(x_27, function (_29) {
+// [Main]         return $thunk(() => k(true))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     function do_30(k) {
+// [Main]       return $thunk(() => iter_22(yield_25, function (_31) {
+// [Main]         const _32 = true;
+// [Main]         if (_31 === _32) {
+// [Main]           return $thunk(() => do_30(k))
+// [Main]         } else {
+// [Main]           return $thunk(() => k(null))
+// [Main]         }
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     return $thunk(() => do_30(k))
+// [Main]   }
+// [Main]   function main_33(k) {
+// [Main]     const _34 = 5;
+// [Main]     const _35 = 1;
+// [Main]     const arr_36 = minimbt_create_array($force(_34), $force(_35));
+// [Main]     const _37 = 0;
+// [Main]     const _38 = 1;
+// [Main]     const _40 = arr_36[_37] = _38;
+// [Main]     const _41 = 1;
+// [Main]     const _42 = 2;
+// [Main]     const _44 = arr_36[_41] = _42;
+// [Main]     const _45 = 2;
+// [Main]     const _46 = 3;
+// [Main]     const _48 = arr_36[_45] = _46;
+// [Main]     const _49 = 3;
+// [Main]     const _50 = 4;
+// [Main]     const _52 = arr_36[_49] = _50;
+// [Main]     const _53 = 4;
+// [Main]     const _54 = 5;
+// [Main]     const _56 = arr_36[_53] = _54;
+// [Main]     const _57 = 5;
+// [Main]     return $thunk(() => iter_1(arr_36, _57, function (int_arr_iter_58) {
+// [Main]       function print_i_59(x_61, k) {
+// [Main]         return k(minimbt_print_int($force(x_61)))
+// [Main]       }
+// [Main]       return $thunk(() => each_20(int_arr_iter_58, print_i_59, function (_63) {
+// [Main]         const _64 = 6;
+// [Main]         const _65 = 0;
+// [Main]         const arr_66 = minimbt_create_float_array($force(_64), $force(_65));
+// [Main]         const _67 = 0;
+// [Main]         const _68 = 1;
+// [Main]         const _70 = arr_66[_67] = _68;
+// [Main]         const _71 = 1;
+// [Main]         const _72 = 2;
+// [Main]         const _74 = arr_66[_71] = _72;
+// [Main]         const _75 = 2;
+// [Main]         const _76 = 3;
+// [Main]         const _78 = arr_66[_75] = _76;
+// [Main]         const _79 = 3;
+// [Main]         const _80 = 4;
+// [Main]         const _82 = arr_66[_79] = _80;
+// [Main]         const _83 = 4;
+// [Main]         const _84 = 5;
+// [Main]         const _86 = arr_66[_83] = _84;
+// [Main]         const _87 = 5;
+// [Main]         const _88 = 6;
+// [Main]         const _90 = arr_66[_87] = _88;
+// [Main]         const _91 = 6;
+// [Main]         return $thunk(() => iter_1(arr_66, _91, function (double_arr_iter_92) {
+// [Main]           function print_d_93(x_95, k) {
+// [Main]             const _96 = minimbt_int_of_float($force(x_95));
+// [Main]             return k(minimbt_print_int($force(_96)))
+// [Main]           }
+// [Main]           return $thunk(() => each_20(double_arr_iter_92, print_d_93, k))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   return $thunk(() => main_33(k))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] check: LetRec({tyvars: ["T"], name: ("iter", Fun([Fun([Named("T")], Bool)], Bool)), args: [("arr", Array(Named("T"))), ("len", Int)], body: LetRec({tyvars: [], name: ("do", Bool), args: [("yield", Var({val: None}))], body: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Var({val: None}))], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)]))}, Var("do"))}, LetRec({tyvars: ["T"], name: ("each", Unit), args: [("iter", Fun([Fun([Named("T")], Bool)], Bool)), ("f", Fun([Named("T")], Unit))], body: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Var({val: None}))], body: Let(("_", Var({val: None})), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Var({val: None})), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("arr", Var({val: None})), Array(Int(5), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, Unit))) against Unit
+// [Typer] typevars: ["T"]
+// [Typer] check: LetRec({tyvars: [], name: ("do", Bool), args: [("yield", Var({val: None}))], body: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Var({val: None}))], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)]))}, Var("do")) against Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] typevars: []
+// [Typer] check: LetRec({tyvars: [], name: ("next", Bool), args: [("i", Var({val: None}))], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]), Bool(false)), Bool(false))}, App(Var("next"), [Int(0)])) against Bool
+// [Typer] typevars: []
+// [Typer] check: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]), Bool(false)), Bool(false)) against Bool
+// [Typer] check: LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)) against Bool
+// [Typer] infer: Var("i")
+// [Typer] inst: TypeScheme(([], Var({val: None})))
+// [Typer] inst result: Var({val: None})
+// [Typer] infer: Prim(Var("len"), Int(1), Sub, kind=None)
+// [Typer] infer: Var("len")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(1)
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: If(App(Var("yield"), [Get(Var("arr"), Var("i"))]), App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]), Bool(false)) against Bool
+// [Typer] check: App(Var("yield"), [Get(Var("arr"), Var("i"))]) against Bool
+// [Typer] infer: Get(Var("arr"), Var("i"))
+// [Typer] infer: Var("arr")
+// [Typer] inst: TypeScheme(([], Array(Named("T"))))
+// [Typer] inst result: Array(Named("T"))
+// [Typer] check: Var("i") against Int
+// [Typer] inst: TypeScheme(([], Var({val: Some(Int)})))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("yield") against Fun([Named("T")], Bool)
+// [Typer] inst: TypeScheme(([], Var({val: None})))
+// [Typer] inst result: Var({val: None})
+// [Typer] unify: Var({val: None}) and Fun([Named("T")], Bool)
+// [Typer] union: Var({val: None}) and Fun([Named("T")], Bool)
+// [Typer] check: App(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None)]) against Bool
+// [Typer] infer: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] infer: Var("i")
+// [Typer] inst: TypeScheme(([], Var({val: Some(Int)})))
+// [Typer] inst result: Int
+// [Typer] infer: Int(1)
+// [Typer] unify: Int and Int
+// [Typer] check: Var("next") against Fun([Int], Bool)
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Int)})], Bool)))
+// [Typer] inst result: Fun([Int], Bool)
+// [Typer] unify: Fun([Int], Bool) and Fun([Int], Bool)
+// [Typer] unify: Int and Int
+// [Typer] unify: Bool and Bool
+// [Typer] check: Bool(false) against Bool
+// [Typer] check: Bool(false) against Bool
+// [Typer] check: App(Var("next"), [Int(0)]) against Bool
+// [Typer] infer: Int(0)
+// [Typer] check: Var("next") against Fun([Int], Bool)
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Int)})], Bool)))
+// [Typer] inst result: Fun([Int], Bool)
+// [Typer] unify: Fun([Int], Bool) and Fun([Int], Bool)
+// [Typer] unify: Int and Int
+// [Typer] unify: Bool and Bool
+// [Typer] check: Var("do") against Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Fun([Named("T")], Bool))})], Bool)))
+// [Typer] inst result: Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] unify: Fun([Fun([Named("T")], Bool)], Bool) and Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] unify: Fun([Named("T")], Bool) and Fun([Named("T")], Bool)
+// [Typer] unify: Named("T") and Named("T")
+// [Typer] unify: Bool and Bool
+// [Typer] unify: Bool and Bool
+// [Typer] check: LetRec({tyvars: ["T"], name: ("each", Unit), args: [("iter", Fun([Fun([Named("T")], Bool)], Bool)), ("f", Fun([Named("T")], Unit))], body: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Var({val: None}))], body: Let(("_", Var({val: None})), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Var({val: None})), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("arr", Var({val: None})), Array(Int(5), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, Unit)) against Unit
+// [Typer] typevars: ["T"]
+// [Typer] check: LetRec({tyvars: [], name: ("yield", Bool), args: [("x", Var({val: None}))], body: Let(("_", Var({val: None})), App(Var("f"), [Var("x")]), Bool(true))}, LetRec({tyvars: [], name: ("do", Var({val: None})), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), []))) against Unit
+// [Typer] typevars: []
+// [Typer] check: Let(("_", Var({val: None})), App(Var("f"), [Var("x")]), Bool(true)) against Bool
+// [Typer] infer: App(Var("f"), [Var("x")])
+// [Typer] infer: Var("f")
+// [Typer] inst: TypeScheme(([], Fun([Named("T")], Unit)))
+// [Typer] inst result: Fun([Named("T")], Unit)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Var({val: None})))
+// [Typer] inst result: Var({val: None})
+// [Typer] unify: Named("T") and Var({val: None})
+// [Typer] union: Named("T") and Var({val: None})
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] check: Bool(true) against Bool
+// [Typer] check: LetRec({tyvars: [], name: ("do", Var({val: None})), args: [], body: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)}, App(Var("do"), [])) against Unit
+// [Typer] typevars: []
+// [Typer] infer: If(App(Var("iter"), [Var("yield")]), App(Var("do"), []), Unit)
+// [Typer] check: App(Var("iter"), [Var("yield")]) against Bool
+// [Typer] infer: Var("yield")
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Named("T"))})], Bool)))
+// [Typer] inst result: Fun([Named("T")], Bool)
+// [Typer] check: Var("iter") against Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] inst: TypeScheme(([], Fun([Fun([Named("T")], Bool)], Bool)))
+// [Typer] inst result: Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] unify: Fun([Fun([Named("T")], Bool)], Bool) and Fun([Fun([Named("T")], Bool)], Bool)
+// [Typer] unify: Fun([Named("T")], Bool) and Fun([Named("T")], Bool)
+// [Typer] unify: Named("T") and Named("T")
+// [Typer] unify: Bool and Bool
+// [Typer] unify: Bool and Bool
+// [Typer] infer: App(Var("do"), [])
+// [Typer] infer: Var("do")
+// [Typer] inst: TypeScheme(([], Fun([], Var({val: None}))))
+// [Typer] inst result: Fun([], Var({val: None}))
+// [Typer] infer: Unit
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] unify: Unit and Var({val: Some(Unit)})
+// [Typer] check: App(Var("do"), []) against Unit
+// [Typer] check: Var("do") against Fun([], Unit)
+// [Typer] inst: TypeScheme(([], Fun([], Var({val: Some(Unit)}))))
+// [Typer] inst result: Fun([], Unit)
+// [Typer] unify: Fun([], Unit) and Fun([], Unit)
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("arr", Var({val: None})), Array(Int(5), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("arr", Var({val: None})), Array(Int(5), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))))
+// [Typer] infer: Array(Int(5), Int(1))
+// [Typer] infer: Int(1)
+// [Typer] check: Int(5) against Int
+// [Typer] unify: Var({val: None}) and Array(Int)
+// [Typer] union: Var({val: None}) and Array(Int)
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))))))
+// [Typer] infer: Put(Var("arr"), Int(0), Int(1))
+// [Typer] infer: Int(1)
+// [Typer] check: Var("arr") against Array(Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Int)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))))
+// [Typer] infer: Put(Var("arr"), Int(1), Int(2))
+// [Typer] infer: Int(2)
+// [Typer] check: Var("arr") against Array(Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Int)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(1) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))))
+// [Typer] infer: Put(Var("arr"), Int(2), Int(3))
+// [Typer] infer: Int(3)
+// [Typer] check: Var("arr") against Array(Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Int)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(2) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))))
+// [Typer] infer: Put(Var("arr"), Int(3), Int(4))
+// [Typer] infer: Int(4)
+// [Typer] check: Var("arr") against Array(Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Int)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(3) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Int(5)), Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))))
+// [Typer] infer: Put(Var("arr"), Int(4), Int(5))
+// [Typer] infer: Int(5)
+// [Typer] check: Var("arr") against Array(Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Int)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(4) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("int_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(5)]), LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))))
+// [Typer] infer: App(Var("iter"), [Var("arr"), Int(5)])
+// [Typer] infer: Var("iter")
+// [Typer] inst: TypeScheme((["T"], Fun([Array(Named("T")), Int], Fun([Fun([Named("T")], Bool)], Bool))))
+// [Typer] inst result: Fun([Array(Var({val: None})), Int], Fun([Fun([Var({val: None})], Bool)], Bool))
+// [Typer] check: Var("arr") against Array(Var({val: None}))
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Int))})))
+// [Typer] inst result: Array(Int)
+// [Typer] unify: Array(Int) and Array(Var({val: None}))
+// [Typer] unify: Int and Var({val: None})
+// [Typer] union: Int and Var({val: None})
+// [Typer] check: Int(5) against Int
+// [Typer] unify: Var({val: None}) and Fun([Fun([Int], Bool)], Bool)
+// [Typer] union: Var({val: None}) and Fun([Fun([Int], Bool)], Bool)
+// [Typer] infer: LetRec({tyvars: [], name: ("print_i", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [Var("x")])}, Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))))
+// [Typer] typevars: []
+// [Typer] check: App(Var("print_int"), [Var("x")]) against Unit
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Var({val: None})))
+// [Typer] inst result: Var({val: None})
+// [Typer] check: Var("print_int") against Fun([Var({val: None})], Unit)
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] unify: Fun([Int], Unit) and Fun([Var({val: None})], Unit)
+// [Typer] unify: Int and Var({val: None})
+// [Typer] union: Int and Var({val: None})
+// [Typer] unify: Unit and Unit
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("each"), [Var("int_arr_iter"), Var("print_i")]), Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))))
+// [Typer] infer: App(Var("each"), [Var("int_arr_iter"), Var("print_i")])
+// [Typer] infer: Var("each")
+// [Typer] inst: TypeScheme((["T"], Fun([Fun([Fun([Named("T")], Bool)], Bool), Fun([Named("T")], Unit)], Unit)))
+// [Typer] inst result: Fun([Fun([Fun([Var({val: None})], Bool)], Bool), Fun([Var({val: None})], Unit)], Unit)
+// [Typer] check: Var("int_arr_iter") against Fun([Fun([Var({val: None})], Bool)], Bool)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Fun([Fun([Int], Bool)], Bool))})))
+// [Typer] inst result: Fun([Fun([Int], Bool)], Bool)
+// [Typer] unify: Fun([Fun([Int], Bool)], Bool) and Fun([Fun([Var({val: None})], Bool)], Bool)
+// [Typer] unify: Fun([Int], Bool) and Fun([Var({val: None})], Bool)
+// [Typer] unify: Int and Var({val: None})
+// [Typer] union: Int and Var({val: None})
+// [Typer] unify: Bool and Bool
+// [Typer] unify: Bool and Bool
+// [Typer] check: Var("print_i") against Fun([Var({val: Some(Int)})], Unit)
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Int)})], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] unify: Fun([Int], Unit) and Fun([Int], Unit)
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Unit
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("arr", Var({val: None})), Array(Int(6), Double(0)), Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))))
+// [Typer] infer: Array(Int(6), Double(0))
+// [Typer] infer: Double(0)
+// [Typer] check: Int(6) against Int
+// [Typer] unify: Var({val: None}) and Array(Double)
+// [Typer] union: Var({val: None}) and Array(Double)
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(0), Double(1)), Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))))
+// [Typer] infer: Put(Var("arr"), Int(0), Double(1))
+// [Typer] infer: Double(1)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(1), Double(2)), Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))))
+// [Typer] infer: Put(Var("arr"), Int(1), Double(2))
+// [Typer] infer: Double(2)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(1) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(2), Double(3)), Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))))
+// [Typer] infer: Put(Var("arr"), Int(2), Double(3))
+// [Typer] infer: Double(3)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(2) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(3), Double(4)), Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))))
+// [Typer] infer: Put(Var("arr"), Int(3), Double(4))
+// [Typer] infer: Double(4)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(3) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(4), Double(5)), Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))))
+// [Typer] infer: Put(Var("arr"), Int(4), Double(5))
+// [Typer] infer: Double(5)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(4) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("_", Var({val: None})), Put(Var("arr"), Int(5), Double(6)), Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))))
+// [Typer] infer: Put(Var("arr"), Int(5), Double(6))
+// [Typer] infer: Double(6)
+// [Typer] check: Var("arr") against Array(Double)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Double and Double
+// [Typer] check: Int(5) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Let(("double_arr_iter", Var({val: None})), App(Var("iter"), [Var("arr"), Int(6)]), LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")])))
+// [Typer] infer: App(Var("iter"), [Var("arr"), Int(6)])
+// [Typer] infer: Var("iter")
+// [Typer] inst: TypeScheme((["T"], Fun([Array(Named("T")), Int], Fun([Fun([Named("T")], Bool)], Bool))))
+// [Typer] inst result: Fun([Array(Var({val: None})), Int], Fun([Fun([Var({val: None})], Bool)], Bool))
+// [Typer] check: Var("arr") against Array(Var({val: None}))
+// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
+// [Typer] inst result: Array(Double)
+// [Typer] unify: Array(Double) and Array(Var({val: None}))
+// [Typer] unify: Double and Var({val: None})
+// [Typer] union: Double and Var({val: None})
+// [Typer] check: Int(6) against Int
+// [Typer] unify: Var({val: None}) and Fun([Fun([Double], Bool)], Bool)
+// [Typer] union: Var({val: None}) and Fun([Fun([Double], Bool)], Bool)
+// [Typer] infer: LetRec({tyvars: [], name: ("print_d", Unit), args: [("x", Var({val: None}))], body: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])])}, App(Var("each"), [Var("double_arr_iter"), Var("print_d")]))
+// [Typer] typevars: []
+// [Typer] check: App(Var("print_int"), [App(Var("int_of_float"), [Var("x")])]) against Unit
+// [Typer] infer: App(Var("int_of_float"), [Var("x")])
+// [Typer] infer: Var("int_of_float")
+// [Typer] inst: TypeScheme(([], Fun([Double], Int)))
+// [Typer] inst result: Fun([Double], Int)
+// [Typer] check: Var("x") against Double
+// [Typer] inst: TypeScheme(([], Var({val: None})))
+// [Typer] inst result: Var({val: None})
+// [Typer] unify: Var({val: None}) and Double
+// [Typer] union: Var({val: None}) and Double
+// [Typer] check: Var("print_int") against Fun([Int], Unit)
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] unify: Fun([Int], Unit) and Fun([Int], Unit)
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Unit
+// [Typer] infer: App(Var("each"), [Var("double_arr_iter"), Var("print_d")])
+// [Typer] infer: Var("each")
+// [Typer] inst: TypeScheme((["T"], Fun([Fun([Fun([Named("T")], Bool)], Bool), Fun([Named("T")], Unit)], Unit)))
+// [Typer] inst result: Fun([Fun([Fun([Var({val: None})], Bool)], Bool), Fun([Var({val: None})], Unit)], Unit)
+// [Typer] check: Var("double_arr_iter") against Fun([Fun([Var({val: None})], Bool)], Bool)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Fun([Fun([Double], Bool)], Bool))})))
+// [Typer] inst result: Fun([Fun([Double], Bool)], Bool)
+// [Typer] unify: Fun([Fun([Double], Bool)], Bool) and Fun([Fun([Var({val: None})], Bool)], Bool)
+// [Typer] unify: Fun([Double], Bool) and Fun([Var({val: None})], Bool)
+// [Typer] unify: Double and Var({val: None})
+// [Typer] union: Double and Var({val: None})
+// [Typer] unify: Bool and Bool
+// [Typer] unify: Bool and Bool
+// [Typer] check: Var("print_d") against Fun([Var({val: Some(Double)})], Unit)
+// [Typer] inst: TypeScheme(([], Fun([Var({val: Some(Double)})], Unit)))
+// [Typer] inst result: Fun([Double], Unit)
+// [Typer] unify: Fun([Double], Unit) and Fun([Double], Unit)
+// [Typer] unify: Double and Double
+// [Typer] unify: Unit and Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
+// [Parser] flags: []
