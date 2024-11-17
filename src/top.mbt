@@ -33,6 +33,7 @@ pub enum Op {
 } derive(Show, Eq)
 
 pub struct Fundef {
+  tyvars : Array[String]
   name : (String, Type)
   args : Array[(String, Type)]
   body : Syntax
@@ -47,8 +48,31 @@ pub enum Type {
   Tuple(Array[Type]) // (_, _, _)
   Array(Type) // Array[_]
   Var(Ref[Type?])
+  Named(String)
   Ptr
 } derive(Show)
+
+pub type TypeScheme (Array[String], Type) derive(Show)
+
+pub fn Type::new_var() -> Type {
+  Type::Var(Ref::new(None))
+}
+
+pub fn Type::new_named_var(name : String) -> Type {
+  Type::Var(Ref::new(Some(Type::Named(name))))
+}
+
+pub fn Type::to_scheme(self : Type) -> TypeScheme {
+  ([], self)
+}
+
+pub fn TypeScheme::no_quantifier(self : TypeScheme) -> Type? {
+  if self._.0.length() == 0 {
+    Some(self._.1)
+  } else {
+    None
+  }
+}
 
 pub fn Type::is_ptr_like(self : Type) -> Bool {
   match self {
@@ -108,6 +132,18 @@ pub fn Type::is_unknown(self : Type) -> Bool {
         Some(t) => t.is_unknown()
         None => true
       }
+    Named(_) => true
+    _ => false
+  }
+}
+
+pub fn Type::is_uninstantiated(self : Type) -> Bool {
+  match self {
+    Var(t) =>
+      match t.val {
+        Some(t) => t.is_uninstantiated()
+        None => true
+      }
     _ => false
   }
 }
@@ -140,4 +176,130 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Var(x), Var(y)) => x.val == y.val
     _ => false
   }
+}
+
+pub type PrettySyntax Syntax
+
+pub fn Syntax::to_pretty_print(self : Syntax) -> PrettySyntax {
+  self
+}
+
+fn PrettySyntax::print_one_level(
+  self : PrettySyntax,
+  logger : @util.IndentLogger,
+  val : Syntax
+) -> Unit {
+  match val {
+    Unit => logger.write_string("Unit")
+    Bool(b) => logger.write_string("Bool(\{b})")
+    Int(i) => logger.write_string("Int(\{i})")
+    Double(d) => logger.write_string("Double(\{d})")
+    Not(e) => logger.write_string("Not(\{e})")
+    Neg(e, ..) => logger.write_string("Neg(\{e})")
+    Var(name) => logger.write_string("Var(\{name})")
+    Prim(e1, e2, op, ..) => {
+      let op_str = match op {
+        Add => "+"
+        Sub => "-"
+        Mul => "*"
+        Div => "/"
+      }
+      logger.write_string("\{e1} \{op_str} \{e2}")
+    }
+    Eq(e1, e2) => logger.write_string("\{e1} == \{e2}")
+    LE(e1, e2) => logger.write_string("\{e1} <= \{e2}")
+    Array(e1, e2) => logger.write_string("Array::make(\{e1}, \{e2})")
+    If(e1, e3, e4) => {
+      logger.write_string("if (\{e1}) then {")
+      logger.indent()
+      logger.write_string("\n")
+      self.print_one_level(logger, e3)
+      logger.outdent()
+      logger.write_string("\n")
+      logger.write_string("} else {")
+      logger.indent()
+      logger.write_string("\n")
+      self.print_one_level(logger, e4)
+      logger.outdent()
+      logger.write_string("\n}")
+    }
+    Let((name, ty), e1, e2) => {
+      logger.write_string("let \{name}: \{ty} = ")
+      match e1 {
+        Let(_) | LetRec(_) | LetTuple(_, _, _) => {
+          logger.write_string("\n")
+          logger.indent()
+          self.print_one_level(logger, e1)
+          logger.outdent()
+        }
+        _ => self.print_one_level(logger, e1)
+      }
+      logger.write_string("\n")
+      self.print_one_level(logger, e2)
+    }
+    LetTuple(name_types, y, e) => {
+      logger.write_string("let (")
+      let mut first = true
+      for nt in name_types {
+        if first {
+          first = false
+        } else {
+          logger.write_string(", ")
+        }
+        let (name, ty) = nt
+        logger.write_string("\{name}: \{ty}")
+      }
+      logger.write_string(") = \{y}\n")
+      self.print_one_level(logger, e)
+    }
+    LetRec(fundef, e) => {
+      let { name, args, body, tyvars } = fundef
+      let quantifier = if tyvars.length() == 0 {
+        ""
+      } else {
+        "forall \{tyvars} . "
+      }
+      logger.write_string("let rec \{name.0}: \{quantifier}(")
+      let mut first = true
+      for arg in args {
+        let (arg_name, arg_ty) = arg
+        if first {
+          first = false
+        } else {
+          logger.write_string(", ")
+        }
+        logger.write_string("\{arg_name}: \{arg_ty}")
+      }
+      logger.write_string(") -> \{name.1} {")
+      logger.indent()
+      logger.write_string("\n")
+      self.print_one_level(logger, body)
+      logger.outdent()
+      logger.write_string("\n}\n")
+      self.print_one_level(logger, e)
+    }
+    App(name, args) => {
+      logger.write_string("Apply(\{name}, [")
+      for arg in args {
+        logger.write_string(arg.to_string())
+        logger.write_string(", ")
+      }
+      logger.write_string("])")
+    }
+    Tuple(es) => {
+      logger.write_string("Tuple([")
+      for e in es {
+        logger.write_string(e.to_string())
+        logger.write_string(", ")
+      }
+      logger.write_string("])")
+    }
+    Put(e1, e2, e3) => logger.write_string("Put \{e1}[\{e2}] = \{e3}")
+    Get(e1, e2) => logger.write_string("Get \{e1}[\{e2}]")
+  }
+}
+
+pub impl Show for PrettySyntax with output(self : PrettySyntax, logger : Logger) -> Unit {
+  let indent_logger = @util.IndentLogger::new(logger)
+  self.print_one_level(indent_logger, self._)
 }

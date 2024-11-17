@@ -112,7 +112,7 @@ pub fn Fundef::from_json(json : Json) -> Fundef!Error {
       let ty = ty |> Type::from_json!()
       let args = from_json!(args)
       let body = body |> Syntax::from_json!()
-      Fundef::{ name: (name, ty), args, body }
+      Fundef::{ tyvars: [], name: (name, ty), args, body }
     }
     _ =>
       fail!(

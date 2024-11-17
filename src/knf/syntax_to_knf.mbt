@@ -348,7 +348,7 @@ fn build_knf(
       let r2 = self.build_knf!(e2, let_list, env, ty_env)
       (r2.0, r2.1, let_list)
     }
-    LetRec({ name, args, body }, e) => {
+    LetRec({ name, args, body, .. }, e) => {
       let ty = name.1
       let orig_name = name.0
       let name = self.make_name(orig_name)

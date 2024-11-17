@@ -137,7 +137,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.ast = Some(parsed.inner)
     }
     Typecheck => {
-      let ast = self.ast.unwrap()
+      let mut ast = self.ast.unwrap()
       let subtracer = tracer.new_subtracer(
         "Typer",
         opts.output_to_console,
@@ -145,7 +145,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       )
       let typer = @typer.Typer::new(ast, subtracer)
       try {
-        typer.check_all!()
+        ast = typer.check_all!()
       } catch {
         Failure(msg) => subtracer.abort(msg)
       }

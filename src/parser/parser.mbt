@@ -228,7 +228,12 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         "Double" => Type::Double
         "Bool" => Type::Bool
         "Array" => Type::Array(Type::Unit)
-        _ => fail!("unexpected type identifier")
+        ty =>
+          if ty[0] >= 'A' && ty[0] <= 'Z' {
+            Type::Named(ty)
+          } else {
+            fail!("unexpected type identifier \{ty}")
+          }
       }
     PairedOpen(po) =>
       if self.peek_token!().inner.tag == PairedClose(po) {
@@ -534,12 +539,12 @@ fn Parser::bind_types(
       x
     }
     Some(_) => fail!("expected tuple type")
-    None => names.map(fn(name) { (name, Type::Var(Ref::new(None))) })
+    None => names.map(fn(name) { (name, Type::new_var()) })
   }
 }
 
 fn Parser::bind_type(name : String, ty : Type?) -> (String, Type) {
-  (name, ty.or(Type::Var(Ref::new(None))))
+  (name, ty.or(Type::new_var()))
 }
 
 fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
@@ -677,77 +682,98 @@ fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       if ident.inner.tag != Identifer {
         fail!("expected identifier")
       }
-      let fdef = match ident.inner.span {
-        _ => {
-          let name = ident.inner.span
-          let args = []
-          if self.peek_token!().inner.tag == PairedOpen(Parenthesis) {
-            if top && (name == "main" || name == "init") {
-              fail!(
-                "main and init cannot have arguments when they are top-level",
-              )
-            }
-            let _ = self.expect_paired_open!(Paired::Parenthesis)
-            ntokens += 1
-            if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
-              let arg = self.next_token!()
-              ntokens += arg.ntokens
-              if arg.inner.tag != Identifer {
-                fail!("expected identifier")
-              }
-              if self.peek_operator(":") {
-                self.skip_token()
-                ntokens += 1
-                let ty = self.parse_type!()
-                ntokens += ty.ntokens
-                args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
-              } else {
-                args.push(Parser::bind_type(arg.inner.span, None))
-              }
-              while self.peek_operator(",") {
-                self.skip_token()
-                ntokens += 1
-                let arg = self.next_token!()
-                ntokens += arg.ntokens
-                if arg.inner.tag != Identifer {
-                  fail!("expected identifier")
-                }
-                if self.peek_operator(":") {
-                  self.skip_token()
-                  ntokens += 1
-                  let ty = self.parse_type!()
-                  ntokens += ty.ntokens
-                  args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
-                } else {
-                  args.push(Parser::bind_type(arg.inner.span, None))
-                }
-              }
-            }
-            let _ = self.expect_paired_close!(Paired::Parenthesis)
-            ntokens += 1
+      let name = ident.inner.span
+      let args = []
+      fn parse_non_generic() -> Unit!Failure {
+        if top && (name == "main" || name == "init") {
+          fail!("main and init cannot have arguments when they are top-level")
+        }
+        let _ = self.expect_paired_open!(Paired::Parenthesis)
+        ntokens += 1
+        if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
+          let arg = self.next_token!()
+          ntokens += arg.ntokens
+          if arg.inner.tag != Identifer {
+            fail!("expected identifier")
           }
-          let ty = if self.peek_operator("->") {
+          if self.peek_operator(":") {
             self.skip_token()
             ntokens += 1
             let ty = self.parse_type!()
             ntokens += ty.ntokens
-            Some(ty.inner)
+            args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
           } else {
-            None
+            args.push(Parser::bind_type(arg.inner.span, None))
           }
-          let _ = self.expect_paired_open!(Paired::Brace)
-          ntokens += 1
-          let stmt = self.parse_stmt!(false)
-          ntokens += stmt.ntokens
-          let _ = self.expect_paired_close!(Paired::Brace)
-          ntokens += 1
-          let fdef = @types.Fundef::{
-            name: Parser::bind_type(name, ty),
-            args,
-            body: stmt.inner,
+          while self.peek_operator(",") {
+            self.skip_token()
+            ntokens += 1
+            let arg = self.next_token!()
+            ntokens += arg.ntokens
+            if arg.inner.tag != Identifer {
+              fail!("expected identifier")
+            }
+            if self.peek_operator(":") {
+              self.skip_token()
+              ntokens += 1
+              let ty = self.parse_type!()
+              ntokens += ty.ntokens
+              args.push(Parser::bind_type(arg.inner.span, Some(ty.inner)))
+            } else {
+              args.push(Parser::bind_type(arg.inner.span, None))
+            }
           }
-          fdef
         }
+        let _ = self.expect_paired_close!(Paired::Parenthesis)
+        ntokens += 1
+      }
+
+      let tyvars = []
+      if self.peek_token!().inner.tag == PairedOpen(Parenthesis) {
+        parse_non_generic!()
+      } else if self.peek_token!().inner.tag == PairedOpen(Bracket) {
+        self.skip_token()
+        ntokens += 1
+        let type_var = self.next_token!()
+        ntokens += 1
+        if ident.inner.tag != Identifer {
+          fail!("expected identifier")
+        }
+        tyvars.push(type_var.inner.span)
+        while self.peek_operator(",") {
+          self.skip_token()
+          ntokens += 1
+          let type_var = self.next_token!()
+          ntokens += 1
+          if ident.inner.tag != Identifer {
+            fail!("expected identifier")
+          }
+          tyvars.push(type_var.inner.span)
+        }
+        let _ = self.expect_paired_close!(Bracket)
+        ntokens += 1
+        parse_non_generic!()
+      }
+      let ty = if self.peek_operator("->") {
+        self.skip_token()
+        ntokens += 1
+        let ty = self.parse_type!()
+        ntokens += ty.ntokens
+        Some(ty.inner)
+      } else {
+        None
+      }
+      let _ = self.expect_paired_open!(Paired::Brace)
+      ntokens += 1
+      let stmt = self.parse_stmt!(false)
+      ntokens += stmt.ntokens
+      let _ = self.expect_paired_close!(Paired::Brace)
+      ntokens += 1
+      let fdef = @types.Fundef::{
+        tyvars,
+        name: Parser::bind_type(name, ty),
+        args,
+        body: stmt.inner,
       }
       if self.peek_operator(";") {
         self.skip_token()
