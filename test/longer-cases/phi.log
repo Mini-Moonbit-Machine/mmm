@@ -246,7 +246,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]), Unit)}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("rec"), [Int(0), Int(0)]), Unit)}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]), Unit)}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("rec"), [Int(0), Int(0)]), Unit)}, App(Var("main"), [])))
 // [Knf] build_knf: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=Some(Int))]), Unit)
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Var("y")
@@ -257,8 +257,8 @@
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Int(1)
 // [Knf] build_knf: Unit
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("rec"), [Int(0), Int(0)]), Unit)}, App(Var("main"), []))
-// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("rec"), [Int(0), Int(0)]), Unit)
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("rec"), [Int(0), Int(0)]), Unit)}, App(Var("main"), []))
+// [Knf] build_knf: Let(("_", Unit), App(Var("rec"), [Int(0), Int(0)]), Unit)
 // [Knf] build_knf: App(Var("rec"), [Int(0), Int(0)])
 // [Knf] build_knf: Var("rec")
 // [Knf] build_knf: Int(0)
@@ -348,6 +348,50 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit) against Unit
+// [Typer] check: Eq(Var("x"), Var("y")) against Bool
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]) against Unit
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Prim(Var("x"), Int(1), Add, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(1)
+// [Typer] unify: Int and Int
+// [Typer] check: Var("rec") against Fun([Int, Int], Unit)
+// [Typer] inst: TypeScheme(([], Fun([Int, Int], Unit)))
+// [Typer] inst result: Fun([Int, Int], Unit)
+// [Typer] unify: Fun([Int, Int], Unit) and Fun([Int, Int], Unit)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Unit
+// [Typer] check: Unit against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("rec"), [Int(0), Int(0)]), Unit)
+// [Typer] infer: App(Var("rec"), [Int(0), Int(0)])
+// [Typer] infer: Var("rec")
+// [Typer] inst: TypeScheme(([], Fun([Int, Int], Unit)))
+// [Typer] inst result: Fun([Int, Int], Unit)
+// [Typer] check: Int(0) against Int
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {rec.1: Many(2), main.8: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 7

@@ -120,10 +120,10 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: Let(("int_min", Int), Neg(Int(2147483648), kind=Some(Int)), LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("int_min")]), Unit)}, App(Var("main"), [])))
+// [Knf] build_knf: Let(("int_min", Int), Neg(Int(2147483648), kind=Some(Int)), LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("print_int"), [Var("int_min")]), Unit)}, App(Var("main"), [])))
 // [Knf] build_knf: Neg(Int(2147483648), kind=Some(Int))
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("int_min")]), Unit)}, App(Var("main"), []))
-// [Knf] build_knf: Let(("_", Var({val: Some(Unit)})), App(Var("print_int"), [Var("int_min")]), Unit)
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("_", Unit), App(Var("print_int"), [Var("int_min")]), Unit)}, App(Var("main"), []))
+// [Knf] build_knf: Let(("_", Unit), App(Var("print_int"), [Var("int_min")]), Unit)
 // [Knf] build_knf: App(Var("print_int"), [Var("int_min")])
 // [Knf] build_knf: Var("int_min")
 // [Knf] build_knf: Unit
@@ -188,6 +188,26 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: Let(("int_min", Int), Neg(Int(2147483648), kind=None), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Var("int_min")]), Unit)}, Unit)) against Unit
+// [Typer] check: Neg(Int(2147483648), kind=None) against Int
+// [Typer] check: Int(2147483648) against Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Var("int_min")]), Unit)}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("print_int"), [Var("int_min")]), Unit)
+// [Typer] infer: App(Var("print_int"), [Var("int_min")])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: Var("int_min") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {main.2: Once}
 // [KnfOpt] freq: {main.2: Once}
 // [KnfOpt] freq: {main.2: Once}

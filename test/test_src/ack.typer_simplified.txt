@@ -1,0 +1,15 @@
+let rec ack: (x: Int, y: Int) -> Int {
+  if (LE(Var("x"), Int(0))) then {
+    Var("y") + Int(1)
+  } else {
+    if (LE(Var("y"), Int(0))) then {
+      Apply(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int)), Int(1), ])
+    } else {
+      Apply(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int)), App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=Some(Int))]), ])
+    }
+  }
+}
+let rec main: () -> Unit {
+  Apply(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)]), ])
+}
+Unit

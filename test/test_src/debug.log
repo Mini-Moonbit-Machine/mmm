@@ -61,16 +61,16 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("useless", Int), args: [("x", Int)], body: Let(("y", Var({val: Some(Int)})), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))}, LetRec({name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), [])))))
-// [Knf] build_knf: Let(("y", Var({val: Some(Int)})), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("useless", Int), args: [("x", Int)], body: Let(("y", Int), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))}, LetRec({tyvars: [], name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Unit}, App(Var("main"), [])))))
+// [Knf] build_knf: Let(("y", Int), Var("x"), Prim(Int(10), Int(1), Sub, kind=Some(Int)))
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Prim(Int(10), Int(1), Sub, kind=Some(Int))
 // [Knf] build_knf: Int(10)
 // [Knf] build_knf: Int(1)
-// [Knf] build_knf: LetRec({name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), []))))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Unit}, App(Var("main"), []))))
 // [Knf] build_knf: Var("x")
-// [Knf] build_knf: LetRec({name: ("f", Int), args: [("x", Int)], body: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), [])))
-// [Knf] build_knf: LetRec({name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Unit}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)]))
 // [Knf] build_knf: Bool(true)
@@ -81,7 +81,7 @@
 // [Knf] build_knf: Var("g")
 // [Knf] build_knf: Int(2)
 // [Knf] build_knf: Bool(true)
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Unit}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Unit}, App(Var("main"), []))
 // [Knf] build_knf: Unit
 // [Knf] build_knf: App(Var("main"), [])
 // [Knf] build_knf: Var("main")
@@ -137,6 +137,55 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("useless", Int), args: [("x", Int)], body: Let(("y", Var({val: None})), Var("x"), Prim(Int(10), Int(1), Sub, kind=None))}, LetRec({tyvars: [], name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Unit}, Unit)))) against Unit
+// [Typer] typevars: []
+// [Typer] check: Let(("y", Var({val: None})), Var("x"), Prim(Int(10), Int(1), Sub, kind=None)) against Int
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: Prim(Int(10), Int(1), Sub, kind=None) against Int
+// [Typer] check: Int(10) against Int
+// [Typer] check: Int(1) against Int
+// [Typer] check: LetRec({tyvars: [], name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Unit}, Unit))) against Unit
+// [Typer] typevars: []
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Unit}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)]))) against Int
+// [Typer] typevars: []
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])) against Int
+// [Typer] check: Bool(true) against Bool
+// [Typer] check: App(Var("f"), [Int(1)]) against Int
+// [Typer] infer: Int(1)
+// [Typer] check: Var("f") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("g"), [Int(2)]) against Int
+// [Typer] infer: Int(2)
+// [Typer] check: Var("g") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Unit}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {useless.1: Zero, dummy.6: Zero, f.9: Once, g.12: Once, main.19: Once}
 // [KnfOpt] Knf inline Some(f)
 // [KnfOpt] Knf inline Some(g)

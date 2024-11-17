@@ -1,0 +1,19 @@
+let rec getx: (v: Tuple([Double, Double, Double])) -> Double {
+  let (x: Var({val: Some(Double)}), _: Var({val: Some(Double)}), _: Var({val: Some(Double)})) = Var("v")
+  Var(x)
+}
+let rec gety: (v: Tuple([Double, Double, Double])) -> Double {
+  let (_: Var({val: Some(Double)}), y: Var({val: Some(Double)}), _: Var({val: Some(Double)})) = Var("v")
+  Var(y)
+}
+let rec getz: (v: Tuple([Double, Double, Double])) -> Double {
+  let (_: Var({val: Some(Double)}), _: Var({val: Some(Double)}), z: Var({val: Some(Double)})) = Var("v")
+  Var(z)
+}
+let rec inprod: (v1: Tuple([Double, Double, Double]), v2: Tuple([Double, Double, Double])) -> Double {
+  Prim(Prim(App(Var("getx"), [Var("v1")]), App(Var("getx"), [Var("v2")]), Mul, kind=Some(Double)), Prim(App(Var("gety"), [Var("v1")]), App(Var("gety"), [Var("v2")]), Mul, kind=Some(Double)), Add, kind=Some(Double)) + Prim(App(Var("getz"), [Var("v1")]), App(Var("getz"), [Var("v2")]), Mul, kind=Some(Double))
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  Apply(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Tuple([Double(1), Double(2), Double(3)]), Tuple([Double(4), Double(5), Double(6)])]), Mul, kind=Some(Double))]), ])
+}
+Unit

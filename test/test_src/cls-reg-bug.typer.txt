@@ -1,0 +1,17 @@
+let rec h: (p: Tuple([Int, Int, Int, Int, Int, Int, Int, Int, Int, Int])) -> Int {
+  let (v1: Var({val: Some(Int)}), v2: Var({val: Some(Int)}), v3: Var({val: Some(Int)}), v4: Var({val: Some(Int)}), v5: Var({val: Some(Int)}), v6: Var({val: Some(Int)}), v7: Var({val: Some(Int)}), v8: Var({val: Some(Int)}), v9: Var({val: Some(Int)}), v10: Var({val: Some(Int)})) = Var("p")
+  let rec g: (z: Int) -> Int {
+    let r: Var({val: Some(Int)}) = Prim(Prim(Prim(Prim(Prim(Prim(Prim(Prim(Var("v1"), Var("v2"), Add, kind=Some(Int)), Var("v3"), Add, kind=Some(Int)), Var("v4"), Add, kind=Some(Int)), Var("v5"), Add, kind=Some(Int)), Var("v6"), Add, kind=Some(Int)), Var("v7"), Add, kind=Some(Int)), Var("v8"), Add, kind=Some(Int)), Var("v9"), Add, kind=Some(Int)) + Var("v10")
+    if (Not(LE(Var("z"), Int(0)))) then {
+      Var(r)
+    } else {
+      Apply(Var("g"), [Neg(Var("z"), kind=Some(Int)), ])
+    }
+  }
+  Apply(Var("g"), [Int(1), ])
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  let t1: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("h"), [Tuple([Int(1), Int(2), Int(3), Int(4), Int(5), Int(6), Int(7), Int(8), Int(9), Int(10)])]), ])
+  Unit
+}
+Unit

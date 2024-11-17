@@ -115,7 +115,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [Int(0)])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [Int(0)])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [Int(0)])
 // [Knf] build_knf: Int(0)
 // [Knf] build_knf: App(Var("main"), [])
@@ -177,6 +177,16 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [Int(0)])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [Int(0)])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {main.1: Once}
 // [KnfOpt] freq: {main.1: Once}
 // [KnfOpt] freq: {main.1: Once}

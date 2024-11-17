@@ -236,7 +236,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("f", Int), args: [], body: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("f", Int), args: [], body: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, App(Var("main"), [])))
 // [Knf] build_knf: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))
 // [Knf] build_knf: Int(6)
 // [Knf] build_knf: Int(0)
@@ -246,7 +246,7 @@
 // [Knf] build_knf: Int(10)
 // [Knf] build_knf: Int(2)
 // [Knf] build_knf: Int(3)
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [App(Var("f"), [])])
 // [Knf] build_knf: App(Var("f"), [])
 // [Knf] build_knf: Var("f")
@@ -330,6 +330,36 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [], body: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3))) against Int
+// [Typer] check: LE(Int(6), Int(0)) against Bool
+// [Typer] infer: Int(6)
+// [Typer] infer: Int(0)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(1) against Int
+// [Typer] check: If(LE(Int(6), Int(10)), Int(2), Int(3)) against Int
+// [Typer] check: LE(Int(6), Int(10)) against Bool
+// [Typer] infer: Int(6)
+// [Typer] infer: Int(10)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(2) against Int
+// [Typer] check: Int(3) against Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [App(Var("f"), [])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("f"), []) against Int
+// [Typer] check: Var("f") against Fun([], Int)
+// [Typer] inst: TypeScheme(([], Fun([], Int)))
+// [Typer] inst result: Fun([], Int)
+// [Typer] unify: Fun([], Int) and Fun([], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {f.1: Once, main.6: Once}
 // [KnfOpt] Knf inline Some(f)
 // [KnfOpt] freq: {main.6: Once}

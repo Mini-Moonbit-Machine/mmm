@@ -1,0 +1,28 @@
+let t: Int = Int(123)
+let f: Int = Int(456)
+let rec even: (x: Int) -> Int {
+  let rec odd: (x: Int) -> Int {
+    if (LE(Int(0), Var("x"))) then {
+      if (Eq(Var("x"), Int(0))) then {
+        Var(f)
+      } else {
+        Apply(Var("even"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int)), ])
+      }
+    } else {
+      Apply(Var("even"), [Prim(Var("x"), Int(1), Add, kind=Some(Int)), ])
+    }
+  }
+  if (LE(Int(0), Var("x"))) then {
+    if (Eq(Var("x"), Int(0))) then {
+      Var(t)
+    } else {
+      Apply(Var("odd"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int)), ])
+    }
+  } else {
+    Apply(Var("odd"), [Prim(Var("x"), Int(1), Add, kind=Some(Int)), ])
+  }
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  Apply(Var("print_int"), [App(Var("even"), [Int(789)]), ])
+}
+Unit

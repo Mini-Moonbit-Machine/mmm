@@ -292,7 +292,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=Some(Double))])])])]), Double(4.5), Add, kind=Some(Double)), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=Some(Double)), Double(1.23456789), Div, kind=Some(Double)), Sub, kind=Some(Double)), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=Some(Double))])])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=Some(Double))])])])]), Double(4.5), Add, kind=Some(Double)), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=Some(Double)), Double(1.23456789), Div, kind=Some(Double)), Sub, kind=Some(Double)), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=Some(Double))])])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=Some(Double))])])])]), Double(4.5), Add, kind=Some(Double)), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=Some(Double)), Double(1.23456789), Div, kind=Some(Double)), Sub, kind=Some(Double)), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=Some(Double))])])
 // [Knf] build_knf: App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=Some(Double))])])])]), Double(4.5), Add, kind=Some(Double)), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=Some(Double)), Double(1.23456789), Div, kind=Some(Double)), Sub, kind=Some(Double)), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=Some(Double))])
 // [Knf] build_knf: Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=Some(Double))])])])]), Double(4.5), Add, kind=Some(Double)), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=Some(Double)), Double(1.23456789), Div, kind=Some(Double)), Sub, kind=Some(Double)), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=Some(Double))
@@ -386,6 +386,65 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None), Sub, kind=None), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=None)])])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None), Sub, kind=None), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=None)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("int_of_float"), [Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None), Sub, kind=None), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=None)]) against Int
+// [Typer] infer: Prim(Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None), Sub, kind=None), App(Var("float_of_int"), [Int(1000000)]), Mul, kind=None)
+// [Typer] infer: Prim(Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None), Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None), Sub, kind=None)
+// [Typer] infer: Prim(App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])]), Double(4.5), Add, kind=None)
+// [Typer] infer: App(Var("sin"), [App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])])])
+// [Typer] infer: Var("sin")
+// [Typer] inst: TypeScheme(([], Fun([Double], Double)))
+// [Typer] inst result: Fun([Double], Double)
+// [Typer] check: App(Var("cos"), [App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])]) against Double
+// [Typer] infer: App(Var("sqrt"), [App(Var("abs_float"), [Neg(Double(12.3), kind=None)])])
+// [Typer] infer: Var("sqrt")
+// [Typer] inst: TypeScheme(([], Fun([Double], Double)))
+// [Typer] inst result: Fun([Double], Double)
+// [Typer] check: App(Var("abs_float"), [Neg(Double(12.3), kind=None)]) against Double
+// [Typer] infer: Neg(Double(12.3), kind=None)
+// [Typer] infer: Double(12.3)
+// [Typer] check: Var("abs_float") against Fun([Double], Double)
+// [Typer] inst: TypeScheme(([], Fun([Double], Double)))
+// [Typer] inst result: Fun([Double], Double)
+// [Typer] unify: Fun([Double], Double) and Fun([Double], Double)
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] check: Var("cos") against Fun([Double], Double)
+// [Typer] inst: TypeScheme(([], Fun([Double], Double)))
+// [Typer] inst result: Fun([Double], Double)
+// [Typer] unify: Fun([Double], Double) and Fun([Double], Double)
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] infer: Double(4.5)
+// [Typer] unify: Double and Double
+// [Typer] infer: Prim(Prim(Double(6.7), Double(8.9), Mul, kind=None), Double(1.23456789), Div, kind=None)
+// [Typer] infer: Prim(Double(6.7), Double(8.9), Mul, kind=None)
+// [Typer] infer: Double(6.7)
+// [Typer] infer: Double(8.9)
+// [Typer] unify: Double and Double
+// [Typer] infer: Double(1.23456789)
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] infer: App(Var("float_of_int"), [Int(1000000)])
+// [Typer] infer: Var("float_of_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Double)))
+// [Typer] inst result: Fun([Int], Double)
+// [Typer] check: Int(1000000) against Int
+// [Typer] unify: Double and Double
+// [Typer] check: Var("int_of_float") against Fun([Double], Int)
+// [Typer] inst: TypeScheme(([], Fun([Double], Int)))
+// [Typer] inst result: Fun([Double], Int)
+// [Typer] unify: Fun([Double], Int) and Fun([Double], Int)
+// [Typer] unify: Double and Double
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {main.1: Once}
 // [KnfOpt] freq: {main.1: Once}
 // [KnfOpt] freq: {main.1: Once}

@@ -1,0 +1,7 @@
+let rec main: () -> Var({val: Some(Unit)}) {
+  let x: Var({val: Some(Int)}) = Apply(Var("truncate"), [Double(1.23), ])
+  let y: Var({val: Some(Int)}) = Apply(Var("truncate"), [Double(4.56), ])
+  let z: Var({val: Some(Int)}) = Apply(Var("truncate"), [Neg(Double(7.89), kind=Some(Double)), ])
+  Apply(Var("print_int"), [Prim(Prim(If(LE(Int(0), Var("z")), Var("x"), Var("y")), If(LE(Var("x"), Int(0)), Var("y"), Var("z")), Add, kind=Some(Int)), If(LE(Int(0), Var("y")), Var("z"), Var("x")), Add, kind=Some(Int)), ])
+}
+Unit

@@ -324,7 +324,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("sum", Int), args: [("x", Int)], body: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int)))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("sum", Int), args: [("x", Int)], body: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int)))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), [])))
 // [Knf] build_knf: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))]), Var("x"), Add, kind=Some(Int)))
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Int(0)
@@ -336,7 +336,7 @@
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Int(1)
 // [Knf] build_knf: Var("x")
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])
 // [Knf] build_knf: App(Var("sum"), [Int(10000)])
 // [Knf] build_knf: Var("sum")
@@ -429,6 +429,51 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("sum", Int), args: [("x", Int)], body: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=None)]), Var("x"), Add, kind=None))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: If(LE(Var("x"), Int(0)), Int(0), Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=None)]), Var("x"), Add, kind=None)) against Int
+// [Typer] check: LE(Var("x"), Int(0)) against Bool
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(0)
+// [Typer] unify: Int and Int
+// [Typer] check: Int(0) against Int
+// [Typer] check: Prim(App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=None)]), Var("x"), Add, kind=None) against Int
+// [Typer] check: App(Var("sum"), [Prim(Var("x"), Int(1), Sub, kind=None)]) against Int
+// [Typer] infer: Prim(Var("x"), Int(1), Sub, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(1)
+// [Typer] unify: Int and Int
+// [Typer] check: Var("sum") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [App(Var("sum"), [Int(10000)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("sum"), [Int(10000)]) against Int
+// [Typer] infer: Int(10000)
+// [Typer] check: Var("sum") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {sum.1: Many(2), main.8: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 2 11

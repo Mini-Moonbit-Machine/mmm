@@ -348,7 +348,7 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("gcd", Int), args: [("m", Int), ("n", Int)], body: If(Eq(Var("m"), Int(0)), Var("n"), If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=Some(Int))]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=Some(Int))])))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("gcd", Int), args: [("m", Int), ("n", Int)], body: If(Eq(Var("m"), Int(0)), Var("n"), If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=Some(Int))]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=Some(Int))])))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, App(Var("main"), [])))
 // [Knf] build_knf: If(Eq(Var("m"), Int(0)), Var("n"), If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=Some(Int))]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=Some(Int))])))
 // [Knf] build_knf: Var("m")
 // [Knf] build_knf: Int(0)
@@ -368,7 +368,7 @@
 // [Knf] build_knf: Prim(Var("m"), Var("n"), Sub, kind=Some(Int))
 // [Knf] build_knf: Var("m")
 // [Knf] build_knf: Var("n")
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])
 // [Knf] build_knf: App(Var("gcd"), [Int(21600), Int(337500)])
 // [Knf] build_knf: Var("gcd")
@@ -467,6 +467,85 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("gcd", Int), args: [("m", Int), ("n", Int)], body: If(Eq(Var("m"), Int(0)), Var("n"), If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=None)]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=None)])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: If(Eq(Var("m"), Int(0)), Var("n"), If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=None)]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=None)]))) against Int
+// [Typer] check: Eq(Var("m"), Int(0)) against Bool
+// [Typer] infer: Var("m")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(0)
+// [Typer] unify: Int and Int
+// [Typer] check: Var("n") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: If(LE(Var("m"), Var("n")), App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=None)]), App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=None)])) against Int
+// [Typer] check: LE(Var("m"), Var("n")) against Bool
+// [Typer] infer: Var("m")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("n")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("gcd"), [Var("m"), Prim(Var("n"), Var("m"), Sub, kind=None)]) against Int
+// [Typer] infer: Var("m")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Prim(Var("n"), Var("m"), Sub, kind=None)
+// [Typer] infer: Var("n")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("m")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("gcd") against Fun([Int, Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
+// [Typer] inst result: Fun([Int, Int], Int)
+// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("gcd"), [Var("n"), Prim(Var("m"), Var("n"), Sub, kind=None)]) against Int
+// [Typer] infer: Var("n")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Prim(Var("m"), Var("n"), Sub, kind=None)
+// [Typer] infer: Var("m")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("n")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("gcd") against Fun([Int, Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
+// [Typer] inst result: Fun([Int, Int], Int)
+// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [App(Var("gcd"), [Int(21600), Int(337500)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(Var("gcd"), [Int(21600), Int(337500)]) against Int
+// [Typer] infer: Int(21600)
+// [Typer] infer: Int(337500)
+// [Typer] check: Var("gcd") against Fun([Int, Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
+// [Typer] inst result: Fun([Int, Int], Int)
+// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {gcd.1: Many(3), main.9: Once}
 // [KnfOpt] Fn like 0
 // [KnfOpt] Inline threshold 3 11

@@ -1,0 +1,11 @@
+let rec sum: (acc: Int, x: Int) -> Int {
+  if (LE(Var("x"), Int(0))) then {
+    Var(acc)
+  } else {
+    Apply(Var("sum"), [Prim(Var("acc"), Var("x"), Add, kind=Some(Int)), Prim(Var("x"), Int(1), Sub, kind=Some(Int)), ])
+  }
+}
+let rec main: () -> Var({val: Some(Unit)}) {
+  Apply(Var("print_int"), [App(Var("sum"), [Int(0), Int(10000)]), ])
+}
+Unit

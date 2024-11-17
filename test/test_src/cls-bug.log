@@ -119,13 +119,13 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("f", Int), args: [("x", Int)], body: Prim(Var("x"), Int(123), Add, kind=Some(Int))}, LetRec({name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), []))))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: Prim(Var("x"), Int(123), Add, kind=Some(Int))}, LetRec({tyvars: [], name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), []))))
 // [Knf] build_knf: Prim(Var("x"), Int(123), Add, kind=Some(Int))
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Int(123)
-// [Knf] build_knf: LetRec({name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), [])))
 // [Knf] build_knf: Var("f")
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), []))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, App(Var("main"), []))
 // [Knf] build_knf: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])
 // [Knf] build_knf: App(App(Var("g"), [Int(456)]), [Int(789)])
 // [Knf] build_knf: App(Var("g"), [Int(456)])
@@ -192,6 +192,43 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: Prim(Var("x"), Int(123), Add, kind=None)}, LetRec({tyvars: [], name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, Unit))) against Unit
+// [Typer] typevars: []
+// [Typer] check: Prim(Var("x"), Int(123), Add, kind=None) against Int
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Int(123) against Int
+// [Typer] check: LetRec({tyvars: [], name: ("g", Fun([Int], Int)), args: [("y", Int)], body: Var("f")}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: Var("f") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), [App(App(Var("g"), [Int(456)]), [Int(789)])])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: App(App(Var("g"), [Int(456)]), [Int(789)]) against Int
+// [Typer] infer: Int(789)
+// [Typer] check: App(Var("g"), [Int(456)]) against Fun([Int], Int)
+// [Typer] infer: Int(456)
+// [Typer] check: Var("g") against Fun([Int], Fun([Int], Int))
+// [Typer] inst: TypeScheme(([], Fun([Int], Fun([Int], Int))))
+// [Typer] inst result: Fun([Int], Fun([Int], Int))
+// [Typer] unify: Fun([Int], Fun([Int], Int)) and Fun([Int], Fun([Int], Int))
+// [Typer] unify: Int and Int
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {f.1: AsClosure, g.5: Once, main.8: Once}
 // [KnfOpt] Knf inline Some(g)
 // [KnfOpt] freq: {f.1: Once, main.8: Once}

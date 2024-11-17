@@ -58,8 +58,8 @@ pub fn Type::new_var() -> Type {
   Type::Var(Ref::new(None))
 }
 
-pub fn Type::new_named_var(name : String) -> Type {
-  Type::Var(Ref::new(Some(Type::Named(name))))
+pub fn Type::new_named(name : String) -> Type {
+  Type::Named(name)
 }
 
 pub fn Type::to_scheme(self : Type) -> TypeScheme {
@@ -174,6 +174,7 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Array(x), Array(y)) => x == y
     (Ptr, Ptr) => true
     (Var(x), Var(y)) => x.val == y.val
+    (Named(x), Named(y)) => x == y
     _ => false
   }
 }

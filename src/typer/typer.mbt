@@ -20,12 +20,13 @@ pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
 }
 
 fn Typer::find(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
+  let _ = self
   fn aux(t : Type) {
     let repr = t.repr()
     match repr {
       Type::Named(name) =>
         match tenv._.find(name) {
-          Some(t) => aux(t)
+          Some(t) => if repr == t { t } else { aux(t) }
           None => repr
         }
       Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
@@ -81,6 +82,8 @@ fn Typer::unify(
   node : Syntax
 ) -> Unit!Failure {
   self.tracer.println("unify: \{ty1} and \{ty2}")
+  let ty1 = self.find(ty1, tenv)
+  let ty2 = self.find(ty2, tenv)
   match (ty1, ty2) {
     (Type::Unit, Type::Unit) => ()
     (Type::Bool, Type::Bool) => ()
@@ -115,14 +118,16 @@ fn Typer::unify(
   }
 }
 
-fn Typer::inst(self : Typer, ts : TypeScheme, envt : TyVEnv) -> (Type, TyVEnv) {
+fn Typer::inst(self : Typer, ts : TypeScheme, envt : TyVEnv) -> Type {
   self.tracer.println("inst: \{ts}")
   let (tyvars, ty) = ts._
   let mut env = envt._
   for t in tyvars {
     env = env.add(t, Type::new_var())
   }
-  (ty, env)
+  let ty = self.find(ty, env)
+  self.tracer.println("inst result: \{ty}")
+  ty
 }
 
 fn Typer::check(
@@ -145,7 +150,7 @@ fn Typer::check(
     (Syntax::Var(x), ty2) =>
       match envs.find(x) {
         Some(t) => {
-          let (ty1, envt) = self.inst(t, envt)
+          let ty1 = self.inst(t, envt)
           self.unify!(ty1, ty2, envt, node)
         }
         None => fail!("unbound variable: \{x}")
@@ -234,7 +239,7 @@ fn Typer::check(
       let mut envt = envt
       self.tracer.println("typevars: \{tyvars}")
       for t in tyvars {
-        let tv = Type::new_named_var(t)
+        let tv = Type::new_named(t)
         envt = envt._.add(t, tv)
       }
       for xt in args {
@@ -301,10 +306,7 @@ fn Typer::infer(
     Syntax::Double(_) => Type::Double
     Syntax::Var(x) =>
       match envs.find(x) {
-        Some(t) => {
-          let (ty, envt) = self.inst(t, envt)
-          self.find(ty, envt)
-        }
+        Some(t) => self.inst(t, envt)
         None => fail!("unbound variable: \{x}")
       }
     Syntax::Tuple(xs) => {
@@ -466,7 +468,7 @@ fn Typer::infer(
       let mut envt = envt
       self.tracer.println("typevars: \{tyvars}")
       for t in tyvars {
-        let tv = Type::new_named_var(t)
+        let tv = Type::new_named(t)
         envt = envt._.add(t, tv)
       }
       for xt in args {

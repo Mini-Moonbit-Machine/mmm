@@ -119,18 +119,18 @@
 // [Asm] start:
 // [Asm]   .zero 4
 // [Asm] 
-// [Knf] build_knf: LetRec({name: ("make_adder", Fun([Int], Int)), args: [("x", Int)], body: LetRec({name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=Some(Int))}, Var("adder"))}, LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("add2", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))}, App(Var("main"), [])))
-// [Knf] build_knf: LetRec({name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=Some(Int))}, Var("adder"))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("make_adder", Fun([Int], Int)), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=Some(Int))}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("add2", Fun([Int], Int)), App(Var("make_adder"), [Int(2)]), Let(("add3", Fun([Int], Int)), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))}, App(Var("main"), [])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=Some(Int))}, Var("adder"))
 // [Knf] build_knf: Prim(Var("x"), Var("y"), Add, kind=Some(Int))
 // [Knf] build_knf: Var("x")
 // [Knf] build_knf: Var("y")
 // [Knf] build_knf: Var("adder")
-// [Knf] build_knf: LetRec({name: ("main", Var({val: Some(Unit)})), args: [], body: Let(("add2", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))}, App(Var("main"), []))
-// [Knf] build_knf: Let(("add2", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))
+// [Knf] build_knf: LetRec({tyvars: [], name: ("main", Unit), args: [], body: Let(("add2", Fun([Int], Int)), App(Var("make_adder"), [Int(2)]), Let(("add3", Fun([Int], Int)), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))}, App(Var("main"), []))
+// [Knf] build_knf: Let(("add2", Fun([Int], Int)), App(Var("make_adder"), [Int(2)]), Let(("add3", Fun([Int], Int)), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))])))
 // [Knf] build_knf: App(Var("make_adder"), [Int(2)])
 // [Knf] build_knf: Var("make_adder")
 // [Knf] build_knf: Int(2)
-// [Knf] build_knf: Let(("add3", Var({val: Some(Fun([Int], Int))})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))]))
+// [Knf] build_knf: Let(("add3", Fun([Int], Int)), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int))]))
 // [Knf] build_knf: App(Var("make_adder"), [Int(3)])
 // [Knf] build_knf: Var("make_adder")
 // [Knf] build_knf: Int(3)
@@ -203,6 +203,67 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("make_adder", Fun([Int], Int)), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("add2", Var({val: None})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: None})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None)])))}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder")) against Fun([Int], Int)
+// [Typer] typevars: []
+// [Typer] check: Prim(Var("x"), Var("y"), Add, kind=None) against Int
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("y") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("adder") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Fun([Int], Int)))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("add2", Var({val: None})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: None})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None)])))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("add2", Var({val: None})), App(Var("make_adder"), [Int(2)]), Let(("add3", Var({val: None})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None)])))
+// [Typer] infer: App(Var("make_adder"), [Int(2)])
+// [Typer] infer: Var("make_adder")
+// [Typer] inst: TypeScheme(([], Fun([Int], Fun([Int], Int))))
+// [Typer] inst result: Fun([Int], Fun([Int], Int))
+// [Typer] check: Int(2) against Int
+// [Typer] unify: Var({val: None}) and Fun([Int], Int)
+// [Typer] union: Var({val: None}) and Fun([Int], Int)
+// [Typer] infer: Let(("add3", Var({val: None})), App(Var("make_adder"), [Int(3)]), App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None)]))
+// [Typer] infer: App(Var("make_adder"), [Int(3)])
+// [Typer] infer: Var("make_adder")
+// [Typer] inst: TypeScheme(([], Fun([Int], Fun([Int], Int))))
+// [Typer] inst result: Fun([Int], Fun([Int], Int))
+// [Typer] check: Int(3) against Int
+// [Typer] unify: Var({val: None}) and Fun([Int], Int)
+// [Typer] union: Var({val: None}) and Fun([Int], Int)
+// [Typer] infer: App(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None)])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=None) against Int
+// [Typer] check: App(Var("add2"), [Int(10)]) against Int
+// [Typer] infer: Int(10)
+// [Typer] check: Var("add2") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Fun([Int], Int))})))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("add3"), [Int(20)]) against Int
+// [Typer] infer: Int(20)
+// [Typer] check: Var("add3") against Fun([Int], Int)
+// [Typer] inst: TypeScheme(([], Var({val: Some(Fun([Int], Int))})))
+// [Typer] inst result: Fun([Int], Int)
+// [Typer] unify: Fun([Int], Int) and Fun([Int], Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
 // [KnfOpt] freq: {make_adder.1: Many(2), adder.4: AsClosure, main.7: Once}
 // [KnfOpt] Fn like 1
 // [KnfOpt] Inline threshold 2 3

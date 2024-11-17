@@ -1,0 +1,39 @@
+let rec dummy: (i: Int) -> Int {
+  Var(i)
+}
+let rec landins_knot: (f: Fun([Fun([Int], Int)], Fun([Int], Int))) -> Fun([Int], Int) {
+  let arr: Array(Fun([Int], Int)) = Array::make(Int(1), Var("dummy"))
+  let rec aux: (x: Int) -> Int {
+    Apply(Get(Var("arr"), Int(0)), [Var("x"), ])
+  }
+  let fixedpoint: Fun([Int], Int) = Apply(Var("f"), [Var("aux"), ])
+  let _: Unit = Put Var("arr")[Int(0)] = Var("fixedpoint")
+  Var(fixedpoint)
+}
+let factorial: Fun([Int], Int) = 
+  let rec g: (f: Fun([Int], Int)) -> Fun([Int], Int) {
+    let rec h: (x: Int) -> Int {
+      if (Eq(Var("x"), Int(0))) then {
+        Int(1)
+      } else {
+        Var("x") * App(Var("f"), [Prim(Var("x"), Int(1), Sub, kind=Some(Int))])
+      }
+    }
+    Var(h)
+  }
+  Apply(Var("landins_knot"), [Var("g"), ])
+let rec f1: () -> Unit {
+  Apply(Var("print_int"), [App(Var("factorial"), [Int(5)]), ])
+}
+let with_effect: Fun([Int], Int) = 
+  let a: Int = Apply(Var("factorial"), [Int(5), ])
+  let rec g: (x: Int) -> Int {
+    Var("x") + Var("a")
+  }
+  Var(g)
+let rec main: () -> Unit {
+  let _: Unit = Apply(Var("f1"), [])
+  let _: Unit = Apply(Var("print_int"), [App(Var("with_effect"), [Int(10)]), ])
+  Apply(Var("print_int"), [App(Var("with_effect"), [Int(31)]), ])
+}
+Unit
