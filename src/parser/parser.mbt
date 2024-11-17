@@ -433,7 +433,12 @@ pub fn Parser::parse_expr_with_level(
               Syntax::Bool(b) => Pattern::Bool(b)
               Syntax::Int(n) => Pattern::Int(n)
               Syntax::Double(n) => Pattern::Double(n)
-              Syntax::Var(name) => Pattern::Var(name)
+              Syntax::Var(name) =>
+                if name[0] >= 'A' && name[0] <= 'Z' {
+                  Pattern::CtorApp(name, [])
+                } else {
+                  Pattern::Var(name)
+                }
               Syntax::Tuple(exprs) => {
                 let ts = []
                 for expr in exprs {

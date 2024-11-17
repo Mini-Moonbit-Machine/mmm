@@ -4,7 +4,18 @@ pub typealias MutSet[K] = @hashset.T[K]
 
 pub struct Occurrence {
   order : Array[Int]
-} derive(Show, Eq)
+} derive(Eq)
+
+pub fn Occurrence::to_string(self : Occurrence) -> String {
+  Show::to_string(self)
+}
+
+pub fn Occurrence::output(self : Occurrence, logger : Logger) -> Unit {
+  logger.write_string("/\\")
+  for i in self.order {
+    logger.write_string(".\{i}")
+  }
+}
 
 pub impl Hash for Occurrence with hash_combine(self, hasher) {
   for i in self.order {
@@ -60,7 +71,22 @@ pub enum SubPatSpec {
   DoubleLit(~dval : Double)
   Ctor(~name : String, ~csize : Int)
   Tuple(~tsize : Int)
-} derive(Show, Eq)
+} derive(Eq)
+
+pub fn SubPatSpec::to_string(self : SubPatSpec) -> String {
+  Show::to_string(self)
+}
+
+pub fn SubPatSpec::output(self : SubPatSpec, logger : Logger) -> Unit {
+  match self {
+    Unit => logger.write_string("unit")
+    BoolLit(~bval) => logger.write_string("bool(\{bval})")
+    IntLit(~ival) => logger.write_string("int(\{ival})")
+    DoubleLit(~dval) => logger.write_string("double(\{dval})")
+    Ctor(~name, ~csize) => logger.write_string("ctor(\{name}, \{csize})")
+    Tuple(~tsize) => logger.write_string("tuple(\{tsize})")
+  }
+}
 
 impl Hash for SubPatSpec with hash_combine(self, hasher) {
   match self {
@@ -122,15 +148,15 @@ pub enum DecisionTree {
   Switch(
     ~occur : Occurrence,
     ~cases : Array[(SubPatSpec, DecisionTree)],
-    ~default : DecisionTree
+    ~default : DecisionTree?
   )
-} derive(Show)
+}
 
 struct PatMatrixRow {
   binds : BindCtx
   patterns : Array[@types.Pattern]
   action : @types.Syntax
-}
+} derive(Show)
 
 fn PatMatrixRow::all_wildcards(self : PatMatrixRow) -> Bool {
   self.patterns
@@ -139,7 +165,7 @@ fn PatMatrixRow::all_wildcards(self : PatMatrixRow) -> Bool {
     fn(pat) {
       match pat {
         Wildcard => true
-        Var(_) => true
+        Var(x) => not(x[0] >= 'A' && x[0] <= 'Z')
         _ => false
       }
     },
@@ -151,7 +177,7 @@ pub struct PatMatrix {
   arity : Int
   occurs : Occurrences
   rows : Array[PatMatrixRow]
-}
+} derive(Show)
 
 fn PatMatrix::new(match_arms : Array[@types.MatchArm]) -> PatMatrix {
   // root clause matrixs
@@ -187,7 +213,10 @@ pub fn PatternMatcher::new(
 
 pub fn PatternMatcher::run(self : PatternMatcher) -> DecisionTree {
   let mat = self.build_clause_matrixs(self.expr)
-  self.clause_matrixs_to_decison_tree(mat)
+  self.tracer.println("matcher_run: init mat\n\{mat}")
+  let tree = self.clause_matrixs_to_decison_tree(mat)
+  self.tracer.println("matcher_run: final tree\n\{tree.to_pretty_print()}")
+  tree
 }
 
 fn PatternMatcher::specialize_row(
@@ -202,23 +231,38 @@ fn PatternMatcher::specialize_row(
   let selected_subpat = row.patterns[selected_col]
   let unpack_subpat = match selected_subpat {
     Wildcard => Some(([@types.Wildcard].repeat(subpat_arity), None))
-    Int(_) | Bool(_) | Double(_) | Unit => {
-      if ctor.is_compatible_with(selected_subpat) && subpat_arity != 0 {
-        self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
+    Int(_) | Bool(_) | Double(_) | Unit =>
+      if ctor.is_compatible_with(selected_subpat) {
+        if subpat_arity != 0 {
+          self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
+        }
+        Some(([], None))
+      } else {
+        None
       }
-      Some(([], None))
-    }
     Var(name) =>
-      Some(
-        ([@types.Wildcard].repeat(subpat_arity), Some(row.binds.add(occ, name))),
-      )
+      if not(name[0] >= 'A' && name[0] <= 'Z') {
+        Some(
+          (
+            [@types.Wildcard].repeat(subpat_arity),
+            Some(row.binds.add(occ, name)),
+          ),
+        )
+      } else {
+        None
+      }
     Tuple(pats) =>
       if ctor.is_compatible_with(selected_subpat) {
         Some((pats, None))
       } else {
         None
       }
-    CtorApp(_, _) => self.tracer.abort("CtorApp is not supported currently")
+    CtorApp(_, pats) =>
+      if ctor.is_compatible_with(selected_subpat) {
+        Some((pats, None))
+      } else {
+        None
+      }
   }
   let new_pat_vec = []
   match unpack_subpat {
@@ -259,7 +303,7 @@ fn PatternMatcher::specialize_matrix(
   let new_rows = []
   for row in mat.rows {
     // filter rows and unpack constructor occurence & patterns
-    let occ = new_occurs.occurs[selected_col]
+    let occ = mat.occurs.occurs[selected_col]
     match self.specialize_row(ctor, occ, selected_col, row) {
       None => continue
       Some(new_row) => new_rows.push(new_row)
@@ -270,7 +314,12 @@ fn PatternMatcher::specialize_matrix(
 
 fn PatternMatcher::pattern_identifier(pat : @types.Pattern) -> String? {
   match pat {
-    Var(name) => Some(name)
+    Var(name) =>
+      if not(name[0] >= 'A' && name[0] <= 'Z') {
+        Some(name)
+      } else {
+        None
+      }
     _ => None
   }
 }
@@ -285,11 +334,15 @@ fn PatternMatcher::default_row(
   let selected_subpat = row.patterns[selected_col]
   let discard_subpat = match selected_subpat {
     Wildcard => Some(None)
-    Int(_) | Bool(_) | Double(_) | Unit =>
-      self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
-    Var(_) => Some(pattern_identifier(selected_subpat))
+    Int(_) | Bool(_) | Double(_) | Unit => None // literals unmatched always be discarded
+    Var(name) =>
+      if not(name[0] >= 'A' && name[0] <= 'Z') {
+        Some(None)
+      } else {
+        None
+      }
     Tuple(_) => None
-    CtorApp(_, _) => self.tracer.abort("CtorApp is not supported currently")
+    CtorApp(_, _) => None
   }
   match discard_subpat {
     None => None
@@ -298,7 +351,7 @@ fn PatternMatcher::default_row(
       let _ = new_pat_vec.remove(selected_col)
       let new_bind = match bind {
         None => row.binds
-        Some(name) => row.binds.add(Occurrence::empty(), name)
+        Some(name) => row.binds.add(occ, name)
       }
       Some(
         PatMatrixRow::{
@@ -321,7 +374,7 @@ fn PatternMatcher::default_matrix(
   let new_arity = mat.arity - 1
   let new_rows = []
   for row in mat.rows {
-    let occ = new_occurs.occurs[selected_col]
+    let occ = mat.occurs.occurs[selected_col]
     // filter rows and match wildcard pattern
     match self.default_row(occ, selected_col, row) {
       None => continue
@@ -374,7 +427,7 @@ fn PatternMatcher::select_by_small_arity(mat : PatMatrix, col : Int) -> Int {
   -score
 }
 
-fn PatternMatcher::selected_col(mat : PatMatrix) -> Int {
+fn PatternMatcher::select_col(mat : PatMatrix) -> Int {
   let heuristic = [
     fn(mat, col) { select_by_column_ctor_prefix(mat, col) },
     fn(mat, col) { select_by_small_branching_factor(mat, col) },
@@ -390,7 +443,14 @@ fn PatternMatcher::selected_col(mat : PatMatrix) -> Int {
         best_score = score
       }
     }
-    columns = columns.filter(fn(col) { scores[col] == best_score })
+    // filter columns with best score
+    let filter_colunns = []
+    for i, scores in scores {
+      if scores == best_score {
+        filter_colunns.push(columns[i])
+      }
+    }
+    columns = filter_colunns
     if columns.is_empty() {
       break
     }
@@ -420,18 +480,26 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
   }
   // Select a column and then switching
   let pattern_actions = []
-  let selected_col = selected_col(mat)
+  let selected_col = select_col(mat)
   for row in mat.rows {
     let selected_pattern = row.patterns[selected_col]
-    guard let Some(subpatsepc) = SubPatSpec::from_pat(selected_pattern) else {
+    guard let Some(subpatspec) = SubPatSpec::from_pat(selected_pattern) else {
       _ => continue
     }
-    let submatrix = self.specialize_matrix(subpatsepc, selected_col, mat)
+    let submatrix = self.specialize_matrix(subpatspec, selected_col, mat)
+    self.tracer.println(
+      "specialize_matrix: by subpat \{subpatspec}, at col \{selected_col}:\n\{submatrix}",
+    )
     let subtree = self.clause_matrixs_to_decison_tree(submatrix)
-    pattern_actions.push((subpatsepc, subtree))
+    pattern_actions.push((subpatspec, subtree))
   }
   let default_submatrix = self.default_matrix(selected_col, mat)
-  let default_tree = self.clause_matrixs_to_decison_tree(default_submatrix)
+  self.tracer.println("default_matrix:\n\{default_submatrix}")
+  let default_tree = if not(default_submatrix.rows.is_empty()) {
+    Some(self.clause_matrixs_to_decison_tree(default_submatrix))
+  } else {
+    None
+  }
   let switch_occur = mat.occurs.occurs[selected_col]
   DecisionTree::Switch(
     occur=switch_occur,
@@ -448,4 +516,61 @@ fn PatternMatcher::build_clause_matrixs(
     _ => self.tracer.abort("not a match expression")
   }
   PatMatrix::new(arms)
+}
+
+pub type PrettyDecisionTree DecisionTree
+
+pub fn DecisionTree::to_pretty_print(self : DecisionTree) -> PrettyDecisionTree {
+  self
+}
+
+pub fn PrettyDecisionTree::print_one_level(
+  self : PrettyDecisionTree,
+  logger : @util.IndentLogger,
+  tree : DecisionTree
+) -> Unit {
+  match tree {
+    Succeed(~binds, ~action) => {
+      logger.write_string("Succeed({")
+      for bind in binds {
+        let (occur, name) = bind
+        logger.write_string("\{occur} -> \{name}, ")
+      }
+      logger.write_string("}, \{action})")
+    }
+    Fail => logger.write_string("Fail")
+    Switch(~occur, ~cases, ~default) => {
+      logger.write_string("Switch(\{occur}, \n")
+      logger.indent()
+      logger.write_string("[")
+      for subp in cases {
+        let (subpat, subtree) = subp
+        logger.write_string("(\{subpat}, ")
+        self.print_one_level(logger, subtree)
+        logger.write_string("),\n")
+      }
+      match default {
+        None => logger.write_string("\n")
+        Some(default) => {
+          logger.write_string("(fallback, ")
+          self.print_one_level(logger, default)
+          logger.write_string(")\n")
+        }
+      }
+      logger.outdent()
+      logger.write_string("])")
+    }
+  }
+}
+
+pub fn PrettyDecisionTree::to_string(self : PrettyDecisionTree) -> String {
+  Show::to_string(self)
+}
+
+impl Show for PrettyDecisionTree with output(
+  self : PrettyDecisionTree,
+  logger : Logger
+) -> Unit {
+  let ident_logger = @util.IndentLogger::new(logger)
+  self.print_one_level(ident_logger, self._)
 }

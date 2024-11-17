@@ -158,6 +158,10 @@ fn PrettyKnf::print_one_level(
   }
 }
 
+pub fn PrettyKnf::to_string(self : PrettyKnf) -> String {
+  Show::to_string(self)
+}
+
 pub impl Show for PrettyKnf with output(self : PrettyKnf, logger : Logger) -> Unit {
   let indent_logger = @util.IndentLogger::new(logger)
   self.print_one_level(indent_logger, self.knf)

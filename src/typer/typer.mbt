@@ -391,7 +391,39 @@ fn Typer::check_and_bind_pattern(
         }
         _ => fail!("check pattern: \{pattern} not a tuple")
       }
-    _ => fail!("ctor app are not supported yet")
+    CtorApp(name, pats) => {
+      let ty = match envs.find(name) {
+        Some(t) => self.inst(t, envt)
+        None => fail!("unbound constructor: \{name}")
+      }
+      match ty {
+        Type::Fun(args_ty, ret_ty) => {
+          if pats.length() != args_ty.length() {
+            fail!("check_pattern: different number of arguments")
+          }
+          self.unify!(pt, ret_ty, envt, action)
+          let mut new_envt = envt
+          for i, p in pats {
+            new_envt = self.check_and_bind_pattern!(
+              p,
+              args_ty[i],
+              action,
+              new_envt,
+              envs,
+            )
+          }
+          new_envt
+        }
+        Enum(_, _) => {
+          if pats.length() != 0 {
+            fail!("0 arity constructor should has no arguments")
+          }
+          self.unify!(pt, ty, envt, action)
+          envt
+        }
+        _ => fail!("check pattern: \{ty} not a function type")
+      }
+    }
   }
 }
 

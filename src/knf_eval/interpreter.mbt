@@ -230,7 +230,7 @@ pub fn KnfInterpreter::eval(
         Tuple(vs) => {
           let len = xts.length()
           if len != vs.length() {
-            fail!("tuple size mismatch")
+            fail!("tuple size mismatch: \{xts}, \{len} != \{y}, \{vs.length()}")
           }
           for i = 0; i < len; i = i + 1 {
             let (x, _) = xts[i]

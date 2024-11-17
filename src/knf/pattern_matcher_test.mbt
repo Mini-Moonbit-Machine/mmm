@@ -25,5 +25,5 @@ test "paper_list_example_tuple_impl" {
   )
   let matcher = @knf.PatternMatcher::new(match_expr, subtracer)
   let tree = matcher.run()
-  println(tree)
+  println("\{tree.to_pretty_print()}")
 }
