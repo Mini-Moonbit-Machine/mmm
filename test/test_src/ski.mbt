@@ -1,8 +1,8 @@
 //:extension
 
 fn s[X, Y, Z](x : (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
-  fn f(y : (Z) -> Y) {
-    fn g(z : Z) {
+  fn f(y) {
+    fn g(z) {
       x(z)(y(z))
     };
 
@@ -13,7 +13,7 @@ fn s[X, Y, Z](x : (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
 };
 
 fn k[X, Y](x : X) -> (Y) -> X {
-  fn f(y : Y) -> X {
+  fn f(y){
     x
   };
 
