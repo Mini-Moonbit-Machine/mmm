@@ -12,7 +12,15 @@ enum Stages {
   CoreOpt2
   Asm
   Finished
-} derive(Show, Eq, Compare)
+} derive(Show, Eq)
+
+enum StagesMode {
+  Wasm
+  Closure
+  Js
+  Riscv
+  Ext
+} derive(Show, Eq)
 
 fn Stages::from_string(s : String) -> Stages? {
   match s {
@@ -32,20 +40,71 @@ fn Stages::from_string(s : String) -> Stages? {
   }
 }
 
-fn Stages::next(self : Stages) -> Stages {
+fn Stages::next_for_wasm(self : Stages) -> Stages {
   match self {
     Stages::Parse => Stages::Typecheck
     Stages::Typecheck => Stages::Knf
     Stages::Knf => Stages::KnfOpt
-    Stages::KnfOpt => Stages::Js
-    Stages::Js => Stages::Closure
-    Stages::Closure => Stages::Core
+    Stages::KnfOpt => Stages::Core
     Stages::Core => Stages::CoreOpt
     Stages::CoreOpt => Stages::Wasm
-    Stages::Wasm => Stages::CoreOpt2
+    Stages::Wasm => Stages::Finished
+    _ => Stages::Finished
+  }
+}
+
+fn Stages::next_for_closure(self : Stages) -> Stages {
+  match self {
+    Stages::Parse => Stages::Typecheck
+    Stages::Typecheck => Stages::Knf
+    Stages::Knf => Stages::KnfOpt
+    Stages::KnfOpt => Stages::Closure
+    Stages::Closure => Stages::Finished
+    _ => Stages::Finished
+  }
+}
+
+fn Stages::next_for_js(self : Stages) -> Stages {
+  match self {
+    Stages::Parse => Stages::Typecheck
+    Stages::Typecheck => Stages::Knf
+    Stages::Knf => Stages::Js
+    Stages::Js => Stages::Finished
+    _ => Stages::Finished
+  }
+}
+
+fn Stages::next_for_riscv(self : Stages) -> Stages {
+  match self {
+    Stages::Parse => Stages::Typecheck
+    Stages::Typecheck => Stages::Knf
+    Stages::Knf => Stages::KnfOpt
+    Stages::KnfOpt => Stages::Core
+    Stages::Core => Stages::CoreOpt
+    Stages::CoreOpt => Stages::CoreOpt2
     Stages::CoreOpt2 => Stages::Asm
     Stages::Asm => Stages::Finished
-    Stages::Finished => Stages::Finished
+    _ => Stages::Finished
+  }
+}
+
+fn Stages::next_for_ext(self : Stages) -> Stages {
+  match self {
+    Stages::Parse => Stages::Typecheck
+    Stages::Typecheck => Stages::Knf
+    Stages::Knf => Stages::Js
+    Stages::Js => Stages::Finished
+    _ => Stages::Finished
+  }
+}
+
+fn StagesMode::next(self : StagesMode, stages : Stages) -> Stages {
+  match self {
+    StagesMode::Wasm => stages.next_for_wasm()
+    StagesMode::Closure => stages.next_for_closure()
+    StagesMode::Js => stages.next_for_js()
+    StagesMode::Riscv => stages.next_for_riscv()
+    StagesMode::Ext => stages.next_for_ext()
   }
 }
 
@@ -64,7 +123,9 @@ fn Flags::has(self : Flags, flag : String) -> Bool {
 }
 
 struct CompileStatus {
+  mut mode : StagesMode
   mut flags : Flags
+  mut prev_stage : Stages
   mut curr_stage : Stages
   end_stage : Stages
   mut source_code : String?
@@ -79,17 +140,19 @@ struct CompileStatus {
   mut wasm : @lower_wasm.MCore?
   mut closure_ir : @closure.Program?
   mut asm : @lower_riscv.MCore?
-  mut knf_env : @knf.KnfEnv?
   mut core_env : @core.CoreEnv?
 }
 
 fn CompileStatus::initialize(
   start_stage : Stages,
   end_stage : Stages,
-  file : String
+  file : String,
+  mode : StagesMode
 ) -> CompileStatus! {
   let v = CompileStatus::{
+    mode,
     flags: @hashset.new(),
+    prev_stage: start_stage,
     curr_stage: start_stage,
     end_stage,
     source_code: None,
@@ -104,7 +167,6 @@ fn CompileStatus::initialize(
     core: None,
     opt_core: None,
     opt_core_2: None,
-    knf_env: None,
     core_env: None,
   }
   match start_stage {
@@ -116,11 +178,11 @@ fn CompileStatus::initialize(
 
 /// Run the next stage of compilation. Returns true if the compilation is finished.
 fn CompileStatus::step(self : CompileStatus) -> Bool {
-  if self.curr_stage >= self.end_stage {
+  if self.curr_stage == self.end_stage {
     return true
   }
   match self.curr_stage {
-    Parse => {
+    Parse => { // source_code -> ast
       let source_code = self.source_code.unwrap()
       let subtracer = tracer.new_subtracer(
         "Parser",
@@ -136,7 +198,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.flags = Flags(@hashset.from_array(parser.get_flags()))
       self.ast = Some(parsed.inner)
     }
-    Typecheck => {
+    Typecheck => { // ast -> typechecked
       let mut ast = self.ast.unwrap()
       let subtracer = tracer.new_subtracer(
         "Typer",
@@ -151,7 +213,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       }
       self.typechecked = Some(ast)
     }
-    Knf => {
+    Knf => { // typechecked -> preprocessed -> knf
       let subtracer = tracer.new_subtracer(
         "Knf",
         opts.output_to_console,
@@ -167,11 +229,9 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       } catch {
         Failure(msg) => subtracer.abort(msg)
       }
-      self.knf_env = Some(knf_env)
       self.knf = Some(knf)
     }
-    KnfOpt => {
-      let _knf_env = self.knf_env.unwrap()
+    KnfOpt => { // knf -> opt_knf
       let tracer = tracer.new_subtracer(
         "KnfOpt",
         opts.output_to_console,
@@ -194,7 +254,8 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let knf = licm.go(1)
       let licm = @knf.LICM::new(tracer, knf)
       let knf = licm.go(2)
-      if self.end_stage != Stages::Wasm.next() {
+      // Wasm backend does not support unboxing but we must run knf optimizer here
+      if self.mode != StagesMode::Wasm {
         let unbox = @knf.Unbox::new(tracer, knf)
         let knf = unbox.go()
         self.opt_knf = Some(knf)
@@ -202,7 +263,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         self.opt_knf = Some(knf)
       }
     }
-    Js => {
+    Js => { // knf -> js
       let knf = self.knf.unwrap()
       let tracer = tracer.new_subtracer(
         "Js",
@@ -213,7 +274,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       let js = lower_ctx.lower()
       self.js = Some(js)
     }
-    Core => {
+    Core => { // opt_knf -> core
       let subtracer = tracer.new_subtracer(
         "Core",
         opts.output_to_console,
@@ -229,7 +290,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.core_env = Some(core_env)
       self.core = Some(core)
     }
-    CoreOpt => {
+    CoreOpt => { // core -> opt_core
       let _core_env = self.core_env.unwrap()
       let subtracer = tracer.new_subtracer(
         "CoreOpt",
@@ -242,19 +303,17 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       self.core_env = Some(_core_env)
       self.opt_core = Some(core)
     }
-    Wasm => {
+    Wasm => { // opt_core -> wasm
       let core = self.opt_core.unwrap()
       let subtracer = tracer.new_subtracer(
         "Wasm",
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      if self.end_stage == Wasm.next() {
-        let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
-        let wasm = lower_ctx.lower()
-        self.wasm = Some(wasm)
-      }
-    }
+      let lower_ctx = @lower_wasm.WasmLoweringCtx::new(core, subtracer)
+      let wasm = lower_ctx.lower()
+      self.wasm = Some(wasm)
+    } // opt_core -> opt_core_2
     CoreOpt2 => {
       let subtracer = tracer.new_subtracer(
         "CoreOpt2",
@@ -266,7 +325,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       opt.go()
       self.opt_core_2 = Some(core)
     }
-    Closure => {
+    Closure => { // knf -> closure_ir
       let subtracer = tracer.new_subtracer(
         "Closure",
         opts.output_to_console,
@@ -286,7 +345,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       }
       self.closure_ir = Some(closure_ir)
     }
-    Asm => {
+    Asm => { // opt_core_2 -> asm
       let core = self.opt_core_2.unwrap()
       let subtracer = tracer.new_subtracer(
         "Asm",
@@ -307,40 +366,28 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
     }
     Finished => ()
   }
-  self.curr_stage = self.curr_stage.next()
-  self.curr_stage >= self.end_stage
+  self.prev_stage = self.curr_stage
+  self.curr_stage = self.mode.next(self.curr_stage)
+  self.curr_stage == self.end_stage
 }
 
 fn CompileStatus::output(self : CompileStatus, json : Bool) -> String {
   if json {
-    match self.curr_stage {
-      Parse => self.source_code.unwrap()
-      Typecheck => @json.stringify(self.ast.unwrap().to_json())
-      Knf => @json.stringify(self.typechecked.unwrap().to_json())
-      KnfOpt => @json.stringify(self.knf.unwrap().to_json())
-      Js => @json.stringify(self.opt_knf.unwrap().to_json())
-      Closure => mt.abort("No json output for JavaScript")
-      Core => @json.stringify(self.opt_knf.unwrap().to_json())
-      CoreOpt => mt.abort("No json output for core IR")
-      Wasm => mt.abort("No json output for wasm")
-      CoreOpt2 => mt.abort("No json output for core IR")
-      Asm => mt.abort("No json output for core IR")
-      Finished => Show::to_string(self.asm.unwrap())
-    }
+    mt.abort("No json output")
   } else {
-    match self.curr_stage {
-      Parse => self.source_code.unwrap()
-      Typecheck => self.ast.unwrap().to_string()
-      Knf => self.typechecked.unwrap().to_string()
-      KnfOpt => self.knf.unwrap().to_string()
-      Js => self.opt_knf.unwrap().to_string()
-      Closure => Show::to_string(self.js.unwrap())
-      Core => self.closure_ir.unwrap().to_string()
-      CoreOpt => Show::to_string(self.core.unwrap().to_pretty_print())
-      Wasm => Show::to_string(self.opt_core.unwrap().to_pretty_print())
-      CoreOpt2 => Show::to_string(self.wasm.unwrap())
-      Asm => Show::to_string(self.opt_core_2.unwrap().to_pretty_print())
-      Finished => Show::to_string(self.asm.unwrap())
+    match self.prev_stage {
+      Parse => self.ast.unwrap().to_string()
+      Typecheck => self.typechecked.unwrap().to_string()
+      Knf => self.knf.unwrap().to_string()
+      KnfOpt => self.opt_knf.unwrap().to_string()
+      Js => Show::to_string(self.js.unwrap())
+      Closure => self.closure_ir.unwrap().to_string()
+      Core => Show::to_string(self.core.unwrap().to_pretty_print())
+      CoreOpt => Show::to_string(self.opt_core.unwrap().to_pretty_print())
+      Wasm => Show::to_string(self.wasm.unwrap())
+      CoreOpt2 => Show::to_string(self.opt_core_2.unwrap().to_pretty_print())
+      Asm => Show::to_string(self.asm.unwrap())
+      Finished => mt.abort("No output for final stage")
     }
   }
 }
@@ -349,6 +396,7 @@ struct Options {
   mut json : Bool
   mut js : Bool
   mut wasm : Bool
+  mut ext : Bool
   mut start_stage : Stages
   mut end_stage : Stages
   mut knf_interpreter : Bool
@@ -360,6 +408,7 @@ struct Options {
   mut output_to_console : Bool
   mut redirect_to_log : Bool
   mut use_xthead : Bool
+  mut mode : StagesMode
 }
 
 fn Options::new() -> Options {
@@ -367,6 +416,7 @@ fn Options::new() -> Options {
     json: false,
     js: false,
     wasm: false,
+    ext: false,
     start_stage: Stages::Parse,
     end_stage: Stages::Finished,
     knf_interpreter: false,
@@ -378,6 +428,7 @@ fn Options::new() -> Options {
     output_to_console: false,
     redirect_to_log: true,
     use_xthead: false,
+    mode: StagesMode::Riscv,
   }
 }
 
@@ -484,6 +535,7 @@ fn main {
       ("--js", "", @ArgParser.Unit(fn() { opts.js = true }), "Output JS"),
       ("--wasm", "", @ArgParser.Unit(fn() { opts.wasm = true }), "Output WAT"),
       ("--use-xthead", "", @ArgParser.Unit(fn() { opts.use_xthead = true }), ""),
+      ("--ext", "", @ArgParser.Unit(fn() { opts.ext = true }), ""),
       // Regular directives
       (
         "--print",
@@ -506,18 +558,27 @@ fn main {
   // Configure pipeline
   if opts.knf_interpreter {
     opts.end_stage = Stages::Knf
+    opts.mode = StagesMode::Js
   }
   if opts.closure_interpreter {
     opts.end_stage = Stages::Closure
+    opts.mode = StagesMode::Closure
   }
   if opts.core_interpreter {
     opts.end_stage = Stages::CoreOpt
+    opts.mode = StagesMode::Riscv
   }
   if opts.js {
     opts.end_stage = Stages::Js
+    opts.mode = StagesMode::Js
   }
   if opts.wasm {
     opts.end_stage = Stages::Wasm
+    opts.mode = StagesMode::Wasm
+  }
+  if opts.ext {
+    opts.end_stage = Stages::Js
+    opts.mode = StagesMode::Ext
   }
   let stages_to_print = opts.print.map(
     fn(s) {
@@ -540,8 +601,9 @@ fn main {
   let status = match
     CompileStatus::initialize?(
       opts.start_stage,
-      opts.end_stage.next(),
+      opts.mode.next(opts.end_stage),
       contents,
+      opts.mode,
     ) {
     Ok(status) => status
     Err(e) => mt.abort("Initialization failed: \{Show::to_string(e)}")

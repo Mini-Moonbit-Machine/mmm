@@ -122,6 +122,7 @@ pub fn Type::size_of(self : Type, size_of_ptr : Int) -> Int {
         Some(t) => t.size_of(size_of_ptr)
         None => abort("Uninstantiated type variable")
       }
+    Named(_) => 8
   }
 }
 
@@ -161,6 +162,21 @@ pub fn Type::repr(self : Type) -> Type {
       }
     _ => self
   }
+}
+
+pub fn Type::map_named(self : Type, m : (String) -> Type) -> Type {
+  fn aux(t : Type) {
+    let repr = t.repr()
+    match repr {
+      Named(name) => m(name)
+      Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
+      Tuple(xs) => Tuple(xs.map(aux))
+      Array(x) => Array(aux(x))
+      _ => repr
+    }
+  }
+
+  aux(self)
 }
 
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {

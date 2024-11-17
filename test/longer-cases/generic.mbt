@@ -1,4 +1,4 @@
-fn iter_generic[T](arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
+fn iter[T](arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
   fn do(yield) -> Bool {
     fn next(i) -> Bool {
       if i <= len - 1 {
@@ -39,7 +39,7 @@ fn main {
   arr[2] = 3;
   arr[3] = 4;
   arr[4] = 5;
-  let int_arr_iter = iter_generic(arr, 5);
+  let int_arr_iter = iter(arr, 5);
   fn print_i(x) -> Unit {
     print_int(x)
   };
@@ -51,7 +51,7 @@ fn main {
   arr[3] = 4.0;
   arr[4] = 5.0;
   arr[5] = 6.0;
-  let double_arr_iter = iter_generic(arr, 6);
+  let double_arr_iter = iter(arr, 6);
   fn print_d(x) -> Unit {
     print_int(int_of_float(x))
   };

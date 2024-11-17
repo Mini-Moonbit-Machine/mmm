@@ -21,33 +21,27 @@ pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
 
 fn Typer::find(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
   let _ = self
-  fn aux(t : Type) {
-    let repr = t.repr()
-    match repr {
-      Type::Named(name) =>
-        match tenv._.find(name) {
-          Some(t) => if repr == t { t } else { aux(t) }
-          None => repr
+  fn m(name) {
+    match tenv._.find(name) {
+      Some(Named(t2) as t) =>
+        if name == t2 {
+          Type::Named(name)
+        } else {
+          t.map_named(m)
         }
-      Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
-      Tuple(xs) => Tuple(xs.map(aux))
-      Array(x) => Array(aux(x))
-      _ => repr
+      Some(t) => t.map_named(m)
+      None => Type::Named(name)
     }
   }
 
-  aux(ty1)
+  ty1.map_named(m)
 }
 
 fn Typer::subst(self : Typer, ty1 : Type) -> Type {
   fn aux(t : Type) {
     let repr = t.repr()
     match repr {
-      Type::Var(t) =>
-        match t.val {
-          Some(t) => aux(t)
-          None => self.tracer.abort("unknown type variable")
-        }
+      Type::Var(_) => self.tracer.abort("unknown type variable")
       Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
       Tuple(xs) => Tuple(xs.map(aux))
       Array(x) => Array(aux(x))

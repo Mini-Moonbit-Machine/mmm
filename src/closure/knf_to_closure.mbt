@@ -86,6 +86,7 @@ fn type_to_lowtype(self : ClosureEnv, ty : Type) -> LowType {
         None => self.tracer.abort("Uninstantiated type variable")
       }
     Ptr => LowType::Ptr
+    Named(_) => self.tracer.abort("Polymorphic type not supported")
   }
 }
 

@@ -11,6 +11,7 @@ pub fn to_json(self : Type) -> Json {
     Var({ val: None }) => ["Var", "None"]
     Var({ val: Some(t) }) => ["Var", ["Some", t.to_json()]]
     Ptr => "Ptr"
+    Named(x) => ["Named", x.to_json()]
   }
 }
 

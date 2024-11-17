@@ -1,0 +1,26 @@
+let rec s: forall ["X", "Y", "Z"] . (x: Fun([Named("Z")], Fun([Named("Y")], Named("X")))) -> Fun([Fun([Named("Z")], Named("Y"))], Fun([Named("Z")], Named("X"))) {
+  let rec f: (y: Fun([Named("Z")], Named("Y"))) -> Fun([Named("Z")], Named("X")) {
+    let rec g: (z: Named("Z")) -> Named("X") {
+      Apply(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")]), ])
+    }
+    Var(g)
+  }
+  Var(f)
+}
+let rec k: forall ["X", "Y"] . (x: Named("X")) -> Fun([Named("Y")], Named("X")) {
+  let rec f: (y: Named("Y")) -> Named("X") {
+    Var(x)
+  }
+  Var(f)
+}
+let rec i: forall ["X"] . (x: Named("X")) -> Named("X") {
+  Var(x)
+}
+let rec main: () -> Unit {
+  let rev_apply: Fun([Int], Fun([Fun([Int], Unit)], Unit)) = Apply(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k"), ])
+  let rec printi: (x: Int) -> Unit {
+    Apply(Var("print_int"), [Var("x"), ])
+  }
+  Apply(App(Var("rev_apply"), [Int(2)]), [Var("printi"), ])
+}
+Unit

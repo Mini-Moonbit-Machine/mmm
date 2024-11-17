@@ -1,4 +1,4 @@
-let rec iter_generic: forall ["T"] . (arr: Array(Named("T")), len: Int) -> Fun([Fun([Named("T")], Bool)], Bool) {
+let rec iter: forall ["T"] . (arr: Array(Named("T")), len: Int) -> Fun([Fun([Named("T")], Bool)], Bool) {
   let rec do: (yield: Fun([Named("T")], Bool)) -> Bool {
     let rec next: (i: Int) -> Bool {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
@@ -36,7 +36,7 @@ let rec main: () -> Unit {
   let _: Unit = Put Var("arr")[Int(2)] = Int(3)
   let _: Unit = Put Var("arr")[Int(3)] = Int(4)
   let _: Unit = Put Var("arr")[Int(4)] = Int(5)
-  let int_arr_iter: Fun([Fun([Int], Bool)], Bool) = Apply(Var("iter_generic"), [Var("arr"), Int(5), ])
+  let int_arr_iter: Fun([Fun([Int], Bool)], Bool) = Apply(Var("iter"), [Var("arr"), Int(5), ])
   let rec print_i: (x: Int) -> Unit {
     Apply(Var("print_int"), [Var("x"), ])
   }
@@ -48,7 +48,7 @@ let rec main: () -> Unit {
   let _: Unit = Put Var("arr")[Int(3)] = Double(4)
   let _: Unit = Put Var("arr")[Int(4)] = Double(5)
   let _: Unit = Put Var("arr")[Int(5)] = Double(6)
-  let double_arr_iter: Fun([Fun([Double], Bool)], Bool) = Apply(Var("iter_generic"), [Var("arr"), Int(6), ])
+  let double_arr_iter: Fun([Fun([Double], Bool)], Bool) = Apply(Var("iter"), [Var("arr"), Int(6), ])
   let rec print_d: (x: Double) -> Unit {
     Apply(Var("print_int"), [App(Var("int_of_float"), [Var("x")]), ])
   }

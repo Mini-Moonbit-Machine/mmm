@@ -512,6 +512,7 @@ fn lower_type(self : CoreEnv, ty : @knf.Type, native : Bool) -> Type!Failure {
       }
     }
     Var(_) => fail!("uninstantiated type variable")
+    Named(_) => fail!("polymorphic type not supported")
   }
 }
 
