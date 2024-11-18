@@ -42,6 +42,7 @@ pub fn KnfEnv::to_knf(
   named_tys : LocalEnv,
   s : @types.Syntax
 ) -> Knf!Failure {
+  println("to_knf: \{s}")
   let let_list = []
   let name_env = NameEnv::new()
   // externals are handled by @typer.externals()
@@ -715,6 +716,5 @@ fn build_knf(
       let src = self.materialize_knf(r3, let_list)
       (Put(dst, idx, src), Unit, let_list)
     }
-    _ => self.tracer.abort("syntax_to_knf: unreachable syntax")
   }
 }

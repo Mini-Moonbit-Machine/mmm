@@ -240,7 +240,10 @@ fn PatternMatcher::specialize_row(
       } else {
         None
       }
-    Var(_) => None
+    Var(x) =>
+      Some(
+        ([@types.Wildcard].repeat(subpat_arity), Some(row.binds.add(occ, x))),
+      )
     Tuple(pats) =>
       if ctor.is_compatible_with(selected_subpat) {
         Some((pats, None))
@@ -310,7 +313,6 @@ fn PatternMatcher::pattern_identifier(pat : @types.Pattern) -> String? {
 }
 
 fn PatternMatcher::default_row(
-  self : PatternMatcher,
   occ : Occurrence,
   selected_col : Int,
   row : PatMatrixRow
@@ -346,7 +348,6 @@ fn PatternMatcher::default_row(
 
 /// default matrix on selected column
 fn PatternMatcher::default_matrix(
-  self : PatternMatcher,
   selected_col : Int,
   mat : PatMatrix
 ) -> PatMatrix {
@@ -356,7 +357,7 @@ fn PatternMatcher::default_matrix(
   for row in mat.rows {
     let occ = mat.occurs.occurs[selected_col]
     // filter rows and match wildcard pattern
-    match self.default_row(occ, selected_col, row) {
+    match default_row(occ, selected_col, row) {
       None => continue
       Some(new_row) => new_rows.push(new_row)
     }
@@ -481,7 +482,7 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
     let subtree = self.clause_matrixs_to_decison_tree(submatrix)
     pattern_actions.push((subpatspec, subtree))
   }
-  let default_submatrix = self.default_matrix(selected_col, mat)
+  let default_submatrix = default_matrix(selected_col, mat)
   self.tracer.println("default_matrix:\n\{default_submatrix}")
   let default_tree = if not(default_submatrix.rows.is_empty()) {
     Some(self.clause_matrixs_to_decison_tree(default_submatrix))
