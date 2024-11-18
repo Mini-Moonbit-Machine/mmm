@@ -120,6 +120,10 @@ fn make_name(self : KnfEnv, name : String) -> Name {
   }
 }
 
+fn pattern_match_fail() -> Knf {
+  ExternalFunctionApplication("minimbt_panic", [])
+}
+
 fn fold_switch_tree_to_knf(
   self : KnfEnv,
   occur : Occurrence,
@@ -136,7 +140,7 @@ fn fold_switch_tree_to_knf(
       match default {
         Some(default) =>
           self.decision_tree_to_knf!(default, let_list, bind_env, env, ty_env)
-        None => (Unit, Unit, let_list) // TODO: check exhaustiveness
+        None => (pattern_match_fail(), Unit, let_list) // TODO: check exhaustiveness
       }
     Some((subpat, subtree)) => {
       let mut bind_env2 = bind_env
@@ -333,8 +337,9 @@ fn fold_switch_tree_to_knf(
           for i in 0..<tsize {
             let tmp = self.new_temp()
             let dyn_ty = Type::Var(Ref::new(None))
+            let suboccur = occur.destruct(i)
             new_binders.push((tmp, dyn_ty))
-            bind_env2 = bind_env2.add(occur, (tmp, dyn_ty))
+            bind_env2 = bind_env2.add(suboccur, (tmp, dyn_ty))
           }
           let_list.push(Binding::LetTuple(new_binders, x.0))
           let subtreek = self.decision_tree_to_knf!(
@@ -372,9 +377,7 @@ fn decision_tree_to_knf(
       let r = self.build_knf!(action, let_list, env2, ty_env2)
       r
     }
-    Fail =>
-      // fallthrough
-      (Unit, Unit, let_list)
+    Fail => (pattern_match_fail(), Unit, let_list)
     Switch(~occur, ~cases, ~default) => {
       let rev_cases = cases.rev()
       self.fold_switch_tree_to_knf!(
