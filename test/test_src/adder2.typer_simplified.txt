@@ -1,12 +1,12 @@
-let rec make_adder: (x: Int) -> Fun([Int], Int) {
+let rec make_adder: (x: Int) -> (Int) -> Int {
   let rec adder: (y: Int) -> Int {
     Var("x") + Var("y")
   }
   Var(adder)
 }
 let rec main: () -> Unit {
-  let add2: Fun([Int], Int) = Apply(Var("make_adder"), [Int(2), ])
-  let add3: Fun([Int], Int) = Apply(Var("make_adder"), [Int(3), ])
+  let add2: (Int) -> Int = Apply(Var("make_adder"), [Int(2), ])
+  let add3: (Int) -> Int = Apply(Var("make_adder"), [Int(3), ])
   Apply(Var("print_int"), [Prim(App(Var("add2"), [Int(10)]), App(Var("add3"), [Int(20)]), Add, kind=Some(Int)), ])
 }
 Unit

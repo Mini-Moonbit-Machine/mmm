@@ -1,57 +1,533 @@
-// [Main] function thunk_main(k) {
-// [Main]   function ack_1(x_3, y_5, k) {
-// [Main]     const _6 = 0;
-// [Main]     if (x_3 <= _6) {
-// [Main]       const _7 = 1;
-// [Main]       return k(y_5 + _7)
-// [Main]     } else {
-// [Main]       const _8 = 0;
-// [Main]       if (y_5 <= _8) {
-// [Main]         const _9 = 1;
-// [Main]         const _10 = x_3 - _9;
-// [Main]         const _11 = 1;
-// [Main]         return $thunk(() => ack_1(_10, _11, k))
-// [Main]       } else {
-// [Main]         const _12 = 1;
-// [Main]         const _13 = x_3 - _12;
-// [Main]         const _14 = 1;
-// [Main]         const _15 = y_5 - _14;
-// [Main]         return $thunk(() => ack_1(x_3, _15, function (_16) {
-// [Main]           return $thunk(() => ack_1(_13, _16, k))
-// [Main]         }
-// [Main]         ))
-// [Main]       }
-// [Main]     }
-// [Main]   }
-// [Main]   function main_17(k) {
-// [Main]     const _18 = 3;
-// [Main]     const _19 = 8;
-// [Main]     return $thunk(() => ack_1(_18, _19, function (_20) {
-// [Main]       return $thunk(() => k(minimbt_print_int($force(_20))))
-// [Main]     }
-// [Main]     ))
-// [Main]   }
-// [Main]   return $thunk(() => main_17(k))
-// [Main] }
+// [Asm] LoweringOrder: [8, 0, 2, 4, 3, 1, 6]
+// [Asm] LoweringOrder: [[7], [1, 2], [3, 4], [0], [0], [6], []]
+// [Asm] LoweringOrder: HashMap::of([(b6, 2), (b4, 0), (b1, 2), (b8, 0), (b2, 0), (b3, 1), (b0, 0)])
+// [Asm] LoweringOrder: [b8, b0, b2, b4, b3, b1, b6]
+// [Asm] LoweringOrder: HashMap::of([(b6, 1), (b4, 3), (b1, 0), (b8, 0), (b2, 2), (b3, 0), (b0, 1)])
+// [Asm] pre_assigned_registers: Insn(iref=%3) -> v11, FnParam(fref=f0, fpref=$f.1) -> v3, Insn(iref=%7) -> v10, Self(fref=f0) -> v0, BlockParam(bref=b6, bpref=$b.0) -> v13, Insn(iref=%2) -> v7, Insn(iref=%1) -> v12, BlockParam(bref=b0, bpref=$b.0) -> v4, BlockParam(bref=b0, bpref=$b.1) -> v5, Insn(iref=%6) -> v9, FnParam(fref=f0, fpref=$f.0) -> v2, Insn(iref=%5) -> v8, Insn(iref=%0) -> v6
+// [Asm] succs: []
+// [Asm] critical edges for b6: []
+// [Asm] critical color seq for b6: []
+// [Asm] succs: [6]
+// [Asm] critical edges for b1: []
+// [Asm] critical color seq for b1: []
+// [Asm] succs: [0]
+// [Asm] critical edges for b3: []
+// [Asm] critical color seq for b3: []
+// [Asm] succs: [0]
+// [Asm] critical edges for b4: []
+// [Asm] critical color seq for b4: []
+// [Asm] succs: [3, 4]
+// [Asm] critical edges for b2: []
+// [Asm] critical color seq for b2: []
+// [Asm] skipping Op(ty=Bool, op=Le, args=[BlockParam(bref=b0, bpref=$b.1), Int32(val=0)])
+// [Asm] succs: [1, 2]
+// [Asm] critical edges for b0: []
+// [Asm] critical color seq for b0: []
+// [Asm] skipping Op(ty=Bool, op=Le, args=[BlockParam(bref=b0, bpref=$b.0), Int32(val=0)])
+// [Asm] succs: [7]
+// [Asm] critical edges for b8: []
+// [Asm] critical color seq for b8: []
+// [Asm] defs: []
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] defs: [v11]
+// [Asm] live_set: [v11, zero]
+// [Asm] defined: v11 is X
+// [Asm] defs: [v4]
+// [Asm] live_set: [v4, zero]
+// [Asm] move: v4 <- v11
+// [Asm] defined: v4 is X
+// [Asm] defs: [v15]
+// [Asm] live_set: [v4, v15, zero]
+// [Asm] defined: v15 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] move: v5 <- v15
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v13
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v12]
+// [Asm] live_set: [v12]
+// [Asm] defined: v12 is X
+// [Asm] defs: [v13]
+// [Asm] live_set: [v13]
+// [Asm] move: v13 <- v12
+// [Asm] defined: v13 is X
+// [Asm] defs: [v8]
+// [Asm] live_set: [v4, v5, zero, v8]
+// [Asm] defined: v8 is X
+// [Asm] defs: [v9]
+// [Asm] live_set: [v4, zero, v9, v8]
+// [Asm] defined: v9 is X
+// [Asm] defs: []
+// [Asm] live_set: [v4, zero, v9, v8]
+// [Asm] defs: [a0]
+// [Asm] live_set: [v8, zero, a0, v9]
+// [Asm] move: a0 <- v4
+// [Asm] defined: a0 is X
+// [Asm] defs: [a1]
+// [Asm] live_set: [a1, zero, a0, v8]
+// [Asm] move: a1 <- v9
+// [Asm] defined: a1 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [zero, a0, v8]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [v10]
+// [Asm] live_set: [v10, zero, v8]
+// [Asm] move: v10 <- a0
+// [Asm] defined: v10 is X
+// [Asm] defs: []
+// [Asm] live_set: [v10, zero, v8]
+// [Asm] defs: [v4]
+// [Asm] live_set: [v4, v10, zero]
+// [Asm] move: v4 <- v8
+// [Asm] defined: v4 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] move: v5 <- v10
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] defs: []
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] defs: []
+// [Asm] live_set: [a1, zero, a0]
+// [Asm] defs: [v2]
+// [Asm] live_set: [a1, zero, v2]
+// [Asm] move: v2 <- a0
+// [Asm] defined: v2 is X
+// [Asm] defs: [v3]
+// [Asm] live_set: [v2, zero, v3]
+// [Asm] move: v3 <- a1
+// [Asm] defined: v3 is X
+// [Asm] defs: [v4]
+// [Asm] live_set: [v4, zero, v3]
+// [Asm] move: v4 <- v2
+// [Asm] defined: v4 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v4, v5, zero]
+// [Asm] move: v5 <- v3
+// [Asm] defined: v5 is X
+// [Asm] Label("ack.21") clobbered_x: @hashset.of([a2, s0, a1, a0])
+// [Asm] Label("ack.21") clobbered_f: @hashset.of([])
+// [Asm] subst   bge zero, v5, .ack.21_3 ->   bge zero, a0, .ack.21_3
+// [Asm] subst   addi v11, v4, -1 ->   addi a0, a1, -1
+// [Asm] subst   mv v4, v11 ->   mv a1, a0
+// [Asm] subst   li v15, 1 ->   li a0, 1
+// [Asm] subst   j .ack.21_0 ->   j .ack.21_0
+// [Asm] subst   ret ->   ret
+// [Asm] subst   addi v12, v5, 1 ->   addi a0, a0, 1
+// [Asm] subst   addi v8, v4, -1 ->   addi s0, a1, -1
+// [Asm] subst   addi v9, v5, -1 ->   addi a2, a0, -1
+// [Asm] subst   mv a0, v4 ->   mv a0, a1
+// [Asm] subst   mv a1, v9 ->   mv a1, a2
+// [Asm] subst   call ack.21 ->   call ack.21
+// [Asm] subst   mv v4, v8 ->   mv a1, s0
+// [Asm] subst   j .ack.21_0 ->   j .ack.21_0
+// [Asm] subst   bge zero, v4, .ack.21_1 ->   bge zero, a1, .ack.21_1
+// [Asm] subst   mv v3, a1 ->   mv a2, a1
+// [Asm] subst   mv v4, v2 ->   mv a1, a0
+// [Asm] subst   mv v5, v3 ->   mv a0, a2
+// [Asm] LoweringOrder: [0]
+// [Asm] LoweringOrder: [[]]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] LoweringOrder: [b0]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] pre_assigned_registers: Self(fref=f4) -> v0, Insn(iref=%0) -> v2
+// [Asm] LoweringOrder: [0]
+// [Asm] LoweringOrder: [[]]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] LoweringOrder: [b0]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] pre_assigned_registers: Insn(iref=%1) -> v3, Insn(iref=%0) -> v2, Self(fref=f1) -> v0
+// [Asm] succs: []
+// [Asm] critical edges for b0: []
+// [Asm] critical color seq for b0: []
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5]
+// [Asm] defined: v5 is X
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v5
+// [Asm] defined: a0 is X
+// [Asm] defs: [v6]
+// [Asm] live_set: [v6, a0]
+// [Asm] defined: v6 is X
+// [Asm] defs: [a1]
+// [Asm] live_set: [a1, a0]
+// [Asm] move: a1 <- v6
+// [Asm] defined: a1 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [a0]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [v2]
+// [Asm] live_set: [v2]
+// [Asm] move: v2 <- a0
+// [Asm] defined: v2 is X
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] defs: []
+// [Asm] live_set: [v2]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v2
+// [Asm] defined: a0 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [a0]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [v3]
+// [Asm] live_set: [v3]
+// [Asm] move: v3 <- a0
+// [Asm] defined: v3 is X
+// [Asm] defs: []
+// [Asm] live_set: [v3]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v3
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] Label("main.22") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("main.22") clobbered_f: @hashset.of([])
+// [Asm] subst   li v5, 3 ->   li a0, 3
+// [Asm] subst   li v6, 8 ->   li a1, 8
+// [Asm] subst   call ack.21 ->   call ack.21
+// [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
+// [Asm] subst   ret ->   ret
+// [Asm] before colored: # leaf false
+// [Asm] ack.21:
+// [Asm] # block info: defs: [v3, v4, v5, v2], uses: [v3, a1, a0, v2], upward_exposed: [a1, a0], params_defs: []
+// [Asm] # live_in: [a1, a0, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_8:
+// [Asm]   # save_ctx1  # live: [a1, zero, a0]
+// [Asm]   mv v2, a0  # live: [a1, zero, v2]
+// [Asm]   mv v3, a1  # live: [v2, zero, v3]
+// [Asm] # control
+// [Asm]   mv v4, v2  # live: [v4, zero, v3]
+// [Asm]   mv v5, v3  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [], uses: [v4, zero], upward_exposed: [v4, zero], params_defs: [v4, v5]
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: [v4, v5]
+// [Asm] .ack.21_0:
+// [Asm] # control
+// [Asm]   bge zero, v4, .ack.21_1  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [], uses: [v5, zero], upward_exposed: [v5, zero], params_defs: []
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_2:
+// [Asm] # control
+// [Asm]   bge zero, v5, .ack.21_3  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, v4, ft7, ft4, v5, ft9, v10, a5, fa4, a0, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v5, v10, a0, v8, v4, a1, v9], upward_exposed: [v4, v5], params_defs: []
+// [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_4:
+// [Asm]   addi v8, v4, -1  # live: [v4, v5, zero, v8]
+// [Asm]   addi v9, v5, -1  # live: [v4, zero, v9, v8]
+// [Asm]   # save_ctx2  # live: [v4, zero, v9, v8]
+// [Asm]   mv a0, v4  # live: [v8, zero, a0, v9]
+// [Asm]   mv a1, v9  # live: [a1, zero, a0, v8]
+// [Asm]   call ack.21  # live: [zero, a0, v8]
+// [Asm]   mv v10, a0  # live: [v10, zero, v8]
+// [Asm]   # restore_ctx2  # live: [v10, zero, v8]
+// [Asm] # control
+// [Asm]   mv v4, v8  # live: [v4, v10, zero]
+// [Asm]   mv v5, v10  # live: [v4, v5, zero]
+// [Asm]   j .ack.21_0  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [v11, v4, v5, v15], uses: [v11, v4, v15], upward_exposed: [v4], params_defs: []
+// [Asm] # live_in: [v4, zero], live_out: [v4, v5, zero]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_3:
+// [Asm]   addi v11, v4, -1  # live: [v11, zero]
+// [Asm] # control
+// [Asm]   mv v4, v11  # live: [v4, zero]
+// [Asm]   li v15, 1  # live: [v4, v15, zero]
+// [Asm]   mv v5, v15  # live: [v4, v5, zero]
+// [Asm]   j .ack.21_0  # live: [v4, v5, zero]
+// [Asm] 
+// [Asm] # block info: defs: [v12, v13], uses: [v5, v12], upward_exposed: [v5], params_defs: []
+// [Asm] # live_in: [v5], live_out: [v13]
+// [Asm] # block parameters: []
+// [Asm] .ack.21_1:
+// [Asm]   addi v12, v5, 1  # live: [v12]
+// [Asm] # control
+// [Asm]   mv v13, v12  # live: [v13]
+// [Asm] 
+// [Asm] # block info: defs: [a0], uses: [v13, a0], upward_exposed: [v13], params_defs: [v13]
+// [Asm] # live_in: [v13], live_out: []
+// [Asm] # block parameters: [v13]
+// [Asm] .ack.21_6:
+// [Asm] # control
+// [Asm]   mv a0, v13  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] main.22:
+// [Asm] # block info: defs: [v3, t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v6, ft7, ft4, v5, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v2], uses: [v2, v5, a0, v6, a1, v3], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .main.22_0:
+// [Asm]   # save_ctx1  # live: []
+// [Asm]   # save_ctx2  # live: []
+// [Asm]   li v5, 3  # live: [v5]
+// [Asm]   mv a0, v5  # live: [a0]
+// [Asm]   li v6, 8  # live: [v6, a0]
+// [Asm]   mv a1, v6  # live: [a1, a0]
+// [Asm]   call ack.21  # live: [a0]
+// [Asm]   mv v2, a0  # live: [v2]
+// [Asm]   # restore_ctx2  # live: [v2]
+// [Asm]   # save_ctx2  # live: [v2]
+// [Asm]   mv a0, v2  # live: [a0]
+// [Asm]   call minimbt_print_int  # live: [a0]
+// [Asm]   mv v3, a0  # live: [v3]
+// [Asm]   # restore_ctx2  # live: [v3]
+// [Asm] # control
+// [Asm]   mv a0, v3  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] minimbt_main:
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
+// [Asm] # live_in: [ra, s11], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .minimbt_main_b0:
+// [Asm]   addi sp, sp, -16  # live: [s11, ra]
+// [Asm]   sd ra, 0(sp)  # live: [s11]
+// [Asm]   sd s11, 8(sp)  # live: []
+// [Asm]   la s11, large_heap_end  # live: []
+// [Asm]   call main.22  # live: [a0]
+// [Asm]   ld ra, 0(sp)  # live: [a0]
+// [Asm]   ld s11, 8(sp)  # live: [a0]
+// [Asm]   addi sp, sp, 16  # live: [a0]
+// [Asm] # control
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm]   .p2align 2
+// [Asm]   .bss
+// [Asm] start:
+// [Asm]   .zero 4
+// [Asm] 
+// [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
 // [Main] 
-// [Main] function $thunk(lambda) {
-// [Main]   return { thunk: lambda };
-// [Main] }
-// [Main] function $is_thunk(x) {
-// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
-// [Main] }
-// [Main] function $force(x) {
-// [Main]   while ($is_thunk(x)) {
-// [Main]     x = x.thunk();
-// [Main]   }
-// [Main]   return x;
-// [Main] }
-// [Main] function $trampoline(f, ...args) {
-// [Main]   let x = f(...args);
-// [Main]   return $force(x);
-// [Main] }
-// [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] check: LetRec({tyvars: [], name: ("ack", Int), args: [("x", Int), ("y", Int)], body: If(LE(Var("x"), Int(0)), Prim(Var("y"), Int(1), Add, kind=None), If(LE(Var("y"), Int(0)), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), Int(1)]), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)])])))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)])])}, Unit)) against Unit
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl ack.21
+// [Main]   .type ack.21, @function
+// [Main] # leaf false
+// [Main] ack.21:
+// [Main] .ack.21_8:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s0, 8(sp)
+// [Main]   mv a2, a1
+// [Main]   mv a1, a0
+// [Main]   mv a0, a2
+// [Main] 
+// [Main] .ack.21_0:
+// [Main]   bge zero, a1, .ack.21_1
+// [Main] 
+// [Main] .ack.21_2:
+// [Main]   bge zero, a0, .ack.21_3
+// [Main] 
+// [Main] .ack.21_4:
+// [Main]   addi s0, a1, -1
+// [Main]   addi a2, a0, -1
+// [Main]   mv a0, a1
+// [Main]   mv a1, a2
+// [Main]   call ack.21
+// [Main]   mv a1, s0
+// [Main]   j .ack.21_0
+// [Main] 
+// [Main] .ack.21_3:
+// [Main]   addi a1, a1, -1
+// [Main]   li a0, 1
+// [Main]   j .ack.21_0
+// [Main] 
+// [Main] .ack.21_1:
+// [Main]   addi a0, a0, 1
+// [Main] 
+// [Main] .ack.21_6:
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s0, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main.22
+// [Main]   .type main.22, @function
+// [Main] # leaf false
+// [Main] main.22:
+// [Main] .main.22_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 3
+// [Main]   li a1, 8
+// [Main]   call ack.21
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s11, 8(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   call main.22
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s11, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("ack", Int), args: [("x", Int), ("y", Int)], body: If(LE(Var("x"), Int(0)), Prim(Var("y"), Int(1), Add, kind=None), If(LE(Var("y"), Int(0)), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), Int(1)]), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)])])))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)])])}, Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] check: If(LE(Var("x"), Int(0)), Prim(Var("y"), Int(1), Add, kind=None), If(LE(Var("y"), Int(0)), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), Int(1)]), App(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)])]))) against Int
 // [Typer] check: LE(Var("x"), Int(0)) against Bool
@@ -81,10 +557,10 @@
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] infer: Int(1)
-// [Typer] check: Var("ack") against Fun([Int, Int], Int)
-// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
-// [Typer] inst result: Fun([Int, Int], Int)
-// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] check: Var("ack") against (Int, Int) -> Int
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] unify: (Int, Int) -> Int and (Int, Int) -> Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
@@ -97,8 +573,8 @@
 // [Typer] unify: Int and Int
 // [Typer] infer: App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)])
 // [Typer] infer: Var("ack")
-// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
-// [Typer] inst result: Fun([Int, Int], Int)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
 // [Typer] check: Var("x") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -109,30 +585,92 @@
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
-// [Typer] check: Var("ack") against Fun([Int, Int], Int)
-// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
-// [Typer] inst result: Fun([Int, Int], Int)
-// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] check: Var("ack") against (Int, Int) -> Int
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] unify: (Int, Int) -> Int and (Int, Int) -> Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)])])}, Unit) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)])])}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: App(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)])])
 // [Typer] infer: Var("print_int")
-// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
-// [Typer] inst result: Fun([Int], Unit)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
 // [Typer] check: App(Var("ack"), [Int(3), Int(8)]) against Int
 // [Typer] infer: Int(3)
 // [Typer] infer: Int(8)
-// [Typer] check: Var("ack") against Fun([Int, Int], Int)
-// [Typer] inst: TypeScheme(([], Fun([Int, Int], Int)))
-// [Typer] inst result: Fun([Int, Int], Int)
-// [Typer] unify: Fun([Int, Int], Int) and Fun([Int, Int], Int)
+// [Typer] check: Var("ack") against (Int, Int) -> Int
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] unify: (Int, Int) -> Int and (Int, Int) -> Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Unit and Var({val: None})
-// [Typer] union: Unit and Var({val: None})
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] freq: {ack.1: Many(4), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 4 27
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Numbers of let rec: 2 2 0
+// [KnfOpt] Tuple freq: {_10: MayEscape, _11: MayEscape, x.3: MayEscape, _15: MayEscape, _13: MayEscape, _16: MayEscape, _18: MayEscape, _19: MayEscape, _20: MayEscape}
 // [Parser] flags: []
+// [CoreOpt] eliminated tail rec call %8: Call(ty=Int32, f=f0, args=[Insn(iref=%5), Insn(iref=%7)])
+// [CoreOpt] eliminated tail rec call %4: Call(ty=Int32, f=f0, args=[Insn(iref=%3), Int32(val=1)])
+// [CoreOpt] Call frequnce: FnCallFreq({f0: Multiple, f4: Once, f1: Once})
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true
+// [CoreOpt] allow_inline: false %7 ack.21 true false true false true
+// [CoreOpt] allow_inline: false %0 main.22 false true true true true
+// [CoreOpt] allow_inline: false %0 ack.21 false false true false true

@@ -1,56 +1,547 @@
-// [Main] function thunk_main(k) {
-// [Main]   function inprod_1(v1_3, v2_5, acc_7, i_9, k) {
-// [Main]     const _10 = 0;
-// [Main]     if (_10 <= i_9) {
-// [Main]       const _11 = v1_3[i_9];
-// [Main]       const _12 = v2_5[i_9];
-// [Main]       const _13 = _11 * _12;
-// [Main]       const _14 = acc_7 + _13;
-// [Main]       const _15 = 1;
-// [Main]       const _16 = i_9 - _15;
-// [Main]       return $thunk(() => inprod_1(v1_3, v2_5, _14, _16, k))
-// [Main]     } else {
-// [Main]       return k(acc_7)
-// [Main]     }
-// [Main]   }
-// [Main]   function main_17(k) {
-// [Main]     const _18 = 3;
-// [Main]     const _19 = 1.23;
-// [Main]     const v1_20 = minimbt_create_float_array($force(_18), $force(_19));
-// [Main]     const _21 = 3;
-// [Main]     const _22 = 4.56;
-// [Main]     const v2_23 = minimbt_create_float_array($force(_21), $force(_22));
-// [Main]     const _24 = 1000000;
-// [Main]     const _25 = 0;
-// [Main]     const _26 = 2;
-// [Main]     return $thunk(() => inprod_1(v1_20, v2_23, _25, _26, function (_27) {
-// [Main]       const _28 = _24 * _27;
-// [Main]       const _29 = minimbt_truncate($force(_28));
-// [Main]       return $thunk(() => k(minimbt_print_int($force(_29))))
-// [Main]     }
-// [Main]     ))
-// [Main]   }
-// [Main]   return $thunk(() => main_17(k))
-// [Main] }
+// [Asm] LoweringOrder: [5, 0, 2, 3, 1]
+// [Asm] LoweringOrder: [[4], [1, 2], [3], [], [0]]
+// [Asm] LoweringOrder: HashMap::of([(b1, 0), (b5, 0), (b2, 1), (b3, 1), (b0, 0)])
+// [Asm] LoweringOrder: [b5, b0, b1, b2, b3]
+// [Asm] LoweringOrder: HashMap::of([(b1, 2), (b5, 0), (b2, 0), (b3, 1), (b0, 1)])
+// [Asm] pre_assigned_registers: Self(fref=f0) -> v0, BlockParam(bref=b3, bpref=$b.0) -> fv11, Insn(iref=%8) -> v12, FnParam(fref=f0, fpref=$f.3) -> v5, BlockParam(bref=b0, bpref=$b.3) -> v9, BlockParam(bref=b0, bpref=$b.0) -> v6, BlockParam(bref=b0, bpref=$b.1) -> v7, BlockParam(bref=b0, bpref=$b.2) -> fv8, FnParam(fref=f0, fpref=$f.0) -> v2, Insn(iref=%5) -> v17, Insn(iref=%0) -> v10, Insn(iref=%4) -> fv16, Insn(iref=%3) -> fv15, FnParam(fref=f0, fpref=$f.1) -> v3, FnParam(fref=f0, fpref=$f.2) -> fv4, Insn(iref=%2) -> fv14, Insn(iref=%1) -> fv13
+// [Asm] succs: [0]
+// [Asm] critical edges for b1: []
+// [Asm] critical color seq for b1: []
+// [Asm] skipping Op(ty=Double, op=Mul, args=[Insn(iref=%1), Insn(iref=%2)])
+// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b0, bpref=$b.3), width=@64))
+// [Asm] succs: []
+// [Asm] critical edges for b3: []
+// [Asm] critical color seq for b3: []
+// [Asm] succs: [3]
+// [Asm] critical edges for b2: []
+// [Asm] critical color seq for b2: []
+// [Asm] succs: [1, 2]
+// [Asm] critical edges for b0: []
+// [Asm] critical color seq for b0: []
+// [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=0), BlockParam(bref=b0, bpref=$b.3)])
+// [Asm] succs: [4]
+// [Asm] critical edges for b5: []
+// [Asm] critical color seq for b5: []
+// [Asm] defs: []
+// [Asm] live_set: [a2, a1, zero, a0, fa0]
+// [Asm] defs: [v2]
+// [Asm] live_set: [fa0, a2, a1, zero, v2]
+// [Asm] move: v2 <- a0
+// [Asm] defined: v2 is X
+// [Asm] defs: [v3]
+// [Asm] live_set: [v2, fa0, a2, zero, v3]
+// [Asm] move: v3 <- a1
+// [Asm] defined: v3 is X
+// [Asm] defs: [fv4]
+// [Asm] live_set: [v2, a2, fv4, zero, v3]
+// [Asm] move: fv4 <- fa0
+// [Asm] defined: fv4 is F
+// [Asm] defs: [v5]
+// [Asm] live_set: [v2, v5, fv4, zero, v3]
+// [Asm] move: v5 <- a2
+// [Asm] defined: v5 is X
+// [Asm] defs: [v6]
+// [Asm] live_set: [v6, v5, fv4, zero, v3]
+// [Asm] move: v6 <- v2
+// [Asm] defined: v6 is X
+// [Asm] defs: [v7]
+// [Asm] live_set: [v6, v5, fv4, zero, v7]
+// [Asm] move: v7 <- v3
+// [Asm] defined: v7 is X
+// [Asm] defs: [fv8]
+// [Asm] live_set: [v7, v6, v5, zero, fv8]
+// [Asm] move: fv8 <- fv4
+// [Asm] defined: fv8 is F
+// [Asm] defs: [v9]
+// [Asm] live_set: [v7, v6, v9, zero, fv8]
+// [Asm] move: v9 <- v5
+// [Asm] defined: v9 is X
+// [Asm] defs: [fv13]
+// [Asm] live_set: [zero, fv13, v7, fv8, v6, v9]
+// [Asm] defined: fv13 is F
+// [Asm] defs: [fv14]
+// [Asm] live_set: [zero, fv13, v7, fv8, v6, fv14, v9]
+// [Asm] defined: fv14 is F
+// [Asm] defs: [fv16]
+// [Asm] live_set: [v6, fv16, zero, v9, v7]
+// [Asm] defined: fv16 is F
+// [Asm] defs: [v17]
+// [Asm] live_set: [v6, v17, fv16, zero, v7]
+// [Asm] defined: v17 is X
+// [Asm] defs: []
+// [Asm] live_set: [v6, v17, fv16, zero, v7]
+// [Asm] move: v6 <- v6
+// [Asm] defs: []
+// [Asm] live_set: [v6, v17, fv16, zero, v7]
+// [Asm] move: v7 <- v7
+// [Asm] defs: [fv8]
+// [Asm] live_set: [fv8, v6, v17, zero, v7]
+// [Asm] move: fv8 <- fv16
+// [Asm] defined: fv8 is F
+// [Asm] defs: [v9]
+// [Asm] live_set: [fv8, v6, v9, zero, v7]
+// [Asm] move: v9 <- v17
+// [Asm] defined: v9 is X
+// [Asm] defs: []
+// [Asm] live_set: [fv8, v6, v9, zero, v7]
+// [Asm] defs: [fa0]
+// [Asm] live_set: [fa0]
+// [Asm] move: fa0 <- fv11
+// [Asm] defined: fa0 is F
+// [Asm] defs: []
+// [Asm] live_set: [fa0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: []
+// [Asm] live_set: [fv8, v6, v9, zero, v7]
+// [Asm] defs: [fv11]
+// [Asm] live_set: [fv11]
+// [Asm] move: fv11 <- fv8
+// [Asm] defined: fv11 is F
+// [Asm] Label("inprod.30") clobbered_x: @hashset.of([a2, a1, a0])
+// [Asm] Label("inprod.30") clobbered_f: @hashset.of([fa2, fa1, fa0])
+// [Asm] subst   th.flurd fv13, v6, v9, 3 ->   th.flurd fa1, a0, a2, 3
+// [Asm] subst   th.flurd fv14, v7, v9, 3 ->   th.flurd fa2, a1, a2, 3
+// [Asm] subst   fmadd.d fv16, fv13, fv14, fv8 ->   fmadd.d fa0, fa1, fa2, fa0
+// [Asm] subst   addi v17, v9, -1 ->   addi a2, a2, -1
+// [Asm] subst   j .inprod.30_0 ->   j .inprod.30_0
+// [Asm] subst   ret ->   ret
+// [Asm] subst   blt v9, zero, .inprod.30_2 ->   blt a2, zero, .inprod.30_2
+// [Asm] LoweringOrder: [0]
+// [Asm] LoweringOrder: [[]]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] LoweringOrder: [b0]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] pre_assigned_registers: Self(fref=f4) -> v0, Insn(iref=%0) -> v2
+// [Asm] LoweringOrder: [0]
+// [Asm] LoweringOrder: [[]]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] LoweringOrder: [b0]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] pre_assigned_registers: Insn(iref=%3) -> fv7, Insn(iref=%2) -> fv6, Insn(iref=%1) -> v5, Mem(fref=f1, mref=m0) -> v2, Self(fref=f1) -> v0, Mem(fref=f1, mref=m1) -> v3, Insn(iref=%5) -> v9, Insn(iref=%0) -> v4, Insn(iref=%4) -> v8
+// [Asm] succs: []
+// [Asm] critical edges for b0: []
+// [Asm] critical color seq for b0: []
+// [Asm] defs: []
+// [Asm] live_set: [s11, zero]
+// [Asm] defs: [v2]
+// [Asm] live_set: [zero, v2]
+// [Asm] defined: v2 is X
+// [Asm] defs: [s11]
+// [Asm] live_set: [s11, zero, v2]
+// [Asm] defined: s11 is X
+// [Asm] defs: [v22]
+// [Asm] live_set: [s11, zero, v22, v2]
+// [Asm] defined: v22 is X
+// [Asm] defs: [fv23]
+// [Asm] live_set: [fv23, s11, zero, v2]
+// [Asm] defined: fv23 is F
+// [Asm] defs: []
+// [Asm] live_set: [fv23, s11, zero, v2]
+// [Asm] defs: []
+// [Asm] live_set: [fv23, s11, zero, v2]
+// [Asm] defs: []
+// [Asm] live_set: [s11, zero, v2]
+// [Asm] defs: [v3]
+// [Asm] live_set: [v2, zero, v3]
+// [Asm] defined: v3 is X
+// [Asm] defs: [s11]
+// [Asm] live_set: [v2, zero, v3]
+// [Asm] defined: s11 is X
+// [Asm] defs: [v19]
+// [Asm] live_set: [v2, v19, zero, v3]
+// [Asm] defined: v19 is X
+// [Asm] defs: [fv20]
+// [Asm] live_set: [v2, fv20, zero, v3]
+// [Asm] defined: fv20 is F
+// [Asm] defs: []
+// [Asm] live_set: [v2, fv20, zero, v3]
+// [Asm] defs: []
+// [Asm] live_set: [v2, fv20, zero, v3]
+// [Asm] defs: []
+// [Asm] live_set: [v2, zero, v3]
+// [Asm] defs: []
+// [Asm] live_set: [v2, zero, v3]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0, zero, v3]
+// [Asm] move: a0 <- v2
+// [Asm] defined: a0 is X
+// [Asm] defs: [a1]
+// [Asm] live_set: [a1, a0, zero]
+// [Asm] move: a1 <- v3
+// [Asm] defined: a1 is X
+// [Asm] defs: [fv15]
+// [Asm] live_set: [a1, fv15, a0]
+// [Asm] defined: fv15 is F
+// [Asm] defs: [fa0]
+// [Asm] live_set: [a1, a0, fa0]
+// [Asm] move: fa0 <- fv15
+// [Asm] defined: fa0 is F
+// [Asm] defs: [v16]
+// [Asm] live_set: [a1, v16, a0, fa0]
+// [Asm] defined: v16 is X
+// [Asm] defs: [a2]
+// [Asm] live_set: [a2, a1, a0, fa0]
+// [Asm] move: a2 <- v16
+// [Asm] defined: a2 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [fa0]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [fv6]
+// [Asm] live_set: [fv6]
+// [Asm] move: fv6 <- fa0
+// [Asm] defined: fv6 is F
+// [Asm] defs: []
+// [Asm] live_set: [fv6]
+// [Asm] defs: [v12]
+// [Asm] live_set: [v12, fv6]
+// [Asm] defined: v12 is X
+// [Asm] defs: [fv13]
+// [Asm] live_set: [fv6, fv13]
+// [Asm] defined: fv13 is F
+// [Asm] defs: [fv7]
+// [Asm] live_set: [fv7]
+// [Asm] defined: fv7 is F
+// [Asm] defs: [v8]
+// [Asm] live_set: [v8]
+// [Asm] defined: v8 is X
+// [Asm] defs: []
+// [Asm] live_set: [v8]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v8
+// [Asm] defined: a0 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [a0]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [v9]
+// [Asm] live_set: [v9]
+// [Asm] move: v9 <- a0
+// [Asm] defined: v9 is X
+// [Asm] defs: []
+// [Asm] live_set: [v9]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v9
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] Label("main.31") clobbered_x: @hashset.of([a2, a1, a0])
+// [Asm] Label("main.31") clobbered_f: @hashset.of([fa1, fa0])
+// [Asm] subst   addi v2, s11, -24 ->   addi a0, s11, -24
+// [Asm] subst   andi s11, v2, -8 ->   andi s11, a0, -8
+// [Asm] subst   li v22, 4608218246714312622 ->   li a1, 4608218246714312622
+// [Asm] subst   fmv.d.x fv23, v22 ->   fmv.d.x fa0, a1
+// [Asm] subst   fsd fv23, 0(v2) ->   fsd fa0, 0(a0)
+// [Asm] subst   fsd fv23, 8(v2) ->   fsd fa0, 8(a0)
+// [Asm] subst   fsd fv23, 16(v2) ->   fsd fa0, 16(a0)
+// [Asm] subst   addi v3, s11, -24 ->   addi a1, s11, -24
+// [Asm] subst   andi s11, v3, -8 ->   andi s11, a1, -8
+// [Asm] subst   li v19, 4616820122002590269 ->   li a2, 4616820122002590269
+// [Asm] subst   fmv.d.x fv20, v19 ->   fmv.d.x fa0, a2
+// [Asm] subst   fsd fv20, 0(v3) ->   fsd fa0, 0(a1)
+// [Asm] subst   fsd fv20, 8(v3) ->   fsd fa0, 8(a1)
+// [Asm] subst   fsd fv20, 16(v3) ->   fsd fa0, 16(a1)
+// [Asm] subst   fmv.d.x fv15, zero ->   fmv.d.x fa0, zero
+// [Asm] subst   li v16, 2 ->   li a2, 2
+// [Asm] subst   call inprod.30 ->   call inprod.30
+// [Asm] subst   li v12, 4696837146684686336 ->   li a0, 4696837146684686336
+// [Asm] subst   fmv.d.x fv13, v12 ->   fmv.d.x fa1, a0
+// [Asm] subst   fmul.d fv7, fv13, fv6 ->   fmul.d fa0, fa1, fa0
+// [Asm] subst   fcvt.w.d v8, fv7, rtz ->   fcvt.w.d a0, fa0, rtz
+// [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
+// [Asm] subst   ret ->   ret
+// [Asm] before colored: # leaf true
+// [Asm] inprod.30:
+// [Asm] # block info: defs: [v2, v5, v7, fv8, fv4, v6, v9, v3], uses: [v3, v5, a0, fa0, a2, a1, fv4, v2], upward_exposed: [a2, a1, a0, fa0], params_defs: []
+// [Asm] # live_in: [a2, a1, a0, zero, fa0], live_out: [fv8, v6, v9, zero, v7]
+// [Asm] # block parameters: []
+// [Asm] .inprod.30_5:
+// [Asm]   # save_ctx1  # live: [a2, a1, zero, a0, fa0]
+// [Asm]   mv v2, a0  # live: [fa0, a2, a1, zero, v2]
+// [Asm]   mv v3, a1  # live: [v2, fa0, a2, zero, v3]
+// [Asm]   fmv.d fv4, fa0  # live: [v2, a2, fv4, zero, v3]
+// [Asm]   mv v5, a2  # live: [v2, v5, fv4, zero, v3]
+// [Asm] # control
+// [Asm]   mv v6, v2  # live: [v6, v5, fv4, zero, v3]
+// [Asm]   mv v7, v3  # live: [v6, v5, fv4, zero, v7]
+// [Asm]   fmv.d fv8, fv4  # live: [v7, v6, v5, zero, fv8]
+// [Asm]   mv v9, v5  # live: [v7, v6, v9, zero, fv8]
+// [Asm] 
+// [Asm] # block info: defs: [], uses: [v9, zero], upward_exposed: [v9, zero], params_defs: [fv8, v6, v9, v7]
+// [Asm] # live_in: [v7, v6, v9, zero, fv8], live_out: [fv8, v6, v9, zero, v7]
+// [Asm] # block parameters: [v6, v7, fv8, v9]
+// [Asm] .inprod.30_0:
+// [Asm] # control
+// [Asm]   blt v9, zero, .inprod.30_2  # live: [fv8, v6, v9, zero, v7]
+// [Asm] 
+// [Asm] # block info: defs: [fv8, v17, fv14, fv16, v9, fv13], uses: [fv13, fv8, v7, v6, v17, fv14, fv16, v9], upward_exposed: [fv8, v6, v9, v7], params_defs: []
+// [Asm] # live_in: [v7, v6, v9, zero, fv8], live_out: [fv8, v6, v9, zero, v7]
+// [Asm] # block parameters: []
+// [Asm] .inprod.30_1:
+// [Asm]   th.flurd fv13, v6, v9, 3  # live: [zero, fv13, v7, fv8, v6, v9]
+// [Asm]   th.flurd fv14, v7, v9, 3  # live: [zero, fv13, v7, fv8, v6, fv14, v9]
+// [Asm]   fmadd.d fv16, fv13, fv14, fv8  # live: [v6, fv16, zero, v9, v7]
+// [Asm]   addi v17, v9, -1  # live: [v6, v17, fv16, zero, v7]
+// [Asm] # control
+// [Asm]   mv v6, v6  # live: [v6, v17, fv16, zero, v7]
+// [Asm]   mv v7, v7  # live: [v6, v17, fv16, zero, v7]
+// [Asm]   fmv.d fv8, fv16  # live: [fv8, v6, v17, zero, v7]
+// [Asm]   mv v9, v17  # live: [fv8, v6, v9, zero, v7]
+// [Asm]   j .inprod.30_0  # live: [fv8, v6, v9, zero, v7]
+// [Asm] 
+// [Asm] # block info: defs: [fv11], uses: [fv8], upward_exposed: [fv8], params_defs: []
+// [Asm] # live_in: [fv8], live_out: [fv11]
+// [Asm] # block parameters: []
+// [Asm] .inprod.30_2:
+// [Asm] # control
+// [Asm]   fmv.d fv11, fv8  # live: [fv11]
+// [Asm] 
+// [Asm] # block info: defs: [fa0], uses: [fv11, fa0], upward_exposed: [fv11], params_defs: [fv11]
+// [Asm] # live_in: [fv11], live_out: []
+// [Asm] # block parameters: [fv11]
+// [Asm] .inprod.30_3:
+// [Asm] # control
+// [Asm]   fmv.d fa0, fv11  # live: [fa0]
+// [Asm]   # restore_ctx1  # live: [fa0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] main.31:
+// [Asm] # block info: defs: [v2, fv23, t1, v16, v22, fv20, ft0, ft1, a1, s11, v12, fv15, fa1, fa2, ft6, a4, fa6, v8, a6, v19, ft10, ft5, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, fv6, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, fv13, t4, t2, fv7, v3], uses: [v3, fv23, v16, a0, v22, fv20, a2, a1, s11, v12, fv15, fv6, v9, zero, fa0, fv13, v8, v19, fv7, v2], upward_exposed: [s11, zero], params_defs: []
+// [Asm] # live_in: [s11, zero], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .main.31_0:
+// [Asm]   # save_ctx1  # live: [s11, zero]
+// [Asm]   addi v2, s11, -24  # live: [zero, v2]
+// [Asm]   andi s11, v2, -8  # live: [s11, zero, v2]
+// [Asm]   li v22, 4608218246714312622  # live: [s11, zero, v22, v2]
+// [Asm]   fmv.d.x fv23, v22  # live: [fv23, s11, zero, v2]
+// [Asm]   fsd fv23, 0(v2)  # live: [fv23, s11, zero, v2]
+// [Asm]   fsd fv23, 8(v2)  # live: [fv23, s11, zero, v2]
+// [Asm]   fsd fv23, 16(v2)  # live: [s11, zero, v2]
+// [Asm]   addi v3, s11, -24  # live: [v2, zero, v3]
+// [Asm]   andi s11, v3, -8  # live: [v2, zero, v3]
+// [Asm]   li v19, 4616820122002590269  # live: [v2, v19, zero, v3]
+// [Asm]   fmv.d.x fv20, v19  # live: [v2, fv20, zero, v3]
+// [Asm]   fsd fv20, 0(v3)  # live: [v2, fv20, zero, v3]
+// [Asm]   fsd fv20, 8(v3)  # live: [v2, fv20, zero, v3]
+// [Asm]   fsd fv20, 16(v3)  # live: [v2, zero, v3]
+// [Asm]   # save_ctx2  # live: [v2, zero, v3]
+// [Asm]   mv a0, v2  # live: [a0, zero, v3]
+// [Asm]   mv a1, v3  # live: [a1, a0, zero]
+// [Asm]   fmv.d.x fv15, zero  # live: [a1, fv15, a0]
+// [Asm]   fmv.d fa0, fv15  # live: [a1, a0, fa0]
+// [Asm]   li v16, 2  # live: [a1, v16, a0, fa0]
+// [Asm]   mv a2, v16  # live: [a2, a1, a0, fa0]
+// [Asm]   call inprod.30  # live: [fa0]
+// [Asm]   fmv.d fv6, fa0  # live: [fv6]
+// [Asm]   # restore_ctx2  # live: [fv6]
+// [Asm]   li v12, 4696837146684686336  # live: [v12, fv6]
+// [Asm]   fmv.d.x fv13, v12  # live: [fv6, fv13]
+// [Asm]   fmul.d fv7, fv13, fv6  # live: [fv7]
+// [Asm]   fcvt.w.d v8, fv7, rtz  # live: [v8]
+// [Asm]   # save_ctx2  # live: [v8]
+// [Asm]   mv a0, v8  # live: [a0]
+// [Asm]   call minimbt_print_int  # live: [a0]
+// [Asm]   mv v9, a0  # live: [v9]
+// [Asm]   # restore_ctx2  # live: [v9]
+// [Asm] # control
+// [Asm]   mv a0, v9  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] minimbt_main:
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
+// [Asm] # live_in: [ra, s11], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .minimbt_main_b0:
+// [Asm]   addi sp, sp, -16  # live: [s11, ra]
+// [Asm]   sd ra, 0(sp)  # live: [s11]
+// [Asm]   sd s11, 8(sp)  # live: []
+// [Asm]   la s11, large_heap_end  # live: []
+// [Asm]   call main.31  # live: [a0]
+// [Asm]   ld ra, 0(sp)  # live: [a0]
+// [Asm]   ld s11, 8(sp)  # live: [a0]
+// [Asm]   addi sp, sp, 16  # live: [a0]
+// [Asm] # control
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm]   .p2align 2
+// [Asm]   .bss
+// [Asm] start:
+// [Asm]   .zero 4
+// [Asm] 
+// [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
 // [Main] 
-// [Main] function $thunk(lambda) {
-// [Main]   return { thunk: lambda };
-// [Main] }
-// [Main] function $is_thunk(x) {
-// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
-// [Main] }
-// [Main] function $force(x) {
-// [Main]   while ($is_thunk(x)) {
-// [Main]     x = x.thunk();
-// [Main]   }
-// [Main]   return x;
-// [Main] }
-// [Main] function $trampoline(f, ...args) {
-// [Main]   let x = f(...args);
-// [Main]   return $force(x);
-// [Main] }
-// [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] check: LetRec({tyvars: [], name: ("inprod", Double), args: [("v1", Array(Double)), ("v2", Array(Double)), ("acc", Double), ("i", Int)], body: If(LE(Int(0), Var("i")), App(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None), Add, kind=None), Prim(Var("i"), Int(1), Sub, kind=None)]), Var("acc"))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("v1", Var({val: None})), Array(Int(3), Double(1.23)), Let(("v2", Var({val: None})), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))}, Unit)) against Unit
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl inprod.30
+// [Main]   .type inprod.30, @function
+// [Main] # leaf true
+// [Main] inprod.30:
+// [Main] .inprod.30_5:
+// [Main] 
+// [Main] .inprod.30_0:
+// [Main]   blt a2, zero, .inprod.30_2
+// [Main] 
+// [Main] .inprod.30_1:
+// [Main]   th.flurd fa1, a0, a2, 3
+// [Main]   th.flurd fa2, a1, a2, 3
+// [Main]   fmadd.d fa0, fa1, fa2, fa0
+// [Main]   addi a2, a2, -1
+// [Main]   j .inprod.30_0
+// [Main] 
+// [Main] .inprod.30_2:
+// [Main] 
+// [Main] .inprod.30_3:
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main.31
+// [Main]   .type main.31, @function
+// [Main] # leaf false
+// [Main] main.31:
+// [Main] .main.31_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   addi a0, s11, -24
+// [Main]   andi s11, a0, -8
+// [Main]   li a1, 4608218246714312622
+// [Main]   fmv.d.x fa0, a1
+// [Main]   fsd fa0, 0(a0)
+// [Main]   fsd fa0, 8(a0)
+// [Main]   fsd fa0, 16(a0)
+// [Main]   addi a1, s11, -24
+// [Main]   andi s11, a1, -8
+// [Main]   li a2, 4616820122002590269
+// [Main]   fmv.d.x fa0, a2
+// [Main]   fsd fa0, 0(a1)
+// [Main]   fsd fa0, 8(a1)
+// [Main]   fsd fa0, 16(a1)
+// [Main]   fmv.d.x fa0, zero
+// [Main]   li a2, 2
+// [Main]   call inprod.30
+// [Main]   li a0, 4696837146684686336
+// [Main]   fmv.d.x fa1, a0
+// [Main]   fmul.d fa0, fa1, fa0
+// [Main]   fcvt.w.d a0, fa0, rtz
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s11, 8(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   call main.31
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s11, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("inprod", Double), args: [("v1", Array[Double]), ("v2", Array[Double]), ("acc", Double), ("i", Int)], body: If(LE(Int(0), Var("i")), App(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None), Add, kind=None), Prim(Var("i"), Int(1), Sub, kind=None)]), Var("acc"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("v1", Var(None)), Array(Int(3), Double(1.23)), Let(("v2", Var(None)), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))}, Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] check: If(LE(Int(0), Var("i")), App(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None), Add, kind=None), Prim(Var("i"), Int(1), Sub, kind=None)]), Var("acc")) against Double
 // [Typer] check: LE(Int(0), Var("i")) against Bool
@@ -61,11 +552,11 @@
 // [Typer] unify: Int and Int
 // [Typer] check: App(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None), Add, kind=None), Prim(Var("i"), Int(1), Sub, kind=None)]) against Double
 // [Typer] infer: Var("v1")
-// [Typer] inst: TypeScheme(([], Array(Double)))
-// [Typer] inst result: Array(Double)
+// [Typer] inst: TypeScheme(([], Array[Double]))
+// [Typer] inst result: Array[Double]
 // [Typer] infer: Var("v2")
-// [Typer] inst: TypeScheme(([], Array(Double)))
-// [Typer] inst result: Array(Double)
+// [Typer] inst: TypeScheme(([], Array[Double]))
+// [Typer] inst result: Array[Double]
 // [Typer] infer: Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None), Add, kind=None)
 // [Typer] infer: Var("acc")
 // [Typer] inst: TypeScheme(([], Double))
@@ -73,16 +564,16 @@
 // [Typer] infer: Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None)
 // [Typer] infer: Get(Var("v1"), Var("i"))
 // [Typer] infer: Var("v1")
-// [Typer] inst: TypeScheme(([], Array(Double)))
-// [Typer] inst result: Array(Double)
+// [Typer] inst: TypeScheme(([], Array[Double]))
+// [Typer] inst result: Array[Double]
 // [Typer] check: Var("i") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] infer: Get(Var("v2"), Var("i"))
 // [Typer] infer: Var("v2")
-// [Typer] inst: TypeScheme(([], Array(Double)))
-// [Typer] inst result: Array(Double)
+// [Typer] inst: TypeScheme(([], Array[Double]))
+// [Typer] inst result: Array[Double]
 // [Typer] check: Var("i") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -95,13 +586,13 @@
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
-// [Typer] check: Var("inprod") against Fun([Array(Double), Array(Double), Double, Int], Double)
-// [Typer] inst: TypeScheme(([], Fun([Array(Double), Array(Double), Double, Int], Double)))
-// [Typer] inst result: Fun([Array(Double), Array(Double), Double, Int], Double)
-// [Typer] unify: Fun([Array(Double), Array(Double), Double, Int], Double) and Fun([Array(Double), Array(Double), Double, Int], Double)
-// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] check: Var("inprod") against (Array[Double], Array[Double], Double, Int) -> Double
+// [Typer] inst: TypeScheme(([], (Array[Double], Array[Double], Double, Int) -> Double))
+// [Typer] inst result: (Array[Double], Array[Double], Double, Int) -> Double
+// [Typer] unify: (Array[Double], Array[Double], Double, Int) -> Double and (Array[Double], Array[Double], Double, Int) -> Double
+// [Typer] unify: Array[Double] and Array[Double]
 // [Typer] unify: Double and Double
-// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] unify: Array[Double] and Array[Double]
 // [Typer] unify: Double and Double
 // [Typer] unify: Double and Double
 // [Typer] unify: Int and Int
@@ -110,51 +601,89 @@
 // [Typer] inst: TypeScheme(([], Double))
 // [Typer] inst result: Double
 // [Typer] unify: Double and Double
-// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("v1", Var({val: None})), Array(Int(3), Double(1.23)), Let(("v2", Var({val: None})), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))}, Unit) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("v1", Var(None)), Array(Int(3), Double(1.23)), Let(("v2", Var(None)), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))}, Unit) against Unit
 // [Typer] typevars: []
-// [Typer] infer: Let(("v1", Var({val: None})), Array(Int(3), Double(1.23)), Let(("v2", Var({val: None})), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))
+// [Typer] infer: Let(("v1", Var(None)), Array(Int(3), Double(1.23)), Let(("v2", Var(None)), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])))
 // [Typer] infer: Array(Int(3), Double(1.23))
 // [Typer] infer: Double(1.23)
 // [Typer] check: Int(3) against Int
-// [Typer] unify: Var({val: None}) and Array(Double)
-// [Typer] union: Var({val: None}) and Array(Double)
-// [Typer] infer: Let(("v2", Var({val: None})), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])]))
+// [Typer] unify: Var(None) and Array[Double]
+// [Typer] union: Var(None) and Array[Double]
+// [Typer] infer: Let(("v2", Var(None)), Array(Int(3), Double(4.56)), App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])]))
 // [Typer] infer: Array(Int(3), Double(4.56))
 // [Typer] infer: Double(4.56)
 // [Typer] check: Int(3) against Int
-// [Typer] unify: Var({val: None}) and Array(Double)
-// [Typer] union: Var({val: None}) and Array(Double)
+// [Typer] unify: Var(None) and Array[Double]
+// [Typer] union: Var(None) and Array[Double]
 // [Typer] infer: App(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)])])
 // [Typer] infer: Var("print_int")
-// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
-// [Typer] inst result: Fun([Int], Unit)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
 // [Typer] check: App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)]) against Int
 // [Typer] infer: Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=None)
 // [Typer] infer: Double(1000000)
 // [Typer] infer: App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)])
 // [Typer] infer: Var("inprod")
-// [Typer] inst: TypeScheme(([], Fun([Array(Double), Array(Double), Double, Int], Double)))
-// [Typer] inst result: Fun([Array(Double), Array(Double), Double, Int], Double)
-// [Typer] check: Var("v1") against Array(Double)
-// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
-// [Typer] inst result: Array(Double)
-// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] inst: TypeScheme(([], (Array[Double], Array[Double], Double, Int) -> Double))
+// [Typer] inst result: (Array[Double], Array[Double], Double, Int) -> Double
+// [Typer] check: Var("v1") against Array[Double]
+// [Typer] inst: TypeScheme(([], Var(Array[Double])))
+// [Typer] inst result: Array[Double]
+// [Typer] unify: Array[Double] and Array[Double]
 // [Typer] unify: Double and Double
-// [Typer] check: Var("v2") against Array(Double)
-// [Typer] inst: TypeScheme(([], Var({val: Some(Array(Double))})))
-// [Typer] inst result: Array(Double)
-// [Typer] unify: Array(Double) and Array(Double)
+// [Typer] check: Var("v2") against Array[Double]
+// [Typer] inst: TypeScheme(([], Var(Array[Double])))
+// [Typer] inst result: Array[Double]
+// [Typer] unify: Array[Double] and Array[Double]
 // [Typer] unify: Double and Double
 // [Typer] check: Double(0) against Double
 // [Typer] check: Int(2) against Int
 // [Typer] unify: Double and Double
-// [Typer] check: Var("truncate") against Fun([Double], Int)
-// [Typer] inst: TypeScheme(([], Fun([Double], Int)))
-// [Typer] inst result: Fun([Double], Int)
-// [Typer] unify: Fun([Double], Int) and Fun([Double], Int)
+// [Typer] check: Var("truncate") against (Double) -> Int
+// [Typer] inst: TypeScheme(([], (Double) -> Int))
+// [Typer] inst result: (Double) -> Int
+// [Typer] unify: (Double) -> Int and (Double) -> Int
 // [Typer] unify: Double and Double
 // [Typer] unify: Int and Int
-// [Typer] unify: Unit and Var({val: None})
-// [Typer] union: Unit and Var({val: None})
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit
+// [KnfOpt] freq: {inprod.1: Many(2), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] freq: {inprod.1: Many(2), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] freq: {inprod.1: Many(2), main.17: Once}
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Fn like 0
+// [KnfOpt] Inline threshold 2 17
+// [KnfOpt] Inline decision rejected
+// [KnfOpt] Numbers of let rec: 2 2 0
+// [KnfOpt] Tuple freq: {v1.3: MayEscape, v2.5: MayEscape, _14: MayEscape, _16: MayEscape, acc.7: MayEscape, _18: MayEscape, _19: MayEscape, _21: MayEscape, _22: MayEscape, v1.20: MayEscape, v2.23: MayEscape, _25: MayEscape, _26: MayEscape, _28: MayEscape, _29: MayEscape}
 // [Parser] flags: []
+// [CoreOpt] eliminated tail rec call %6: Call(ty=Double, f=f0, args=[FnParam(fref=f0, fpref=$f.0), FnParam(fref=f0, fpref=$f.1), Insn(iref=%4), Insn(iref=%5)])
+// [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f4: Once, f1: Once})
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] allow_inline: false %0 main.31 false true true false true
+// [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt2] LVN subst Insn(iref=%7) with Insn(iref=%8)

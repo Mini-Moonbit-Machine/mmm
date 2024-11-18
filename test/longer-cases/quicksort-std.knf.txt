@@ -1,11 +1,11 @@
-let rec swap.1: Unit = (arr.3: Array(Int), i.5: Int, j.7: Int) {
+let rec swap.1: Unit = (arr.3: Array[Int], i.5: Int, j.7: Int) {
   let tmp.8: Int = Get arr.3[i.5]
   let _9: Int = Get arr.3[j.7]
   let _11: Unit = Put arr.3[i.5] = _9
   let _13: Unit = Put arr.3[j.7] = tmp.8
   Unit
 }
-let rec output.14: Unit = (arr.16: Array(Int), i.18: Int, len.20: Int) {
+let rec output.14: Unit = (arr.16: Array[Int], i.18: Int, len.20: Int) {
   let _21: Int = Int(1)
   let _22: Int = Sub(len.20, _21)
   if (i.18 <= _22) then {
@@ -19,7 +19,7 @@ let rec output.14: Unit = (arr.16: Array(Int), i.18: Int, len.20: Int) {
     Unit
   }
 }
-let rec insertion_sort.30: Unit = (arr.32: Array(Int), low.34: Int, high.36: Int) {
+let rec insertion_sort.30: Unit = (arr.32: Array[Int], low.34: Int, high.36: Int) {
   let rec g.37: Unit = (j.39: Int) {
     let _40: Int = Int(1)
     let _41: Int = Add(_40, low.34)
@@ -60,7 +60,7 @@ let rec insertion_sort.30: Unit = (arr.32: Array(Int), low.34: Int, high.36: Int
   let _64: Int = Add(low.34, _63)
   Apply(f.54, [_64, ])
 }
-let rec partition.65: Tuple([Int, Bool]) = (arr.67: Array(Int), pivot_index.69: Int, low.71: Int, high.73: Int) {
+let rec partition.65: (Int, Bool) = (arr.67: Array[Int], pivot_index.69: Int, low.71: Int, high.73: Int) {
   let _74: Int = Int(1)
   let _75: Int = Sub(high.73, _74)
   let _77: Unit = Apply(swap.1, [arr.67, pivot_index.69, _75, ])
@@ -68,10 +68,10 @@ let rec partition.65: Tuple([Int, Bool]) = (arr.67: Array(Int), pivot_index.69: 
   let _79: Int = Sub(high.73, _78)
   let pivot.80: Int = Get arr.67[_79]
   let _81: Int = Int(1)
-  let i.82: Array(Int) = ExtApply(minimbt_create_array, [_81, low.71, ])
+  let i.82: Array[Int] = ExtApply(minimbt_create_array, [_81, low.71, ])
   let _83: Int = Int(1)
   let _84: Int = Int(1)
-  let partitioned.85: Array(Int) = ExtApply(minimbt_create_array, [_83, _84, ])
+  let partitioned.85: Array[Int] = ExtApply(minimbt_create_array, [_83, _84, ])
   let rec aux.86: Unit = (j.88: Int) {
     let _89: Int = Int(2)
     let _90: Int = Sub(high.73, _89)
@@ -127,11 +127,11 @@ let rec partition.65: Tuple([Int, Bool]) = (arr.67: Array(Int), pivot_index.69: 
   }
   Tuple([_124, _128, ])
 }
-let rec choose_pivot.129: Tuple([Int, Bool]) = (arr.131: Array(Int), low.133: Int, high.135: Int) {
+let rec choose_pivot.129: (Int, Bool) = (arr.131: Array[Int], low.133: Int, high.135: Int) {
   let use_median_of_medians.136: Int = Int(50)
   let _137: Int = Int(1)
   let _138: Int = Int(0)
-  let swaps.139: Array(Int) = ExtApply(minimbt_create_array, [_137, _138, ])
+  let swaps.139: Array[Int] = ExtApply(minimbt_create_array, [_137, _138, ])
   let len.140: Int = Sub(high.135, low.133)
   let _141: Int = Int(4)
   let _142: Int = Div(len.140, _141)
@@ -207,15 +207,15 @@ let rec choose_pivot.129: Tuple([Int, Bool]) = (arr.131: Array(Int), low.133: In
   }
   Tuple([b.145, _209, ])
 }
-let rec quick_sort.210: Unit = (arr.212: Array(Int), low.214: Int, high.216: Int) {
+let rec quick_sort.210: Unit = (arr.212: Array[Int], low.214: Int, high.216: Int) {
   let len.217: Int = Sub(high.216, low.214)
   let _218: Int = Int(16)
   if (len.217 <= _218) then {
     Apply(insertion_sort.30, [arr.212, low.214, high.216, ])
   } else {
-    let _219: Tuple([Int, Bool]) = Apply(choose_pivot.129, [arr.212, low.214, high.216, ])
+    let _219: (Int, Bool) = Apply(choose_pivot.129, [arr.212, low.214, high.216, ])
     let (pivot_index.221: Int, likely_sorted.223: Bool) = _219
-    let _224: Tuple([Int, Bool]) = Apply(partition.65, [arr.212, pivot_index.221, low.214, high.216, ])
+    let _224: (Int, Bool) = Apply(partition.65, [arr.212, pivot_index.221, low.214, high.216, ])
     let (pivot.226: Int, partitioned.228: Bool) = _224
     let _230: Unit = Apply(quick_sort.210, [arr.212, low.214, pivot.226, ])
     let _231: Int = Int(1)
@@ -223,14 +223,14 @@ let rec quick_sort.210: Unit = (arr.212: Array(Int), low.214: Int, high.216: Int
     Apply(quick_sort.210, [arr.212, _232, high.216, ])
   }
 }
-let rec sort.233: Unit = (x.235: Array(Int), len.237: Int) {
+let rec sort.233: Unit = (x.235: Array[Int], len.237: Int) {
   let _238: Int = Int(0)
   Apply(quick_sort.210, [x.235, _238, len.237, ])
 }
 let rec main.239: Unit = () {
   let len.240: Int = ExtApply(minimbt_read_int, [])
   let _241: Int = Int(0)
-  let arr.242: Array(Int) = ExtApply(minimbt_create_array, [len.240, _241, ])
+  let arr.242: Array[Int] = ExtApply(minimbt_create_array, [len.240, _241, ])
   let rec input.243: Unit = (i.245: Int) {
     let _246: Int = Int(1)
     let _247: Int = Sub(len.240, _246)

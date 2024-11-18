@@ -1,6 +1,6 @@
 let unmem_magic: Int = Neg(Int(1919810))
-let rec mem: (func: Fun([Fun([Int], Int), Int], Int), max_n: Int) -> Fun([Int], Int) {
-  let cache: Array(Int) = Array::make(Var("max_n"), Var("unmem_magic"))
+let rec mem: (func: ((Int) -> Int, Int) -> Int, max_n: Int) -> (Int) -> Int {
+  let cache: Array[Int] = Array::make(Var("max_n"), Var("unmem_magic"))
   let rec memed: (n: Int) -> Int {
     if (Eq(Get(Var("cache"), Var("n")), Var("unmem_magic"))) then {
       let res: Int = Apply(Var("func"), [Var("memed"), Var("n"), ])
@@ -12,7 +12,7 @@ let rec mem: (func: Fun([Fun([Int], Int), Int], Int), max_n: Int) -> Fun([Int], 
   }
   Var(memed)
 }
-let rec mem_fib: (f: Fun([Int], Int), n: Int) -> Int {
+let rec mem_fib: (f: (Int) -> Int, n: Int) -> Int {
   if (LE(Var("n"), Int(1))) then {
     Var(n)
   } else {
@@ -20,7 +20,7 @@ let rec mem_fib: (f: Fun([Int], Int), n: Int) -> Int {
   }
 }
 let rec fib: (n: Int) -> Int {
-  let f: Fun([Int], Int) = Apply(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=Some(Int)), ])
+  let f: (Int) -> Int = Apply(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=Some(Int)), ])
   Apply(Var("f"), [Var("n"), ])
 }
 let rec main: () -> Unit {

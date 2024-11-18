@@ -1,5 +1,5 @@
-let rec iter: (arr: Array(Int), len: Int) -> Fun([Fun([Int], Bool)], Bool) {
-  let rec do: (yield: Fun([Int], Bool)) -> Bool {
+let rec iter: (arr: Array[Int], len: Int) -> ((Int) -> Bool) -> Bool {
+  let rec do: (yield: (Int) -> Bool) -> Bool {
     let rec next: (i: Int) -> Bool {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
         if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
@@ -15,7 +15,7 @@ let rec iter: (arr: Array(Int), len: Int) -> Fun([Fun([Int], Bool)], Bool) {
   }
   Var(do)
 }
-let rec each: (iter: Fun([Fun([Int], Bool)], Bool), f: Fun([Int], Unit)) -> Unit {
+let rec each: (iter: ((Int) -> Bool) -> Bool, f: (Int) -> Unit) -> Unit {
   let rec yield: (x: Int) -> Bool {
     let _: Unit = Apply(Var("f"), [Var("x"), ])
     Bool(true)
@@ -30,13 +30,13 @@ let rec each: (iter: Fun([Fun([Int], Bool)], Bool), f: Fun([Int], Unit)) -> Unit
   Apply(Var("do"), [])
 }
 let rec main: () -> Unit {
-  let arr: Array(Int) = Array::make(Int(5), Int(1))
+  let arr: Array[Int] = Array::make(Int(5), Int(1))
   let _: Unit = Put Var("arr")[Int(0)] = Int(1)
   let _: Unit = Put Var("arr")[Int(1)] = Int(2)
   let _: Unit = Put Var("arr")[Int(2)] = Int(3)
   let _: Unit = Put Var("arr")[Int(3)] = Int(4)
   let _: Unit = Put Var("arr")[Int(4)] = Int(5)
-  let f: Fun([Fun([Int], Bool)], Bool) = Apply(Var("iter"), [Var("arr"), Int(5), ])
+  let f: ((Int) -> Bool) -> Bool = Apply(Var("iter"), [Var("arr"), Int(5), ])
   let rec print: (x: Int) -> Unit {
     Apply(Var("print_int"), [Var("x"), ])
   }

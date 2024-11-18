@@ -1,46 +1,320 @@
-// [Main] function thunk_main(k) {
-// [Main]   function f_1(k) {
-// [Main]     const _2 = 6;
-// [Main]     const _3 = 0;
-// [Main]     if (_2 <= _3) {
-// [Main]       return k(1)
-// [Main]     } else {
-// [Main]       const _4 = 6;
-// [Main]       const _5 = 10;
-// [Main]       if (_4 <= _5) {
-// [Main]         return k(2)
-// [Main]       } else {
-// [Main]         return k(3)
-// [Main]       }
-// [Main]     }
-// [Main]   }
-// [Main]   function main_6(k) {
-// [Main]     return $thunk(() => f_1(function (_7) {
-// [Main]       return $thunk(() => k(minimbt_print_int($force(_7))))
-// [Main]     }
-// [Main]     ))
-// [Main]   }
-// [Main]   return $thunk(() => main_6(k))
-// [Main] }
+// [Asm] LoweringOrder: [0, 2, 4, 3, 5, 1, 6]
+// [Asm] LoweringOrder: [[1, 2], [3, 4], [5], [5], [6], [6], []]
+// [Asm] LoweringOrder: HashMap::of([(b6, 0), (b4, 1), (b1, 2), (b5, 0), (b2, 0), (b3, 0), (b0, 0)])
+// [Asm] LoweringOrder: [b0, b2, b3, b5, b6, b4, b1]
+// [Asm] LoweringOrder: HashMap::of([(b6, 4), (b4, 0), (b1, 0), (b5, 3), (b2, 1), (b3, 2), (b0, 0)])
+// [Asm] pre_assigned_registers: Insn(iref=%1) -> v3, BlockParam(bref=b5, bpref=$b.0) -> v4, Self(fref=f0) -> v0, BlockParam(bref=b6, bpref=$b.0) -> v5, Insn(iref=%0) -> v2, Insn(iref=%2) -> v6
+// [Asm] succs: []
+// [Asm] critical edges for b6: []
+// [Asm] critical color seq for b6: []
+// [Asm] succs: [6]
+// [Asm] critical edges for b1: []
+// [Asm] critical color seq for b1: []
+// [Asm] succs: [6]
+// [Asm] critical edges for b5: []
+// [Asm] critical color seq for b5: []
+// [Asm] succs: [5]
+// [Asm] critical edges for b3: []
+// [Asm] critical color seq for b3: []
+// [Asm] succs: [5]
+// [Asm] critical edges for b4: []
+// [Asm] critical color seq for b4: []
+// [Asm] succs: [3, 4]
+// [Asm] critical edges for b2: []
+// [Asm] critical color seq for b2: []
+// [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=6), Int32(val=10)])
+// [Asm] succs: [1, 2]
+// [Asm] critical edges for b0: []
+// [Asm] critical color seq for b0: []
+// [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=6), Int32(val=0)])
+// [Asm] defs: []
+// [Asm] live_set: [v5]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v5
+// [Asm] defined: a0 is X
+// [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
+// [Asm] live_set: [a0]
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: t2 is X
+// [Asm] defined: t3 is X
+// [Asm] defined: t4 is X
+// [Asm] defined: a0 is X
+// [Asm] defined: a1 is X
+// [Asm] defined: a2 is X
+// [Asm] defined: a3 is X
+// [Asm] defined: a4 is X
+// [Asm] defined: a5 is X
+// [Asm] defined: a6 is X
+// [Asm] defined: a7 is X
+// [Asm] defined: t0 is X
+// [Asm] defined: t1 is X
+// [Asm] defined: ft0 is F
+// [Asm] defined: ft1 is F
+// [Asm] defined: ft2 is F
+// [Asm] defined: ft3 is F
+// [Asm] defined: ft4 is F
+// [Asm] defined: ft5 is F
+// [Asm] defined: ft6 is F
+// [Asm] defined: ft7 is F
+// [Asm] defined: ft8 is F
+// [Asm] defined: ft9 is F
+// [Asm] defined: ft10 is F
+// [Asm] defined: fa0 is F
+// [Asm] defined: fa1 is F
+// [Asm] defined: fa2 is F
+// [Asm] defined: fa3 is F
+// [Asm] defined: fa4 is F
+// [Asm] defined: fa5 is F
+// [Asm] defined: fa6 is F
+// [Asm] defined: fa7 is F
+// [Asm] defs: [v6]
+// [Asm] live_set: [v6]
+// [Asm] move: v6 <- a0
+// [Asm] defined: v6 is X
+// [Asm] defs: []
+// [Asm] live_set: [v6]
+// [Asm] defs: [a0]
+// [Asm] live_set: [a0]
+// [Asm] move: a0 <- v6
+// [Asm] defined: a0 is X
+// [Asm] defs: []
+// [Asm] live_set: [a0]
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v10]
+// [Asm] live_set: [v10]
+// [Asm] defined: v10 is X
+// [Asm] defs: [v4]
+// [Asm] live_set: [v4]
+// [Asm] move: v4 <- v10
+// [Asm] defined: v4 is X
+// [Asm] defs: []
+// [Asm] live_set: [v4]
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5]
+// [Asm] move: v5 <- v4
+// [Asm] defined: v5 is X
+// [Asm] defs: [v11]
+// [Asm] live_set: [v11]
+// [Asm] defined: v11 is X
+// [Asm] defs: [v12]
+// [Asm] live_set: [v11, v12]
+// [Asm] defined: v12 is X
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] defs: [v9]
+// [Asm] live_set: [v9]
+// [Asm] defined: v9 is X
+// [Asm] defs: [v4]
+// [Asm] live_set: [v4]
+// [Asm] move: v4 <- v9
+// [Asm] defined: v4 is X
+// [Asm] defs: [v8]
+// [Asm] live_set: [v8]
+// [Asm] defined: v8 is X
+// [Asm] defs: [v5]
+// [Asm] live_set: [v5]
+// [Asm] move: v5 <- v8
+// [Asm] defined: v5 is X
+// [Asm] defs: []
+// [Asm] live_set: [v5]
+// [Asm] defs: []
+// [Asm] live_set: [zero]
+// [Asm] defs: [v13]
+// [Asm] live_set: [zero, v13]
+// [Asm] defined: v13 is X
+// [Asm] defs: []
+// [Asm] live_set: []
+// [Asm] Label("main.12") clobbered_x: @hashset.of([a1, a0])
+// [Asm] Label("main.12") clobbered_f: @hashset.of([])
+// [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
+// [Asm] subst   ret ->   ret
+// [Asm] subst   li v10, 3 ->   li a0, 3
+// [Asm] subst   j .main.12_5 ->   j .main.12_5
+// [Asm] subst   li v11, 10 ->   li a0, 10
+// [Asm] subst   li v12, 6 ->   li a1, 6
+// [Asm] subst   blt v11, v12, .main.12_4 ->   blt a0, a1, .main.12_4
+// [Asm] subst   li v9, 2 ->   li a0, 2
+// [Asm] subst   li v8, 1 ->   li a0, 1
+// [Asm] subst   j .main.12_6 ->   j .main.12_6
+// [Asm] subst   li v13, 6 ->   li a0, 6
+// [Asm] subst   bge zero, v13, .main.12_1 ->   bge zero, a0, .main.12_1
+// [Asm] LoweringOrder: [0]
+// [Asm] LoweringOrder: [[]]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] LoweringOrder: [b0]
+// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
+// [Asm] pre_assigned_registers: Self(fref=f2) -> v0, Insn(iref=%0) -> v2
+// [Asm] before colored: # leaf false
+// [Asm] main.12:
+// [Asm] # block info: defs: [v13], uses: [zero, v13], upward_exposed: [zero], params_defs: []
+// [Asm] # live_in: [zero], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .main.12_0:
+// [Asm]   # save_ctx1  # live: [zero]
+// [Asm] # control
+// [Asm]   li v13, 6  # live: [zero, v13]
+// [Asm]   bge zero, v13, .main.12_1  # live: []
+// [Asm] 
+// [Asm] # block info: defs: [v11, v12], uses: [v11, v12], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .main.12_2:
+// [Asm] # control
+// [Asm]   li v11, 10  # live: [v11]
+// [Asm]   li v12, 6  # live: [v11, v12]
+// [Asm]   blt v11, v12, .main.12_4  # live: []
+// [Asm] 
+// [Asm] # block info: defs: [v4, v9], uses: [v9], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: [v4]
+// [Asm] # block parameters: []
+// [Asm] .main.12_3:
+// [Asm] # control
+// [Asm]   li v9, 2  # live: [v9]
+// [Asm]   mv v4, v9  # live: [v4]
+// [Asm] 
+// [Asm] # block info: defs: [v5], uses: [v4], upward_exposed: [v4], params_defs: [v4]
+// [Asm] # live_in: [v4], live_out: [v5]
+// [Asm] # block parameters: [v4]
+// [Asm] .main.12_5:
+// [Asm] # control
+// [Asm]   mv v5, v4  # live: [v5]
+// [Asm] 
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v6, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v5, v6, a0], upward_exposed: [v5], params_defs: [v5]
+// [Asm] # live_in: [v5], live_out: []
+// [Asm] # block parameters: [v5]
+// [Asm] .main.12_6:
+// [Asm]   # save_ctx2  # live: [v5]
+// [Asm]   mv a0, v5  # live: [a0]
+// [Asm]   call minimbt_print_int  # live: [a0]
+// [Asm]   mv v6, a0  # live: [v6]
+// [Asm]   # restore_ctx2  # live: [v6]
+// [Asm] # control
+// [Asm]   mv a0, v6  # live: [a0]
+// [Asm]   # restore_ctx1  # live: [a0]
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] # block info: defs: [v4, v10], uses: [v10], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: [v4]
+// [Asm] # block parameters: []
+// [Asm] .main.12_4:
+// [Asm] # control
+// [Asm]   li v10, 3  # live: [v10]
+// [Asm]   mv v4, v10  # live: [v4]
+// [Asm]   j .main.12_5  # live: [v4]
+// [Asm] 
+// [Asm] # block info: defs: [v5, v8], uses: [v8], upward_exposed: [], params_defs: []
+// [Asm] # live_in: [], live_out: [v5]
+// [Asm] # block parameters: []
+// [Asm] .main.12_1:
+// [Asm] # control
+// [Asm]   li v8, 1  # live: [v8]
+// [Asm]   mv v5, v8  # live: [v5]
+// [Asm]   j .main.12_6  # live: [v5]
+// [Asm] 
+// [Asm] # leaf false
+// [Asm] minimbt_main:
+// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
+// [Asm] # live_in: [ra, s11], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .minimbt_main_b0:
+// [Asm]   addi sp, sp, -16  # live: [s11, ra]
+// [Asm]   sd ra, 0(sp)  # live: [s11]
+// [Asm]   sd s11, 8(sp)  # live: []
+// [Asm]   la s11, large_heap_end  # live: []
+// [Asm]   call main.12  # live: [a0]
+// [Asm]   ld ra, 0(sp)  # live: [a0]
+// [Asm]   ld s11, 8(sp)  # live: [a0]
+// [Asm]   addi sp, sp, 16  # live: [a0]
+// [Asm] # control
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm]   .p2align 2
+// [Asm]   .bss
+// [Asm] start:
+// [Asm]   .zero 4
+// [Asm] 
+// [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 1610612736
+// [Main] large_heap_end:
 // [Main] 
-// [Main] function $thunk(lambda) {
-// [Main]   return { thunk: lambda };
-// [Main] }
-// [Main] function $is_thunk(x) {
-// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
-// [Main] }
-// [Main] function $force(x) {
-// [Main]   while ($is_thunk(x)) {
-// [Main]     x = x.thunk();
-// [Main]   }
-// [Main]   return x;
-// [Main] }
-// [Main] function $trampoline(f, ...args) {
-// [Main]   let x = f(...args);
-// [Main]   return $force(x);
-// [Main] }
-// [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [], body: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))}, LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit)) against Unit
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 268435456
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl main.12
+// [Main]   .type main.12, @function
+// [Main] # leaf false
+// [Main] main.12:
+// [Main] .main.12_0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   li a0, 6
+// [Main]   bge zero, a0, .main.12_1
+// [Main] 
+// [Main] .main.12_2:
+// [Main]   li a0, 10
+// [Main]   li a1, 6
+// [Main]   blt a0, a1, .main.12_4
+// [Main] 
+// [Main] .main.12_3:
+// [Main]   li a0, 2
+// [Main] 
+// [Main] .main.12_5:
+// [Main] 
+// [Main] .main.12_6:
+// [Main]   call minimbt_print_int
+// [Main]   ld ra, 0(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] .main.12_4:
+// [Main]   li a0, 3
+// [Main]   j .main.12_5
+// [Main] 
+// [Main] .main.12_1:
+// [Main]   li a0, 1
+// [Main]   j .main.12_6
+// [Main] 
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s11, 8(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   call main.12
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s11, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main]   .p2align 2
+// [Main]   .bss
+// [Main]   .globl start
+// [Main]   .type start, @object
+// [Main] start:
+// [Main]   .zero 4
+// [Main] 
+// [Main] 
+// [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [], body: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3)))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] check: If(LE(Int(6), Int(0)), Int(1), If(LE(Int(6), Int(10)), Int(2), Int(3))) against Int
 // [Typer] check: LE(Int(6), Int(0)) against Bool
@@ -55,19 +329,32 @@
 // [Typer] unify: Int and Int
 // [Typer] check: Int(2) against Int
 // [Typer] check: Int(3) against Int
-// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(Var("f"), [])])}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: App(Var("print_int"), [App(Var("f"), [])])
 // [Typer] infer: Var("print_int")
-// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
-// [Typer] inst result: Fun([Int], Unit)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
 // [Typer] check: App(Var("f"), []) against Int
-// [Typer] check: Var("f") against Fun([], Int)
-// [Typer] inst: TypeScheme(([], Fun([], Int)))
-// [Typer] inst result: Fun([], Int)
-// [Typer] unify: Fun([], Int) and Fun([], Int)
+// [Typer] check: Var("f") against () -> Int
+// [Typer] inst: TypeScheme(([], () -> Int))
+// [Typer] inst result: () -> Int
+// [Typer] unify: () -> Int and () -> Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Unit and Var({val: None})
-// [Typer] union: Unit and Var({val: None})
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit
+// [KnfOpt] freq: {f.1: Once, main.6: Once}
+// [KnfOpt] Knf inline Some(f)
+// [KnfOpt] freq: {main.6: Once}
+// [KnfOpt] freq: {main.6: Once}
+// [KnfOpt] Numbers of let rec: 1 1 0
+// [KnfOpt] Tuple freq: {_7: MayEscape}
 // [Parser] flags: []
+// [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f2: Once})
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true
+// [CoreOpt] allow_inline: false %0 main.12 false true true false true

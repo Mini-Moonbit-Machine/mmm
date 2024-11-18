@@ -1,7 +1,7 @@
-let rec map.1: Fun([Unit], Tuple([Int, Int])) = (stream.3: Fun([Unit], Tuple([Int, Int])), f.5: Fun([Int], Int)) {
-  let rec aux.6: Tuple([Int, Int]) = (u.8: Unit) {
+let rec map.1: (Unit) -> (Int, Int) = (stream.3: (Unit) -> (Int, Int), f.5: (Int) -> Int) {
+  let rec aux.6: (Int, Int) = (u.8: Unit) {
     let _9: Unit = Unit
-    let _10: Tuple([Int, Int]) = Apply(stream.3, [_9, ])
+    let _10: (Int, Int) = Apply(stream.3, [_9, ])
     let (ok.12: Int, val.14: Int) = _10
     let _15: Int = Int(0)
     if (ok.12 == _15) then {
@@ -16,10 +16,10 @@ let rec map.1: Fun([Unit], Tuple([Int, Int])) = (stream.3: Fun([Unit], Tuple([In
   }
   Var(aux.6)
 }
-let rec filter.20: Fun([Unit], Tuple([Int, Int])) = (stream.22: Fun([Unit], Tuple([Int, Int])), f.24: Fun([Int], Int)) {
-  let rec aux.25: Tuple([Int, Int]) = (u.27: Unit) {
+let rec filter.20: (Unit) -> (Int, Int) = (stream.22: (Unit) -> (Int, Int), f.24: (Int) -> Int) {
+  let rec aux.25: (Int, Int) = (u.27: Unit) {
     let _28: Unit = Unit
-    let _29: Tuple([Int, Int]) = Apply(stream.22, [_28, ])
+    let _29: (Int, Int) = Apply(stream.22, [_28, ])
     let (ok.31: Int, val.33: Int) = _29
     let _34: Int = Int(0)
     if (ok.31 == _34) then {
@@ -40,10 +40,10 @@ let rec filter.20: Fun([Unit], Tuple([Int, Int])) = (stream.22: Fun([Unit], Tupl
   }
   Var(aux.25)
 }
-let rec concat.41: Fun([Unit], Tuple([Int, Int])) = (stream1.43: Fun([Unit], Tuple([Int, Int])), stream2.45: Fun([Unit], Tuple([Int, Int]))) {
-  let rec aux.46: Tuple([Int, Int]) = (u.48: Unit) {
+let rec concat.41: (Unit) -> (Int, Int) = (stream1.43: (Unit) -> (Int, Int), stream2.45: (Unit) -> (Int, Int)) {
+  let rec aux.46: (Int, Int) = (u.48: Unit) {
     let _49: Unit = Unit
-    let _50: Tuple([Int, Int]) = Apply(stream1.43, [_49, ])
+    let _50: (Int, Int) = Apply(stream1.43, [_49, ])
     let (ok.52: Int, val.54: Int) = _50
     let _55: Int = Int(0)
     if (ok.52 == _55) then {
@@ -56,10 +56,10 @@ let rec concat.41: Fun([Unit], Tuple([Int, Int])) = (stream1.43: Fun([Unit], Tup
   }
   Var(aux.46)
 }
-let rec range.58: Fun([Unit], Tuple([Int, Int])) = (from.60: Int, to.62: Int) {
+let rec range.58: (Unit) -> (Int, Int) = (from.60: Int, to.62: Int) {
   let _63: Int = Int(1)
-  let state.64: Array(Int) = ExtApply(minimbt_create_array, [_63, from.60, ])
-  let rec aux.65: Tuple([Int, Int]) = (u.67: Unit) {
+  let state.64: Array[Int] = ExtApply(minimbt_create_array, [_63, from.60, ])
+  let rec aux.65: (Int, Int) = (u.67: Unit) {
     let _68: Int = Int(0)
     let val.69: Int = Get state.64[_68]
     if (val.69 == to.62) then {
@@ -77,15 +77,15 @@ let rec range.58: Fun([Unit], Tuple([Int, Int])) = (from.60: Int, to.62: Int) {
   }
   Var(aux.65)
 }
-let rec addx.78: Fun([Int], Int) = (x.80: Int) {
+let rec addx.78: (Int) -> Int = (x.80: Int) {
   let rec aux.81: Int = (y.83: Int) {
     Add(x.80, y.83)
   }
   Var(aux.81)
 }
-let rec fold.84: Int = (stream.86: Fun([Unit], Tuple([Int, Int])), f.88: Fun([Int, Int], Int), acc.90: Int) {
+let rec fold.84: Int = (stream.86: (Unit) -> (Int, Int), f.88: (Int, Int) -> Int, acc.90: Int) {
   let _91: Unit = Unit
-  let _92: Tuple([Int, Int]) = Apply(stream.86, [_91, ])
+  let _92: (Int, Int) = Apply(stream.86, [_91, ])
   let (ok.94: Int, val.96: Int) = _92
   let _97: Int = Int(0)
   if (ok.94 == _97) then {
@@ -95,14 +95,14 @@ let rec fold.84: Int = (stream.86: Fun([Unit], Tuple([Int, Int])), f.88: Fun([In
     Apply(fold.84, [stream.86, f.88, _98, ])
   }
 }
-let rec sum.99: Int = (stream.101: Fun([Unit], Tuple([Int, Int]))) {
+let rec sum.99: Int = (stream.101: (Unit) -> (Int, Int)) {
   let rec add.102: Int = (x.104: Int, y.106: Int) {
     Add(x.104, y.106)
   }
   let _107: Int = Int(0)
   Apply(fold.84, [stream.101, add.102, _107, ])
 }
-let rec gt.108: Fun([Int], Int) = (x.110: Int) {
+let rec gt.108: (Int) -> Int = (x.110: Int) {
   let rec aux.111: Int = (y.113: Int) {
     if (x.110 <= y.113) then {
       Int(0)
@@ -112,7 +112,7 @@ let rec gt.108: Fun([Int], Int) = (x.110: Int) {
   }
   Var(aux.111)
 }
-let rec le.114: Fun([Int], Int) = (x.116: Int) {
+let rec le.114: (Int) -> Int = (x.116: Int) {
   let rec aux.117: Int = (y.119: Int) {
     if (y.119 <= x.116) then {
       Int(0)
@@ -125,20 +125,20 @@ let rec le.114: Fun([Int], Int) = (x.116: Int) {
 let rec main.120: Unit = () {
   let _121: Int = Int(0)
   let _122: Int = Int(100)
-  let range100.123: Fun([Unit], Tuple([Int, Int])) = Apply(range.58, [_121, _122, ])
+  let range100.123: (Unit) -> (Int, Int) = Apply(range.58, [_121, _122, ])
   let _124: Int = Int(0)
   let _125: Int = Int(1000)
-  let range1000.126: Fun([Unit], Tuple([Int, Int])) = Apply(range.58, [_124, _125, ])
-  let catt.127: Fun([Unit], Tuple([Int, Int])) = Apply(concat.41, [range100.123, range1000.126, ])
+  let range1000.126: (Unit) -> (Int, Int) = Apply(range.58, [_124, _125, ])
+  let catt.127: (Unit) -> (Int, Int) = Apply(concat.41, [range100.123, range1000.126, ])
   let _128: Int = Int(1)
-  let _129: Fun([Int], Int) = Apply(addx.78, [_128, ])
-  let addone.130: Fun([Unit], Tuple([Int, Int])) = Apply(map.1, [catt.127, _129, ])
+  let _129: (Int) -> Int = Apply(addx.78, [_128, ])
+  let addone.130: (Unit) -> (Int, Int) = Apply(map.1, [catt.127, _129, ])
   let _131: Int = Int(50)
-  let _132: Fun([Int], Int) = Apply(gt.108, [_131, ])
-  let over50.133: Fun([Unit], Tuple([Int, Int])) = Apply(filter.20, [addone.130, _132, ])
+  let _132: (Int) -> Int = Apply(gt.108, [_131, ])
+  let over50.133: (Unit) -> (Int, Int) = Apply(filter.20, [addone.130, _132, ])
   let _134: Int = Int(1200)
-  let _135: Fun([Int], Int) = Apply(le.114, [_134, ])
-  let under1200.136: Fun([Unit], Tuple([Int, Int])) = Apply(filter.20, [over50.133, _135, ])
+  let _135: (Int) -> Int = Apply(le.114, [_134, ])
+  let under1200.136: (Unit) -> (Int, Int) = Apply(filter.20, [over50.133, _135, ])
   let sum.137: Int = Apply(sum.99, [under1200.136, ])
   let _139: Unit = ExtApply(minimbt_print_int, [sum.137, ])
   let _140: Int = Int(10)

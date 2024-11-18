@@ -1,4 +1,4 @@
-let rec matmul: (l: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec matmul: (l: Int, m: Int, n: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   let rec loop1: (i: Int) -> Unit {
     if (LE(Int(0), Var("i"))) then {
       let rec loop2: (j: Int) -> Unit {
@@ -26,9 +26,9 @@ let rec matmul: (l: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array
   Apply(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int)), ])
 }
 let rec main: () -> Unit {
-  let dummy: Array(Double) = Array::make(Int(0), Double(0))
-  let rec gen_arr: (m: Int, n: Int) -> Array(Array(Double)) {
-    let mat: Array(Array(Double)) = Array::make(Var("m"), Var("dummy"))
+  let dummy: Array[Double] = Array::make(Int(0), Double(0))
+  let rec gen_arr: (m: Int, n: Int) -> Array[Array[Double]] {
+    let mat: Array[Array[Double]] = Array::make(Var("m"), Var("dummy"))
     let rec init_arr: (i: Int) -> Unit {
       if (LE(Int(0), Var("i"))) then {
         let _: Unit = Put Var("mat")[Var("i")] = Array(Var("n"), Double(0))
@@ -40,9 +40,9 @@ let rec main: () -> Unit {
     let _: Unit = Apply(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), ])
     Var(mat)
   }
-  let a: Array(Array(Double)) = Apply(Var("gen_arr"), [Int(2), Int(3), ])
-  let b: Array(Array(Double)) = Apply(Var("gen_arr"), [Int(3), Int(2), ])
-  let c: Array(Array(Double)) = Apply(Var("gen_arr"), [Int(2), Int(2), ])
+  let a: Array[Array[Double]] = Apply(Var("gen_arr"), [Int(2), Int(3), ])
+  let b: Array[Array[Double]] = Apply(Var("gen_arr"), [Int(3), Int(2), ])
+  let c: Array[Array[Double]] = Apply(Var("gen_arr"), [Int(2), Int(2), ])
   let _: Unit = Put Get(Var("a"), Int(0))[Int(0)] = Double(1)
   let _: Unit = Put Get(Var("a"), Int(0))[Int(1)] = Double(2)
   let _: Unit = Put Get(Var("a"), Int(0))[Int(2)] = Double(3)

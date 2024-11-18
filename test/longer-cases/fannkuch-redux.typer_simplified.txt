@@ -1,6 +1,6 @@
-let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
-  let rec gen_perm1: (len: Int) -> Array(Int) {
-    let arr: Array(Int) = Array::make(Var("len"), Int(0))
+let rec fannkuch: (n: Int) -> (Int, Int) {
+  let rec gen_perm1: (len: Int) -> Array[Int] {
+    let arr: Array[Int] = Array::make(Var("len"), Int(0))
     let rec init_arr: (i: Int) -> Unit {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
         let _: Unit = Put Var("arr")[Var("i")] = Var("i")
@@ -12,15 +12,15 @@ let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
     let _: Unit = Apply(Var("init_arr"), [Int(0), ])
     Var(arr)
   }
-  let perm1: Array(Int) = Apply(Var("gen_perm1"), [Var("n"), ])
-  let perm: Array(Int) = Array::make(Var("n"), Int(0))
-  let count: Array(Int) = Array::make(Var("n"), Int(0))
-  let flips: Array(Int) = Array::make(Int(1), Int(0))
-  let max_flips: Array(Int) = Array::make(Int(1), Int(0))
-  let check_sum: Array(Int) = Array::make(Int(1), Int(0))
-  let nperm: Array(Int) = Array::make(Int(1), Int(0))
-  let r: Array(Int) = Array::make(Int(1), Var("n"))
-  let rec compute: (r: Array(Int)) -> Unit {
+  let perm1: Array[Int] = Apply(Var("gen_perm1"), [Var("n"), ])
+  let perm: Array[Int] = Array::make(Var("n"), Int(0))
+  let count: Array[Int] = Array::make(Var("n"), Int(0))
+  let flips: Array[Int] = Array::make(Int(1), Int(0))
+  let max_flips: Array[Int] = Array::make(Int(1), Int(0))
+  let check_sum: Array[Int] = Array::make(Int(1), Int(0))
+  let nperm: Array[Int] = Array::make(Int(1), Int(0))
+  let r: Array[Int] = Array::make(Int(1), Var("n"))
+  let rec compute: (r: Array[Int]) -> Unit {
     if (LE(Int(1), Get(Var("r"), Int(0)))) then {
       let rec copy_perm: (i: Int) -> Unit {
         if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=Some(Int)))) then {
@@ -43,10 +43,10 @@ let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
       }
       let _: Unit = Apply(Var("init_count"), [])
       let _: Unit = Put Var("flips")[Int(0)] = Int(0)
-      let k: Array(Int) = Array::make(Int(1), Get(Var("perm"), Int(0)))
-      let rec do_flip: (k: Array(Int)) -> Unit {
+      let k: Array[Int] = Array::make(Int(1), Get(Var("perm"), Int(0)))
+      let rec do_flip: (k: Array[Int]) -> Unit {
         if (Not(Eq(Get(Var("k"), Int(0)), Int(0)))) then {
-          let t: Array(Int) = Array::make(Int(1), Int(0))
+          let t: Array[Int] = Array::make(Int(1), Int(0))
           let rec flip_loop: (i: Int) -> Unit {
             if (LE(Var("i"), Prim(Get(Var("k"), Int(0)), Int(2), Div, kind=Some(Int)))) then {
               let _: Unit = Put Var("t")[Int(0)] = Get(Var("perm"), Var("i"))
@@ -72,8 +72,8 @@ let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
         Unit
       }
       let _: Unit = Put Var("check_sum")[Int(0)] = Prim(Get(Var("check_sum"), Int(0)), Prim(Get(Var("flips"), Int(0)), Prim(Int(1), Prim(Prim(Get(Var("nperm"), Int(0)), Prim(Prim(Get(Var("nperm"), Int(0)), Int(2), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Mul, kind=Some(Int)), Add, kind=Some(Int))
-      let go: Array(Bool) = Array::make(Int(1), Bool(true))
-      let t: Array(Int) = Array::make(Int(1), Int(0))
+      let go: Array[Bool] = Array::make(Int(1), Bool(true))
+      let t: Array[Int] = Array::make(Int(1), Int(0))
       let rec go_loop: () -> Unit {
         if (Get(Var("go"), Int(0))) then {
           let _: Unit = if (Eq(Get(Var("r"), Int(0)), Var("n"))) then {

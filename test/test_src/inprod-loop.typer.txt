@@ -1,13 +1,13 @@
-let rec inprod: (v1: Array(Double), v2: Array(Double), acc: Double, i: Int) -> Double {
+let rec inprod: (v1: Array[Double], v2: Array[Double], acc: Double, i: Int) -> Double {
   if (LE(Int(0), Var("i"))) then {
     Apply(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("acc"), Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=Some(Double)), Add, kind=Some(Double)), Prim(Var("i"), Int(1), Sub, kind=Some(Int)), ])
   } else {
     Var(acc)
   }
 }
-let rec main: () -> Var({val: Some(Unit)}) {
-  let v1: Var({val: Some(Array(Double))}) = Array::make(Int(3), Double(1.23))
-  let v2: Var({val: Some(Array(Double))}) = Array::make(Int(3), Double(4.56))
+let rec main: () -> Var(Unit) {
+  let v1: Var(Array[Double]) = Array::make(Int(3), Double(1.23))
+  let v2: Var(Array[Double]) = Array::make(Int(3), Double(4.56))
   Apply(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Double(0), Int(2)]), Mul, kind=Some(Double))]), ])
 }
 Unit

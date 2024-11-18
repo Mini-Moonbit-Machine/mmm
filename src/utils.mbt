@@ -194,7 +194,8 @@ pub fn to_json(self : Syntax) -> Json {
         )
         |> Json::Array,
       ]
-    LetEnum(nmty, body) => ["LetEnum", nmty.to_json(), body.to_json()]
+    LetEnum(name, ty, body) =>
+      ["LetEnum", name.to_json(), ty.to_json(), body.to_json()]
   }
 }
 

@@ -1,20 +1,20 @@
 let rec dummy.1: Int = (i.3: Int) {
   Var(i.3)
 }
-let rec landins_knot.4: Fun([Int], Int) = (f.6: Fun([Fun([Int], Int)], Fun([Int], Int))) {
+let rec landins_knot.4: (Int) -> Int = (f.6: ((Int) -> Int) -> (Int) -> Int) {
   let _7: Int = Int(1)
-  let arr.8: Array(Fun([Int], Int)) = ExtApply(minimbt_create_ptr_array, [_7, dummy.1, ])
+  let arr.8: Array[(Int) -> Int] = ExtApply(minimbt_create_ptr_array, [_7, dummy.1, ])
   let rec aux.9: Int = (x.11: Int) {
     let _12: Int = Int(0)
-    let _13: Fun([Int], Int) = Get arr.8[_12]
+    let _13: (Int) -> Int = Get arr.8[_12]
     Apply(_13, [x.11, ])
   }
-  let fixedpoint.14: Fun([Int], Int) = Apply(f.6, [aux.9, ])
+  let fixedpoint.14: (Int) -> Int = Apply(f.6, [aux.9, ])
   let _15: Int = Int(0)
   let _17: Unit = Put arr.8[_15] = fixedpoint.14
   Var(fixedpoint.14)
 }
-let rec g.18: Fun([Int], Int) = (f.20: Fun([Int], Int)) {
+let rec g.18: (Int) -> Int = (f.20: (Int) -> Int) {
   let rec h.21: Int = (x.23: Int) {
     let _24: Int = Int(0)
     if (x.23 == _24) then {
@@ -28,7 +28,7 @@ let rec g.18: Fun([Int], Int) = (f.20: Fun([Int], Int)) {
   }
   Var(h.21)
 }
-let factorial.28: Fun([Int], Int) = Apply(landins_knot.4, [g.18, ])
+let factorial.28: (Int) -> Int = Apply(landins_knot.4, [g.18, ])
 let rec f1.29: Unit = () {
   let _30: Int = Int(5)
   let _31: Int = Apply(factorial.28, [_30, ])

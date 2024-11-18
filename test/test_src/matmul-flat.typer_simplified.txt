@@ -1,4 +1,4 @@
-let rec loop3: (i: Int, j: Int, k: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec loop3: (i: Int, j: Int, k: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   if (LE(Int(0), Var("k"))) then {
     let _: Unit = Put Get(Var("c"), Var("i"))[Var("j")] = Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))
     Apply(Var("loop3"), [Var("i"), Var("j"), Prim(Var("k"), Int(1), Sub, kind=Some(Int)), Var("a"), Var("b"), Var("c"), ])
@@ -6,7 +6,7 @@ let rec loop3: (i: Int, j: Int, k: Int, a: Array(Array(Double)), b: Array(Array(
     Unit
   }
 }
-let rec loop2: (i: Int, m: Int, j: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec loop2: (i: Int, m: Int, j: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   if (LE(Int(0), Var("j"))) then {
     let _: Unit = Apply(Var("loop3"), [Var("i"), Var("j"), Prim(Var("m"), Int(1), Sub, kind=Some(Int)), Var("a"), Var("b"), Var("c"), ])
     Apply(Var("loop2"), [Var("i"), Var("m"), Prim(Var("j"), Int(1), Sub, kind=Some(Int)), Var("a"), Var("b"), Var("c"), ])
@@ -14,7 +14,7 @@ let rec loop2: (i: Int, m: Int, j: Int, a: Array(Array(Double)), b: Array(Array(
     Unit
   }
 }
-let rec loop1: (i: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec loop1: (i: Int, m: Int, n: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   if (LE(Int(0), Var("i"))) then {
     let _: Unit = Apply(Var("loop2"), [Var("i"), Var("m"), Prim(Var("n"), Int(1), Sub, kind=Some(Int)), Var("a"), Var("b"), Var("c"), ])
     Apply(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int)), Var("m"), Var("n"), Var("a"), Var("b"), Var("c"), ])
@@ -22,13 +22,13 @@ let rec loop1: (i: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array(
     Unit
   }
 }
-let rec mul: (l: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec mul: (l: Int, m: Int, n: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   let _: Unit = Apply(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int)), Var("m"), Var("n"), Var("a"), Var("b"), Var("c"), ])
   Unit
 }
 let rec main: () -> Unit {
-  let dummy: Array(Double) = Array::make(Int(0), Double(0))
-  let rec init_arr: (i: Int, n: Int, mat: Array(Array(Double))) -> Unit {
+  let dummy: Array[Double] = Array::make(Int(0), Double(0))
+  let rec init_arr: (i: Int, n: Int, mat: Array[Array[Double]]) -> Unit {
     if (LE(Int(0), Var("i"))) then {
       let _: Unit = Put Var("mat")[Var("i")] = Array(Var("n"), Double(0))
       Apply(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int)), Var("n"), Var("mat"), ])
@@ -36,14 +36,14 @@ let rec main: () -> Unit {
       Unit
     }
   }
-  let rec make_arr: (m: Int, n: Int, dummy: Array(Double)) -> Array(Array(Double)) {
-    let mat: Array(Array(Double)) = Array::make(Var("m"), Var("dummy"))
+  let rec make_arr: (m: Int, n: Int, dummy: Array[Double]) -> Array[Array[Double]] {
+    let mat: Array[Array[Double]] = Array::make(Var("m"), Var("dummy"))
     let _: Unit = Apply(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), Var("n"), Var("mat"), ])
     Var(mat)
   }
-  let a: Array(Array(Double)) = Apply(Var("make_arr"), [Int(2), Int(3), Var("dummy"), ])
-  let b: Array(Array(Double)) = Apply(Var("make_arr"), [Int(3), Int(2), Var("dummy"), ])
-  let c: Array(Array(Double)) = Apply(Var("make_arr"), [Int(2), Int(2), Var("dummy"), ])
+  let a: Array[Array[Double]] = Apply(Var("make_arr"), [Int(2), Int(3), Var("dummy"), ])
+  let b: Array[Array[Double]] = Apply(Var("make_arr"), [Int(3), Int(2), Var("dummy"), ])
+  let c: Array[Array[Double]] = Apply(Var("make_arr"), [Int(2), Int(2), Var("dummy"), ])
   let _: Unit = Put Get(Var("a"), Int(0))[Int(0)] = Double(1)
   let _: Unit = Put Get(Var("a"), Int(0))[Int(1)] = Double(2)
   let _: Unit = Put Get(Var("a"), Int(0))[Int(2)] = Double(3)

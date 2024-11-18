@@ -1,10 +1,10 @@
-let rec swap: (arr: Array(Int), i: Int, j: Int) -> Unit {
+let rec swap: (arr: Array[Int], i: Int, j: Int) -> Unit {
   let tmp: Int = Get Var("arr")[Var("i")]
   let _: Unit = Put Var("arr")[Var("i")] = Get(Var("arr"), Var("j"))
   let _: Unit = Put Var("arr")[Var("j")] = Var("tmp")
   Unit
 }
-let rec output: (arr: Array(Int), i: Int, len: Int) -> Unit {
+let rec output: (arr: Array[Int], i: Int, len: Int) -> Unit {
   if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
     let _: Unit = Apply(Var("print_int"), [Get(Var("arr"), Var("i")), ])
     let _: Unit = Apply(Var("print_endline"), [])
@@ -13,7 +13,7 @@ let rec output: (arr: Array(Int), i: Int, len: Int) -> Unit {
     Unit
   }
 }
-let rec insertion_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
+let rec insertion_sort: (arr: Array[Int], low: Int, high: Int) -> Unit {
   let rec g: (j: Int) -> Unit {
     if (LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j"))) then {
       if (LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int)))) then {
@@ -37,11 +37,11 @@ let rec insertion_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
   }
   Apply(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int)), ])
 }
-let rec partition: (arr: Array(Int), pivot_index: Int, low: Int, high: Int) -> Tuple([Int, Bool]) {
+let rec partition: (arr: Array[Int], pivot_index: Int, low: Int, high: Int) -> (Int, Bool) {
   let _: Unit = Apply(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
   let pivot: Int = Get Var("arr")[Prim(Var("high"), Int(1), Sub, kind=Some(Int))]
-  let i: Array(Int) = Array::make(Int(1), Var("low"))
-  let partitioned: Array(Int) = Array::make(Int(1), Int(1))
+  let i: Array[Int] = Array::make(Int(1), Var("low"))
+  let partitioned: Array[Int] = Array::make(Int(1), Int(1))
   let rec aux: (j: Int) -> Unit {
     if (LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int)))) then {
       let _: Unit = if (LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int)))) then {
@@ -65,9 +65,9 @@ let rec partition: (arr: Array(Int), pivot_index: Int, low: Int, high: Int) -> T
   let _: Unit = Apply(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
   Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1)), ])
 }
-let rec choose_pivot: (arr: Array(Int), low: Int, high: Int) -> Tuple([Int, Bool]) {
+let rec choose_pivot: (arr: Array[Int], low: Int, high: Int) -> (Int, Bool) {
   let use_median_of_medians: Int = Int(50)
-  let swaps: Array(Int) = Array::make(Int(1), Int(0))
+  let swaps: Array[Int] = Array::make(Int(1), Int(0))
   let len: Int = Var("high") - Var("low")
   let b: Int = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int))
   let _: Unit = if (LE(Int(8), Var("len"))) then {
@@ -99,7 +99,7 @@ let rec choose_pivot: (arr: Array(Int), low: Int, high: Int) -> Tuple([Int, Bool
   }
   Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0)), ])
 }
-let rec quick_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
+let rec quick_sort: (arr: Array[Int], low: Int, high: Int) -> Unit {
   let len: Int = Var("high") - Var("low")
   if (LE(Var("len"), Int(16))) then {
     Apply(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high"), ])
@@ -110,12 +110,12 @@ let rec quick_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
     Apply(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high"), ])
   }
 }
-let rec sort: (x: Array(Int), len: Int) -> Unit {
+let rec sort: (x: Array[Int], len: Int) -> Unit {
   Apply(Var("quick_sort"), [Var("x"), Int(0), Var("len"), ])
 }
 let rec main: () -> Unit {
   let len: Int = Apply(Var("read_int"), [])
-  let arr: Array(Int) = Array::make(Var("len"), Int(0))
+  let arr: Array[Int] = Array::make(Var("len"), Int(0))
   let rec input: (i: Int) -> Unit {
     if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
       let _: Unit = Put Var("arr")[Var("i")] = App(Var("read_int"), [])

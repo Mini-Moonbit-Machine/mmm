@@ -131,7 +131,6 @@ struct CompileStatus {
   mut source_code : String?
   mut ast : @types.Syntax?
   mut typechecked : @types.Syntax?
-  mut named_tys : @immut/hashmap.T[String, @types.Type]?
   mut knf : @knf.Knf?
   mut opt_knf : @knf.Knf?
   mut js : @lower_js.JsCore?
@@ -159,7 +158,6 @@ fn CompileStatus::initialize(
     source_code: None,
     ast: None,
     typechecked: None,
-    named_tys: None,
     knf: None,
     opt_knf: None,
     js: None,
@@ -214,7 +212,6 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         Failure(msg) => subtracer.abort(msg)
       }
       self.typechecked = Some(ast)
-      self.named_tys = Some(typer.named_tys)
     }
     Knf => { // typechecked -> preprocessed -> knf
       let subtracer = tracer.new_subtracer(
@@ -222,14 +219,13 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      let named_ty_env = self.named_tys.unwrap()
       let knf_env = @knf.KnfEnv::new(@typer.externals(), subtracer)
       let knf = try {
         let preprocessed = knf_env.syntax_preprocess(
           self.typechecked.unwrap(),
           false,
         )
-        knf_env.to_knf!(named_ty_env, preprocessed)
+        knf_env.to_knf!(preprocessed)
       } catch {
         Failure(msg) => subtracer.abort(msg)
       }
@@ -242,8 +238,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let knf = self.knf.unwrap()
-      let named_tys = self.named_tys.unwrap()
-      let knf_env = @knf.KnfEnv::new(named_tys, tracer)
+      let knf_env = @knf.KnfEnv::new(@typer.externals(), tracer)
       knf_env.init_counter_from_existing(knf)
       let inline = @knf.InlineEnv::new(knf_env, tracer)
       let knf = inline.go(knf, 0)

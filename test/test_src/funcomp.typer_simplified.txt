@@ -1,4 +1,4 @@
-let rec compose: (f: Fun([Int], Int), g: Fun([Int], Int)) -> Fun([Int], Int) {
+let rec compose: (f: (Int) -> Int, g: (Int) -> Int) -> (Int) -> Int {
   let rec composed: (x: Int) -> Int {
     Apply(Var("g"), [App(Var("f"), [Var("x")]), ])
   }
@@ -14,7 +14,7 @@ let rec dec: (x: Int) -> Int {
   Var("x") - Int(1)
 }
 let rec main: () -> Unit {
-  let h: Fun([Int], Int) = Apply(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")]), ])
+  let h: (Int) -> Int = Apply(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")]), ])
   Apply(Var("print_int"), [App(Var("h"), [Int(123)]), ])
 }
 Unit

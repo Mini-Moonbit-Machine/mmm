@@ -675,15 +675,23 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         ntokens += 1
         ctors.push((ctor.inner.span, tys))
       }
-      let _ = self.next_token!()
+      let _ = self.expect_paired_close!(Paired::Brace)
       ntokens += 1
-      let enum_ty = Type::Enum(ident.inner.span, ctors)
-      if self.reach_eof() == false {
-        let stmt = self.parse_stmt!(top)
-        ntokens += stmt.ntokens
-        Syntax::LetEnum(enum_ty, stmt.inner)
+      let enum_ty = Type::Var(
+        Ref::new(Some(Type::Enum(ident.inner.span, ctors))),
+      )
+      if self.peek_operator(";") {
+        self.skip_token()
+        ntokens += 1
+        if self.reach_eof() == false {
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          Syntax::LetEnum(ident.inner.span, enum_ty, stmt.inner)
+        } else {
+          Syntax::LetEnum(ident.inner.span, enum_ty, Syntax::Unit)
+        }
       } else {
-        Syntax::LetEnum(enum_ty, Syntax::Unit)
+        Syntax::LetEnum(ident.inner.span, enum_ty, Syntax::Unit)
       }
     }
     Kw(Keyword::Let) => {

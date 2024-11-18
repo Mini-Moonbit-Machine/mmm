@@ -1,18 +1,13 @@
-LetEnum(..)
-LetEnum(..)
-let rec id: forall ["X"] . (x: Named("X")) -> Named("X") {
-  Var(x)
-}
-let y: Var({val: Some(Int)}) = Apply(Var("id"), [Int(2), ])
-let z: Var({val: Some(Double)}) = Apply(Var("id"), [Double(2.1), ])
-let p: Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))}) = CtorApp(Nil, [])
-let q: Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))}) = CtorApp(Cons, [CtorApp("None", []), CtorApp("Nil", []), ])
-let r: Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))}) = CtorApp(Cons, [CtorApp("Some", [Int(1)]), CtorApp("Nil", []), ])
-let _: Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))}) = Match(Int(2), [(Int(1), CtorApp("Nil", [])), (Int(2), Var("q")), ])
-let t: Var({val: Some(Int)}) = Match(Var("r"), [(CtorApp("Nil", []), Int(0)), (CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Int(1)), (CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), Int(2)), (Wildcard, Int(3)), ])
-let w: Var({val: Some(Int)}) = Match(Var("r"), [(CtorApp("Nil", []), Int(0)), (CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), Var("v")), (Wildcard, Int(3)), ])
-let rec main: () -> Var({val: Some(Unit)}) {
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=Some(Int)), ])
+enum Option = Var(Enum Option { None(), Some(Int) })
+enum List = Var(Enum List { Nil(), Cons(Var(Enum Option { None(), Some(Int) }), Var(~0)) })
+let rec main: () -> Unit {
+  let p: Var(Enum List { Nil(), Cons(Var(Enum Option { None(), Some(Int) }), Var(~0)) }) = CtorApp(Nil, [])
+  let q: Var(Enum List { Nil(), Cons(Var(Enum Option { None(), Some(Int) }), Var(~0)) }) = CtorApp(Cons, [CtorApp("None", []), CtorApp("Nil", []), ])
+  let r: Var(Enum List { Nil(), Cons(Var(Enum Option { None(), Some(Int) }), Var(~0)) }) = CtorApp(Cons, [CtorApp("Some", [Int(1)]), CtorApp("Nil", []), ])
+  let _: Var(Enum List { Nil(), Cons(Var(Enum Option { None(), Some(Int) }), Var(~0)) }) = Match(Int(2), [(Int(1), CtorApp("Nil", [])), (Int(2), Var("q")), ])
+  let t: Int = Match(Var("r"), [(CtorApp("Nil", []), Int(0)), (CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Int(1)), (CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), Int(2)), (Wildcard, Int(3)), ])
+  let w: Int = Match(Var("r"), [(CtorApp("Nil", []), Int(0)), (CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), Var("v")), (Wildcard, Int(3)), ])
+  let _: Unit = Apply(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=Some(Int)), ])
   Unit
 }
 Unit

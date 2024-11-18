@@ -1,5 +1,5 @@
-let rec iter.1: Fun([Fun([Int], Bool)], Bool) = (arr.3: Array(Int), len.5: Int) {
-  let rec do.6: Bool = (yield.8: Fun([Int], Bool)) {
+let rec iter.1: ((Int) -> Bool) -> Bool = (arr.3: Array[Int], len.5: Int) {
+  let rec do.6: Bool = (yield.8: (Int) -> Bool) {
     let rec next.9: Bool = (i.11: Int) {
       let _12: Int = Int(1)
       let _13: Int = Sub(len.5, _12)
@@ -23,7 +23,7 @@ let rec iter.1: Fun([Fun([Int], Bool)], Bool) = (arr.3: Array(Int), len.5: Int) 
   }
   Var(do.6)
 }
-let rec each.20: Unit = (iter.22: Fun([Fun([Int], Bool)], Bool), f.24: Fun([Int], Unit)) {
+let rec each.20: Unit = (iter.22: ((Int) -> Bool) -> Bool, f.24: (Int) -> Unit) {
   let rec yield.25: Bool = (x.27: Int) {
     let _29: Unit = Apply(f.24, [x.27, ])
     Bool(true)
@@ -42,7 +42,7 @@ let rec each.20: Unit = (iter.22: Fun([Fun([Int], Bool)], Bool), f.24: Fun([Int]
 let rec main.33: Unit = () {
   let _34: Int = Int(5)
   let _35: Int = Int(1)
-  let arr.36: Array(Int) = ExtApply(minimbt_create_array, [_34, _35, ])
+  let arr.36: Array[Int] = ExtApply(minimbt_create_array, [_34, _35, ])
   let _37: Int = Int(0)
   let _38: Int = Int(1)
   let _40: Unit = Put arr.36[_37] = _38
@@ -59,7 +59,7 @@ let rec main.33: Unit = () {
   let _54: Int = Int(5)
   let _56: Unit = Put arr.36[_53] = _54
   let _57: Int = Int(5)
-  let f.58: Fun([Fun([Int], Bool)], Bool) = Apply(iter.1, [arr.36, _57, ])
+  let f.58: ((Int) -> Bool) -> Bool = Apply(iter.1, [arr.36, _57, ])
   let rec print.59: Unit = (x.61: Int) {
     ExtApply(minimbt_print_int, [x.61, ])
   }

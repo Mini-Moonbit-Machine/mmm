@@ -35,7 +35,7 @@ test "knf_to_core" {
   typer.check_all!() |> ignore
   let knf_env = @knf.KnfEnv::new(@typer.externals(), subtracer)
   let preprocessed = knf_env.syntax_preprocess(ast, false)
-  let knf = knf_env.to_knf!(@immut/hashmap.T::new(), preprocessed)
+  let knf = knf_env.to_knf!(preprocessed)
   let core_env = @core.CoreEnv::new(subtracer)
   let core = core_env.build!(knf)
   let _ = core

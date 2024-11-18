@@ -1,23 +1,23 @@
-let rec matmul: (l: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array(Double)), c: Array(Array(Double))) -> Unit {
+let rec matmul: (l: Int, m: Int, n: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
   let rec loop1: (i: Int) -> Unit {
     if (LE(Int(0), Var("i"))) then {
       let rec loop2: (j: Int) -> Unit {
         if (LE(Int(0), Var("j"))) then {
           let rec loop3: (k: Int) -> Unit {
             if (LE(Int(0), Var("k"))) then {
-              let _: Var({val: Some(Unit)}) = Put Get(Var("c"), Var("i"))[Var("j")] = Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))
+              let _: Var(Unit) = Put Get(Var("c"), Var("i"))[Var("j")] = Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=Some(Double)), Add, kind=Some(Double))
               Apply(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=Some(Int)), ])
             } else {
               Unit
             }
           }
-          let _: Var({val: Some(Unit)}) = Apply(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), ])
+          let _: Var(Unit) = Apply(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), ])
           Apply(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int)), ])
         } else {
           Unit
         }
       }
-      let _: Var({val: Some(Unit)}) = Apply(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int)), ])
+      let _: Var(Unit) = Apply(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=Some(Int)), ])
       Apply(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int)), ])
     } else {
       Unit
@@ -25,44 +25,44 @@ let rec matmul: (l: Int, m: Int, n: Int, a: Array(Array(Double)), b: Array(Array
   }
   Apply(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=Some(Int)), ])
 }
-let rec main: () -> Var({val: Some(Unit)}) {
-  let dummy: Var({val: Some(Array(Double))}) = Array::make(Int(0), Double(0))
-  let rec gen_arr: (m: Int, n: Int) -> Array(Array(Double)) {
-    let mat: Var({val: Some(Array(Array(Double)))}) = Array::make(Var("m"), Var("dummy"))
+let rec main: () -> Var(Unit) {
+  let dummy: Var(Array[Double]) = Array::make(Int(0), Double(0))
+  let rec gen_arr: (m: Int, n: Int) -> Array[Array[Double]] {
+    let mat: Var(Array[Array[Double]]) = Array::make(Var("m"), Var("dummy"))
     let rec init_arr: (i: Int) -> Unit {
       if (LE(Int(0), Var("i"))) then {
-        let _: Var({val: Some(Unit)}) = Put Var("mat")[Var("i")] = Array(Var("n"), Double(0))
+        let _: Var(Unit) = Put Var("mat")[Var("i")] = Array(Var("n"), Double(0))
         Apply(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=Some(Int)), ])
       } else {
         Unit
       }
     }
-    let _: Var({val: Some(Unit)}) = Apply(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), ])
+    let _: Var(Unit) = Apply(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=Some(Int)), ])
     Var(mat)
   }
-  let a: Var({val: Some(Array(Array(Double)))}) = Apply(Var("gen_arr"), [Int(2), Int(3), ])
-  let b: Var({val: Some(Array(Array(Double)))}) = Apply(Var("gen_arr"), [Int(3), Int(2), ])
-  let c: Var({val: Some(Array(Array(Double)))}) = Apply(Var("gen_arr"), [Int(2), Int(2), ])
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(0))[Int(0)] = Double(1)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(0))[Int(1)] = Double(2)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(0))[Int(2)] = Double(3)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(1))[Int(0)] = Double(4)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(1))[Int(1)] = Double(5)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("a"), Int(1))[Int(2)] = Double(6)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(0))[Int(0)] = Double(7)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(0))[Int(1)] = Double(8)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(1))[Int(0)] = Double(9)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(1))[Int(1)] = Double(10)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(2))[Int(0)] = Double(11)
-  let _: Var({val: Some(Unit)}) = Put Get(Var("b"), Int(2))[Int(1)] = Double(12)
-  let _: Var({val: Some(Unit)}) = Apply(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c"), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))]), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_endline"), [])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))]), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_endline"), [])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))]), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_endline"), [])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))]), ])
+  let a: Var(Array[Array[Double]]) = Apply(Var("gen_arr"), [Int(2), Int(3), ])
+  let b: Var(Array[Array[Double]]) = Apply(Var("gen_arr"), [Int(3), Int(2), ])
+  let c: Var(Array[Array[Double]]) = Apply(Var("gen_arr"), [Int(2), Int(2), ])
+  let _: Var(Unit) = Put Get(Var("a"), Int(0))[Int(0)] = Double(1)
+  let _: Var(Unit) = Put Get(Var("a"), Int(0))[Int(1)] = Double(2)
+  let _: Var(Unit) = Put Get(Var("a"), Int(0))[Int(2)] = Double(3)
+  let _: Var(Unit) = Put Get(Var("a"), Int(1))[Int(0)] = Double(4)
+  let _: Var(Unit) = Put Get(Var("a"), Int(1))[Int(1)] = Double(5)
+  let _: Var(Unit) = Put Get(Var("a"), Int(1))[Int(2)] = Double(6)
+  let _: Var(Unit) = Put Get(Var("b"), Int(0))[Int(0)] = Double(7)
+  let _: Var(Unit) = Put Get(Var("b"), Int(0))[Int(1)] = Double(8)
+  let _: Var(Unit) = Put Get(Var("b"), Int(1))[Int(0)] = Double(9)
+  let _: Var(Unit) = Put Get(Var("b"), Int(1))[Int(1)] = Double(10)
+  let _: Var(Unit) = Put Get(Var("b"), Int(2))[Int(0)] = Double(11)
+  let _: Var(Unit) = Put Get(Var("b"), Int(2))[Int(1)] = Double(12)
+  let _: Var(Unit) = Apply(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c"), ])
+  let _: Var(Unit) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))]), ])
+  let _: Var(Unit) = Apply(Var("print_endline"), [])
+  let _: Var(Unit) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))]), ])
+  let _: Var(Unit) = Apply(Var("print_endline"), [])
+  let _: Var(Unit) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))]), ])
+  let _: Var(Unit) = Apply(Var("print_endline"), [])
+  let _: Var(Unit) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))]), ])
   Unit
 }
 Unit

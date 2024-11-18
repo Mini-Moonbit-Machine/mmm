@@ -1,6 +1,6 @@
 let unmem_magic.1: Int = Int(-1919810)
-let rec mem.2: Fun([Int], Int) = (func.4: Fun([Fun([Int], Int), Int], Int), max_n.6: Int) {
-  let cache.7: Array(Int) = ExtApply(minimbt_create_array, [max_n.6, unmem_magic.1, ])
+let rec mem.2: (Int) -> Int = (func.4: ((Int) -> Int, Int) -> Int, max_n.6: Int) {
+  let cache.7: Array[Int] = ExtApply(minimbt_create_array, [max_n.6, unmem_magic.1, ])
   let rec memed.8: Int = (n.10: Int) {
     let _11: Int = Get cache.7[n.10]
     if (_11 == unmem_magic.1) then {
@@ -13,7 +13,7 @@ let rec mem.2: Fun([Int], Int) = (func.4: Fun([Fun([Int], Int), Int], Int), max_
   }
   Var(memed.8)
 }
-let rec mem_fib.15: Int = (f.17: Fun([Int], Int), n.19: Int) {
+let rec mem_fib.15: Int = (f.17: (Int) -> Int, n.19: Int) {
   let _20: Int = Int(1)
   if (n.19 <= _20) then {
     Var(n.19)
@@ -30,7 +30,7 @@ let rec mem_fib.15: Int = (f.17: Fun([Int], Int), n.19: Int) {
 let rec fib.27: Int = (n.29: Int) {
   let _30: Int = Int(1)
   let _31: Int = Add(n.29, _30)
-  let f.32: Fun([Int], Int) = Apply(mem.2, [mem_fib.15, _31, ])
+  let f.32: (Int) -> Int = Apply(mem.2, [mem_fib.15, _31, ])
   Apply(f.32, [n.29, ])
 }
 let rec main.33: Unit = () {

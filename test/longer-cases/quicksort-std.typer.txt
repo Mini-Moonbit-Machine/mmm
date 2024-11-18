@@ -1,23 +1,23 @@
-let rec swap: (arr: Array(Int), i: Int, j: Int) -> Unit {
-  let tmp: Var({val: Some(Int)}) = Get Var("arr")[Var("i")]
-  let _: Var({val: Some(Unit)}) = Put Var("arr")[Var("i")] = Get(Var("arr"), Var("j"))
-  let _: Var({val: Some(Unit)}) = Put Var("arr")[Var("j")] = Var("tmp")
+let rec swap: (arr: Array[Int], i: Int, j: Int) -> Unit {
+  let tmp: Var(Int) = Get Var("arr")[Var("i")]
+  let _: Var(Unit) = Put Var("arr")[Var("i")] = Get(Var("arr"), Var("j"))
+  let _: Var(Unit) = Put Var("arr")[Var("j")] = Var("tmp")
   Unit
 }
-let rec output: (arr: Array(Int), i: Int, len: Int) -> Unit {
+let rec output: (arr: Array[Int], i: Int, len: Int) -> Unit {
   if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
-    let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [Get(Var("arr"), Var("i")), ])
-    let _: Var({val: Some(Unit)}) = Apply(Var("print_endline"), [])
+    let _: Var(Unit) = Apply(Var("print_int"), [Get(Var("arr"), Var("i")), ])
+    let _: Var(Unit) = Apply(Var("print_endline"), [])
     Apply(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=Some(Int)), Var("len"), ])
   } else {
     Unit
   }
 }
-let rec insertion_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
+let rec insertion_sort: (arr: Array[Int], low: Int, high: Int) -> Unit {
   let rec g: (j: Int) -> Unit {
     if (LE(Prim(Int(1), Var("low"), Add, kind=Some(Int)), Var("j"))) then {
       if (LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=Some(Int))), Int(1), Sub, kind=Some(Int)))) then {
-        let _: Var({val: Some(Unit)}) = Apply(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int)), ])
+        let _: Var(Unit) = Apply(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=Some(Int)), ])
         Apply(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=Some(Int)), ])
       } else {
         Unit
@@ -28,8 +28,8 @@ let rec insertion_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
   }
   let rec f: (i: Int) -> Unit {
     if (LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=Some(Int)))) then {
-      let j: Var({val: Some(Int)}) = Var(i)
-      let _: Var({val: Some(Unit)}) = Apply(Var("g"), [Var("j"), ])
+      let j: Var(Int) = Var(i)
+      let _: Var(Unit) = Apply(Var("g"), [Var("j"), ])
       Apply(Var("f"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
     } else {
       Unit
@@ -37,21 +37,21 @@ let rec insertion_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
   }
   Apply(Var("f"), [Prim(Var("low"), Int(1), Add, kind=Some(Int)), ])
 }
-let rec partition: (arr: Array(Int), pivot_index: Int, low: Int, high: Int) -> Tuple([Int, Bool]) {
-  let _: Var({val: Some(Unit)}) = Apply(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
-  let pivot: Var({val: Some(Int)}) = Get Var("arr")[Prim(Var("high"), Int(1), Sub, kind=Some(Int))]
-  let i: Var({val: Some(Array(Int))}) = Array::make(Int(1), Var("low"))
-  let partitioned: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(1))
-  let rec aux: (j: Int) -> Var({val: Some(Unit)}) {
+let rec partition: (arr: Array[Int], pivot_index: Int, low: Int, high: Int) -> (Int, Bool) {
+  let _: Var(Unit) = Apply(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
+  let pivot: Var(Int) = Get Var("arr")[Prim(Var("high"), Int(1), Sub, kind=Some(Int))]
+  let i: Var(Array[Int]) = Array::make(Int(1), Var("low"))
+  let partitioned: Var(Array[Int]) = Array::make(Int(1), Int(1))
+  let rec aux: (j: Int) -> Var(Unit) {
     if (LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=Some(Int)))) then {
-      let _: Var({val: Some(Unit)}) = if (LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int)))) then {
-        let _: Var({val: Some(Unit)}) = if (Eq(Get(Var("i"), Int(0)), Var("j"))) then {
+      let _: Var(Unit) = if (LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=Some(Int)))) then {
+        let _: Var(Unit) = if (Eq(Get(Var("i"), Int(0)), Var("j"))) then {
           Unit
         } else {
-          let _: Var({val: Some(Unit)}) = Apply(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j"), ])
+          let _: Var(Unit) = Apply(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j"), ])
           Put Var("partitioned")[Int(0)] = Int(0)
         }
-        let _: Var({val: Some(Unit)}) = Put Var("i")[Int(0)] = Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))
+        let _: Var(Unit) = Put Var("i")[Int(0)] = Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=Some(Int))
         Unit
       } else {
         Unit
@@ -61,34 +61,34 @@ let rec partition: (arr: Array(Int), pivot_index: Int, low: Int, high: Int) -> T
       Unit
     }
   }
-  let _: Var({val: Some(Unit)}) = Apply(Var("aux"), [Var("low"), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
+  let _: Var(Unit) = Apply(Var("aux"), [Var("low"), ])
+  let _: Var(Unit) = Apply(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=Some(Int)), ])
   Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1)), ])
 }
-let rec choose_pivot: (arr: Array(Int), low: Int, high: Int) -> Tuple([Int, Bool]) {
-  let use_median_of_medians: Var({val: Some(Int)}) = Int(50)
-  let swaps: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
-  let len: Var({val: Some(Int)}) = Var("high") - Var("low")
-  let b: Var({val: Some(Int)}) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int))
-  let _: Var({val: Some(Unit)}) = if (LE(Int(8), Var("len"))) then {
-    let a: Var({val: Some(Int)}) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int))
-    let c: Var({val: Some(Int)}) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int))
-    let rec sort_2: (a: Int, b: Int) -> Var({val: Some(Unit)}) {
+let rec choose_pivot: (arr: Array[Int], low: Int, high: Int) -> (Int, Bool) {
+  let use_median_of_medians: Var(Int) = Int(50)
+  let swaps: Var(Array[Int]) = Array::make(Int(1), Int(0))
+  let len: Var(Int) = Var("high") - Var("low")
+  let b: Var(Int) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int))
+  let _: Var(Unit) = if (LE(Int(8), Var("len"))) then {
+    let a: Var(Int) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(1), Mul, kind=Some(Int))
+    let c: Var(Int) = Var("low") + Prim(Prim(Var("len"), Int(4), Div, kind=Some(Int)), Int(3), Mul, kind=Some(Int))
+    let rec sort_2: (a: Int, b: Int) -> Var(Unit) {
       if (LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=Some(Int)))) then {
-        let _: Var({val: Some(Unit)}) = Apply(Var("swap"), [Var("arr"), Var("a"), Var("b"), ])
+        let _: Var(Unit) = Apply(Var("swap"), [Var("arr"), Var("a"), Var("b"), ])
         Put Var("swaps")[Int(0)] = Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=Some(Int))
       } else {
         Unit
       }
     }
-    let rec sort_3: (a: Int, b: Int, c: Int) -> Var({val: Some(Unit)}) {
-      let _: Var({val: Some(Unit)}) = Apply(Var("sort_2"), [Var("a"), Var("b"), ])
-      let _: Var({val: Some(Unit)}) = Apply(Var("sort_2"), [Var("b"), Var("c"), ])
+    let rec sort_3: (a: Int, b: Int, c: Int) -> Var(Unit) {
+      let _: Var(Unit) = Apply(Var("sort_2"), [Var("a"), Var("b"), ])
+      let _: Var(Unit) = Apply(Var("sort_2"), [Var("b"), Var("c"), ])
       Apply(Var("sort_2"), [Var("a"), Var("b"), ])
     }
-    let _: Var({val: Some(Unit)}) = if (LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
-      let _: Var({val: Some(Unit)}) = Apply(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int)), ])
-      let _: Var({val: Some(Unit)}) = Apply(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int)), ])
+    let _: Var(Unit) = if (LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
+      let _: Var(Unit) = Apply(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=Some(Int)), Var("a"), Prim(Var("a"), Int(1), Add, kind=Some(Int)), ])
+      let _: Var(Unit) = Apply(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=Some(Int)), Var("b"), Prim(Var("b"), Int(1), Add, kind=Some(Int)), ])
       Apply(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=Some(Int)), Var("c"), Prim(Var("c"), Int(1), Add, kind=Some(Int)), ])
     } else {
       Unit
@@ -99,33 +99,33 @@ let rec choose_pivot: (arr: Array(Int), low: Int, high: Int) -> Tuple([Int, Bool
   }
   Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0)), ])
 }
-let rec quick_sort: (arr: Array(Int), low: Int, high: Int) -> Unit {
-  let len: Var({val: Some(Int)}) = Var("high") - Var("low")
+let rec quick_sort: (arr: Array[Int], low: Int, high: Int) -> Unit {
+  let len: Var(Int) = Var("high") - Var("low")
   if (LE(Var("len"), Int(16))) then {
     Apply(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high"), ])
   } else {
-    let (pivot_index: Var({val: Some(Int)}), likely_sorted: Var({val: Some(Bool)})) = App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")])
-    let (pivot: Var({val: Some(Int)}), partitioned: Var({val: Some(Bool)})) = App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
-    let _: Var({val: Some(Unit)}) = Apply(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot"), ])
+    let (pivot_index: Var(Int), likely_sorted: Var(Bool)) = App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")])
+    let (pivot: Var(Int), partitioned: Var(Bool)) = App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
+    let _: Var(Unit) = Apply(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot"), ])
     Apply(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=Some(Int)), Var("high"), ])
   }
 }
-let rec sort: (x: Array(Int), len: Int) -> Unit {
+let rec sort: (x: Array[Int], len: Int) -> Unit {
   Apply(Var("quick_sort"), [Var("x"), Int(0), Var("len"), ])
 }
-let rec main: () -> Var({val: Some(Unit)}) {
-  let len: Var({val: Some(Int)}) = Apply(Var("read_int"), [])
-  let arr: Var({val: Some(Array(Int))}) = Array::make(Var("len"), Int(0))
-  let rec input: (i: Int) -> Var({val: Some(Unit)}) {
+let rec main: () -> Var(Unit) {
+  let len: Var(Int) = Apply(Var("read_int"), [])
+  let arr: Var(Array[Int]) = Array::make(Var("len"), Int(0))
+  let rec input: (i: Int) -> Var(Unit) {
     if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
-      let _: Var({val: Some(Unit)}) = Put Var("arr")[Var("i")] = App(Var("read_int"), [])
+      let _: Var(Unit) = Put Var("arr")[Var("i")] = App(Var("read_int"), [])
       Apply(Var("input"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
     } else {
       Unit
     }
   }
-  let _: Var({val: Some(Unit)}) = Apply(Var("input"), [Int(0), ])
-  let _: Var({val: Some(Unit)}) = Apply(Var("sort"), [Var("arr"), Var("len"), ])
+  let _: Var(Unit) = Apply(Var("input"), [Int(0), ])
+  let _: Var(Unit) = Apply(Var("sort"), [Var("arr"), Var("len"), ])
   Apply(Var("output"), [Var("arr"), Int(0), Var("len"), ])
 }
 Unit

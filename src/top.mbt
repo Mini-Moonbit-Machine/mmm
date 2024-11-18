@@ -20,7 +20,7 @@ pub enum Syntax {
   Put(Syntax, Syntax, Syntax) // _[_] = _
   CtorApp(String, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
-  LetEnum(Type, Syntax) // enum {..}; _
+  LetEnum(String, Type, Syntax) // enum {..}; _
 } derive(Show)
 
 pub struct MatchArm {
@@ -70,7 +70,7 @@ pub enum Type {
   Ptr
   Named(String)
   Enum(String, Array[(String, Array[Type])]) // enum _ {_; _(_, _); }
-} derive(Show)
+}
 
 pub type TypeScheme (Array[String], Type) derive(Show)
 
@@ -159,17 +159,6 @@ pub fn Type::is_unknown(self : Type) -> Bool {
   }
 }
 
-pub fn Type::is_uninstantiated(self : Type) -> Bool {
-  match self {
-    Var(t) =>
-      match t.val {
-        Some(t) => t.is_uninstantiated()
-        None => true
-      }
-    _ => false
-  }
-}
-
 pub fn Type::repr(self : Type) -> Type {
   match self {
     Type::Var(t) =>
@@ -183,21 +172,6 @@ pub fn Type::repr(self : Type) -> Type {
       }
     _ => self
   }
-}
-
-pub fn Type::map_named(self : Type, m : (String) -> Type) -> Type {
-  fn aux(t : Type) {
-    let repr = t.repr()
-    match repr {
-      Named(name) => m(name)
-      Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
-      Tuple(xs) => Tuple(xs.map(aux))
-      Array(x) => Array(aux(x))
-      _ => repr
-    }
-  }
-
-  aux(self)
 }
 
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {
@@ -214,6 +188,101 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Named(x), Named(y)) => x == y
     _ => false
   }
+}
+
+pub fn Type::to_string(self : Type) -> String {
+  Show::to_string(self)
+}
+
+pub fn Type::output(self : Type, logger : Logger) -> Unit {
+  let mem : Array[(Int, Type)] = []
+  let mut counter = 0
+  fn aux(self : Type) {
+    match self {
+      Unit => logger.write_string("Unit")
+      Bool => logger.write_string("Bool")
+      Int => logger.write_string("Int")
+      Double => logger.write_string("Double")
+      Fun(args, ret) => {
+        logger.write_string("(")
+        let mut first = true
+        for arg in args {
+          if first {
+            first = false
+          } else {
+            logger.write_string(", ")
+          }
+          aux(arg)
+        }
+        logger.write_string(") -> ")
+        aux(ret)
+      }
+      Tuple(xs) => {
+        logger.write_string("(")
+        let mut first = true
+        for x in xs {
+          if first {
+            first = false
+          } else {
+            logger.write_string(", ")
+          }
+          aux(x)
+        }
+        logger.write_string(")")
+      }
+      Array(x) => {
+        logger.write_string("Array[")
+        aux(x)
+        logger.write_string("]")
+      }
+      Ptr => logger.write_string("Ptr")
+      Var(r) =>
+        match r.val {
+          Some(t) => {
+            for t2 in mem {
+              let (n, t2) = t2
+              if physical_equal(t, t2) {
+                logger.write_string("Var(~\{n})")
+                return
+              }
+            }
+            mem.push((counter, t))
+            counter += 1
+            logger.write_string("Var(")
+            aux(t)
+            logger.write_string(")")
+          }
+          None => logger.write_string("Var(None)")
+        }
+      Named(name) => logger.write_string(name)
+      Enum(name, variants) => {
+        logger.write_string("Enum \{name} { ")
+        let mut first = true
+        for variant in variants {
+          let (variant, args) = variant
+          if first {
+            first = false
+          } else {
+            logger.write_string(", ")
+          }
+          logger.write_string("\{variant}(")
+          let mut first = true
+          for arg in args {
+            if first {
+              first = false
+            } else {
+              logger.write_string(", ")
+            }
+            aux(arg)
+          }
+          logger.write_string(")")
+        }
+        logger.write_string(" }")
+      }
+    }
+  }
+
+  aux(self)
 }
 
 pub type PrettySyntax Syntax
@@ -264,7 +333,7 @@ fn PrettySyntax::print_one_level(
     Let((name, ty), e1, e2) => {
       logger.write_string("let \{name}: \{ty} = ")
       match e1 {
-        Let(_) | LetRec(_) | LetTuple(_, _, _) => {
+        Let(_) | LetRec(_) | LetTuple(_, _, _) | LetEnum(_, _, _) => {
           logger.write_string("\n")
           logger.indent()
           self.print_one_level(logger, e1)
@@ -274,6 +343,10 @@ fn PrettySyntax::print_one_level(
       }
       logger.write_string("\n")
       self.print_one_level(logger, e2)
+    }
+    LetEnum(name, ty, e) => {
+      logger.write_string("enum \{name} = \{ty}\n")
+      self.print_one_level(logger, e)
     }
     LetTuple(name_types, y, e) => {
       logger.write_string("let (")
@@ -339,10 +412,6 @@ fn PrettySyntax::print_one_level(
         logger.write_string("(\{pat}, \{action}), ")
       }
       logger.write_string("])")
-    }
-    LetEnum(_, e) => {
-      logger.write_string("LetEnum(..)\n")
-      self.print_one_level(logger, e)
     }
     Tuple(es) => {
       logger.write_string("Tuple([")

@@ -6,7 +6,6 @@ pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
 
 struct KnfEnv {
   mut counter : Int
-  mut named_tys : LocalEnv
   externals : LocalEnv
   tracer : @util.SubTracer
 }
@@ -15,7 +14,7 @@ pub fn KnfEnv::new(
   externals : @immut/hashmap.T[String, Type],
   tracer : @util.SubTracer
 ) -> KnfEnv {
-  { counter: 1, named_tys: LocalEnv::new(), externals, tracer }
+  { counter: 1, externals, tracer }
 }
 
 pub fn KnfEnv::init_counter_from_existing(
@@ -37,16 +36,11 @@ fn KnfEnv::new_named_temp(self : KnfEnv, name : Name) -> Name {
   { ..name, slot: counter }
 }
 
-pub fn KnfEnv::to_knf(
-  self : KnfEnv,
-  named_tys : LocalEnv,
-  s : @types.Syntax
-) -> Knf!Failure {
+pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
   let let_list = []
   let name_env = NameEnv::new()
   // externals are handled by @typer.externals()
   let local_env = LocalEnv::new()
-  self.named_tys = named_tys
   let r = self.build_knf!(s, let_list, name_env, local_env)
   let knf = bind_all(r)
   self.tracer.record("knf", knf.to_pretty_print())
@@ -265,69 +259,69 @@ fn fold_switch_tree_to_knf(
         }
         Ctor(~name, ~csize) => {
           // unpack occurrences and bind name
-          let ctor_ty = self.named_tys.find(name).unwrap()
-          match ctor_ty {
-            @types.Type::Enum(_, variants) => {
-              let variant_id = variants
-                .search_by(fn(ctor) { name == ctor.0 })
-                .unwrap()
-              let (_, args_ty) = variants[variant_id]
-              if args_ty.length() != csize {
-                fail!("unmatched ctor size: \{name} \{csize}")
-              }
-              let x = match bind_env.find(occur) {
-                Some(x) => x
-                None => fail!("unbound occurrence: \{occur}")
-              }
-              // ctor id: variant index
-              let r = self.build_knf!(
-                Int(variant_id.to_int64()),
-                let_list,
-                env,
-                ty_env,
-              )
-              let o = self.materialize_knf(r, let_list)
-              // unpack tag
-              let tag_tmp = self.new_temp()
-              let args_tmp = self.new_temp()
-              let_list.push(
-                Binding::LetTuple(
-                  [(tag_tmp, Int), (args_tmp, Tuple(args_ty))],
-                  x.0,
-                ),
-              )
-              // unpack ctor arguments
-              let new_binders = []
-              for i, arg_ty in args_ty {
-                let tmp = self.new_temp()
-                let suboccur = occur.destruct(i)
-                new_binders.push((tmp, arg_ty))
-                bind_env2 = bind_env2.add(suboccur, (tmp, arg_ty))
-              }
-              let subtreek = self.decision_tree_to_knf!(
-                subtree,
-                [Binding::LetTuple(new_binders, args_tmp)],
-                bind_env2,
-                env,
-                ty_env,
-              )
-              let rest = self.fold_switch_tree_to_knf!(
-                occur,
-                rev_cases,
-                default,
-                [],
-                bind_env,
-                env,
-                ty_env,
-              )
-              (
-                IfEq(tag_tmp, o, bind_all(subtreek), bind_all(rest)),
-                subtreek.1,
-                let_list,
-              )
-            }
-            _ => self.tracer.abort("not an enum type")
+          let ctor_ty = ty_env
+            .find(name)
+            .or_else(fn() { self.tracer.abort("not a ctor") })
+          guard let Type::Fun(_, ty) = ctor_ty.repr() else {
+            _ => fail!("ctor type \{ctor_ty} is not a function type")
           }
+          guard let Type::Enum(_, variants) = ty.repr() else {
+            _ => fail!("ctor type \{ty} is not an enum type")
+          }
+          let variant_id = variants
+            .search_by(fn(ctor) { name == ctor.0 })
+            .unwrap()
+          let (_, args_ty) = variants[variant_id]
+          if args_ty.length() != csize {
+            fail!("unmatched ctor size: \{name} \{csize}")
+          }
+          let x = match bind_env.find(occur) {
+            Some(x) => x
+            None => fail!("unbound occurrence: \{occur}")
+          }
+          // ctor id: variant index
+          let r = self.build_knf!(
+            Int(variant_id.to_int64()),
+            let_list,
+            env,
+            ty_env,
+          )
+          let o = self.materialize_knf(r, let_list)
+          // unpack tag
+          let tag_tmp = self.new_temp()
+          let args_tmp = self.new_temp()
+          let_list.push(
+            Binding::LetTuple([(tag_tmp, Int), (args_tmp, Tuple(args_ty))], x.0),
+          )
+          // unpack ctor arguments
+          let new_binders = []
+          for i, arg_ty in args_ty {
+            let tmp = self.new_temp()
+            let suboccur = occur.destruct(i)
+            new_binders.push((tmp, arg_ty))
+            bind_env2 = bind_env2.add(suboccur, (tmp, arg_ty))
+          }
+          let subtreek = self.decision_tree_to_knf!(
+            subtree,
+            [Binding::LetTuple(new_binders, args_tmp)],
+            bind_env2,
+            env,
+            ty_env,
+          )
+          let rest = self.fold_switch_tree_to_knf!(
+            occur,
+            rev_cases,
+            default,
+            [],
+            bind_env,
+            env,
+            ty_env,
+          )
+          (
+            IfEq(tag_tmp, o, bind_all(subtreek), bind_all(rest)),
+            subtreek.1,
+            let_list,
+          )
         }
         Tuple(~tsize) => {
           // unpack occurrences and bind name
@@ -621,32 +615,35 @@ fn build_knf(
       (r2.0, r2.1, let_list)
     }
     CtorApp(f, xs) => {
-      let ctor_ty = self.named_tys.find(f).unwrap()
-      match ctor_ty {
-        @types.Type::Enum(_, variants) => {
-          let variant_id = variants.search_by(fn(ctor) { f == ctor.0 }).unwrap()
-          let idk = self.build_knf!(
-            Int(variant_id.to_int64()),
-            let_list,
-            env,
-            ty_env,
-          )
-          let idn = self.materialize_knf(idk, let_list)
-          let args = []
-          let tys = []
-          for x in xs {
-            let r = self.build_knf!(x, let_list, env, ty_env)
-            let tmp = self.materialize_knf(r, let_list)
-            args.push(tmp)
-            tys.push(r.1)
-          }
-          // indirectin: Tuple(tag, Tuple(..args))
-          let argk = (Knf::Tuple(args), @types.Type::Tuple(tys), let_list)
-          let argn = self.materialize_knf(argk, let_list)
-          (Tuple([idn, argn]), ctor_ty, let_list)
-        }
-        _ => self.tracer.abort("not an enum type")
+      let ctor_ty = ty_env
+        .find(f)
+        .or_else(fn() { self.tracer.abort("not a ctor") })
+      guard let Type::Fun(_, ty) = ctor_ty.repr() else {
+        _ => fail!("ctor type \{ctor_ty} is not a function type")
       }
+      guard let Type::Enum(_, variants) = ty.repr() else {
+        _ => fail!("ctor type \{ty} is not an enum type")
+      }
+      let variant_id = variants.search_by(fn(ctor) { f == ctor.0 }).unwrap()
+      let idk = self.build_knf!(
+        Int(variant_id.to_int64()),
+        let_list,
+        env,
+        ty_env,
+      )
+      let idn = self.materialize_knf(idk, let_list)
+      let args = []
+      let tys = []
+      for x in xs {
+        let r = self.build_knf!(x, let_list, env, ty_env)
+        let tmp = self.materialize_knf(r, let_list)
+        args.push(tmp)
+        tys.push(r.1)
+      }
+      // indirection: Tuple(tag, Tuple(..args))
+      let argk = (Knf::Tuple(args), @types.Type::Tuple(tys), let_list)
+      let argn = self.materialize_knf(argk, let_list)
+      (Tuple([idn, argn]), ty, let_list)
     }
     Match(e, _) as matcher => {
       let r = self.build_knf!(e, let_list, env, ty_env)
@@ -656,9 +653,20 @@ fn build_knf(
       let r = self.decision_tree_to_knf!(tree, let_list, bind_env, env, ty_env)
       r
     }
-    LetEnum(_, e) =>
-      // enum medata should be handled by @typer
+    LetEnum(_, ty, e) => {
+      let mut ty_env = ty_env
+      guard let Type::Enum(_, variants) = ty.repr() else {
+        _ => fail!("infer: \{ty} is not an enum type")
+      }
+      for variant in variants {
+        let (cname, args_ty) = variant
+        // Add constructors to type scheme environment.
+        // This is for constructors such as 'None' and 'Nil'.
+        let variant_ty = Type::Fun(args_ty, ty)
+        ty_env = ty_env.add(cname, variant_ty)
+      }
       self.build_knf!(e, let_list, env, ty_env)
+    }
     LetRec({ name, args, body, .. }, e) => {
       let ty = name.1
       let orig_name = name.0

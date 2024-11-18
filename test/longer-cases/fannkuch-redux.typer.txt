@@ -1,100 +1,100 @@
-let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
-  let rec gen_perm1: (len: Int) -> Array(Int) {
-    let arr: Var({val: Some(Array(Int))}) = Array::make(Var("len"), Int(0))
+let rec fannkuch: (n: Int) -> (Int, Int) {
+  let rec gen_perm1: (len: Int) -> Array[Int] {
+    let arr: Var(Array[Int]) = Array::make(Var("len"), Int(0))
     let rec init_arr: (i: Int) -> Unit {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
-        let _: Var({val: Some(Unit)}) = Put Var("arr")[Var("i")] = Var("i")
+        let _: Var(Unit) = Put Var("arr")[Var("i")] = Var("i")
         Apply(Var("init_arr"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
       } else {
         Unit
       }
     }
-    let _: Var({val: Some(Unit)}) = Apply(Var("init_arr"), [Int(0), ])
+    let _: Var(Unit) = Apply(Var("init_arr"), [Int(0), ])
     Var(arr)
   }
-  let perm1: Var({val: Some(Array(Int))}) = Apply(Var("gen_perm1"), [Var("n"), ])
-  let perm: Var({val: Some(Array(Int))}) = Array::make(Var("n"), Int(0))
-  let count: Var({val: Some(Array(Int))}) = Array::make(Var("n"), Int(0))
-  let flips: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
-  let max_flips: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
-  let check_sum: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
-  let nperm: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
-  let r: Var({val: Some(Array(Int))}) = Array::make(Int(1), Var("n"))
-  let rec compute: (r: Array(Int)) -> Unit {
+  let perm1: Var(Array[Int]) = Apply(Var("gen_perm1"), [Var("n"), ])
+  let perm: Var(Array[Int]) = Array::make(Var("n"), Int(0))
+  let count: Var(Array[Int]) = Array::make(Var("n"), Int(0))
+  let flips: Var(Array[Int]) = Array::make(Int(1), Int(0))
+  let max_flips: Var(Array[Int]) = Array::make(Int(1), Int(0))
+  let check_sum: Var(Array[Int]) = Array::make(Int(1), Int(0))
+  let nperm: Var(Array[Int]) = Array::make(Int(1), Int(0))
+  let r: Var(Array[Int]) = Array::make(Int(1), Var("n"))
+  let rec compute: (r: Array[Int]) -> Unit {
     if (LE(Int(1), Get(Var("r"), Int(0)))) then {
       let rec copy_perm: (i: Int) -> Unit {
         if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=Some(Int)))) then {
-          let _: Var({val: Some(Unit)}) = Put Var("perm")[Var("i")] = Get(Var("perm1"), Var("i"))
+          let _: Var(Unit) = Put Var("perm")[Var("i")] = Get(Var("perm1"), Var("i"))
           Apply(Var("copy_perm"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
         } else {
           Unit
         }
       }
-      let _: Var({val: Some(Unit)}) = Apply(Var("copy_perm"), [Int(0), ])
+      let _: Var(Unit) = Apply(Var("copy_perm"), [Int(0), ])
       let rec init_count: () -> Unit {
-        let _: Var({val: Some(Unit)}) = if (Not(Eq(Get(Var("r"), Int(0)), Int(1)))) then {
-          let _: Var({val: Some(Unit)}) = Put Var("count")[Prim(Get(Var("r"), Int(0)), Int(1), Sub, kind=Some(Int))] = Get(Var("r"), Int(0))
-          let _: Var({val: Some(Unit)}) = Put Var("r")[Int(0)] = Prim(Get(Var("r"), Int(0)), Int(1), Sub, kind=Some(Int))
+        let _: Var(Unit) = if (Not(Eq(Get(Var("r"), Int(0)), Int(1)))) then {
+          let _: Var(Unit) = Put Var("count")[Prim(Get(Var("r"), Int(0)), Int(1), Sub, kind=Some(Int))] = Get(Var("r"), Int(0))
+          let _: Var(Unit) = Put Var("r")[Int(0)] = Prim(Get(Var("r"), Int(0)), Int(1), Sub, kind=Some(Int))
           Apply(Var("init_count"), [])
         } else {
           Unit
         }
         Unit
       }
-      let _: Var({val: Some(Unit)}) = Apply(Var("init_count"), [])
-      let _: Var({val: Some(Unit)}) = Put Var("flips")[Int(0)] = Int(0)
-      let k: Var({val: Some(Array(Int))}) = Array::make(Int(1), Get(Var("perm"), Int(0)))
-      let rec do_flip: (k: Array(Int)) -> Unit {
+      let _: Var(Unit) = Apply(Var("init_count"), [])
+      let _: Var(Unit) = Put Var("flips")[Int(0)] = Int(0)
+      let k: Var(Array[Int]) = Array::make(Int(1), Get(Var("perm"), Int(0)))
+      let rec do_flip: (k: Array[Int]) -> Unit {
         if (Not(Eq(Get(Var("k"), Int(0)), Int(0)))) then {
-          let t: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
+          let t: Var(Array[Int]) = Array::make(Int(1), Int(0))
           let rec flip_loop: (i: Int) -> Unit {
             if (LE(Var("i"), Prim(Get(Var("k"), Int(0)), Int(2), Div, kind=Some(Int)))) then {
-              let _: Var({val: Some(Unit)}) = Put Var("t")[Int(0)] = Get(Var("perm"), Var("i"))
-              let _: Var({val: Some(Unit)}) = Put Var("perm")[Var("i")] = Get(Var("perm"), Prim(Get(Var("k"), Int(0)), Var("i"), Sub, kind=Some(Int)))
-              let _: Var({val: Some(Unit)}) = Put Var("perm")[Prim(Get(Var("k"), Int(0)), Var("i"), Sub, kind=Some(Int))] = Get(Var("t"), Int(0))
+              let _: Var(Unit) = Put Var("t")[Int(0)] = Get(Var("perm"), Var("i"))
+              let _: Var(Unit) = Put Var("perm")[Var("i")] = Get(Var("perm"), Prim(Get(Var("k"), Int(0)), Var("i"), Sub, kind=Some(Int)))
+              let _: Var(Unit) = Put Var("perm")[Prim(Get(Var("k"), Int(0)), Var("i"), Sub, kind=Some(Int))] = Get(Var("t"), Int(0))
               Apply(Var("flip_loop"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
             } else {
               Unit
             }
           }
-          let _: Var({val: Some(Unit)}) = Apply(Var("flip_loop"), [Int(0), ])
-          let _: Var({val: Some(Unit)}) = Put Var("k")[Int(0)] = Get(Var("perm"), Int(0))
-          let _: Var({val: Some(Unit)}) = Put Var("flips")[Int(0)] = Prim(Get(Var("flips"), Int(0)), Int(1), Add, kind=Some(Int))
+          let _: Var(Unit) = Apply(Var("flip_loop"), [Int(0), ])
+          let _: Var(Unit) = Put Var("k")[Int(0)] = Get(Var("perm"), Int(0))
+          let _: Var(Unit) = Put Var("flips")[Int(0)] = Prim(Get(Var("flips"), Int(0)), Int(1), Add, kind=Some(Int))
           Apply(Var("do_flip"), [Var("k"), ])
         } else {
           Unit
         }
       }
-      let _: Var({val: Some(Unit)}) = Apply(Var("do_flip"), [Var("k"), ])
-      let _: Var({val: Some(Unit)}) = if (LE(Get(Var("max_flips"), Int(0)), Get(Var("flips"), Int(0)))) then {
+      let _: Var(Unit) = Apply(Var("do_flip"), [Var("k"), ])
+      let _: Var(Unit) = if (LE(Get(Var("max_flips"), Int(0)), Get(Var("flips"), Int(0)))) then {
         Put Var("max_flips")[Int(0)] = Get(Var("flips"), Int(0))
       } else {
         Unit
       }
-      let _: Var({val: Some(Unit)}) = Put Var("check_sum")[Int(0)] = Prim(Get(Var("check_sum"), Int(0)), Prim(Get(Var("flips"), Int(0)), Prim(Int(1), Prim(Prim(Get(Var("nperm"), Int(0)), Prim(Prim(Get(Var("nperm"), Int(0)), Int(2), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Mul, kind=Some(Int)), Add, kind=Some(Int))
-      let go: Var({val: Some(Array(Bool))}) = Array::make(Int(1), Bool(true))
-      let t: Var({val: Some(Array(Int))}) = Array::make(Int(1), Int(0))
+      let _: Var(Unit) = Put Var("check_sum")[Int(0)] = Prim(Get(Var("check_sum"), Int(0)), Prim(Get(Var("flips"), Int(0)), Prim(Int(1), Prim(Prim(Get(Var("nperm"), Int(0)), Prim(Prim(Get(Var("nperm"), Int(0)), Int(2), Div, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Int(2), Mul, kind=Some(Int)), Sub, kind=Some(Int)), Mul, kind=Some(Int)), Add, kind=Some(Int))
+      let go: Var(Array[Bool]) = Array::make(Int(1), Bool(true))
+      let t: Var(Array[Int]) = Array::make(Int(1), Int(0))
       let rec go_loop: () -> Unit {
         if (Get(Var("go"), Int(0))) then {
-          let _: Var({val: Some(Unit)}) = if (Eq(Get(Var("r"), Int(0)), Var("n"))) then {
-            let _: Var({val: Some(Unit)}) = Put Var("go")[Int(0)] = Bool(false)
-            let _: Var({val: Some(Unit)}) = Put Var("r")[Int(0)] = Int(0)
+          let _: Var(Unit) = if (Eq(Get(Var("r"), Int(0)), Var("n"))) then {
+            let _: Var(Unit) = Put Var("go")[Int(0)] = Bool(false)
+            let _: Var(Unit) = Put Var("r")[Int(0)] = Int(0)
             Unit
           } else {
-            let _: Var({val: Some(Unit)}) = Put Var("t")[Int(0)] = Get(Var("perm1"), Int(0))
+            let _: Var(Unit) = Put Var("t")[Int(0)] = Get(Var("perm1"), Int(0))
             let rec move_perm1_forward: (i: Int) -> Unit {
               if (LE(Var("i"), Prim(Get(Var("r"), Int(0)), Int(1), Sub, kind=Some(Int)))) then {
-                let _: Var({val: Some(Unit)}) = Put Var("perm1")[Var("i")] = Get(Var("perm1"), Prim(Var("i"), Int(1), Add, kind=Some(Int)))
-                let _: Var({val: Some(Unit)}) = Apply(Var("move_perm1_forward"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
+                let _: Var(Unit) = Put Var("perm1")[Var("i")] = Get(Var("perm1"), Prim(Var("i"), Int(1), Add, kind=Some(Int)))
+                let _: Var(Unit) = Apply(Var("move_perm1_forward"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
                 Unit
               } else {
                 Unit
               }
             }
-            let _: Var({val: Some(Unit)}) = Apply(Var("move_perm1_forward"), [Int(0), ])
-            let _: Var({val: Some(Unit)}) = Put Var("perm1")[Get(Var("r"), Int(0))] = Get(Var("t"), Int(0))
-            let _: Var({val: Some(Unit)}) = Put Var("count")[Get(Var("r"), Int(0))] = Prim(Get(Var("count"), Get(Var("r"), Int(0))), Int(1), Sub, kind=Some(Int))
-            let _: Var({val: Some(Unit)}) = if (LE(Int(1), Get(Var("count"), Get(Var("r"), Int(0))))) then {
+            let _: Var(Unit) = Apply(Var("move_perm1_forward"), [Int(0), ])
+            let _: Var(Unit) = Put Var("perm1")[Get(Var("r"), Int(0))] = Get(Var("t"), Int(0))
+            let _: Var(Unit) = Put Var("count")[Get(Var("r"), Int(0))] = Prim(Get(Var("count"), Get(Var("r"), Int(0))), Int(1), Sub, kind=Some(Int))
+            let _: Var(Unit) = if (LE(Int(1), Get(Var("count"), Get(Var("r"), Int(0))))) then {
               Put Var("go")[Int(0)] = Bool(false)
             } else {
               Put Var("r")[Int(0)] = Prim(Get(Var("r"), Int(0)), Int(1), Add, kind=Some(Int))
@@ -106,19 +106,19 @@ let rec fannkuch: (n: Int) -> Tuple([Int, Int]) {
           Unit
         }
       }
-      let _: Var({val: Some(Unit)}) = Apply(Var("go_loop"), [])
-      let _: Var({val: Some(Unit)}) = Put Var("nperm")[Int(0)] = Prim(Get(Var("nperm"), Int(0)), Int(1), Add, kind=Some(Int))
+      let _: Var(Unit) = Apply(Var("go_loop"), [])
+      let _: Var(Unit) = Put Var("nperm")[Int(0)] = Prim(Get(Var("nperm"), Int(0)), Int(1), Add, kind=Some(Int))
       Apply(Var("compute"), [Var("r"), ])
     } else {
       Unit
     }
   }
-  let _: Var({val: Some(Unit)}) = Apply(Var("compute"), [Var("r"), ])
+  let _: Var(Unit) = Apply(Var("compute"), [Var("r"), ])
   Tuple([Get(Var("max_flips"), Int(0)), Get(Var("check_sum"), Int(0)), ])
 }
-let rec main: () -> Var({val: Some(Unit)}) {
-  let (max_flips: Var({val: Some(Int)}), check_sum: Var({val: Some(Int)})) = App(Var("fannkuch"), [Int(9)])
-  let _: Var({val: Some(Unit)}) = Apply(Var("print_int"), [Var("check_sum"), ])
+let rec main: () -> Var(Unit) {
+  let (max_flips: Var(Int), check_sum: Var(Int)) = App(Var("fannkuch"), [Int(9)])
+  let _: Var(Unit) = Apply(Var("print_int"), [Var("check_sum"), ])
   Apply(Var("print_int"), [Var("max_flips"), ])
 }
 Unit
