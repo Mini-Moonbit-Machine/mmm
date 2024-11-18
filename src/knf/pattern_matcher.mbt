@@ -165,7 +165,7 @@ fn PatMatrixRow::all_wildcards(self : PatMatrixRow) -> Bool {
     fn(pat) {
       match pat {
         Wildcard => true
-        Var(x) => not(x[0] >= 'A' && x[0] <= 'Z')
+        Var(_) => true
         _ => false
       }
     },
@@ -240,17 +240,7 @@ fn PatternMatcher::specialize_row(
       } else {
         None
       }
-    Var(name) =>
-      if not(name[0] >= 'A' && name[0] <= 'Z') {
-        Some(
-          (
-            [@types.Wildcard].repeat(subpat_arity),
-            Some(row.binds.add(occ, name)),
-          ),
-        )
-      } else {
-        None
-      }
+    Var(_) => None
     Tuple(pats) =>
       if ctor.is_compatible_with(selected_subpat) {
         Some((pats, None))
@@ -314,12 +304,7 @@ fn PatternMatcher::specialize_matrix(
 
 fn PatternMatcher::pattern_identifier(pat : @types.Pattern) -> String? {
   match pat {
-    Var(name) =>
-      if not(name[0] >= 'A' && name[0] <= 'Z') {
-        Some(name)
-      } else {
-        None
-      }
+    Var(name) => Some(name)
     _ => None
   }
 }
@@ -335,12 +320,7 @@ fn PatternMatcher::default_row(
   let discard_subpat = match selected_subpat {
     Wildcard => Some(None)
     Int(_) | Bool(_) | Double(_) | Unit => None // literals unmatched always be discarded
-    Var(name) =>
-      if not(name[0] >= 'A' && name[0] <= 'Z') {
-        Some(None)
-      } else {
-        None
-      }
+    Var(_) => Some(None)
     Tuple(_) => None
     CtorApp(_, _) => None
   }
@@ -481,12 +461,20 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
   // Select a column and then switching
   let pattern_actions = []
   let selected_col = select_col(mat)
+  let specialize_cache = MutMap::new()
   for row in mat.rows {
     let selected_pattern = row.patterns[selected_col]
     guard let Some(subpatspec) = SubPatSpec::from_pat(selected_pattern) else {
       _ => continue
     }
-    let submatrix = self.specialize_matrix(subpatspec, selected_col, mat)
+    let submatrix = match specialize_cache.get(subpatspec) {
+      Some(_) => continue // same ctor, no need to specialize
+      None => {
+        let submatrix = self.specialize_matrix(subpatspec, selected_col, mat)
+        specialize_cache.set(subpatspec, submatrix)
+        submatrix
+      }
+    }
     self.tracer.println(
       "specialize_matrix: by subpat \{subpatspec}, at col \{selected_col}:\n\{submatrix}",
     )

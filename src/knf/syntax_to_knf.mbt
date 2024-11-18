@@ -287,20 +287,26 @@ fn fold_switch_tree_to_knf(
                 ty_env,
               )
               let o = self.materialize_knf(r, let_list)
-              let class_id_tmp = self.new_temp()
-              let class_id_ty = @types.Type::Int
-              let new_binders = [(class_id_tmp, class_id_ty)]
+              // unpack tag
+              let tag_tmp = self.new_temp()
+              let args_tmp = self.new_temp()
+              let_list.push(
+                Binding::LetTuple(
+                  [(tag_tmp, Int), (args_tmp, Tuple(args_ty))],
+                  x.0,
+                ),
+              )
+              // unpack ctor arguments
+              let new_binders = []
               for i, arg_ty in args_ty {
                 let tmp = self.new_temp()
                 let suboccur = occur.destruct(i)
                 new_binders.push((tmp, arg_ty))
                 bind_env2 = bind_env2.add(suboccur, (tmp, arg_ty))
               }
-              let_list.push(Binding::LetTuple(new_binders, x.0))
-              // unpack ctor arguments
               let subtreek = self.decision_tree_to_knf!(
                 subtree,
-                [],
+                [Binding::LetTuple(new_binders, args_tmp)],
                 bind_env2,
                 env,
                 ty_env,
@@ -315,7 +321,7 @@ fn fold_switch_tree_to_knf(
                 ty_env,
               )
               (
-                IfEq(class_id_tmp, o, bind_all(subtreek), bind_all(rest)),
+                IfEq(tag_tmp, o, bind_all(subtreek), bind_all(rest)),
                 subtreek.1,
                 let_list,
               )
@@ -398,34 +404,9 @@ fn build_knf(
     Bool(b) => (Bool(b), Bool, let_list)
     Double(d) => (Double(d), Double, let_list)
     Var(x) =>
-      if x[0] >= 'A' && x[0] <= 'Z' {
-        let ctor_ty = self.named_tys.find(x).unwrap()
-        match ctor_ty {
-          @types.Type::Enum(_, variants) => {
-            let variant_id = variants
-              .search_by(fn(ctor) { x == ctor.0 })
-              .unwrap()
-            let (_, args_ty) = variants[variant_id]
-            if args_ty.length() != 0 {
-              fail!("unmatched ctor size: \{x} 0")
-            }
-            let idk = self.build_knf!(
-              Int(variant_id.to_int64()),
-              let_list,
-              env,
-              ty_env,
-            )
-            let idn = self.materialize_knf(idk, let_list)
-            let args = [idn]
-            (Tuple(args), ctor_ty, let_list)
-          }
-          _ => self.tracer.abort("not an enum type")
-        }
-      } else {
-        match (env.find(x), ty_env.find(x)) {
-          (Some(name), Some(ty)) => (Var(name), ty, let_list)
-          _ => fail!("unbound variable: \{x}")
-        }
+      match (env.find(x), ty_env.find(x)) {
+        (Some(name), Some(ty)) => (Var(name), ty, let_list)
+        _ => fail!("unbound variable: \{x}")
       }
     Tuple(xs) => {
       let ys = []
@@ -639,7 +620,7 @@ fn build_knf(
       let r2 = self.build_knf!(e2, let_list, env, ty_env)
       (r2.0, r2.1, let_list)
     }
-    CtorApp(Var(f), xs) => {
+    CtorApp(f, xs) => {
       let ctor_ty = self.named_tys.find(f).unwrap()
       match ctor_ty {
         @types.Type::Enum(_, variants) => {
@@ -651,13 +632,18 @@ fn build_knf(
             ty_env,
           )
           let idn = self.materialize_knf(idk, let_list)
-          let args = [idn]
+          let args = []
+          let tys = []
           for x in xs {
             let r = self.build_knf!(x, let_list, env, ty_env)
             let tmp = self.materialize_knf(r, let_list)
             args.push(tmp)
+            tys.push(r.1)
           }
-          (Tuple(args), ctor_ty, let_list)
+          // indirectin: Tuple(tag, Tuple(..args))
+          let argk = (Knf::Tuple(args), @types.Type::Tuple(tys), let_list)
+          let argn = self.materialize_knf(argk, let_list)
+          (Tuple([idn, argn]), ctor_ty, let_list)
         }
         _ => self.tracer.abort("not an enum type")
       }

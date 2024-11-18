@@ -18,7 +18,7 @@ pub enum Syntax {
   LetRec(Fundef, Syntax) // fn f() {} ; _
   LetTuple(Array[(String, Type)], Syntax, Syntax) // let (_ , _) : (_, _)= _; _
   Put(Syntax, Syntax, Syntax) // _[_] = _
-  CtorApp(Syntax, Array[Syntax]) // _(_, _)
+  CtorApp(String, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
   LetEnum(Type, Syntax) // enum {..}; _
 } derive(Show)

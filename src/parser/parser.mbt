@@ -362,7 +362,12 @@ pub fn Parser::parse_expr_with_level(
           }
           Syntax::Var("<Array::make>")
         }
-        _ => Syntax::Var(lhs_token.inner.span)
+        x =>
+          if x[0] >= 'A' && x[0] <= 'Z' {
+            Syntax::CtorApp(x, [])
+          } else {
+            Syntax::Var(x)
+          }
       }
     PairedOpen(po) =>
       if self.peek_token!().inner.tag == PairedClose(po) &&
@@ -433,12 +438,7 @@ pub fn Parser::parse_expr_with_level(
               Syntax::Bool(b) => Pattern::Bool(b)
               Syntax::Int(n) => Pattern::Int(n)
               Syntax::Double(n) => Pattern::Double(n)
-              Syntax::Var(name) =>
-                if name[0] >= 'A' && name[0] <= 'Z' {
-                  Pattern::CtorApp(name, [])
-                } else {
-                  Pattern::Var(name)
-                }
+              Syntax::Var(name) => Pattern::Var(name)
               Syntax::Tuple(exprs) => {
                 let ts = []
                 for expr in exprs {
@@ -446,7 +446,7 @@ pub fn Parser::parse_expr_with_level(
                 }
                 Pattern::Tuple(ts)
               }
-              Syntax::CtorApp(Syntax::Var(ctor), exprs) => {
+              Syntax::CtorApp(ctor, exprs) => {
                 let args = []
                 for expr in exprs {
                   args.push(syntax_to_pattern!(expr))
@@ -554,12 +554,9 @@ pub fn Parser::parse_expr_with_level(
                 (Syntax::Var("not"), [expr]) => lhs = Syntax::Not(expr)
                 (Syntax::Var("<Array::make>"), [e1, e2]) =>
                   lhs = Syntax::Array(e1, e2)
-                (Syntax::Var(f), es) =>
-                  if f[0] >= 'A' && f[0] <= 'Z' {
-                    lhs = Syntax::CtorApp(lhs, es)
-                  } else {
-                    lhs = Syntax::App(lhs, exprs)
-                  }
+                (Syntax::CtorApp(f, []), es) => lhs = Syntax::CtorApp(f, es)
+                (Syntax::CtorApp(_, _), _) =>
+                  fail!("CtorApp has zero arguments before check apply style")
                 _ => lhs = Syntax::App(lhs, exprs)
               }
             }

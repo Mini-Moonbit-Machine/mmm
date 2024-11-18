@@ -187,8 +187,18 @@ fn Typer::check(
         let arg_ty = self.infer!(arg, envt, envs)
         args_ty.push(arg_ty)
       }
-      let expected_fun_ty = Type::Fun(args_ty, ty)
-      self.check!(f, expected_fun_ty, envt, envs)
+      let expected_ty = if args.length() > 0 {
+        Type::Fun(args_ty, ty)
+      } else {
+        ty
+      }
+      match envs.find(f) {
+        Some(t) => {
+          let ctor_ty = self.inst(t, envt)
+          self.unify!(ctor_ty, expected_ty, envt, node)
+        }
+        None => fail!("unbound constructor: \{f}")
+      }
     }
     (Syntax::App(f, args), ty) => {
       let args_ty = []
@@ -484,7 +494,10 @@ fn Typer::infer(
       Type::Double
     }
     Syntax::CtorApp(f, args) => {
-      let inferred_fun_ty = self.infer!(f, envt, envs)
+      let inferred_fun_ty = match envs.find(f) {
+        Some(t) => self.inst(t, envt)
+        None => fail!("unbound constructor: \{f}")
+      }
       match inferred_fun_ty {
         Type::Fun(args_ty, ret_ty) => {
           if args.length() != args_ty.length() {
@@ -499,6 +512,12 @@ fn Typer::infer(
             }
           }
           self.find(ret_ty, envt)
+        }
+        Enum(_, _) => {
+          if args.length() != 0 {
+            fail!("0 arity constructor should has no arguments")
+          }
+          self.find(inferred_fun_ty, envt)
         }
         _ =>
           fail!(
