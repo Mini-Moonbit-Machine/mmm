@@ -409,6 +409,7 @@ struct Options {
   mut redirect_to_log : Bool
   mut use_xthead : Bool
   mut mode : StagesMode
+  mut stop : String?
 }
 
 fn Options::new() -> Options {
@@ -429,15 +430,28 @@ fn Options::new() -> Options {
     redirect_to_log: true,
     use_xthead: false,
     mode: StagesMode::Riscv,
+    stop: None,
   }
 }
 
 fn Options::update_from_flags(
-  _self : Options,
-  _flags : Flags,
+  self : Options,
+  flags : Flags,
   _tracer : @util.SubTracer
 ) -> Unit {
-
+  if flags.has("extension") && self.mode != StagesMode::Ext {
+    self.stop = Some(
+      "This is an test file for extension but you are not in extension mode",
+    )
+  }
+  if flags.has("has_read") &&
+    (
+      self.mode == StagesMode::Js ||
+      self.mode == StagesMode::Wasm ||
+      self.mode == StagesMode::Ext
+    ) {
+    self.stop = Some("This test file contains read and cannot be tested")
+  }
 }
 
 fn main {
@@ -621,6 +635,10 @@ fn main {
     }
     if stop {
       break
+    }
+    match opts.stop {
+      Some(msg) => ot.abort(msg)
+      None => ()
     }
   }
 

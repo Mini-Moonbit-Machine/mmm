@@ -1,6 +1,6 @@
 let rec s: forall ["X", "Y", "Z"] . (x: (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
-  let rec f: (y: (Z) -> Y) -> Var((Z) -> Var(X)) {
-    let rec g: (z: Z) -> Var(X) {
+  let rec f: (y: Var((Z) -> Var(Y))) -> Var((Var(Z)) -> Var(X)) {
+    let rec g: (z: Var(Z)) -> Var(X) {
       Apply(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")]), ])
     }
     Var(g)
@@ -8,7 +8,7 @@ let rec s: forall ["X", "Y", "Z"] . (x: (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) ->
   Var(f)
 }
 let rec k: forall ["X", "Y"] . (x: X) -> (Y) -> X {
-  let rec f: (y: Y) -> X {
+  let rec f: (y: Var(Y)) -> Var(X) {
     Var(x)
   }
   Var(f)

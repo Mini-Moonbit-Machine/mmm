@@ -8,13 +8,17 @@ alias @moonbitlang/minimbt/util as @util
 fn externals() -> @hashmap.T[String, @minimbt.Type]
 
 // Types and methods
+type TyVEnv
+
 pub struct Typer {
   pub syntax : @minimbt.Syntax
   pub tracer : @util.SubTracer
 }
 impl Typer {
-  check_all(Self) -> Unit!Failure
+  check_all(Self) -> @minimbt.Syntax!Failure
+  map_named(Self, @minimbt.Type, (String) -> @minimbt.Type, ~subst_enum : Bool = ..) -> @minimbt.Type
   new(@minimbt.Syntax, @util.SubTracer) -> Self
+  simplify(Self, @minimbt.Syntax) -> @minimbt.Syntax
 }
 
 // Type aliases

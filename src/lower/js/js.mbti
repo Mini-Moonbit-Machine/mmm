@@ -18,6 +18,7 @@ pub enum JsExpr {
   Lit(String)
   Thunk(JsExpr)
   Fn(JsFn)
+  LetFn(JsFn, JsExpr)
   LetRec(JsFn, JsExpr)
   Let(String, JsExpr, JsExpr)
   LetTuple(Array[String], JsExpr, JsExpr)
@@ -25,6 +26,7 @@ pub enum JsExpr {
   Put(String, String, String)
   UnOp(String, String)
   BinOp(String, String, String)
+  IntBinOp(String, String, String)
   If(JsExpr, JsExpr, JsExpr)
   Call(String, Array[JsExpr])
   Tuple(Array[String])
@@ -45,6 +47,7 @@ impl JsFn {
 
 pub struct JsLoweringCtx {
   pub knf : @knf.Knf
+  pub counter : Int
   pub tracer : @util.SubTracer
 }
 impl JsLoweringCtx {

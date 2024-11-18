@@ -1,3 +1,5 @@
+//:extension
+
 fn iter[T](arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
   fn do(yield) -> Bool {
     fn next(i) -> Bool {

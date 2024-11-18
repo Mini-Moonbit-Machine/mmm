@@ -1,3 +1,5 @@
+//:has_read
+
 let unmem_magic: Int = -1919810;
 
 fn mem(func: ((Int) -> Int, Int) -> Int, max_n: Int) -> (Int) -> Int {

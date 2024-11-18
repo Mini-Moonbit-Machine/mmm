@@ -1,3 +1,5 @@
+//:has_read
+
 let limit: Double = 2.0;
 let limit_sq: Double = limit * limit;
 let iter: Int = 300;

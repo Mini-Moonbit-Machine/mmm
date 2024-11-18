@@ -4,6 +4,7 @@ package moonbitlang/minimbt
 
 // Types and methods
 pub struct Fundef {
+  pub tyvars : Array[String]
   pub name : (String, Type)
   pub args : Array[(String, Type)]
   pub body : Syntax
@@ -20,6 +21,14 @@ pub enum Kind {
 }
 impl Kind {
   op_equal(Self, Self) -> Bool
+  to_string(Self) -> String
+}
+
+pub struct MatchArm {
+  pub pat : Pattern
+  pub action : Syntax
+}
+impl MatchArm {
   to_string(Self) -> String
 }
 
@@ -55,6 +64,23 @@ impl Op {
   to_string(Self) -> String
 }
 
+pub enum Pattern {
+  Wildcard
+  Unit
+  Bool(Bool)
+  Int(Int64)
+  Double(Double)
+  Var(String)
+  Tuple(Array[Pattern])
+  CtorApp(String, Array[Pattern])
+}
+impl Pattern {
+  to_json(Self) -> Json
+  to_string(Self) -> String
+}
+
+pub type PrettySyntax Syntax
+
 pub enum Syntax {
   Unit
   Bool(Bool)
@@ -75,10 +101,14 @@ pub enum Syntax {
   LetRec(Fundef, Syntax)
   LetTuple(Array[(String, Type)], Syntax, Syntax)
   Put(Syntax, Syntax, Syntax)
+  CtorApp(String, Array[Syntax])
+  Match(Syntax, Array[MatchArm])
+  LetEnum(String, Type, Syntax)
 }
 impl Syntax {
   from_json(Json) -> Self!
   to_json(Self) -> Json
+  to_pretty_print(Self) -> PrettySyntax
   to_string(Self) -> String
 }
 
@@ -92,6 +122,8 @@ pub enum Type {
   Array(Type)
   Var(Ref[Type?])
   Ptr
+  Named(String)
+  Enum(String, Array[(String, Array[Type])])
 }
 impl Type {
   from_json(Json) -> Self!
@@ -99,10 +131,20 @@ impl Type {
   is_fn_like(Self) -> Bool
   is_ptr_like(Self) -> Bool
   is_unknown(Self) -> Bool
+  new_named(String) -> Self
+  new_var() -> Self
   op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
   repr(Self) -> Self
   size_of(Self, Int) -> Int
   to_json(Self) -> Json
+  to_scheme(Self) -> TypeScheme
+  to_string(Self) -> String
+}
+
+pub type TypeScheme (Array[String], Type)
+impl TypeScheme {
+  no_quantifier(Self) -> Type?
   to_string(Self) -> String
 }
 
@@ -115,13 +157,19 @@ impl Show for Fundef
 
 impl Show for Kind
 
+impl Show for MatchArm
+
 impl Show for Name
 
 impl Show for NameFromStringError
 
 impl Show for Op
 
+impl Show for Pattern
+
+impl Show for PrettySyntax
+
 impl Show for Syntax
 
-impl Show for Type
+impl Show for TypeScheme
 

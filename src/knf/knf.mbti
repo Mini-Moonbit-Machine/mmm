@@ -40,6 +40,15 @@ impl CallFreq {
   to_string(Self) -> String
 }
 
+pub enum DecisionTree {
+  Succeed(@hashmap.T[Occurrence, String], @minimbt.Syntax)
+  Fail
+  Switch(Occurrence, Array[(SubPatSpec, DecisionTree)], DecisionTree?)
+}
+impl DecisionTree {
+  to_pretty_print(Self) -> PrettyDecisionTree
+}
+
 pub struct FreeSetClosure {
   pub ctx : Map[@minimbt.Name, @moonbitlang/core/hashset.T[@minimbt.Name]]
   pub changed : Bool
@@ -154,7 +163,74 @@ impl LambdaLifter {
   new(@util.SubTracer, Knf) -> Self
 }
 
+pub struct Occurrence {
+  pub order : Array[Int]
+}
+impl Occurrence {
+  destruct(Self, Int) -> Self
+  empty() -> Self
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
+
+pub struct Occurrences {
+  pub occurs : Array[Occurrence]
+}
+impl Occurrences {
+  remove_col(Self, Int) -> Self
+  root() -> Self
+  to_string(Self) -> String
+  unpack_col(Self, Int, Int) -> Self
+}
+
+pub struct PatMatrix {
+  pub arity : Int
+  pub occurs : Occurrences
+  pub rows : Array[PatMatrixRow]
+}
+impl PatMatrix {
+  to_string(Self) -> String
+}
+
+type PatMatrixRow
+impl PatMatrixRow {
+  to_string(Self) -> String
+}
+
+pub struct PatternMatcher {
+  pub expr : @minimbt.Syntax
+  pub tracer : @util.SubTracer
+}
+impl PatternMatcher {
+  new(@minimbt.Syntax, @util.SubTracer) -> Self
+  run(Self) -> DecisionTree
+}
+
+pub type PrettyDecisionTree DecisionTree
+impl PrettyDecisionTree {
+  print_one_level(Self, @util.IndentLogger, DecisionTree) -> Unit
+  to_string(Self) -> String
+}
+
 type PrettyKnf
+impl PrettyKnf {
+  to_string(Self) -> String
+}
+
+pub enum SubPatSpec {
+  Unit
+  BoolLit(Bool)
+  IntLit(Int64)
+  DoubleLit(Double)
+  Ctor(String, Int)
+  Tuple(Int)
+}
+impl SubPatSpec {
+  op_equal(Self, Self) -> Bool
+  output(Self, Logger) -> Unit
+  to_string(Self) -> String
+}
 
 type TupleFreq
 impl TupleFreq {
@@ -172,7 +248,15 @@ impl Unbox {
 }
 
 // Type aliases
+pub typealias BindCtx = @hashmap.T[Occurrence, String]
+
+pub typealias BindEnv = @hashmap.T[Occurrence, (@minimbt.Name, @minimbt.Type)]
+
 pub typealias LocalEnv = @hashmap.T[String, @minimbt.Type]
+
+pub typealias MutMap[K, V] = @moonbitlang/core/hashmap.T[K, V]
+
+pub typealias MutSet[K] = @moonbitlang/core/hashset.T[K]
 
 pub typealias Name = @minimbt.Name
 
@@ -183,11 +267,19 @@ pub typealias Type = @minimbt.Type
 // Traits
 
 // Extension Methods
+impl Hash for Occurrence
+
 impl Show for CallFreq
 
 impl Show for FuncDef
 
 impl Show for Knf
+
+impl Show for Occurrences
+
+impl Show for PatMatrix
+
+impl Show for PatMatrixRow
 
 impl Show for PrettyKnf
 

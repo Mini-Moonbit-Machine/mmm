@@ -15,6 +15,7 @@ pub struct PResult {
 pub struct Parser {
   pub tokenizer : @lexer.Lexer
   pub tracer : @util.SubTracer
+  pub op : Map[String, UserOp]
   pub token : @lexer.Token?
 }
 impl Parser {
@@ -24,8 +25,11 @@ impl Parser {
   parse(Self) -> PResult[@minimbt.Syntax]!Failure
   parse_expr(Self) -> PResult[@minimbt.Syntax]!Failure
   parse_expr_with_level(Self, Int) -> PResult[@minimbt.Syntax]!Failure
+  parse_stmt(Self, Bool) -> PResult[@minimbt.Syntax]!Failure
   parse_type(Self) -> PResult[@minimbt.Type]!Failure
 }
+
+type UserOp
 
 // Type aliases
 
