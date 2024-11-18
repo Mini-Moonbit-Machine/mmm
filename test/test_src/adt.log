@@ -1,0 +1,301 @@
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("Nil", [])], action: Unit}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Cons", [Var("h"), Var("t")])], action: Let(("_", Var(Unit)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}]}
+// [Knf] specialize_matrix: by subpat ctor(Nil, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Unit}]}
+// [Knf] specialize_matrix: by subpat ctor(Cons, 2), at col 0:
+// [Knf] {arity: 2, occurs: {occurs: [/\.0, /\.1]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Var("h"), Var("t")], action: Let(("_", Var(Unit)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: []}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Unit)),
+// [Knf]   (ctor(Cons, 2), Succeed({/\.0 -> h, /\.1 -> t, }, Let(("_", Var(Unit)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")])))),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Unit)),
+// [Knf]   (ctor(Cons, 2), Succeed({/\.0 -> h, /\.1 -> t, }, Let(("_", Var(Unit)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")])))),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Unit)
+// [Knf] decision_tree_to_knf: Succeed({/\.0 -> h, /\.1 -> t, }, Let(("_", Var(Unit)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")])))
+// [Main] function thunk_main(k) {
+// [Main]   function int_array_to_list_1(arr_3, len_5, k) {
+// [Main]     function aux_6(i_8, k) {
+// [Main]       if (i_8 === len_5) {
+// [Main]         const _9 = 0;
+// [Main]         const _10 = [];
+// [Main]         return $thunk(() => k([_9, _10]))
+// [Main]       } else {
+// [Main]         const _11 = 1;
+// [Main]         const _12 = arr_3[i_8];
+// [Main]         const _13 = 1;
+// [Main]         const _14 = i_8 + _13;
+// [Main]         return $thunk(() => aux_6(_14, function (_15) {
+// [Main]           const _16 = [_12, _15];
+// [Main]           return $thunk(() => k([_11, _16]))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]     }
+// [Main]     const _17 = 0;
+// [Main]     return $thunk(() => aux_6(_17, function (x) {
+// [Main]       return $thunk(() => k(x))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   function print_int_list_18(lst_20, k) {
+// [Main]     const _21 = 0;
+// [Main]     const [_22, _23] = lst_20;
+// [Main]     if (_22 === _21) {
+// [Main]       const [] = _23;
+// [Main]       return $thunk(() => k(null))
+// [Main]     } else {
+// [Main]       const _24 = 1;
+// [Main]       const [_25, _26] = lst_20;
+// [Main]       if (_25 === _24) {
+// [Main]         const [_27, _28] = _26;
+// [Main]         return $thunk(() => $external(minimbt_print_int, function (_30) {
+// [Main]           return $thunk(() => print_int_list_18(_28, function (x) {
+// [Main]             return $thunk(() => k(x))
+// [Main]           }
+// [Main]           ))
+// [Main]         }
+// [Main]         , _27))
+// [Main]       } else {
+// [Main]         return $thunk(() => k(null))
+// [Main]       }
+// [Main]     }
+// [Main]   }
+// [Main]   function main_31(k) {
+// [Main]     const _32 = 5;
+// [Main]     const _33 = 1;
+// [Main]     return $thunk(() => $external(minimbt_create_array, function (arr_34) {
+// [Main]       const _35 = 0;
+// [Main]       const _36 = 1;
+// [Main]       const _38 = arr_34[_35] = _36;
+// [Main]       const _39 = 1;
+// [Main]       const _40 = 2;
+// [Main]       const _42 = arr_34[_39] = _40;
+// [Main]       const _43 = 2;
+// [Main]       const _44 = 3;
+// [Main]       const _46 = arr_34[_43] = _44;
+// [Main]       const _47 = 3;
+// [Main]       const _48 = 4;
+// [Main]       const _50 = arr_34[_47] = _48;
+// [Main]       const _51 = 4;
+// [Main]       const _52 = 5;
+// [Main]       const _54 = arr_34[_51] = _52;
+// [Main]       const _55 = 5;
+// [Main]       return $thunk(() => int_array_to_list_1(arr_34, _55, function (lst_56) {
+// [Main]         return $thunk(() => print_int_list_18(lst_56, function (x) {
+// [Main]           return $thunk(() => k(x))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     , _32, _33))
+// [Main]   }
+// [Main]   return $thunk(() => main_31(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] check: LetEnum("IntList", Var(Enum IntList { Nil(), Cons(Int, IntList) }), LetRec({tyvars: [], name: ("int_array_to_list", IntList), args: [("arr", Array[Int]), ("len", Int)], body: LetRec({tyvars: [], name: ("aux", IntList), args: [("i", Int)], body: If(Eq(Var("i"), Var("len")), CtorApp("Nil", []), CtorApp("Cons", [Get(Var("arr"), Var("i")), App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)])]))}, App(Var("aux"), [Int(0)]))}, LetRec({tyvars: [], name: ("print_int_list", Unit), args: [("lst", IntList)], body: Match(Var("lst"), [{pat: CtorApp("Nil", []), action: Unit}, {pat: CtorApp("Cons", [Var("h"), Var("t")]), action: Let(("_", Var(None)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("arr", Var(None)), Array(Int(5), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))))}, Unit)))) against Unit
+// [Typer] let enum before resolved: Var(Enum IntList { Nil(), Cons(Int, IntList) })
+// [Typer] let enum after resolved: Var(Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }))
+// [Typer] check: LetRec({tyvars: [], name: ("int_array_to_list", IntList), args: [("arr", Array[Int]), ("len", Int)], body: LetRec({tyvars: [], name: ("aux", IntList), args: [("i", Int)], body: If(Eq(Var("i"), Var("len")), CtorApp("Nil", []), CtorApp("Cons", [Get(Var("arr"), Var("i")), App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)])]))}, App(Var("aux"), [Int(0)]))}, LetRec({tyvars: [], name: ("print_int_list", Unit), args: [("lst", IntList)], body: Match(Var("lst"), [{pat: CtorApp("Nil", []), action: Unit}, {pat: CtorApp("Cons", [Var("h"), Var("t")]), action: Let(("_", Var(None)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("arr", Var(None)), Array(Int(5), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))))}, Unit))) against Unit
+// [Typer] typevars: []
+// [Typer] infer: LetRec({tyvars: [], name: ("aux", IntList), args: [("i", Int)], body: If(Eq(Var("i"), Var("len")), CtorApp("Nil", []), CtorApp("Cons", [Get(Var("arr"), Var("i")), App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)])]))}, App(Var("aux"), [Int(0)]))
+// [Typer] typevars: []
+// [Typer] infer: If(Eq(Var("i"), Var("len")), CtorApp("Nil", []), CtorApp("Cons", [Get(Var("arr"), Var("i")), App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)])]))
+// [Typer] check: Eq(Var("i"), Var("len")) against Bool
+// [Typer] infer: Var("i")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("len")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] infer: CtorApp("Nil", [])
+// [Typer] inst: TypeScheme(([], () -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })))
+// [Typer] inst result: () -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] infer: CtorApp("Cons", [Get(Var("arr"), Var("i")), App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)])])
+// [Typer] inst: TypeScheme(([], (Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Var(~0)))
+// [Typer] inst result: (Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Enum IntList { Nil(), Cons(Int, Var(~0)) }
+// [Typer] check: Get(Var("arr"), Var("i")) against Int
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Array[Int]))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Var("i") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: App(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None)]) against Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] infer: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] infer: Var("i")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(1)
+// [Typer] unify: Int and Int
+// [Typer] check: Var("aux") against (Int) -> Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] inst: TypeScheme(([], (Int) -> IntList))
+// [Typer] inst result: (Int) -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] unify: (Int) -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) and (Int) -> Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Int and Int
+// [Typer] unify: Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) } and IntList
+// [Typer] infer: App(Var("aux"), [Int(0)])
+// [Typer] infer: Var("aux")
+// [Typer] inst: TypeScheme(([], (Int) -> IntList))
+// [Typer] inst result: (Int) -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) } and IntList
+// [Typer] check: LetRec({tyvars: [], name: ("print_int_list", Unit), args: [("lst", IntList)], body: Match(Var("lst"), [{pat: CtorApp("Nil", []), action: Unit}, {pat: CtorApp("Cons", [Var("h"), Var("t")]), action: Let(("_", Var(None)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("arr", Var(None)), Array(Int(5), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))))}, Unit)) against Unit
+// [Typer] typevars: []
+// [Typer] check: Match(Var("lst"), [{pat: CtorApp("Nil", []), action: Unit}, {pat: CtorApp("Cons", [Var("h"), Var("t")]), action: Let(("_", Var(None)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")]))}]) against Unit
+// [Typer] infer: Var("lst")
+// [Typer] inst: TypeScheme(([], IntList))
+// [Typer] inst result: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] inst: TypeScheme(([], () -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })))
+// [Typer] inst result: () -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] unify: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) } and Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] check: Unit against Unit
+// [Typer] inst: TypeScheme(([], (Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Var(~0)))
+// [Typer] inst result: (Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Enum IntList { Nil(), Cons(Int, Var(~0)) }
+// [Typer] unify: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) } and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] check: Let(("_", Var(None)), App(Var("print_int"), [Var("h")]), App(Var("print_int_list"), [Var("t")])) against Unit
+// [Typer] infer: App(Var("print_int"), [Var("h")])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] check: Var("h") against Int
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] check: App(Var("print_int_list"), [Var("t")]) against Unit
+// [Typer] infer: Var("t")
+// [Typer] inst: TypeScheme(([], Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })))
+// [Typer] inst result: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] check: Var("print_int_list") against (Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }) -> Unit
+// [Typer] inst: TypeScheme(([], (IntList) -> Unit))
+// [Typer] inst result: (Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Unit
+// [Typer] unify: (Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Unit and (Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }) -> Unit
+// [Typer] unify: Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("arr", Var(None)), Array(Int(5), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("arr", Var(None)), Array(Int(5), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))))
+// [Typer] infer: Array(Int(5), Int(1))
+// [Typer] infer: Int(1)
+// [Typer] check: Int(5) against Int
+// [Typer] unify: Var(None) and Array[Int]
+// [Typer] union: Var(None) and Array[Int]
+// [Typer] infer: Let(("_", Var(None)), Put(Var("arr"), Int(0), Int(1)), Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")])))))))
+// [Typer] infer: Put(Var("arr"), Int(0), Int(1))
+// [Typer] infer: Int(1)
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(0) against Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), Put(Var("arr"), Int(1), Int(2)), Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))))
+// [Typer] infer: Put(Var("arr"), Int(1), Int(2))
+// [Typer] infer: Int(2)
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(1) against Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), Put(Var("arr"), Int(2), Int(3)), Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")])))))
+// [Typer] infer: Put(Var("arr"), Int(2), Int(3))
+// [Typer] infer: Int(3)
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(2) against Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), Put(Var("arr"), Int(3), Int(4)), Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))))
+// [Typer] infer: Put(Var("arr"), Int(3), Int(4))
+// [Typer] infer: Int(4)
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(3) against Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), Put(Var("arr"), Int(4), Int(5)), Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")])))
+// [Typer] infer: Put(Var("arr"), Int(4), Int(5))
+// [Typer] infer: Int(5)
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(4) against Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("lst", Var(None)), App(Var("int_array_to_list"), [Var("arr"), Int(5)]), App(Var("print_int_list"), [Var("lst")]))
+// [Typer] infer: App(Var("int_array_to_list"), [Var("arr"), Int(5)])
+// [Typer] infer: Var("int_array_to_list")
+// [Typer] inst: TypeScheme(([], (Array[Int], Int) -> IntList))
+// [Typer] inst result: (Array[Int], Int) -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] check: Var("arr") against Array[Int]
+// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst result: Array[Int]
+// [Typer] unify: Array[Int] and Array[Int]
+// [Typer] unify: Int and Int
+// [Typer] check: Int(5) against Int
+// [Typer] unify: Var(None) and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] union: Var(None) and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] infer: App(Var("print_int_list"), [Var("lst")])
+// [Typer] infer: Var("print_int_list")
+// [Typer] inst: TypeScheme(([], (IntList) -> Unit))
+// [Typer] inst result: (Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) -> Unit
+// [Typer] check: Var("lst") against Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
+// [Typer] inst: TypeScheme(([], Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })))
+// [Typer] inst result: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) } and Enum IntList { Nil(), Cons(Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) }
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Unit against Unit
+// [Parser] flags: ["extension"]

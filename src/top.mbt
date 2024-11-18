@@ -406,11 +406,17 @@ fn PrettySyntax::print_one_level(
       logger.write_string("])")
     }
     Match(e, arms) => {
-      logger.write_string("Match(\{e}, [")
+      logger.write_string("Match(\{e}, [\n")
+      logger.indent()
       for arm in arms {
         let { pat, action } = arm
-        logger.write_string("(\{pat}, \{action}), ")
+        logger.write_string("\{pat} =>\n")
+        logger.indent()
+        self.print_one_level(logger, action)
+        logger.outdent()
+        logger.write_string("\n")
       }
+      logger.outdent()
       logger.write_string("])")
     }
     Tuple(es) => {

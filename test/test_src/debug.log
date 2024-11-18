@@ -1,118 +1,62 @@
-// [Asm] LoweringOrder: [0]
-// [Asm] LoweringOrder: [[]]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] LoweringOrder: [b0]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] pre_assigned_registers: Self(fref=f6) -> v0, Insn(iref=%0) -> v2
-// [Asm] LoweringOrder: [0]
-// [Asm] LoweringOrder: [[]]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] LoweringOrder: [b0]
-// [Asm] LoweringOrder: HashMap::of([(b0, 0)])
-// [Asm] pre_assigned_registers: Self(fref=f2) -> v0
-// [Asm] succs: []
-// [Asm] critical edges for b0: []
-// [Asm] critical color seq for b0: []
-// [Asm] defs: []
-// [Asm] live_set: [zero]
-// [Asm] defs: [a0]
-// [Asm] live_set: [a0]
-// [Asm] move: a0 <- zero
-// [Asm] defined: a0 is X
-// [Asm] defs: []
-// [Asm] live_set: [a0]
-// [Asm] defs: []
-// [Asm] live_set: []
-// [Asm] Label("main.56") clobbered_x: @hashset.of([])
-// [Asm] Label("main.56") clobbered_f: @hashset.of([])
-// [Asm] subst   mv a0, zero ->   mv a0, zero
-// [Asm] subst   ret ->   ret
-// [Asm] before colored: # leaf true
-// [Asm] main.56:
-// [Asm] # block info: defs: [a0], uses: [zero, a0], upward_exposed: [zero], params_defs: []
-// [Asm] # live_in: [zero], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .main.56_0:
-// [Asm]   # save_ctx1  # live: [zero]
-// [Asm] # control
-// [Asm]   mv a0, zero  # live: [a0]
-// [Asm]   # restore_ctx1  # live: [a0]
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm] # leaf false
-// [Asm] minimbt_main:
-// [Asm] # block info: defs: [t1, ft0, ft1, a1, s11, ra, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, sp, a3, ft8, a7, t3, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11], params_defs: []
-// [Asm] # live_in: [ra, s11], live_out: []
-// [Asm] # block parameters: []
-// [Asm] .minimbt_main_b0:
-// [Asm]   addi sp, sp, -16  # live: [s11, ra]
-// [Asm]   sd ra, 0(sp)  # live: [s11]
-// [Asm]   sd s11, 8(sp)  # live: []
-// [Asm]   la s11, large_heap_end  # live: []
-// [Asm]   call main.56  # live: [a0]
-// [Asm]   ld ra, 0(sp)  # live: [a0]
-// [Asm]   ld s11, 8(sp)  # live: [a0]
-// [Asm]   addi sp, sp, 16  # live: [a0]
-// [Asm] # control
-// [Asm]   ret  # live: []
-// [Asm] 
-// [Asm]   .p2align 2
-// [Asm]   .bss
-// [Asm] start:
-// [Asm]   .zero 4
-// [Asm] 
-// [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
-// [Main]   .p2align 4
-// [Main]   .bss
-// [Main]   .type large_heap, @object
-// [Main] large_heap:
-// [Main]   .zero 1610612736
-// [Main] large_heap_end:
+// [Main] function thunk_main(k) {
+// [Main]   function useless_1(x_3, k) {
+// [Main]     const _4 = 10;
+// [Main]     const _5 = 1;
+// [Main]     return $thunk(() => k(_4 - _5))
+// [Main]   }
+// [Main]   function dummy_6(x_8, k) {
+// [Main]     return $thunk(() => k(x_8))
+// [Main]   }
+// [Main]   function f_9(x_11, k) {
+// [Main]     function g_12(y_14, k) {
+// [Main]       return $thunk(() => k(x_11))
+// [Main]     }
+// [Main]     const _15 = true;
+// [Main]     const _18 = true;
+// [Main]     if (_15 === _18) {
+// [Main]       const _16 = 1;
+// [Main]       return $thunk(() => f_9(_16, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       ))
+// [Main]     } else {
+// [Main]       const _17 = 2;
+// [Main]       return $thunk(() => g_12(_17, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]   }
+// [Main]   function main_19(k) {
+// [Main]     return $thunk(() => k(null))
+// [Main]   }
+// [Main]   return $thunk(() => main_19(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
+// [Main] }
 // [Main] 
-// [Main]   .p2align 4
-// [Main]   .bss
-// [Main]   .type large_stack, @object
-// [Main] large_stack:
-// [Main]   .zero 268435456
-// [Main] large_stack_end:
-// [Main] 
-// [Main] __begin_text:
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl main.56
-// [Main]   .type main.56, @function
-// [Main] # leaf true
-// [Main] main.56:
-// [Main] .main.56_0:
-// [Main]   mv a0, zero
-// [Main]   ret
-// [Main] 
-// [Main]   .p2align 2
-// [Main]   .text
-// [Main]   .globl minimbt_main
-// [Main]   .type minimbt_main, @function
-// [Main] # leaf false
-// [Main] minimbt_main:
-// [Main] .minimbt_main_b0:
-// [Main]   addi sp, sp, -16
-// [Main]   sd ra, 0(sp)
-// [Main]   sd s11, 8(sp)
-// [Main]   la s11, large_heap_end
-// [Main]   call main.56
-// [Main]   ld ra, 0(sp)
-// [Main]   ld s11, 8(sp)
-// [Main]   addi sp, sp, 16
-// [Main]   ret
-// [Main] 
-// [Main] __end_text:
-// [Main]   .p2align 2
-// [Main]   .bss
-// [Main]   .globl start
-// [Main]   .type start, @object
-// [Main] start:
-// [Main]   .zero 4
-// [Main] 
-// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
 // [Typer] check: LetRec({tyvars: [], name: ("useless", Int), args: [("x", Int)], body: Let(("y", Var(None)), Var("x"), Prim(Int(10), Int(1), Sub, kind=None))}, LetRec({tyvars: [], name: ("dummy", Int), args: [("x", Int)], body: Var("x")}, LetRec({tyvars: [], name: ("f", Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("g", Int), args: [("y", Int)], body: Var("x")}, If(Bool(true), App(Var("f"), [Int(1)]), App(Var("g"), [Int(2)])))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Unit}, Unit)))) against Unit
 // [Typer] typevars: []
 // [Typer] check: Let(("y", Var(None)), Var("x"), Prim(Int(10), Int(1), Sub, kind=None)) against Int
@@ -162,36 +106,4 @@
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit
-// [KnfOpt] freq: {useless.1: Zero, dummy.6: Zero, f.9: Once, g.12: Once, main.19: Once}
-// [KnfOpt] Knf inline Some(f)
-// [KnfOpt] Knf inline Some(g)
-// [KnfOpt] freq: {f.9: Once, g.20: Once, main.19: Once}
-// [KnfOpt] Knf inline Some(f)
-// [KnfOpt] Knf inline Some(g)
-// [KnfOpt] freq: {f.9: Once, g.29: Once, main.19: Once}
-// [KnfOpt] Knf inline Some(f)
-// [KnfOpt] Knf inline Some(g)
-// [KnfOpt] Numbers of let rec: 3 3 0
-// [KnfOpt] Tuple freq: {_49: MayEscape, _50: MayEscape, x.11: MayEscape}
 // [Parser] flags: []
-// [CoreOpt] eliminated tail rec call %8: Call(ty=Int32, f=f1, args=[Int32(val=1)])
-// [CoreOpt] Call frequnce: FnCallFreq({f6: Once, f0: Once, f1: Never, f2: Once})
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true
-// [CoreOpt] allow_inline: true %9 g.55 true true true true true
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true
-// [CoreOpt] allow_inline: true %9 g.55 true true true true true
-// [CoreOpt] f.54 is inlining Call(ty=Int32, f=f0, args=[Int32(val=2)])
-// [CoreOpt] shifted callee .fn g.55 #f0 : fn(int32) -> int32
-// [CoreOpt] .freevars ()
-// [CoreOpt] .entry b27 {
-// [CoreOpt]   .bb #b27 () {
-// [CoreOpt]     return 1
-// [CoreOpt]   }
-// [CoreOpt] }
-// [CoreOpt] 
-// [CoreOpt] Remove dead function: f0
-// [CoreOpt] Remove dead function: f1
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true
-// [CoreOpt] allow_inline: false %0 main.56 false true true true true

@@ -1,0 +1,61 @@
+let rec int_array_to_list.1: IntList = (arr.3: Array[Int], len.5: Int) {
+  let rec aux.6: IntList = (i.8: Int) {
+    if (i.8 == len.5) then {
+      let _9: Int = Int(0)
+      let _10: () = Tuple([])
+      Tuple([_9, _10, ])
+    } else {
+      let _11: Int = Int(1)
+      let _12: Int = Get arr.3[i.8]
+      let _13: Int = Int(1)
+      let _14: Int = Add(i.8, _13)
+      let _15: IntList = Apply(aux.6, [_14, ])
+      let _16: (Int, IntList) = Tuple([_12, _15, ])
+      Tuple([_11, _16, ])
+    }
+  }
+  let _17: Int = Int(0)
+  Apply(aux.6, [_17, ])
+}
+let rec print_int_list.18: Unit = (lst.20: IntList) {
+  let _21: Int = Int(0)
+  let (_22: Int, _23: ()) = lst.20
+  if (_22 == _21) then {
+    let () = _23
+    Unit
+  } else {
+    let _24: Int = Int(1)
+    let (_25: Int, _26: (Int, Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }))) = lst.20
+    if (_25 == _24) then {
+      let (_27: Int, _28: Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })) = _26
+      let _30: Unit = ExtApply(minimbt_print_int, [_27, ])
+      Apply(print_int_list.18, [_28, ])
+    } else {
+      Unit
+    }
+  }
+}
+let rec main.31: Unit = () {
+  let _32: Int = Int(5)
+  let _33: Int = Int(1)
+  let arr.34: Array[Int] = ExtApply(minimbt_create_array, [_32, _33, ])
+  let _35: Int = Int(0)
+  let _36: Int = Int(1)
+  let _38: Unit = Put arr.34[_35] = _36
+  let _39: Int = Int(1)
+  let _40: Int = Int(2)
+  let _42: Unit = Put arr.34[_39] = _40
+  let _43: Int = Int(2)
+  let _44: Int = Int(3)
+  let _46: Unit = Put arr.34[_43] = _44
+  let _47: Int = Int(3)
+  let _48: Int = Int(4)
+  let _50: Unit = Put arr.34[_47] = _48
+  let _51: Int = Int(4)
+  let _52: Int = Int(5)
+  let _54: Unit = Put arr.34[_51] = _52
+  let _55: Int = Int(5)
+  let lst.56: IntList = Apply(int_array_to_list.1, [arr.34, _55, ])
+  Apply(print_int_list.18, [lst.56, ])
+}
+Apply(main.31, [])

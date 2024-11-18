@@ -1,12 +1,12 @@
 
-enum Option {
+enum IntOpt {
   None;
   Some(Int);
 };
 
-enum List {
+enum IntOptList {
   Nil;
-  Cons(Option, List);
+  Cons(IntOpt, IntOptList);
 };
 
 fn main {
