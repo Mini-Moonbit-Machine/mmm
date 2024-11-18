@@ -22,6 +22,7 @@ pub fn KnfEnv::syntax_preprocess(
         LetRec(f, self.syntax_preprocess(e, has_main || f.name.0 == "main"))
       }
     Let(ann, e1, e2) => Let(ann, e1, self.syntax_preprocess(e2, has_main))
+    LetEnum(enumty, e) => LetEnum(enumty, self.syntax_preprocess(e, has_main))
     _ => s
   }
 }

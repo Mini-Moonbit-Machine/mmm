@@ -1,0 +1,429 @@
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Int(1)], action: CtorApp("Nil", [])}, {binds: @immut/hashmap.of([]), patterns: [Int(2)], action: Var("q")}]}
+// [Knf] specialize_matrix: by subpat int(1), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: CtorApp("Nil", [])}]}
+// [Knf] specialize_matrix: by subpat int(2), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Var("q")}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: []}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(int(1), Succeed({}, CtorApp("Nil", []))),
+// [Knf]   (int(2), Succeed({}, Var("q"))),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(int(1), Succeed({}, CtorApp("Nil", []))),
+// [Knf]   (int(2), Succeed({}, Var("q"))),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, CtorApp("Nil", []))
+// [Knf] decision_tree_to_knf: Succeed({}, Var("q"))
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("Nil", [])], action: Int(0)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])])], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])])], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Nil, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(0)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Cons, 2), at col 0:
+// [Knf] {arity: 2, occurs: {occurs: [/\.0, /\.1]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("None", []), CtorApp("Nil", [])], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard, Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Nil, 0), at col 1:
+// [Knf] {arity: 1, occurs: {occurs: [/\.0]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("None", [])], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [Int(2)])], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(None, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Some, 1), at col 0:
+// [Knf] {arity: 1, occurs: {occurs: [/\.0.0]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Int(2)], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat int(2), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 1, occurs: {occurs: [/\.0]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Int(0))),
+// [Knf]   (ctor(Cons, 2), Switch(/\.1, 
+// [Knf]     [(ctor(Nil, 0), Switch(/\.0, 
+// [Knf]       [(ctor(None, 0), Succeed({}, Int(1))),
+// [Knf]       (ctor(Some, 1), Switch(/\.0.0, 
+// [Knf]         [(int(2), Succeed({}, Int(2))),
+// [Knf]         (fallback, Succeed({}, Int(3)))
+// [Knf]       ])),
+// [Knf]       (fallback, Succeed({}, Int(3)))
+// [Knf]     ])),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Int(0))),
+// [Knf]   (ctor(Cons, 2), Switch(/\.1, 
+// [Knf]     [(ctor(Nil, 0), Switch(/\.0, 
+// [Knf]       [(ctor(None, 0), Succeed({}, Int(1))),
+// [Knf]       (ctor(Some, 1), Switch(/\.0.0, 
+// [Knf]         [(int(2), Succeed({}, Int(2))),
+// [Knf]         (fallback, Succeed({}, Int(3)))
+// [Knf]       ])),
+// [Knf]       (fallback, Succeed({}, Int(3)))
+// [Knf]     ])),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Int(0))
+// [Knf] decision_tree_to_knf: Switch(/\.1, 
+// [Knf]   [(ctor(Nil, 0), Switch(/\.0, 
+// [Knf]     [(ctor(None, 0), Succeed({}, Int(1))),
+// [Knf]     (ctor(Some, 1), Switch(/\.0.0, 
+// [Knf]       [(int(2), Succeed({}, Int(2))),
+// [Knf]       (fallback, Succeed({}, Int(3)))
+// [Knf]     ])),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\.0, 
+// [Knf]   [(ctor(None, 0), Succeed({}, Int(1))),
+// [Knf]   (ctor(Some, 1), Switch(/\.0.0, 
+// [Knf]     [(int(2), Succeed({}, Int(2))),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Int(1))
+// [Knf] decision_tree_to_knf: Switch(/\.0.0, 
+// [Knf]   [(int(2), Succeed({}, Int(2))),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Int(2))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("Nil", [])], action: Int(0)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard])], action: Var("v")}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Nil, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(0)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Cons, 2), at col 0:
+// [Knf] {arity: 2, occurs: {occurs: [/\.0, /\.1]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [Var("v")]), Wildcard], action: Var("v")}, {binds: @immut/hashmap.of([]), patterns: [Wildcard, Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Some, 1), at col 0:
+// [Knf] {arity: 2, occurs: {occurs: [/\.0.0, /\.1]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Var("v"), Wildcard], action: Var("v")}, {binds: @immut/hashmap.of([]), patterns: [Wildcard, Wildcard], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 1, occurs: {occurs: [/\.1]}, rows: [{binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Int(0))),
+// [Knf]   (ctor(Cons, 2), Switch(/\.0, 
+// [Knf]     [(ctor(Some, 1), Succeed({/\.0.0 -> v, }, Var("v"))),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(ctor(Nil, 0), Succeed({}, Int(0))),
+// [Knf]   (ctor(Cons, 2), Switch(/\.0, 
+// [Knf]     [(ctor(Some, 1), Succeed({/\.0.0 -> v, }, Var("v"))),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Int(0))
+// [Knf] decision_tree_to_knf: Switch(/\.0, 
+// [Knf]   [(ctor(Some, 1), Succeed({/\.0.0 -> v, }, Var("v"))),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({/\.0.0 -> v, }, Var("v"))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Main] function thunk_main(k) {
+// [Main]   function id_1(x_3, k) {
+// [Main]     return k(x_3)
+// [Main]   }
+// [Main]   const _4 = 2;
+// [Main]   return $thunk(() => id_1(_4, function (y_5) {
+// [Main]     const _6 = 2.1;
+// [Main]     return $thunk(() => id_1(_6, function (z_7) {
+// [Main]       const _8 = 0;
+// [Main]       const _9 = [];
+// [Main]       const p_10 = [_8, _9];
+// [Main]       const _11 = 1;
+// [Main]       const _12 = 0;
+// [Main]       const _13 = [];
+// [Main]       const _14 = [_12, _13];
+// [Main]       const _15 = 0;
+// [Main]       const _16 = [];
+// [Main]       const _17 = [_15, _16];
+// [Main]       const _18 = [_14, _17];
+// [Main]       const q_19 = [_11, _18];
+// [Main]       const _20 = 1;
+// [Main]       const _21 = 1;
+// [Main]       const _22 = 1;
+// [Main]       const _23 = [_22];
+// [Main]       const _24 = [_21, _23];
+// [Main]       const _25 = 0;
+// [Main]       const _26 = [];
+// [Main]       const _27 = [_25, _26];
+// [Main]       const _28 = [_24, _27];
+// [Main]       const r_29 = [_20, _28];
+// [Main]       const _30 = 2;
+// [Main]       const _31 = 1;
+// [Main]       const _36 = $force((() => {
+// [Main]         if (_30 === _31) {
+// [Main]           const _32 = 0;
+// [Main]           const _33 = [];
+// [Main]           return [_32, _33]
+// [Main]         } else {
+// [Main]           const _34 = 2;
+// [Main]           if (_30 === _34) {
+// [Main]             return q_19
+// [Main]           } else {
+// [Main]             return null
+// [Main]           }
+// [Main]         }
+// [Main]       })());
+// [Main]       const _37 = 0;
+// [Main]       const [_38, _39] = r_29;const t_56 = $force((() => {
+// [Main]         if (_38 === _37) {
+// [Main]           const [] = _39;return 0
+// [Main]         } else {
+// [Main]           const _40 = 1;
+// [Main]           const [_41, _42] = r_29;if (_41 === _40) {
+// [Main]             const [_43, _44] = _42;const _45 = 0;
+// [Main]             const [_46, _47] = _44;if (_46 === _45) {
+// [Main]               const [] = _47;const _48 = 0;
+// [Main]               const [_49, _50] = _43;if (_49 === _48) {
+// [Main]                 const [] = _50;return 1
+// [Main]               } else {
+// [Main]                 const _51 = 1;
+// [Main]                 const [_52, _53] = _43;if (_52 === _51) {
+// [Main]                   const [_54] = _53;const _55 = 2;
+// [Main]                   if (_54 === _55) {
+// [Main]                     return 2
+// [Main]                   } else {
+// [Main]                     return 3
+// [Main]                   }
+// [Main]                 } else {
+// [Main]                   return 3
+// [Main]                 }
+// [Main]               }
+// [Main]             } else {
+// [Main]               return 3
+// [Main]             }
+// [Main]           } else {
+// [Main]             return 3
+// [Main]           }
+// [Main]         }
+// [Main]       })());
+// [Main]       const _57 = 0;
+// [Main]       const [_58, _59] = r_29;const w_69 = $force((() => {
+// [Main]         if (_58 === _57) {
+// [Main]           const [] = _59;return 0
+// [Main]         } else {
+// [Main]           const _60 = 1;
+// [Main]           const [_61, _62] = r_29;if (_61 === _60) {
+// [Main]             const [_63, _64] = _62;const _65 = 1;
+// [Main]             const [_66, _67] = _63;if (_66 === _65) {
+// [Main]               const [_68] = _67;return _68
+// [Main]             } else {
+// [Main]               return 3
+// [Main]             }
+// [Main]           } else {
+// [Main]             return 3
+// [Main]           }
+// [Main]         }
+// [Main]       })());
+// [Main]       function main_70(k) {
+// [Main]         const _71 = t_56 + w_69;
+// [Main]         const _73 = minimbt_print_int($force(_71));
+// [Main]         return k(null)
+// [Main]       }
+// [Main]       return $thunk(() => main_70(k))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   ))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] check: LetEnum(Enum("Option", [("None", []), ("Some", [Int])]), LetEnum(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]), LetRec({tyvars: ["X"], name: ("id", Named("X")), args: [("x", Named("X"))], body: Var("x")}, Let(("y", Var({val: None})), App(Var("id"), [Int(2)]), Let(("z", Var({val: None})), App(Var("id"), [Double(2.1)]), Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)))))))))))) against Unit
+// [Typer] check: LetEnum(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]), LetRec({tyvars: ["X"], name: ("id", Named("X")), args: [("x", Named("X"))], body: Var("x")}, Let(("y", Var({val: None})), App(Var("id"), [Int(2)]), Let(("z", Var({val: None})), App(Var("id"), [Double(2.1)]), Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit))))))))))) against Unit
+// [Typer] check: LetRec({tyvars: ["X"], name: ("id", Named("X")), args: [("x", Named("X"))], body: Var("x")}, Let(("y", Var({val: None})), App(Var("id"), [Int(2)]), Let(("z", Var({val: None})), App(Var("id"), [Double(2.1)]), Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)))))))))) against Unit
+// [Typer] typevars: ["X"]
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Named("X")))
+// [Typer] inst result: Named("X")
+// [Typer] unify: Named("X") and Named("X")
+// [Typer] check: Let(("y", Var({val: None})), App(Var("id"), [Int(2)]), Let(("z", Var({val: None})), App(Var("id"), [Double(2.1)]), Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit))))))))) against Unit
+// [Typer] infer: App(Var("id"), [Int(2)])
+// [Typer] infer: Var("id")
+// [Typer] inst: TypeScheme((["X"], Fun([Named("X")], Named("X"))))
+// [Typer] inst result: Fun([Var({val: None})], Var({val: None}))
+// [Typer] infer: Int(2)
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: Let(("z", Var({val: None})), App(Var("id"), [Double(2.1)]), Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)))))))) against Unit
+// [Typer] infer: App(Var("id"), [Double(2.1)])
+// [Typer] infer: Var("id")
+// [Typer] inst: TypeScheme((["X"], Fun([Named("X")], Named("X"))))
+// [Typer] inst result: Fun([Var({val: None})], Var({val: None}))
+// [Typer] infer: Double(2.1)
+// [Typer] unify: Var({val: None}) and Double
+// [Typer] union: Var({val: None}) and Double
+// [Typer] unify: Var({val: None}) and Double
+// [Typer] union: Var({val: None}) and Double
+// [Typer] check: Let(("p", Var({val: None})), CtorApp("Nil", []), Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit))))))) against Unit
+// [Typer] infer: CtorApp("Nil", [])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] union: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] check: Let(("q", Var({val: None})), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)))))) against Unit
+// [Typer] infer: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])])
+// [Typer] inst: TypeScheme(([], Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))))
+// [Typer] inst result: Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))
+// [Typer] infer: CtorApp("None", [])
+// [Typer] inst: TypeScheme(([], Enum("Option", [("None", []), ("Some", [Int])])))
+// [Typer] inst result: Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] unify: Named("Option") and Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] infer: CtorApp("Nil", [])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Named("List") and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] union: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] check: Let(("r", Var({val: None})), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit))))) against Unit
+// [Typer] infer: CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])])
+// [Typer] inst: TypeScheme(([], Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))))
+// [Typer] inst result: Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))
+// [Typer] infer: CtorApp("Some", [Int(1)])
+// [Typer] inst: TypeScheme(([], Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))))
+// [Typer] inst result: Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))
+// [Typer] check: Int(1) against Int
+// [Typer] unify: Named("Option") and Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] infer: CtorApp("Nil", [])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Named("List") and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] union: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] check: Let(("_", Var({val: None})), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)))) against Unit
+// [Typer] infer: Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}])
+// [Typer] infer: Int(2)
+// [Typer] unify: Int and Int
+// [Typer] infer: CtorApp("Nil", [])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Int and Int
+// [Typer] infer: Var("q")
+// [Typer] inst: TypeScheme(([], Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))})))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] union: Var({val: None}) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] check: Let(("t", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit))) against Unit
+// [Typer] infer: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}])
+// [Typer] infer: Var("r")
+// [Typer] inst: TypeScheme(([], Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))})))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] infer: Int(0)
+// [Typer] inst: TypeScheme(([], Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))))
+// [Typer] inst result: Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] inst: TypeScheme(([], Enum("Option", [("None", []), ("Some", [Int])])))
+// [Typer] inst result: Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] unify: Named("Option") and Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Named("List") and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] infer: Int(1)
+// [Typer] inst: TypeScheme(([], Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))))
+// [Typer] inst result: Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] inst: TypeScheme(([], Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))))
+// [Typer] inst result: Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))
+// [Typer] unify: Named("Option") and Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] unify: Int and Int
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Named("List") and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] infer: Int(2)
+// [Typer] infer: Int(3)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: Let(("w", Var({val: None})), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit)) against Unit
+// [Typer] infer: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}])
+// [Typer] infer: Var("r")
+// [Typer] inst: TypeScheme(([], Var({val: Some(Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))})))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] inst: TypeScheme(([], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])))
+// [Typer] inst result: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] infer: Int(0)
+// [Typer] inst: TypeScheme(([], Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))))
+// [Typer] inst result: Fun([Named("Option"), Named("List")], Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]))
+// [Typer] unify: Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])]) and Enum("List", [("Nil", []), ("Cons", [Named("Option"), Named("List")])])
+// [Typer] inst: TypeScheme(([], Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))))
+// [Typer] inst result: Fun([Int], Enum("Option", [("None", []), ("Some", [Int])]))
+// [Typer] unify: Named("Option") and Enum("Option", [("None", []), ("Some", [Int])])
+// [Typer] infer: Var("v")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Int(3)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Int
+// [Typer] union: Var({val: None}) and Int
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var({val: None})), args: [], body: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var({val: None})), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)
+// [Typer] infer: App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], Fun([Int], Unit)))
+// [Typer] inst result: Fun([Int], Unit)
+// [Typer] check: Prim(Var("t"), Var("w"), Add, kind=None) against Int
+// [Typer] check: Var("t") against Int
+// [Typer] inst: TypeScheme(([], Var({val: Some(Int)})))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] check: Var("w") against Int
+// [Typer] inst: TypeScheme(([], Var({val: Some(Int)})))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var({val: None}) and Unit
+// [Typer] union: Var({val: None}) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var({val: None})
+// [Typer] union: Unit and Var({val: None})
+// [Typer] check: Unit against Unit
+// [Parser] flags: []

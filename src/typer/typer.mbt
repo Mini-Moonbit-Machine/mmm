@@ -341,10 +341,10 @@ fn Typer::check(
       for arm in arms {
         let pattern = arm.pat
         let action = arm.action
-        let arm_env = self.check_and_bind_pattern!(
+        let arm_envs = self.check_and_bind_pattern!(
           pattern, et, action, envt, envs,
         )
-        self.check!(action, ty, arm_env, envs)
+        self.check!(action, ty, envt, arm_envs)
       }
     }
     _ => fail!("check: mismatched types \{node} and \{ty}")
@@ -358,28 +358,28 @@ fn Typer::check_and_bind_pattern(
   action : Syntax,
   envt : TyVEnv,
   envs : TySEnv
-) -> TyVEnv!Failure {
+) -> TySEnv!Failure {
   match pattern {
-    Pattern::Wildcard => envt
+    Pattern::Wildcard => envs
     Pattern::Unit => {
       self.unify!(pt, Type::Unit, envt, action)
-      envt
+      envs
     }
     Pattern::Bool(_) => {
       self.unify!(pt, Type::Bool, envt, action)
-      envt
+      envs
     }
     Pattern::Int(_) => {
       self.unify!(pt, Type::Int, envt, action)
-      envt
+      envs
     }
     Pattern::Double(_) => {
       self.unify!(pt, Type::Double, envt, action)
-      envt
+      envs
     }
     Pattern::Var(x) => {
-      let envt = envt._.add(x, pt)
-      envt
+      let envs = envs.add(x, pt.to_scheme())
+      envs
     }
     Pattern::Tuple(ps) =>
       match pt {
@@ -387,17 +387,17 @@ fn Typer::check_and_bind_pattern(
           if ps.length() != ts.length() {
             fail!("check_pattern: different number of elements")
           }
-          let mut new_envt = envt
+          let mut new_envs = envs
           for i, p in ps {
-            new_envt = self.check_and_bind_pattern!(
+            new_envs = self.check_and_bind_pattern!(
               p,
               ts[i],
               action,
-              new_envt,
-              envs,
+              envt,
+              new_envs,
             )
           }
-          new_envt
+          new_envs
         }
         _ => fail!("check pattern: \{pattern} not a tuple")
       }
@@ -412,24 +412,24 @@ fn Typer::check_and_bind_pattern(
             fail!("check_pattern: different number of arguments")
           }
           self.unify!(pt, ret_ty, envt, action)
-          let mut new_envt = envt
+          let mut new_envs = envs
           for i, p in pats {
-            new_envt = self.check_and_bind_pattern!(
+            new_envs = self.check_and_bind_pattern!(
               p,
               args_ty[i],
               action,
-              new_envt,
-              envs,
+              envt,
+              new_envs,
             )
           }
-          new_envt
+          new_envs
         }
         Enum(_, _) => {
           if pats.length() != 0 {
             fail!("0 arity constructor should has no arguments")
           }
           self.unify!(pt, ty, envt, action)
-          envt
+          envs
         }
         _ => fail!("check pattern: \{ty} not a function type")
       }
@@ -693,10 +693,10 @@ fn Typer::infer(
       for arm in arms {
         let pattern = arm.pat
         let action = arm.action
-        let arm_env = self.check_and_bind_pattern!(
+        let arm_envs = self.check_and_bind_pattern!(
           pattern, et, action, envt, envs,
         )
-        let action_ty = self.infer!(action, arm_env, envs)
+        let action_ty = self.infer!(action, envt, arm_envs)
         actions_ty.push(action_ty)
       }
       // ring unify

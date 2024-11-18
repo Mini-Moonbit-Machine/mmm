@@ -42,7 +42,6 @@ pub fn KnfEnv::to_knf(
   named_tys : LocalEnv,
   s : @types.Syntax
 ) -> Knf!Failure {
-  println("to_knf: \{s}")
   let let_list = []
   let name_env = NameEnv::new()
   // externals are handled by @typer.externals()
@@ -369,13 +368,14 @@ fn decision_tree_to_knf(
       let mut ty_env2 = ty_env
       for occnm in binds {
         let (occ, name) = occnm
-        let (knf_name, ty) = bind_env
-          .find(occ)
-          .or_else(self.tracer.abort("unbound occurrence: \{occ}"))
+        let (knf_name, ty) = match bind_env.find(occ) {
+          Some(x) => x
+          None => fail!("unbound occurrence: \{occ}")
+        }
         env2 = env2.add(name, knf_name)
         ty_env2 = ty_env2.add(name, ty)
       }
-      let r = self.build_knf!(action, let_list, env, ty_env)
+      let r = self.build_knf!(action, let_list, env2, ty_env2)
       r
     }
     Fail =>
@@ -397,7 +397,6 @@ fn build_knf(
   env : NameEnv,
   ty_env : LocalEnv
 ) -> KnfResult!Failure {
-  self.tracer.println("build_knf: \{node}")
   match node {
     Unit => (Unit, Unit, let_list)
     Int(i) => (Int(i), Int, let_list)

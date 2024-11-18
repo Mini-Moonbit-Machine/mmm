@@ -451,9 +451,10 @@ fn PatternMatcher::clause_matrixs_to_decison_tree(
   // If the first row of P exists and is constituted by wildcards, then matching always succeeds and yields the first action.
   if mat.rows[0].all_wildcards() {
     let mut binds = mat.rows[0].binds
-    for subpat in mat.rows[0].patterns {
+    for i, subpat in mat.rows[0].patterns {
+      let occ = mat.occurs.occurs[i]
       match pattern_identifier(subpat) {
-        Some(name) => binds = binds.add(Occurrence::empty(), name)
+        Some(name) => binds = binds.add(occ, name)
         None => ()
       }
     }
