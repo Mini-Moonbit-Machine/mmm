@@ -1,3 +1,5 @@
+//:extension
+
 enum X {
   A(X, X);
   B(Int, Int);

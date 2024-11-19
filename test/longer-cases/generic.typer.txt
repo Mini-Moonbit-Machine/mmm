@@ -1,6 +1,6 @@
 let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
-  let rec do: (yield: Var((T) -> Bool)) -> Bool {
-    let rec next: (i: Var(Int)) -> Bool {
+  let rec do: (yield: Var((T) -> Bool)) -> Var(Bool) {
+    let rec next: (i: Var(Int)) -> Var(Bool) {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
         if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
           Apply(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
@@ -16,7 +16,7 @@ let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool 
   Var(do)
 }
 let rec each: forall ["T"] . (iter: ((T) -> Bool) -> Bool, f: (T) -> Unit) -> Unit {
-  let rec yield: (x: Var(T)) -> Bool {
+  let rec yield: (x: Var(T)) -> Var(Bool) {
     let _: Var(Unit) = Apply(Var("f"), [Var("x"), ])
     Bool(true)
   }

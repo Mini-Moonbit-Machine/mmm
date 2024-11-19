@@ -1,3 +1,4 @@
+//:extension
 
 enum IntOpt {
   None;
