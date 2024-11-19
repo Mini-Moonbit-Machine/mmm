@@ -77,6 +77,7 @@ fn JsLoweringCtx::lower_expr(
     Bool(b) => Lit(b.to_string()) |> kont
     Int(i) => Lit(i.to_string()) |> kont
     Double(d) => Lit(d.to_string()) |> kont
+    String(s) => Lit(s.escape()) |> kont
     Neg(n) => UnOp("-", self.to_js_name(n)) |> kont
     Add(l, r) => BinOp("+", self.to_js_name(l), self.to_js_name(r)) |> kont
     Sub(l, r) => BinOp("-", self.to_js_name(l), self.to_js_name(r)) |> kont

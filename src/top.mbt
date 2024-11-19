@@ -21,6 +21,7 @@ pub enum Syntax {
   CtorApp(String, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
   LetEnum(String, Type, Syntax) // enum {..}; _
+  String(String)
 } derive(Show)
 
 pub struct MatchArm {
@@ -34,6 +35,7 @@ pub enum Pattern {
   Bool(Bool)
   Int(Int64)
   Double(Double)
+  String(String)
   Var(String)
   Tuple(Array[Pattern])
   CtorApp(String, Array[Pattern])
@@ -63,6 +65,7 @@ pub enum Type {
   Bool
   Int
   Double
+  String
   Fun(Array[Type], Type) // (_, _, _) -> _
   Tuple(Array[Type]) // (_, _, _)
   Array(Type) // Array[_]
@@ -144,6 +147,7 @@ pub fn Type::size_of(self : Type, size_of_ptr : Int) -> Int {
       }
     Named(_) => 8
     Enum(_, _) => abort("Enum type is not supported")
+    String => abort("String type is not supported")
   }
 }
 
@@ -203,6 +207,7 @@ pub fn Type::output(self : Type, logger : Logger) -> Unit {
       Bool => logger.write_string("Bool")
       Int => logger.write_string("Int")
       Double => logger.write_string("Double")
+      String => logger.write_string("String")
       Fun(args, ret) => {
         logger.write_string("(")
         let mut first = true
@@ -301,6 +306,7 @@ fn PrettySyntax::print_one_level(
     Bool(b) => logger.write_string("Bool(\{b})")
     Int(i) => logger.write_string("Int(\{i})")
     Double(d) => logger.write_string("Double(\{d})")
+    String(s) => logger.write_string("String(\{s.escape()})")
     Not(e) => logger.write_string("Not(\{e})")
     Neg(e, ..) => logger.write_string("Neg(\{e})")
     Var(name) => logger.write_string("Var(\{name})")

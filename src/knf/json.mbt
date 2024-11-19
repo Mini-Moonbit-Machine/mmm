@@ -4,6 +4,7 @@ pub fn Knf::to_json(self : Knf) -> Json {
     Bool(b) => ["Int", Number(if b { 1 } else { 0 })]
     Int(i) => ["Int", Number(i.to_double())]
     Double(d) => ["Double", Number(d)]
+    String(s) => ["String", String(s.escape())]
     Neg(n) => ["Neg", n.to_json()]
     Add(n1, n2) => ["Add", n1.to_json(), n2.to_json()]
     Sub(n1, n2) => ["Sub", n1.to_json(), n2.to_json()]

@@ -128,6 +128,137 @@ fn Lexer::ch_at(self : Lexer, i : Int) -> Char {
   self.buffer[self.index + i]
 }
 
+fn Lexer::string_literal(self : Lexer, loc : Loc) -> Token {
+  self.index += 1
+  let buffer = Buffer::new()
+  while true {
+    match self.ch() {
+      '\x00' => return self.make_error(loc, "early EOF in string literal")
+      '\n' => {
+        self.index += 1
+        self.move_to_newline()
+        return self.make_error(loc, "newline in string literal")
+      }
+      '"' => break
+      '\\' => {
+        self.index += 1
+        match self.ch() {
+          'n' => {
+            buffer.write_char('\n')
+            self.index += 1
+          }
+          'r' => {
+            buffer.write_char('\r')
+            self.index += 1
+          }
+          't' => {
+            buffer.write_char('\t')
+            self.index += 1
+          }
+          '\\' => {
+            buffer.write_char('\\')
+            self.index += 1
+          }
+          '"' => {
+            buffer.write_char('"')
+            self.index += 1
+          }
+          'x' => {
+            // Hexadecimal escape sequence
+            self.index += 1
+            let start = self.index
+            self.index += 2
+            let value = try {
+              @strconv.parse_int!(
+                self.buffer.substring(~start, end=self.index),
+                base=16,
+              )
+            } catch {
+              StrConvError(msg) => return self.make_error(loc, msg)
+            }
+            buffer.write_char(Char::from_int(value))
+          }
+          'o' => {
+            // Octal escape sequence
+            self.index += 1
+            let start = self.index
+            self.index += 3
+            let value = try {
+              @strconv.parse_int!(
+                self.buffer.substring(~start, end=self.index),
+                base=8,
+              )
+            } catch {
+              StrConvError(msg) => return self.make_error(loc, msg)
+            }
+            buffer.write_char(Char::from_int(value))
+          }
+          'u' => {
+            // Unicode escape sequence
+            self.index += 1
+            let value = match self.ch() {
+              '{' => {
+                self.index += 1
+                let start = self.index
+                while self.ch() != '}' {
+                  self.index += 1
+                  if self.index > start + 4 {
+                    return self.make_error(
+                      loc, "invalid unicode escape sequence: too long",
+                    )
+                  }
+                }
+                let value = try {
+                  @strconv.parse_int!(
+                    self.buffer.substring(~start, end=self.index),
+                    base=16,
+                  )
+                } catch {
+                  StrConvError(msg) => return self.make_error(loc, msg)
+                }
+                match self.ch() {
+                  '}' => self.index += 1
+                  _ =>
+                    return self.make_error(
+                      loc, "invalid unicode escape sequence: unmatched '{'",
+                    )
+                }
+                value
+              }
+              '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
+                let start = self.index
+                self.index += 4
+                let value = try {
+                  @strconv.parse_int!(
+                    self.buffer.substring(~start, end=self.index),
+                    base=16,
+                  )
+                } catch {
+                  StrConvError(msg) => return self.make_error(loc, msg)
+                }
+                value
+              }
+              _ =>
+                return self.make_error(loc, "invalid unicode escape sequence")
+            }
+            buffer.write_char(Char::from_int(value))
+          }
+          _ => {
+            self.index += 1
+            return self.make_error(loc, "invalid escape sequence")
+          }
+        }
+      }
+      _ => {
+        buffer.write_char(self.ch())
+        self.index += 1
+      }
+    }
+  }
+  self.index += 1
+  self.make_token(TokenTag::StrLiteral(buffer.to_string()), loc)
+}
+
 fn Lexer::numeric_literal(self : Lexer, loc : Loc) -> Token {
   let start = self.index
   self.index += 1
@@ -300,6 +431,7 @@ fn Lexer::next(self : Lexer) -> Token {
         self.index += 1
         return self.make_token(TokenTag::PairedClose(Paired::Brace), loc)
       }
+      '"' => return self.string_literal(loc)
       '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' =>
         return self.numeric_literal(loc)
       '+' | '-' => return self.operator(loc, c)

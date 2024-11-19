@@ -262,6 +262,7 @@ fn Parser::parse_type_with_level(self : Parser, level : Int) -> PType!Failure {
         "Double" => Type::Double
         "Bool" => Type::Bool
         "Array" => Type::Array(Type::Unit)
+        "String" => Type::String
         ty =>
           if ty[0] >= 'A' && ty[0] <= 'Z' {
             Type::Named(ty)
@@ -376,6 +377,7 @@ pub fn Parser::parse_expr_with_level(
   let mut lhs = match lhs_token.inner.tag {
     IntLiteral(n) => Syntax::Int(n.to_uint64().to_int64())
     DoubleLiteral(n) => Syntax::Double(n)
+    StrLiteral(s) => Syntax::String(s)
     Identifer =>
       match lhs_token.inner.span {
         "true" => Syntax::Bool(true)
@@ -466,6 +468,7 @@ pub fn Parser::parse_expr_with_level(
               Syntax::Bool(b) => Pattern::Bool(b)
               Syntax::Int(n) => Pattern::Int(n)
               Syntax::Double(n) => Pattern::Double(n)
+              Syntax::String(s) => Pattern::String(s)
               Syntax::Var(name) => Pattern::Var(name)
               Syntax::Tuple(exprs) => {
                 let ts = []

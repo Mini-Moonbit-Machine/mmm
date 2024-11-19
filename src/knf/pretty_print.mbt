@@ -16,6 +16,7 @@ fn PrettyKnf::print_one_level(
     Bool(b) => logger.write_string("Bool(\{b})")
     Int(i) => logger.write_string("Int(\{i})")
     Double(d) => logger.write_string("Double(\{d})")
+    String(s) => logger.write_string("String(\{s.escape()})")
     Neg(e) => logger.write_string("Neg(\{e})")
     Var(name) => logger.write_string("Var(\{name})")
     Add(e1, e2) => logger.write_string("Add(\{e1}, \{e2})")

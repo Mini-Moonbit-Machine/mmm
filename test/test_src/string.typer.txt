@@ -1,0 +1,27 @@
+enum StrOpt = Var(Enum StrOpt { None(), Some(String) })
+let rec main: () -> Var(Unit) {
+  let r: Var(Enum StrOpt { None(), Some(String) }) = CtorApp(Some, [String("Moonbit"), ])
+  let t: Var(Enum StrOpt { None(), Some(String) }) = Match(Var("r"), [
+    CtorApp("None", []) =>
+      CtorApp(None, [])
+    CtorApp("Some", [String("OCaml")]) =>
+      CtorApp(Some, [String("Hello "), ])
+    CtorApp("Some", [String("Moonbit")]) =>
+      CtorApp(Some, [String("Hello 月兔"), ])
+    CtorApp("Some", [Var("s")]) =>
+      CtorApp(None, [])
+  ])
+  let w: Var(Int) = Match(Var("t"), [
+    CtorApp("Some", [String("Hello 月兔")]) =>
+      Int(1)
+    CtorApp("None", []) =>
+      Int(2)
+    Wildcard =>
+      Int(3)
+  ])
+  let _: Var(Unit) = Apply(Var("print_int"), [Var("w"), ])
+  let greet: Var(String) = String(" Hello 月兔  A 0 0 α ")
+  let _: Var(Unit) = Apply(Var("print_string"), [Var("greet"), ])
+  Unit
+}
+Unit

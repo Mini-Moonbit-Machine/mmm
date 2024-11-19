@@ -4,6 +4,7 @@ pub fn knf_max_counter(knf : Knf) -> Int {
     Bool(_) => 0
     Int(_) => 0
     Double(_) => 0
+    String(_) => 0
     Neg(x) => x.slot
     Add(x, y) => @math.maximum(x.slot, y.slot)
     Sub(x, y) => @math.maximum(x.slot, y.slot)

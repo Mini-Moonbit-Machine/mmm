@@ -88,6 +88,7 @@ fn type_to_lowtype(self : ClosureEnv, ty : Type) -> LowType {
     Ptr => LowType::Ptr
     Named(_) => self.tracer.abort("Polymorphic type not supported")
     Enum(_, _) => self.tracer.abort("Enum type not supported")
+    String(_) => self.tracer.abort("String type not supported")
   }
 }
 
@@ -103,6 +104,7 @@ fn build_closure(
     Bool(b) => (Int(if b { 1 } else { 0 }), func_def_list, let_list)
     Int(i) => (Int(i.to_int()), func_def_list, let_list)
     Double(d) => (Double(d), func_def_list, let_list)
+    String(_) => fail!("String not supported")
     Neg(x) => (Neg(x), func_def_list, let_list)
     Add(x, y) => (Add(x, y), func_def_list, let_list)
     Sub(x, y) => (Sub(x, y), func_def_list, let_list)

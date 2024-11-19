@@ -1,0 +1,285 @@
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("None", [])], action: CtorApp("None", [])}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [String("OCaml")])], action: CtorApp("Some", [String("Hello ")])}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [String("Moonbit")])], action: CtorApp("Some", [String("Hello 月兔")])}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [Var("s")])], action: CtorApp("None", [])}]}
+// [Knf] specialize_matrix: by subpat ctor(None, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: CtorApp("None", [])}]}
+// [Knf] specialize_matrix: by subpat ctor(Some, 1), at col 0:
+// [Knf] {arity: 1, occurs: {occurs: [/\.0]}, rows: [{binds: @immut/hashmap.of([]), patterns: [String("OCaml")], action: CtorApp("Some", [String("Hello ")])}, {binds: @immut/hashmap.of([]), patterns: [String("Moonbit")], action: CtorApp("Some", [String("Hello 月兔")])}, {binds: @immut/hashmap.of([]), patterns: [Var("s")], action: CtorApp("None", [])}]}
+// [Knf] specialize_matrix: by subpat string("OCaml"), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: CtorApp("Some", [String("Hello ")])}, {binds: @immut/hashmap.of([(/\.0, "s")]), patterns: [], action: CtorApp("None", [])}]}
+// [Knf] specialize_matrix: by subpat string("Moonbit"), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: CtorApp("Some", [String("Hello 月兔")])}, {binds: @immut/hashmap.of([(/\.0, "s")]), patterns: [], action: CtorApp("None", [])}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: CtorApp("None", [])}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: []}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(ctor(None, 0), Succeed({}, CtorApp("None", []))),
+// [Knf]   (ctor(Some, 1), Switch(/\.0, 
+// [Knf]     [(string("OCaml"), Succeed({}, CtorApp("Some", [String("Hello ")]))),
+// [Knf]     (string("Moonbit"), Succeed({}, CtorApp("Some", [String("Hello 月兔")]))),
+// [Knf]     (fallback, Succeed({}, CtorApp("None", [])))
+// [Knf]   ])),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(ctor(None, 0), Succeed({}, CtorApp("None", []))),
+// [Knf]   (ctor(Some, 1), Switch(/\.0, 
+// [Knf]     [(string("OCaml"), Succeed({}, CtorApp("Some", [String("Hello ")]))),
+// [Knf]     (string("Moonbit"), Succeed({}, CtorApp("Some", [String("Hello 月兔")]))),
+// [Knf]     (fallback, Succeed({}, CtorApp("None", [])))
+// [Knf]   ])),
+// [Knf]   
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, CtorApp("None", []))
+// [Knf] decision_tree_to_knf: Switch(/\.0, 
+// [Knf]   [(string("OCaml"), Succeed({}, CtorApp("Some", [String("Hello ")]))),
+// [Knf]   (string("Moonbit"), Succeed({}, CtorApp("Some", [String("Hello 月兔")]))),
+// [Knf]   (fallback, Succeed({}, CtorApp("None", [])))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, CtorApp("Some", [String("Hello ")]))
+// [Knf] decision_tree_to_knf: Succeed({}, CtorApp("Some", [String("Hello 月兔")]))
+// [Knf] decision_tree_to_knf: Succeed({}, CtorApp("None", []))
+// [Knf] matcher_run: init mat
+// [Knf] {arity: 1, occurs: {occurs: [/\]}, rows: [{binds: @immut/hashmap.of([]), patterns: [CtorApp("Some", [String("Hello 月兔")])], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [CtorApp("None", [])], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(Some, 1), at col 0:
+// [Knf] {arity: 1, occurs: {occurs: [/\.0]}, rows: [{binds: @immut/hashmap.of([]), patterns: [String("Hello 月兔")], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [Wildcard], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat string("Hello 月兔"), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(1)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] specialize_matrix: by subpat ctor(None, 0), at col 0:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(2)}, {binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] default_matrix:
+// [Knf] {arity: 0, occurs: {occurs: []}, rows: [{binds: @immut/hashmap.of([]), patterns: [], action: Int(3)}]}
+// [Knf] matcher_run: final tree
+// [Knf] Switch(/\, 
+// [Knf]   [(ctor(Some, 1), Switch(/\.0, 
+// [Knf]     [(string("Hello 月兔"), Succeed({}, Int(1))),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (ctor(None, 0), Succeed({}, Int(2))),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\, 
+// [Knf]   [(ctor(Some, 1), Switch(/\.0, 
+// [Knf]     [(string("Hello 月兔"), Succeed({}, Int(1))),
+// [Knf]     (fallback, Succeed({}, Int(3)))
+// [Knf]   ])),
+// [Knf]   (ctor(None, 0), Succeed({}, Int(2))),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Switch(/\.0, 
+// [Knf]   [(string("Hello 月兔"), Succeed({}, Int(1))),
+// [Knf]   (fallback, Succeed({}, Int(3)))
+// [Knf] ])
+// [Knf] decision_tree_to_knf: Succeed({}, Int(1))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(2))
+// [Knf] decision_tree_to_knf: Succeed({}, Int(3))
+// [Main] function thunk_main(k) {
+// [Main]   function main_1(k) {
+// [Main]     const _2 = 1;
+// [Main]     const _3 = "Moonbit";
+// [Main]     const _4 = [_3];
+// [Main]     const r_5 = [_2, _4];
+// [Main]     const _6 = 0;
+// [Main]     const [_7, _8] = r_5;
+// [Main]     function j1(t_25) {
+// [Main]       const _26 = 1;
+// [Main]       const [_27, _28] = t_25;
+// [Main]       function j0(w_34) {
+// [Main]         return $thunk(() => $external(minimbt_print_int, function (_36) {
+// [Main]           const greet_37 = " Hello 月兔  A 0 0 α ";
+// [Main]           return $thunk(() => $external(minimbt_print_string, function (_39) {
+// [Main]             return $thunk(() => k(null))
+// [Main]           }
+// [Main]           , greet_37))
+// [Main]         }
+// [Main]         , w_34))
+// [Main]       }
+// [Main]       if (_27 === _26) {
+// [Main]         const [_29] = _28;
+// [Main]         const _30 = "Hello 月兔";
+// [Main]         if (_29 === _30) {
+// [Main]           return $thunk(() => j0(1))
+// [Main]         } else {
+// [Main]           return $thunk(() => j0(3))
+// [Main]         }
+// [Main]       } else {
+// [Main]         const _31 = 0;
+// [Main]         const [_32, _33] = t_25;
+// [Main]         if (_32 === _31) {
+// [Main]           const [] = _33;
+// [Main]           return $thunk(() => j0(2))
+// [Main]         } else {
+// [Main]           return $thunk(() => j0(3))
+// [Main]         }
+// [Main]       }
+// [Main]     }
+// [Main]     if (_7 === _6) {
+// [Main]       const [] = _8;
+// [Main]       const _9 = 0;
+// [Main]       const _10 = [];
+// [Main]       return $thunk(() => j1([_9, _10]))
+// [Main]     } else {
+// [Main]       const _11 = 1;
+// [Main]       const [_12, _13] = r_5;
+// [Main]       if (_12 === _11) {
+// [Main]         const [_14] = _13;
+// [Main]         const _15 = "OCaml";
+// [Main]         if (_14 === _15) {
+// [Main]           const _16 = 1;
+// [Main]           const _17 = "Hello ";
+// [Main]           const _18 = [_17];
+// [Main]           return $thunk(() => j1([_16, _18]))
+// [Main]         } else {
+// [Main]           const _19 = "Moonbit";
+// [Main]           if (_14 === _19) {
+// [Main]             const _20 = 1;
+// [Main]             const _21 = "Hello 月兔";
+// [Main]             const _22 = [_21];
+// [Main]             return $thunk(() => j1([_20, _22]))
+// [Main]           } else {
+// [Main]             const _23 = 0;
+// [Main]             const _24 = [];
+// [Main]             return $thunk(() => j1([_23, _24]))
+// [Main]           }
+// [Main]         }
+// [Main]       } else {
+// [Main]         return $thunk(() => $external(minimbt_panic, function (x) {
+// [Main]           return $thunk(() => j1(x))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]     }
+// [Main]   }
+// [Main]   return $thunk(() => main_1(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] check: LetEnum("StrOpt", Var(Enum StrOpt { None(), Some(String) }), LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("r", Var(None)), CtorApp("Some", [String("Moonbit")]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("None", []), action: CtorApp("None", [])}, {pat: CtorApp("Some", [String("OCaml")]), action: CtorApp("Some", [String("Hello ")])}, {pat: CtorApp("Some", [String("Moonbit")]), action: CtorApp("Some", [String("Hello 月兔")])}, {pat: CtorApp("Some", [Var("s")]), action: CtorApp("None", [])}]), Let(("w", Var(None)), Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit))))))}, Unit)) against Unit
+// [Typer] let enum before resolved: Var(Enum StrOpt { None(), Some(String) })
+// [Typer] let enum after resolved: Var(Var(Enum StrOpt { None(), Some(String) }))
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("r", Var(None)), CtorApp("Some", [String("Moonbit")]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("None", []), action: CtorApp("None", [])}, {pat: CtorApp("Some", [String("OCaml")]), action: CtorApp("Some", [String("Hello ")])}, {pat: CtorApp("Some", [String("Moonbit")]), action: CtorApp("Some", [String("Hello 月兔")])}, {pat: CtorApp("Some", [Var("s")]), action: CtorApp("None", [])}]), Let(("w", Var(None)), Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit))))))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("r", Var(None)), CtorApp("Some", [String("Moonbit")]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("None", []), action: CtorApp("None", [])}, {pat: CtorApp("Some", [String("OCaml")]), action: CtorApp("Some", [String("Hello ")])}, {pat: CtorApp("Some", [String("Moonbit")]), action: CtorApp("Some", [String("Hello 月兔")])}, {pat: CtorApp("Some", [Var("s")]), action: CtorApp("None", [])}]), Let(("w", Var(None)), Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit))))))
+// [Typer] infer: CtorApp("Some", [String("Moonbit")])
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] check: String("Moonbit") against String
+// [Typer] unify: Var(None) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] union: Var(None) and Enum StrOpt { None(), Some(String) }
+// [Typer] infer: Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("None", []), action: CtorApp("None", [])}, {pat: CtorApp("Some", [String("OCaml")]), action: CtorApp("Some", [String("Hello ")])}, {pat: CtorApp("Some", [String("Moonbit")]), action: CtorApp("Some", [String("Hello 月兔")])}, {pat: CtorApp("Some", [Var("s")]), action: CtorApp("None", [])}]), Let(("w", Var(None)), Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit)))))
+// [Typer] infer: Match(Var("r"), [{pat: CtorApp("None", []), action: CtorApp("None", [])}, {pat: CtorApp("Some", [String("OCaml")]), action: CtorApp("Some", [String("Hello ")])}, {pat: CtorApp("Some", [String("Moonbit")]), action: CtorApp("Some", [String("Hello 月兔")])}, {pat: CtorApp("Some", [Var("s")]), action: CtorApp("None", [])}])
+// [Typer] infer: Var("r")
+// [Typer] inst: TypeScheme(([], Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: Enum StrOpt { None(), Some(String) }
+// [Typer] inst: TypeScheme(([], () -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: () -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] infer: CtorApp("None", [])
+// [Typer] inst: TypeScheme(([], () -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: () -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: String and String
+// [Typer] infer: CtorApp("Some", [String("Hello ")])
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] check: String("Hello ") against String
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: String and String
+// [Typer] infer: CtorApp("Some", [String("Hello 月兔")])
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] check: String("Hello 月兔") against String
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] infer: CtorApp("None", [])
+// [Typer] inst: TypeScheme(([], () -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: () -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Var(Enum StrOpt { None(), Some(String) }) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Var(Enum StrOpt { None(), Some(String) }) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Var(Enum StrOpt { None(), Some(String) }) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Var(Enum StrOpt { None(), Some(String) }) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Var(None) and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] union: Var(None) and Enum StrOpt { None(), Some(String) }
+// [Typer] infer: Let(("w", Var(None)), Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit))))
+// [Typer] infer: Match(Var("t"), [{pat: CtorApp("Some", [String("Hello 月兔")]), action: Int(1)}, {pat: CtorApp("None", []), action: Int(2)}, {pat: Wildcard, action: Int(3)}])
+// [Typer] infer: Var("t")
+// [Typer] inst: TypeScheme(([], Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: Enum StrOpt { None(), Some(String) }
+// [Typer] inst: TypeScheme(([], (String) -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: (String) -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: String and String
+// [Typer] infer: Int(1)
+// [Typer] inst: TypeScheme(([], () -> Var(Enum StrOpt { None(), Some(String) })))
+// [Typer] inst result: () -> Var(Enum StrOpt { None(), Some(String) })
+// [Typer] unify: Enum StrOpt { None(), Some(String) } and Var(Enum StrOpt { None(), Some(String) })
+// [Typer] infer: Int(2)
+// [Typer] infer: Int(3)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] infer: Let(("_", Var(None)), App(Var("print_int"), [Var("w")]), Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit)))
+// [Typer] infer: App(Var("print_int"), [Var("w")])
+// [Typer] infer: Var("print_int")
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] check: Var("w") against Int
+// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst result: Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("greet", Var(None)), String(" Hello 月兔  A 0 0 α "), Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit))
+// [Typer] infer: String(" Hello 月兔  A 0 0 α ")
+// [Typer] unify: Var(None) and String
+// [Typer] union: Var(None) and String
+// [Typer] infer: Let(("_", Var(None)), App(Var("print_string"), [Var("greet")]), Unit)
+// [Typer] infer: App(Var("print_string"), [Var("greet")])
+// [Typer] infer: Var("print_string")
+// [Typer] inst: TypeScheme(([], (String) -> Unit))
+// [Typer] inst result: (String) -> Unit
+// [Typer] check: Var("greet") against String
+// [Typer] inst: TypeScheme(([], Var(String)))
+// [Typer] inst result: String
+// [Typer] unify: String and String
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Unit against Unit
+// [Parser] flags: []

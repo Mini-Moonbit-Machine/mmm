@@ -124,6 +124,7 @@ fn count_let_rec(knf : Knf) -> Int {
     | Bool(_)
     | Int(_)
     | Double(_)
+    | String(_)
     | Neg(_)
     | Add(_, _)
     | Sub(_, _)
@@ -155,7 +156,7 @@ fn LambdaLifter::lift(
 ) -> (LetList, Knf) {
   match knf {
     // we assume that the names here are non-function, otherwise it tends to be a type error
-    Unit | Bool(_) | Int(_) | Double(_) => ([], knf)
+    Unit | Bool(_) | Int(_) | Double(_) | String(_) => ([], knf)
     Neg(_) | FNeg(_) => ([], knf)
     Add(_, _)
     | Sub(_, _)
@@ -334,7 +335,7 @@ fn LambdaLifter::lift_non_fvars(
 ) -> (LetList, Knf) {
   match knf {
     // we assume that the names here are non-function, otherwise it tends to be a type error
-    Unit | Bool(_) | Int(_) | Double(_) => ([], knf)
+    Unit | Bool(_) | Int(_) | Double(_) | String(_) => ([], knf)
     Neg(_) | FNeg(_) => ([], knf)
     Add(_, _)
     | Sub(_, _)

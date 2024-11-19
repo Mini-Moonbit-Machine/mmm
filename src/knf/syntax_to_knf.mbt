@@ -144,123 +144,41 @@ fn fold_switch_tree_to_knf(
       }
     Some((subpat, subtree)) => {
       let mut bind_env2 = bind_env
+      fn tree_check_lit_to_knf(
+        lit : @types.Syntax,
+        subtree : DecisionTree
+      ) -> KnfResult!Failure {
+        let x = match bind_env.find(occur) {
+          Some(x) => x
+          None => fail!("unbound occurrence: \{occur}")
+        }
+        let r = self.build_knf!(lit, let_list, env, ty_env)
+        let o = self.materialize_knf(r, let_list)
+        let subtreek = self.decision_tree_to_knf!(
+          subtree,
+          [],
+          bind_env,
+          env,
+          ty_env,
+        )
+        let rest = self.fold_switch_tree_to_knf!(
+          occur,
+          rev_cases,
+          default,
+          [],
+          bind_env,
+          env,
+          ty_env,
+        )
+        (IfEq(x.0, o, bind_all(subtreek), bind_all(rest)), subtreek.1, let_list)
+      }
+
       match subpat {
-        Unit => {
-          let x = match bind_env2.find(occur) {
-            Some(x) => x
-            None => fail!("unbound occurrence: \{occur}")
-          }
-          let r = self.build_knf!(Unit, let_list, env, ty_env)
-          let o = self.materialize_knf(r, let_list)
-          let subtreek = self.decision_tree_to_knf!(
-            subtree,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          let rest = self.fold_switch_tree_to_knf!(
-            occur,
-            rev_cases,
-            default,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          (
-            IfEq(x.0, o, bind_all(subtreek), bind_all(rest)),
-            subtreek.1,
-            let_list,
-          )
-        }
-        BoolLit(~bval) => {
-          let x = match bind_env2.find(occur) {
-            Some(x) => x
-            None => fail!("unbound occurrence: \{occur}")
-          }
-          let r = self.build_knf!(Bool(bval), let_list, env, ty_env)
-          let o = self.materialize_knf(r, let_list)
-          let subtreek = self.decision_tree_to_knf!(
-            subtree,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          let rest = self.fold_switch_tree_to_knf!(
-            occur,
-            rev_cases,
-            default,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          (
-            IfEq(x.0, o, bind_all(subtreek), bind_all(rest)),
-            subtreek.1,
-            let_list,
-          )
-        }
-        IntLit(~ival) => {
-          let x = match bind_env2.find(occur) {
-            Some(x) => x
-            None => fail!("unbound occurrence: \{occur}")
-          }
-          let r = self.build_knf!(Int(ival), let_list, env, ty_env)
-          let o = self.materialize_knf(r, let_list)
-          let subtreek = self.decision_tree_to_knf!(
-            subtree,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          let rest = self.fold_switch_tree_to_knf!(
-            occur,
-            rev_cases,
-            default,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          (
-            IfEq(x.0, o, bind_all(subtreek), bind_all(rest)),
-            subtreek.1,
-            let_list,
-          )
-        }
-        DoubleLit(~dval) => {
-          let x = match bind_env2.find(occur) {
-            Some(x) => x
-            None => fail!("unbound occurrence: \{occur}")
-          }
-          let r = self.build_knf!(Double(dval), let_list, env, ty_env)
-          let o = self.materialize_knf(r, let_list)
-          let subtreek = self.decision_tree_to_knf!(
-            subtree,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          let rest = self.fold_switch_tree_to_knf!(
-            occur,
-            rev_cases,
-            default,
-            [],
-            bind_env,
-            env,
-            ty_env,
-          )
-          (
-            IfEq(x.0, o, bind_all(subtreek), bind_all(rest)),
-            subtreek.1,
-            let_list,
-          )
-        }
+        Unit => tree_check_lit_to_knf!(Unit, subtree)
+        BoolLit(~bval) => tree_check_lit_to_knf!(Bool(bval), subtree)
+        IntLit(~ival) => tree_check_lit_to_knf!(Int(ival), subtree)
+        DoubleLit(~dval) => tree_check_lit_to_knf!(Double(dval), subtree)
+        StringLit(~strval) => tree_check_lit_to_knf!(String(strval), subtree)
         Ctor(~name, ~csize) => {
           // unpack occurrences and bind name
           let ctor_ty = ty_env
@@ -400,6 +318,7 @@ fn build_knf(
     Neg(Int(i), ..) => (Int(-i), Int, let_list)
     Bool(b) => (Bool(b), Bool, let_list)
     Double(d) => (Double(d), Double, let_list)
+    String(s) => (String(s), String, let_list)
     Var(x) =>
       match (env.find(x), ty_env.find(x)) {
         (Some(name), Some(ty)) => (Var(name), ty, let_list)
