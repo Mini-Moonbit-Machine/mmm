@@ -821,6 +821,7 @@ pub fn externals() -> @immut/hashmap.T[String, @types.Type] {
   .add("read_char", @types.Fun([], Int))
   .add("print_int", @types.Fun([Int], Unit))
   .add("print_char", @types.Fun([Int], Unit))
+  .add("print_string", @types.Fun([String], Unit))
   .add("print_endline", @types.Fun([], Unit))
   .add("print_newline", @types.Fun([], Unit))
   .add("create_array", @types.Fun([Int, Int], @types.Type::Array(Int)))

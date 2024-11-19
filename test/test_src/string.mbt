@@ -21,4 +21,8 @@ fn main {
     _ => 3;
   };
   print_int(w);
+  
+
+  let greet = " Hello 月兔 🐰 \x41 \u0030 \u{30} \u03B1 ";
+  print_string(greet);
 };

@@ -33,6 +33,7 @@ let importObject = {
         return '\x00'
     },
     minimbt_print_int: (value) => process.stdout.write(`${value}`),
+    minimbt_print_string: (value) => process.stdout.write(`${value}`),
     minimbt_print_char: (value) => process.stdout.write(String.fromCharCode(value)),
     minimbt_print_endline: () => process.stdout.write('\n'),
     minimbt_print_newline: () => process.stdout.write('\n'),
