@@ -69,6 +69,7 @@ pub enum SubPatSpec {
   BoolLit(~bval : Bool)
   IntLit(~ival : Int64)
   DoubleLit(~dval : Double)
+  StringLit(~strval : String)
   Ctor(~name : String, ~csize : Int)
   Tuple(~tsize : Int)
 } derive(Eq)
@@ -83,6 +84,7 @@ pub fn SubPatSpec::output(self : SubPatSpec, logger : Logger) -> Unit {
     BoolLit(~bval) => logger.write_string("bool(\{bval})")
     IntLit(~ival) => logger.write_string("int(\{ival})")
     DoubleLit(~dval) => logger.write_string("double(\{dval})")
+    StringLit(~strval) => logger.write_string("string(\{strval.escape()})")
     Ctor(~name, ~csize) => logger.write_string("ctor(\{name}, \{csize})")
     Tuple(~tsize) => logger.write_string("tuple(\{tsize})")
   }
@@ -94,6 +96,7 @@ impl Hash for SubPatSpec with hash_combine(self, hasher) {
     BoolLit(~bval) => hasher.combine_bool(bval)
     IntLit(~ival) => hasher.combine_int64(ival)
     DoubleLit(~dval) => hasher.combine_double(dval)
+    StringLit(~strval) => hasher.combine_string(strval)
     Ctor(~name, ~csize) => {
       hasher.combine_string(name)
       hasher.combine_int(csize)
@@ -108,6 +111,7 @@ fn SubPatSpec::from_pat(pat : @types.Pattern) -> SubPatSpec? {
     Bool(bval) => Some(BoolLit(~bval))
     Int(ival) => Some(IntLit(~ival))
     Double(dval) => Some(DoubleLit(~dval))
+    String(strval) => Some(StringLit(~strval))
     CtorApp(name, pats) => Some(Ctor(~name, csize=pats.length()))
     Tuple(ts) => Some(Tuple(tsize=ts.length()))
     Wildcard | Var(_) => None
@@ -123,6 +127,7 @@ fn SubPatSpec::is_compatible_with(
     (BoolLit(~bval), Bool(b)) => bval == b
     (IntLit(~ival), Int(i)) => ival == i
     (DoubleLit(~dval), Double(d)) => dval == d
+    (StringLit(~strval), String(s)) => strval == s
     (Ctor(~name, ~csize), CtorApp(n, ps)) => name == n && csize == ps.length()
     (Tuple(~tsize), Tuple(ts)) => tsize == ts.length()
     _ => false
@@ -135,6 +140,7 @@ fn SubPatSpec::get_subpattern_arity(self : SubPatSpec) -> Int {
     BoolLit(_) => 0
     IntLit(_) => 0
     DoubleLit(_) => 0
+    StringLit(_) => 0
     Ctor(~csize, ..) => csize
     Tuple(~tsize) => tsize
   }
@@ -231,7 +237,7 @@ fn PatternMatcher::specialize_row(
   let selected_subpat = row.patterns[selected_col]
   let unpack_subpat = match selected_subpat {
     Wildcard => Some(([@types.Wildcard].repeat(subpat_arity), None))
-    Int(_) | Bool(_) | Double(_) | Unit =>
+    Int(_) | Bool(_) | Double(_) | Unit | String(_) =>
       if ctor.is_compatible_with(selected_subpat) {
         if subpat_arity != 0 {
           self.tracer.abort("Int, Bool, Double, Unit should have zero arity")
@@ -321,7 +327,7 @@ fn PatternMatcher::default_row(
   let selected_subpat = row.patterns[selected_col]
   let discard_subpat = match selected_subpat {
     Wildcard => Some(None)
-    Int(_) | Bool(_) | Double(_) | Unit => None // literals unmatched always be discarded
+    Int(_) | Bool(_) | Double(_) | Unit | String(_) => None // literals unmatched always be discarded
     Var(_) => Some(None)
     Tuple(_) => None
     CtorApp(_, _) => None

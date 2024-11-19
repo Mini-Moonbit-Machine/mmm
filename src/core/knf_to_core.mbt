@@ -513,6 +513,7 @@ fn lower_type(self : CoreEnv, ty : @knf.Type, native : Bool) -> Type!Failure {
     }
     Var(_) | Named(_) => fail!("uninstantiated type variable")
     Enum(_, _) => fail!("enum type is not supported")
+    String(_) => fail!("string type is not supported")
   }
 }
 
@@ -921,6 +922,7 @@ fn build_knf_expr(
           (ctx, bb, val)
         }
       }
+    String(_) => fail!("string is not supported")
   }
 }
 

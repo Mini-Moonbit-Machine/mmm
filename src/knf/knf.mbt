@@ -7,6 +7,7 @@ pub enum Knf {
   Bool(Bool)
   Int(Int64)
   Double(Double)
+  String(String)
   Neg(Name)
   Add(Name, Name)
   Sub(Name, Name)

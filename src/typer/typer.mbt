@@ -180,6 +180,7 @@ fn Typer::unify(
     (Type::Bool, Type::Bool) => ()
     (Type::Int, Type::Int) => ()
     (Type::Double, Type::Double) => ()
+    (Type::String, Type::String) => ()
     (Type::Fun(args1, ret1), Type::Fun(args2, ret2)) => {
       if args1.length() != args2.length() {
         fail!("unify: different number of arguments")
@@ -230,6 +231,7 @@ fn Typer::check(
     (Syntax::Bool(_), Type::Bool) => ()
     (Syntax::Int(_), Type::Int) => ()
     (Syntax::Double(_), Type::Double) => ()
+    (Syntax::String(_), Type::String) => ()
     (Syntax::Var(x), ty2) =>
       match envs.find(x) {
         Some(t) => {
@@ -442,6 +444,10 @@ fn Typer::check_and_bind_pattern(
       self.unify!(pt, Type::Double, envt, action)
       envs
     }
+    String(_) => {
+      self.unify!(pt, Type::String, envt, action)
+      envs
+    }
     Var(x) => {
       let envs = envs.add(x, pt.to_scheme())
       envs
@@ -507,6 +513,7 @@ fn Typer::infer(
     Syntax::Bool(_) => Type::Bool
     Syntax::Int(_) => Type::Int
     Syntax::Double(_) => Type::Double
+    Syntax::String(_) => Type::String
     Syntax::Var(x) =>
       match envs.find(x) {
         Some(t) => self.inst_unfold(t, envt)

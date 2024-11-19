@@ -11,6 +11,7 @@ pub enum Value {
   Unit
   Int(Int)
   Double(Double)
+  String(String)
   Tuple(Array[Value])
   Array(Array[Value])
   ExternFn(String)
@@ -22,6 +23,7 @@ pub fn Value::op_equal(self : Value, other : Value) -> Bool {
     (Unit, Unit) => true
     (Int(x), Int(y)) => x == y
     (Double(x), Double(y)) => x == y
+    (String(x), String(y)) => x == y
     (Tuple(xs), Tuple(ys)) => xs == ys
     (Array(xs), Array(ys)) => xs == ys
     (ExternFn(x), ExternFn(y)) => x == y
@@ -64,6 +66,7 @@ pub fn KnfInterpreter::eval(
     Bool(b) => Int(if b { 1 } else { 0 })
     Int(i) => Int(i.to_int())
     Double(d) => Double(d)
+    String(s) => String(s)
     Var(v) => find!(env, v)
     Neg(x) => {
       let x = find!(env, x)

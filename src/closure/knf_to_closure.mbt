@@ -88,6 +88,7 @@ fn type_to_lowtype(self : ClosureEnv, ty : Type) -> LowType {
     Ptr => LowType::Ptr
     Named(_) => self.tracer.abort("Polymorphic type not supported")
     Enum(_, _) => self.tracer.abort("Enum type not supported")
+    String(_) => self.tracer.abort("String type not supported")
   }
 }
 

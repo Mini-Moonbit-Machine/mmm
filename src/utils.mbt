@@ -4,6 +4,7 @@ pub fn to_json(self : Type) -> Json {
     Bool => "Bool"
     Int => "Int"
     Double => "Float"
+    String => "String"
     Fun(params, result) =>
       ["Fun", params.map(Type::to_json) |> Json::Array, result.to_json()]
     Tuple(types) => ["Tuple", types.map(Type::to_json) |> Json::Array]
@@ -59,23 +60,23 @@ test {
   inspect!(Type::from_json?(Type::Double.to_json()), content="Ok(Double)")
   inspect!(
     Type::from_json?(Type::Fun([Type::Int, Type::Double], Type::Unit).to_json()),
-    content="Ok(Fun([Int, Double], Unit))",
+    content="Ok((Int, Double) -> Unit)",
   )
   inspect!(
     Type::from_json?(Type::Tuple([Type::Int, Type::Double]).to_json()),
-    content="Ok(Tuple([Int, Double]))",
+    content="Ok((Int, Double))",
   )
   inspect!(
     Type::from_json?(Type::Array(Type::Int).to_json()),
-    content="Ok(Array(Int))",
+    content="Ok(Array[Int])",
   )
   inspect!(
     Type::from_json?(Type::Var({ val: None }).to_json()),
-    content="Ok(Var({val: None}))",
+    content="Ok(Var(None))",
   )
   inspect!(
     Type::from_json?(Type::Var({ val: Some(Type::Int) }).to_json()),
-    content="Ok(Var({val: Some(Int)}))",
+    content="Ok(Var(Int))",
   )
 }
 
@@ -140,6 +141,7 @@ pub fn to_json(self : Pattern) -> Json {
     Bool(b) => ["Bool", if b { true } else { false }]
     Int(i) => ["Int", Json::Number(i.to_double())]
     Double(f) => ["Float", Json::Number(f)]
+    String(s) => ["String", s.escape() |> Json::String]
     Tuple(ps) => ["Tuple", ps.map(Pattern::to_json) |> Json::Array]
     Wildcard => "Wildcard"
     Var(id) => ["Var", id |> Json::String]
@@ -154,6 +156,7 @@ pub fn to_json(self : Syntax) -> Json {
     Bool(b) => ["Bool", if b { true } else { false }]
     Int(i) => ["Int", Json::Number(i.to_double())]
     Double(f) => ["Float", Json::Number(f)]
+    String(s) => ["String", s |> Json::String]
     Not(e) => ["Not", e.to_json()]
     Neg(e, kind=Some(Double)) => ["FNeg", e.to_json()]
     Neg(e, kind=_) => ["Neg", e.to_json()]

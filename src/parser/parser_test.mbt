@@ -235,18 +235,36 @@ test "parse expr" {
   )
   test_parse_expr!(
     "match e { (Nil, _) => 0; (_, Nil) => 1; (Cons(x, xs), Cons(y, _)) => 2; }",
-    #|["Match",["Var","e"],[{"pat":["Tuple",[["Var","Nil"],"Wildcard"]],"action":["Int",0]},{"pat":["Tuple",["Wildcard",["Var","Nil"]]],"action":["Int",1]},{"pat":["Tuple",[["CtorApp",["Cons"],[["Var","x"],["Var","xs"]]],["CtorApp",["Cons"],[["Var","y"],"Wildcard"]]]],"action":["Int",2]}]]
+    #|["Match",["Var","e"],[{"pat":["Tuple",[["CtorApp",["Nil"],[]],"Wildcard"]],"action":["Int",0]},{"pat":["Tuple",["Wildcard",["CtorApp",["Nil"],[]]]],"action":["Int",1]},{"pat":["Tuple",[["CtorApp",["Cons"],[["Var","x"],["Var","xs"]]],["CtorApp",["Cons"],[["Var","y"],"Wildcard"]]]],"action":["Int",2]}]]
     ,
     38,
+  )
+  test_parse_expr!(
+    "\" Hello 月兔 🐰 \\x41 \\u0030 \\u{30} \\u03B1 \"",
+    #|["String"," Hello 月兔 🐰 A 0 0 α "]
+    ,
+    1,
+  )
+  test_parse_expr!(
+    #|match r {
+    #|  None => None;
+    #|  Some("OCaml") => Some("Hello 🐪");
+    #|  Some("Moonbit") => Some("Hello \u{6708}\u{5154}");
+    #|  Some(s) => None;
+    #|};
+    ,
+    #|["Match",["Var","r"],[{"pat":["CtorApp",["None"],[]],"action":["CtorApp",["None"],[]]},{"pat":["CtorApp",["Some"],[["String","\"OCaml\""]]],"action":["CtorApp",["Some"],[["String","Hello 🐪"]]]},{"pat":["CtorApp",["Some"],[["String","\"Moonbit\""]]],"action":["CtorApp",["Some"],[["String","Hello 月兔"]]]},{"pat":["CtorApp",["Some"],[["Var","s"]]],"action":["CtorApp",["None"],[]]}]]
+    ,
+    35,
   )
 }
 
 test "parse enum" {
   test_parse_stmt!(
     "enum List { Nil; Cons(Int, List); }",
-    #|["LetEnum",["Enum","List",["Cons","Nil"]],"Unit"]
+    #|["LetEnum","List",["Var",["Some",["Enum","List",["Nil","Cons"]]]],"Unit"]
     ,
-    21,
+    13,
   )
 }
 
