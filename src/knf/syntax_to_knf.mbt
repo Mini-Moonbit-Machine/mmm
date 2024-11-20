@@ -2,6 +2,35 @@ pub typealias LocalEnv = @immut/hashmap.T[String, Type]
 
 pub typealias NameEnv = @immut/hashmap.T[String, Name]
 
+pub struct TypeClassEnv {
+  classes : @immut/hashmap.T[String, @types.Classdef]
+  instances : Array[(Type, Name)]
+}
+
+pub fn TypeClassEnv::new() -> TypeClassEnv {
+  { classes: @immut/hashmap.new(), instances: [] }
+}
+
+fn TypeClassEnv::add_class(
+  self : TypeClassEnv,
+  class : @types.Classdef
+) -> TypeClassEnv {
+  { ..self, classes: self.classes.add(class.name, class) }
+}
+
+fn TypeClassEnv::add_instance(
+  self : TypeClassEnv,
+  ty : Type,
+  class : Name
+) -> TypeClassEnv {
+  let instances = self.instances
+  if instances.search_by(fn(x) { x.0 == ty }).is_empty() == false {
+    @util.t.abort("duplicate instance: \{ty} \{class}")
+  }
+  instances.push((ty, class))
+  { ..self, instances, }
+}
+
 pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
 
 struct KnfEnv {
@@ -41,7 +70,8 @@ pub fn KnfEnv::to_knf(self : KnfEnv, s : @types.Syntax) -> Knf!Failure {
   let name_env = NameEnv::new()
   // externals are handled by @typer.externals()
   let local_env = LocalEnv::new()
-  let r = self.build_knf!(s, let_list, name_env, local_env)
+  let typeclass_env = TypeClassEnv::new()
+  let r = self.build_knf!(s, let_list, name_env, local_env, typeclass_env)
   let knf = bind_all(r)
   self.tracer.record("knf", knf.to_pretty_print())
   knf
@@ -132,14 +162,17 @@ fn fold_switch_tree_to_knf(
   let_list : LetList,
   bind_env : BindEnv,
   env : NameEnv,
-  ty_env : LocalEnv
+  ty_env : LocalEnv,
+  tc_env : TypeClassEnv
 ) -> KnfResult!Failure {
   let case = rev_cases.pop()
   match case {
     None =>
       match default {
         Some(default) =>
-          self.decision_tree_to_knf!(default, let_list, bind_env, env, ty_env)
+          self.decision_tree_to_knf!(
+            default, let_list, bind_env, env, ty_env, tc_env,
+          )
         None => (pattern_match_fail(), Unit, let_list) // TODO: check exhaustiveness
       }
     Some((subpat, subtree)) => {
@@ -152,7 +185,7 @@ fn fold_switch_tree_to_knf(
           Some(x) => x
           None => fail!("unbound occurrence: \{occur}")
         }
-        let r = self.build_knf!(lit, let_list, env, ty_env)
+        let r = self.build_knf!(lit, let_list, env, ty_env, tc_env)
         let o = self.materialize_knf(r, let_list)
         let subtreek = self.decision_tree_to_knf!(
           subtree,
@@ -160,6 +193,7 @@ fn fold_switch_tree_to_knf(
           bind_env,
           env,
           ty_env,
+          tc_env,
         )
         let rest = self.fold_switch_tree_to_knf!(
           occur,
@@ -169,6 +203,7 @@ fn fold_switch_tree_to_knf(
           bind_env,
           env,
           ty_env,
+          tc_env,
         )
         (IfEq(x.0, o, bind_all(subtreek), bind_all(rest)), subtreek.1, let_list)
       }
@@ -207,6 +242,7 @@ fn fold_switch_tree_to_knf(
             let_list,
             env,
             ty_env,
+            tc_env,
           )
           let o = self.materialize_knf(r, let_list)
           // unpack tag
@@ -229,6 +265,7 @@ fn fold_switch_tree_to_knf(
             bind_env2,
             env,
             ty_env,
+            tc_env,
           )
           let rest = self.fold_switch_tree_to_knf!(
             occur,
@@ -238,6 +275,7 @@ fn fold_switch_tree_to_knf(
             bind_env,
             env,
             ty_env,
+            tc_env,
           )
           (
             IfEq(tag_tmp, o, bind_all(subtreek), bind_all(rest)),
@@ -261,7 +299,7 @@ fn fold_switch_tree_to_knf(
           }
           let_list.push(Binding::LetTuple(new_binders, x.0))
           let subtreek = self.decision_tree_to_knf!(
-            subtree, let_list, bind_env2, env, ty_env,
+            subtree, let_list, bind_env2, env, ty_env, tc_env,
           )
           subtreek
         }
@@ -276,7 +314,8 @@ fn decision_tree_to_knf(
   let_list : LetList,
   bind_env : BindEnv,
   env : NameEnv,
-  ty_env : LocalEnv
+  ty_env : LocalEnv,
+  tc_env : TypeClassEnv
 ) -> KnfResult!Failure {
   self.tracer.println("decision_tree_to_knf: \{tree.to_pretty_print()}")
   match tree {
@@ -292,14 +331,14 @@ fn decision_tree_to_knf(
         env2 = env2.add(name, knf_name)
         ty_env2 = ty_env2.add(name, ty)
       }
-      let r = self.build_knf!(action, let_list, env2, ty_env2)
+      let r = self.build_knf!(action, let_list, env2, ty_env2, tc_env)
       r
     }
     Fail => (pattern_match_fail(), Unit, let_list)
     Switch(~occur, ~cases, ~default) => {
       let rev_cases = cases.rev()
       self.fold_switch_tree_to_knf!(
-        occur, rev_cases, default, let_list, bind_env, env, ty_env,
+        occur, rev_cases, default, let_list, bind_env, env, ty_env, tc_env,
       )
     }
   }
@@ -310,7 +349,8 @@ fn build_knf(
   node : @types.Syntax,
   let_list : LetList,
   env : NameEnv,
-  ty_env : LocalEnv
+  ty_env : LocalEnv,
+  tc_env : TypeClassEnv
 ) -> KnfResult!Failure {
   match node {
     Unit => (Unit, Unit, let_list)
@@ -328,7 +368,7 @@ fn build_knf(
       let ys = []
       let tys = []
       for x in xs {
-        let r = self.build_knf!(x, let_list, env, ty_env)
+        let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
         let tmp = self.materialize_knf(r, let_list)
         ys.push(tmp)
         tys.push(r.1)
@@ -336,16 +376,16 @@ fn build_knf(
       (Tuple(ys), Tuple(tys), let_list)
     }
     Not(xs) => {
-      let r1 = self.build_knf!(xs, let_list, env, ty_env)
+      let r1 = self.build_knf!(xs, let_list, env, ty_env, tc_env)
       let tmp = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(Bool(true), let_list, env, ty_env)
+      let r2 = self.build_knf!(Bool(true), let_list, env, ty_env, tc_env)
       let const_1 = self.materialize_knf(r2, let_list)
       (IfEq(tmp, const_1, Bool(false), Bool(true)), Int, let_list)
     }
     Array(len, elem) => {
-      let r1 = self.build_knf!(len, let_list, env, ty_env)
+      let r1 = self.build_knf!(len, let_list, env, ty_env, tc_env)
       let len = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(elem, let_list, env, ty_env)
+      let r2 = self.build_knf!(elem, let_list, env, ty_env, tc_env)
       let elem = self.materialize_knf(r2, let_list)
       let call = match r2.1.repr() {
         Int | Bool =>
@@ -367,12 +407,12 @@ fn build_knf(
       (call, Array(r2.1), let_list)
     }
     Neg(xs, kind=Some(@types.Kind::Int)) => {
-      let r = self.build_knf!(xs, let_list, env, ty_env)
+      let r = self.build_knf!(xs, let_list, env, ty_env, tc_env)
       let tmp = self.materialize_knf(r, let_list)
       (Neg(tmp), Int, let_list)
     }
     Neg(xs, kind=Some(@types.Kind::Double)) => {
-      let r = self.build_knf!(xs, let_list, env, ty_env)
+      let r = self.build_knf!(xs, let_list, env, ty_env, tc_env)
       let tmp = self.materialize_knf(r, let_list)
       (FNeg(tmp), Double, let_list)
     }
@@ -381,7 +421,7 @@ fn build_knf(
       if self.externals.find(f).is_empty() == false {
         let args = []
         for x in xs {
-          let r = self.build_knf!(x, let_list, env, ty_env)
+          let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
           let tmp = self.materialize_knf(r, let_list)
           args.push(tmp)
         }
@@ -397,11 +437,11 @@ fn build_knf(
           let_list,
         )
       } else {
-        let r = self.build_knf!(fv, let_list, env, ty_env)
+        let r = self.build_knf!(fv, let_list, env, ty_env, tc_env)
         let fv = self.materialize_knf(r, let_list)
         let args = []
         for x in xs {
-          let r = self.build_knf!(x, let_list, env, ty_env)
+          let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
           let tmp = self.materialize_knf(r, let_list)
           args.push(tmp)
         }
@@ -415,11 +455,11 @@ fn build_knf(
         )
       }
     App(fv, xs) => {
-      let r = self.build_knf!(fv, let_list, env, ty_env)
+      let r = self.build_knf!(fv, let_list, env, ty_env, tc_env)
       let fv = self.materialize_knf(r, let_list)
       let args = []
       for x in xs {
-        let r = self.build_knf!(x, let_list, env, ty_env)
+        let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
         let tmp = self.materialize_knf(r, let_list)
         args.push(tmp)
       }
@@ -433,9 +473,9 @@ fn build_knf(
       )
     }
     Get(x, y) => {
-      let r1 = self.build_knf!(x, let_list, env, ty_env)
+      let r1 = self.build_knf!(x, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(y, let_list, env, ty_env)
+      let r2 = self.build_knf!(y, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r2, let_list)
       (
         Get(x, y),
@@ -448,43 +488,44 @@ fn build_knf(
     }
     // It's possible to omit the 3 cases, but it's better to fuse them here
     If(Eq(o1, o2), y, z) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let o1 = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let o2 = self.materialize_knf(r2, let_list)
       let ll1 = []
-      let r3 = self.build_knf!(y, ll1, env, ty_env)
+      let r3 = self.build_knf!(y, ll1, env, ty_env, tc_env)
       let ll2 = []
-      let r4 = self.build_knf!(z, ll2, env, ty_env)
+      let r4 = self.build_knf!(z, ll2, env, ty_env, tc_env)
       (IfEq(o1, o2, bind_all(r3), bind_all(r4)), r3.1, let_list)
     }
     If(LE(o1, o2), y, z) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let o1 = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let o2 = self.materialize_knf(r2, let_list)
       let ll1 = []
-      let r3 = self.build_knf!(y, ll1, env, ty_env)
+      let r3 = self.build_knf!(y, ll1, env, ty_env, tc_env)
       let ll2 = []
-      let r4 = self.build_knf!(z, ll2, env, ty_env)
+      let r4 = self.build_knf!(z, ll2, env, ty_env, tc_env)
       (IfLe(o1, o2, bind_all(r3), bind_all(r4)), r3.1, let_list)
     }
-    If(Not(x), y, z) => self.build_knf!(If(x, z, y), let_list, env, ty_env)
+    If(Not(x), y, z) =>
+      self.build_knf!(If(x, z, y), let_list, env, ty_env, tc_env)
     If(x, y, z) => {
-      let r = self.build_knf!(x, let_list, env, ty_env)
+      let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r, let_list)
       let ll1 = []
-      let r1 = self.build_knf!(y, ll1, env, ty_env)
+      let r1 = self.build_knf!(y, ll1, env, ty_env, tc_env)
       let ll2 = []
-      let r2 = self.build_knf!(z, ll2, env, ty_env)
-      let r3 = self.build_knf!(Bool(true), let_list, env, ty_env)
+      let r2 = self.build_knf!(z, ll2, env, ty_env, tc_env)
+      let r3 = self.build_knf!(Bool(true), let_list, env, ty_env, tc_env)
       let const_1 = self.materialize_knf(r3, let_list)
       (IfEq(x, const_1, bind_all(r1), bind_all(r2)), r1.1, let_list)
     }
     Prim(o1, o2, op, kind=Some(@types.Kind::Int)) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r2, let_list)
       (
         match op {
@@ -498,9 +539,9 @@ fn build_knf(
       )
     }
     Prim(o1, o2, op, kind=Some(@types.Kind::Double)) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r2, let_list)
       (
         match op {
@@ -515,25 +556,25 @@ fn build_knf(
     }
     Prim(_, _, _, ~kind) => fail!("invalid kind: \{kind}")
     Eq(o1, o2) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r2, let_list)
       (IfEq(x, y, Bool(true), Bool(false)), Int, let_list)
     }
     LE(o1, o2) => {
-      let r1 = self.build_knf!(o1, let_list, env, ty_env)
+      let r1 = self.build_knf!(o1, let_list, env, ty_env, tc_env)
       let x = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(o2, let_list, env, ty_env)
+      let r2 = self.build_knf!(o2, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r2, let_list)
       (IfLe(x, y, Bool(true), Bool(false)), Int, let_list)
     }
     Let((x, ty), e1, e2) => {
-      let r1 = self.build_knf!(e1, let_list, env, ty_env)
+      let r1 = self.build_knf!(e1, let_list, env, ty_env, tc_env)
       let e1 = self.materialize_knf_with_name!(r1, let_list, x)
       let env = env.add(x, e1)
       let ty_env = ty_env.add(x, ty)
-      let r2 = self.build_knf!(e2, let_list, env, ty_env)
+      let r2 = self.build_knf!(e2, let_list, env, ty_env, tc_env)
       (r2.0, r2.1, let_list)
     }
     CtorApp(f, xs) => {
@@ -552,12 +593,13 @@ fn build_knf(
         let_list,
         env,
         ty_env,
+        tc_env,
       )
       let idn = self.materialize_knf(idk, let_list)
       let args = []
       let tys = []
       for x in xs {
-        let r = self.build_knf!(x, let_list, env, ty_env)
+        let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
         let tmp = self.materialize_knf(r, let_list)
         args.push(tmp)
         tys.push(r.1)
@@ -568,11 +610,13 @@ fn build_knf(
       (Tuple([idn, argn]), ty, let_list)
     }
     Match(e, _) as matcher => {
-      let r = self.build_knf!(e, let_list, env, ty_env)
+      let r = self.build_knf!(e, let_list, env, ty_env, tc_env)
       let scrutinee = self.materialize_knf(r, let_list)
       let tree = PatternMatcher::new(matcher, self.tracer).run()
       let bind_env = BindEnv::of([(Occurrence::empty(), (scrutinee, r.1))])
-      let r = self.decision_tree_to_knf!(tree, let_list, bind_env, env, ty_env)
+      let r = self.decision_tree_to_knf!(
+        tree, let_list, bind_env, env, ty_env, tc_env,
+      )
       r
     }
     LetEnum(_, ty, e) => {
@@ -587,7 +631,7 @@ fn build_knf(
         let variant_ty = Type::Fun(args_ty, ty)
         ty_env = ty_env.add(cname, variant_ty)
       }
-      self.build_knf!(e, let_list, env, ty_env)
+      self.build_knf!(e, let_list, env, ty_env, tc_env)
     }
     LetRec({ name, args, body, .. }, e) => {
       let ty = name.1
@@ -612,14 +656,14 @@ fn build_knf(
         env2 = env2.add(x, tmp)
         ty_env2 = ty_env2.add(x, ty)
       }
-      let r = self.build_knf!(body, inner_let_list, env2, ty_env2)
+      let r = self.build_knf!(body, inner_let_list, env2, ty_env2, tc_env)
       let new_def = FuncDef::{ name, ty, args: new_binders, body: bind_all(r) }
       let_list.push(Binding::LetRec(new_def))
-      let r = self.build_knf!(e, let_list, env, ty_env)
+      let r = self.build_knf!(e, let_list, env, ty_env, tc_env)
       (r.0, r.1, let_list)
     }
     LetTuple(xs, y, e) => {
-      let r1 = self.build_knf!(y, let_list, env, ty_env)
+      let r1 = self.build_knf!(y, let_list, env, ty_env, tc_env)
       let y = self.materialize_knf(r1, let_list)
       let mut env2 = env
       let mut ty_env2 = ty_env
@@ -633,17 +677,36 @@ fn build_knf(
         ty_env2 = ty_env2.add(x, ty)
       }
       let_list.push(Binding::LetTuple(new_binders, y))
-      let r2 = self.build_knf!(e, let_list, env2, ty_env2)
+      let r2 = self.build_knf!(e, let_list, env2, ty_env2, tc_env)
       (r2.0, r2.1, let_list)
     }
     Put(dst, idx, src) => {
-      let r1 = self.build_knf!(dst, let_list, env, ty_env)
+      let r1 = self.build_knf!(dst, let_list, env, ty_env, tc_env)
       let dst = self.materialize_knf(r1, let_list)
-      let r2 = self.build_knf!(idx, let_list, env, ty_env)
+      let r2 = self.build_knf!(idx, let_list, env, ty_env, tc_env)
       let idx = self.materialize_knf(r2, let_list)
-      let r3 = self.build_knf!(src, let_list, env, ty_env)
+      let r3 = self.build_knf!(src, let_list, env, ty_env, tc_env)
       let src = self.materialize_knf(r3, let_list)
       (Put(dst, idx, src), Unit, let_list)
+    }
+    LetClass(classdef, e) => {
+      let tc_env = tc_env.add_class(classdef)
+      self.build_knf!(e, let_list, env, ty_env, tc_env)
+    }
+    LetInstance({ name, methods, ty }, e) => {
+      let xs = []
+      let tys = []
+      for method in methods {
+        let (_, method_body) = method
+        let r = self.build_knf!(method_body, let_list, env, ty_env, tc_env)
+        let x = self.materialize_knf(r, let_list)
+        xs.push(x)
+        tys.push(r.1)
+      }
+      let dict_name = self.new_named_temp(Name::name_only("D$\{name}"))
+      let_list.push(Binding::Let(dict_name, Type::Tuple(tys), Tuple(xs)))
+      let tc_env = tc_env.add_instance(ty, dict_name)
+      self.build_knf!(e, let_list, env, ty_env, tc_env)
     }
   }
 }

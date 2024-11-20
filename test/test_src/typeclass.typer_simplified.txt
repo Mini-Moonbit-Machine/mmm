@@ -1,0 +1,16 @@
+class Print [T] {
+  print: (T) -> Unit
+}
+instance Print [Int] {
+  print = let rec aux: (x: Int) -> Unit {
+      Apply(Var("print_int"), [Var("x"), ])
+    }
+    Var(aux)
+}
+instance Print [String] {
+  print = let rec aux: (x: String) -> Unit {
+      Apply(Var("print_string"), [Var("x"), ])
+    }
+    Var(aux)
+}
+Unit

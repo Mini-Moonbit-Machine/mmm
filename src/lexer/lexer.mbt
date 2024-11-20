@@ -26,6 +26,8 @@ pub enum Keyword {
   Infix
   Left
   Right
+  Class
+  Instance
 } derive(Hash, Eq, Show)
 
 pub enum Paired {
@@ -60,6 +62,8 @@ fn init {
   keywords["infix"] = Keyword::Infix
   keywords["left"] = Keyword::Left
   keywords["right"] = Keyword::Right
+  keywords["class"] = Keyword::Class
+  keywords["instance"] = Keyword::Instance
 }
 
 pub struct Token {

@@ -188,6 +188,8 @@ pub fn to_json(self : Syntax) -> Json {
       ]
     LetEnum(name, ty, body) =>
       ["LetEnum", name.to_json(), ty.to_json(), body.to_json()]
+    LetClass(_) => @util.t.abort("not implemented")
+    LetInstance(_) => @util.t.abort("not implemented")
   }
 }
 

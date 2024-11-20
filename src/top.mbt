@@ -22,6 +22,8 @@ pub enum Syntax {
   CtorApp(String, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
   LetEnum(String, Type, Syntax) // enum {..}; _
+  LetClass(Classdef, Syntax) // class {..}; _
+  LetInstance(Instancedef, Syntax) // instance {..}; _
 } derive(Show)
 
 pub struct MatchArm {
@@ -60,6 +62,18 @@ pub struct Fundef {
   body : Syntax
 } derive(Show)
 
+pub struct Classdef {
+  tyvar : String
+  name : String
+  methods : Array[(String, Type)]
+} derive(Show)
+
+pub struct Instancedef {
+  ty : Type
+  name : String
+  methods : Array[(String, Syntax)]
+} derive(Show)
+
 pub enum Type {
   Unit
   Bool
@@ -87,6 +101,13 @@ pub fn Type::new_named(name : String) -> Type {
 
 pub fn Type::to_scheme(self : Type) -> TypeScheme {
   ([], self)
+}
+
+pub fn Type::to_scheme_with_tvars(
+  self : Type,
+  tvars : Array[String]
+) -> TypeScheme {
+  (tvars, self)
 }
 
 pub fn TypeScheme::no_quantifier(self : TypeScheme) -> Type? {
@@ -248,6 +269,7 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Ptr, Ptr) => true
     (Var(x), Var(y)) => x.val == y.val
     (Named(x), Named(y)) => x == y
+    (Enum(x, _), Enum(y, _)) => x == y
     _ => false
   }
 }
@@ -508,6 +530,34 @@ fn PrettySyntax::print_one_level(
     }
     Put(e1, e2, e3) => logger.write_string("Put \{e1}[\{e2}] = \{e3}")
     Get(e1, e2) => logger.write_string("Get \{e1}[\{e2}]")
+    LetClass({ tyvar, name, methods }, e) => {
+      logger.write_string("class \{name} [\{tyvar}] {")
+      logger.indent()
+      logger.write_string("\n")
+      for method in methods {
+        let (method_name, method_ty) = method
+        logger.write_string("\{method_name}: \{method_ty}\n")
+      }
+      logger.outdent()
+      logger.write_string("}\n")
+      self.print_one_level(logger, e)
+    }
+    LetInstance({ ty, name, methods }, e) => {
+      logger.write_string("instance \{name} [\{ty}] {")
+      logger.indent()
+      logger.write_string("\n")
+      for method in methods {
+        let (method_name, method_body) = method
+        logger.write_string("\{method_name} = ")
+        logger.indent()
+        self.print_one_level(logger, method_body)
+        logger.write_string("\n")
+        logger.outdent()
+      }
+      logger.outdent()
+      logger.write_string("}\n")
+      self.print_one_level(logger, e)
+    }
   }
 }
 

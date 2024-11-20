@@ -239,6 +239,13 @@ fn Parser::expect_operator(self : Parser, op : String) -> PToken!Failure {
   }
 }
 
+fn Parser::expect_ident(self : Parser) -> PToken!Failure {
+  match self.next_token!() {
+    { inner: { tag: TokenTag::Identifer, .. }, .. } as r => r
+    tok => fail!("expected identifier, got \{tok.inner}")
+  }
+}
+
 fn Parser::expect_int(self : Parser) -> PResult[Int64]!Failure {
   match self.next_token!() {
     { inner: { tag: TokenTag::IntLiteral(n), .. }, .. } =>
@@ -454,12 +461,6 @@ pub fn Parser::parse_expr_with_level(
         Keyword::Match => {
           let scrutinee = self.parse_expr!()
           ntokens += scrutinee.ntokens
-          let lookhead = self.peek_token!()
-          if lookhead.inner.tag != PairedOpen(Brace) {
-            fail!("expected matched block")
-          }
-          self.skip_token()
-          ntokens += 1
           // parse match arms
           fn syntax_to_pattern(node : Syntax) -> Pattern!Failure {
             match node {
@@ -488,9 +489,10 @@ pub fn Parser::parse_expr_with_level(
             }
           }
 
-          let mut lookhead2 = self.peek_token!()
+          let _ = self.expect_paired_open!(Paired::Brace)
+          ntokens += 1
           let match_arms = []
-          while lookhead2.inner.tag != PairedClose(Brace) {
+          while self.peek_token!().inner.tag != PairedClose(Brace) {
             let pat_expr = self.parse_expr!()
             ntokens += pat_expr.ntokens
             let pat = syntax_to_pattern!(pat_expr.inner)
@@ -502,7 +504,6 @@ pub fn Parser::parse_expr_with_level(
             let _ = self.expect_operator!(";")
             ntokens += 1
             match_arms.push(@types.MatchArm::{ pat, action })
-            lookhead2 = self.peek_token!()
           }
           self.skip_token()
           ntokens += 1
@@ -665,21 +666,15 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           "enum definition must be at the top level and the beginning of the line, but got enum at \{lookahead.inner.loc}",
         )
       }
-      let ident = self.next_token!()
+      let ident = self.expect_ident!()
       ntokens += ident.ntokens
-      if ident.inner.tag != Identifer {
-        fail!("expected enum identifier")
-      }
       let _ = self.expect_paired_open!(Paired::Brace)
       ntokens += 1
       // collect ctors
       let ctors = []
       while self.peek_token!().inner.tag != PairedClose(Brace) {
-        let ctor = self.next_token!()
+        let ctor = self.expect_ident!()
         ntokens += ctor.ntokens
-        if ctor.inner.tag != Identifer {
-          fail!("expected constructor identifier")
-        }
         let lookahead3 = self.peek_token!()
         // parse constructor arguments
         let tys = if lookahead3.inner.tag == PairedOpen(Parenthesis) {
@@ -747,11 +742,8 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       ntokens += op.ntokens
       match op {
         { inner: { tag: Op(op), .. }, .. } => {
-          let ident = self.next_token!()
+          let ident = self.expect_ident!()
           ntokens += ident.ntokens
-          if ident.inner.tag != Identifer {
-            fail!("expected identifier for op")
-          }
           let func = ident.inner.span
           self.op.set(op, { assoc_left, prec, func })
           let _ = self.expect_operator!(";")
@@ -775,20 +767,14 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           // let (...) : ... = ...
           self.skip_token()
           ntokens += 1
-          let ident = self.next_token!()
+          let ident = self.expect_ident!()
           ntokens += ident.ntokens
-          if ident.inner.tag != Identifer {
-            fail!("expected identifier")
-          }
           let idents = [ident.inner.span]
           while self.peek_operator(",") {
             self.skip_token()
             ntokens += 1
-            let ident = self.next_token!()
+            let ident = self.expect_ident!()
             ntokens += ident.ntokens
-            if ident.inner.tag != Identifer {
-              fail!("expected identifier")
-            }
             idents.push(ident.inner.span)
           }
           let _ = self.expect_paired_close!(Parenthesis)
@@ -879,6 +865,104 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         _ => fail!("unexpected token after let")
       }
     }
+    Kw(Keyword::Class) => {
+      self.skip_token()
+      ntokens += 1
+      let ident = self.expect_ident!()
+      ntokens += ident.ntokens
+      let name = ident.inner.span
+      if name[0] < 'A' || name[0] > 'Z' {
+        fail!("class name must start with uppercase letter")
+      }
+      let tyvar = []
+      let _ = self.expect_paired_open!(Paired::Bracket)
+      ntokens += 1
+      let type_var = self.expect_ident!()
+      ntokens += type_var.ntokens
+      tyvar.push(type_var.inner.span)
+      // Currently we only support must one and only one type variable
+      let _ = self.expect_paired_close!(Paired::Bracket)
+      ntokens += 1
+      let _ = self.expect_paired_open!(Paired::Brace)
+      ntokens += 1
+      let methods = []
+      while self.peek_token!().inner.tag != PairedClose(Brace) {
+        let method_name = self.expect_ident!()
+        ntokens += method_name.ntokens
+        let _ = self.expect_operator!(":")
+        ntokens += 1
+        let ty = self.parse_type!()
+        ntokens += ty.ntokens
+        let _ = self.expect_operator!(";")
+        ntokens += 1
+        methods.push((method_name.inner.span, ty.inner))
+      }
+      let _ = self.expect_paired_close!(Paired::Brace)
+      ntokens += 1
+      let tyvar = tyvar[0]
+      if self.peek_operator(";") {
+        self.skip_token()
+        ntokens += 1
+        if self.reach_eof() == false {
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          Syntax::LetClass({ name, tyvar, methods }, stmt.inner)
+        } else {
+          Syntax::LetClass({ name, tyvar, methods }, Syntax::Unit)
+        }
+      } else {
+        Syntax::LetClass({ name, tyvar, methods }, Syntax::Unit)
+      }
+    }
+    Kw(Keyword::Instance) => {
+      self.skip_token()
+      ntokens += 1
+      let ident = self.expect_ident!()
+      ntokens += ident.ntokens
+      let name = ident.inner.span
+      if name[0] < 'A' || name[0] > 'Z' {
+        fail!("class name must start with uppercase letter")
+      }
+      let tys = []
+      let _ = self.expect_paired_open!(Paired::Bracket)
+      ntokens += 1
+      let ty = self.parse_type!()
+      ntokens += ty.ntokens
+      tys.push(ty)
+      // Currently we only support must one and only one type variable
+      let _ = self.expect_paired_close!(Paired::Bracket)
+      ntokens += 1
+      let _ = self.expect_paired_open!(Paired::Brace)
+      ntokens += 1
+      let methods = []
+      while self.peek_token!().inner.tag != PairedClose(Brace) {
+        let method_name = self.expect_ident!()
+        ntokens += method_name.ntokens
+        let _ = self.expect_operator!("=")
+        ntokens += 1
+        let expr = self.parse_expr!()
+        ntokens += ty.ntokens
+        let _ = self.expect_operator!(";")
+        ntokens += 1
+        methods.push((method_name.inner.span, expr.inner))
+      }
+      let _ = self.expect_paired_close!(Paired::Brace)
+      ntokens += 1
+      let ty = tys[0].inner
+      if self.peek_operator(";") {
+        self.skip_token()
+        ntokens += 1
+        if self.reach_eof() == false {
+          let stmt = self.parse_stmt!(top)
+          ntokens += stmt.ntokens
+          Syntax::LetInstance({ name, ty, methods }, stmt.inner)
+        } else {
+          Syntax::LetInstance({ name, ty, methods }, Syntax::Unit)
+        }
+      } else {
+        Syntax::LetInstance({ name, ty, methods }, Syntax::Unit)
+      }
+    }
     Kw(Keyword::Fn) => {
       self.skip_token()
       ntokens += 1
@@ -887,11 +971,8 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           "fn definition must be at the beginning of the line, but got let at \{lookahead.inner.loc}",
         )
       }
-      let ident = self.next_token!()
+      let ident = self.expect_ident!()
       ntokens += ident.ntokens
-      if ident.inner.tag != Identifer {
-        fail!("expected identifier")
-      }
       let name = ident.inner.span
       let args = []
       fn parse_non_generic() -> Unit!Failure {
@@ -901,11 +982,8 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         let _ = self.expect_paired_open!(Paired::Parenthesis)
         ntokens += 1
         if self.peek_token!().inner.tag != PairedClose(Parenthesis) {
-          let arg = self.next_token!()
+          let arg = self.expect_ident!()
           ntokens += arg.ntokens
-          if arg.inner.tag != Identifer {
-            fail!("expected identifier")
-          }
           if self.peek_operator(":") {
             self.skip_token()
             ntokens += 1
@@ -918,11 +996,8 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
           while self.peek_operator(",") {
             self.skip_token()
             ntokens += 1
-            let arg = self.next_token!()
+            let arg = self.expect_ident!()
             ntokens += arg.ntokens
-            if arg.inner.tag != Identifer {
-              fail!("expected identifier")
-            }
             if self.peek_operator(":") {
               self.skip_token()
               ntokens += 1
@@ -944,20 +1019,14 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       } else if self.peek_token!().inner.tag == PairedOpen(Bracket) {
         self.skip_token()
         ntokens += 1
-        let type_var = self.next_token!()
+        let type_var = self.expect_ident!()
         ntokens += 1
-        if ident.inner.tag != Identifer {
-          fail!("expected identifier")
-        }
         tyvars.push(type_var.inner.span)
         while self.peek_operator(",") {
           self.skip_token()
           ntokens += 1
-          let type_var = self.next_token!()
+          let type_var = self.expect_ident!()
           ntokens += 1
-          if ident.inner.tag != Identifer {
-            fail!("expected identifier")
-          }
           tyvars.push(type_var.inner.span)
         }
         let _ = self.expect_paired_close!(Bracket)
