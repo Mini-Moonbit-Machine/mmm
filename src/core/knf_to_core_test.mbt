@@ -32,9 +32,9 @@ test "knf_to_core" {
   let parser = @parser.Parser::new(src, subtracer)
   let ast = parser.parse!().inner
   let typer = @typer.Typer::new(ast, subtracer)
-  typer.check_all!() |> ignore
+  let typed_ast = typer.check_all!()
   let knf_env = @knf.KnfEnv::new(@typer.externals(), subtracer)
-  let preprocessed = knf_env.syntax_preprocess(ast, false)
+  let preprocessed = knf_env.syntax_preprocess(typed_ast, false)
   let knf = knf_env.to_knf!(preprocessed)
   let core_env = @core.CoreEnv::new(subtracer)
   let core = core_env.build!(knf)

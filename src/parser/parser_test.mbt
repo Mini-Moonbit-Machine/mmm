@@ -251,18 +251,24 @@ test "parse expr" {
     #|  Some("OCaml") => Some("Hello 🐪");
     #|  Some("Moonbit") => Some("Hello \u{6708}\u{5154}");
     #|  Some(s) => None;
-    #|};
+    #|}
     ,
     #|["Match",["Var","r"],[{"pat":["CtorApp",["None"],[]],"action":["CtorApp",["None"],[]]},{"pat":["CtorApp",["Some"],[["String","\"OCaml\""]]],"action":["CtorApp",["Some"],[["String","Hello 🐪"]]]},{"pat":["CtorApp",["Some"],[["String","\"Moonbit\""]]],"action":["CtorApp",["Some"],[["String","Hello 月兔"]]]},{"pat":["CtorApp",["Some"],[["Var","s"]]],"action":["CtorApp",["None"],[]]}]]
     ,
     35,
+  )
+  test_parse_expr!(
+    "[1, 2+3, [1, 2], 2.1, [f(a, b)]]",
+    #|["Let",["_array",["Var","None"]],["Array",["Int",5],["Int",1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",1],["IAdd",["Int",2],["Int",3]]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",2],["Let",["_array",["Var","None"]],["Array",["Int",2],["Int",1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",1],["Int",2]],["Var","_array"]]]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",3],["Float",2.1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",4],["Let",["_array",["Var","None"]],["Array",["Int",1],["App",["Var","f"],[["Var","a"],["Var","b"]]]],["Var","_array"]]],["Var","_array"]]]]]]
+    ,
+    24
   )
 }
 
 test "parse enum" {
   test_parse_stmt!(
     "enum List { Nil; Cons(Int, List); }",
-    #|["LetEnum","List",["Var",["Some",["Enum","List",["Nil","Cons"]]]],"Unit"]
+    #|["LetEnum","List",["Enum","List"],"Unit"]
     ,
     13,
   )

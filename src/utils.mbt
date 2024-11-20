@@ -65,7 +65,7 @@ test {
   )
   inspect!(
     Type::from_json?(Type::Var({ val: Some(Type::Int) }).to_json()),
-    content="Ok(Var(Int))",
+    content="Ok(Int)",
   )
 }
 

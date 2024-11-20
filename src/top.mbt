@@ -120,7 +120,7 @@ pub fn TypeScheme::no_quantifier(self : TypeScheme) -> Type? {
 
 pub fn Type::is_ptr_like(self : Type) -> Bool {
   match self {
-    Fun(_) | Tuple(_) | Array(_) | Ptr => true
+    Fun(_) | Tuple(_) | Array(_) | Ptr | Enum(_, _) => true
     Var(t) =>
       match t.val {
         Some(t) => t.is_ptr_like()
