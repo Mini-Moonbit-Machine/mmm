@@ -30,13 +30,13 @@ let rec main: () -> Unit {
   ])
   let m: Int = Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [
     CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]) =>
-      Prim(Var("a"), Var("b"), Add, kind=Some(Int)) + Var("c")
+      Int(1)
     CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]) =>
       Int(2)
     CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]) =>
       Int(3)
-    CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]) =>
-      Int(4)
+    CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("C", [])]) =>
+      Var("a") + Var("b")
     CtorApp("B", [Wildcard, Wildcard]) =>
       Int(5)
     CtorApp("C", []) =>

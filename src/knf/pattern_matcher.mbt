@@ -328,7 +328,7 @@ fn PatternMatcher::default_row(
   let discard_subpat = match selected_subpat {
     Wildcard => Some(None)
     Int(_) | Bool(_) | Double(_) | Unit | String(_) => None // literals unmatched always be discarded
-    Var(_) => Some(None)
+    Var(name) => Some(Some(name))
     Tuple(_) => None
     CtorApp(_, _) => None
   }
