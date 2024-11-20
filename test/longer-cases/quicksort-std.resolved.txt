@@ -104,8 +104,8 @@ let rec quick_sort: (arr: Array[Int], low: Int, high: Int) -> Unit {
   if (LE(Var("len"), Int(16))) then {
     Apply(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high"), ])
   } else {
-    let (pivot_index: Var(None), likely_sorted: Var(None)) = App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")])
-    let (pivot: Var(None), partitioned: Var(None)) = App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
+    let (pivot_index: Var(None), likely_sorted: Var(None)) = App(Var("choose_pivot"), targs=None, [Var("arr"), Var("low"), Var("high")])
+    let (pivot: Var(None), partitioned: Var(None)) = App(Var("partition"), targs=None, [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
     let _: Var(None) = Apply(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot"), ])
     Apply(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high"), ])
   }
@@ -118,7 +118,7 @@ let rec main: () -> Var(None) {
   let arr: Var(None) = Array::make(Var("len"), Int(0))
   let rec input: (i: Int) -> Var(None) {
     if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None))) then {
-      let _: Var(None) = Put Var("arr")[Var("i")] = App(Var("read_int"), [])
+      let _: Var(None) = Put Var("arr")[Var("i")] = App(Var("read_int"), targs=None, [])
       Apply(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None), ])
     } else {
       Unit

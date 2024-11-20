@@ -13,4 +13,13 @@ instance Print [String] {
     }
     Var(aux)
 }
+let rec print_generic: forall [("P", Some("Print")), ("X", None)] . (p: P, _dummy: X) -> Unit {
+  Apply(Var("print"), [Var("p"), ])
+}
+let rec main: () -> Var(None) {
+  let _: Var(None) = Apply(Var("print_generic"), [Int(1), Double(0.1), ])
+  let _: Var(None) = Apply(Var("print_generic"), [String("\n"), Unit, ])
+  let _: Var(None) = Apply(Var("print_generic"), [String("Hello Moonbit"), Int(2), ])
+  Unit
+}
 Unit

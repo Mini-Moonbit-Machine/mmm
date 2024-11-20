@@ -3,12 +3,20 @@ pub typealias LocalEnv = @immut/hashmap.T[String, Type]
 pub typealias NameEnv = @immut/hashmap.T[String, Name]
 
 pub struct TypeClassEnv {
-  classes : @immut/hashmap.T[String, @types.Classdef]
-  instances : Array[(Type, Name)]
+  classes : @immut/hashmap.T[String, @types.Classdef] // class name -> class
+  instances : Array[((String, Type), Name)] // (class name, instance type) -> dict name
+  // method name -> (dict name, dict size, method type, method index)
+  methods : @immut/hashmap.T[String, (String, Int, @types.Type, Int)]
+  function_dicts : @immut/hashmap.T[String, Array[(String, String)]] // function name -> [type var with a dict, class name]
 }
 
 pub fn TypeClassEnv::new() -> TypeClassEnv {
-  { classes: @immut/hashmap.new(), instances: [] }
+  {
+    classes: @immut/hashmap.new(),
+    instances: [],
+    methods: @immut/hashmap.new(),
+    function_dicts: @immut/hashmap.new(),
+  }
 }
 
 fn TypeClassEnv::add_class(
@@ -20,15 +28,45 @@ fn TypeClassEnv::add_class(
 
 fn TypeClassEnv::add_instance(
   self : TypeClassEnv,
+  class : String,
   ty : Type,
-  class : Name
+  dict : Name
 ) -> TypeClassEnv {
   let instances = self.instances
-  if instances.search_by(fn(x) { x.0 == ty }).is_empty() == false {
+  if instances.search_by(fn(x) { x.0 == (class, ty) }).is_empty() == false {
     @util.t.abort("duplicate instance: \{ty} \{class}")
   }
-  instances.push((ty, class))
+  instances.push(((class, ty), dict))
   { ..self, instances, }
+}
+
+fn TypeClassEnv::add_method(
+  self : TypeClassEnv,
+  name : String,
+  dict : String,
+  size : Int,
+  ty : Type,
+  index : Int
+) -> TypeClassEnv {
+  { ..self, methods: self.methods.add(name, (dict, size, ty, index)) }
+}
+
+fn TypeClassEnv::add_function_dict(
+  self : TypeClassEnv,
+  name : String,
+  dict_type_names : Array[(String, String)]
+) -> TypeClassEnv {
+  { ..self, function_dicts: self.function_dicts.add(name, dict_type_names) }
+}
+
+fn TypeClassEnv::get_instance(
+  self : TypeClassEnv,
+  class : String,
+  ty : Type
+) -> Name? {
+  self.instances
+  .search_by(fn(x) { x.0 == (class, ty) })
+  .map(fn(x) { self.instances[x].1 })
 }
 
 pub typealias BindEnv = @immut/hashmap.T[Occurrence, (Name, Type)]
@@ -362,7 +400,26 @@ fn build_knf(
     Var(x) =>
       match (env.find(x), ty_env.find(x)) {
         (Some(name), Some(ty)) => (Var(name), ty, let_list)
-        _ => fail!("unbound variable: \{x}")
+        _ =>
+          match tc_env.methods.find(x) {
+            Some((dict, size, ty, index)) =>
+              match (env.find(dict), ty_env.find(dict)) {
+                (Some(dict_name), Some(dict_type)) => {
+                  guard let Type::Tuple(args) = dict_type else {
+                    _ => fail!("not a tuple: \{dict_type}")
+                  }
+                  let tmps = []
+                  for i in 0..<size {
+                    let tmp = self.new_temp()
+                    tmps.push((tmp, args[i]))
+                  }
+                  let_list.push(Binding::LetTuple(tmps, dict_name))
+                  (Var(tmps[index].0), ty, let_list)
+                }
+                _ => fail!("unbound dict: \{dict}")
+              }
+            None => fail!("unbound variable: \{x}")
+          }
       }
     Tuple(xs) => {
       let ys = []
@@ -417,29 +474,45 @@ fn build_knf(
       (FNeg(tmp), Double, let_list)
     }
     Neg(_, ~kind) => fail!("invalid kind: \{kind}")
-    App(Var(f) as fv, xs) =>
-      if self.externals.find(f).is_empty() == false {
-        let args = []
-        for x in xs {
-          let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
-          let tmp = self.materialize_knf(r, let_list)
-          args.push(tmp)
-        }
-        (
-          ExternalFunctionApplication("minimbt_" + f, args),
-          match self.externals.find(f).unwrap() {
-            @types.Type::Fun(_, t) => t
-            _ =>
-              fail!(
-                "not a function: \{fv} : \{self.externals.find(f).unwrap()}",
-              )
-          },
-          let_list,
-        )
-      } else {
+    App(fv, ~targs, xs) => {
+      fn fallback(f : String?) -> KnfResult!Failure {
         let r = self.build_knf!(fv, let_list, env, ty_env, tc_env)
         let fv = self.materialize_knf(r, let_list)
         let args = []
+        match f {
+          Some(f) =>
+            match (tc_env.function_dicts.find(f), targs) {
+              (Some(dict_type_names), Some(targs)) =>
+                for abstract_ty in dict_type_names {
+                  let (abstract_ty, class) = abstract_ty
+                  let real_ty_idx = targs
+                    .search_by(fn(t) { t.0 == abstract_ty })
+                    .or_else(
+                      fn() { self.tracer.abort("type argument not found") },
+                    )
+                  let (_, real_ty) = targs[real_ty_idx]
+                  let instance = tc_env
+                    .get_instance(class, real_ty)
+                    .or_else(
+                      fn() {
+                        self.tracer.abort(
+                          "instance not found: \{class} \{real_ty} in \{tc_env.instances}",
+                        )
+                      },
+                    )
+                  args.push(instance)
+                }
+              (Some(_), None) =>
+                fail!(
+                  "type arguments are required for dictionary passing: calling \{f}",
+                )
+              _ => ()
+            }
+          None =>
+            if targs.is_empty() == false {
+              fail!("type arguments are not supported for high order functions")
+            }
+        }
         for x in xs {
           let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
           let tmp = self.materialize_knf(r, let_list)
@@ -454,23 +527,32 @@ fn build_knf(
           let_list,
         )
       }
-    App(fv, xs) => {
-      let r = self.build_knf!(fv, let_list, env, ty_env, tc_env)
-      let fv = self.materialize_knf(r, let_list)
-      let args = []
-      for x in xs {
-        let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
-        let tmp = self.materialize_knf(r, let_list)
-        args.push(tmp)
+
+      match fv {
+        Var(f) =>
+          if self.externals.find(f).is_empty() == false {
+            let args = []
+            for x in xs {
+              let r = self.build_knf!(x, let_list, env, ty_env, tc_env)
+              let tmp = self.materialize_knf(r, let_list)
+              args.push(tmp)
+            }
+            (
+              ExternalFunctionApplication("minimbt_" + f, args),
+              match self.externals.find(f).unwrap() {
+                @types.Type::Fun(_, t) => t
+                _ =>
+                  fail!(
+                    "not a function: \{fv} : \{self.externals.find(f).unwrap()}",
+                  )
+              },
+              let_list,
+            )
+          } else {
+            fallback!(Some(f))
+          }
+        _ => fallback!(None)
       }
-      (
-        Apply(fv, args),
-        match r.1.repr() {
-          @types.Type::Fun(_, t) => t
-          _ => fail!("not a function: \{r.0} : \{r.1}")
-        },
-        let_list,
-      )
     }
     Get(x, y) => {
       let r1 = self.build_knf!(x, let_list, env, ty_env, tc_env)
@@ -633,7 +715,46 @@ fn build_knf(
       }
       self.build_knf!(e, let_list, env, ty_env, tc_env)
     }
-    LetRec({ name, args, body, .. }, e) => {
+    LetRec({ name, args, body, tyvars }, e) => {
+      let dict_args = []
+      let dict_tys = []
+      let mut tc_env = tc_env
+      let tvars_with_contraints = []
+      let mem_class = @hashset.new()
+      for tvar in tyvars {
+        match tvar.1 {
+          Some(tc) =>
+            match tc_env.classes.find(tc) {
+              Some(class) => {
+                if mem_class.contains(tc) {
+                  continue
+                }
+                mem_class.insert(tc)
+                let dict_name = self.make_name("dict")
+                let tys = []
+                for j, method in class.methods {
+                  let (method_name, method_ty) = method
+                  tc_env = tc_env.add_method(
+                    method_name,
+                    dict_name.to_string(),
+                    class.methods.length(),
+                    method_ty,
+                    j,
+                  )
+                  tys.push(method_ty)
+                }
+                tvars_with_contraints.push((tvar.0, tc))
+                dict_args.push(dict_name.to_string())
+                dict_tys.push(Type::Tuple(tys))
+              }
+              None => fail!("undefined type class: \{tc}")
+            }
+          None => ()
+        }
+      }
+      if tvars_with_contraints.is_empty() == false {
+        tc_env = tc_env.add_function_dict(name.0, tvars_with_contraints)
+      }
       let ty = name.1
       let orig_name = name.0
       let name = self.make_name(orig_name)
@@ -648,6 +769,17 @@ fn build_knf(
       let mut ty_env2 = ty_env
       let new_binders = []
       let inner_let_list = []
+      for i, dict_arg in dict_args {
+        let dict_ty = dict_tys[i]
+        let dict_name = try {
+          Name::from_string!(dict_arg)
+        } catch {
+          _ => fail!("invalid dict name: \{dict_arg}")
+        }
+        new_binders.push((dict_name, dict_ty))
+        ty_env2 = ty_env2.add(dict_arg, dict_ty)
+        env2 = env2.add(dict_arg, dict_name)
+      }
       for item in args {
         let (x, ty) = item
         let x_name = self.make_name(x)
@@ -705,7 +837,7 @@ fn build_knf(
       }
       let dict_name = self.new_named_temp(Name::name_only("D$\{name}"))
       let_list.push(Binding::Let(dict_name, Type::Tuple(tys), Tuple(xs)))
-      let tc_env = tc_env.add_instance(ty, dict_name)
+      let tc_env = tc_env.add_instance(name, ty, dict_name)
       self.build_knf!(e, let_list, env, ty_env, tc_env)
     }
   }

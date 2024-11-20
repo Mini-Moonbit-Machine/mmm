@@ -1,17 +1,17 @@
 let rec map: (stream: (Unit) -> (Int, Int), f: (Int) -> Int) -> (Unit) -> (Int, Int) {
   let rec aux: (u: Var(None)) -> (Int, Int) {
-    let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+    let (ok: Var(None), val: Var(None)) = App(Var("stream"), targs=None, [Unit])
     if (Eq(Var("ok"), Int(0))) then {
       Tuple([Int(0), Int(0), ])
     } else {
-      Tuple([Int(1), App(Var("f"), [Var("val")]), ])
+      Tuple([Int(1), App(Var("f"), targs=None, [Var("val")]), ])
     }
   }
   Var(aux)
 }
 let rec filter: (stream: (Unit) -> (Int, Int), f: (Int) -> Int) -> (Unit) -> (Int, Int) {
   let rec aux: (u: Var(None)) -> (Int, Int) {
-    let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+    let (ok: Var(None), val: Var(None)) = App(Var("stream"), targs=None, [Unit])
     if (Eq(Var("ok"), Int(0))) then {
       Tuple([Int(0), Int(0), ])
     } else {
@@ -27,7 +27,7 @@ let rec filter: (stream: (Unit) -> (Int, Int), f: (Int) -> Int) -> (Unit) -> (In
 }
 let rec concat: (stream1: (Unit) -> (Int, Int), stream2: (Unit) -> (Int, Int)) -> (Unit) -> (Int, Int) {
   let rec aux: (u: Var(None)) -> (Int, Int) {
-    let (ok: Var(None), val: Var(None)) = App(Var("stream1"), [Unit])
+    let (ok: Var(None), val: Var(None)) = App(Var("stream1"), targs=None, [Unit])
     if (Eq(Var("ok"), Int(0))) then {
       Apply(Var("stream2"), [Unit, ])
     } else {
@@ -56,11 +56,11 @@ let rec addx: (x: Int) -> (Int) -> Int {
   Var(aux)
 }
 let rec fold: (stream: (Unit) -> (Int, Int), f: (Int, Int) -> Int, acc: Int) -> Int {
-  let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+  let (ok: Var(None), val: Var(None)) = App(Var("stream"), targs=None, [Unit])
   if (Eq(Var("ok"), Int(0))) then {
     Var(acc)
   } else {
-    Apply(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")]), ])
+    Apply(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), targs=None, [Var("acc"), Var("val")]), ])
   }
 }
 let rec sum: (stream: (Unit) -> (Int, Int)) -> Int {
@@ -93,9 +93,9 @@ let rec main: () -> Var(None) {
   let range100: Var(None) = Apply(Var("range"), [Int(0), Int(100), ])
   let range1000: Var(None) = Apply(Var("range"), [Int(0), Int(1000), ])
   let catt: Var(None) = Apply(Var("concat"), [Var("range100"), Var("range1000"), ])
-  let addone: Var(None) = Apply(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)]), ])
-  let over50: Var(None) = Apply(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)]), ])
-  let under1200: Var(None) = Apply(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)]), ])
+  let addone: Var(None) = Apply(Var("map"), [Var("catt"), App(Var("addx"), targs=None, [Int(1)]), ])
+  let over50: Var(None) = Apply(Var("filter"), [Var("addone"), App(Var("gt"), targs=None, [Int(50)]), ])
+  let under1200: Var(None) = Apply(Var("filter"), [Var("over50"), App(Var("le"), targs=None, [Int(1200)]), ])
   let sum: Var(None) = Apply(Var("sum"), [Var("under1200"), ])
   let _: Var(None) = Apply(Var("print_int"), [Var("sum"), ])
   let _: Var(None) = Apply(Var("print_char"), [Int(10), ])

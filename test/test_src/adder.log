@@ -177,22 +177,22 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
-// [Typer] resolve: LetRec({tyvars: [], name: ("make_adder", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])}, Unit))
+// [Typer] resolve: LetRec({tyvars: [], name: ("make_adder", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])}, Unit))
 // [Typer] resolve: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))
 // [Typer] resolve: Prim(Var("x"), Var("y"), Add, kind=None)
 // [Typer] resolve: Var("x")
 // [Typer] resolve: Var("y")
 // [Typer] resolve: Var("adder")
-// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])}, Unit)
-// [Typer] resolve: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])
-// [Typer] resolve: App(App(Var("make_adder"), [Int(3)]), [Int(7)])
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])}, Unit)
+// [Typer] resolve: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])
+// [Typer] resolve: App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])
 // [Typer] resolve: Int(7)
-// [Typer] resolve: App(Var("make_adder"), [Int(3)])
+// [Typer] resolve: App(Var("make_adder"), targs=None, [Int(3)])
 // [Typer] resolve: Int(3)
 // [Typer] resolve: Var("make_adder")
 // [Typer] resolve: Var("print_int")
 // [Typer] resolve: Unit
-// [Typer] check: LetRec({tyvars: [], name: ("make_adder", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])}, Unit)) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("make_adder", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])}, Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] check: LetRec({tyvars: [], name: ("adder", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("adder")) against (Int) -> Int
 // [Typer] typevars: []
@@ -211,17 +211,15 @@
 // [Typer] unify: (Int) -> Int and (Int) -> Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])}, Unit) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])}, Unit) against Unit
 // [Typer] typevars: []
-// [Typer] infer: App(Var("print_int"), [App(App(Var("make_adder"), [Int(3)]), [Int(7)])])
-// [Typer] infer: Var("print_int")
+// [Typer] infer: App(Var("print_int"), targs=None, [App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)])])
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
-// [Typer] check: App(App(Var("make_adder"), [Int(3)]), [Int(7)]) against Int
+// [Typer] check: App(App(Var("make_adder"), targs=None, [Int(3)]), targs=None, [Int(7)]) against Int
 // [Typer] infer: Int(7)
-// [Typer] check: App(Var("make_adder"), [Int(3)]) against (Int) -> Int
+// [Typer] check: App(Var("make_adder"), targs=None, [Int(3)]) against (Int) -> Int
 // [Typer] infer: Int(3)
-// [Typer] check: Var("make_adder") against (Int) -> (Int) -> Int
 // [Typer] inst: TypeScheme(([], (Int) -> (Int) -> Int))
 // [Typer] inst result: (Int) -> (Int) -> Int
 // [Typer] unify: (Int) -> (Int) -> Int and (Int) -> (Int) -> Int

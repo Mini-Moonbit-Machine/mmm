@@ -16,7 +16,7 @@ let rec mem_fib: (f: (Int) -> Int, n: Int) -> Int {
   if (LE(Var("n"), Int(1))) then {
     Var(n)
   } else {
-    App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]) + App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)])
+    App(Var("f"), targs=None, [Prim(Var("n"), Int(1), Sub, kind=None)]) + App(Var("f"), targs=None, [Prim(Var("n"), Int(2), Sub, kind=None)])
   }
 }
 let rec fib: (n: Int) -> Int {
@@ -25,7 +25,7 @@ let rec fib: (n: Int) -> Int {
 }
 let rec main: () -> Var(None) {
   let n: Var(None) = Apply(Var("read_int"), [])
-  let _: Var(None) = Apply(Var("print_int"), [App(Var("fib"), [Var("n")]), ])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("fib"), targs=None, [Var("n")]), ])
   let _: Var(None) = Apply(Var("print_char"), [Int(10), ])
   Unit
 }

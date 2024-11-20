@@ -1,8 +1,8 @@
-let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
+let rec iter: forall [("T", None)] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
   let rec do: (yield: Var(None)) -> Var(None) {
     let rec next: (i: Var(None)) -> Var(None) {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None))) then {
-        if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
+        if (App(Var("yield"), targs=None, [Get(Var("arr"), Var("i"))])) then {
           Apply(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None), ])
         } else {
           Bool(false)
@@ -15,13 +15,13 @@ let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool 
   }
   Var(do)
 }
-let rec each: forall ["T"] . (iter: ((T) -> Bool) -> Bool, f: (T) -> Unit) -> Unit {
+let rec each: forall [("T", None)] . (iter: ((T) -> Bool) -> Bool, f: (T) -> Unit) -> Unit {
   let rec yield: (x: Var(None)) -> Var(None) {
     let _: Var(None) = Apply(Var("f"), [Var("x"), ])
     Bool(true)
   }
   let rec do: () -> Var(None) {
-    if (App(Var("iter"), [Var("yield")])) then {
+    if (App(Var("iter"), targs=None, [Var("yield")])) then {
       Apply(Var("do"), [])
     } else {
       Unit
@@ -50,7 +50,7 @@ let rec main: () -> Var(None) {
   let _: Var(None) = Put Var("arr")[Int(5)] = Double(6)
   let double_arr_iter: Var(None) = Apply(Var("iter"), [Var("arr"), Int(6), ])
   let rec print_d: (x: Var(None)) -> Unit {
-    Apply(Var("print_int"), [App(Var("int_of_float"), [Var("x")]), ])
+    Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Var("x")]), ])
   }
   Apply(Var("each"), [Var("double_arr_iter"), Var("print_d"), ])
 }

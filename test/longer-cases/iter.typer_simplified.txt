@@ -2,8 +2,8 @@ let rec iter: (arr: Array[Int], len: Int) -> ((Int) -> Bool) -> Bool {
   let rec do: (yield: (Int) -> Bool) -> Bool {
     let rec next: (i: Int) -> Bool {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
-        if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
-          Apply(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
+        if (App(Var("yield"), targs=Some([]), [Get(Var("arr"), Var("i"))])) then {
+          Apply[](Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
         } else {
           Bool(false)
         }
@@ -11,23 +11,23 @@ let rec iter: (arr: Array[Int], len: Int) -> ((Int) -> Bool) -> Bool {
         Bool(false)
       }
     }
-    Apply(Var("next"), [Int(0), ])
+    Apply[](Var("next"), [Int(0), ])
   }
   Var(do)
 }
 let rec each: (iter: ((Int) -> Bool) -> Bool, f: (Int) -> Unit) -> Unit {
   let rec yield: (x: Int) -> Bool {
-    let _: Unit = Apply(Var("f"), [Var("x"), ])
+    let _: Unit = Apply[](Var("f"), [Var("x"), ])
     Bool(true)
   }
   let rec do: () -> Unit {
-    if (App(Var("iter"), [Var("yield")])) then {
-      Apply(Var("do"), [])
+    if (App(Var("iter"), targs=Some([]), [Var("yield")])) then {
+      Apply[](Var("do"), [])
     } else {
       Unit
     }
   }
-  Apply(Var("do"), [])
+  Apply[](Var("do"), [])
 }
 let rec main: () -> Unit {
   let arr: Array[Int] = Array::make(Int(5), Int(1))
@@ -36,10 +36,10 @@ let rec main: () -> Unit {
   let _: Unit = Put Var("arr")[Int(2)] = Int(3)
   let _: Unit = Put Var("arr")[Int(3)] = Int(4)
   let _: Unit = Put Var("arr")[Int(4)] = Int(5)
-  let f: ((Int) -> Bool) -> Bool = Apply(Var("iter"), [Var("arr"), Int(5), ])
+  let f: ((Int) -> Bool) -> Bool = Apply[](Var("iter"), [Var("arr"), Int(5), ])
   let rec print: (x: Int) -> Unit {
-    Apply(Var("print_int"), [Var("x"), ])
+    Apply[](Var("print_int"), [Var("x"), ])
   }
-  Apply(Var("each"), [Var("f"), Var("print"), ])
+  Apply[](Var("each"), [Var("f"), Var("print"), ])
 }
 Unit

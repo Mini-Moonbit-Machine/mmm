@@ -2,7 +2,7 @@ let rec iter: (arr: Array[Int], len: Int) -> ((Int) -> Bool) -> Bool {
   let rec do: (yield: Var(None)) -> Bool {
     let rec next: (i: Var(None)) -> Bool {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None))) then {
-        if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
+        if (App(Var("yield"), targs=None, [Get(Var("arr"), Var("i"))])) then {
           Apply(Var("next"), [Prim(Var("i"), Int(1), Add, kind=None), ])
         } else {
           Bool(false)
@@ -21,7 +21,7 @@ let rec each: (iter: ((Int) -> Bool) -> Bool, f: (Int) -> Unit) -> Unit {
     Bool(true)
   }
   let rec do: () -> Var(None) {
-    if (App(Var("iter"), [Var("yield")])) then {
+    if (App(Var("iter"), targs=None, [Var("yield")])) then {
       Apply(Var("do"), [])
     } else {
       Unit

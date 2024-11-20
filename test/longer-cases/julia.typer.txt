@@ -14,7 +14,7 @@ let rec calc_pixel: (zr: Double, zi: Double, it: Int) -> Int {
     } else {
       let new_zi: Double = Prim(Prim(Double(2), Var("zr"), Mul, kind=Some(Double)), Var("zi"), Mul, kind=Some(Double)) + Var("c_im")
       let new_zr: Double = Prim(Var("zr2"), Var("zi2"), Sub, kind=Some(Double)) + Var("c_re")
-      Apply(Var("calc_pixel"), [Var("new_zr"), Var("new_zi"), Prim(Var("it"), Int(1), Add, kind=Some(Int)), ])
+      Apply[](Var("calc_pixel"), [Var("new_zr"), Var("new_zi"), Prim(Var("it"), Int(1), Add, kind=Some(Int)), ])
     }
   }
 }
@@ -34,13 +34,13 @@ let rec main_loop: (w: Int, h: Int, x: Int, y: Int, ret: Array[Int]) -> Unit {
     Unit
   } else {
     if (Eq(Var("x"), Var("w"))) then {
-      Apply(Var("main_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=Some(Int)), Var("ret"), ])
+      Apply[](Var("main_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=Some(Int)), Var("ret"), ])
     } else {
-      let cr: Double = Neg(Prim(Prim(Prim(Double(3), App(Var("float_of_int"), [Var("x")]), Mul, kind=Some(Double)), App(Var("float_of_int"), [Var("w")]), Div, kind=Some(Double)), Double(1.5), Sub, kind=Some(Double)))
-      let ci: Double = Prim(Prim(Double(3), App(Var("float_of_int"), [Var("y")]), Mul, kind=Some(Double)), App(Var("float_of_int"), [Var("h")]), Div, kind=Some(Double)) - Double(1.5)
-      let res: Int = Apply(Var("calc_pixel"), [Var("cr"), Var("ci"), Int(0), ])
-      let _: Unit = Put Var("ret")[Prim(Prim(Var("y"), Var("w"), Mul, kind=Some(Int)), Var("x"), Add, kind=Some(Int))] = App(Var("clamp"), [Var("res")])
-      Apply(Var("main_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Var("y"), Var("ret"), ])
+      let cr: Double = Neg(Prim(Prim(Prim(Double(3), App(Var("float_of_int"), targs=Some([]), [Var("x")]), Mul, kind=Some(Double)), App(Var("float_of_int"), targs=Some([]), [Var("w")]), Div, kind=Some(Double)), Double(1.5), Sub, kind=Some(Double)))
+      let ci: Double = Prim(Prim(Double(3), App(Var("float_of_int"), targs=Some([]), [Var("y")]), Mul, kind=Some(Double)), App(Var("float_of_int"), targs=Some([]), [Var("h")]), Div, kind=Some(Double)) - Double(1.5)
+      let res: Int = Apply[](Var("calc_pixel"), [Var("cr"), Var("ci"), Int(0), ])
+      let _: Unit = Put Var("ret")[Prim(Prim(Var("y"), Var("w"), Mul, kind=Some(Int)), Var("x"), Add, kind=Some(Int))] = App(Var("clamp"), targs=Some([]), [Var("res")])
+      Apply[](Var("main_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Var("y"), Var("ret"), ])
     }
   }
 }
@@ -49,20 +49,20 @@ let rec print_loop: (w: Int, h: Int, x: Int, y: Int, ret: Array[Int]) -> Unit {
     Unit
   } else {
     if (Eq(Var("x"), Var("w"))) then {
-      let _: Unit = Apply(Var("print_char"), [Int(10), ])
-      Apply(Var("print_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=Some(Int)), Var("ret"), ])
+      let _: Unit = Apply[](Var("print_char"), [Int(10), ])
+      Apply[](Var("print_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=Some(Int)), Var("ret"), ])
     } else {
-      let _: Unit = Apply(Var("print_char"), [Prim(Int(48), Get(Var("ret"), Prim(Prim(Var("y"), Var("w"), Mul, kind=Some(Int)), Var("x"), Add, kind=Some(Int))), Add, kind=Some(Int)), ])
-      Apply(Var("print_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Var("y"), Var("ret"), ])
+      let _: Unit = Apply[](Var("print_char"), [Prim(Int(48), Get(Var("ret"), Prim(Prim(Var("y"), Var("w"), Mul, kind=Some(Int)), Var("x"), Add, kind=Some(Int))), Add, kind=Some(Int)), ])
+      Apply[](Var("print_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=Some(Int)), Var("y"), Var("ret"), ])
     }
   }
 }
 let rec main: () -> Unit {
-  let h: Int = Apply(Var("read_int"), [])
+  let h: Int = Apply[](Var("read_int"), [])
   let w: Int = Var("h") * Int(2)
   let ret: Array[Int] = Array::make(Prim(Var("w"), Var("h"), Mul, kind=Some(Int)), Int(0))
-  let _: Unit = Apply(Var("main_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
-  let _: Unit = Apply(Var("print_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
+  let _: Unit = Apply[](Var("main_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
+  let _: Unit = Apply[](Var("print_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
   Unit
 }
 Unit

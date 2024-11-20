@@ -328,29 +328,29 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
-// [Typer] resolve: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit))
-// [Typer] resolve: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)
+// [Typer] resolve: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)}, Unit))
+// [Typer] resolve: If(Eq(Var("x"), Var("y")), App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)
 // [Typer] resolve: Eq(Var("x"), Var("y"))
 // [Typer] resolve: Var("x")
 // [Typer] resolve: Var("y")
-// [Typer] resolve: App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)])
+// [Typer] resolve: App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)])
 // [Typer] resolve: Var("y")
 // [Typer] resolve: Prim(Var("x"), Int(1), Add, kind=None)
 // [Typer] resolve: Var("x")
 // [Typer] resolve: Int(1)
 // [Typer] resolve: Var("rec")
 // [Typer] resolve: Unit
-// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit)
-// [Typer] resolve: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)
-// [Typer] resolve: App(Var("rec"), [Int(0), Int(0)])
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)}, Unit)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)
+// [Typer] resolve: App(Var("rec"), targs=None, [Int(0), Int(0)])
 // [Typer] resolve: Int(0)
 // [Typer] resolve: Int(0)
 // [Typer] resolve: Var("rec")
 // [Typer] resolve: Unit
 // [Typer] resolve: Unit
-// [Typer] check: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit)) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("rec", Unit), args: [("x", Int), ("y", Int)], body: If(Eq(Var("x"), Var("y")), App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)}, Unit)) against Unit
 // [Typer] typevars: []
-// [Typer] check: If(Eq(Var("x"), Var("y")), App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit) against Unit
+// [Typer] check: If(Eq(Var("x"), Var("y")), App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]), Unit) against Unit
 // [Typer] check: Eq(Var("x"), Var("y")) against Bool
 // [Typer] infer: Var("x")
 // [Typer] inst: TypeScheme(([], Int))
@@ -359,7 +359,7 @@
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
-// [Typer] check: App(Var("rec"), [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]) against Unit
+// [Typer] check: App(Var("rec"), targs=None, [Var("y"), Prim(Var("x"), Int(1), Add, kind=None)]) against Unit
 // [Typer] infer: Var("y")
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -369,7 +369,6 @@
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
-// [Typer] check: Var("rec") against (Int, Int) -> Unit
 // [Typer] inst: TypeScheme(([], (Int, Int) -> Unit))
 // [Typer] inst result: (Int, Int) -> Unit
 // [Typer] unify: (Int, Int) -> Unit and (Int, Int) -> Unit
@@ -377,11 +376,10 @@
 // [Typer] unify: Int and Int
 // [Typer] unify: Unit and Unit
 // [Typer] check: Unit against Unit
-// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)}, Unit) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)}, Unit) against Unit
 // [Typer] typevars: []
-// [Typer] infer: Let(("_", Var(None)), App(Var("rec"), [Int(0), Int(0)]), Unit)
-// [Typer] infer: App(Var("rec"), [Int(0), Int(0)])
-// [Typer] infer: Var("rec")
+// [Typer] infer: Let(("_", Var(None)), App(Var("rec"), targs=None, [Int(0), Int(0)]), Unit)
+// [Typer] infer: App(Var("rec"), targs=None, [Int(0), Int(0)])
 // [Typer] inst: TypeScheme(([], (Int, Int) -> Unit))
 // [Typer] inst result: (Int, Int) -> Unit
 // [Typer] check: Int(0) against Int

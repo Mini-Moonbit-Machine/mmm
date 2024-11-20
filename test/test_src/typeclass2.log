@@ -1,0 +1,469 @@
+// [Main] function thunk_main(k) {
+// [Main]   function aux_1(x_3, k) {
+// [Main]     return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]       return $thunk(() => k(x))
+// [Main]     }
+// [Main]     , x_3))
+// [Main]   }
+// [Main]   const D_Print_4 = [aux_1];
+// [Main]   function aux_5(x_7, k) {
+// [Main]     return $thunk(() => $external(minimbt_print_string, function (x) {
+// [Main]       return $thunk(() => k(x))
+// [Main]     }
+// [Main]     , x_7))
+// [Main]   }
+// [Main]   const D_Print_8 = [aux_5];
+// [Main]   function aux_9(x_11, k) {
+// [Main]     return $thunk(() => $external(minimbt_truncate, function (_12) {
+// [Main]       return $thunk(() => $external(minimbt_print_int, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       , _12))
+// [Main]     }
+// [Main]     , x_11))
+// [Main]   }
+// [Main]   const D_Print_13 = [aux_9];
+// [Main]   function aux_14(x_16, y_18, k) {
+// [Main]     return $thunk(() => k(x_16 + y_18))
+// [Main]   }
+// [Main]   function aux_19(x_21, y_23, k) {
+// [Main]     return $thunk(() => k(x_21 * y_23))
+// [Main]   }
+// [Main]   const D_Num_24 = [aux_14, aux_19];
+// [Main]   function aux_25(x_27, y_29, k) {
+// [Main]     return $thunk(() => k(x_27 + y_29))
+// [Main]   }
+// [Main]   function aux_30(x_32, y_34, k) {
+// [Main]     return $thunk(() => k(x_32 * y_34))
+// [Main]   }
+// [Main]   const D_Num_35 = [aux_25, aux_30];
+// [Main]   function fused_mul_add_37(dict_36, x_39, y_41, z_43, k) {
+// [Main]     const [_44, _45] = dict_36;
+// [Main]     const [_46, _47] = dict_36;
+// [Main]     return $thunk(() => _47(x_39, y_41, function (_48) {
+// [Main]       return $thunk(() => _44(_48, z_43, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   function println_50(dict_49, p_52, k) {
+// [Main]     const [_53] = dict_49;
+// [Main]     return $thunk(() => _53(p_52, function (_55) {
+// [Main]       const _56 = "\n";
+// [Main]       return $thunk(() => $external(minimbt_print_string, function (x) {
+// [Main]         return $thunk(() => k(x))
+// [Main]       }
+// [Main]       , _56))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   function main_57(k) {
+// [Main]     const _58 = 1;
+// [Main]     return $thunk(() => println_50(D_Print_4, _58, function (_60) {
+// [Main]       const _61 = "Hello Moonbit";
+// [Main]       return $thunk(() => println_50(D_Print_8, _61, function (_63) {
+// [Main]         const _64 = 1;
+// [Main]         return $thunk(() => println_50(D_Print_13, _64, function (_66) {
+// [Main]           const _67 = 1;
+// [Main]           const _68 = 2;
+// [Main]           const _69 = 3;
+// [Main]           return $thunk(() => fused_mul_add_37(D_Num_24, _67, _68, _69, function (_70) {
+// [Main]             return $thunk(() => println_50(D_Print_4, _70, function (_72) {
+// [Main]               const _73 = 1;
+// [Main]               const _74 = 2;
+// [Main]               const _75 = 3;
+// [Main]               return $thunk(() => fused_mul_add_37(D_Num_35, _73, _74, _75, function (_76) {
+// [Main]                 return $thunk(() => println_50(D_Print_13, _76, function (_78) {
+// [Main]                   return $thunk(() => k(null))
+// [Main]                 }
+// [Main]                 ))
+// [Main]               }
+// [Main]               ))
+// [Main]             }
+// [Main]             ))
+// [Main]           }
+// [Main]           ))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   return $thunk(() => main_57(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
+// [Main] }
+// [Main] 
+// [Main] function $thunk(lambda) {
+// [Main]   return { thunk: lambda };
+// [Main] }
+// [Main] function $is_thunk(x) {
+// [Main]   return x && x.hasOwnProperty('thunk') && x.thunk !== undefined;
+// [Main] }
+// [Main] function $force(x) {
+// [Main]   while ($is_thunk(x)) {
+// [Main]     x = x.thunk();
+// [Main]   }
+// [Main]   return x;
+// [Main] }
+// [Main] function $external(f, k, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $thunk(() => k(x));
+// [Main] }
+// [Main] function $trampoline(f, ...args) {
+// [Main]   let x = f(...args);
+// [Main]   return $force(x);
+// [Main] }
+// [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] resolve: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))))))))
+// [Typer] resolve: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux"))
+// [Typer] resolve: App(Var("print_int"), targs=None, [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux"))
+// [Typer] resolve: App(Var("print_string"), targs=None, [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("print_string")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux"))
+// [Typer] resolve: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])
+// [Typer] resolve: App(Var("truncate"), targs=None, [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("truncate")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))))
+// [Typer] resolve: LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux"))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Mul, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux"))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Mul, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))
+// [Typer] resolve: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])
+// [Typer] resolve: App(Var("mul"), targs=None, [Var("x"), Var("y")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("mul")
+// [Typer] resolve: Var("z")
+// [Typer] resolve: Var("add")
+// [Typer] resolve: LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))
+// [Typer] resolve: App(Var("print"), targs=None, [Var("p")])
+// [Typer] resolve: Var("p")
+// [Typer] resolve: Var("print")
+// [Typer] resolve: App(Var("print_string"), targs=None, [String("\n")])
+// [Typer] resolve: String("\n")
+// [Typer] resolve: Var("print_string")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))
+// [Typer] resolve: App(Var("println"), targs=None, [Int(1)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("println")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit))))
+// [Typer] resolve: App(Var("println"), targs=None, [String("Hello Moonbit")])
+// [Typer] resolve: String("Hello Moonbit")
+// [Typer] resolve: Var("println")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))
+// [Typer] resolve: App(Var("println"), targs=None, [Double(1)])
+// [Typer] resolve: Double(1)
+// [Typer] resolve: Var("println")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit))
+// [Typer] resolve: App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])])
+// [Typer] resolve: App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Var("fused_mul_add")
+// [Typer] resolve: Var("println")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)
+// [Typer] resolve: App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])])
+// [Typer] resolve: App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])
+// [Typer] resolve: Double(1)
+// [Typer] resolve: Double(2)
+// [Typer] resolve: Double(3)
+// [Typer] resolve: Var("fused_mul_add")
+// [Typer] resolve: Var("println")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] check: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))))))) against Unit
+// [Typer] check: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))))))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")) against (Int) -> Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), targs=None, [Var("x")])
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] check: Var("x") against Int
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Var("aux") against (Int) -> Unit
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] unify: (Int) -> Unit and (Int) -> Unit
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")) against (String) -> Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_string"), targs=None, [Var("x")])
+// [Typer] inst: TypeScheme(([], (String) -> Unit))
+// [Typer] inst result: (String) -> Unit
+// [Typer] check: Var("x") against String
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Var(None) and String
+// [Typer] union: Var(None) and String
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Var("aux") against (String) -> Unit
+// [Typer] inst: TypeScheme(([], (String) -> Unit))
+// [Typer] inst result: (String) -> Unit
+// [Typer] unify: (String) -> Unit and (String) -> Unit
+// [Typer] unify: String and String
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetInstance({ty: Double, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")))]}, LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])}, Var("aux")) against (Double) -> Unit
+// [Typer] typevars: []
+// [Typer] infer: App(Var("print_int"), targs=None, [App(Var("truncate"), targs=None, [Var("x")])])
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] check: App(Var("truncate"), targs=None, [Var("x")]) against Int
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] inst: TypeScheme(([], (Double) -> Int))
+// [Typer] inst result: (Double) -> Int
+// [Typer] unify: (Double) -> Int and (Var(None)) -> Int
+// [Typer] unify: Double and Var(None)
+// [Typer] union: Double and Var(None)
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Var("aux") against (Double) -> Unit
+// [Typer] inst: TypeScheme(([], (Double) -> Unit))
+// [Typer] inst result: (Double) -> Unit
+// [Typer] unify: (Double) -> Unit and (Double) -> Unit
+// [Typer] unify: Double and Double
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetClass({tyvar: "T", name: "Num", methods: [("add", (T, T) -> T), ("mul", (T, T) -> T)]}, LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))))) against Unit
+// [Typer] check: LetInstance({ty: Int, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux")) against (Int, Int) -> Int
+// [Typer] typevars: []
+// [Typer] infer: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Int and Var(None)
+// [Typer] union: Int and Var(None)
+// [Typer] unify: Int and Var(None)
+// [Typer] union: Int and Var(None)
+// [Typer] check: Var("aux") against (Int, Int) -> Int
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] unify: (Int, Int) -> Int and (Int, Int) -> Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Int), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")) against (Int, Int) -> Int
+// [Typer] typevars: []
+// [Typer] infer: Prim(Var("x"), Var("y"), Mul, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Int))
+// [Typer] inst result: Int
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Int and Var(None)
+// [Typer] union: Int and Var(None)
+// [Typer] unify: Int and Var(None)
+// [Typer] union: Int and Var(None)
+// [Typer] check: Var("aux") against (Int, Int) -> Int
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] unify: (Int, Int) -> Int and (Int, Int) -> Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] check: LetInstance({ty: Double, name: "Num", methods: [("add", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))), ("mul", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")))]}, LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux")) against (Double, Double) -> Double
+// [Typer] typevars: []
+// [Typer] infer: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Double))
+// [Typer] inst result: Double
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Double and Var(None)
+// [Typer] union: Double and Var(None)
+// [Typer] unify: Double and Var(None)
+// [Typer] union: Double and Var(None)
+// [Typer] check: Var("aux") against (Double, Double) -> Double
+// [Typer] inst: TypeScheme(([], (Double, Double) -> Double))
+// [Typer] inst result: (Double, Double) -> Double
+// [Typer] unify: (Double, Double) -> Double and (Double, Double) -> Double
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Double), ("y", Var(None))], body: Prim(Var("x"), Var("y"), Mul, kind=None)}, Var("aux")) against (Double, Double) -> Double
+// [Typer] typevars: []
+// [Typer] infer: Prim(Var("x"), Var("y"), Mul, kind=None)
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], Double))
+// [Typer] inst result: Double
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], Var(None)))
+// [Typer] inst result: Var(None)
+// [Typer] unify: Double and Var(None)
+// [Typer] union: Double and Var(None)
+// [Typer] unify: Double and Var(None)
+// [Typer] union: Double and Var(None)
+// [Typer] check: Var("aux") against (Double, Double) -> Double
+// [Typer] inst: TypeScheme(([], (Double, Double) -> Double))
+// [Typer] inst result: (Double, Double) -> Double
+// [Typer] unify: (Double, Double) -> Double and (Double, Double) -> Double
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] unify: Double and Double
+// [Typer] check: LetRec({tyvars: [("T", Some("Num"))], name: ("fused_mul_add", T), args: [("x", T), ("y", T), ("z", T)], body: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])}, LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit))) against Unit
+// [Typer] typevars: [("T", Some("Num"))]
+// [Typer] unify: Var(None) and T
+// [Typer] union: Var(None) and T
+// [Typer] infer: App(Var("add"), targs=None, [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z")])
+// [Typer] inst: TypeScheme(([], (T, T) -> T))
+// [Typer] inst result: (T, T) -> T
+// [Typer] infer: App(Var("mul"), targs=None, [Var("x"), Var("y")])
+// [Typer] inst: TypeScheme(([], (T, T) -> T))
+// [Typer] inst result: (T, T) -> T
+// [Typer] infer: Var("x")
+// [Typer] inst: TypeScheme(([], T))
+// [Typer] inst result: T
+// [Typer] unify: T and T
+// [Typer] infer: Var("y")
+// [Typer] inst: TypeScheme(([], T))
+// [Typer] inst result: T
+// [Typer] unify: T and T
+// [Typer] unify: T and T
+// [Typer] infer: Var("z")
+// [Typer] inst: TypeScheme(([], T))
+// [Typer] inst result: T
+// [Typer] unify: T and T
+// [Typer] unify: T and T
+// [Typer] check: LetRec({tyvars: [("P", Some("Print"))], name: ("println", Unit), args: [("p", P)], body: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit)) against Unit
+// [Typer] typevars: [("P", Some("Print"))]
+// [Typer] unify: Var(None) and P
+// [Typer] union: Var(None) and P
+// [Typer] check: Let(("_", Var(None)), App(Var("print"), targs=None, [Var("p")]), App(Var("print_string"), targs=None, [String("\n")])) against Unit
+// [Typer] infer: App(Var("print"), targs=None, [Var("p")])
+// [Typer] inst: TypeScheme(([], (P) -> Unit))
+// [Typer] inst result: (P) -> Unit
+// [Typer] infer: Var("p")
+// [Typer] inst: TypeScheme(([], P))
+// [Typer] inst result: P
+// [Typer] unify: P and P
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] check: App(Var("print_string"), targs=None, [String("\n")]) against Unit
+// [Typer] infer: String("\n")
+// [Typer] inst: TypeScheme(([], (String) -> Unit))
+// [Typer] inst result: (String) -> Unit
+// [Typer] unify: (String) -> Unit and (String) -> Unit
+// [Typer] unify: String and String
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var(None)), App(Var("println"), targs=None, [Int(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))))
+// [Typer] infer: App(Var("println"), targs=None, [Int(1)])
+// [Typer] inst: TypeScheme((["P"], (P) -> Unit))
+// [Typer] inst result: (Var(None)) -> Unit
+// [Typer] infer: Int(1)
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("println"), targs=None, [String("Hello Moonbit")]), Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit))))
+// [Typer] infer: App(Var("println"), targs=None, [String("Hello Moonbit")])
+// [Typer] inst: TypeScheme((["P"], (P) -> Unit))
+// [Typer] inst result: (Var(None)) -> Unit
+// [Typer] infer: String("Hello Moonbit")
+// [Typer] unify: Var(None) and String
+// [Typer] union: Var(None) and String
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("println"), targs=None, [Double(1)]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)))
+// [Typer] infer: App(Var("println"), targs=None, [Double(1)])
+// [Typer] inst: TypeScheme((["P"], (P) -> Unit))
+// [Typer] inst result: (Var(None)) -> Unit
+// [Typer] infer: Double(1)
+// [Typer] unify: Var(None) and Double
+// [Typer] union: Var(None) and Double
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])]), Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit))
+// [Typer] infer: App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])])
+// [Typer] inst: TypeScheme((["P"], (P) -> Unit))
+// [Typer] inst result: (Var(None)) -> Unit
+// [Typer] infer: App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)])
+// [Typer] inst: TypeScheme((["T"], (T, T, T) -> T))
+// [Typer] inst result: (Var(None), Var(None), Var(None)) -> Var(None)
+// [Typer] infer: Int(1)
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] check: Int(2) against Int
+// [Typer] check: Int(3) against Int
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])]), Unit)
+// [Typer] infer: App(Var("println"), targs=None, [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])])
+// [Typer] inst: TypeScheme((["P"], (P) -> Unit))
+// [Typer] inst result: (Var(None)) -> Unit
+// [Typer] infer: App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)])
+// [Typer] inst: TypeScheme((["T"], (T, T, T) -> T))
+// [Typer] inst result: (Var(None), Var(None), Var(None)) -> Var(None)
+// [Typer] infer: Double(1)
+// [Typer] unify: Var(None) and Double
+// [Typer] union: Var(None) and Double
+// [Typer] check: Double(2) against Double
+// [Typer] check: Double(3) against Double
+// [Typer] unify: Var(None) and Double
+// [Typer] union: Var(None) and Double
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
+// [Typer] check: Unit against Unit
+// [Parser] flags: ["extension"]

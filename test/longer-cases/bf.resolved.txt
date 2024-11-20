@@ -68,17 +68,17 @@ let rec bf: (len: Int, prog: Array[Int]) -> Unit {
                 Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None), ])
               } else {
                 if (Eq(Var("i"), Var("read"))) then {
-                  let _: Var(None) = Put Var("cells")[Get(Var("ptr"), Int(0))] = App(Var("read_ch_until_newline_or_eof"), [])
+                  let _: Var(None) = Put Var("cells")[Get(Var("ptr"), Int(0))] = App(Var("read_ch_until_newline_or_eof"), targs=None, [])
                   Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None), ])
                 } else {
                   if (Eq(Var("i"), Var("loop_start"))) then {
                     let _: Var(None) = Put Var("next_pc")[Int(0)] = Var("pc")
                     let rec lp: () -> Var(None) {
                       if (Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0))) then {
-                        let _: Var(None) = Put Var("next_pc")[Int(0)] = App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])
+                        let _: Var(None) = Put Var("next_pc")[Int(0)] = App(Var("skip"), targs=None, [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])
                         Unit
                       } else {
-                        let _: Var(None) = Put Var("next_pc")[Int(0)] = App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+                        let _: Var(None) = Put Var("next_pc")[Int(0)] = App(Var("aux"), targs=None, [Prim(Var("pc"), Int(1), Add, kind=None)])
                         Apply(Var("lp"), [])
                       }
                     }

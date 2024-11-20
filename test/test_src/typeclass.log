@@ -13,7 +13,35 @@
 // [Main]     , x_7))
 // [Main]   }
 // [Main]   const D_Print_8 = [aux_5];
-// [Main]   return $thunk(() => k(null))
+// [Main]   function print_generic_10(dict_9, p_12, _dummy_14, k) {
+// [Main]     const [_15] = dict_9;
+// [Main]     return $thunk(() => _15(p_12, function (x) {
+// [Main]       return $thunk(() => k(x))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   function main_16(k) {
+// [Main]     const _17 = 1;
+// [Main]     const _18 = 0.1;
+// [Main]     return $thunk(() => print_generic_10(D_Print_4, _17, _18, function (_20) {
+// [Main]       const _21 = "\n";
+// [Main]       const _22 = null;
+// [Main]       return $thunk(() => print_generic_10(D_Print_8, _21, _22, function (_24) {
+// [Main]         const _25 = "Hello Moonbit";
+// [Main]         const _26 = 2;
+// [Main]         return $thunk(() => print_generic_10(D_Print_8, _25, _26, function (_28) {
+// [Main]           return $thunk(() => k(null))
+// [Main]         }
+// [Main]         ))
+// [Main]       }
+// [Main]       ))
+// [Main]     }
+// [Main]     ))
+// [Main]   }
+// [Main]   return $thunk(() => main_16(function (x) {
+// [Main]     return $thunk(() => k(x))
+// [Main]   }
+// [Main]   ))
 // [Main] }
 // [Main] 
 // [Main] function $thunk(lambda) {
@@ -37,26 +65,46 @@
 // [Main]   return $force(x);
 // [Main] }
 // [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] resolve: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit)))
-// [Typer] resolve: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit))
-// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux"))
-// [Typer] resolve: App(Var("print_int"), [Var("x")])
+// [Typer] resolve: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit)))))
+// [Typer] resolve: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux"))
+// [Typer] resolve: App(Var("print_int"), targs=None, [Var("x")])
 // [Typer] resolve: Var("x")
 // [Typer] resolve: Var("print_int")
 // [Typer] resolve: Var("aux")
-// [Typer] resolve: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit)
-// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux"))
-// [Typer] resolve: App(Var("print_string"), [Var("x")])
+// [Typer] resolve: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit)))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux"))
+// [Typer] resolve: App(Var("print_string"), targs=None, [Var("x")])
 // [Typer] resolve: Var("x")
 // [Typer] resolve: Var("print_string")
 // [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit))
+// [Typer] resolve: App(Var("print"), targs=None, [Var("p")])
+// [Typer] resolve: Var("p")
+// [Typer] resolve: Var("print")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))
+// [Typer] resolve: App(Var("print_generic"), targs=None, [Int(1), Double(0.1)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Double(0.1)
+// [Typer] resolve: Var("print_generic")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit))
+// [Typer] resolve: App(Var("print_generic"), targs=None, [String("\n"), Unit])
+// [Typer] resolve: String("\n")
 // [Typer] resolve: Unit
-// [Typer] check: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit))) against Unit
-// [Typer] check: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit)) against Unit
-// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), [Var("x")])}, Var("aux")) against (Int) -> Unit
+// [Typer] resolve: Var("print_generic")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)
+// [Typer] resolve: App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)])
+// [Typer] resolve: String("Hello Moonbit")
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Var("print_generic")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] check: LetClass({tyvar: "T", name: "Print", methods: [("print", (T) -> Unit)]}, LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit))))) against Unit
+// [Typer] check: LetInstance({ty: Int, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")))]}, LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit)))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_int"), targs=None, [Var("x")])}, Var("aux")) against (Int) -> Unit
 // [Typer] typevars: []
-// [Typer] infer: App(Var("print_int"), [Var("x")])
-// [Typer] infer: Var("print_int")
+// [Typer] infer: App(Var("print_int"), targs=None, [Var("x")])
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("x") against Int
@@ -72,11 +120,10 @@
 // [Typer] unify: (Int) -> Unit and (Int) -> Unit
 // [Typer] unify: Int and Int
 // [Typer] unify: Unit and Unit
-// [Typer] check: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")))]}, Unit) against Unit
-// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), [Var("x")])}, Var("aux")) against (String) -> Unit
+// [Typer] check: LetInstance({ty: String, name: "Print", methods: [("print", LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")))]}, LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit))) against Unit
+// [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("x", Var(None))], body: App(Var("print_string"), targs=None, [Var("x")])}, Var("aux")) against (String) -> Unit
 // [Typer] typevars: []
-// [Typer] infer: App(Var("print_string"), [Var("x")])
-// [Typer] infer: Var("print_string")
+// [Typer] infer: App(Var("print_string"), targs=None, [Var("x")])
 // [Typer] inst: TypeScheme(([], (String) -> Unit))
 // [Typer] inst result: (String) -> Unit
 // [Typer] check: Var("x") against String
@@ -92,5 +139,59 @@
 // [Typer] unify: (String) -> Unit and (String) -> Unit
 // [Typer] unify: String and String
 // [Typer] unify: Unit and Unit
+// [Typer] check: LetRec({tyvars: [("P", Some("Print")), ("X", None)], name: ("print_generic", Unit), args: [("p", P), ("_dummy", X)], body: App(Var("print"), targs=None, [Var("p")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit)) against Unit
+// [Typer] typevars: [("P", Some("Print")), ("X", None)]
+// [Typer] unify: Var(None) and P
+// [Typer] union: Var(None) and P
+// [Typer] check: App(Var("print"), targs=None, [Var("p")]) against Unit
+// [Typer] infer: Var("p")
+// [Typer] inst: TypeScheme(([], P))
+// [Typer] inst result: P
+// [Typer] inst: TypeScheme(([], (P) -> Unit))
+// [Typer] inst result: (P) -> Unit
+// [Typer] unify: (P) -> Unit and (P) -> Unit
+// [Typer] unify: P and P
+// [Typer] unify: Unit and Unit
+// [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))}, Unit) against Unit
+// [Typer] typevars: []
+// [Typer] infer: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [Int(1), Double(0.1)]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)))
+// [Typer] infer: App(Var("print_generic"), targs=None, [Int(1), Double(0.1)])
+// [Typer] inst: TypeScheme((["P", "X"], (P, X) -> Unit))
+// [Typer] inst result: (Var(None), Var(None)) -> Unit
+// [Typer] infer: Int(1)
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] infer: Double(0.1)
+// [Typer] unify: Var(None) and Double
+// [Typer] union: Var(None) and Double
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("\n"), Unit]), Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit))
+// [Typer] infer: App(Var("print_generic"), targs=None, [String("\n"), Unit])
+// [Typer] inst: TypeScheme((["P", "X"], (P, X) -> Unit))
+// [Typer] inst result: (Var(None), Var(None)) -> Unit
+// [Typer] infer: String("\n")
+// [Typer] unify: Var(None) and String
+// [Typer] union: Var(None) and String
+// [Typer] infer: Unit
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Let(("_", Var(None)), App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)]), Unit)
+// [Typer] infer: App(Var("print_generic"), targs=None, [String("Hello Moonbit"), Int(2)])
+// [Typer] inst: TypeScheme((["P", "X"], (P, X) -> Unit))
+// [Typer] inst result: (Var(None), Var(None)) -> Unit
+// [Typer] infer: String("Hello Moonbit")
+// [Typer] unify: Var(None) and String
+// [Typer] union: Var(None) and String
+// [Typer] infer: Int(2)
+// [Typer] unify: Var(None) and Int
+// [Typer] union: Var(None) and Int
+// [Typer] unify: Var(None) and Unit
+// [Typer] union: Var(None) and Unit
+// [Typer] infer: Unit
+// [Typer] unify: Unit and Var(None)
+// [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit
 // [Parser] flags: ["extension"]

@@ -314,9 +314,6 @@ fn Lexer::ident(self : Lexer, loc : Loc) -> Token {
     self.index += 1
   }
   let tok = self.make_token(TokenTag::Identifer, loc)
-  if tok.span.starts_with("_") && tok.span != "_" {
-    return self.make_error(loc, "invalid identifier")
-  }
   Lexer::is_keyword(tok.span).map_or(
     tok,
     fn(kw) { Token::new(TokenTag::Kw(kw), loc, tok.span) },

@@ -1,0 +1,59 @@
+let rec aux.1: Unit = (x.3: Int) {
+  ExtApply(minimbt_print_int, [x.3, ])
+}
+let D$Print.4: ((Int) -> Unit) = Tuple([aux.1, ])
+let rec aux.5: Unit = (x.7: String) {
+  ExtApply(minimbt_print_string, [x.7, ])
+}
+let D$Print.8: ((String) -> Unit) = Tuple([aux.5, ])
+let rec aux.9: Unit = (x.11: Double) {
+  let _12: Int = ExtApply(minimbt_truncate, [x.11, ])
+  ExtApply(minimbt_print_int, [_12, ])
+}
+let D$Print.13: ((Double) -> Unit) = Tuple([aux.9, ])
+let rec aux.14: Int = (x.16: Int, y.18: Int) {
+  Add(x.16, y.18)
+}
+let rec aux.19: Int = (x.21: Int, y.23: Int) {
+  Mul(x.21, y.23)
+}
+let D$Num.24: ((Int, Int) -> Int, (Int, Int) -> Int) = Tuple([aux.14, aux.19, ])
+let rec aux.25: Double = (x.27: Double, y.29: Double) {
+  FAdd(x.27, y.29)
+}
+let rec aux.30: Double = (x.32: Double, y.34: Double) {
+  FMul(x.32, y.34)
+}
+let D$Num.35: ((Double, Double) -> Double, (Double, Double) -> Double) = Tuple([aux.25, aux.30, ])
+let rec fused_mul_add.37: T = (dict.36: ((T, T) -> T, (T, T) -> T), x.39: T, y.41: T, z.43: T) {
+  let (_44: (T, T) -> T, _45: (T, T) -> T) = dict.36
+  let (_46: (T, T) -> T, _47: (T, T) -> T) = dict.36
+  let _48: T = Apply(_47, [x.39, y.41, ])
+  Apply(_44, [_48, z.43, ])
+}
+let rec println.50: Unit = (dict.49: ((T) -> Unit), p.52: P) {
+  let (_53: (T) -> Unit) = dict.49
+  let _55: Unit = Apply(_53, [p.52, ])
+  let _56: String = String("\n")
+  ExtApply(minimbt_print_string, [_56, ])
+}
+let rec main.57: Unit = () {
+  let _58: Int = Int(1)
+  let _60: Unit = Apply(println.50, [D$Print.4, _58, ])
+  let _61: String = String("Hello Moonbit")
+  let _63: Unit = Apply(println.50, [D$Print.8, _61, ])
+  let _64: Double = Double(1)
+  let _66: Unit = Apply(println.50, [D$Print.13, _64, ])
+  let _67: Int = Int(1)
+  let _68: Int = Int(2)
+  let _69: Int = Int(3)
+  let _70: T = Apply(fused_mul_add.37, [D$Num.24, _67, _68, _69, ])
+  let _72: Unit = Apply(println.50, [D$Print.4, _70, ])
+  let _73: Double = Double(1)
+  let _74: Double = Double(2)
+  let _75: Double = Double(3)
+  let _76: T = Apply(fused_mul_add.37, [D$Num.35, _73, _74, _75, ])
+  let _78: Unit = Apply(println.50, [D$Print.13, _76, ])
+  Unit
+}
+Apply(main.57, [])

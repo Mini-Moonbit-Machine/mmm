@@ -30,7 +30,7 @@ let rec main: () -> Unit {
   ])
   let m: Int = Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [
     CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]) =>
-      Int(1)
+      Prim(Var("a"), Var("b"), Add, kind=Some(Int)) + Var("c")
     CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]) =>
       Int(2)
     CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]) =>
@@ -42,10 +42,10 @@ let rec main: () -> Unit {
     CtorApp("C", []) =>
       Int(6)
   ])
-  let _: Unit = Apply(Var("print_int"), [Var("i"), ])
-  let _: Unit = Apply(Var("print_int"), [Var("j"), ])
-  let _: Unit = Apply(Var("print_int"), [Var("k"), ])
-  let _: Unit = Apply(Var("print_int"), [Var("m"), ])
+  let _: Unit = Apply[](Var("print_int"), [Var("i"), ])
+  let _: Unit = Apply[](Var("print_int"), [Var("j"), ])
+  let _: Unit = Apply[](Var("print_int"), [Var("k"), ])
+  let _: Unit = Apply[](Var("print_int"), [Var("m"), ])
   Unit
 }
 Unit

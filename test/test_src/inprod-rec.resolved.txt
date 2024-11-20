@@ -1,6 +1,6 @@
 let rec inprod: (v1: Array[Double], v2: Array[Double], i: Int) -> Double {
   if (LE(Int(0), Var("i"))) then {
-    Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None) + App(Var("inprod"), [Var("v1"), Var("v2"), Prim(Var("i"), Int(1), Sub, kind=None)])
+    Prim(Get(Var("v1"), Var("i")), Get(Var("v2"), Var("i")), Mul, kind=None) + App(Var("inprod"), targs=None, [Var("v1"), Var("v2"), Prim(Var("i"), Int(1), Sub, kind=None)])
   } else {
     Double(0)
   }
@@ -8,6 +8,6 @@ let rec inprod: (v1: Array[Double], v2: Array[Double], i: Int) -> Double {
 let rec main: () -> Var(None) {
   let v1: Var(None) = Array::make(Int(3), Double(1.23))
   let v2: Var(None) = Array::make(Int(3), Double(4.56))
-  Apply(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Var("v1"), Var("v2"), Int(2)]), Mul, kind=None)]), ])
+  Apply(Var("print_int"), [App(Var("truncate"), targs=None, [Prim(Double(1000000), App(Var("inprod"), targs=None, [Var("v1"), Var("v2"), Int(2)]), Mul, kind=None)]), ])
 }
 Unit

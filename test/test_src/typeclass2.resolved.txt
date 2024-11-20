@@ -1,0 +1,61 @@
+class Print [T] {
+  print: (T) -> Unit
+}
+instance Print [Int] {
+  print = let rec aux: (x: Var(None)) -> Var(None) {
+      Apply(Var("print_int"), [Var("x"), ])
+    }
+    Var(aux)
+}
+instance Print [String] {
+  print = let rec aux: (x: Var(None)) -> Var(None) {
+      Apply(Var("print_string"), [Var("x"), ])
+    }
+    Var(aux)
+}
+instance Print [Double] {
+  print = let rec aux: (x: Var(None)) -> Var(None) {
+      Apply(Var("print_int"), [App(Var("truncate"), targs=None, [Var("x")]), ])
+    }
+    Var(aux)
+}
+class Num [T] {
+  add: (T, T) -> T
+  mul: (T, T) -> T
+}
+instance Num [Int] {
+  add = let rec aux: (x: Int, y: Var(None)) -> Var(None) {
+      Var("x") + Var("y")
+    }
+    Var(aux)
+  mul = let rec aux: (x: Int, y: Var(None)) -> Var(None) {
+      Var("x") * Var("y")
+    }
+    Var(aux)
+}
+instance Num [Double] {
+  add = let rec aux: (x: Double, y: Var(None)) -> Var(None) {
+      Var("x") + Var("y")
+    }
+    Var(aux)
+  mul = let rec aux: (x: Double, y: Var(None)) -> Var(None) {
+      Var("x") * Var("y")
+    }
+    Var(aux)
+}
+let rec fused_mul_add: forall [("T", Some("Num"))] . (x: T, y: T, z: T) -> T {
+  Apply(Var("add"), [App(Var("mul"), targs=None, [Var("x"), Var("y")]), Var("z"), ])
+}
+let rec println: forall [("P", Some("Print"))] . (p: P) -> Unit {
+  let _: Var(None) = Apply(Var("print"), [Var("p"), ])
+  Apply(Var("print_string"), [String("\n"), ])
+}
+let rec main: () -> Var(None) {
+  let _: Var(None) = Apply(Var("println"), [Int(1), ])
+  let _: Var(None) = Apply(Var("println"), [String("Hello Moonbit"), ])
+  let _: Var(None) = Apply(Var("println"), [Double(1), ])
+  let _: Var(None) = Apply(Var("println"), [App(Var("fused_mul_add"), targs=None, [Int(1), Int(2), Int(3)]), ])
+  let _: Var(None) = Apply(Var("println"), [App(Var("fused_mul_add"), targs=None, [Double(1), Double(2), Double(3)]), ])
+  Unit
+}
+Unit

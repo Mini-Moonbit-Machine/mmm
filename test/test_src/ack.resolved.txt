@@ -5,11 +5,11 @@ let rec ack: (x: Int, y: Int) -> Int {
     if (LE(Var("y"), Int(0))) then {
       Apply(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), Int(1), ])
     } else {
-      Apply(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), App(Var("ack"), [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)]), ])
+      Apply(Var("ack"), [Prim(Var("x"), Int(1), Sub, kind=None), App(Var("ack"), targs=None, [Var("x"), Prim(Var("y"), Int(1), Sub, kind=None)]), ])
     }
   }
 }
 let rec main: () -> Var(None) {
-  Apply(Var("print_int"), [App(Var("ack"), [Int(3), Int(8)]), ])
+  Apply(Var("print_int"), [App(Var("ack"), targs=None, [Int(3), Int(8)]), ])
 }
 Unit

@@ -1,11 +1,11 @@
 let rec make_adder: (x: Double) -> (Int) -> Double {
   let rec adder: (y: Int) -> Double {
-    Var("x") + App(Var("float_of_int"), [Var("y")])
+    Var("x") + App(Var("float_of_int"), targs=Some([]), [Var("y")])
   }
   Var(adder)
 }
 let rec main: () -> Unit {
-  let add: (Int) -> Double = Apply(Var("make_adder"), [Double(2.14), ])
-  Apply(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])]), ])
+  let add: (Int) -> Double = Apply[](Var("make_adder"), [Double(2.14), ])
+  Apply[](Var("print_int"), [App(Var("int_of_float"), targs=Some([]), [App(Var("add"), targs=Some([]), [Int(1)])]), ])
 }
 Unit

@@ -11,9 +11,9 @@ let rec getz: (v: (Double, Double, Double)) -> Double {
   Var(z)
 }
 let rec inprod: (v1: (Double, Double, Double), v2: (Double, Double, Double)) -> Double {
-  Prim(Prim(App(Var("getx"), [Var("v1")]), App(Var("getx"), [Var("v2")]), Mul, kind=Some(Double)), Prim(App(Var("gety"), [Var("v1")]), App(Var("gety"), [Var("v2")]), Mul, kind=Some(Double)), Add, kind=Some(Double)) + Prim(App(Var("getz"), [Var("v1")]), App(Var("getz"), [Var("v2")]), Mul, kind=Some(Double))
+  Prim(Prim(App(Var("getx"), targs=Some([]), [Var("v1")]), App(Var("getx"), targs=Some([]), [Var("v2")]), Mul, kind=Some(Double)), Prim(App(Var("gety"), targs=Some([]), [Var("v1")]), App(Var("gety"), targs=Some([]), [Var("v2")]), Mul, kind=Some(Double)), Add, kind=Some(Double)) + Prim(App(Var("getz"), targs=Some([]), [Var("v1")]), App(Var("getz"), targs=Some([]), [Var("v2")]), Mul, kind=Some(Double))
 }
 let rec main: () -> Unit {
-  Apply(Var("print_int"), [App(Var("truncate"), [Prim(Double(1000000), App(Var("inprod"), [Tuple([Double(1), Double(2), Double(3)]), Tuple([Double(4), Double(5), Double(6)])]), Mul, kind=Some(Double))]), ])
+  Apply[](Var("print_int"), [App(Var("truncate"), targs=Some([]), [Prim(Double(1000000), App(Var("inprod"), targs=Some([]), [Tuple([Double(1), Double(2), Double(3)]), Tuple([Double(4), Double(5), Double(6)])]), Mul, kind=Some(Double))]), ])
 }
 Unit

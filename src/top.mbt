@@ -9,7 +9,7 @@ pub enum Syntax {
   Not(Syntax) // not(_)
   Array(Syntax, Syntax) // Array::make(_, _)
   Neg(Syntax, mut ~kind : Kind?) // -_
-  App(Syntax, Array[Syntax]) // _(_, _, _) or _()
+  App(Syntax, mut ~targs : Array[(String, Type)]?, Array[Syntax]) // _(_, _, _) or _()
   Get(Syntax, Syntax) // _[_]
   If(Syntax, Syntax, Syntax) // if _ { _ } else { _ }
   Prim(Syntax, Syntax, Op, mut ~kind : Kind?) // _+ - * / _
@@ -56,7 +56,7 @@ pub enum Op {
 } derive(Show, Eq)
 
 pub struct Fundef {
-  tyvars : Array[String]
+  tyvars : Array[(String, String?)]
   name : (String, Type)
   args : Array[(String, Type)]
   body : Syntax
@@ -262,6 +262,7 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Unit, Unit) => true
     (Bool, Bool) => true
     (Int, Int) => true
+    (String, String) => true
     (Double, Double) => true
     (Fun(xs, x), Fun(ys, y)) => xs == ys && x == y
     (Tuple(xs), Tuple(ys)) => xs == ys
@@ -490,8 +491,20 @@ fn PrettySyntax::print_one_level(
       logger.write_string("\n}\n")
       self.print_one_level(logger, e)
     }
-    App(name, args) => {
-      logger.write_string("Apply(\{name}, [")
+    App(name, ~targs, args) => {
+      logger.write_string("Apply")
+      match targs {
+        Some(targs) => {
+          logger.write_string("[")
+          for t in targs {
+            logger.write_string(t.to_string())
+            logger.write_string(",")
+          }
+          logger.write_string("]")
+        }
+        None => ()
+      }
+      logger.write_string("(\{name}, [")
       for arg in args {
         logger.write_string(arg.to_string())
         logger.write_string(", ")

@@ -160,7 +160,8 @@ pub fn to_json(self : Syntax) -> Json {
       ["Let", [x |> Json::String, t.to_json()], e1.to_json(), e2.to_json()]
     Var(id) => ["Var", id |> Json::String]
     LetRec(funcdef, e) => ["LetRec", funcdef.to_json(), e.to_json()]
-    App(e, es) => ["App", e.to_json(), es.map(Syntax::to_json) |> Json::Array]
+    App(e, targs=_, es) =>
+      ["App", e.to_json(), es.map(Syntax::to_json) |> Json::Array]
     Tuple(es) => ["Tuple", es.map(Syntax::to_json) |> Json::Array]
     LetTuple(def, value, body) =>
       [
@@ -308,7 +309,7 @@ pub fn Syntax::from_json(json : Json) -> Syntax! {
         array
       }
 
-      App(e |> Syntax::from_json!(), from_json!(es))
+      App(e |> Syntax::from_json!(), targs=None, from_json!(es))
     }
     ["Tuple", [.. as es]] => {
       fn from_json(values : ArrayView[Json]) -> Array[Syntax]! {
@@ -368,13 +369,15 @@ pub fn Syntax::from_json(json : Json) -> Syntax! {
 
 test {
   inspect!(
-    Syntax::App(Syntax::Var("f"), []).to_json().stringify(),
+    Syntax::App(Syntax::Var("f"), targs=None, []).to_json().stringify(),
     content=
       #|["App",["Var","f"],[]]
     ,
   )
   inspect!(
-    Syntax::App(Syntax::Var("f"), [Syntax::Int(1)]).to_json().stringify(),
+    Syntax::App(Syntax::Var("f"), targs=None, [Syntax::Int(1)])
+    .to_json()
+    .stringify(),
     content=
       #|["App",["Var","f"],[["Int",1]]]
     ,

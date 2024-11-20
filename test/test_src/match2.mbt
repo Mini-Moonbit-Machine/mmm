@@ -28,7 +28,7 @@ fn main {
     A(B(a, b), B(c, d)) => 1;
     A(C, B(a, b)) => 2;
     A(B(1, 3), C) => 3;
-    A(B(1, 2), C) => 4; // here
+    A(B(a, b), C) => a + b; // here
     B(_, _) => 5;
     C => 6;
   };

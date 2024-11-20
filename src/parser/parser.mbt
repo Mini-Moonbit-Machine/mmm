@@ -568,7 +568,7 @@ pub fn Parser::parse_expr_with_level(
             if self.peek_token!().inner.tag == PairedClose(Parenthesis) {
               self.skip_token()
               ntokens += 1
-              lhs = Syntax::App(lhs, [])
+              lhs = Syntax::App(lhs, targs=None, [])
             } else {
               let expr = self.parse_expr!()
               ntokens += expr.ntokens
@@ -589,7 +589,7 @@ pub fn Parser::parse_expr_with_level(
                 (Syntax::CtorApp(f, []), es) => lhs = Syntax::CtorApp(f, es)
                 (Syntax::CtorApp(_, _), _) =>
                   fail!("CtorApp has zero arguments before check apply style")
-                _ => lhs = Syntax::App(lhs, exprs)
+                _ => lhs = Syntax::App(lhs, targs=None, exprs)
               }
             }
           _ => fail!("unexpected token when parsing expr")
@@ -617,7 +617,11 @@ pub fn Parser::parse_expr_with_level(
           _ =>
             match self.op.get(op_str) {
               Some({ func, .. }) =>
-                lhs = Syntax::App(Syntax::Var(func), [lhs, rhs.inner])
+                lhs = Syntax::App(
+                  Syntax::Var(func),
+                  targs=None,
+                  [lhs, rhs.inner],
+                )
               None => fail!("unexpected operator in infix expression")
             }
         }
@@ -1021,13 +1025,31 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
         ntokens += 1
         let type_var = self.expect_ident!()
         ntokens += 1
-        tyvars.push(type_var.inner.span)
+        let cstr = if self.peek_operator(":") {
+          self.skip_token()
+          ntokens += 1
+          let cstr = self.expect_ident!()
+          ntokens += cstr.ntokens
+          Some(cstr.inner.span)
+        } else {
+          None
+        }
+        tyvars.push((type_var.inner.span, cstr))
         while self.peek_operator(",") {
           self.skip_token()
           ntokens += 1
           let type_var = self.expect_ident!()
           ntokens += 1
-          tyvars.push(type_var.inner.span)
+          let cstr = if self.peek_operator(":") {
+            self.skip_token()
+            ntokens += 1
+            let cstr = self.expect_ident!()
+            ntokens += cstr.ntokens
+            Some(cstr.inner.span)
+          } else {
+            None
+          }
+          tyvars.push((type_var.inner.span, cstr))
         }
         let _ = self.expect_paired_close!(Bracket)
         ntokens += 1

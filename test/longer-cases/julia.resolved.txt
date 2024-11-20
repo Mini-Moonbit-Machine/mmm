@@ -36,10 +36,10 @@ let rec main_loop: (w: Int, h: Int, x: Int, y: Int, ret: Array[Int]) -> Unit {
     if (Eq(Var("x"), Var("w"))) then {
       Apply(Var("main_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=None), Var("ret"), ])
     } else {
-      let cr: Var(None) = Neg(Prim(Prim(Prim(Double(3), App(Var("float_of_int"), [Var("x")]), Mul, kind=None), App(Var("float_of_int"), [Var("w")]), Div, kind=None), Double(1.5), Sub, kind=None))
-      let ci: Var(None) = Prim(Prim(Double(3), App(Var("float_of_int"), [Var("y")]), Mul, kind=None), App(Var("float_of_int"), [Var("h")]), Div, kind=None) - Double(1.5)
+      let cr: Var(None) = Neg(Prim(Prim(Prim(Double(3), App(Var("float_of_int"), targs=None, [Var("x")]), Mul, kind=None), App(Var("float_of_int"), targs=None, [Var("w")]), Div, kind=None), Double(1.5), Sub, kind=None))
+      let ci: Var(None) = Prim(Prim(Double(3), App(Var("float_of_int"), targs=None, [Var("y")]), Mul, kind=None), App(Var("float_of_int"), targs=None, [Var("h")]), Div, kind=None) - Double(1.5)
       let res: Var(None) = Apply(Var("calc_pixel"), [Var("cr"), Var("ci"), Int(0), ])
-      let _: Var(None) = Put Var("ret")[Prim(Prim(Var("y"), Var("w"), Mul, kind=None), Var("x"), Add, kind=None)] = App(Var("clamp"), [Var("res")])
+      let _: Var(None) = Put Var("ret")[Prim(Prim(Var("y"), Var("w"), Mul, kind=None), Var("x"), Add, kind=None)] = App(Var("clamp"), targs=None, [Var("res")])
       Apply(Var("main_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=None), Var("y"), Var("ret"), ])
     }
   }
