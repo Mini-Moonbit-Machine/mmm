@@ -178,6 +178,41 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("compose", (Int) -> Int), args: [("f", (Int) -> Int), ("g", (Int) -> Int)], body: LetRec({tyvars: [], name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed"))}, LetRec({tyvars: [], name: ("dbl", Int), args: [("x", Int)], body: Prim(Var("x"), Var("x"), Add, kind=None)}, LetRec({tyvars: [], name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=None)}, LetRec({tyvars: [], name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=None)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit)))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed"))
+// [Typer] resolve: App(Var("g"), [App(Var("f"), [Var("x")])])
+// [Typer] resolve: App(Var("f"), [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Var("g")
+// [Typer] resolve: Var("composed")
+// [Typer] resolve: LetRec({tyvars: [], name: ("dbl", Int), args: [("x", Int)], body: Prim(Var("x"), Var("x"), Add, kind=None)}, LetRec({tyvars: [], name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=None)}, LetRec({tyvars: [], name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=None)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit))))
+// [Typer] resolve: Prim(Var("x"), Var("x"), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("x")
+// [Typer] resolve: LetRec({tyvars: [], name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=None)}, LetRec({tyvars: [], name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=None)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit)))
+// [Typer] resolve: Prim(Var("x"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: LetRec({tyvars: [], name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=None)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit))
+// [Typer] resolve: Prim(Var("x"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit)
+// [Typer] resolve: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))
+// [Typer] resolve: App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])])
+// [Typer] resolve: Var("inc")
+// [Typer] resolve: App(Var("compose"), [Var("dbl"), Var("dec")])
+// [Typer] resolve: Var("dbl")
+// [Typer] resolve: Var("dec")
+// [Typer] resolve: Var("compose")
+// [Typer] resolve: Var("compose")
+// [Typer] resolve: App(Var("print_int"), [App(Var("h"), [Int(123)])])
+// [Typer] resolve: App(Var("h"), [Int(123)])
+// [Typer] resolve: Int(123)
+// [Typer] resolve: Var("h")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("compose", (Int) -> Int), args: [("f", (Int) -> Int), ("g", (Int) -> Int)], body: LetRec({tyvars: [], name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed"))}, LetRec({tyvars: [], name: ("dbl", Int), args: [("x", Int)], body: Prim(Var("x"), Var("x"), Add, kind=None)}, LetRec({tyvars: [], name: ("inc", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Add, kind=None)}, LetRec({tyvars: [], name: ("dec", Int), args: [("x", Int)], body: Prim(Var("x"), Int(1), Sub, kind=None)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("h", Var(None)), App(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")])]), App(Var("print_int"), [App(Var("h"), [Int(123)])]))}, Unit))))) against Unit
 // [Typer] typevars: []
 // [Typer] check: LetRec({tyvars: [], name: ("composed", Int), args: [("x", Int)], body: App(Var("g"), [App(Var("f"), [Var("x")])])}, Var("composed")) against (Int) -> Int
@@ -272,7 +307,7 @@
 // [Typer] check: App(Var("h"), [Int(123)]) against Int
 // [Typer] infer: Int(123)
 // [Typer] check: Var("h") against (Int) -> Int
-// [Typer] inst: TypeScheme(([], Var((Int) -> Int)))
+// [Typer] inst: TypeScheme(([], (Int) -> Int))
 // [Typer] inst result: (Int) -> Int
 // [Typer] unify: (Int) -> Int and (Int) -> Int
 // [Typer] unify: Int and Int

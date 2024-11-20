@@ -1,0 +1,104 @@
+let rec map: (stream: (Unit) -> (Int, Int), f: (Int) -> Int) -> (Unit) -> (Int, Int) {
+  let rec aux: (u: Var(None)) -> (Int, Int) {
+    let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+    if (Eq(Var("ok"), Int(0))) then {
+      Tuple([Int(0), Int(0), ])
+    } else {
+      Tuple([Int(1), App(Var("f"), [Var("val")]), ])
+    }
+  }
+  Var(aux)
+}
+let rec filter: (stream: (Unit) -> (Int, Int), f: (Int) -> Int) -> (Unit) -> (Int, Int) {
+  let rec aux: (u: Var(None)) -> (Int, Int) {
+    let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+    if (Eq(Var("ok"), Int(0))) then {
+      Tuple([Int(0), Int(0), ])
+    } else {
+      let r: Var(None) = Apply(Var("f"), [Var("val"), ])
+      if (Eq(Var("r"), Int(0))) then {
+        Tuple([Int(1), Var("val"), ])
+      } else {
+        Apply(Var("aux"), [Unit, ])
+      }
+    }
+  }
+  Var(aux)
+}
+let rec concat: (stream1: (Unit) -> (Int, Int), stream2: (Unit) -> (Int, Int)) -> (Unit) -> (Int, Int) {
+  let rec aux: (u: Var(None)) -> (Int, Int) {
+    let (ok: Var(None), val: Var(None)) = App(Var("stream1"), [Unit])
+    if (Eq(Var("ok"), Int(0))) then {
+      Apply(Var("stream2"), [Unit, ])
+    } else {
+      Tuple([Int(1), Var("val"), ])
+    }
+  }
+  Var(aux)
+}
+let rec range: (from: Int, to: Int) -> (Unit) -> (Int, Int) {
+  let state: Var(None) = Array::make(Int(1), Var("from"))
+  let rec aux: (u: Var(None)) -> (Int, Int) {
+    let val: Var(None) = Get Var("state")[Int(0)]
+    if (Eq(Var("val"), Var("to"))) then {
+      Tuple([Int(0), Int(0), ])
+    } else {
+      let _: Var(None) = Put Var("state")[Int(0)] = Prim(Var("val"), Int(1), Add, kind=None)
+      Tuple([Int(1), Var("val"), ])
+    }
+  }
+  Var(aux)
+}
+let rec addx: (x: Int) -> (Int) -> Int {
+  let rec aux: (y: Int) -> Int {
+    Var("x") + Var("y")
+  }
+  Var(aux)
+}
+let rec fold: (stream: (Unit) -> (Int, Int), f: (Int, Int) -> Int, acc: Int) -> Int {
+  let (ok: Var(None), val: Var(None)) = App(Var("stream"), [Unit])
+  if (Eq(Var("ok"), Int(0))) then {
+    Var(acc)
+  } else {
+    Apply(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")]), ])
+  }
+}
+let rec sum: (stream: (Unit) -> (Int, Int)) -> Int {
+  let rec add: (x: Int, y: Int) -> Int {
+    Var("x") + Var("y")
+  }
+  Apply(Var("fold"), [Var("stream"), Var("add"), Int(0), ])
+}
+let rec gt: (x: Int) -> (Int) -> Int {
+  let rec aux: (y: Int) -> Int {
+    if (LE(Var("x"), Var("y"))) then {
+      Int(0)
+    } else {
+      Int(1)
+    }
+  }
+  Var(aux)
+}
+let rec le: (x: Int) -> (Int) -> Int {
+  let rec aux: (y: Int) -> Int {
+    if (LE(Var("y"), Var("x"))) then {
+      Int(0)
+    } else {
+      Int(1)
+    }
+  }
+  Var(aux)
+}
+let rec main: () -> Var(None) {
+  let range100: Var(None) = Apply(Var("range"), [Int(0), Int(100), ])
+  let range1000: Var(None) = Apply(Var("range"), [Int(0), Int(1000), ])
+  let catt: Var(None) = Apply(Var("concat"), [Var("range100"), Var("range1000"), ])
+  let addone: Var(None) = Apply(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)]), ])
+  let over50: Var(None) = Apply(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)]), ])
+  let under1200: Var(None) = Apply(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)]), ])
+  let sum: Var(None) = Apply(Var("sum"), [Var("under1200"), ])
+  let _: Var(None) = Apply(Var("print_int"), [Var("sum"), ])
+  let _: Var(None) = Apply(Var("print_char"), [Int(10), ])
+  Unit
+}
+Unit

@@ -1,0 +1,65 @@
+let rec random: (state: Int) -> Int {
+  Prim(Var("state"), Int(75), Mul, kind=None) + Int(74)
+}
+let rec modulo: (x: Int, y: Int) -> Int {
+  let q: Var(None) = Var("x") / Var("y")
+  Var("x") - Prim(Var("q"), Var("y"), Mul, kind=None)
+}
+let rec fill_buffer: (arr: Array[Int], n: Int) -> Unit {
+  let rec aux: (i: Int, state: Int) -> Unit {
+    if (Eq(Var("i"), Var("n"))) then {
+      Unit
+    } else {
+      let new_state: Var(None) = Apply(Var("random"), [Var("state"), ])
+      let res: Var(None) = Apply(Var("modulo"), [Var("new_state"), Int(65537), ])
+      let _: Var(None) = Put Var("arr")[Var("i")] = Var("res")
+      Apply(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None), Var("res"), ])
+    }
+  }
+  Apply(Var("aux"), [Int(0), Int(12345), ])
+}
+let rec isort: (arr: Array[Int], n: Int) -> Unit {
+  let rec insert: (arr: Array[Int], i: Int) -> Unit {
+    if (Eq(Var("i"), Int(0))) then {
+      Unit
+    } else {
+      if (LE(Get(Var("arr"), Prim(Var("i"), Int(1), Sub, kind=None)), Get(Var("arr"), Var("i")))) then {
+        Unit
+      } else {
+        let tmp: Var(None) = Get Var("arr")[Var("i")]
+        let _: Var(None) = Put Var("arr")[Var("i")] = Get(Var("arr"), Prim(Var("i"), Int(1), Sub, kind=None))
+        let _: Var(None) = Put Var("arr")[Prim(Var("i"), Int(1), Sub, kind=None)] = Var("tmp")
+        Apply(Var("insert"), [Var("arr"), Prim(Var("i"), Int(1), Sub, kind=None), ])
+      }
+    }
+  }
+  let rec aux: (i: Int) -> Unit {
+    if (Eq(Var("i"), Var("n"))) then {
+      Unit
+    } else {
+      let _: Var(None) = Apply(Var("insert"), [Var("arr"), Var("i"), ])
+      Apply(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+    }
+  }
+  Apply(Var("aux"), [Int(1), ])
+}
+let rec print_array: (arr: Array[Int], n: Int) -> Unit {
+  let rec aux: (i: Int) -> Unit {
+    if (Eq(Var("i"), Var("n"))) then {
+      Unit
+    } else {
+      let _: Var(None) = Apply(Var("print_int"), [Get(Var("arr"), Var("i")), ])
+      let _: Var(None) = Apply(Var("print_char"), [Int(32), ])
+      Apply(Var("aux"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+    }
+  }
+  Apply(Var("aux"), [Int(0), ])
+}
+let rec main: () -> Var(None) {
+  let n: Var(None) = Int(100)
+  let arr: Var(None) = Array::make(Var("n"), Int(0))
+  let _: Var(None) = Apply(Var("fill_buffer"), [Var("arr"), Var("n"), ])
+  let _: Var(None) = Apply(Var("isort"), [Var("arr"), Var("n"), ])
+  Apply(Var("print_array"), [Var("arr"), Var("n"), ])
+}
+Unit

@@ -1,0 +1,34 @@
+enum IntOpt = Enum IntOpt { None(), Some(Int) }
+enum IntOptList = Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+let rec main: () -> Var(None) {
+  let p: Var(None) = CtorApp(Nil, [])
+  let q: Var(None) = CtorApp(Cons, [CtorApp("None", []), CtorApp("Nil", []), ])
+  let r: Var(None) = CtorApp(Cons, [CtorApp("Some", [Int(1)]), CtorApp("Nil", []), ])
+  let _: Var(None) = Match(Int(2), [
+    Int(1) =>
+      CtorApp(Nil, [])
+    Int(2) =>
+      Var(q)
+  ])
+  let t: Var(None) = Match(Var("r"), [
+    CtorApp("Nil", []) =>
+      Int(0)
+    CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]) =>
+      Int(1)
+    CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]) =>
+      Int(2)
+    Wildcard =>
+      Int(3)
+  ])
+  let w: Var(None) = Match(Var("r"), [
+    CtorApp("Nil", []) =>
+      Int(0)
+    CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]) =>
+      Var(v)
+    Wildcard =>
+      Int(3)
+  ])
+  let _: Var(None) = Apply(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None), ])
+  Unit
+}
+Unit

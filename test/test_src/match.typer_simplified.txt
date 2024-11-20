@@ -1,10 +1,10 @@
-enum IntOpt = Var(Enum IntOpt { None(), Some(Int) })
-enum IntOptList = Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+enum IntOpt = Enum IntOpt { None(), Some(Int) }
+enum IntOptList = Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 let rec main: () -> Unit {
-  let p: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) = CtorApp(Nil, [])
-  let q: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) = CtorApp(Cons, [CtorApp("None", []), CtorApp("Nil", []), ])
-  let r: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) = CtorApp(Cons, [CtorApp("Some", [Int(1)]), CtorApp("Nil", []), ])
-  let _: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) = Match(Int(2), [
+  let p: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) } = CtorApp(Nil, [])
+  let q: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) } = CtorApp(Cons, [CtorApp("None", []), CtorApp("Nil", []), ])
+  let r: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) } = CtorApp(Cons, [CtorApp("Some", [Int(1)]), CtorApp("Nil", []), ])
+  let _: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) } = Match(Int(2), [
     Int(1) =>
       CtorApp(Nil, [])
     Int(2) =>

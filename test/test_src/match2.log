@@ -616,9 +616,60 @@
 // [Main]   return $force(x);
 // [Main] }
 // [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] check: LetEnum("X", Var(Enum X { A(X, X), B(Int, Int), C() }), LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))}, Unit)) against Unit
-// [Typer] let enum before resolved: Var(Enum X { A(X, X), B(Int, Int), C() })
-// [Typer] let enum after resolved: Var(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }))
+// [Typer] resolve: LetEnum("X", Enum X { A(X, X), B(Int, Int), C() }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))}, Unit))
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))}, Unit)
+// [Typer] resolve: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))
+// [Typer] resolve: Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}])
+// [Typer] resolve: Tuple([Bool(true), Bool(false)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit)))))))
+// [Typer] resolve: Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}])
+// [Typer] resolve: Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))
+// [Typer] resolve: Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}])
+// [Typer] resolve: Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit)))))
+// [Typer] resolve: Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}])
+// [Typer] resolve: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])])
+// [Typer] resolve: CtorApp("B", [Int(1), Int(2)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: CtorApp("C", [])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Int(5)
+// [Typer] resolve: Int(6)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))
+// [Typer] resolve: App(Var("print_int"), [Var("i")])
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit)))
+// [Typer] resolve: App(Var("print_int"), [Var("j")])
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))
+// [Typer] resolve: App(Var("print_int"), [Var("k")])
+// [Typer] resolve: Var("k")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit)
+// [Typer] resolve: App(Var("print_int"), [Var("m")])
+// [Typer] resolve: Var("m")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] check: LetEnum("X", Enum X { A(~0, ~0), B(Int, Int), C() }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))}, Unit)) against Unit
 // [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: Let(("i", Var(None)), Match(Tuple([Bool(true), Bool(false)]), [{pat: Tuple([Bool(true), Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true)]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("j", Var(None)), Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [{pat: Tuple([Bool(true), Wildcard, Wildcard]), action: Int(1)}, {pat: Tuple([Wildcard, Bool(true), Wildcard]), action: Int(2)}, {pat: Tuple([Wildcard, Wildcard, Bool(true)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("k", Var(None)), Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}]), Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit))))))))
@@ -641,17 +692,17 @@
 // [Typer] infer: Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))])
 // [Typer] infer: LE(Var("i"), Int(1))
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: LE(Var("i"), Int(2))
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Int(2) against Int
 // [Typer] infer: LE(Var("i"), Int(3))
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Int(3) against Int
 // [Typer] unify: Bool and Bool
@@ -671,23 +722,23 @@
 // [Typer] infer: Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)]), [{pat: Tuple([Int(1), Int(2), Int(3), Int(5)]), action: Int(1)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(6)]), action: Int(2)}, {pat: Tuple([Int(1), Int(2), Int(3), Int(7)]), action: Int(3)}, {pat: Wildcard, action: Int(4)}])
 // [Typer] infer: Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=None), Prim(Var("j"), Int(2), Add, kind=None), Prim(Var("j"), Int(3), Add, kind=None)])
 // [Typer] infer: Var("j")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Prim(Var("j"), Int(1), Add, kind=None)
 // [Typer] infer: Var("j")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] infer: Prim(Var("j"), Int(2), Add, kind=None)
 // [Typer] infer: Var("j")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(2)
 // [Typer] unify: Int and Int
 // [Typer] infer: Prim(Var("j"), Int(3), Add, kind=None)
 // [Typer] infer: Var("j")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(3)
 // [Typer] unify: Int and Int
@@ -716,73 +767,73 @@
 // [Typer] infer: Let(("m", Var(None)), Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}]), Let(("_", Var(None)), App(Var("print_int"), [Var("i")]), Let(("_", Var(None)), App(Var("print_int"), [Var("j")]), Let(("_", Var(None)), App(Var("print_int"), [Var("k")]), Let(("_", Var(None)), App(Var("print_int"), [Var("m")]), Unit)))))
 // [Typer] infer: Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [{pat: CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]), action: Int(1)}, {pat: CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]), action: Int(2)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(3)]), CtorApp("C", [])]), action: Int(3)}, {pat: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), action: Int(4)}, {pat: CtorApp("B", [Wildcard, Wildcard]), action: Int(5)}, {pat: CtorApp("C", []), action: Int(6)}])
 // [Typer] infer: CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])])
-// [Typer] inst: TypeScheme(([], (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)) -> Var(~0)))
-// [Typer] inst result: (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) -> Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }
-// [Typer] check: CtorApp("B", [Int(1), Int(2)]) against Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] check: CtorApp("B", [Int(1), Int(2)]) against Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(1)
 // [Typer] infer: Int(2)
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and (Int, Int) -> Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() } and (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] check: CtorApp("C", []) against Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and () -> Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)) -> Var(~0)))
-// [Typer] inst result: (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) -> Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] check: CtorApp("C", []) against Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() } and () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(1)
-// [Typer] inst: TypeScheme(([], (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)) -> Var(~0)))
-// [Typer] inst result: (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) -> Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(2)
-// [Typer] inst: TypeScheme(([], (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)) -> Var(~0)))
-// [Typer] inst result: (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) -> Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] inst: TypeScheme(([], () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(3)
-// [Typer] inst: TypeScheme(([], (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)) -> Var(~0)))
-// [Typer] inst result: (Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) -> Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() }
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }) and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }, Enum X { A(~0, ~0), B(Int, Int), C() }) -> Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] inst: TypeScheme(([], () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(4)
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: (Int, Int) -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: (Int, Int) -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(5)
-// [Typer] inst: TypeScheme(([], () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })))
-// [Typer] inst result: () -> Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-// [Typer] unify: Enum X { A(Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() }), Var(~0)), B(Int, Int), C() } and Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
+// [Typer] inst: TypeScheme(([], () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }))
+// [Typer] inst result: () -> Enum X { A(Enum X { A(~0, ~0), B(Int, Int), C() }, ~0), B(Int, Int), C() }
+// [Typer] unify: Enum X { A(~0, ~0), B(Int, Int), C() } and Enum X { A(~0, ~0), B(Int, Int), C() }
 // [Typer] infer: Int(6)
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
@@ -798,7 +849,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("i") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -809,7 +860,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("j") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -820,7 +871,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("k") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -831,7 +882,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("m") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit

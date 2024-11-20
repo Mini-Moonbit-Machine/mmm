@@ -3,6 +3,7 @@ pub enum Syntax {
   Bool(Bool) // true false
   Int(Int64) // int
   Double(Double) // double
+  String(String)
   Var(String) // _
   Tuple(Array[Syntax]) // (_, _, _)
   Not(Syntax) // not(_)
@@ -21,7 +22,6 @@ pub enum Syntax {
   CtorApp(String, Array[Syntax]) // _(_, _)
   Match(Syntax, Array[MatchArm]) // match _ { _ => _ }
   LetEnum(String, Type, Syntax) // enum {..}; _
-  String(String)
 } derive(Show)
 
 pub struct MatchArm {
@@ -72,7 +72,7 @@ pub enum Type {
   Var(Ref[Type?])
   Ptr
   Named(String)
-  Enum(String, Array[(String, Array[Type])]) // enum _ {_; _(_, _); }
+  Enum(String, Ref[Array[(String, Array[Type])]?]) // enum _ {_; _(_, _); }
 }
 
 pub type TypeScheme (Array[String], Type) derive(Show)
@@ -178,6 +178,64 @@ pub fn Type::repr(self : Type) -> Type {
   }
 }
 
+pub struct TypeMemSet {
+  mem : Array[(Int, Type)]
+  mut counter : Int
+}
+
+pub fn TypeMemSet::new() -> TypeMemSet {
+  { mem: [], counter: 0 }
+}
+
+pub fn TypeMemSet::map(
+  self : TypeMemSet,
+  t : Type,
+  f : (Int?, Type) -> Type
+) -> Type {
+  fn do() {
+    for t2 in self.mem {
+      let (n, t2) = t2
+      if physical_equal(t, t2) {
+        return f(Some(n), t)
+      }
+    }
+    self.mem.push((self.counter, t))
+    self.counter += 1
+    let t2 = f(None, t)
+    t2
+  }
+
+  match t {
+    Type::Enum(_, _) => do()
+    Type::Var(_) => do()
+    _ => f(None, t)
+  }
+}
+
+pub fn TypeMemSet::iter(
+  self : TypeMemSet,
+  t : Type,
+  f : (Int?, Type) -> Unit
+) -> Unit {
+  fn do() {
+    for t2 in self.mem {
+      let (n, t2) = t2
+      if physical_equal(t, t2) {
+        return f(Some(n), t)
+      }
+    }
+    self.mem.push((self.counter, t))
+    self.counter += 1
+    f(None, t)
+  }
+
+  match t {
+    Type::Enum(_, _) => do()
+    Type::Var(_) => do()
+    _ => f(None, t)
+  }
+}
+
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {
   match (self, other) {
     (Unit, Unit) => true
@@ -198,10 +256,33 @@ pub fn Type::to_string(self : Type) -> String {
   Show::to_string(self)
 }
 
+pub fn non_rec_name(self : Type) -> String {
+  match self {
+    Unit => "unit"
+    Bool => "bool"
+    Int => "int"
+    Double => "double"
+    String => "string"
+    Fun(_, _) => "fun"
+    Tuple(_) => "tuple"
+    Array(_) => "array"
+    Ptr => "ptr"
+    Var(_) => "var"
+    Named(name) => "named \{name}"
+    Enum(name, _) => "enum \{name}"
+  }
+}
+
 pub fn Type::output(self : Type, logger : Logger) -> Unit {
-  let mem : Array[(Int, Type)] = []
-  let mut counter = 0
-  fn aux(self : Type) {
+  let mem = TypeMemSet::new()
+  fn aux(rec_id : Int?, self : Type) {
+    match rec_id {
+      Some(n) => {
+        logger.write_string("~\{n}")
+        return
+      }
+      None => ()
+    }
     match self {
       Unit => logger.write_string("Unit")
       Bool => logger.write_string("Bool")
@@ -217,10 +298,10 @@ pub fn Type::output(self : Type, logger : Logger) -> Unit {
           } else {
             logger.write_string(", ")
           }
-          aux(arg)
+          aux(None, arg)
         }
         logger.write_string(") -> ")
-        aux(ret)
+        aux(None, ret)
       }
       Tuple(xs) => {
         logger.write_string("(")
@@ -231,63 +312,55 @@ pub fn Type::output(self : Type, logger : Logger) -> Unit {
           } else {
             logger.write_string(", ")
           }
-          aux(x)
+          aux(None, x)
         }
         logger.write_string(")")
       }
       Array(x) => {
         logger.write_string("Array[")
-        aux(x)
+        aux(None, x)
         logger.write_string("]")
       }
       Ptr => logger.write_string("Ptr")
       Var(r) =>
         match r.val {
-          Some(t) => {
-            for t2 in mem {
-              let (n, t2) = t2
-              if physical_equal(t, t2) {
-                logger.write_string("Var(~\{n})")
-                return
-              }
-            }
-            mem.push((counter, t))
-            counter += 1
-            logger.write_string("Var(")
-            aux(t)
-            logger.write_string(")")
-          }
+          Some(t) => mem.iter(t, aux)
           None => logger.write_string("Var(None)")
         }
       Named(name) => logger.write_string(name)
       Enum(name, variants) => {
         logger.write_string("Enum \{name} { ")
-        let mut first = true
-        for variant in variants {
-          let (variant, args) = variant
-          if first {
-            first = false
-          } else {
-            logger.write_string(", ")
-          }
-          logger.write_string("\{variant}(")
-          let mut first = true
-          for arg in args {
-            if first {
-              first = false
-            } else {
-              logger.write_string(", ")
+        match variants.val {
+          None => logger.write_string("None")
+          Some(variants) => {
+            let mut first = true
+            for variant in variants {
+              let (variant, args) = variant
+              if first {
+                first = false
+              } else {
+                logger.write_string(", ")
+              }
+              logger.write_string("\{variant}(")
+              let mut first = true
+              for arg in args {
+                if first {
+                  first = false
+                } else {
+                  logger.write_string(", ")
+                }
+                mem.iter(arg, aux)
+              }
+              logger.write_string(")")
             }
-            aux(arg)
           }
-          logger.write_string(")")
         }
         logger.write_string(" }")
       }
     }
   }
 
-  aux(self)
+  mem.iter(self, aux)
 }
 
 pub type PrettySyntax Syntax

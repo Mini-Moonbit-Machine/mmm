@@ -1901,6 +1901,185 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("map", (Unit) -> (Int, Int)), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int) -> Int)], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])])))}, Var("aux"))}, LetRec({tyvars: [], name: ("filter", (Unit) -> (Int, Int)), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int) -> Int)], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))))}, Var("aux"))}, LetRec({tyvars: [], name: ("concat", (Unit) -> (Int, Int)), args: [("stream1", (Unit) -> (Int, Int)), ("stream2", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))}, Var("aux"))}, LetRec({tyvars: [], name: ("range", (Unit) -> (Int, Int)), args: [("from", Int), ("to", Int)], body: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))}, LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit))))))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])])))}, Var("aux"))
+// [Typer] resolve: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])])))
+// [Typer] resolve: App(Var("stream"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("stream")
+// [Typer] resolve: If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])]))
+// [Typer] resolve: Eq(Var("ok"), Int(0))
+// [Typer] resolve: Var("ok")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Tuple([Int(0), Int(0)])
+// [Typer] resolve: Tuple([Int(1), App(Var("f"), [Var("val")])])
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("filter", (Unit) -> (Int, Int)), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int) -> Int)], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))))}, Var("aux"))}, LetRec({tyvars: [], name: ("concat", (Unit) -> (Int, Int)), args: [("stream1", (Unit) -> (Int, Int)), ("stream2", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))}, Var("aux"))}, LetRec({tyvars: [], name: ("range", (Unit) -> (Int, Int)), args: [("from", Int), ("to", Int)], body: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))}, LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)))))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))))}, Var("aux"))
+// [Typer] resolve: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))))
+// [Typer] resolve: App(Var("stream"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("stream")
+// [Typer] resolve: If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit]))))
+// [Typer] resolve: Eq(Var("ok"), Int(0))
+// [Typer] resolve: Var("ok")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Tuple([Int(0), Int(0)])
+// [Typer] resolve: Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))
+// [Typer] resolve: App(Var("f"), [Var("val")])
+// [Typer] resolve: Var("val")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit]))
+// [Typer] resolve: Eq(Var("r"), Int(0))
+// [Typer] resolve: Var("r")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Tuple([Int(1), Var("val")])
+// [Typer] resolve: App(Var("aux"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("concat", (Unit) -> (Int, Int)), args: [("stream1", (Unit) -> (Int, Int)), ("stream2", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))}, Var("aux"))}, LetRec({tyvars: [], name: ("range", (Unit) -> (Int, Int)), args: [("from", Int), ("to", Int)], body: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))}, LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit))))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))}, Var("aux"))
+// [Typer] resolve: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))
+// [Typer] resolve: App(Var("stream1"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("stream1")
+// [Typer] resolve: If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")]))
+// [Typer] resolve: Eq(Var("ok"), Int(0))
+// [Typer] resolve: Var("ok")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: App(Var("stream2"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("stream2")
+// [Typer] resolve: Tuple([Int(1), Var("val")])
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("range", (Unit) -> (Int, Int)), args: [("from", Int), ("to", Int)], body: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))}, LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)))))))
+// [Typer] resolve: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))
+// [Typer] resolve: Array(Int(1), Var("from"))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("from")
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux"))
+// [Typer] resolve: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))
+// [Typer] resolve: Get(Var("state"), Int(0))
+// [Typer] resolve: Var("state")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")])))
+// [Typer] resolve: Eq(Var("val"), Var("to"))
+// [Typer] resolve: Var("val")
+// [Typer] resolve: Var("to")
+// [Typer] resolve: Tuple([Int(0), Int(0)])
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))
+// [Typer] resolve: Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None))
+// [Typer] resolve: Var("state")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Var("val"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("val")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Tuple([Int(1), Var("val")])
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)))))
+// [Typer] resolve: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))
+// [Typer] resolve: App(Var("stream"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("stream")
+// [Typer] resolve: If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])]))
+// [Typer] resolve: Eq(Var("ok"), Int(0))
+// [Typer] resolve: Var("ok")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("acc")
+// [Typer] resolve: App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])
+// [Typer] resolve: Var("stream")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: App(Var("f"), [Var("acc"), Var("val")])
+// [Typer] resolve: Var("acc")
+// [Typer] resolve: Var("val")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Var("fold")
+// [Typer] resolve: LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))
+// [Typer] resolve: Prim(Var("x"), Var("y"), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: App(Var("fold"), [Var("stream"), Var("add"), Int(0)])
+// [Typer] resolve: Var("stream")
+// [Typer] resolve: Var("add")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("fold")
+// [Typer] resolve: LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))
+// [Typer] resolve: If(LE(Var("x"), Var("y")), Int(0), Int(1))
+// [Typer] resolve: LE(Var("x"), Var("y"))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit))
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))
+// [Typer] resolve: If(LE(Var("y"), Var("x")), Int(0), Int(1))
+// [Typer] resolve: LE(Var("y"), Var("x"))
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)
+// [Typer] resolve: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))
+// [Typer] resolve: App(Var("range"), [Int(0), Int(100)])
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(100)
+// [Typer] resolve: Var("range")
+// [Typer] resolve: Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit))))))))
+// [Typer] resolve: App(Var("range"), [Int(0), Int(1000)])
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1000)
+// [Typer] resolve: Var("range")
+// [Typer] resolve: Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))
+// [Typer] resolve: App(Var("concat"), [Var("range100"), Var("range1000")])
+// [Typer] resolve: Var("range100")
+// [Typer] resolve: Var("range1000")
+// [Typer] resolve: Var("concat")
+// [Typer] resolve: Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit))))))
+// [Typer] resolve: App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])])
+// [Typer] resolve: Var("catt")
+// [Typer] resolve: App(Var("addx"), [Int(1)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("addx")
+// [Typer] resolve: Var("map")
+// [Typer] resolve: Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))
+// [Typer] resolve: App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])])
+// [Typer] resolve: Var("addone")
+// [Typer] resolve: App(Var("gt"), [Int(50)])
+// [Typer] resolve: Int(50)
+// [Typer] resolve: Var("gt")
+// [Typer] resolve: Var("filter")
+// [Typer] resolve: Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit))))
+// [Typer] resolve: App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])])
+// [Typer] resolve: Var("over50")
+// [Typer] resolve: App(Var("le"), [Int(1200)])
+// [Typer] resolve: Int(1200)
+// [Typer] resolve: Var("le")
+// [Typer] resolve: Var("filter")
+// [Typer] resolve: Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))
+// [Typer] resolve: App(Var("sum"), [Var("under1200")])
+// [Typer] resolve: Var("under1200")
+// [Typer] resolve: Var("sum")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit))
+// [Typer] resolve: App(Var("print_int"), [Var("sum")])
+// [Typer] resolve: Var("sum")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)
+// [Typer] resolve: App(Var("print_char"), [Int(10)])
+// [Typer] resolve: Int(10)
+// [Typer] resolve: Var("print_char")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("map", (Unit) -> (Int, Int)), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int) -> Int)], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])])))}, Var("aux"))}, LetRec({tyvars: [], name: ("filter", (Unit) -> (Int, Int)), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int) -> Int)], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Let(("r", Var(None)), App(Var("f"), [Var("val")]), If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])))))}, Var("aux"))}, LetRec({tyvars: [], name: ("concat", (Unit) -> (Int, Int)), args: [("stream1", (Unit) -> (Int, Int)), ("stream2", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream1"), [Unit]), If(Eq(Var("ok"), Int(0)), App(Var("stream2"), [Unit]), Tuple([Int(1), Var("val")])))}, Var("aux"))}, LetRec({tyvars: [], name: ("range", (Unit) -> (Int, Int)), args: [("from", Int), ("to", Int)], body: Let(("state", Var(None)), Array(Int(1), Var("from")), LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))))}, Var("aux")))}, LetRec({tyvars: [], name: ("addx", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, Var("aux"))}, LetRec({tyvars: [], name: ("fold", Int), args: [("stream", (Unit) -> (Int, Int)), ("f", (Int, Int) -> Int), ("acc", Int)], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Var("acc"), App(Var("fold"), [Var("stream"), Var("f"), App(Var("f"), [Var("acc"), Var("val")])])))}, LetRec({tyvars: [], name: ("sum", Int), args: [("stream", (Unit) -> (Int, Int))], body: LetRec({tyvars: [], name: ("add", Int), args: [("x", Int), ("y", Int)], body: Prim(Var("x"), Var("y"), Add, kind=None)}, App(Var("fold"), [Var("stream"), Var("add"), Int(0)]))}, LetRec({tyvars: [], name: ("gt", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("x"), Var("y")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("le", (Int) -> Int), args: [("x", Int)], body: LetRec({tyvars: [], name: ("aux", Int), args: [("y", Int)], body: If(LE(Var("y"), Var("x")), Int(0), Int(1))}, Var("aux"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("range100", Var(None)), App(Var("range"), [Int(0), Int(100)]), Let(("range1000", Var(None)), App(Var("range"), [Int(0), Int(1000)]), Let(("catt", Var(None)), App(Var("concat"), [Var("range100"), Var("range1000")]), Let(("addone", Var(None)), App(Var("map"), [Var("catt"), App(Var("addx"), [Int(1)])]), Let(("over50", Var(None)), App(Var("filter"), [Var("addone"), App(Var("gt"), [Int(50)])]), Let(("under1200", Var(None)), App(Var("filter"), [Var("over50"), App(Var("le"), [Int(1200)])]), Let(("sum", Var(None)), App(Var("sum"), [Var("under1200")]), Let(("_", Var(None)), App(Var("print_int"), [Var("sum")]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))))))))}, Unit)))))))))) against Unit
 // [Typer] typevars: []
 // [Typer] check: LetRec({tyvars: [], name: ("aux", (Int, Int)), args: [("u", Var(None))], body: LetTuple([("ok", Var(None)), ("val", Var(None))], App(Var("stream"), [Unit]), If(Eq(Var("ok"), Int(0)), Tuple([Int(0), Int(0)]), Tuple([Int(1), App(Var("f"), [Var("val")])])))}, Var("aux")) against (Unit) -> (Int, Int)
@@ -1984,7 +2163,7 @@
 // [Typer] check: If(Eq(Var("r"), Int(0)), Tuple([Int(1), Var("val")]), App(Var("aux"), [Unit])) against (Int, Int)
 // [Typer] check: Eq(Var("r"), Int(0)) against Bool
 // [Typer] infer: Var("r")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(0)
 // [Typer] unify: Int and Int
@@ -2006,10 +2185,10 @@
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("aux") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], (Var(Unit)) -> (Int, Int)))
-// [Typer] inst result: (Var(Unit)) -> (Int, Int)
-// [Typer] unify: (Var(Unit)) -> (Int, Int) and (Unit) -> (Int, Int)
-// [Typer] unify: Var(Unit) and Unit
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
+// [Typer] inst result: (Unit) -> (Int, Int)
+// [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
+// [Typer] unify: Unit and Unit
 // [Typer] unify: (Int, Int) and (Int, Int)
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
@@ -2074,7 +2253,7 @@
 // [Typer] check: Let(("val", Var(None)), Get(Var("state"), Int(0)), If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")])))) against (Int, Int)
 // [Typer] infer: Get(Var("state"), Int(0))
 // [Typer] infer: Var("state")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] unify: Var(None) and Int
@@ -2082,7 +2261,7 @@
 // [Typer] check: If(Eq(Var("val"), Var("to")), Tuple([Int(0), Int(0)]), Let(("_", Var(None)), Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None)), Tuple([Int(1), Var("val")]))) against (Int, Int)
 // [Typer] check: Eq(Var("val"), Var("to")) against Bool
 // [Typer] infer: Var("val")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("to")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2095,12 +2274,12 @@
 // [Typer] infer: Put(Var("state"), Int(0), Prim(Var("val"), Int(1), Add, kind=None))
 // [Typer] infer: Prim(Var("val"), Int(1), Add, kind=None)
 // [Typer] infer: Var("val")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("state") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2110,7 +2289,7 @@
 // [Typer] check: Tuple([Int(1), Var("val")]) against (Int, Int)
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("val") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("aux") against (Unit) -> (Int, Int)
@@ -2302,7 +2481,7 @@
 // [Typer] inst: TypeScheme(([], ((Unit) -> (Int, Int), (Unit) -> (Int, Int)) -> (Unit) -> (Int, Int)))
 // [Typer] inst result: ((Unit) -> (Int, Int), (Unit) -> (Int, Int)) -> (Unit) -> (Int, Int)
 // [Typer] check: Var("range100") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2310,7 +2489,7 @@
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("range1000") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2325,7 +2504,7 @@
 // [Typer] inst: TypeScheme(([], ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)))
 // [Typer] inst result: ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)
 // [Typer] check: Var("catt") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2350,7 +2529,7 @@
 // [Typer] inst: TypeScheme(([], ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)))
 // [Typer] inst result: ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)
 // [Typer] check: Var("addone") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2375,7 +2554,7 @@
 // [Typer] inst: TypeScheme(([], ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)))
 // [Typer] inst result: ((Unit) -> (Int, Int), (Int) -> Int) -> (Unit) -> (Int, Int)
 // [Typer] check: Var("over50") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2400,7 +2579,7 @@
 // [Typer] inst: TypeScheme(([], ((Unit) -> (Int, Int)) -> Int))
 // [Typer] inst result: ((Unit) -> (Int, Int)) -> Int
 // [Typer] check: Var("under1200") against (Unit) -> (Int, Int)
-// [Typer] inst: TypeScheme(([], Var((Unit) -> (Int, Int))))
+// [Typer] inst: TypeScheme(([], (Unit) -> (Int, Int)))
 // [Typer] inst result: (Unit) -> (Int, Int)
 // [Typer] unify: (Unit) -> (Int, Int) and (Unit) -> (Int, Int)
 // [Typer] unify: Unit and Unit
@@ -2415,7 +2594,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("sum") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit

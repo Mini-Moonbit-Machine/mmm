@@ -1,6 +1,6 @@
-enum X = Var(Enum X { A(Var(~0), Var(~0)), B(Int, Int), C() })
-let rec main: () -> Var(Unit) {
-  let i: Var(Int) = Match(Tuple([Bool(true), Bool(false)]), [
+enum X = Enum X { A(~0, ~0), B(Int, Int), C() }
+let rec main: () -> Unit {
+  let i: Int = Match(Tuple([Bool(true), Bool(false)]), [
     Tuple([Bool(true), Wildcard]) =>
       Int(1)
     Tuple([Wildcard, Bool(true)]) =>
@@ -8,7 +8,7 @@ let rec main: () -> Var(Unit) {
     Wildcard =>
       Int(3)
   ])
-  let j: Var(Int) = Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [
+  let j: Int = Match(Tuple([LE(Var("i"), Int(1)), LE(Var("i"), Int(2)), LE(Var("i"), Int(3))]), [
     Tuple([Bool(true), Wildcard, Wildcard]) =>
       Int(1)
     Tuple([Wildcard, Bool(true), Wildcard]) =>
@@ -18,7 +18,7 @@ let rec main: () -> Var(Unit) {
     Wildcard =>
       Int(4)
   ])
-  let k: Var(Int) = Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=Some(Int)), Prim(Var("j"), Int(2), Add, kind=Some(Int)), Prim(Var("j"), Int(3), Add, kind=Some(Int))]), [
+  let k: Int = Match(Tuple([Var("j"), Prim(Var("j"), Int(1), Add, kind=Some(Int)), Prim(Var("j"), Int(2), Add, kind=Some(Int)), Prim(Var("j"), Int(3), Add, kind=Some(Int))]), [
     Tuple([Int(1), Int(2), Int(3), Int(5)]) =>
       Int(1)
     Tuple([Int(1), Int(2), Int(3), Int(6)]) =>
@@ -28,7 +28,7 @@ let rec main: () -> Var(Unit) {
     Wildcard =>
       Int(4)
   ])
-  let m: Var(Int) = Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [
+  let m: Int = Match(CtorApp("A", [CtorApp("B", [Int(1), Int(2)]), CtorApp("C", [])]), [
     CtorApp("A", [CtorApp("B", [Var("a"), Var("b")]), CtorApp("B", [Var("c"), Var("d")])]) =>
       Int(1)
     CtorApp("A", [CtorApp("C", []), CtorApp("B", [Var("a"), Var("b")])]) =>
@@ -42,10 +42,10 @@ let rec main: () -> Var(Unit) {
     CtorApp("C", []) =>
       Int(6)
   ])
-  let _: Var(Unit) = Apply(Var("print_int"), [Var("i"), ])
-  let _: Var(Unit) = Apply(Var("print_int"), [Var("j"), ])
-  let _: Var(Unit) = Apply(Var("print_int"), [Var("k"), ])
-  let _: Var(Unit) = Apply(Var("print_int"), [Var("m"), ])
+  let _: Unit = Apply(Var("print_int"), [Var("i"), ])
+  let _: Unit = Apply(Var("print_int"), [Var("j"), ])
+  let _: Unit = Apply(Var("print_int"), [Var("k"), ])
+  let _: Unit = Apply(Var("print_int"), [Var("m"), ])
   Unit
 }
 Unit

@@ -3828,6 +3828,411 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("swap", Unit), args: [("arr", Array[Int]), ("i", Int), ("j", Int)], body: Let(("tmp", Var(None)), Get(Var("arr"), Var("i")), Let(("_", Var(None)), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))}, LetRec({tyvars: [], name: ("output", Unit), args: [("arr", Array[Int]), ("i", Int), ("len", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")]))), Unit)}, LetRec({tyvars: [], name: ("insertion_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: LetRec({tyvars: [], name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)}, LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])))}, LetRec({tyvars: [], name: ("partition", (Int, Bool)), args: [("arr", Array[Int]), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit))))))))
+// [Typer] resolve: Let(("tmp", Var(None)), Get(Var("arr"), Var("i")), Let(("_", Var(None)), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))
+// [Typer] resolve: Get(Var("arr"), Var("i"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit))
+// [Typer] resolve: Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j")))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Get(Var("arr"), Var("j"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit)
+// [Typer] resolve: Put(Var("arr"), Var("j"), Var("tmp"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Var("tmp")
+// [Typer] resolve: Unit
+// [Typer] resolve: LetRec({tyvars: [], name: ("output", Unit), args: [("arr", Array[Int]), ("i", Int), ("len", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")]))), Unit)}, LetRec({tyvars: [], name: ("insertion_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: LetRec({tyvars: [], name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)}, LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])))}, LetRec({tyvars: [], name: ("partition", (Int, Bool)), args: [("arr", Array[Int]), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit)))))))
+// [Typer] resolve: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")]))), Unit)
+// [Typer] resolve: LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Prim(Var("len"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")])))
+// [Typer] resolve: App(Var("print_int"), [Get(Var("arr"), Var("i"))])
+// [Typer] resolve: Get(Var("arr"), Var("i"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")]))
+// [Typer] resolve: App(Var("print_endline"), [])
+// [Typer] resolve: Var("print_endline")
+// [Typer] resolve: App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("output")
+// [Typer] resolve: Unit
+// [Typer] resolve: LetRec({tyvars: [], name: ("insertion_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: LetRec({tyvars: [], name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)}, LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])))}, LetRec({tyvars: [], name: ("partition", (Int, Bool)), args: [("arr", Array[Int]), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit))))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)}, LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])))
+// [Typer] resolve: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)
+// [Typer] resolve: LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j"))
+// [Typer] resolve: Prim(Int(1), Var("low"), Add, kind=None)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit)
+// [Typer] resolve: LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None))
+// [Typer] resolve: Get(Var("arr"), Var("j"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)
+// [Typer] resolve: Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Prim(Var("j"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)]))
+// [Typer] resolve: App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Prim(Var("j"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("swap")
+// [Typer] resolve: App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Prim(Var("j"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("g")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)]))
+// [Typer] resolve: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)
+// [Typer] resolve: LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Prim(Var("high"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)])))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))
+// [Typer] resolve: App(Var("g"), [Var("j")])
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Var("g")
+// [Typer] resolve: App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Unit
+// [Typer] resolve: App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("low"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: LetRec({tyvars: [], name: ("partition", (Int, Bool)), args: [("arr", Array[Int]), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit)))))
+// [Typer] resolve: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))
+// [Typer] resolve: App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("pivot_index")
+// [Typer] resolve: Prim(Var("high"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("swap")
+// [Typer] resolve: Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))))))
+// [Typer] resolve: Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Prim(Var("high"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))
+// [Typer] resolve: Array(Int(1), Var("low"))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))))
+// [Typer] resolve: Array(Int(1), Int(1))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))
+// [Typer] resolve: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)
+// [Typer] resolve: LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None))
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Prim(Var("high"), Int(2), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)]))
+// [Typer] resolve: If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit)
+// [Typer] resolve: LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None))
+// [Typer] resolve: Get(Var("arr"), Var("j"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Prim(Var("pivot"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("pivot")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit))
+// [Typer] resolve: If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0))))
+// [Typer] resolve: Eq(Get(Var("i"), Int(0)), Var("j"))
+// [Typer] resolve: Get(Var("i"), Int(0))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Unit
+// [Typer] resolve: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))
+// [Typer] resolve: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Get(Var("i"), Int(0))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Var("swap")
+// [Typer] resolve: Put(Var("partitioned"), Int(0), Int(0))
+// [Typer] resolve: Var("partitioned")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)
+// [Typer] resolve: Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)
+// [Typer] resolve: Get(Var("i"), Int(0))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] resolve: App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("j"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("j")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: Unit
+// [Typer] resolve: Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])))
+// [Typer] resolve: App(Var("aux"), [Var("low")])
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))
+// [Typer] resolve: App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Get(Var("i"), Int(0))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Var("high"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("swap")
+// [Typer] resolve: Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))])
+// [Typer] resolve: LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit))))
+// [Typer] resolve: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))
+// [Typer] resolve: Int(50)
+// [Typer] resolve: Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])))))
+// [Typer] resolve: Array(Int(1), Int(0))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))
+// [Typer] resolve: Prim(Var("high"), Var("low"), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])))
+// [Typer] resolve: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None)
+// [Typer] resolve: Prim(Var("len"), Int(4), Div, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))
+// [Typer] resolve: If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit)
+// [Typer] resolve: LE(Int(8), Var("len"))
+// [Typer] resolve: Int(8)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))))))
+// [Typer] resolve: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None)
+// [Typer] resolve: Prim(Var("len"), Int(4), Div, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))
+// [Typer] resolve: Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None)
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None)
+// [Typer] resolve: Prim(Var("len"), Int(4), Div, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(4)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))))
+// [Typer] resolve: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)
+// [Typer] resolve: LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None))
+// [Typer] resolve: Get(Var("arr"), Var("b"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)
+// [Typer] resolve: Get(Var("arr"), Var("a"))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None)))
+// [Typer] resolve: App(Var("swap"), [Var("arr"), Var("a"), Var("b")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Var("swap")
+// [Typer] resolve: Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))
+// [Typer] resolve: Var("swaps")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None)
+// [Typer] resolve: Get(Var("swaps"), Int(0))
+// [Typer] resolve: Var("swaps")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Unit
+// [Typer] resolve: LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))
+// [Typer] resolve: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))
+// [Typer] resolve: App(Var("sort_2"), [Var("a"), Var("b")])
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Var("sort_2")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")]))
+// [Typer] resolve: App(Var("sort_2"), [Var("b"), Var("c")])
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Var("sort_2")
+// [Typer] resolve: App(Var("sort_2"), [Var("a"), Var("b")])
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Var("sort_2")
+// [Typer] resolve: Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))
+// [Typer] resolve: If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit)
+// [Typer] resolve: LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("use_median_of_medians")
+// [Typer] resolve: Prim(Var("len"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)])))
+// [Typer] resolve: App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("a"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Prim(Var("a"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("sort_3")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))
+// [Typer] resolve: App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("b"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Prim(Var("b"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("sort_3")
+// [Typer] resolve: App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("c"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Prim(Var("c"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("sort_3")
+// [Typer] resolve: Unit
+// [Typer] resolve: App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])
+// [Typer] resolve: Var("a")
+// [Typer] resolve: Var("b")
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Var("sort_3")
+// [Typer] resolve: Unit
+// [Typer] resolve: Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))])
+// [Typer] resolve: LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit)))
+// [Typer] resolve: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))
+// [Typer] resolve: Prim(Var("high"), Var("low"), Sub, kind=None)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")])))))
+// [Typer] resolve: LE(Var("len"), Int(16))
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(16)
+// [Typer] resolve: App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("insertion_sort")
+// [Typer] resolve: LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))
+// [Typer] resolve: App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("choose_pivot")
+// [Typer] resolve: LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")])))
+// [Typer] resolve: App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("pivot_index")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("partition")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))
+// [Typer] resolve: App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("low")
+// [Typer] resolve: Var("pivot")
+// [Typer] resolve: Var("quick_sort")
+// [Typer] resolve: App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Prim(Var("pivot"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pivot")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("high")
+// [Typer] resolve: Var("quick_sort")
+// [Typer] resolve: LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit))
+// [Typer] resolve: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("quick_sort")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit)
+// [Typer] resolve: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))
+// [Typer] resolve: App(Var("read_int"), [])
+// [Typer] resolve: Var("read_int")
+// [Typer] resolve: Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")])))))
+// [Typer] resolve: Array(Var("len"), Int(0))
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))
+// [Typer] resolve: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)
+// [Typer] resolve: LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Prim(Var("len"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("arr"), Var("i"), App(Var("read_int"), []))
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("i")
+// [Typer] resolve: App(Var("read_int"), [])
+// [Typer] resolve: Var("read_int")
+// [Typer] resolve: App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("input")
+// [Typer] resolve: Unit
+// [Typer] resolve: Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")])))
+// [Typer] resolve: App(Var("input"), [Int(0)])
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("input")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))
+// [Typer] resolve: App(Var("sort"), [Var("arr"), Var("len")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("sort")
+// [Typer] resolve: App(Var("output"), [Var("arr"), Int(0), Var("len")])
+// [Typer] resolve: Var("arr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("output")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("swap", Unit), args: [("arr", Array[Int]), ("i", Int), ("j", Int)], body: Let(("tmp", Var(None)), Get(Var("arr"), Var("i")), Let(("_", Var(None)), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit)))}, LetRec({tyvars: [], name: ("output", Unit), args: [("arr", Array[Int]), ("i", Int), ("len", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("print_int"), [Get(Var("arr"), Var("i"))]), Let(("_", Var(None)), App(Var("print_endline"), []), App(Var("output"), [Var("arr"), Prim(Var("i"), Int(1), Add, kind=None), Var("len")]))), Unit)}, LetRec({tyvars: [], name: ("insertion_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: LetRec({tyvars: [], name: ("g", Unit), args: [("j", Int)], body: If(LE(Prim(Int(1), Var("low"), Add, kind=None), Var("j")), If(LE(Get(Var("arr"), Var("j")), Prim(Get(Var("arr"), Prim(Var("j"), Int(1), Sub, kind=None)), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("j"), Prim(Var("j"), Int(1), Sub, kind=None)]), App(Var("g"), [Prim(Var("j"), Int(1), Sub, kind=None)])), Unit), Unit)}, LetRec({tyvars: [], name: ("f", Unit), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("j", Var(None)), Var("i"), Let(("_", Var(None)), App(Var("g"), [Var("j")]), App(Var("f"), [Prim(Var("i"), Int(1), Add, kind=None)]))), Unit)}, App(Var("f"), [Prim(Var("low"), Int(1), Add, kind=None)])))}, LetRec({tyvars: [], name: ("partition", (Int, Bool)), args: [("arr", Array[Int]), ("pivot_index", Int), ("low", Int), ("high", Int)], body: Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("pivot_index"), Prim(Var("high"), Int(1), Sub, kind=None)]), Let(("pivot", Var(None)), Get(Var("arr"), Prim(Var("high"), Int(1), Sub, kind=None)), Let(("i", Var(None)), Array(Int(1), Var("low")), Let(("partitioned", Var(None)), Array(Int(1), Int(1)), LetRec({tyvars: [], name: ("aux", Var(None)), args: [("j", Int)], body: If(LE(Var("j"), Prim(Var("high"), Int(2), Sub, kind=None)), Let(("_", Var(None)), If(LE(Get(Var("arr"), Var("j")), Prim(Var("pivot"), Int(1), Sub, kind=None)), Let(("_", Var(None)), If(Eq(Get(Var("i"), Int(0)), Var("j")), Unit, Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Var("j")]), Put(Var("partitioned"), Int(0), Int(0)))), Let(("_", Var(None)), Put(Var("i"), Int(0), Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)), Unit)), Unit), App(Var("aux"), [Prim(Var("j"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))))))))}, LetRec({tyvars: [], name: ("choose_pivot", (Int, Bool)), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("use_median_of_medians", Var(None)), Int(50), Let(("swaps", Var(None)), Array(Int(1), Int(0)), Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), Let(("b", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None), Add, kind=None), Let(("_", Var(None)), If(LE(Int(8), Var("len")), Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])))))), Unit), Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]))))))}, LetRec({tyvars: [], name: ("quick_sort", Unit), args: [("arr", Array[Int]), ("low", Int), ("high", Int)], body: Let(("len", Var(None)), Prim(Var("high"), Var("low"), Sub, kind=None), If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))))}, LetRec({tyvars: [], name: ("sort", Unit), args: [("x", Array[Int]), ("len", Int)], body: App(Var("quick_sort"), [Var("x"), Int(0), Var("len")])}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), App(Var("read_int"), []), Let(("arr", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("input", Var(None)), args: [("i", Int)], body: If(LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), Put(Var("arr"), Var("i"), App(Var("read_int"), [])), App(Var("input"), [Prim(Var("i"), Int(1), Add, kind=None)])), Unit)}, Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")]))))))}, Unit)))))))) against Unit
 // [Typer] typevars: []
 // [Typer] check: Let(("tmp", Var(None)), Get(Var("arr"), Var("i")), Let(("_", Var(None)), Put(Var("arr"), Var("i"), Get(Var("arr"), Var("j"))), Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit))) against Unit
@@ -3865,7 +4270,7 @@
 // [Typer] check: Let(("_", Var(None)), Put(Var("arr"), Var("j"), Var("tmp")), Unit) against Unit
 // [Typer] infer: Put(Var("arr"), Var("j"), Var("tmp"))
 // [Typer] infer: Var("tmp")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("arr") against Array[Int]
 // [Typer] inst: TypeScheme(([], Array[Int]))
@@ -4043,7 +4448,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("j") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -4153,7 +4558,7 @@
 // [Typer] unify: Int and Int
 // [Typer] infer: Prim(Var("pivot"), Int(1), Sub, kind=None)
 // [Typer] infer: Var("pivot")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
@@ -4163,7 +4568,7 @@
 // [Typer] check: Eq(Get(Var("i"), Int(0)), Var("j")) against Bool
 // [Typer] infer: Get(Var("i"), Int(0))
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Var("j")
@@ -4183,7 +4588,7 @@
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("i"), Int(0)) against Int
 // [Typer] check: Var("i") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4197,7 +4602,7 @@
 // [Typer] infer: Put(Var("partitioned"), Int(0), Int(0))
 // [Typer] infer: Int(0)
 // [Typer] check: Var("partitioned") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4210,13 +4615,13 @@
 // [Typer] infer: Prim(Get(Var("i"), Int(0)), Int(1), Add, kind=None)
 // [Typer] infer: Get(Var("i"), Int(0))
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("i") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4241,12 +4646,12 @@
 // [Typer] infer: Unit
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
-// [Typer] unify: Unit and Var(Unit)
+// [Typer] unify: Unit and Unit
 // [Typer] check: Let(("_", Var(None)), App(Var("aux"), [Var("low")]), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Get(Var("i"), Int(0)), Prim(Var("high"), Int(1), Sub, kind=None)]), Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]))) against (Int, Bool)
 // [Typer] infer: App(Var("aux"), [Var("low")])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Unit)))
-// [Typer] inst result: (Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("low") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -4265,7 +4670,7 @@
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("i"), Int(0)) against Int
 // [Typer] check: Var("i") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4281,7 +4686,7 @@
 // [Typer] check: Tuple([Get(Var("i"), Int(0)), Eq(Get(Var("partitioned"), Int(0)), Int(1))]) against (Int, Bool)
 // [Typer] check: Get(Var("i"), Int(0)) against Int
 // [Typer] check: Var("i") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4289,7 +4694,7 @@
 // [Typer] check: Eq(Get(Var("partitioned"), Int(0)), Int(1)) against Bool
 // [Typer] infer: Get(Var("partitioned"), Int(0))
 // [Typer] infer: Var("partitioned")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(1)
@@ -4325,7 +4730,7 @@
 // [Typer] infer: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(2), Mul, kind=None)
 // [Typer] infer: Prim(Var("len"), Int(4), Div, kind=None)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(4)
 // [Typer] unify: Int and Int
@@ -4339,7 +4744,7 @@
 // [Typer] check: LE(Int(8), Var("len")) against Bool
 // [Typer] infer: Int(8)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] infer: Let(("a", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None), Add, kind=None), Let(("c", Var(None)), Prim(Var("low"), Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None), Add, kind=None), LetRec({tyvars: [], name: ("sort_2", Var(None)), args: [("a", Int), ("b", Int)], body: If(LE(Get(Var("arr"), Var("b")), Prim(Get(Var("arr"), Var("a")), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("swap"), [Var("arr"), Var("a"), Var("b")]), Put(Var("swaps"), Int(0), Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None))), Unit)}, LetRec({tyvars: [], name: ("sort_3", Var(None)), args: [("a", Int), ("b", Int), ("c", Int)], body: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))}, Let(("_", Var(None)), If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit), App(Var("sort_3"), [Var("a"), Var("b"), Var("c")]))))))
@@ -4350,7 +4755,7 @@
 // [Typer] infer: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(1), Mul, kind=None)
 // [Typer] infer: Prim(Var("len"), Int(4), Div, kind=None)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(4)
 // [Typer] unify: Int and Int
@@ -4367,7 +4772,7 @@
 // [Typer] infer: Prim(Prim(Var("len"), Int(4), Div, kind=None), Int(3), Mul, kind=None)
 // [Typer] infer: Prim(Var("len"), Int(4), Div, kind=None)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(4)
 // [Typer] unify: Int and Int
@@ -4424,13 +4829,13 @@
 // [Typer] infer: Prim(Get(Var("swaps"), Int(0)), Int(1), Add, kind=None)
 // [Typer] infer: Get(Var("swaps"), Int(0))
 // [Typer] infer: Var("swaps")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("swaps") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4444,8 +4849,8 @@
 // [Typer] infer: Let(("_", Var(None)), App(Var("sort_2"), [Var("a"), Var("b")]), Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")])))
 // [Typer] infer: App(Var("sort_2"), [Var("a"), Var("b")])
 // [Typer] infer: Var("sort_2")
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int) -> Unit
 // [Typer] check: Var("a") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -4459,8 +4864,8 @@
 // [Typer] infer: Let(("_", Var(None)), App(Var("sort_2"), [Var("b"), Var("c")]), App(Var("sort_2"), [Var("a"), Var("b")]))
 // [Typer] infer: App(Var("sort_2"), [Var("b"), Var("c")])
 // [Typer] infer: Var("sort_2")
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int) -> Unit
 // [Typer] check: Var("b") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -4473,8 +4878,8 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("sort_2"), [Var("a"), Var("b")])
 // [Typer] infer: Var("sort_2")
-// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int) -> Unit
 // [Typer] check: Var("a") against Int
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -4489,11 +4894,11 @@
 // [Typer] infer: If(LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))), Unit)
 // [Typer] check: LE(Var("use_median_of_medians"), Prim(Var("len"), Int(1), Sub, kind=None)) against Bool
 // [Typer] infer: Var("use_median_of_medians")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Prim(Var("len"), Int(1), Sub, kind=None)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
@@ -4501,21 +4906,21 @@
 // [Typer] infer: Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)]), Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)])))
 // [Typer] infer: App(Var("sort_3"), [Prim(Var("a"), Int(1), Sub, kind=None), Var("a"), Prim(Var("a"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("sort_3")
-// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int, Int) -> Unit
 // [Typer] check: Prim(Var("a"), Int(1), Sub, kind=None) against Int
 // [Typer] check: Var("a") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("a") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Prim(Var("a"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("a") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -4524,21 +4929,21 @@
 // [Typer] infer: Let(("_", Var(None)), App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)]), App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)]))
 // [Typer] infer: App(Var("sort_3"), [Prim(Var("b"), Int(1), Sub, kind=None), Var("b"), Prim(Var("b"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("sort_3")
-// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int, Int) -> Unit
 // [Typer] check: Prim(Var("b"), Int(1), Sub, kind=None) against Int
 // [Typer] check: Var("b") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("b") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Prim(Var("b"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("b") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -4546,21 +4951,21 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("sort_3"), [Prim(Var("c"), Int(1), Sub, kind=None), Var("c"), Prim(Var("c"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("sort_3")
-// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int, Int) -> Unit
 // [Typer] check: Prim(Var("c"), Int(1), Sub, kind=None) against Int
 // [Typer] check: Var("c") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("c") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Prim(Var("c"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("c") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -4570,18 +4975,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("sort_3"), [Var("a"), Var("b"), Var("c")])
 // [Typer] infer: Var("sort_3")
-// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Var(Unit)))
-// [Typer] inst result: (Int, Int, Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int, Int, Int) -> Unit))
+// [Typer] inst result: (Int, Int, Int) -> Unit
 // [Typer] check: Var("a") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("b") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("c") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] infer: Unit
@@ -4590,13 +4995,13 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] check: Tuple([Var("b"), Eq(Get(Var("swaps"), Int(0)), Int(0))]) against (Int, Bool)
 // [Typer] check: Var("b") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Eq(Get(Var("swaps"), Int(0)), Int(0)) against Bool
 // [Typer] infer: Get(Var("swaps"), Int(0))
 // [Typer] infer: Var("swaps")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(0)
@@ -4617,7 +5022,7 @@
 // [Typer] check: If(LE(Var("len"), Int(16)), App(Var("insertion_sort"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot_index", Var(None)), ("likely_sorted", Var(None))], App(Var("choose_pivot"), [Var("arr"), Var("low"), Var("high")]), LetTuple([("pivot", Var(None)), ("partitioned", Var(None))], App(Var("partition"), [Var("arr"), Var("pivot_index"), Var("low"), Var("high")]), Let(("_", Var(None)), App(Var("quick_sort"), [Var("arr"), Var("low"), Var("pivot")]), App(Var("quick_sort"), [Var("arr"), Prim(Var("pivot"), Int(1), Add, kind=None), Var("high")]))))) against Unit
 // [Typer] check: LE(Var("len"), Int(16)) against Bool
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(16)
 // [Typer] unify: Int and Int
@@ -4762,7 +5167,7 @@
 // [Typer] infer: Array(Var("len"), Int(0))
 // [Typer] infer: Int(0)
 // [Typer] check: Var("len") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Array[Int]
@@ -4776,7 +5181,7 @@
 // [Typer] inst result: Int
 // [Typer] infer: Prim(Var("len"), Int(1), Sub, kind=None)
 // [Typer] infer: Var("len")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
@@ -4788,7 +5193,7 @@
 // [Typer] inst: TypeScheme(([], () -> Int))
 // [Typer] inst result: () -> Int
 // [Typer] check: Var("arr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -4811,12 +5216,12 @@
 // [Typer] infer: Unit
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
-// [Typer] unify: Unit and Var(Unit)
+// [Typer] unify: Unit and Unit
 // [Typer] infer: Let(("_", Var(None)), App(Var("input"), [Int(0)]), Let(("_", Var(None)), App(Var("sort"), [Var("arr"), Var("len")]), App(Var("output"), [Var("arr"), Int(0), Var("len")])))
 // [Typer] infer: App(Var("input"), [Int(0)])
 // [Typer] infer: Var("input")
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Unit)))
-// [Typer] inst result: (Int) -> Var(Unit)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
 // [Typer] check: Int(0) against Int
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
@@ -4826,12 +5231,12 @@
 // [Typer] inst: TypeScheme(([], (Array[Int], Int) -> Unit))
 // [Typer] inst result: (Array[Int], Int) -> Unit
 // [Typer] check: Var("arr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Var("len") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -4841,13 +5246,13 @@
 // [Typer] inst: TypeScheme(([], (Array[Int], Int, Int) -> Unit))
 // [Typer] inst result: (Array[Int], Int, Int) -> Unit
 // [Typer] check: Var("arr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Int(0) against Int
 // [Typer] check: Var("len") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Unit and Var(None)

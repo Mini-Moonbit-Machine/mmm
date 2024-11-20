@@ -347,6 +347,28 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))}, Unit)
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))
+// [Typer] resolve: Let(("x", Var(None)), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))
+// [Typer] resolve: App(Var("read_int"), [])
+// [Typer] resolve: Var("read_int")
+// [Typer] resolve: If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), [])))
+// [Typer] resolve: Eq(Var("x"), Neg(Int(2147483648), kind=None))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Neg(Int(2147483648), kind=None)
+// [Typer] resolve: Int(2147483648)
+// [Typer] resolve: App(Var("print_int"), [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))
+// [Typer] resolve: App(Var("print_int"), [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: App(Var("f"), [])
+// [Typer] resolve: Var("f")
+// [Typer] resolve: App(Var("f"), [])
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: LetRec({tyvars: [], name: ("f", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("read_int"), []), If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))))}, App(Var("f"), []))
@@ -361,7 +383,7 @@
 // [Typer] infer: If(Eq(Var("x"), Neg(Int(2147483648), kind=None)), App(Var("print_int"), [Var("x")]), Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), [])))
 // [Typer] check: Eq(Var("x"), Neg(Int(2147483648), kind=None)) against Bool
 // [Typer] infer: Var("x")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Neg(Int(2147483648), kind=None)
 // [Typer] infer: Int(2147483648)
@@ -371,7 +393,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("x") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] infer: Let(("_", Var(None)), App(Var("print_int"), [Var("x")]), App(Var("f"), []))
@@ -380,7 +402,7 @@
 // [Typer] inst: TypeScheme(([], (Int) -> Unit))
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Var("x") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
@@ -391,11 +413,11 @@
 // [Typer] inst result: () -> Var(None)
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
-// [Typer] unify: Unit and Var(Unit)
+// [Typer] unify: Unit and Unit
 // [Typer] infer: App(Var("f"), [])
 // [Typer] infer: Var("f")
-// [Typer] inst: TypeScheme(([], () -> Var(Unit)))
-// [Typer] inst result: () -> Var(Unit)
+// [Typer] inst: TypeScheme(([], () -> Unit))
+// [Typer] inst result: () -> Unit
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
 // [Typer] check: Unit against Unit

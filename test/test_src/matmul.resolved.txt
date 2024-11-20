@@ -1,0 +1,68 @@
+let rec matmul: (l: Int, m: Int, n: Int, a: Array[Array[Double]], b: Array[Array[Double]], c: Array[Array[Double]]) -> Unit {
+  let rec loop1: (i: Int) -> Unit {
+    if (LE(Int(0), Var("i"))) then {
+      let rec loop2: (j: Int) -> Unit {
+        if (LE(Int(0), Var("j"))) then {
+          let rec loop3: (k: Int) -> Unit {
+            if (LE(Int(0), Var("k"))) then {
+              let _: Var(None) = Put Get(Var("c"), Var("i"))[Var("j")] = Prim(Get(Get(Var("c"), Var("i")), Var("j")), Prim(Get(Get(Var("a"), Var("i")), Var("k")), Get(Get(Var("b"), Var("k")), Var("j")), Mul, kind=None), Add, kind=None)
+              Apply(Var("loop3"), [Prim(Var("k"), Int(1), Sub, kind=None), ])
+            } else {
+              Unit
+            }
+          }
+          let _: Var(None) = Apply(Var("loop3"), [Prim(Var("m"), Int(1), Sub, kind=None), ])
+          Apply(Var("loop2"), [Prim(Var("j"), Int(1), Sub, kind=None), ])
+        } else {
+          Unit
+        }
+      }
+      let _: Var(None) = Apply(Var("loop2"), [Prim(Var("n"), Int(1), Sub, kind=None), ])
+      Apply(Var("loop1"), [Prim(Var("i"), Int(1), Sub, kind=None), ])
+    } else {
+      Unit
+    }
+  }
+  Apply(Var("loop1"), [Prim(Var("l"), Int(1), Sub, kind=None), ])
+}
+let rec main: () -> Var(None) {
+  let dummy: Var(None) = Array::make(Int(0), Double(0))
+  let rec gen_arr: (m: Int, n: Int) -> Array[Array[Double]] {
+    let mat: Var(None) = Array::make(Var("m"), Var("dummy"))
+    let rec init_arr: (i: Int) -> Unit {
+      if (LE(Int(0), Var("i"))) then {
+        let _: Var(None) = Put Var("mat")[Var("i")] = Array(Var("n"), Double(0))
+        Apply(Var("init_arr"), [Prim(Var("i"), Int(1), Sub, kind=None), ])
+      } else {
+        Unit
+      }
+    }
+    let _: Var(None) = Apply(Var("init_arr"), [Prim(Var("m"), Int(1), Sub, kind=None), ])
+    Var(mat)
+  }
+  let a: Var(None) = Apply(Var("gen_arr"), [Int(2), Int(3), ])
+  let b: Var(None) = Apply(Var("gen_arr"), [Int(3), Int(2), ])
+  let c: Var(None) = Apply(Var("gen_arr"), [Int(2), Int(2), ])
+  let _: Var(None) = Put Get(Var("a"), Int(0))[Int(0)] = Double(1)
+  let _: Var(None) = Put Get(Var("a"), Int(0))[Int(1)] = Double(2)
+  let _: Var(None) = Put Get(Var("a"), Int(0))[Int(2)] = Double(3)
+  let _: Var(None) = Put Get(Var("a"), Int(1))[Int(0)] = Double(4)
+  let _: Var(None) = Put Get(Var("a"), Int(1))[Int(1)] = Double(5)
+  let _: Var(None) = Put Get(Var("a"), Int(1))[Int(2)] = Double(6)
+  let _: Var(None) = Put Get(Var("b"), Int(0))[Int(0)] = Double(7)
+  let _: Var(None) = Put Get(Var("b"), Int(0))[Int(1)] = Double(8)
+  let _: Var(None) = Put Get(Var("b"), Int(1))[Int(0)] = Double(9)
+  let _: Var(None) = Put Get(Var("b"), Int(1))[Int(1)] = Double(10)
+  let _: Var(None) = Put Get(Var("b"), Int(2))[Int(0)] = Double(11)
+  let _: Var(None) = Put Get(Var("b"), Int(2))[Int(1)] = Double(12)
+  let _: Var(None) = Apply(Var("matmul"), [Int(2), Int(3), Int(2), Var("a"), Var("b"), Var("c"), ])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(0))]), ])
+  let _: Var(None) = Apply(Var("print_endline"), [])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(0)), Int(1))]), ])
+  let _: Var(None) = Apply(Var("print_endline"), [])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(0))]), ])
+  let _: Var(None) = Apply(Var("print_endline"), [])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("truncate"), [Get(Get(Var("c"), Int(1)), Int(1))]), ])
+  Unit
+}
+Unit

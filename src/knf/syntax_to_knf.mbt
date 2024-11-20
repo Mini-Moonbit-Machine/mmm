@@ -187,7 +187,7 @@ fn fold_switch_tree_to_knf(
           guard let Type::Fun(_, ty) = ctor_ty.repr() else {
             _ => fail!("ctor type \{ctor_ty} is not a function type")
           }
-          guard let Type::Enum(_, variants) = ty.repr() else {
+          guard let Type::Enum(_, { val: Some(variants) }) = ty.repr() else {
             _ => fail!("ctor type \{ty} is not an enum type")
           }
           let variant_id = variants
@@ -543,7 +543,7 @@ fn build_knf(
       guard let Type::Fun(_, ty) = ctor_ty.repr() else {
         _ => fail!("ctor type \{ctor_ty} is not a function type")
       }
-      guard let Type::Enum(_, variants) = ty.repr() else {
+      guard let Type::Enum(_, { val: Some(variants) }) = ty.repr() else {
         _ => fail!("ctor type \{ty} is not an enum type")
       }
       let variant_id = variants.search_by(fn(ctor) { f == ctor.0 }).unwrap()
@@ -577,7 +577,7 @@ fn build_knf(
     }
     LetEnum(_, ty, e) => {
       let mut ty_env = ty_env
-      guard let Type::Enum(_, variants) = ty.repr() else {
+      guard let Type::Enum(_, { val: Some(variants) }) = ty.repr() else {
         _ => fail!("infer: \{ty} is not an enum type")
       }
       for variant in variants {

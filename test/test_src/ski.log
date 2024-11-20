@@ -81,6 +81,45 @@
 // [Main]   return $force(x);
 // [Main] }
 // [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] resolve: LetRec({tyvars: ["X", "Y", "Z"], name: ("s", ((Z) -> Y) -> (Z) -> X), args: [("x", (Z) -> (Y) -> X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: LetRec({tyvars: [], name: ("g", Var(None)), args: [("z", Var(None))], body: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])}, Var("g"))}, Var("f"))}, LetRec({tyvars: ["X", "Y"], name: ("k", (Y) -> X), args: [("x", X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f"))}, LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit))))
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: LetRec({tyvars: [], name: ("g", Var(None)), args: [("z", Var(None))], body: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])}, Var("g"))}, Var("f"))
+// [Typer] resolve: LetRec({tyvars: [], name: ("g", Var(None)), args: [("z", Var(None))], body: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])}, Var("g"))
+// [Typer] resolve: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])
+// [Typer] resolve: App(Var("y"), [Var("z")])
+// [Typer] resolve: Var("z")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: App(Var("x"), [Var("z")])
+// [Typer] resolve: Var("z")
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("g")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: LetRec({tyvars: ["X", "Y"], name: ("k", (Y) -> X), args: [("x", X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f"))}, LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit)))
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f"))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit)
+// [Typer] resolve: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))
+// [Typer] resolve: App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")])
+// [Typer] resolve: Var("k")
+// [Typer] resolve: App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])])
+// [Typer] resolve: App(Var("k"), [App(Var("s"), [Var("i")])])
+// [Typer] resolve: App(Var("s"), [Var("i")])
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("s")
+// [Typer] resolve: Var("k")
+// [Typer] resolve: Var("s")
+// [Typer] resolve: LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")]))
+// [Typer] resolve: App(Var("print_int"), [Var("x")])
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])
+// [Typer] resolve: Var("printi")
+// [Typer] resolve: App(Var("rev_apply"), [Int(2)])
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Var("rev_apply")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: ["X", "Y", "Z"], name: ("s", ((Z) -> Y) -> (Z) -> X), args: [("x", (Z) -> (Y) -> X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: LetRec({tyvars: [], name: ("g", Var(None)), args: [("z", Var(None))], body: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])}, Var("g"))}, Var("f"))}, LetRec({tyvars: ["X", "Y"], name: ("k", (Y) -> X), args: [("x", X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f"))}, LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit)))) against Unit
 // [Typer] typevars: ["X", "Y", "Z"]
 // [Typer] check: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: LetRec({tyvars: [], name: ("g", Var(None)), args: [("z", Var(None))], body: App(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")])])}, Var("g"))}, Var("f")) against ((Z) -> Y) -> (Z) -> X
@@ -102,7 +141,7 @@
 // [Typer] inst: TypeScheme(([], Var(None)))
 // [Typer] inst result: Var(None)
 // [Typer] infer: Var("z")
-// [Typer] inst: TypeScheme(([], Var(Z)))
+// [Typer] inst: TypeScheme(([], Z))
 // [Typer] inst result: Z
 // [Typer] unify: Var(None) and (Z) -> Var(None)
 // [Typer] union: Var(None) and (Z) -> Var(None)
@@ -111,20 +150,20 @@
 // [Typer] unify: X and Var(None)
 // [Typer] union: X and Var(None)
 // [Typer] infer: Var("g")
-// [Typer] inst: TypeScheme(([], (Var(Z)) -> Var(X)))
-// [Typer] inst result: (Var(Z)) -> Var(X)
-// [Typer] unify: (Var(Z)) -> Var(X) and Var(None)
-// [Typer] union: (Var(Z)) -> Var(X) and Var(None)
+// [Typer] inst: TypeScheme(([], (Z) -> X))
+// [Typer] inst result: (Z) -> X
+// [Typer] unify: (Z) -> X and Var(None)
+// [Typer] union: (Z) -> X and Var(None)
 // [Typer] check: Var("f") against ((Z) -> Y) -> (Z) -> X
-// [Typer] inst: TypeScheme(([], (Var((Z) -> Var(Y))) -> Var((Var(Z)) -> Var(X))))
-// [Typer] inst result: (Var((Z) -> Var(Y))) -> Var((Var(Z)) -> Var(X))
-// [Typer] unify: (Var((Z) -> Var(Y))) -> Var((Var(Z)) -> Var(X)) and ((Z) -> Y) -> (Z) -> X
-// [Typer] unify: Var((Z) -> Var(Y)) and (Z) -> Y
+// [Typer] inst: TypeScheme(([], ((Z) -> Y) -> (Z) -> X))
+// [Typer] inst result: ((Z) -> Y) -> (Z) -> X
+// [Typer] unify: ((Z) -> Y) -> (Z) -> X and ((Z) -> Y) -> (Z) -> X
+// [Typer] unify: (Z) -> Y and (Z) -> Y
 // [Typer] unify: Z and Z
-// [Typer] unify: Var(Y) and Y
-// [Typer] unify: Var((Var(Z)) -> Var(X)) and (Z) -> X
-// [Typer] unify: Var(Z) and Z
-// [Typer] unify: Var(X) and X
+// [Typer] unify: Y and Y
+// [Typer] unify: (Z) -> X and (Z) -> X
+// [Typer] unify: Z and Z
+// [Typer] unify: X and X
 // [Typer] check: LetRec({tyvars: ["X", "Y"], name: ("k", (Y) -> X), args: [("x", X)], body: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f"))}, LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit))) against Unit
 // [Typer] typevars: ["X", "Y"]
 // [Typer] check: LetRec({tyvars: [], name: ("f", Var(None)), args: [("y", Var(None))], body: Var("x")}, Var("f")) against (Y) -> X
@@ -135,12 +174,12 @@
 // [Typer] unify: X and Var(None)
 // [Typer] union: X and Var(None)
 // [Typer] check: Var("f") against (Y) -> X
-// [Typer] inst: TypeScheme(([], (Var(None)) -> Var(X)))
-// [Typer] inst result: (Var(None)) -> Var(X)
-// [Typer] unify: (Var(None)) -> Var(X) and (Y) -> X
+// [Typer] inst: TypeScheme(([], (Var(None)) -> X))
+// [Typer] inst result: (Var(None)) -> X
+// [Typer] unify: (Var(None)) -> X and (Y) -> X
 // [Typer] unify: Var(None) and Y
 // [Typer] union: Var(None) and Y
-// [Typer] unify: Var(X) and X
+// [Typer] unify: X and X
 // [Typer] check: LetRec({tyvars: ["X"], name: ("i", X), args: [("x", X)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("rev_apply", Var(None)), App(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k")]), LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])))}, Unit)) against Unit
 // [Typer] typevars: ["X"]
 // [Typer] infer: Var("x")
@@ -166,35 +205,35 @@
 // [Typer] unify: (Var(None)) -> Var(None) and (Var(None)) -> (Var(None)) -> Var(None)
 // [Typer] unify: Var(None) and Var(None)
 // [Typer] union: Var(None) and Var(None)
-// [Typer] unify: Var(Var(None)) and (Var(None)) -> Var(None)
+// [Typer] unify: Var(None) and (Var(None)) -> Var(None)
 // [Typer] union: Var(None) and (Var(None)) -> Var(None)
-// [Typer] check: Var("k") against (((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) -> (Var(None)) -> (Var(None)) -> Var(None)
+// [Typer] check: Var("k") against ((((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) -> (Var(None)) -> (Var(None)) -> Var(None)
 // [Typer] inst: TypeScheme((["X", "Y"], (X) -> (Y) -> X))
 // [Typer] inst result: (Var(None)) -> (Var(None)) -> Var(None)
-// [Typer] unify: (Var(None)) -> (Var(None)) -> Var(None) and (((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) -> (Var(None)) -> (Var(None)) -> Var(None)
-// [Typer] unify: Var(None) and ((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
-// [Typer] union: Var(None) and ((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
-// [Typer] unify: (Var(None)) -> Var(((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) and (Var(None)) -> (Var(None)) -> Var(None)
+// [Typer] unify: (Var(None)) -> (Var(None)) -> Var(None) and ((((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) -> (Var(None)) -> (Var(None)) -> Var(None)
+// [Typer] unify: Var(None) and (((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
+// [Typer] union: Var(None) and (((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
+// [Typer] unify: (Var(None)) -> (((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None) and (Var(None)) -> (Var(None)) -> Var(None)
 // [Typer] unify: Var(None) and Var(None)
 // [Typer] union: Var(None) and Var(None)
-// [Typer] unify: Var(((Var((Var(None)) -> Var(None))) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)) and (Var(None)) -> Var(None)
-// [Typer] unify: (Var((Var(None)) -> Var(None))) -> Var(None) and Var(None)
-// [Typer] union: (Var((Var(None)) -> Var(None))) -> Var(None) and Var(None)
+// [Typer] unify: (((Var(None)) -> Var(None)) -> Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None) and (Var(None)) -> Var(None)
 // [Typer] unify: ((Var(None)) -> Var(None)) -> Var(None) and Var(None)
 // [Typer] union: ((Var(None)) -> Var(None)) -> Var(None) and Var(None)
-// [Typer] check: Var("k") against (Var(None)) -> Var((Var((Var(None)) -> Var(None))) -> Var(None))
+// [Typer] unify: ((Var(None)) -> Var(None)) -> Var(None) and Var(None)
+// [Typer] union: ((Var(None)) -> Var(None)) -> Var(None) and Var(None)
+// [Typer] check: Var("k") against (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
 // [Typer] inst: TypeScheme((["X", "Y"], (X) -> (Y) -> X))
 // [Typer] inst result: (Var(None)) -> (Var(None)) -> Var(None)
-// [Typer] unify: (Var(None)) -> (Var(None)) -> Var(None) and (Var(None)) -> Var((Var((Var(None)) -> Var(None))) -> Var(None))
+// [Typer] unify: (Var(None)) -> (Var(None)) -> Var(None) and (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
 // [Typer] unify: Var(None) and Var(None)
 // [Typer] union: Var(None) and Var(None)
-// [Typer] unify: (Var(None)) -> Var(Var(None)) and Var((Var((Var(None)) -> Var(None))) -> Var(None))
-// [Typer] unify: Var(None) and Var((Var(None)) -> Var(None))
+// [Typer] unify: (Var(None)) -> Var(None) and ((Var(None)) -> Var(None)) -> Var(None)
+// [Typer] unify: Var(None) and (Var(None)) -> Var(None)
 // [Typer] union: Var(None) and (Var(None)) -> Var(None)
-// [Typer] unify: Var(Var(None)) and Var(None)
+// [Typer] unify: Var(None) and Var(None)
 // [Typer] union: Var(None) and Var(None)
-// [Typer] unify: Var(None) and (Var(Var(None))) -> Var(((Var(None)) -> Var(None)) -> Var(None))
-// [Typer] union: Var(None) and (Var(Var(None))) -> Var(((Var(None)) -> Var(None)) -> Var(None))
+// [Typer] unify: Var(None) and (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
+// [Typer] union: Var(None) and (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
 // [Typer] infer: LetRec({tyvars: [], name: ("printi", Var(None)), args: [("x", Int)], body: App(Var("print_int"), [Var("x")])}, App(App(Var("rev_apply"), [Int(2)]), [Var("printi")]))
 // [Typer] typevars: []
 // [Typer] infer: App(Var("print_int"), [Var("x")])
@@ -210,17 +249,17 @@
 // [Typer] infer: App(App(Var("rev_apply"), [Int(2)]), [Var("printi")])
 // [Typer] infer: App(Var("rev_apply"), [Int(2)])
 // [Typer] infer: Var("rev_apply")
-// [Typer] inst: TypeScheme(([], Var((Var(Var(None))) -> Var(((Var(None)) -> Var(None)) -> Var(None)))))
-// [Typer] inst result: (Var(Var(None))) -> Var(((Var(None)) -> Var(None)) -> Var(None))
+// [Typer] inst: TypeScheme(([], (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)))
+// [Typer] inst result: (Var(None)) -> ((Var(None)) -> Var(None)) -> Var(None)
 // [Typer] infer: Int(2)
-// [Typer] unify: Var(Var(None)) and Int
+// [Typer] unify: Var(None) and Int
 // [Typer] union: Var(None) and Int
-// [Typer] check: Var("printi") against (Var(Int)) -> Var(None)
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Unit)))
-// [Typer] inst result: (Int) -> Var(Unit)
-// [Typer] unify: (Int) -> Var(Unit) and (Var(Int)) -> Var(None)
-// [Typer] unify: Int and Var(Int)
-// [Typer] unify: Var(Unit) and Var(None)
+// [Typer] check: Var("printi") against (Int) -> Var(None)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] unify: (Int) -> Unit and (Int) -> Var(None)
+// [Typer] unify: Int and Int
+// [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)

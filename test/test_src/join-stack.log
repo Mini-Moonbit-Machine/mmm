@@ -242,6 +242,40 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Int), args: [("u", Unit)], body: Int(123)}, LetRec({tyvars: [], name: ("g", Int), args: [("u", Unit)], body: Int(456)}, LetRec({tyvars: [], name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))}, Unit))))
+// [Typer] resolve: Int(123)
+// [Typer] resolve: LetRec({tyvars: [], name: ("g", Int), args: [("u", Unit)], body: Int(456)}, LetRec({tyvars: [], name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))}, Unit)))
+// [Typer] resolve: Int(456)
+// [Typer] resolve: LetRec({tyvars: [], name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))}, Unit))
+// [Typer] resolve: Int(789)
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))}, Unit)
+// [Typer] resolve: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))
+// [Typer] resolve: App(Var("f"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))]))
+// [Typer] resolve: App(Var("g"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("g")
+// [Typer] resolve: App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])
+// [Typer] resolve: If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))
+// [Typer] resolve: Eq(App(Var("h"), [Unit]), Int(0))
+// [Typer] resolve: App(Var("h"), [Unit])
+// [Typer] resolve: Unit
+// [Typer] resolve: Var("h")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Var("x"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None)
+// [Typer] resolve: Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None)
+// [Typer] resolve: Prim(Var("y"), Int(2), Add, kind=None)
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("f", Int), args: [("u", Unit)], body: Int(123)}, LetRec({tyvars: [], name: ("g", Int), args: [("u", Unit)], body: Int(456)}, LetRec({tyvars: [], name: ("h", Int), args: [("u", Unit)], body: Int(789)}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("x", Var(None)), App(Var("f"), [Unit]), Let(("y", Var(None)), App(Var("g"), [Unit]), App(Var("print_int"), [If(Eq(App(Var("h"), [Unit]), Int(0)), Prim(Var("x"), Int(1), Add, kind=None), Prim(Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None), Var("y"), Add, kind=None))])))}, Unit)))) against Unit
 // [Typer] typevars: []
 // [Typer] check: Int(123) against Int
@@ -284,7 +318,7 @@
 // [Typer] unify: Int and Int
 // [Typer] check: Prim(Var("x"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("x") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -292,16 +326,16 @@
 // [Typer] check: Prim(Prim(Var("y"), Int(2), Add, kind=None), Var("x"), Add, kind=None) against Int
 // [Typer] check: Prim(Var("y"), Int(2), Add, kind=None) against Int
 // [Typer] check: Var("y") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(2) against Int
 // [Typer] check: Var("x") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("y") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Unit and Var(None)

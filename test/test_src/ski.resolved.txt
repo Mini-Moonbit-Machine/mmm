@@ -1,0 +1,26 @@
+let rec s: forall ["X", "Y", "Z"] . (x: (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
+  let rec f: (y: Var(None)) -> Var(None) {
+    let rec g: (z: Var(None)) -> Var(None) {
+      Apply(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")]), ])
+    }
+    Var(g)
+  }
+  Var(f)
+}
+let rec k: forall ["X", "Y"] . (x: X) -> (Y) -> X {
+  let rec f: (y: Var(None)) -> Var(None) {
+    Var(x)
+  }
+  Var(f)
+}
+let rec i: forall ["X"] . (x: X) -> X {
+  Var(x)
+}
+let rec main: () -> Var(None) {
+  let rev_apply: Var(None) = Apply(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k"), ])
+  let rec printi: (x: Int) -> Var(None) {
+    Apply(Var("print_int"), [Var("x"), ])
+  }
+  Apply(App(Var("rev_apply"), [Int(2)]), [Var("printi"), ])
+}
+Unit

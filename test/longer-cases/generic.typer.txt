@@ -1,6 +1,6 @@
 let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool {
-  let rec do: (yield: Var((T) -> Bool)) -> Var(Bool) {
-    let rec next: (i: Var(Int)) -> Var(Bool) {
+  let rec do: (yield: (T) -> Bool) -> Bool {
+    let rec next: (i: Int) -> Bool {
       if (LE(Var("i"), Prim(Var("len"), Int(1), Sub, kind=Some(Int)))) then {
         if (App(Var("yield"), [Get(Var("arr"), Var("i"))])) then {
           Apply(Var("next"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
@@ -16,11 +16,11 @@ let rec iter: forall ["T"] . (arr: Array[T], len: Int) -> ((T) -> Bool) -> Bool 
   Var(do)
 }
 let rec each: forall ["T"] . (iter: ((T) -> Bool) -> Bool, f: (T) -> Unit) -> Unit {
-  let rec yield: (x: Var(T)) -> Var(Bool) {
-    let _: Var(Unit) = Apply(Var("f"), [Var("x"), ])
+  let rec yield: (x: T) -> Bool {
+    let _: Unit = Apply(Var("f"), [Var("x"), ])
     Bool(true)
   }
-  let rec do: () -> Var(Unit) {
+  let rec do: () -> Unit {
     if (App(Var("iter"), [Var("yield")])) then {
       Apply(Var("do"), [])
     } else {
@@ -29,27 +29,27 @@ let rec each: forall ["T"] . (iter: ((T) -> Bool) -> Bool, f: (T) -> Unit) -> Un
   }
   Apply(Var("do"), [])
 }
-let rec main: () -> Var(Unit) {
-  let arr: Var(Array[Int]) = Array::make(Int(5), Int(1))
-  let _: Var(Unit) = Put Var("arr")[Int(0)] = Int(1)
-  let _: Var(Unit) = Put Var("arr")[Int(1)] = Int(2)
-  let _: Var(Unit) = Put Var("arr")[Int(2)] = Int(3)
-  let _: Var(Unit) = Put Var("arr")[Int(3)] = Int(4)
-  let _: Var(Unit) = Put Var("arr")[Int(4)] = Int(5)
-  let int_arr_iter: Var(((Var(Int)) -> Bool) -> Bool) = Apply(Var("iter"), [Var("arr"), Int(5), ])
-  let rec print_i: (x: Var(Int)) -> Unit {
+let rec main: () -> Unit {
+  let arr: Array[Int] = Array::make(Int(5), Int(1))
+  let _: Unit = Put Var("arr")[Int(0)] = Int(1)
+  let _: Unit = Put Var("arr")[Int(1)] = Int(2)
+  let _: Unit = Put Var("arr")[Int(2)] = Int(3)
+  let _: Unit = Put Var("arr")[Int(3)] = Int(4)
+  let _: Unit = Put Var("arr")[Int(4)] = Int(5)
+  let int_arr_iter: ((Int) -> Bool) -> Bool = Apply(Var("iter"), [Var("arr"), Int(5), ])
+  let rec print_i: (x: Int) -> Unit {
     Apply(Var("print_int"), [Var("x"), ])
   }
-  let _: Var(Unit) = Apply(Var("each"), [Var("int_arr_iter"), Var("print_i"), ])
-  let arr: Var(Array[Double]) = Array::make(Int(6), Double(0))
-  let _: Var(Unit) = Put Var("arr")[Int(0)] = Double(1)
-  let _: Var(Unit) = Put Var("arr")[Int(1)] = Double(2)
-  let _: Var(Unit) = Put Var("arr")[Int(2)] = Double(3)
-  let _: Var(Unit) = Put Var("arr")[Int(3)] = Double(4)
-  let _: Var(Unit) = Put Var("arr")[Int(4)] = Double(5)
-  let _: Var(Unit) = Put Var("arr")[Int(5)] = Double(6)
-  let double_arr_iter: Var(((Var(Double)) -> Bool) -> Bool) = Apply(Var("iter"), [Var("arr"), Int(6), ])
-  let rec print_d: (x: Var(Double)) -> Unit {
+  let _: Unit = Apply(Var("each"), [Var("int_arr_iter"), Var("print_i"), ])
+  let arr: Array[Double] = Array::make(Int(6), Double(0))
+  let _: Unit = Put Var("arr")[Int(0)] = Double(1)
+  let _: Unit = Put Var("arr")[Int(1)] = Double(2)
+  let _: Unit = Put Var("arr")[Int(2)] = Double(3)
+  let _: Unit = Put Var("arr")[Int(3)] = Double(4)
+  let _: Unit = Put Var("arr")[Int(4)] = Double(5)
+  let _: Unit = Put Var("arr")[Int(5)] = Double(6)
+  let double_arr_iter: ((Double) -> Bool) -> Bool = Apply(Var("iter"), [Var("arr"), Int(6), ])
+  let rec print_d: (x: Double) -> Unit {
     Apply(Var("print_int"), [App(Var("int_of_float"), [Var("x")]), ])
   }
   Apply(Var("each"), [Var("double_arr_iter"), Var("print_d"), ])

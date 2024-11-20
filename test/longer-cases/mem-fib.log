@@ -813,6 +813,80 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: Let(("unmem_magic", Int), Neg(Int(1919810), kind=None), LetRec({tyvars: [], name: ("mem", (Int) -> Int), args: [("func", ((Int) -> Int, Int) -> Int), ("max_n", Int)], body: Let(("cache", Var(None)), Array(Var("max_n"), Var("unmem_magic")), LetRec({tyvars: [], name: ("memed", Int), args: [("n", Int)], body: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))}, Var("memed")))}, LetRec({tyvars: [], name: ("mem_fib", Int), args: [("f", (Int) -> Int), ("n", Int)], body: If(LE(Var("n"), Int(1)), Var("n"), Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None))}, LetRec({tyvars: [], name: ("fib", Int), args: [("n", Int)], body: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit)))))
+// [Typer] resolve: Neg(Int(1919810), kind=None)
+// [Typer] resolve: Int(1919810)
+// [Typer] resolve: LetRec({tyvars: [], name: ("mem", (Int) -> Int), args: [("func", ((Int) -> Int, Int) -> Int), ("max_n", Int)], body: Let(("cache", Var(None)), Array(Var("max_n"), Var("unmem_magic")), LetRec({tyvars: [], name: ("memed", Int), args: [("n", Int)], body: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))}, Var("memed")))}, LetRec({tyvars: [], name: ("mem_fib", Int), args: [("f", (Int) -> Int), ("n", Int)], body: If(LE(Var("n"), Int(1)), Var("n"), Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None))}, LetRec({tyvars: [], name: ("fib", Int), args: [("n", Int)], body: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit))))
+// [Typer] resolve: Let(("cache", Var(None)), Array(Var("max_n"), Var("unmem_magic")), LetRec({tyvars: [], name: ("memed", Int), args: [("n", Int)], body: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))}, Var("memed")))
+// [Typer] resolve: Array(Var("max_n"), Var("unmem_magic"))
+// [Typer] resolve: Var("max_n")
+// [Typer] resolve: Var("unmem_magic")
+// [Typer] resolve: LetRec({tyvars: [], name: ("memed", Int), args: [("n", Int)], body: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))}, Var("memed"))
+// [Typer] resolve: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))
+// [Typer] resolve: Eq(Get(Var("cache"), Var("n")), Var("unmem_magic"))
+// [Typer] resolve: Get(Var("cache"), Var("n"))
+// [Typer] resolve: Var("cache")
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("unmem_magic")
+// [Typer] resolve: Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res")))
+// [Typer] resolve: App(Var("func"), [Var("memed"), Var("n")])
+// [Typer] resolve: Var("memed")
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("func")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))
+// [Typer] resolve: Put(Var("cache"), Var("n"), Var("res"))
+// [Typer] resolve: Var("cache")
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("res")
+// [Typer] resolve: Var("res")
+// [Typer] resolve: Get(Var("cache"), Var("n"))
+// [Typer] resolve: Var("cache")
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("memed")
+// [Typer] resolve: LetRec({tyvars: [], name: ("mem_fib", Int), args: [("f", (Int) -> Int), ("n", Int)], body: If(LE(Var("n"), Int(1)), Var("n"), Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None))}, LetRec({tyvars: [], name: ("fib", Int), args: [("n", Int)], body: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit)))
+// [Typer] resolve: If(LE(Var("n"), Int(1)), Var("n"), Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None))
+// [Typer] resolve: LE(Var("n"), Int(1))
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None)
+// [Typer] resolve: App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Prim(Var("n"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)])
+// [Typer] resolve: Prim(Var("n"), Int(2), Sub, kind=None)
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: LetRec({tyvars: [], name: ("fib", Int), args: [("n", Int)], body: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit))
+// [Typer] resolve: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))
+// [Typer] resolve: App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)])
+// [Typer] resolve: Var("mem_fib")
+// [Typer] resolve: Prim(Var("n"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("mem")
+// [Typer] resolve: App(Var("f"), [Var("n")])
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("f")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit)
+// [Typer] resolve: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))
+// [Typer] resolve: App(Var("read_int"), [])
+// [Typer] resolve: Var("read_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit))
+// [Typer] resolve: App(Var("print_int"), [App(Var("fib"), [Var("n")])])
+// [Typer] resolve: App(Var("fib"), [Var("n")])
+// [Typer] resolve: Var("n")
+// [Typer] resolve: Var("fib")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)
+// [Typer] resolve: App(Var("print_char"), [Int(10)])
+// [Typer] resolve: Int(10)
+// [Typer] resolve: Var("print_char")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
 // [Typer] check: Let(("unmem_magic", Int), Neg(Int(1919810), kind=None), LetRec({tyvars: [], name: ("mem", (Int) -> Int), args: [("func", ((Int) -> Int, Int) -> Int), ("max_n", Int)], body: Let(("cache", Var(None)), Array(Var("max_n"), Var("unmem_magic")), LetRec({tyvars: [], name: ("memed", Int), args: [("n", Int)], body: If(Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")), Let(("res", Var(None)), App(Var("func"), [Var("memed"), Var("n")]), Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res"))), Get(Var("cache"), Var("n")))}, Var("memed")))}, LetRec({tyvars: [], name: ("mem_fib", Int), args: [("f", (Int) -> Int), ("n", Int)], body: If(LE(Var("n"), Int(1)), Var("n"), Prim(App(Var("f"), [Prim(Var("n"), Int(1), Sub, kind=None)]), App(Var("f"), [Prim(Var("n"), Int(2), Sub, kind=None)]), Add, kind=None))}, LetRec({tyvars: [], name: ("fib", Int), args: [("n", Int)], body: Let(("f", Var(None)), App(Var("mem"), [Var("mem_fib"), Prim(Var("n"), Int(1), Add, kind=None)]), App(Var("f"), [Var("n")]))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("n", Var(None)), App(Var("read_int"), []), Let(("_", Var(None)), App(Var("print_int"), [App(Var("fib"), [Var("n")])]), Let(("_", Var(None)), App(Var("print_char"), [Int(10)]), Unit)))}, Unit))))) against Unit
 // [Typer] check: Neg(Int(1919810), kind=None) against Int
 // [Typer] check: Int(1919810) against Int
@@ -835,7 +909,7 @@
 // [Typer] check: Eq(Get(Var("cache"), Var("n")), Var("unmem_magic")) against Bool
 // [Typer] infer: Get(Var("cache"), Var("n"))
 // [Typer] infer: Var("cache")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Var("n") against Int
 // [Typer] inst: TypeScheme(([], Int))
@@ -865,10 +939,10 @@
 // [Typer] check: Let(("_", Var(None)), Put(Var("cache"), Var("n"), Var("res")), Var("res")) against Int
 // [Typer] infer: Put(Var("cache"), Var("n"), Var("res"))
 // [Typer] infer: Var("res")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("cache") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -879,12 +953,12 @@
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
 // [Typer] check: Var("res") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("cache"), Var("n")) against Int
 // [Typer] check: Var("cache") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -967,7 +1041,7 @@
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("f") against (Int) -> Int
-// [Typer] inst: TypeScheme(([], Var((Int) -> Int)))
+// [Typer] inst: TypeScheme(([], (Int) -> Int))
 // [Typer] inst result: (Int) -> Int
 // [Typer] unify: (Int) -> Int and (Int) -> Int
 // [Typer] unify: Int and Int
@@ -988,7 +1062,7 @@
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: App(Var("fib"), [Var("n")]) against Int
 // [Typer] infer: Var("n")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("fib") against (Int) -> Int
 // [Typer] inst: TypeScheme(([], (Int) -> Int))

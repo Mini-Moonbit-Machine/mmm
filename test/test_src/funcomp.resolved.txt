@@ -1,0 +1,20 @@
+let rec compose: (f: (Int) -> Int, g: (Int) -> Int) -> (Int) -> Int {
+  let rec composed: (x: Int) -> Int {
+    Apply(Var("g"), [App(Var("f"), [Var("x")]), ])
+  }
+  Var(composed)
+}
+let rec dbl: (x: Int) -> Int {
+  Var("x") + Var("x")
+}
+let rec inc: (x: Int) -> Int {
+  Var("x") + Int(1)
+}
+let rec dec: (x: Int) -> Int {
+  Var("x") - Int(1)
+}
+let rec main: () -> Var(None) {
+  let h: Var(None) = Apply(Var("compose"), [Var("inc"), App(Var("compose"), [Var("dbl"), Var("dec")]), ])
+  Apply(Var("print_int"), [App(Var("h"), [Int(123)]), ])
+}
+Unit

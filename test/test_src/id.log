@@ -49,6 +49,23 @@
 // [Main]   return $force(x);
 // [Main] }
 // [Main] export default () => $trampoline(thunk_main, x => x);
+// [Typer] resolve: LetRec({tyvars: ["T"], name: ("f", T), args: [("x", T)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_int"), [App(Var("f"), [Int(1000)])]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])]))}, Unit))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_int"), [App(Var("f"), [Int(1000)])]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])]))}, Unit)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [App(Var("f"), [Int(1000)])]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])]))
+// [Typer] resolve: App(Var("print_int"), [App(Var("f"), [Int(1000)])])
+// [Typer] resolve: App(Var("f"), [Int(1000)])
+// [Typer] resolve: Int(1000)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])])
+// [Typer] resolve: App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])
+// [Typer] resolve: App(Var("f"), [Double(1000)])
+// [Typer] resolve: Double(1000)
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Var("int_of_float")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: ["T"], name: ("f", T), args: [("x", T)], body: Var("x")}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("_", Var(None)), App(Var("print_int"), [App(Var("f"), [Int(1000)])]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])]))}, Unit)) against Unit
 // [Typer] typevars: ["T"]
 // [Typer] infer: Var("x")
@@ -70,7 +87,7 @@
 // [Typer] unify: (Var(None)) -> Var(None) and (Int) -> Int
 // [Typer] unify: Var(None) and Int
 // [Typer] union: Var(None) and Int
-// [Typer] unify: Var(Int) and Int
+// [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("print_int"), [App(Var("int_of_float"), [App(Var("f"), [Double(1000)])])])

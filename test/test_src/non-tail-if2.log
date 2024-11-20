@@ -340,6 +340,33 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: LetRec({tyvars: [], name: ("f", Int), args: [], body: Int(12345)}, Let(("y", Var(None)), Array(Int(10), Int(3)), Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))]))))}, Unit)
+// [Typer] resolve: LetRec({tyvars: [], name: ("f", Int), args: [], body: Int(12345)}, Let(("y", Var(None)), Array(Int(10), Int(3)), Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))]))))
+// [Typer] resolve: Int(12345)
+// [Typer] resolve: Let(("y", Var(None)), Array(Int(10), Int(3)), Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))])))
+// [Typer] resolve: Array(Int(10), Int(3))
+// [Typer] resolve: Int(10)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))]))
+// [Typer] resolve: Int(67890)
+// [Typer] resolve: App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))])
+// [Typer] resolve: If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))
+// [Typer] resolve: Eq(Get(Var("y"), Int(0)), Int(3))
+// [Typer] resolve: Get(Var("y"), Int(0))
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None)
+// [Typer] resolve: Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None)
+// [Typer] resolve: App(Var("f"), [])
+// [Typer] resolve: Var("f")
+// [Typer] resolve: Get(Var("y"), Int(1))
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Int(7)
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: LetRec({tyvars: [], name: ("f", Int), args: [], body: Int(12345)}, Let(("y", Var(None)), Array(Int(10), Int(3)), Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))]))))}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: LetRec({tyvars: [], name: ("f", Int), args: [], body: Int(12345)}, Let(("y", Var(None)), Array(Int(10), Int(3)), Let(("x", Var(None)), Int(67890), App(Var("print_int"), [If(Eq(Get(Var("y"), Int(0)), Int(3)), Prim(Prim(App(Var("f"), []), Get(Var("y"), Int(1)), Add, kind=None), Var("x"), Add, kind=None), Int(7))]))))
@@ -363,7 +390,7 @@
 // [Typer] check: Eq(Get(Var("y"), Int(0)), Int(3)) against Bool
 // [Typer] infer: Get(Var("y"), Int(0))
 // [Typer] infer: Var("y")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(3)
@@ -378,13 +405,13 @@
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("y"), Int(1)) against Int
 // [Typer] check: Var("y") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("x") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(7) against Int

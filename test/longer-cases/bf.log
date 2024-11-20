@@ -2539,6 +2539,320 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("read_ch_until_newline_or_eof", Int), args: [], body: Let(("c", Var(None)), App(Var("read_char"), []), If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c"))))}, Let(("move_left", Int), Int(60), Let(("move_right", Int), Int(62), Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))))))))))
+// [Typer] resolve: Let(("c", Var(None)), App(Var("read_char"), []), If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c"))))
+// [Typer] resolve: App(Var("read_char"), [])
+// [Typer] resolve: Var("read_char")
+// [Typer] resolve: If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c")))
+// [Typer] resolve: Eq(Var("c"), Int(10))
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Int(10)
+// [Typer] resolve: Neg(Int(1), kind=None)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c"))
+// [Typer] resolve: Eq(Var("c"), Int(13))
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Int(13)
+// [Typer] resolve: Neg(Int(1), kind=None)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("c")
+// [Typer] resolve: Let(("move_left", Int), Int(60), Let(("move_right", Int), Int(62), Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))))))))))
+// [Typer] resolve: Int(60)
+// [Typer] resolve: Let(("move_right", Int), Int(62), Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))))))))
+// [Typer] resolve: Int(62)
+// [Typer] resolve: Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))))))))
+// [Typer] resolve: Int(43)
+// [Typer] resolve: Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))))))
+// [Typer] resolve: Int(45)
+// [Typer] resolve: Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))))))
+// [Typer] resolve: Int(46)
+// [Typer] resolve: Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))))
+// [Typer] resolve: Int(44)
+// [Typer] resolve: Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))))
+// [Typer] resolve: Int(91)
+// [Typer] resolve: Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))
+// [Typer] resolve: Int(93)
+// [Typer] resolve: LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))
+// [Typer] resolve: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))
+// [Typer] resolve: Array(Int(1), Int(0))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit)))))
+// [Typer] resolve: Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0))
+// [Typer] resolve: Prim(Int(1024), Int(1024), Mul, kind=None)
+// [Typer] resolve: Int(1024)
+// [Typer] resolve: Int(1024)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))
+// [Typer] resolve: Array(Int(1), Int(0))
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit)))
+// [Typer] resolve: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))
+// [Typer] resolve: LE(Var("len"), Var("pc"))
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")]))))
+// [Typer] resolve: Get(Var("prog"), Var("pc"))
+// [Typer] resolve: Var("prog")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))
+// [Typer] resolve: Eq(Var("i"), Var("loop_start"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("loop_start")
+// [Typer] resolve: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Prim(Var("level"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("level")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("skip")
+// [Typer] resolve: If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")]))
+// [Typer] resolve: Eq(Var("i"), Var("loop_end"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("loop_end")
+// [Typer] resolve: If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)]))
+// [Typer] resolve: Eq(Var("level"), Int(0))
+// [Typer] resolve: Var("level")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Prim(Var("level"), Int(1), Sub, kind=None)
+// [Typer] resolve: Var("level")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("skip")
+// [Typer] resolve: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("level")
+// [Typer] resolve: Var("skip")
+// [Typer] resolve: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))
+// [Typer] resolve: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))
+// [Typer] resolve: LE(Var("len"), Var("pc"))
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))))))
+// [Typer] resolve: Get(Var("prog"), Var("pc"))
+// [Typer] resolve: Var("prog")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))
+// [Typer] resolve: Eq(Var("i"), Var("move_right"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("move_right")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))))
+// [Typer] resolve: Eq(Var("i"), Var("move_left"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("move_left")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))
+// [Typer] resolve: Eq(Var("i"), Var("increase"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("increase")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)
+// [Typer] resolve: Get(Var("cells"), Get(Var("ptr"), Int(0)))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))
+// [Typer] resolve: Eq(Var("i"), Var("decrease"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("decrease")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)
+// [Typer] resolve: Get(Var("cells"), Get(Var("ptr"), Int(0)))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))
+// [Typer] resolve: Eq(Var("i"), Var("print"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("print")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))])
+// [Typer] resolve: Get(Var("cells"), Get(Var("ptr"), Int(0)))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("print_char")
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))
+// [Typer] resolve: Eq(Var("i"), Var("read"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("read")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), []))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: App(Var("read_ch_until_newline_or_eof"), [])
+// [Typer] resolve: Var("read_ch_until_newline_or_eof")
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))
+// [Typer] resolve: Eq(Var("i"), Var("loop_start"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("loop_start")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)]))))
+// [Typer] resolve: Put(Var("next_pc"), Int(0), Var("pc"))
+// [Typer] resolve: Var("next_pc")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))
+// [Typer] resolve: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))
+// [Typer] resolve: Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0))
+// [Typer] resolve: Get(Var("cells"), Get(Var("ptr"), Int(0)))
+// [Typer] resolve: Var("cells")
+// [Typer] resolve: Get(Var("ptr"), Int(0))
+// [Typer] resolve: Var("ptr")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit)
+// [Typer] resolve: Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)]))
+// [Typer] resolve: Var("next_pc")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("skip")
+// [Typer] resolve: Unit
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), []))
+// [Typer] resolve: Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Var("next_pc")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("pc"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: App(Var("lp"), [])
+// [Typer] resolve: Var("lp")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)]))
+// [Typer] resolve: App(Var("lp"), [])
+// [Typer] resolve: Var("lp")
+// [Typer] resolve: App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)
+// [Typer] resolve: Get(Var("next_pc"), Int(0))
+// [Typer] resolve: Var("next_pc")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))
+// [Typer] resolve: Eq(Var("i"), Var("loop_end"))
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("loop_end")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Var("pc")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit)
+// [Typer] resolve: App(Var("aux"), [Int(0)])
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("aux")
+// [Typer] resolve: Unit
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)
+// [Typer] resolve: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))
+// [Typer] resolve: Int(1024)
+// [Typer] resolve: Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit)))
+// [Typer] resolve: Array(Var("len"), Int(0))
+// [Typer] resolve: Var("len")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))
+// [Typer] resolve: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))
+// [Typer] resolve: App(Var("read_ch_until_newline_or_eof"), [])
+// [Typer] resolve: Var("read_ch_until_newline_or_eof")
+// [Typer] resolve: If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)])))
+// [Typer] resolve: Eq(Var("x"), Neg(Int(1), kind=None))
+// [Typer] resolve: Var("x")
+// [Typer] resolve: Neg(Int(1), kind=None)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: App(Var("bf"), [Var("i"), Var("prog")])
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("prog")
+// [Typer] resolve: Var("bf")
+// [Typer] resolve: Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))
+// [Typer] resolve: Put(Var("prog"), Var("i"), Var("x"))
+// [Typer] resolve: Var("prog")
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Var("x")
+// [Typer] resolve: App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)])
+// [Typer] resolve: Prim(Var("i"), Int(1), Add, kind=None)
+// [Typer] resolve: Var("i")
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("read_prog")
+// [Typer] resolve: Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit)
+// [Typer] resolve: App(Var("read_prog"), [Int(0)])
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("read_prog")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("read_ch_until_newline_or_eof", Int), args: [], body: Let(("c", Var(None)), App(Var("read_char"), []), If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c"))))}, Let(("move_left", Int), Int(60), Let(("move_right", Int), Int(62), Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit))))))))))) against Unit
 // [Typer] typevars: []
 // [Typer] check: Let(("c", Var(None)), App(Var("read_char"), []), If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c")))) against Int
@@ -2551,7 +2865,7 @@
 // [Typer] check: If(Eq(Var("c"), Int(10)), Neg(Int(1), kind=None), If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c"))) against Int
 // [Typer] check: Eq(Var("c"), Int(10)) against Bool
 // [Typer] infer: Var("c")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(10)
 // [Typer] unify: Int and Int
@@ -2560,14 +2874,14 @@
 // [Typer] check: If(Eq(Var("c"), Int(13)), Neg(Int(1), kind=None), Var("c")) against Int
 // [Typer] check: Eq(Var("c"), Int(13)) against Bool
 // [Typer] infer: Var("c")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Int(13)
 // [Typer] unify: Int and Int
 // [Typer] check: Neg(Int(1), kind=None) against Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("c") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Let(("move_left", Int), Int(60), Let(("move_right", Int), Int(62), Let(("increase", Int), Int(43), Let(("decrease", Int), Int(45), Let(("print", Int), Int(46), Let(("read", Int), Int(44), Let(("loop_start", Int), Int(91), Let(("loop_end", Int), Int(93), LetRec({tyvars: [], name: ("bf", Unit), args: [("len", Int), ("prog", Array[Int])], body: Let(("ptr", Var(None)), Array(Int(1), Int(0)), Let(("cells", Var(None)), Array(Prim(Int(1024), Int(1024), Mul, kind=None), Int(0)), Let(("next_pc", Var(None)), Array(Int(1), Int(0)), LetRec({tyvars: [], name: ("skip", Var(None)), args: [("pc", Var(None)), ("level", Int)], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))))}, LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit))))))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("len", Var(None)), Int(1024), Let(("prog", Var(None)), Array(Var("len"), Int(0)), LetRec({tyvars: [], name: ("read_prog", Var(None)), args: [("i", Var(None))], body: Let(("x", Var(None)), App(Var("read_ch_until_newline_or_eof"), []), If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))))}, Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit))))}, Unit)))))))))) against Unit
@@ -2621,7 +2935,7 @@
 // [Typer] unify: Int and Var(None)
 // [Typer] union: Int and Var(None)
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")]))))
 // [Typer] infer: Get(Var("prog"), Var("pc"))
@@ -2629,7 +2943,7 @@
 // [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Int
@@ -2637,7 +2951,7 @@
 // [Typer] infer: If(Eq(Var("i"), Var("loop_start")), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)]), If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])))
 // [Typer] check: Eq(Var("i"), Var("loop_start")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("loop_start")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2645,11 +2959,11 @@
 // [Typer] unify: Int and Int
 // [Typer] infer: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("skip")
-// [Typer] inst: TypeScheme(([], (Var(Int), Int) -> Var(None)))
-// [Typer] inst result: (Var(Int), Int) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(None)))
+// [Typer] inst result: (Int, Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -2662,7 +2976,7 @@
 // [Typer] infer: If(Eq(Var("i"), Var("loop_end")), If(Eq(Var("level"), Int(0)), Var("pc"), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")]))
 // [Typer] check: Eq(Var("i"), Var("loop_end")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("loop_end")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2676,15 +2990,15 @@
 // [Typer] infer: Int(0)
 // [Typer] unify: Int and Int
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Prim(Var("level"), Int(1), Sub, kind=None)])
 // [Typer] infer: Var("skip")
-// [Typer] inst: TypeScheme(([], (Var(Int), Int) -> Var(None)))
-// [Typer] inst result: (Var(Int), Int) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Var(None)))
+// [Typer] inst result: (Int, Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -2698,11 +3012,11 @@
 // [Typer] union: Int and Var(None)
 // [Typer] infer: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Var("level")])
 // [Typer] infer: Var("skip")
-// [Typer] inst: TypeScheme(([], (Var(Int), Int) -> Var(~0)))
-// [Typer] inst result: (Var(Int), Int) -> Int
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
@@ -2711,9 +3025,9 @@
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Var(Int) and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Int and Var(Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
 // [Typer] check: LetRec({tyvars: [], name: ("aux", Var(None)), args: [("pc", Var(None))], body: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))}, Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] infer: If(LE(Var("len"), Var("pc")), Var("pc"), Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))))
@@ -2727,7 +3041,7 @@
 // [Typer] unify: Int and Var(None)
 // [Typer] union: Int and Var(None)
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Let(("i", Var(None)), Get(Var("prog"), Var("pc")), If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))))))
 // [Typer] infer: Get(Var("prog"), Var("pc"))
@@ -2735,7 +3049,7 @@
 // [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Int
@@ -2743,7 +3057,7 @@
 // [Typer] infer: If(Eq(Var("i"), Var("move_right")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))))
 // [Typer] check: Eq(Var("i"), Var("move_right")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("move_right")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2754,13 +3068,13 @@
 // [Typer] infer: Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=None)
 // [Typer] infer: Get(Var("ptr"), Int(0))
 // [Typer] infer: Var("ptr")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2769,18 +3083,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("move_left")), Let(("_", Var(None)), Put(Var("ptr"), Int(0), Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))))
 // [Typer] check: Eq(Var("i"), Var("move_left")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("move_left")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2791,13 +3105,13 @@
 // [Typer] infer: Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=None)
 // [Typer] infer: Get(Var("ptr"), Int(0))
 // [Typer] infer: Var("ptr")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Int(0) against Int
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2806,18 +3120,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("increase")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))))
 // [Typer] check: Eq(Var("i"), Var("increase")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("increase")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2828,11 +3142,11 @@
 // [Typer] infer: Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=None)
 // [Typer] infer: Get(Var("cells"), Get(Var("ptr"), Int(0)))
 // [Typer] infer: Var("cells")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2840,13 +3154,13 @@
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("cells") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2855,18 +3169,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("decrease")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))))
 // [Typer] check: Eq(Var("i"), Var("decrease")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("decrease")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2877,11 +3191,11 @@
 // [Typer] infer: Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=None)
 // [Typer] infer: Get(Var("cells"), Get(Var("ptr"), Int(0)))
 // [Typer] infer: Var("cells")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2889,13 +3203,13 @@
 // [Typer] infer: Int(1)
 // [Typer] unify: Int and Int
 // [Typer] check: Var("cells") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2904,18 +3218,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("print")), Let(("_", Var(None)), App(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0)))]), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))))
 // [Typer] check: Eq(Var("i"), Var("print")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("print")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2928,13 +3242,13 @@
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Get(Var("cells"), Get(Var("ptr"), Int(0))) against Int
 // [Typer] check: Var("cells") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2943,18 +3257,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("read")), Let(("_", Var(None)), Put(Var("cells"), Get(Var("ptr"), Int(0)), App(Var("read_ch_until_newline_or_eof"), [])), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))))
 // [Typer] check: Eq(Var("i"), Var("read")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("read")
 // [Typer] inst: TypeScheme(([], Int))
@@ -2967,13 +3281,13 @@
 // [Typer] inst: TypeScheme(([], () -> Int))
 // [Typer] inst result: () -> Int
 // [Typer] check: Var("cells") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -2982,18 +3296,18 @@
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] infer: If(Eq(Var("i"), Var("loop_start")), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])))), If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc")))
 // [Typer] check: Eq(Var("i"), Var("loop_start")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("loop_start")
 // [Typer] inst: TypeScheme(([], Int))
@@ -3002,10 +3316,10 @@
 // [Typer] infer: Let(("_", Var(None)), Put(Var("next_pc"), Int(0), Var("pc")), LetRec({tyvars: [], name: ("lp", Var(None)), args: [], body: If(Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])), Unit), Let(("_", Var(None)), Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])), App(Var("lp"), [])))}, Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)]))))
 // [Typer] infer: Put(Var("next_pc"), Int(0), Var("pc"))
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("next_pc") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -3018,11 +3332,11 @@
 // [Typer] check: Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0)) against Bool
 // [Typer] infer: Get(Var("cells"), Get(Var("ptr"), Int(0)))
 // [Typer] infer: Var("cells")
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] check: Get(Var("ptr"), Int(0)) against Int
 // [Typer] check: Var("ptr") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -3033,17 +3347,17 @@
 // [Typer] infer: Put(Var("next_pc"), Int(0), App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)]))
 // [Typer] infer: App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=None), Int(0)])
 // [Typer] infer: Var("skip")
-// [Typer] inst: TypeScheme(([], (Var(Int), Int) -> Var(~0)))
-// [Typer] inst result: (Var(Int), Int) -> Int
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int, Int) -> Int))
+// [Typer] inst result: (Int, Int) -> Int
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Int(0) against Int
 // [Typer] check: Var("next_pc") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -3055,16 +3369,16 @@
 // [Typer] infer: Put(Var("next_pc"), Int(0), App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)]))
 // [Typer] infer: App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("pc"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("pc") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("next_pc") against Array[Var(None)]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Var(None)]
 // [Typer] unify: Int and Var(None)
@@ -3078,22 +3392,22 @@
 // [Typer] inst result: () -> Var(None)
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
-// [Typer] unify: Unit and Var(Unit)
+// [Typer] unify: Unit and Unit
 // [Typer] infer: Let(("_", Var(None)), App(Var("lp"), []), App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)]))
 // [Typer] infer: App(Var("lp"), [])
 // [Typer] infer: Var("lp")
-// [Typer] inst: TypeScheme(([], () -> Var(Unit)))
-// [Typer] inst result: () -> Var(Unit)
+// [Typer] inst: TypeScheme(([], () -> Unit))
+// [Typer] inst result: () -> Unit
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(~0)))
-// [Typer] inst result: (Var(Int)) -> Int
-// [Typer] check: Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Int))
+// [Typer] inst result: (Int) -> Int
+// [Typer] check: Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=None) against Int
 // [Typer] check: Get(Var("next_pc"), Int(0)) against Int
 // [Typer] check: Var("next_pc") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
@@ -3102,34 +3416,34 @@
 // [Typer] infer: If(Eq(Var("i"), Var("loop_end")), Var("pc"), Var("pc"))
 // [Typer] check: Eq(Var("i"), Var("loop_end")) against Bool
 // [Typer] infer: Var("i")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("loop_end")
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Var("pc")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Var(Int) and Int
-// [Typer] unify: Var(Int) and Int
-// [Typer] unify: Var(Int) and Int
-// [Typer] unify: Var(Int) and Int
-// [Typer] unify: Var(Int) and Int
-// [Typer] unify: Var(Int) and Int
 // [Typer] unify: Int and Int
-// [Typer] unify: Int and Var(Int)
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
+// [Typer] unify: Int and Int
 // [Typer] check: Let(("_", Var(None)), App(Var("aux"), [Int(0)]), Unit) against Unit
 // [Typer] infer: App(Var("aux"), [Int(0)])
 // [Typer] infer: Var("aux")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(~0)))
-// [Typer] inst result: (Var(Int)) -> Int
-// [Typer] check: Int(0) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Int))
+// [Typer] inst result: (Int) -> Int
+// [Typer] check: Int(0) against Int
 // [Typer] unify: Var(None) and Int
 // [Typer] union: Var(None) and Int
 // [Typer] check: Unit against Unit
@@ -3143,7 +3457,7 @@
 // [Typer] infer: Array(Var("len"), Int(0))
 // [Typer] infer: Int(0)
 // [Typer] check: Var("len") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Array[Int]
@@ -3160,7 +3474,7 @@
 // [Typer] infer: If(Eq(Var("x"), Neg(Int(1), kind=None)), App(Var("bf"), [Var("i"), Var("prog")]), Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)])))
 // [Typer] check: Eq(Var("x"), Neg(Int(1), kind=None)) against Bool
 // [Typer] infer: Var("x")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] infer: Neg(Int(1), kind=None)
 // [Typer] infer: Int(1)
@@ -3175,45 +3489,45 @@
 // [Typer] unify: Var(None) and Int
 // [Typer] union: Var(None) and Int
 // [Typer] check: Var("prog") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] infer: Let(("_", Var(None)), Put(Var("prog"), Var("i"), Var("x")), App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)]))
 // [Typer] infer: Put(Var("prog"), Var("i"), Var("x"))
 // [Typer] infer: Var("x")
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] check: Var("prog") against Array[Int]
-// [Typer] inst: TypeScheme(([], Var(Array[Int])))
+// [Typer] inst: TypeScheme(([], Array[Int]))
 // [Typer] inst result: Array[Int]
 // [Typer] unify: Array[Int] and Array[Int]
 // [Typer] unify: Int and Int
 // [Typer] check: Var("i") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: App(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=None)])
 // [Typer] infer: Var("read_prog")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(None)))
-// [Typer] inst result: (Var(Int)) -> Var(None)
-// [Typer] check: Prim(Var("i"), Int(1), Add, kind=None) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Var(None)))
+// [Typer] inst result: (Int) -> Var(None)
+// [Typer] check: Prim(Var("i"), Int(1), Add, kind=None) against Int
 // [Typer] check: Var("i") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Int(1) against Int
 // [Typer] unify: Unit and Var(None)
 // [Typer] union: Unit and Var(None)
-// [Typer] unify: Unit and Var(Unit)
+// [Typer] unify: Unit and Unit
 // [Typer] infer: Let(("_", Var(None)), App(Var("read_prog"), [Int(0)]), Unit)
 // [Typer] infer: App(Var("read_prog"), [Int(0)])
 // [Typer] infer: Var("read_prog")
-// [Typer] inst: TypeScheme(([], (Var(Int)) -> Var(Unit)))
-// [Typer] inst result: (Var(Int)) -> Var(Unit)
-// [Typer] check: Int(0) against Var(Int)
+// [Typer] inst: TypeScheme(([], (Int) -> Unit))
+// [Typer] inst result: (Int) -> Unit
+// [Typer] check: Int(0) against Int
 // [Typer] unify: Var(None) and Unit
 // [Typer] union: Var(None) and Unit
 // [Typer] infer: Unit

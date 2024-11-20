@@ -1,0 +1,68 @@
+let limit: Double = Double(2)
+let limit_sq: Double = Var("limit") * Var("limit")
+let iter: Int = Int(300)
+let c_re: Double = Neg(Double(0.123))
+let c_im: Double = Double(0.745)
+let rec calc_pixel: (zr: Double, zi: Double, it: Int) -> Int {
+  let zr2: Var(None) = Var("zr") * Var("zr")
+  let zi2: Var(None) = Var("zi") * Var("zi")
+  if (Eq(Var("it"), Var("iter"))) then {
+    Var(iter)
+  } else {
+    if (LE(Var("limit_sq"), Prim(Var("zr2"), Var("zi2"), Add, kind=None))) then {
+      Var(it)
+    } else {
+      let new_zi: Var(None) = Prim(Prim(Double(2), Var("zr"), Mul, kind=None), Var("zi"), Mul, kind=None) + Var("c_im")
+      let new_zr: Var(None) = Prim(Var("zr2"), Var("zi2"), Sub, kind=None) + Var("c_re")
+      Apply(Var("calc_pixel"), [Var("new_zr"), Var("new_zi"), Prim(Var("it"), Int(1), Add, kind=None), ])
+    }
+  }
+}
+let rec clamp: (i: Int) -> Int {
+  if (LE(Var("i"), Int(0))) then {
+    Int(0)
+  } else {
+    if (LE(Int(48), Var("i"))) then {
+      Int(48)
+    } else {
+      Var(i)
+    }
+  }
+}
+let rec main_loop: (w: Int, h: Int, x: Int, y: Int, ret: Array[Int]) -> Unit {
+  if (Eq(Var("y"), Var("h"))) then {
+    Unit
+  } else {
+    if (Eq(Var("x"), Var("w"))) then {
+      Apply(Var("main_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=None), Var("ret"), ])
+    } else {
+      let cr: Var(None) = Neg(Prim(Prim(Prim(Double(3), App(Var("float_of_int"), [Var("x")]), Mul, kind=None), App(Var("float_of_int"), [Var("w")]), Div, kind=None), Double(1.5), Sub, kind=None))
+      let ci: Var(None) = Prim(Prim(Double(3), App(Var("float_of_int"), [Var("y")]), Mul, kind=None), App(Var("float_of_int"), [Var("h")]), Div, kind=None) - Double(1.5)
+      let res: Var(None) = Apply(Var("calc_pixel"), [Var("cr"), Var("ci"), Int(0), ])
+      let _: Var(None) = Put Var("ret")[Prim(Prim(Var("y"), Var("w"), Mul, kind=None), Var("x"), Add, kind=None)] = App(Var("clamp"), [Var("res")])
+      Apply(Var("main_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=None), Var("y"), Var("ret"), ])
+    }
+  }
+}
+let rec print_loop: (w: Int, h: Int, x: Int, y: Int, ret: Array[Int]) -> Unit {
+  if (Eq(Var("y"), Var("h"))) then {
+    Unit
+  } else {
+    if (Eq(Var("x"), Var("w"))) then {
+      let _: Var(None) = Apply(Var("print_char"), [Int(10), ])
+      Apply(Var("print_loop"), [Var("w"), Var("h"), Int(0), Prim(Var("y"), Int(1), Add, kind=None), Var("ret"), ])
+    } else {
+      let _: Var(None) = Apply(Var("print_char"), [Prim(Int(48), Get(Var("ret"), Prim(Prim(Var("y"), Var("w"), Mul, kind=None), Var("x"), Add, kind=None)), Add, kind=None), ])
+      Apply(Var("print_loop"), [Var("w"), Var("h"), Prim(Var("x"), Int(1), Add, kind=None), Var("y"), Var("ret"), ])
+    }
+  }
+}
+let rec main: () -> Var(None) {
+  let h: Var(None) = Apply(Var("read_int"), [])
+  let w: Var(None) = Var("h") * Int(2)
+  let ret: Var(None) = Array::make(Prim(Var("w"), Var("h"), Mul, kind=None), Int(0))
+  let _: Var(None) = Apply(Var("main_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
+  let _: Var(None) = Apply(Var("print_loop"), [Var("w"), Var("h"), Int(0), Int(0), Var("ret"), ])
+  Unit
+}
+Unit

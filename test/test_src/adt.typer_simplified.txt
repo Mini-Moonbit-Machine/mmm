@@ -1,6 +1,6 @@
-enum IntList = Var(Enum IntList { Nil(), Cons(Int, Var(~0)) })
-let rec int_array_to_list: (arr: Array[Int], len: Int) -> IntList {
-  let rec aux: (i: Int) -> Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) {
+enum IntList = Enum IntList { Nil(), Cons(Int, ~0) }
+let rec int_array_to_list: (arr: Array[Int], len: Int) -> Enum IntList { Nil(), Cons(Int, ~0) } {
+  let rec aux: (i: Int) -> Enum IntList { Nil(), Cons(Int, ~1) } {
     if (Eq(Var("i"), Var("len"))) then {
       CtorApp(Nil, [])
     } else {
@@ -9,12 +9,12 @@ let rec int_array_to_list: (arr: Array[Int], len: Int) -> IntList {
   }
   Apply(Var("aux"), [Int(0), ])
 }
-let rec print_int_list: (lst: IntList) -> Unit {
+let rec print_int_list: (lst: Enum IntList { Nil(), Cons(Int, ~0) }) -> Unit {
   Match(Var("lst"), [
     CtorApp("Nil", []) =>
       Unit
     CtorApp("Cons", [Var("h"), Var("t")]) =>
-      let _: Var(Unit) = Apply(Var("print_int"), [Var("h"), ])
+      let _: Unit = Apply(Var("print_int"), [Var("h"), ])
       Apply(Var("print_int_list"), [Var("t"), ])
   ])
 }
@@ -25,7 +25,7 @@ let rec main: () -> Unit {
   let _: Unit = Put Var("arr")[Int(2)] = Int(3)
   let _: Unit = Put Var("arr")[Int(3)] = Int(4)
   let _: Unit = Put Var("arr")[Int(4)] = Int(5)
-  let lst: Var(Enum IntList { Nil(), Cons(Int, Var(~0)) }) = Apply(Var("int_array_to_list"), [Var("arr"), Int(5), ])
+  let lst: Enum IntList { Nil(), Cons(Int, ~1) } = Apply(Var("int_array_to_list"), [Var("arr"), Int(5), ])
   Apply(Var("print_int_list"), [Var("lst"), ])
 }
 let rec print_int: (x: Int) -> Unit {

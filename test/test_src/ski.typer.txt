@@ -1,6 +1,6 @@
 let rec s: forall ["X", "Y", "Z"] . (x: (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) -> X {
-  let rec f: (y: Var((Z) -> Var(Y))) -> Var((Var(Z)) -> Var(X)) {
-    let rec g: (z: Var(Z)) -> Var(X) {
+  let rec f: (y: (Z) -> Y) -> (Z) -> X {
+    let rec g: (z: Z) -> X {
       Apply(App(Var("x"), [Var("z")]), [App(Var("y"), [Var("z")]), ])
     }
     Var(g)
@@ -8,7 +8,7 @@ let rec s: forall ["X", "Y", "Z"] . (x: (Z) -> (Y) -> X) -> ((Z) -> Y) -> (Z) ->
   Var(f)
 }
 let rec k: forall ["X", "Y"] . (x: X) -> (Y) -> X {
-  let rec f: (y: Var(Y)) -> Var(X) {
+  let rec f: (y: Y) -> X {
     Var(x)
   }
   Var(f)
@@ -16,9 +16,9 @@ let rec k: forall ["X", "Y"] . (x: X) -> (Y) -> X {
 let rec i: forall ["X"] . (x: X) -> X {
   Var(x)
 }
-let rec main: () -> Var(Unit) {
-  let rev_apply: Var((Var(Var(Int))) -> Var(((Var(~2)) -> Var(Unit)) -> Var(~4))) = Apply(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k"), ])
-  let rec printi: (x: Int) -> Var(Unit) {
+let rec main: () -> Unit {
+  let rev_apply: (Int) -> ((Int) -> Unit) -> Unit = Apply(App(Var("s"), [App(Var("k"), [App(Var("s"), [Var("i")])])]), [Var("k"), ])
+  let rec printi: (x: Int) -> Unit {
     Apply(Var("print_int"), [Var("x"), ])
   }
   Apply(App(Var("rev_apply"), [Int(2)]), [Var("printi"), ])

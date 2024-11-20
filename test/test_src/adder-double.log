@@ -207,6 +207,27 @@
 // [Main]   .zero 4
 // [Main] 
 // [Main] 
+// [Typer] resolve: LetRec({tyvars: [], name: ("make_adder", (Int) -> Double), args: [("x", Double)], body: LetRec({tyvars: [], name: ("adder", Double), args: [("y", Int)], body: Prim(Var("x"), App(Var("float_of_int"), [Var("y")]), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("add", Var(None)), App(Var("make_adder"), [Double(2.14)]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])])]))}, Unit))
+// [Typer] resolve: LetRec({tyvars: [], name: ("adder", Double), args: [("y", Int)], body: Prim(Var("x"), App(Var("float_of_int"), [Var("y")]), Add, kind=None)}, Var("adder"))
+// [Typer] resolve: Prim(Var("x"), App(Var("float_of_int"), [Var("y")]), Add, kind=None)
+// [Typer] resolve: Var("x")
+// [Typer] resolve: App(Var("float_of_int"), [Var("y")])
+// [Typer] resolve: Var("y")
+// [Typer] resolve: Var("float_of_int")
+// [Typer] resolve: Var("adder")
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("add", Var(None)), App(Var("make_adder"), [Double(2.14)]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])])]))}, Unit)
+// [Typer] resolve: Let(("add", Var(None)), App(Var("make_adder"), [Double(2.14)]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])])]))
+// [Typer] resolve: App(Var("make_adder"), [Double(2.14)])
+// [Typer] resolve: Double(2.14)
+// [Typer] resolve: Var("make_adder")
+// [Typer] resolve: App(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])])])
+// [Typer] resolve: App(Var("int_of_float"), [App(Var("add"), [Int(1)])])
+// [Typer] resolve: App(Var("add"), [Int(1)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Var("add")
+// [Typer] resolve: Var("int_of_float")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
 // [Typer] check: LetRec({tyvars: [], name: ("make_adder", (Int) -> Double), args: [("x", Double)], body: LetRec({tyvars: [], name: ("adder", Double), args: [("y", Int)], body: Prim(Var("x"), App(Var("float_of_int"), [Var("y")]), Add, kind=None)}, Var("adder"))}, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("add", Var(None)), App(Var("make_adder"), [Double(2.14)]), App(Var("print_int"), [App(Var("int_of_float"), [App(Var("add"), [Int(1)])])]))}, Unit)) against Unit
 // [Typer] typevars: []
 // [Typer] check: LetRec({tyvars: [], name: ("adder", Double), args: [("y", Int)], body: Prim(Var("x"), App(Var("float_of_int"), [Var("y")]), Add, kind=None)}, Var("adder")) against (Int) -> Double
@@ -249,7 +270,7 @@
 // [Typer] check: App(Var("int_of_float"), [App(Var("add"), [Int(1)])]) against Int
 // [Typer] infer: App(Var("add"), [Int(1)])
 // [Typer] infer: Var("add")
-// [Typer] inst: TypeScheme(([], Var((Int) -> Double)))
+// [Typer] inst: TypeScheme(([], (Int) -> Double))
 // [Typer] inst result: (Int) -> Double
 // [Typer] check: Int(1) against Int
 // [Typer] check: Var("int_of_float") against (Double) -> Int

@@ -21,57 +21,55 @@ pub fn Typer::new(syntax : Syntax, tracer : @util.SubTracer) -> Typer {
   Typer::{ syntax, tracer }
 }
 
-pub fn Typer::map_named(
-  self : Typer,
-  ty1 : Type,
-  m : (String) -> Type,
-  ~subst_enum : Bool = false // we only want to substitute enum types when resolving them
-  // in other time, the enum can't contain type parameters, so it's safe to keep them as is
-) -> Type {
+pub fn Typer::map_named(self : Typer, ty1 : Type, m : (String) -> Type) -> Type {
   let _ = self
-  let mem = []
-  fn aux(t : Type) {
+  let mem = @types.TypeMemSet::new()
+  fn aux(rid : Int?, t : Type) {
+    match rid {
+      Some(_) => return t
+      None => ()
+    }
     match t {
-      Var(r) =>
-        match r.val {
-          Some(t) => {
-            for t2 in mem {
-              if physical_equal(t, t2) {
-                return t
-              }
-            }
-            mem.push(t)
-            let t2 = aux(t)
-            Var(Ref::new(Some(t2)))
-          }
-          None => t
-        }
-      Named(name) => m(name)
-      Fun(args, ret) => Type::Fun(args.map(aux), aux(ret))
-      Tuple(xs) => Tuple(xs.map(aux))
-      Array(x) => Array(aux(x))
-      Enum(name, variants) =>
-        if subst_enum {
-          Enum(
-            name,
-            variants.map(fn(variant) { (variant.0, variant.1.map(aux)) }),
-          )
-        } else {
-          t
-        }
-      _ => t
+      Type::Named(name) => m(name)
+      Enum(_, { val } as r) => {
+        let inner = val.map(
+          fn(arr) {
+            arr.map(
+              fn(variant) {
+                (
+                  variant.0,
+                  variant.1.map(
+                    fn(x) { mem.map(x, fn(rid, x) { aux(rid, x) }) },
+                  ),
+                )
+              },
+            )
+          },
+        )
+        r.val = inner
+        t
+      }
+      Fun(args, ret) =>
+        Fun(
+          args.map(fn(x) { mem.map(x, fn(r, x) { aux(r, x) }) }),
+          mem.map(ret, fn(r, x) { aux(r, x) }),
+        )
+      Tuple(xs) => Tuple(xs.map(fn(x) { mem.map(x, fn(r, x) { aux(r, x) }) }))
+      Array(x) => Array(mem.map(x, fn(r, x) { aux(r, x) }))
+      Var({ val: Some(t2) } as r) => {
+        let new_val = mem.map(t2, fn(r, x) { aux(r, x) })
+        r.val = Some(new_val)
+        t
+      }
+      Var(_) => t
+      Bool | Int | Double | String | Unit | Ptr => t
     }
   }
 
-  aux(ty1)
+  mem.map(ty1, aux)
 }
 
-fn Typer::replace(
-  self : Typer,
-  ty1 : Type,
-  tenv : TyVEnv,
-  ~subst_enum : Bool = false
-) -> Type {
+fn Typer::replace(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
   let _ = self
   fn m(name) {
     match tenv._.find(name) {
@@ -81,37 +79,17 @@ fn Typer::replace(
     }
   }
 
-  self.map_named(ty1, m, ~subst_enum)
+  self.map_named(ty1, m).repr()
 }
 
-fn Typer::unfold(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
-  self.replace(ty1, tenv).repr()
-}
-
-fn Typer::fold(self : Typer, ty1 : Type, tenv : TyVEnv) -> Type {
-  self.replace(ty1, tenv)
-}
-
-fn Typer::inst_unfold(self : Typer, ts : TypeScheme, envt : TyVEnv) -> Type {
+fn Typer::inst(self : Typer, ts : TypeScheme, envt : TyVEnv) -> Type {
   self.tracer.println("inst: \{ts}")
   let (tyvars, ty) = ts._
   let mut env = envt._
   for t in tyvars {
     env = env.add(t, Type::new_var())
   }
-  let ty = self.unfold(ty, env)
-  self.tracer.println("inst result: \{ty}")
-  ty
-}
-
-fn Typer::inst_fold(self : Typer, ts : TypeScheme, envt : TyVEnv) -> Type {
-  self.tracer.println("inst: \{ts}")
-  let (tyvars, ty) = ts._
-  let mut env = envt._
-  for t in tyvars {
-    env = env.add(t, Type::new_var())
-  }
-  let ty = self.fold(ty, env)
+  let ty = self.replace(ty, env)
   self.tracer.println("inst result: \{ty}")
   ty
 }
@@ -132,20 +110,14 @@ fn Typer::subst(self : Typer, ty1 : Type) -> Type {
   aux(ty1)
 }
 
-fn Typer::resolve_enum_type(
+fn Typer::add_enum(
   self : Typer,
   name : String,
   ty1 : Type,
   tenv : TyVEnv
 ) -> TyVEnv {
-  self.tracer.println("let enum before resolved: \{ty1}")
-  guard let @types.Type::Var({ val: Some(@types.Type::Enum(_)) } as enum_ty_var) = ty1 else {
-    _ => self.tracer.abort("resolve_enum_type: not a type variable")
-  }
+  let _ = self
   let tenv = tenv._.add(name, ty1)
-  let unfolded = self.replace(ty1, tenv, subst_enum=true)
-  enum_ty_var.val = Some(unfolded)
-  self.tracer.println("let enum after resolved: \{ty1}")
   tenv
 }
 
@@ -173,8 +145,8 @@ fn Typer::unify(
   node : Syntax
 ) -> Unit!Failure {
   self.tracer.println("unify: \{ty1} and \{ty2}")
-  let ty1 = self.unfold(ty1, tenv)
-  let ty2 = self.unfold(ty2, tenv)
+  let ty1 = self.replace(ty1, tenv)
+  let ty2 = self.replace(ty2, tenv)
   match (ty1, ty2) {
     (Type::Unit, Type::Unit) => ()
     (Type::Bool, Type::Bool) => ()
@@ -222,7 +194,7 @@ fn Typer::check(
   envs : TySEnv
 ) -> Unit!Failure {
   self.tracer.println("check: \{node} against \{ty}")
-  let ty = self.unfold(ty, envt)
+  let ty = self.replace(ty, envt)
   if ty.is_unknown() {
     fail!("check \{node} against unknown type \{ty}")
   }
@@ -235,7 +207,7 @@ fn Typer::check(
     (Syntax::Var(x), ty2) =>
       match envs.find(x) {
         Some(t) => {
-          let ty1 = self.inst_unfold(t, envt)
+          let ty1 = self.inst(t, envt)
           self.unify!(ty1, ty2, envt, node)
         }
         None => fail!("unbound variable: \{x}")
@@ -270,7 +242,7 @@ fn Typer::check(
       let expected_ty = Type::Fun(args_ty, ty)
       match envs.find(f) {
         Some(t) => {
-          let ctor_ty = self.inst_fold(t, envt)
+          let ctor_ty = self.inst(t, envt)
           self.unify!(ctor_ty, expected_ty, envt, node)
         }
         None => fail!("unbound constructor: \{f}")
@@ -314,10 +286,9 @@ fn Typer::check(
       let t2 = self.infer!(y, envt, envs)
       self.unify!(t1, t2, envt, node)
     }
-    (Syntax::LetEnum(name, ty, e), ty2) => {
-      let envt = self.resolve_enum_type(name, ty, envt)
+    (Syntax::LetEnum(_, ty, e), ty2) => {
       let mut envs = envs
-      guard let Type::Enum(_, variants) = ty.repr() else {
+      guard let Type::Enum(_, { val: Some(variants) }) = ty.repr() else {
         _ => fail!("check: \{ty} is not an enum type")
       }
       for variant in variants {
@@ -374,7 +345,7 @@ fn Typer::check(
         self.check!(e1, t1, envt, envs)
         let mut envs = envs
         for xt in xts {
-          envs = envs.add(xt.0, self.fold(xt.1, envt).to_scheme())
+          envs = envs.add(xt.0, self.replace(xt.1, envt).to_scheme())
         }
         self.check!(e2, t2, envt, envs)
       } else {
@@ -391,7 +362,7 @@ fn Typer::check(
             }
             let mut envs = envs
             for i, xt in xts {
-              envs = envs.add(xt.0, self.fold(ts[i], envt).to_scheme())
+              envs = envs.add(xt.0, self.replace(ts[i], envt).to_scheme())
             }
             self.check!(e2, t2, envt, envs)
           }
@@ -415,6 +386,99 @@ fn Typer::check(
       }
     }
     _ => fail!("check: mismatched types \{node} and \{ty}")
+  }
+}
+
+fn Typer::resolve(self : Typer, node : Syntax, envt : TyVEnv) -> Syntax!Failure {
+  self.tracer.println("resolve: \{node}")
+  fn f(ty, envt : TyVEnv) {
+    self.map_named(
+      ty,
+      fn(name) {
+        match envt._.find(name) {
+          Some(t) => t
+          None => Type::Named(name)
+        }
+      },
+    )
+  }
+
+  match node {
+    Syntax::Unit
+    | Syntax::Bool(_)
+    | Syntax::Int(_)
+    | Syntax::Double(_) | Syntax::String(_) | Syntax::Var(_) | Syntax::Tuple(_) =>
+      node
+    Syntax::Not(x) => Not(self.resolve!(x, envt))
+    Syntax::Array(len, elem) =>
+      Array(self.resolve!(len, envt), self.resolve!(elem, envt))
+    Syntax::Neg(x, ~kind) => Neg(self.resolve!(x, envt), ~kind)
+    Syntax::CtorApp(f, args) => {
+      let args2 = []
+      for arg in args {
+        args2.push(self.resolve!(arg, envt))
+      }
+      CtorApp(f, args2)
+    }
+    Syntax::App(f, args) => {
+      let args2 = []
+      for arg in args {
+        args2.push(self.resolve!(arg, envt))
+      }
+      App(self.resolve!(f, envt), args2)
+    }
+    Syntax::Get(arr, idx) =>
+      Get(self.resolve!(arr, envt), self.resolve!(idx, envt))
+    Syntax::If(cond, t, f) =>
+      If(
+        self.resolve!(cond, envt),
+        self.resolve!(t, envt),
+        self.resolve!(f, envt),
+      )
+    Syntax::Prim(x, y, op, ~kind) =>
+      Prim(self.resolve!(x, envt), self.resolve!(y, envt), op, ~kind)
+    Syntax::Eq(x, y) => Eq(self.resolve!(x, envt), self.resolve!(y, envt))
+    Syntax::LE(x, y) => LE(self.resolve!(x, envt), self.resolve!(y, envt))
+    Syntax::Let((x, t), e1, e2) => {
+      let t2 = f(t, envt)
+      Let((x, t2), self.resolve!(e1, envt), self.resolve!(e2, envt))
+    }
+    Syntax::LetEnum(name, ty, e) => {
+      let envt = self.add_enum(name, ty, envt)
+      let ty2 = f(ty, envt)
+      let envt = self.add_enum(name, ty2, envt)
+      LetEnum(name, ty2, self.resolve!(e, envt))
+    }
+    Syntax::LetRec({ args, name, tyvars, body }, e) => {
+      let name = (name.0, f(name.1, envt))
+      let args = args.map(fn(xt) { (xt.0, f(xt.1, envt)) })
+      let body = self.resolve!(body, envt)
+      LetRec({ args, name, tyvars, body }, self.resolve!(e, envt))
+    }
+    Syntax::LetTuple(xts, e1, e2) => {
+      let xts2 = []
+      for xt in xts {
+        let (x, t) = xt
+        let t2 = f(t, envt)
+        xts2.push((x, t2))
+      }
+      LetTuple(xts2, self.resolve!(e1, envt), self.resolve!(e2, envt))
+    }
+    Syntax::Put(arr, idx, x) =>
+      Put(
+        self.resolve!(arr, envt),
+        self.resolve!(idx, envt),
+        self.resolve!(x, envt),
+      )
+    Syntax::Match(e, arms) => {
+      let e2 = self.resolve!(e, envt)
+      let arms2 = []
+      for arm in arms {
+        let action = self.resolve!(arm.action, envt)
+        arms2.push({ ..arm, action, })
+      }
+      Match(e2, arms2)
+    }
   }
 }
 
@@ -474,7 +538,7 @@ fn Typer::check_and_bind_pattern(
       }
     CtorApp(name, pats) => {
       let ty = match envs.find(name) {
-        Some(t) => self.inst_fold(t, envt)
+        Some(t) => self.inst(t, envt)
         None => fail!("unbound constructor: \{name}")
       }
       match ty {
@@ -516,7 +580,7 @@ fn Typer::infer(
     Syntax::String(_) => Type::String
     Syntax::Var(x) =>
       match envs.find(x) {
-        Some(t) => self.inst_unfold(t, envt)
+        Some(t) => self.inst(t, envt)
         None => fail!("unbound variable: \{x}")
       }
     Syntax::Tuple(xs) => {
@@ -548,7 +612,7 @@ fn Typer::infer(
         }
         _ => fail!("infer: invalid type for negation: \{ty}")
       }
-      self.unfold(ty, envt)
+      self.replace(ty, envt)
     }
     Syntax::Neg(x, kind=Some(Kind::Int)) => {
       self.check!(x, Type::Int, envt, envs)
@@ -560,7 +624,7 @@ fn Typer::infer(
     }
     Syntax::CtorApp(f, args) => {
       let inferred_fun_ty = match envs.find(f) {
-        Some(t) => self.inst_unfold(t, envt)
+        Some(t) => self.inst(t, envt)
         None => fail!("unbound constructor: \{f}")
       }
       match inferred_fun_ty {
@@ -576,7 +640,7 @@ fn Typer::infer(
               self.check!(arg, args_ty[i], envt, envs)
             }
           }
-          self.fold(ret_ty, envt)
+          self.replace(ret_ty, envt)
         }
         _ =>
           fail!(
@@ -599,7 +663,7 @@ fn Typer::infer(
               self.check!(arg, args_ty[i], envt, envs)
             }
           }
-          self.unfold(ret_ty, envt)
+          self.replace(ret_ty, envt)
         }
         Type::Var({ val: None }) => {
           let guessed_ret_ty = Type::new_var()
@@ -610,7 +674,7 @@ fn Typer::infer(
           }
           let guessed_fun_ty = Type::Fun(args_ty, guessed_ret_ty)
           self.unify!(inferred_fun_ty, guessed_fun_ty, envt, node)
-          self.unfold(guessed_ret_ty, envt)
+          self.replace(guessed_ret_ty, envt)
         }
         _ => fail!("infer: not a function type: \{inferred_fun_ty}")
       }
@@ -620,7 +684,7 @@ fn Typer::infer(
       match arr_ty {
         Type::Array(ty) => {
           self.check!(idx, Type::Int, envt, envs)
-          self.unfold(ty, envt)
+          self.replace(ty, envt)
         }
         _ => fail!("infer: not an array")
       }
@@ -630,13 +694,13 @@ fn Typer::infer(
       let ty1 = self.infer!(t, envt, envs)
       let ty2 = self.infer!(f, envt, envs)
       self.unify!(ty1, ty2, envt, node)
-      self.unfold(ty1, envt)
+      self.replace(ty1, envt)
     }
     Syntax::Prim(x, y, _, kind=None) as r => {
       let ty1 = self.infer!(x, envt, envs)
       let ty2 = self.infer!(y, envt, envs)
       self.unify!(ty1, ty2, envt, node)
-      let ty1 = self.unfold(ty1, envt)
+      let ty1 = self.replace(ty1, envt)
       match ty1 {
         Type::Int => {
           r.kind = Some(Kind::Int)
@@ -692,9 +756,9 @@ fn Typer::infer(
       self.infer!(e2, envt, envs)
     }
     Syntax::LetEnum(name, ty, e) => {
-      let envt = self.resolve_enum_type(name, ty, envt)
+      let envt = self.add_enum(name, ty, envt)
       let mut envs = envs
-      guard let Type::Enum(_, variants) = ty.repr() else {
+      guard let Type::Enum(_, { val: Some(variants) }) = ty.repr() else {
         _ => fail!("check: \{ty} is not an enum type")
       }
       for variant in variants {
@@ -747,7 +811,7 @@ fn Typer::infer(
           }
           let mut envs = envs
           for i, xt in xts {
-            envs = envs.add(xt.0, self.unfold(ts[i], envt).to_scheme())
+            envs = envs.add(xt.0, self.replace(ts[i], envt).to_scheme())
           }
           self.infer!(e2, envt, envs)
         }
@@ -777,7 +841,7 @@ fn Typer::infer(
         self.unify!(actions_ty[i - 1], actions_ty[i], envt, node)
       }
       self.unify!(actions_ty[n - 1], actions_ty[0], envt, node)
-      self.fold(actions_ty[0], envt)
+      self.replace(actions_ty[0], envt)
     }
   }
 }
@@ -846,9 +910,11 @@ pub fn Typer::check_all(self : Typer) -> Syntax!Failure {
   for ext in externals() {
     envs = envs.add(ext.0, ext.1.to_scheme())
   }
-  self.check!(self.syntax, Type::Unit, @immut/hashmap.T::new(), envs)
-  self.tracer.record("typer", self.syntax.to_pretty_print())
-  let syn = self.simplify(self.syntax)
-  self.tracer.record("typer_simplified", syn.to_pretty_print())
-  syn
+  let syntax = self.resolve!(self.syntax, @immut/hashmap.T::new())
+  self.tracer.record("resolved", syntax.to_pretty_print())
+  self.check!(syntax, Type::Unit, @immut/hashmap.T::new(), envs)
+  self.tracer.record("typer", syntax.to_pretty_print())
+  let syntax = self.simplify(syntax)
+  self.tracer.record("typer_simplified", syntax.to_pretty_print())
+  syntax
 }

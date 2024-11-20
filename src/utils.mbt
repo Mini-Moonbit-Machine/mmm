@@ -12,18 +12,7 @@ pub fn to_json(self : Type) -> Json {
     Var({ val: None }) => ["Var", "None"]
     Var({ val: Some(t) }) => ["Var", ["Some", t.to_json()]]
     Ptr => "Ptr"
-    Enum(name, variants) =>
-      [
-        "Enum",
-        name |> Json::String,
-        variants.map(
-          fn(ncpair) {
-            let (name, _) = ncpair
-            name |> Json::String
-          },
-        )
-        |> Json::Array,
-      ]
+    Enum(name, _) => ["Enum", name.to_json()]
     Named(x) => ["Named", x.to_json()]
   }
 }

@@ -1,5 +1,5 @@
 let rec read_ch_until_newline_or_eof: () -> Int {
-  let c: Var(Int) = Apply(Var("read_char"), [])
+  let c: Int = Apply(Var("read_char"), [])
   if (Eq(Var("c"), Int(10))) then {
     Neg(Int(1))
   } else {
@@ -19,14 +19,14 @@ let read: Int = Int(44)
 let loop_start: Int = Int(91)
 let loop_end: Int = Int(93)
 let rec bf: (len: Int, prog: Array[Int]) -> Unit {
-  let ptr: Var(Array[Int]) = Array::make(Int(1), Int(0))
-  let cells: Var(Array[Int]) = Array::make(Prim(Int(1024), Int(1024), Mul, kind=Some(Int)), Int(0))
-  let next_pc: Var(Array[Int]) = Array::make(Int(1), Int(0))
-  let rec skip: (pc: Var(Int), level: Int) -> Var(Int) {
+  let ptr: Array[Int] = Array::make(Int(1), Int(0))
+  let cells: Array[Int] = Array::make(Prim(Int(1024), Int(1024), Mul, kind=Some(Int)), Int(0))
+  let next_pc: Array[Int] = Array::make(Int(1), Int(0))
+  let rec skip: (pc: Int, level: Int) -> Int {
     if (LE(Var("len"), Var("pc"))) then {
       Var(pc)
     } else {
-      let i: Var(Int) = Get Var("prog")[Var("pc")]
+      let i: Int = Get Var("prog")[Var("pc")]
       if (Eq(Var("i"), Var("loop_start"))) then {
         Apply(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), Prim(Var("level"), Int(1), Add, kind=Some(Int)), ])
       } else {
@@ -42,47 +42,47 @@ let rec bf: (len: Int, prog: Array[Int]) -> Unit {
       }
     }
   }
-  let rec aux: (pc: Var(Int)) -> Var(Int) {
+  let rec aux: (pc: Int) -> Int {
     if (LE(Var("len"), Var("pc"))) then {
       Var(pc)
     } else {
-      let i: Var(Int) = Get Var("prog")[Var("pc")]
+      let i: Int = Get Var("prog")[Var("pc")]
       if (Eq(Var("i"), Var("move_right"))) then {
-        let _: Var(Unit) = Put Var("ptr")[Int(0)] = Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=Some(Int))
+        let _: Unit = Put Var("ptr")[Int(0)] = Prim(Get(Var("ptr"), Int(0)), Int(1), Add, kind=Some(Int))
         Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
       } else {
         if (Eq(Var("i"), Var("move_left"))) then {
-          let _: Var(Unit) = Put Var("ptr")[Int(0)] = Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=Some(Int))
+          let _: Unit = Put Var("ptr")[Int(0)] = Prim(Get(Var("ptr"), Int(0)), Int(1), Sub, kind=Some(Int))
           Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
         } else {
           if (Eq(Var("i"), Var("increase"))) then {
-            let _: Var(Unit) = Put Var("cells")[Get(Var("ptr"), Int(0))] = Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=Some(Int))
+            let _: Unit = Put Var("cells")[Get(Var("ptr"), Int(0))] = Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Add, kind=Some(Int))
             Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
           } else {
             if (Eq(Var("i"), Var("decrease"))) then {
-              let _: Var(Unit) = Put Var("cells")[Get(Var("ptr"), Int(0))] = Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=Some(Int))
+              let _: Unit = Put Var("cells")[Get(Var("ptr"), Int(0))] = Prim(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(1), Sub, kind=Some(Int))
               Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
             } else {
               if (Eq(Var("i"), Var("print"))) then {
-                let _: Var(Unit) = Apply(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0))), ])
+                let _: Unit = Apply(Var("print_char"), [Get(Var("cells"), Get(Var("ptr"), Int(0))), ])
                 Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
               } else {
                 if (Eq(Var("i"), Var("read"))) then {
-                  let _: Var(Unit) = Put Var("cells")[Get(Var("ptr"), Int(0))] = App(Var("read_ch_until_newline_or_eof"), [])
+                  let _: Unit = Put Var("cells")[Get(Var("ptr"), Int(0))] = App(Var("read_ch_until_newline_or_eof"), [])
                   Apply(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), ])
                 } else {
                   if (Eq(Var("i"), Var("loop_start"))) then {
-                    let _: Var(Unit) = Put Var("next_pc")[Int(0)] = Var("pc")
-                    let rec lp: () -> Var(Unit) {
+                    let _: Unit = Put Var("next_pc")[Int(0)] = Var("pc")
+                    let rec lp: () -> Unit {
                       if (Eq(Get(Var("cells"), Get(Var("ptr"), Int(0))), Int(0))) then {
-                        let _: Var(Unit) = Put Var("next_pc")[Int(0)] = App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), Int(0)])
+                        let _: Unit = Put Var("next_pc")[Int(0)] = App(Var("skip"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int)), Int(0)])
                         Unit
                       } else {
-                        let _: Var(Unit) = Put Var("next_pc")[Int(0)] = App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int))])
+                        let _: Unit = Put Var("next_pc")[Int(0)] = App(Var("aux"), [Prim(Var("pc"), Int(1), Add, kind=Some(Int))])
                         Apply(Var("lp"), [])
                       }
                     }
-                    let _: Var(Unit) = Apply(Var("lp"), [])
+                    let _: Unit = Apply(Var("lp"), [])
                     Apply(Var("aux"), [Prim(Get(Var("next_pc"), Int(0)), Int(1), Add, kind=Some(Int)), ])
                   } else {
                     if (Eq(Var("i"), Var("loop_end"))) then {
@@ -99,22 +99,22 @@ let rec bf: (len: Int, prog: Array[Int]) -> Unit {
       }
     }
   }
-  let _: Var(Int) = Apply(Var("aux"), [Int(0), ])
+  let _: Int = Apply(Var("aux"), [Int(0), ])
   Unit
 }
-let rec main: () -> Var(Unit) {
-  let len: Var(Int) = Int(1024)
-  let prog: Var(Array[Int]) = Array::make(Var("len"), Int(0))
-  let rec read_prog: (i: Var(Int)) -> Var(Unit) {
-    let x: Var(Int) = Apply(Var("read_ch_until_newline_or_eof"), [])
+let rec main: () -> Unit {
+  let len: Int = Int(1024)
+  let prog: Array[Int] = Array::make(Var("len"), Int(0))
+  let rec read_prog: (i: Int) -> Unit {
+    let x: Int = Apply(Var("read_ch_until_newline_or_eof"), [])
     if (Eq(Var("x"), Neg(Int(1), kind=Some(Int)))) then {
       Apply(Var("bf"), [Var("i"), Var("prog"), ])
     } else {
-      let _: Var(Unit) = Put Var("prog")[Var("i")] = Var("x")
+      let _: Unit = Put Var("prog")[Var("i")] = Var("x")
       Apply(Var("read_prog"), [Prim(Var("i"), Int(1), Add, kind=Some(Int)), ])
     }
   }
-  let _: Var(Unit) = Apply(Var("read_prog"), [Int(0), ])
+  let _: Unit = Apply(Var("read_prog"), [Int(0), ])
   Unit
 }
 Unit

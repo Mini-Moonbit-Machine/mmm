@@ -713,9 +713,7 @@ pub fn Parser::parse_stmt(self : Parser, top : Bool) -> PSyntax!Failure {
       }
       let _ = self.expect_paired_close!(Paired::Brace)
       ntokens += 1
-      let enum_ty = Type::Var(
-        Ref::new(Some(Type::Enum(ident.inner.span, ctors))),
-      )
+      let enum_ty = Type::Enum(ident.inner.span, Ref::new(Some(ctors)))
       if self.peek_operator(";") {
         self.skip_token()
         ntokens += 1

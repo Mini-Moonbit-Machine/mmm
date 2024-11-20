@@ -282,98 +282,134 @@
 // [Main]   return $force(x);
 // [Main] }
 // [Main] export default () => $trampoline(thunk_main, x => x);
-// [Typer] check: LetEnum("IntOpt", Var(Enum IntOpt { None(), Some(Int) }), LetEnum("IntOptList", Var(Enum IntOptList { Nil(), Cons(IntOpt, IntOptList) }), LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit))) against Unit
-// [Typer] let enum before resolved: Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] let enum after resolved: Var(Var(Enum IntOpt { None(), Some(Int) }))
-// [Typer] check: LetEnum("IntOptList", Var(Enum IntOptList { Nil(), Cons(IntOpt, IntOptList) }), LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit)) against Unit
-// [Typer] let enum before resolved: Var(Enum IntOptList { Nil(), Cons(IntOpt, IntOptList) })
-// [Typer] let enum after resolved: Var(Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }))
+// [Typer] resolve: LetEnum("IntOpt", Enum IntOpt { None(), Some(Int) }, LetEnum("IntOptList", Enum IntOptList { Nil(), Cons(IntOpt, IntOptList) }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit)))
+// [Typer] resolve: LetEnum("IntOptList", Enum IntOptList { Nil(), Cons(IntOpt, IntOptList) }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit))
+// [Typer] resolve: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit)
+// [Typer] resolve: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))
+// [Typer] resolve: CtorApp("Nil", [])
+// [Typer] resolve: Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))))))
+// [Typer] resolve: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])])
+// [Typer] resolve: CtorApp("None", [])
+// [Typer] resolve: CtorApp("Nil", [])
+// [Typer] resolve: Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))
+// [Typer] resolve: CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])])
+// [Typer] resolve: CtorApp("Some", [Int(1)])
+// [Typer] resolve: Int(1)
+// [Typer] resolve: CtorApp("Nil", [])
+// [Typer] resolve: Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))))
+// [Typer] resolve: Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}])
+// [Typer] resolve: Int(2)
+// [Typer] resolve: CtorApp("Nil", [])
+// [Typer] resolve: Var("q")
+// [Typer] resolve: Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))
+// [Typer] resolve: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}])
+// [Typer] resolve: Var("r")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Int(1)
+// [Typer] resolve: Int(2)
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))
+// [Typer] resolve: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}])
+// [Typer] resolve: Var("r")
+// [Typer] resolve: Int(0)
+// [Typer] resolve: Var("v")
+// [Typer] resolve: Int(3)
+// [Typer] resolve: Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)
+// [Typer] resolve: App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)])
+// [Typer] resolve: Prim(Var("t"), Var("w"), Add, kind=None)
+// [Typer] resolve: Var("t")
+// [Typer] resolve: Var("w")
+// [Typer] resolve: Var("print_int")
+// [Typer] resolve: Unit
+// [Typer] resolve: Unit
+// [Typer] check: LetEnum("IntOpt", Enum IntOpt { None(), Some(Int) }, LetEnum("IntOptList", Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit))) against Unit
+// [Typer] check: LetEnum("IntOptList", Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }, LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit)) against Unit
 // [Typer] check: LetRec({tyvars: [], name: ("main", Var(None)), args: [], body: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))}, Unit) against Unit
 // [Typer] typevars: []
 // [Typer] infer: Let(("p", Var(None)), CtorApp("Nil", []), Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))))
 // [Typer] infer: CtorApp("Nil", [])
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Var(None) and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Let(("q", Var(None)), CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))))))
 // [Typer] infer: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])])
-// [Typer] inst: TypeScheme(([], (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Var(~1)))
-// [Typer] inst result: (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) }
-// [Typer] check: CtorApp("None", []) against Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOpt { None(), Some(Int) })))
-// [Typer] inst result: () -> Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] unify: () -> Var(Enum IntOpt { None(), Some(Int) }) and () -> Enum IntOpt { None(), Some(Int) }
-// [Typer] unify: Var(Enum IntOpt { None(), Some(Int) }) and Enum IntOpt { None(), Some(Int) }
-// [Typer] check: CtorApp("Nil", []) against Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and () -> Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
+// [Typer] inst: TypeScheme(([], (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }))
+// [Typer] inst result: (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }
+// [Typer] check: CtorApp("None", []) against Enum IntOpt { None(), Some(Int) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOpt { None(), Some(Int) }))
+// [Typer] inst result: () -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: () -> Enum IntOpt { None(), Some(Int) } and () -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: Enum IntOpt { None(), Some(Int) } and Enum IntOpt { None(), Some(Int) }
+// [Typer] check: CtorApp("Nil", []) against Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) } and () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Let(("r", Var(None)), CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])]), Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))))
 // [Typer] infer: CtorApp("Cons", [CtorApp("Some", [Int(1)]), CtorApp("Nil", [])])
-// [Typer] inst: TypeScheme(([], (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Var(~1)))
-// [Typer] inst result: (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) }
-// [Typer] check: CtorApp("Some", [Int(1)]) against Var(Enum IntOpt { None(), Some(Int) })
+// [Typer] inst: TypeScheme(([], (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }))
+// [Typer] inst result: (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }
+// [Typer] check: CtorApp("Some", [Int(1)]) against Enum IntOpt { None(), Some(Int) }
 // [Typer] infer: Int(1)
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Enum IntOpt { None(), Some(Int) })))
-// [Typer] inst result: (Int) -> Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] unify: (Int) -> Var(Enum IntOpt { None(), Some(Int) }) and (Int) -> Enum IntOpt { None(), Some(Int) }
+// [Typer] inst: TypeScheme(([], (Int) -> Enum IntOpt { None(), Some(Int) }))
+// [Typer] inst result: (Int) -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: (Int) -> Enum IntOpt { None(), Some(Int) } and (Int) -> Enum IntOpt { None(), Some(Int) }
 // [Typer] unify: Int and Int
-// [Typer] unify: Var(Enum IntOpt { None(), Some(Int) }) and Enum IntOpt { None(), Some(Int) }
-// [Typer] check: CtorApp("Nil", []) against Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and () -> Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
+// [Typer] unify: Enum IntOpt { None(), Some(Int) } and Enum IntOpt { None(), Some(Int) }
+// [Typer] check: CtorApp("Nil", []) against Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) } and () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Let(("_", Var(None)), Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}]), Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))))
 // [Typer] infer: Match(Int(2), [{pat: Int(1), action: CtorApp("Nil", [])}, {pat: Int(2), action: Var("q")}])
 // [Typer] infer: Int(2)
 // [Typer] unify: Int and Int
 // [Typer] infer: CtorApp("Nil", [])
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
 // [Typer] unify: Int and Int
 // [Typer] infer: Var("q")
-// [Typer] inst: TypeScheme(([], Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Var(None) and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
+// [Typer] inst: TypeScheme(([], Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) }))
+// [Typer] inst result: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] unify: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] union: Var(None) and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Let(("t", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}]), Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit)))
 // [Typer] infer: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("None", []), CtorApp("Nil", [])]), action: Int(1)}, {pat: CtorApp("Cons", [CtorApp("Some", [Int(2)]), CtorApp("Nil", [])]), action: Int(2)}, {pat: Wildcard, action: Int(3)}])
 // [Typer] infer: Var("r")
-// [Typer] inst: TypeScheme(([], Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+// [Typer] inst: TypeScheme(([], Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) }))
+// [Typer] inst result: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Int(0)
-// [Typer] inst: TypeScheme(([], (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Var(~1)))
-// [Typer] inst result: (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) }
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOpt { None(), Some(Int) })))
-// [Typer] inst result: () -> Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] unify: Var(Enum IntOpt { None(), Some(Int) }) and Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+// [Typer] inst: TypeScheme(([], (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }))
+// [Typer] inst result: (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOpt { None(), Some(Int) }))
+// [Typer] inst result: () -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: Enum IntOpt { None(), Some(Int) } and Enum IntOpt { None(), Some(Int) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Int(1)
-// [Typer] inst: TypeScheme(([], (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Var(~1)))
-// [Typer] inst result: (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) }
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Enum IntOpt { None(), Some(Int) })))
-// [Typer] inst result: (Int) -> Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] unify: Var(Enum IntOpt { None(), Some(Int) }) and Var(Enum IntOpt { None(), Some(Int) })
+// [Typer] inst: TypeScheme(([], (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }))
+// [Typer] inst result: (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], (Int) -> Enum IntOpt { None(), Some(Int) }))
+// [Typer] inst result: (Int) -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: Enum IntOpt { None(), Some(Int) } and Enum IntOpt { None(), Some(Int) }
 // [Typer] unify: Int and Int
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) }) and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Int(2)
 // [Typer] infer: Int(3)
 // [Typer] unify: Int and Int
@@ -385,18 +421,18 @@
 // [Typer] infer: Let(("w", Var(None)), Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}]), Let(("_", Var(None)), App(Var("print_int"), [Prim(Var("t"), Var("w"), Add, kind=None)]), Unit))
 // [Typer] infer: Match(Var("r"), [{pat: CtorApp("Nil", []), action: Int(0)}, {pat: CtorApp("Cons", [CtorApp("Some", [Var("v")]), Wildcard]), action: Var("v")}, {pat: Wildcard, action: Int(3)}])
 // [Typer] infer: Var("r")
-// [Typer] inst: TypeScheme(([], Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] inst: TypeScheme(([], () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })))
-// [Typer] inst result: () -> Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Var(Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(~0)) })
+// [Typer] inst: TypeScheme(([], Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~1) }))
+// [Typer] inst result: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }))
+// [Typer] inst result: () -> Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
 // [Typer] infer: Int(0)
-// [Typer] inst: TypeScheme(([], (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Var(~1)))
-// [Typer] inst result: (Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) -> Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) }
-// [Typer] unify: Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) } and Enum IntOptList { Nil(), Cons(Var(Enum IntOpt { None(), Some(Int) }), Var(Enum IntOptList { Nil(), Cons(Var(~0), Var(~1)) })) }
-// [Typer] inst: TypeScheme(([], (Int) -> Var(Enum IntOpt { None(), Some(Int) })))
-// [Typer] inst result: (Int) -> Var(Enum IntOpt { None(), Some(Int) })
-// [Typer] unify: Var(Enum IntOpt { None(), Some(Int) }) and Var(Enum IntOpt { None(), Some(Int) })
+// [Typer] inst: TypeScheme(([], (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }))
+// [Typer] inst result: (Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, Enum IntOptList { Nil(), Cons(~0, ~1) }) }) -> Enum IntOptList { Nil(), Cons(~0, ~1) }
+// [Typer] unify: Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) } and Enum IntOptList { Nil(), Cons(Enum IntOpt { None(), Some(Int) }, ~0) }
+// [Typer] inst: TypeScheme(([], (Int) -> Enum IntOpt { None(), Some(Int) }))
+// [Typer] inst result: (Int) -> Enum IntOpt { None(), Some(Int) }
+// [Typer] unify: Enum IntOpt { None(), Some(Int) } and Enum IntOpt { None(), Some(Int) }
 // [Typer] infer: Var("v")
 // [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
@@ -413,11 +449,11 @@
 // [Typer] inst result: (Int) -> Unit
 // [Typer] check: Prim(Var("t"), Var("w"), Add, kind=None) against Int
 // [Typer] check: Var("t") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] check: Var("w") against Int
-// [Typer] inst: TypeScheme(([], Var(Int)))
+// [Typer] inst: TypeScheme(([], Int))
 // [Typer] inst result: Int
 // [Typer] unify: Int and Int
 // [Typer] unify: Var(None) and Unit
