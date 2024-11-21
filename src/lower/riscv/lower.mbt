@@ -25,8 +25,8 @@ pub struct RiscvFnLoweringCtx {
   used_primitive : MutSet[String]
   mut is_leaf : Bool
   mut mfn : MFn?
-  use_xthead : Bool
   mut tbl_counter : Int
+  conf : @types.Configure
   tracer : @util.SubTracer
 }
 
@@ -747,7 +747,7 @@ fn RiscvFnLoweringCtx::lower_address(
       fn fallback() {
         let base = @generated.constructor_lower_value(self, val)
         let index = @generated.constructor_lower_value(self, offset)
-        if self.use_xthead {
+        if self.conf.use_xthead {
           let shift = match width.size_of_lp64() {
             4 => 2
             8 => 3
@@ -812,7 +812,7 @@ fn RiscvFnLoweringCtx::lower_address(
         ma
       }
 
-      if self.use_xthead {
+      if self.conf.use_xthead {
         match self.insn_any(raw_offset).map(fn(iref) { self.ref_insn(iref) }) {
           Some(@core.Insn::ComputeAddress(~ma)) =>
             match ma {
@@ -860,7 +860,7 @@ fn RiscvFnLoweringCtx::lower_store(
         }
       }
 
-      if self.use_xthead {
+      if self.conf.use_xthead {
         fn thead_memidx_ext_store(
           val : @core.Value,
           offset : @core.Value,
@@ -944,7 +944,7 @@ fn RiscvFnLoweringCtx::lower_load(
         }
       }
 
-      if self.use_xthead {
+      if self.conf.use_xthead {
         fn thead_memidx_ext_load(
           val : @core.Value,
           offset : @core.Value,
@@ -1830,7 +1830,7 @@ fn RiscvFnLoweringCtx::lower_select(
   let fallback_label = self.block_label(fallback)
   let base = @generated.constructor_rv_la(self, jtbl_label)
   @generated.constructor_rv_bltu(self, upper, xreg(cond), fallback_label)
-  let reg = if self.use_xthead == false {
+  let reg = if self.conf.use_xthead == false {
     let offset = @generated.constructor_rv_slliw(self, xreg(cond), 2)
     let addr = @generated.constructor_rv_add(self, base, offset)
     @generated.constructor_rv_lw(self, { base: addr, offset: 0 })
@@ -2547,7 +2547,7 @@ pub fn RiscvFnLoweringCtx::new(
   core : @core.Core,
   func : @core.Fn,
   tracer : @util.SubTracer,
-  ~use_xthead : Bool = false
+  conf : @types.Configure
 ) -> RiscvFnLoweringCtx {
   let value_ref_count = MutMap::new()
   let value_regs = MutMap::new()
@@ -2578,8 +2578,8 @@ pub fn RiscvFnLoweringCtx::new(
     is_leaf: true,
     mfn: None,
     used_primitive: MutSet::new(),
-    use_xthead,
     tracer,
+    conf,
     tbl_counter: 0,
   }
   lower_ctx.assign_reg_for_closure_ptr()
@@ -2874,7 +2874,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.core,
       func,
       self.tracer,
-      use_xthead=self.conf.use_xthead,
+      self.conf,
     )
     let retarget = {}
     match lower_ctx.try_lower_trivial() {

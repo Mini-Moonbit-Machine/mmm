@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-git archive -o submit.zip $1 ./src ./moon.mod.json ./mmm.json
+set -ex
+git archive -o "submit-$(git rev-parse --short HEAD)-$(python conf.py).zip" $1 ./src ./moon.mod.json ./mmm.json
