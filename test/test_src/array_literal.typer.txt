@@ -1,0 +1,36 @@
+enum IntOpt = Enum IntOpt { None(), Some(Int) }
+class Print [T] {
+  print: (T) -> Unit
+}
+instance Print [Enum IntOpt { None(), Some(Int) }] {
+  print = let rec aux: (x: Enum IntOpt { None(), Some(Int) }) -> Unit {
+      let _: Unit = Match(Var("x"), [
+        CtorApp("None", []) =>
+          Apply[](Var("print_string"), [String("None"), ])
+        CtorApp("Some", [Var("i")]) =>
+          let _: Unit = Apply[](Var("print_string"), [String("Some("), ])
+          let _: Unit = Apply[](Var("print_int"), [Var("i"), ])
+          let _: Unit = Apply[](Var("print_string"), [String(")"), ])
+          Unit
+      ])
+      Unit
+    }
+    Var(aux)
+}
+let rec println: forall [("X", Some("Print"))] . (x: X) -> Unit {
+  let _: Unit = Apply[](Var("print"), [Var("x"), ])
+  let _: Unit = Apply[](Var("print_string"), [String("\n"), ])
+  Unit
+}
+let rec main: () -> Unit {
+  let xs: Array[Enum IntOpt { None(), Some(Int) }] = 
+    let _array: Array[Enum IntOpt { None(), Some(Int) }] = Array::make(Int(3), CtorApp("None", []))
+    let _: Unit = Put Var("_array")[Int(1)] = CtorApp("Some", [Int(1)])
+    let _: Unit = Put Var("_array")[Int(2)] = CtorApp("Some", [Int(2)])
+    Var(_array)
+  let _: Unit = Apply[("X", Enum IntOpt { None(), Some(Int) }),](Var("println"), [Get(Var("xs"), Int(0)), ])
+  let _: Unit = Apply[("X", Enum IntOpt { None(), Some(Int) }),](Var("println"), [Get(Var("xs"), Int(1)), ])
+  let _: Unit = Apply[("X", Enum IntOpt { None(), Some(Int) }),](Var("println"), [Get(Var("xs"), Int(2)), ])
+  Unit
+}
+Unit

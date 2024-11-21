@@ -439,50 +439,61 @@ pub fn Parser::parse_expr_with_level(
         ntokens += 1
         block.inner
       } else if po == Paired::Bracket {
-              // parse array literal
-              let mut lookahead = self.peek_token!()
-              // empty array case
-              match lookahead.inner.tag {
-                PairedClose(Bracket) => {
-                  // empty array
-                  self.skip_token()
-                  ntokens += 1
-                  fail!("empty array not supported")
-                }
-                _ => {
-                  // non-empty array
-                  let exprs = []
-                  let expr = self.parse_expr!()
-                  ntokens += expr.ntokens
-                  exprs.push(expr.inner)
-                  lookahead = self.peek_token!()
-                  while lookahead.inner.tag != PairedClose(Bracket) {
-                    let _ = self.expect_operator!(",")
-                    ntokens += 1
-                    let expr = self.parse_expr!()
-                    ntokens += expr.ntokens
-                    exprs.push(expr.inner)
-                    lookahead = self.peek_token!()
-                  }
-                  let _ = self.expect_paired_close!(Bracket)
-                  ntokens += 1
-                  
-                  let arr_name = "_array"
-                  let make_arr = Syntax::Array(Syntax::Int(exprs.length().to_int64()), exprs[0])
-                  let puts = []
-                  for i = 1; i < exprs.length(); i = i + 1 {
-                    puts.push(Syntax::Put(Syntax::Var(arr_name), Syntax::Int(i.to_int64()), exprs[i]))
-                  }
-                  let mut desugar = Syntax::Var(arr_name)
-                  for put in puts.rev() {
-                    desugar = Syntax::Let(("_", Type::new_var()), put, desugar)
-                  }
-                  desugar = Syntax::Let((arr_name, Type::new_var()), make_arr, desugar)
-                  desugar
-                }
-              }
-      }
-      else {
+        // parse array literal
+        let mut lookahead = self.peek_token!()
+        // empty array case
+        match lookahead.inner.tag {
+          PairedClose(Bracket) => {
+            // empty array
+            self.skip_token()
+            ntokens += 1
+            fail!("empty array not supported")
+          }
+          _ => {
+            // non-empty array
+            let exprs = []
+            let expr = self.parse_expr!()
+            ntokens += expr.ntokens
+            exprs.push(expr.inner)
+            lookahead = self.peek_token!()
+            while lookahead.inner.tag != PairedClose(Bracket) {
+              let _ = self.expect_operator!(",")
+              ntokens += 1
+              let expr = self.parse_expr!()
+              ntokens += expr.ntokens
+              exprs.push(expr.inner)
+              lookahead = self.peek_token!()
+            }
+            let _ = self.expect_paired_close!(Bracket)
+            ntokens += 1
+            let arr_name = "_array"
+            let make_arr = Syntax::Array(
+              Syntax::Int(exprs.length().to_int64()),
+              exprs[0],
+            )
+            let puts = []
+            for i = 1; i < exprs.length(); i = i + 1 {
+              puts.push(
+                Syntax::Put(
+                  Syntax::Var(arr_name),
+                  Syntax::Int(i.to_int64()),
+                  exprs[i],
+                ),
+              )
+            }
+            let mut desugar = Syntax::Var(arr_name)
+            for put in puts.rev() {
+              desugar = Syntax::Let(("_", Type::new_var()), put, desugar)
+            }
+            desugar = Syntax::Let(
+              (arr_name, Type::new_var()),
+              make_arr,
+              desugar,
+            )
+            desugar
+          }
+        }
+      } else {
         fail!("unexpected paired when parsing expr: \{lhs_token.inner}")
       }
     Kw(kw) =>

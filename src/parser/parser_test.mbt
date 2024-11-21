@@ -261,7 +261,7 @@ test "parse expr" {
     "[1, 2+3, [1, 2], 2.1, [f(a, b)]]",
     #|["Let",["_array",["Var","None"]],["Array",["Int",5],["Int",1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",1],["IAdd",["Int",2],["Int",3]]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",2],["Let",["_array",["Var","None"]],["Array",["Int",2],["Int",1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",1],["Int",2]],["Var","_array"]]]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",3],["Float",2.1]],["Let",["_",["Var","None"]],["Put",["Var","_array"],["Int",4],["Let",["_array",["Var","None"]],["Array",["Int",1],["App",["Var","f"],[["Var","a"],["Var","b"]]]],["Var","_array"]]],["Var","_array"]]]]]]
     ,
-    24
+    24,
   )
 }
 

@@ -258,7 +258,7 @@ pub fn TypeMemSet::iter(
 }
 
 pub fn Type::op_equal(self : Type, other : Type) -> Bool {
-  match (self, other) {
+  match (self.repr(), other.repr()) {
     (Unit, Unit) => true
     (Bool, Bool) => true
     (Int, Int) => true
@@ -268,7 +268,6 @@ pub fn Type::op_equal(self : Type, other : Type) -> Bool {
     (Tuple(xs), Tuple(ys)) => xs == ys
     (Array(x), Array(y)) => x == y
     (Ptr, Ptr) => true
-    (Var(x), Var(y)) => x.val == y.val
     (Named(x), Named(y)) => x == y
     (Enum(x, _), Enum(y, _)) => x == y
     _ => false
