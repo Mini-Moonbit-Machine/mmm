@@ -353,6 +353,7 @@
 // [Asm] succs: [0]
 // [Asm] critical edges for b1: []
 // [Asm] critical color seq for b1: []
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b0, bpref=$b.0), width=@32))
 // [Asm] succs: []
 // [Asm] critical edges for b3: []
@@ -367,9 +368,9 @@
 // [Asm] succs: [4]
 // [Asm] critical edges for b5: []
 // [Asm] critical color seq for b5: []
-// [Asm] defs: [v12]
-// [Asm] live_set: [v4, v5, v12, zero]
-// [Asm] defined: v12 is X
+// [Asm] defs: [v14]
+// [Asm] live_set: [v4, v5, v14, zero]
+// [Asm] defined: v14 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] defs: []
@@ -402,6 +403,12 @@
 // [Asm] live_set: [v7]
 // [Asm] move: v7 <- zero
 // [Asm] defined: v7 is X
+// [Asm] defs: [v12]
+// [Asm] live_set: [v4, v5, v12, zero]
+// [Asm] defined: v12 is X
+// [Asm] defs: [v13]
+// [Asm] live_set: [v4, v5, zero, v13]
+// [Asm] defined: v13 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] defs: [v10]
@@ -418,15 +425,17 @@
 // [Asm] live_set: [v4, v5, zero]
 // [Asm] Label("init_arr.514") clobbered_x: @hashset.of([a2, a1, a0])
 // [Asm] Label("init_arr.514") clobbered_f: @hashset.of([])
-// [Asm] subst   li v12, 8 ->   li a0, 8
-// [Asm] subst   blt v12, v4, .init_arr.514_2 ->   blt a0, a1, .init_arr.514_2
+// [Asm] subst   li v14, 8 ->   li a0, 8
+// [Asm] subst   blt v14, v4, .init_arr.514_2 ->   blt a0, a1, .init_arr.514_2
 // [Asm] subst   mv v2, a0 ->   mv a2, a0
 // [Asm] subst   mv v3, a1 ->   mv a0, a1
 // [Asm] subst   mv v4, v2 ->   mv a1, a2
 // [Asm] subst   mv v5, v3 ->   mv a2, a0
 // [Asm] subst   ret ->   ret
 // [Asm] subst   mv v7, zero ->   mv a0, zero
-// [Asm] subst   th.surw v4, v5, v4, 2 ->   th.surw a1, a2, a1, 2
+// [Asm] subst   slliw v12, v4, 2 ->   slliw a0, a1, 2
+// [Asm] subst   add v13, v5, v12 ->   add a0, a2, a0
+// [Asm] subst   sw v4, 0(v13) ->   sw a1, 0(a0)
 // [Asm] subst   addi v10, v4, 1 ->   addi a0, a1, 1
 // [Asm] subst   mv v4, v10 ->   mv a1, a0
 // [Asm] subst   j .init_arr.514_0 ->   j .init_arr.514_0
@@ -442,7 +451,9 @@
 // [Asm] succs: [3]
 // [Asm] critical edges for b1: []
 // [Asm] critical color seq for b1: []
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=FnParam(fref=f5, fpref=$f.0), width=@32))
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%3), width=@32))
 // [Asm] succs: [3]
 // [Asm] critical edges for b2: []
@@ -454,9 +465,21 @@
 // [Asm] defs: [v8]
 // [Asm] live_set: [v8, v2, v4, zero, v3]
 // [Asm] defined: v8 is X
+// [Asm] defs: [v18]
+// [Asm] live_set: [v8, v2, v4, v18, zero, v3]
+// [Asm] defined: v18 is X
+// [Asm] defs: [v19]
+// [Asm] live_set: [v8, v2, v19, v4, zero, v3]
+// [Asm] defined: v19 is X
 // [Asm] defs: [v10]
 // [Asm] live_set: [v8, v2, v4, v10, zero, v3]
 // [Asm] defined: v10 is X
+// [Asm] defs: [v16]
+// [Asm] live_set: [v8, v4, v16, v10, zero, v3]
+// [Asm] defined: v16 is X
+// [Asm] defs: [v17]
+// [Asm] live_set: [v8, v4, v17, v10, zero, v3]
+// [Asm] defined: v17 is X
 // [Asm] defs: []
 // [Asm] live_set: [v8, v4, zero, v3]
 // [Asm] defs: []
@@ -558,8 +581,12 @@
 // [Asm] Label("move_perm1_forward.521") clobbered_x: @hashset.of([a2, a1, a3, a0, a4])
 // [Asm] Label("move_perm1_forward.521") clobbered_f: @hashset.of([])
 // [Asm] subst   addi v8, v2, 1 ->   addi a1, a0, 1
-// [Asm] subst   th.lurw v10, v4, v8, 2 ->   th.lurw a4, a2, a1, 2
-// [Asm] subst   th.surw v10, v4, v2, 2 ->   th.surw a4, a2, a0, 2
+// [Asm] subst   slliw v18, v8, 2 ->   slliw a4, a1, 2
+// [Asm] subst   add v19, v4, v18 ->   add a4, a2, a4
+// [Asm] subst   lw v10, 0(v19) ->   lw a4, 0(a4)
+// [Asm] subst   slliw v16, v2, 2 ->   slliw a0, a0, 2
+// [Asm] subst   add v17, v4, v16 ->   add a0, a2, a0
+// [Asm] subst   sw v10, 0(v17) ->   sw a4, 0(a0)
 // [Asm] subst   mv a0, v8 ->   mv a0, a1
 // [Asm] subst   mv a1, v3 ->   mv a1, a3
 // [Asm] subst   call move_perm1_forward.521 ->   call move_perm1_forward.521
@@ -586,6 +613,7 @@
 // [Asm] succs: [3]
 // [Asm] critical edges for b2: []
 // [Asm] critical color seq for b2: []
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%3), width=@32))
 // [Asm] succs: [1, 2]
 // [Asm] critical edges for b0: []
@@ -604,9 +632,9 @@
 // [Asm] defs: [v4]
 // [Asm] live_set: [v3, v4, zero, v2]
 // [Asm] defined: v4 is X
-// [Asm] defs: [v20]
-// [Asm] live_set: [v3, v4, zero, v20, v2]
-// [Asm] defined: v20 is X
+// [Asm] defs: [v22]
+// [Asm] live_set: [v3, v4, zero, v22, v2]
+// [Asm] defined: v22 is X
 // [Asm] defs: []
 // [Asm] live_set: [v3, zero, v2]
 // [Asm] defs: [a0]
@@ -630,6 +658,12 @@
 // [Asm] defs: [v7]
 // [Asm] live_set: [v2, v7, v6, zero, v3]
 // [Asm] defined: v7 is X
+// [Asm] defs: [v18]
+// [Asm] live_set: [v2, v6, v18, zero, v3]
+// [Asm] defined: v18 is X
+// [Asm] defs: [v19]
+// [Asm] live_set: [v2, v19, v6, zero, v3]
+// [Asm] defined: v19 is X
 // [Asm] defs: []
 // [Asm] live_set: [v2, zero, v3]
 // [Asm] defs: [v10]
@@ -699,15 +733,17 @@
 // [Asm] Label("init_count.517") clobbered_x: @hashset.of([a2, a1, a3, a0])
 // [Asm] Label("init_count.517") clobbered_f: @hashset.of([])
 // [Asm] subst   lw v4, 0(v2) ->   lw a2, 0(a0)
-// [Asm] subst   li v20, 1 ->   li a3, 1
-// [Asm] subst   beq v4, v20, .init_count.517_1 ->   beq a2, a3, .init_count.517_1
+// [Asm] subst   li v22, 1 ->   li a3, 1
+// [Asm] subst   beq v4, v22, .init_count.517_1 ->   beq a2, a3, .init_count.517_1
 // [Asm] subst   mv a0, zero ->   mv a0, zero
 // [Asm] subst   ret ->   ret
 // [Asm] subst   mv v14, zero ->   mv a0, zero
 // [Asm] subst   j .init_count.517_3 ->   j .init_count.517_3
 // [Asm] subst   lw v6, 0(v2) ->   lw a2, 0(a0)
 // [Asm] subst   addi v7, v6, -1 ->   addi a3, a2, -1
-// [Asm] subst   th.surw v6, v3, v7, 2 ->   th.surw a2, a1, a3, 2
+// [Asm] subst   slliw v18, v7, 2 ->   slliw a3, a3, 2
+// [Asm] subst   add v19, v3, v18 ->   add a3, a1, a3
+// [Asm] subst   sw v6, 0(v19) ->   sw a2, 0(a3)
 // [Asm] subst   lw v10, 0(v2) ->   lw a2, 0(a0)
 // [Asm] subst   addi v11, v10, -1 ->   addi a2, a2, -1
 // [Asm] subst   sw v11, 0(v2) ->   sw a2, 0(a0)
@@ -727,7 +763,6 @@
 // [Asm] succs: [54]
 // [Asm] critical edges for b55: []
 // [Asm] critical color seq for b55: []
-// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b54, bpref=$b.0), width=@32))
 // [Asm] succs: [60]
 // [Asm] critical edges for b68: []
 // [Asm] critical color seq for b68: []
@@ -747,8 +782,9 @@
 // [Asm] critical edges for b64: []
 // [Asm] critical color seq for b64: []
 // [Asm] skipping Op(ty=Bool, op=Le, args=[Int32(val=1), Insn(iref=%76)])
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%75), width=@32))
-// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%70), width=@32))
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%67), width=@32))
 // [Asm] succs: [63, 64]
 // [Asm] critical edges for b61: []
@@ -794,9 +830,10 @@
 // [Asm] succs: [40]
 // [Asm] critical edges for b41: []
 // [Asm] critical color seq for b41: []
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%50), width=@32))
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=Insn(iref=%46), width=@32))
-// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b40, bpref=$b.0), width=@32))
 // [Asm] succs: [31]
 // [Asm] critical edges for b37: []
 // [Asm] critical color seq for b37: []
@@ -903,9 +940,9 @@
 // [Asm] defs: [v98]
 // [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] defined: v98 is X
-// [Asm] defs: [v152]
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v152, v19, v15]
-// [Asm] defined: v152 is X
+// [Asm] defs: [v162]
+// [Asm] live_set: [v16, v162, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] defined: v162 is X
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] defs: [v50]
@@ -992,9 +1029,9 @@
 // [Asm] live_set: [v26]
 // [Asm] move: v26 <- zero
 // [Asm] defined: v26 is X
-// [Asm] defs: [v187]
-// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v187, v18, v29, zero, v27, v20, v23, v19, v15]
-// [Asm] defined: v187 is X
+// [Asm] defs: [v204]
+// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v204, v29, zero, v27, v20, v23, v19, v15]
+// [Asm] defined: v204 is X
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v27, v20, v23, v19, v15]
 // [Asm] defs: [v76]
@@ -1107,23 +1144,23 @@
 // [Asm] move: v72 <- v71
 // [Asm] defined: v72 is X
 // [Asm] defs: [v79]
-// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v15]
 // [Asm] defined: v79 is X
 // [Asm] defs: [v80]
-// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v80, v15]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v80, v15]
 // [Asm] defined: v80 is X
 // [Asm] defs: [v81]
-// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v80, v81, v15]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v80, v81, v15]
 // [Asm] defined: v81 is X
 // [Asm] defs: [v84]
-// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v84, v80, v15]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v84, v80, v15]
 // [Asm] defined: v84 is X
 // [Asm] defs: [v85]
-// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v85, v19, v80, v15]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v85, v19, v80, v15]
 // [Asm] defined: v85 is X
-// [Asm] defs: [v159]
-// [Asm] live_set: [v16, v21, v79, v22, v159, v17, s11, v18, zero, v23, v20, v85, v19, v80, v15]
-// [Asm] defined: v159 is X
+// [Asm] defs: [v169]
+// [Asm] live_set: [v16, v21, v79, v22, v17, s11, v18, zero, v169, v20, v23, v85, v19, v80, v15]
+// [Asm] defined: v169 is X
 // [Asm] defs: [v86]
 // [Asm] live_set: [v16, v21, v79, v22, v17, s11, v86, v18, zero, v23, v20, v19, v80, v15]
 // [Asm] defined: v86 is X
@@ -1141,9 +1178,9 @@
 // [Asm] defs: [s11]
 // [Asm] live_set: [v11, v16, v21, v22, v17, s11, v18, zero, v23, v20, v19, v15]
 // [Asm] defined: s11 is X
-// [Asm] defs: [v156]
-// [Asm] live_set: [v11, v16, v21, v22, v17, s11, v18, v156, zero, v23, v20, v19, v15]
-// [Asm] defined: v156 is X
+// [Asm] defs: [v166]
+// [Asm] live_set: [v11, v16, v21, v22, v17, s11, v18, zero, v23, v20, v19, v166, v15]
+// [Asm] defined: v166 is X
 // [Asm] defs: []
 // [Asm] live_set: [v11, v16, v21, v18, zero, v22, v23, v20, v19, v17, v15, s11]
 // [Asm] defs: [v12]
@@ -1166,9 +1203,18 @@
 // [Asm] move: v39 <- v20
 // [Asm] defined: v39 is X
 // [Asm] skip edge 15 -> 7
+// [Asm] defs: [v131]
+// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131]
+// [Asm] defined: v131 is X
+// [Asm] defs: [v137]
+// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131, v137]
+// [Asm] defined: v137 is X
 // [Asm] defs: [v132]
-// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v132]
+// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131, v132]
 // [Asm] defined: v132 is X
+// [Asm] defs: [v136]
+// [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v136, v15, v132]
+// [Asm] defined: v136 is X
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15]
 // [Asm] defs: [v134]
@@ -1203,20 +1249,35 @@
 // [Asm] skip edge 47 -> 5
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v18, zero, v22, v20, v78, v23, v19, v17, v15, s11]
+// [Asm] defs: [v57]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm] defined: v57 is X
+// [Asm] defs: [v191]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v191, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm] defined: v191 is X
 // [Asm] defs: [v58]
-// [Asm] live_set: [v46, v16, v58, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm] live_set: [v46, v16, v58, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
 // [Asm] defined: v58 is X
 // [Asm] defs: []
-// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
 // [Asm] defs: [v60]
-// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v60, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v60, v18, zero, v23, v20, v45, v19, v38, v15, v57]
 // [Asm] defined: v60 is X
 // [Asm] defs: [v61]
-// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v61]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57, v61]
 // [Asm] defined: v61 is X
+// [Asm] defs: [v186]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v186, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm] defined: v186 is X
+// [Asm] defs: [v187]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v187, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm] defined: v187 is X
 // [Asm] defs: [v63]
-// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15, v57]
 // [Asm] defined: v63 is X
+// [Asm] defs: [v185]
+// [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v185, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm] defined: v185 is X
 // [Asm] defs: []
 // [Asm] live_set: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm] defs: [v65]
@@ -1228,6 +1289,12 @@
 // [Asm] defs: [v67]
 // [Asm] live_set: [v66, v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm] defined: v67 is X
+// [Asm] defs: [v180]
+// [Asm] live_set: [v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v180, v15]
+// [Asm] defined: v180 is X
+// [Asm] defs: [v181]
+// [Asm] live_set: [v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v181, v15]
+// [Asm] defined: v181 is X
 // [Asm] defs: []
 // [Asm] live_set: [v46, v16, v21, v22, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm] defs: [v70]
@@ -1318,29 +1385,29 @@
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v22, v37, v17, s11, v39, v18, zero, v23, v20, v19, v38, v15]
 // [Asm] defs: [v107]
-// [Asm] live_set: [v16, v21, v22, v95, v92, v107, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v107, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v107 is X
 // [Asm] defs: []
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defs: []
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defs: [a0]
-// [Asm] live_set: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] move: a0 <- zero
 // [Asm] defined: a0 is X
 // [Asm] skip edge 20 -> 5
 // [Asm] defs: [a1]
-// [Asm] live_set: [v16, v21, a0, v22, v95, v92, a1, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, a0, v22, v95, v92, a1, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] move: a1 <- v93
 // [Asm] defined: a1 is X
 // [Asm] skip edge 51 -> 29
 // [Asm] defs: [a2]
-// [Asm] live_set: [v16, v21, a0, v22, v95, v92, a2, a1, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, a0, v22, v95, v92, a2, a1, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] move: a2 <- v96
 // [Asm] defined: a2 is X
 // [Asm] skip edge 57 -> 31
 // [Asm] defs: [t0, t1, t2, t3, t4, a0, a1, a2, a3, a4, a5, a6, a7, t0, t1, ft0, ft1, ft2, ft3, ft4, ft5, ft6, ft7, ft8, ft9, ft10, fa0, fa1, fa2, fa3, fa4, fa5, fa6, fa7]
-// [Asm] live_set: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: t0 is X
 // [Asm] defined: t1 is X
 // [Asm] defined: t2 is X
@@ -1376,39 +1443,60 @@
 // [Asm] defined: fa6 is F
 // [Asm] defined: fa7 is F
 // [Asm] defs: [v109]
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] move: v109 <- a0
 // [Asm] defined: v109 is X
 // [Asm] defs: []
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defs: [v110]
-// [Asm] live_set: [v16, v21, v22, v110, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v110, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v110 is X
 // [Asm] defs: [v111]
-// [Asm] live_set: [v16, v21, v22, v110, v95, v92, v17, v111, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v110, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v111 is X
+// [Asm] defs: [v153]
+// [Asm] live_set: [v153, v16, v21, v22, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm] defined: v153 is X
+// [Asm] defs: [v154]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v154]
+// [Asm] defined: v154 is X
 // [Asm] defs: []
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defs: [v114]
-// [Asm] live_set: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v114 is X
+// [Asm] defs: [v115]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm] defined: v115 is X
+// [Asm] defs: [v149]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v149, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm] defined: v149 is X
 // [Asm] defs: [v116]
-// [Asm] live_set: [v116, v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v116, v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v116 is X
 // [Asm] defs: [v117]
-// [Asm] live_set: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15, v117]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15, v117]
 // [Asm] defined: v117 is X
+// [Asm] defs: [v147]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v147, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v117]
+// [Asm] defined: v147 is X
 // [Asm] defs: []
-// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defs: [v119]
-// [Asm] live_set: [v16, v21, v22, v119, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v22, v119, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v119 is X
+// [Asm] defs: [v143]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v143, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm] defined: v143 is X
+// [Asm] defs: [v144]
+// [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v144]
+// [Asm] defined: v144 is X
 // [Asm] defs: [v121]
-// [Asm] live_set: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm] live_set: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] defined: v121 is X
-// [Asm] defs: [v139]
-// [Asm] live_set: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15, v139]
-// [Asm] defined: v139 is X
+// [Asm] defs: [v142]
+// [Asm] live_set: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v142, v96, zero, v97, v20, v23, v19, v15]
+// [Asm] defined: v142 is X
 // [Asm] defs: []
 // [Asm] live_set: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] defs: []
@@ -1486,11 +1574,11 @@
 // [Asm] move: v23 <- v10
 // [Asm] defined: v23 is X
 // [Asm] defs: [v24]
-// [Asm] live_set: [v16, v18, v21, zero, v20, v23, v22, v19, v17, s11, v24, v15]
+// [Asm] live_set: [v16, v21, v18, zero, v23, v22, v20, v19, v17, s11, v24, v15]
 // [Asm] defined: v24 is X
-// [Asm] defs: [v188]
-// [Asm] live_set: [v16, v18, v21, zero, v20, v23, v22, v19, v188, v17, s11, v24, v15]
-// [Asm] defined: v188 is X
+// [Asm] defs: [v205]
+// [Asm] live_set: [v16, v205, v21, v18, zero, v23, v22, v20, v19, v17, s11, v24, v15]
+// [Asm] defined: v205 is X
 // [Asm] defs: []
 // [Asm] live_set: [v16, v18, v21, zero, v20, v23, v22, v19, v17, v15, s11]
 // [Asm] defs: [v14]
@@ -1522,8 +1610,8 @@
 // [Asm] subst   ret ->   ret
 // [Asm] subst   mv v43, zero ->   mv a1, zero
 // [Asm] subst   lw v98, 0(v95) ->   lw a0, 0(s9)
-// [Asm] subst   li v152, 1 ->   li a1, 1
-// [Asm] subst   bne v98, v152, .compute.515_62 ->   bne a0, a1, .compute.515_62
+// [Asm] subst   li v162, 1 ->   li a1, 1
+// [Asm] subst   bne v98, v162, .compute.515_62 ->   bne a0, a1, .compute.515_62
 // [Asm] subst   mv v50, zero ->   mv a1, zero
 // [Asm] subst   mv v130, zero ->   mv a0, zero
 // [Asm] subst   lw v47, 0(v44) ->   lw a5, 0(a0)
@@ -1537,8 +1625,8 @@
 // [Asm] subst   mv v95, v11 ->   mv s9, a0
 // [Asm] subst   mv v71, zero ->   mv a0, zero
 // [Asm] subst   mv v26, zero ->   mv a0, zero
-// [Asm] subst   li v187, 8 ->   li a0, 8
-// [Asm] subst   blt v187, v27, .compute.515_56 ->   blt a0, a1, .compute.515_56
+// [Asm] subst   li v204, 8 ->   li a0, 8
+// [Asm] subst   blt v204, v27, .compute.515_56 ->   blt a0, a1, .compute.515_56
 // [Asm] subst   lw v76, 0(v20) ->   lw a0, 0(s4)
 // [Asm] subst   sw v76, 0(v23) ->   sw a0, 0(s3)
 // [Asm] subst   mv v78, zero ->   mv a0, zero
@@ -1563,22 +1651,25 @@
 // [Asm] subst   lw v81, 0(v21) ->   lw a2, 0(s1)
 // [Asm] subst   andi v84, v81, 1 ->   andi a2, a2, 1
 // [Asm] subst   slli v85, v84, 1 ->   slli a2, a2, 1
-// [Asm] subst   li v159, 1 ->   li a3, 1
-// [Asm] subst   sub v86, v159, v85 ->   sub a2, a3, a2
+// [Asm] subst   li v169, 1 ->   li a3, 1
+// [Asm] subst   sub v86, v169, v85 ->   sub a2, a3, a2
 // [Asm] subst   mulw v87, v80, v86 ->   mulw a1, a1, a2
 // [Asm] subst   add v88, v79, v87 ->   add a0, a0, a1
 // [Asm] subst   sw v88, 0(v22) ->   sw a0, 0(s5)
 // [Asm] subst   addi v11, s11, -4 ->   addi a0, s11, -4
 // [Asm] subst   andi s11, v11, -8 ->   andi s11, a0, -8
-// [Asm] subst   li v156, 1 ->   li a1, 1
-// [Asm] subst   sw v156, 0(v11) ->   sw a1, 0(a0)
+// [Asm] subst   li v166, 1 ->   li a1, 1
+// [Asm] subst   sw v166, 0(v11) ->   sw a1, 0(a0)
 // [Asm] subst   addi v12, s11, -4 ->   addi a1, s11, -4
 // [Asm] subst   andi s11, v12, -8 ->   andi s11, a1, -8
 // [Asm] subst   mv v37, v13 ->   mv a0, a1
 // [Asm] subst   mv v38, v18 ->   mv a3, s2
 // [Asm] subst   mv v39, v20 ->   mv a2, s4
-// [Asm] subst   th.lurw v132, v28, v27, 2 ->   th.lurw a0, a2, a1, 2
-// [Asm] subst   th.surw v132, v29, v27, 2 ->   th.surw a0, a3, a1, 2
+// [Asm] subst   slliw v131, v27, 2 ->   slliw a0, a1, 2
+// [Asm] subst   add v137, v28, v131 ->   add a4, a2, a0
+// [Asm] subst   lw v132, 0(v137) ->   lw a4, 0(a4)
+// [Asm] subst   add v136, v29, v131 ->   add a0, a3, a0
+// [Asm] subst   sw v132, 0(v136) ->   sw a4, 0(a0)
 // [Asm] subst   addi v134, v27, 1 ->   addi a0, a1, 1
 // [Asm] subst   mv v27, v134 ->   mv a1, a0
 // [Asm] subst   j .compute.515_54 ->   j .compute.515_54
@@ -1587,16 +1678,23 @@
 // [Asm] subst   mv v31, zero ->   mv a0, zero
 // [Asm] subst   mv v78, zero ->   mv a0, zero
 // [Asm] subst   j .compute.515_5 ->   j .compute.515_5
-// [Asm] subst   th.lurw v58, v46, v43, 2 ->   th.lurw a5, a3, a1, 2
-// [Asm] subst   sw v58, 0(v45) ->   sw a5, 0(a4)
-// [Asm] subst   lw v60, 0(v44) ->   lw a5, 0(a0)
-// [Asm] subst   sub v61, v60, v43 ->   sub a5, a5, a1
-// [Asm] subst   th.lurw v63, v46, v61, 2 ->   th.lurw a5, a3, a5, 2
-// [Asm] subst   th.surw v63, v46, v43, 2 ->   th.surw a5, a3, a1, 2
+// [Asm] subst   slliw v57, v43, 2 ->   slliw a5, a1, 2
+// [Asm] subst   add v191, v46, v57 ->   add a6, a3, a5
+// [Asm] subst   lw v58, 0(v191) ->   lw a6, 0(a6)
+// [Asm] subst   sw v58, 0(v45) ->   sw a6, 0(a4)
+// [Asm] subst   lw v60, 0(v44) ->   lw a6, 0(a0)
+// [Asm] subst   sub v61, v60, v43 ->   sub a6, a6, a1
+// [Asm] subst   slliw v186, v61, 2 ->   slliw a6, a6, 2
+// [Asm] subst   add v187, v46, v186 ->   add a6, a3, a6
+// [Asm] subst   lw v63, 0(v187) ->   lw a6, 0(a6)
+// [Asm] subst   add v185, v46, v57 ->   add a5, a3, a5
+// [Asm] subst   sw v63, 0(v185) ->   sw a6, 0(a5)
 // [Asm] subst   lw v65, 0(v44) ->   lw a5, 0(a0)
 // [Asm] subst   sub v66, v65, v43 ->   sub a5, a5, a1
 // [Asm] subst   lw v67, 0(v45) ->   lw a6, 0(a4)
-// [Asm] subst   th.surw v67, v46, v66, 2 ->   th.surw a6, a3, a5, 2
+// [Asm] subst   slliw v180, v66, 2 ->   slliw a5, a5, 2
+// [Asm] subst   add v181, v46, v180 ->   add a5, a3, a5
+// [Asm] subst   sw v67, 0(v181) ->   sw a6, 0(a5)
 // [Asm] subst   addi v70, v43, 1 ->   addi a1, a1, 1
 // [Asm] subst   j .compute.515_40 ->   j .compute.515_40
 // [Asm] subst   lw v73, 0(v23) ->   lw a0, 0(s3)
@@ -1620,15 +1718,22 @@
 // [Asm] subst   call move_perm1_forward.521 ->   call move_perm1_forward.521
 // [Asm] subst   lw v110, 0(v93) ->   lw a0, 0(s8)
 // [Asm] subst   lw v111, 0(v94) ->   lw a1, 0(s10)
-// [Asm] subst   th.surw v111, v96, v110, 2 ->   th.surw a1, s7, a0, 2
+// [Asm] subst   slliw v153, v110, 2 ->   slliw a0, a0, 2
+// [Asm] subst   add v154, v96, v153 ->   add a0, s7, a0
+// [Asm] subst   sw v111, 0(v154) ->   sw a1, 0(a0)
 // [Asm] subst   lw v114, 0(v93) ->   lw a0, 0(s8)
-// [Asm] subst   th.lurw v116, v97, v114, 2 ->   th.lurw a1, s6, a0, 2
+// [Asm] subst   slliw v115, v114, 2 ->   slliw a0, a0, 2
+// [Asm] subst   add v149, v97, v115 ->   add a1, s6, a0
+// [Asm] subst   lw v116, 0(v149) ->   lw a1, 0(a1)
 // [Asm] subst   addi v117, v116, -1 ->   addi a1, a1, -1
-// [Asm] subst   th.surw v117, v97, v114, 2 ->   th.surw a1, s6, a0, 2
+// [Asm] subst   add v147, v97, v115 ->   add a0, s6, a0
+// [Asm] subst   sw v117, 0(v147) ->   sw a1, 0(a0)
 // [Asm] subst   lw v119, 0(v93) ->   lw a0, 0(s8)
-// [Asm] subst   th.lurw v121, v97, v119, 2 ->   th.lurw a0, s6, a0, 2
-// [Asm] subst   li v139, 1 ->   li a1, 1
-// [Asm] subst   bge v121, v139, .compute.515_65 ->   bge a0, a1, .compute.515_65
+// [Asm] subst   slliw v143, v119, 2 ->   slliw a0, a0, 2
+// [Asm] subst   add v144, v97, v143 ->   add a0, s6, a0
+// [Asm] subst   lw v121, 0(v144) ->   lw a0, 0(a0)
+// [Asm] subst   li v142, 1 ->   li a1, 1
+// [Asm] subst   bge v121, v142, .compute.515_65 ->   bge a0, a1, .compute.515_65
 // [Asm] subst   mv v15, v2 ->   mv s8, a0
 // [Asm] subst   mv v16, v3 ->   mv s0, a1
 // [Asm] subst   mv v17, v4 ->   mv s7, a2
@@ -1639,8 +1744,8 @@
 // [Asm] subst   mv v22, v9 ->   mv s5, a7
 // [Asm] subst   mv v23, v10 ->   mv s3, t0
 // [Asm] subst   lw v24, 0(v15) ->   lw a0, 0(s8)
-// [Asm] subst   li v188, 1 ->   li a1, 1
-// [Asm] subst   blt v24, v188, .compute.515_2 ->   blt a0, a1, .compute.515_2
+// [Asm] subst   li v205, 1 ->   li a1, 1
+// [Asm] subst   blt v24, v205, .compute.515_2 ->   blt a0, a1, .compute.515_2
 // [Asm] subst   addi v14, s11, -4 ->   addi a4, s11, -4
 // [Asm] subst   andi s11, v14, -8 ->   andi s11, a4, -8
 // [Asm] subst   mv v27, zero ->   mv a1, zero
@@ -1674,14 +1779,14 @@
 // [Asm]   mv v22, v9  # live: [v16, v18, v21, v10, zero, v20, v22, v19, v17, v15, s11]
 // [Asm]   mv v23, v10  # live: [v16, v18, v21, zero, v22, v23, v20, v19, v17, v15, s11]
 // [Asm] 
-// [Asm] # block info: defs: [v188, v24], uses: [v188, v15, v24], upward_exposed: [v15], params_defs: [v16, v18, v21, v20, v22, v23, v19, v17, v15]
+// [Asm] # block info: defs: [v205, v24], uses: [v205, v15, v24], upward_exposed: [v15], params_defs: [v16, v18, v21, v20, v22, v23, v19, v17, v15]
 // [Asm] # live_in: [v16, v18, v21, zero, v23, v20, v22, v19, v17, v15, s11], live_out: [v16, v18, v21, zero, v20, v23, v22, v19, v17, v15, s11]
 // [Asm] # block parameters: [v15, v16, v17, v18, v19, v20, v21, v22, v23]
 // [Asm] .compute.515_0:
-// [Asm]   lw v24, 0(v15)  # live: [v16, v18, v21, zero, v20, v23, v22, v19, v17, s11, v24, v15]
+// [Asm]   lw v24, 0(v15)  # live: [v16, v21, v18, zero, v23, v22, v20, v19, v17, s11, v24, v15]
 // [Asm] # control
-// [Asm]   li v188, 1  # live: [v16, v18, v21, zero, v20, v23, v22, v19, v188, v17, s11, v24, v15]
-// [Asm]   blt v24, v188, .compute.515_2  # live: [v16, v18, v21, zero, v20, v23, v22, v19, v17, v15, s11]
+// [Asm]   li v205, 1  # live: [v16, v205, v21, v18, zero, v23, v22, v20, v19, v17, s11, v24, v15]
+// [Asm]   blt v24, v205, .compute.515_2  # live: [v16, v18, v21, zero, v20, v23, v22, v19, v17, v15, s11]
 // [Asm] 
 // [Asm] # block info: defs: [v28, v29, v27], uses: [v17, v18, zero], upward_exposed: [v17, v18, zero], params_defs: []
 // [Asm] # live_in: [v16, v18, v21, zero, v20, v23, v22, v19, v17, v15, s11], live_out: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15]
@@ -1692,20 +1797,23 @@
 // [Asm]   mv v28, v17  # live: [v16, v21, v22, v17, s11, v28, v18, zero, v20, v27, v23, v19, v15]
 // [Asm]   mv v29, v18  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15]
 // [Asm] 
-// [Asm] # block info: defs: [v187], uses: [v187, v27], upward_exposed: [v27], params_defs: [v28, v29, v27]
+// [Asm] # block info: defs: [v204], uses: [v204, v27], upward_exposed: [v27], params_defs: [v28, v29, v27]
 // [Asm] # live_in: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15], live_out: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v27, v20, v23, v19, v15]
 // [Asm] # block parameters: [v27, v28, v29]
 // [Asm] .compute.515_54:
 // [Asm] # control
-// [Asm]   li v187, 8  # live: [v16, v21, v22, v17, s11, v28, v187, v18, v29, zero, v27, v20, v23, v19, v15]
-// [Asm]   blt v187, v27, .compute.515_56  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v27, v20, v23, v19, v15]
+// [Asm]   li v204, 8  # live: [v16, v21, v22, v17, s11, v28, v18, v204, v29, zero, v27, v20, v23, v19, v15]
+// [Asm]   blt v204, v27, .compute.515_56  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v27, v20, v23, v19, v15]
 // [Asm] 
-// [Asm] # block info: defs: [v134, v27, v132], uses: [v134, v28, v29, v27, v132], upward_exposed: [v28, v29, v27], params_defs: []
+// [Asm] # block info: defs: [v136, v134, v131, v137, v27, v132], uses: [v29, v27, v136, v134, v28, v131, v137, v132], upward_exposed: [v28, v29, v27], params_defs: []
 // [Asm] # live_in: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15], live_out: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15]
 // [Asm] # block parameters: []
 // [Asm] .compute.515_55:
-// [Asm]   th.lurw v132, v28, v27, 2  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v132]
-// [Asm]   th.surw v132, v29, v27, 2  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15]
+// [Asm]   slliw v131, v27, 2  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131]
+// [Asm]   add v137, v28, v131  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131, v137]
+// [Asm]   lw v132, 0(v137)  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15, v131, v132]
+// [Asm]   add v136, v29, v131  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v136, v15, v132]
+// [Asm]   sw v132, 0(v136)  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v23, v27, v19, v15]
 // [Asm]   addi v134, v27, 1  # live: [v16, v21, v22, v134, v17, s11, v28, v18, v29, zero, v20, v23, v19, v15]
 // [Asm] # control
 // [Asm]   mv v27, v134  # live: [v16, v21, v22, v17, s11, v28, v18, v29, zero, v20, v27, v23, v19, v15]
@@ -1781,20 +1889,27 @@
 // [Asm] # control
 // [Asm]   blt v48, v43, .compute.515_42  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm] 
-// [Asm] # block info: defs: [v66, v63, v58, v67, v65, v70, v43, v61, v60], uses: [v66, v63, v46, v58, v67, v45, v65, v43, v70, v61, v44, v60], upward_exposed: [v46, v43, v44, v45], params_defs: []
+// [Asm] # block info: defs: [v66, v58, v67, v65, v43, v185, v60, v187, v186, v191, v63, v180, v181, v70, v57, v61], uses: [v66, v46, v58, v67, v65, v43, v44, v185, v60, v187, v186, v191, v63, v45, v180, v181, v70, v57, v61], upward_exposed: [v43, v46, v44, v45], params_defs: []
 // [Asm] # live_in: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15], live_out: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm] # block parameters: []
 // [Asm] .compute.515_41:
-// [Asm]   th.lurw v58, v46, v43, 2  # live: [v46, v16, v58, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
-// [Asm]   sw v58, 0(v45)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
-// [Asm]   lw v60, 0(v44)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v60, v18, zero, v23, v20, v45, v19, v38, v15]
-// [Asm]   sub v61, v60, v43  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v61]
-// [Asm]   th.lurw v63, v46, v61, 2  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15]
-// [Asm]   th.surw v63, v46, v43, 2  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm]   slliw v57, v43, 2  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   add v191, v46, v57  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v191, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   lw v58, 0(v191)  # live: [v46, v16, v58, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   sw v58, 0(v45)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   lw v60, 0(v44)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v60, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   sub v61, v60, v43  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15, v57, v61]
+// [Asm]   slliw v186, v61, 2  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v186, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   add v187, v46, v186  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v187, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   lw v63, 0(v187)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15, v57]
+// [Asm]   add v185, v46, v57  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v185, v39, v63, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm]   sw v63, 0(v185)  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm]   lw v65, 0(v44)  # live: [v46, v16, v21, v22, v37, v65, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm]   sub v66, v65, v43  # live: [v66, v46, v16, v21, v22, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm]   lw v67, 0(v45)  # live: [v66, v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
-// [Asm]   th.surw v67, v46, v66, 2  # live: [v46, v16, v21, v22, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
+// [Asm]   slliw v180, v66, 2  # live: [v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v180, v15]
+// [Asm]   add v181, v46, v180  # live: [v46, v16, v21, v22, v67, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v181, v15]
+// [Asm]   sw v67, 0(v181)  # live: [v46, v16, v21, v22, v37, v17, v43, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
 // [Asm]   addi v70, v43, 1  # live: [v46, v16, v21, v22, v37, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v70, v15]
 // [Asm] # control
 // [Asm]   mv v43, v70  # live: [v46, v16, v21, v22, v37, v43, v17, s11, v44, v39, v18, zero, v23, v20, v45, v19, v38, v15]
@@ -1866,24 +1981,24 @@
 // [Asm] # control
 // [Asm]   mv v78, zero  # live: [v16, v21, v18, zero, v22, v20, v78, v23, v19, v17, v15, s11]
 // [Asm] 
-// [Asm] # block info: defs: [v11, v87, v79, v159, v88, s11, v12, v86, v156, v85, v84, v81, v80], uses: [v11, v87, v21, v79, v159, v22, v88, s11, v12, v86, v156, v20, v85, v84, v80, v81], upward_exposed: [v21, s11, v22, v20], params_defs: [v78]
+// [Asm] # block info: defs: [v11, v87, v79, v88, s11, v12, v86, v169, v85, v84, v166, v80, v81], uses: [v11, v87, v21, v79, v22, v88, s11, v12, v86, v169, v20, v85, v84, v166, v80, v81], upward_exposed: [v21, s11, v22, v20], params_defs: [v78]
 // [Asm] # live_in: [v16, v21, v18, zero, v20, v78, v22, v23, v19, v17, v15, s11], live_out: [v11, v16, v21, v22, v17, v12, s11, v18, zero, v23, v20, v19, v15]
 // [Asm] # block parameters: [v78]
 // [Asm] .compute.515_5:
-// [Asm]   lw v79, 0(v22)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v15]
-// [Asm]   lw v80, 0(v20)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v80, v15]
-// [Asm]   lw v81, 0(v21)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v80, v81, v15]
-// [Asm]   andi v84, v81, 1  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v84, v80, v15]
-// [Asm]   slli v85, v84, 1  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v23, v20, v85, v19, v80, v15]
-// [Asm]   li v159, 1  # live: [v16, v21, v79, v22, v159, v17, s11, v18, zero, v23, v20, v85, v19, v80, v15]
-// [Asm]   sub v86, v159, v85  # live: [v16, v21, v79, v22, v17, s11, v86, v18, zero, v23, v20, v19, v80, v15]
+// [Asm]   lw v79, 0(v22)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v15]
+// [Asm]   lw v80, 0(v20)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v80, v15]
+// [Asm]   lw v81, 0(v21)  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v80, v81, v15]
+// [Asm]   andi v84, v81, 1  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v19, v84, v80, v15]
+// [Asm]   slli v85, v84, 1  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v20, v23, v85, v19, v80, v15]
+// [Asm]   li v169, 1  # live: [v16, v21, v79, v22, v17, s11, v18, zero, v169, v20, v23, v85, v19, v80, v15]
+// [Asm]   sub v86, v169, v85  # live: [v16, v21, v79, v22, v17, s11, v86, v18, zero, v23, v20, v19, v80, v15]
 // [Asm]   mulw v87, v80, v86  # live: [v16, v87, v21, v79, v22, v17, s11, v18, zero, v23, v20, v19, v15]
 // [Asm]   add v88, v79, v87  # live: [v16, v21, v22, v88, v17, s11, v18, zero, v23, v20, v19, v15]
 // [Asm]   sw v88, 0(v22)  # live: [v16, v21, v22, v17, s11, v18, zero, v23, v20, v19, v15]
 // [Asm]   addi v11, s11, -4  # live: [v11, v16, v21, v22, v17, v18, zero, v23, v20, v19, v15]
 // [Asm]   andi s11, v11, -8  # live: [v11, v16, v21, v22, v17, s11, v18, zero, v23, v20, v19, v15]
-// [Asm]   li v156, 1  # live: [v11, v16, v21, v22, v17, s11, v18, v156, zero, v23, v20, v19, v15]
-// [Asm]   sw v156, 0(v11)  # live: [v11, v16, v21, v18, zero, v22, v23, v20, v19, v17, v15, s11]
+// [Asm]   li v166, 1  # live: [v11, v16, v21, v22, v17, s11, v18, zero, v23, v20, v19, v166, v15]
+// [Asm]   sw v166, 0(v11)  # live: [v11, v16, v21, v18, zero, v22, v23, v20, v19, v17, v15, s11]
 // [Asm]   addi v12, s11, -4  # live: [v11, v16, v21, v18, zero, v22, v23, v20, v19, v17, v12, v15]
 // [Asm]   andi s11, v12, -8  # live: [v11, v16, v21, v18, zero, v22, v23, v20, v19, v17, v12, s11, v15]
 // [Asm] # control
@@ -1900,14 +2015,14 @@
 // [Asm]   mv v96, v17  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v23, v20, v19, v15]
 // [Asm]   mv v97, v19  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v23, v20, v19, v15]
 // [Asm] 
-// [Asm] # block info: defs: [v152, v98], uses: [v152, v95, v98], upward_exposed: [v95], params_defs: [v92, v95, v94, v96, v97, v93]
+// [Asm] # block info: defs: [v162, v98], uses: [v95, v162, v98], upward_exposed: [v95], params_defs: [v92, v95, v94, v96, v97, v93]
 // [Asm] # live_in: [v16, v21, v22, v92, v95, v17, s11, v93, v94, v18, v96, zero, v97, v23, v20, v19, v15], live_out: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] # block parameters: [v92, v93, v94, v95, v96, v97]
 // [Asm] .compute.515_60:
 // [Asm]   lw v98, 0(v95)  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] # control
-// [Asm]   li v152, 1  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v152, v19, v15]
-// [Asm]   bne v98, v152, .compute.515_62  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm]   li v162, 1  # live: [v16, v162, v21, v22, v95, v92, v17, s11, v93, v98, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm]   bne v98, v162, .compute.515_62  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] 
 // [Asm] # block info: defs: [v105], uses: [v105, v92, v93], upward_exposed: [v92, v93], params_defs: []
 // [Asm] # live_in: [v16, v21, v22, v92, v95, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15], live_out: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
@@ -1917,31 +2032,38 @@
 // [Asm] # control
 // [Asm]   beq v105, v92, .compute.515_63  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] 
-// [Asm] # block info: defs: [t1, v107, ft0, ft1, a1, fa1, v109, fa2, ft6, a4, fa6, a6, ft5, ft10, v117, ft7, v116, ft4, ft9, v121, a5, fa4, a0, v119, v110, ft2, a2, v114, v111, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2, v139], uses: [v116, v121, a0, v110, v119, v107, a2, v114, a1, v111, v93, v94, v96, zero, v97, v117, v139], upward_exposed: [v94, v96, zero, v97, v93], params_defs: []
+// [Asm] # block info: defs: [v153, t1, v107, ft0, ft1, a1, v143, fa1, v149, v109, v115, v142, fa2, ft6, a4, fa6, a6, ft5, ft10, v154, v117, v144, ft7, v116, ft4, ft9, v121, a5, fa4, a0, v119, v110, ft2, a2, v114, v111, a3, v147, ft8, a7, fa7, t3, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v153, v116, v121, a0, v110, v119, v107, a2, v114, v111, a1, v143, v147, v149, v93, v115, v94, v142, v96, zero, v97, v154, v117, v144], upward_exposed: [v94, v96, zero, v97, v93], params_defs: []
 // [Asm] # live_in: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15], live_out: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] # block parameters: []
 // [Asm] .compute.515_64:
-// [Asm]   lw v107, 0(v96)  # live: [v16, v21, v22, v95, v92, v107, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   sw v107, 0(v94)  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   # save_ctx2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   mv a0, zero  # live: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   mv a1, v93  # live: [v16, v21, a0, v22, v95, v92, a1, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   mv a2, v96  # live: [v16, v21, a0, v22, v95, v92, a2, a1, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   call move_perm1_forward.521  # live: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   mv v109, a0  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   # restore_ctx2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   lw v110, 0(v93)  # live: [v16, v21, v22, v110, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   lw v111, 0(v94)  # live: [v16, v21, v22, v110, v95, v92, v17, v111, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   th.surw v111, v96, v110, 2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   lw v114, 0(v93)  # live: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   th.lurw v116, v97, v114, 2  # live: [v116, v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   addi v117, v116, -1  # live: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15, v117]
-// [Asm]   th.surw v117, v97, v114, 2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   lw v119, 0(v93)  # live: [v16, v21, v22, v119, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
-// [Asm]   th.lurw v121, v97, v119, 2  # live: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm]   lw v107, 0(v96)  # live: [v16, v21, v22, v95, v92, v107, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   sw v107, 0(v94)  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   # save_ctx2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   mv a0, zero  # live: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   mv a1, v93  # live: [v16, v21, a0, v22, v95, v92, a1, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   mv a2, v96  # live: [v16, v21, a0, v22, v95, v92, a2, a1, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   call move_perm1_forward.521  # live: [v16, v21, a0, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   mv v109, a0  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   # restore_ctx2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   lw v110, 0(v93)  # live: [v16, v21, v22, v110, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   lw v111, 0(v94)  # live: [v16, v21, v22, v110, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   slliw v153, v110, 2  # live: [v153, v16, v21, v22, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   add v154, v96, v153  # live: [v16, v21, v22, v95, v92, v17, v111, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v154]
+// [Asm]   sw v111, 0(v154)  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   lw v114, 0(v93)  # live: [v16, v21, v22, v95, v92, v114, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   slliw v115, v114, 2  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   add v149, v97, v115  # live: [v16, v21, v22, v95, v92, v17, s11, v149, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   lw v116, 0(v149)  # live: [v116, v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   addi v117, v116, -1  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v115, v94, v18, v96, zero, v97, v20, v23, v19, v15, v117]
+// [Asm]   add v147, v97, v115  # live: [v16, v21, v22, v95, v92, v17, s11, v147, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v117]
+// [Asm]   sw v117, 0(v147)  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   lw v119, 0(v93)  # live: [v16, v21, v22, v119, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   slliw v143, v119, 2  # live: [v16, v21, v22, v95, v92, v17, s11, v143, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   add v144, v97, v143  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15, v144]
+// [Asm]   lw v121, 0(v144)  # live: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, zero, v97, v20, v23, v19, v15]
 // [Asm] # control
-// [Asm]   li v139, 1  # live: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15, v139]
-// [Asm]   bge v121, v139, .compute.515_65  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
+// [Asm]   li v142, 1  # live: [v16, v21, v121, v22, v95, v92, v17, s11, v93, v94, v18, v142, v96, zero, v97, v20, v23, v19, v15]
+// [Asm]   bge v121, v142, .compute.515_65  # live: [v16, v21, v22, v95, v92, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
 // [Asm] 
 // [Asm] # block info: defs: [v124, v127, v123], uses: [v124, zero, v123, v93], upward_exposed: [zero, v93], params_defs: []
 // [Asm] # live_in: [v16, v21, v22, v92, v95, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15], live_out: [v16, v21, v127, v22, v92, v95, v17, s11, v93, v94, v18, v96, v97, zero, v23, v20, v19, v15]
@@ -2101,19 +2223,21 @@
 // [Asm]   mv v4, v2  # live: [v4, zero, v3]
 // [Asm]   mv v5, v3  # live: [v4, v5, zero]
 // [Asm] 
-// [Asm] # block info: defs: [v12], uses: [v4, v12], upward_exposed: [v4], params_defs: [v4, v5]
+// [Asm] # block info: defs: [v14], uses: [v4, v14], upward_exposed: [v4], params_defs: [v4, v5]
 // [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
 // [Asm] # block parameters: [v4, v5]
 // [Asm] .init_arr.514_0:
 // [Asm] # control
-// [Asm]   li v12, 8  # live: [v4, v5, v12, zero]
-// [Asm]   blt v12, v4, .init_arr.514_2  # live: [v4, v5, zero]
+// [Asm]   li v14, 8  # live: [v4, v5, v14, zero]
+// [Asm]   blt v14, v4, .init_arr.514_2  # live: [v4, v5, zero]
 // [Asm] 
-// [Asm] # block info: defs: [v4, v10], uses: [v4, v5, v10], upward_exposed: [v4, v5], params_defs: []
+// [Asm] # block info: defs: [v4, v12, v10, v13], uses: [v4, v5, v12, v10, v13], upward_exposed: [v4, v5], params_defs: []
 // [Asm] # live_in: [v4, v5, zero], live_out: [v4, v5, zero]
 // [Asm] # block parameters: []
 // [Asm] .init_arr.514_1:
-// [Asm]   th.surw v4, v5, v4, 2  # live: [v4, v5, zero]
+// [Asm]   slliw v12, v4, 2  # live: [v4, v5, v12, zero]
+// [Asm]   add v13, v5, v12  # live: [v4, v5, zero, v13]
+// [Asm]   sw v4, 0(v13)  # live: [v4, v5, zero]
 // [Asm]   addi v10, v4, 1  # live: [v5, v10, zero]
 // [Asm] # control
 // [Asm]   mv v4, v10  # live: [v4, v5, zero]
@@ -2151,13 +2275,17 @@
 // [Asm] # control
 // [Asm]   blt v6, v2, .move_perm1_forward.521_2  # live: [v3, v4, zero, v2]
 // [Asm] 
-// [Asm] # block info: defs: [t1, v14, v13, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, ft10, ft5, ft7, ft4, v10, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v2, v10, a0, zero, v8, v4, a2, a1, v3], upward_exposed: [v3, v4, zero, v2], params_defs: []
+// [Asm] # block info: defs: [t1, v16, v14, v13, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, v19, a6, ft10, ft5, ft7, ft4, v10, ft9, a5, a0, fa4, ft2, a2, v17, a3, ft8, t3, a7, fa7, t0, fa5, v18, fa3, ft3, fa0, t4, t2], uses: [v3, v16, v18, v10, a0, zero, v8, v19, v4, a2, a1, v17, v2], upward_exposed: [v3, v4, zero, v2], params_defs: []
 // [Asm] # live_in: [v2, v4, zero, v3], live_out: [v14]
 // [Asm] # block parameters: []
 // [Asm] .move_perm1_forward.521_1:
 // [Asm]   addi v8, v2, 1  # live: [v8, v2, v4, zero, v3]
-// [Asm]   th.lurw v10, v4, v8, 2  # live: [v8, v2, v4, v10, zero, v3]
-// [Asm]   th.surw v10, v4, v2, 2  # live: [v8, v4, zero, v3]
+// [Asm]   slliw v18, v8, 2  # live: [v8, v2, v4, v18, zero, v3]
+// [Asm]   add v19, v4, v18  # live: [v8, v2, v19, v4, zero, v3]
+// [Asm]   lw v10, 0(v19)  # live: [v8, v2, v4, v10, zero, v3]
+// [Asm]   slliw v16, v2, 2  # live: [v8, v4, v16, v10, zero, v3]
+// [Asm]   add v17, v4, v16  # live: [v8, v4, v17, v10, zero, v3]
+// [Asm]   sw v10, 0(v17)  # live: [v8, v4, zero, v3]
 // [Asm]   # save_ctx2  # live: [v8, v4, zero, v3]
 // [Asm]   mv a0, v8  # live: [v4, zero, a0, v3]
 // [Asm]   mv a1, v3  # live: [v4, a1, zero, a0]
@@ -2204,7 +2332,7 @@
 // [Asm] 
 // [Asm] # leaf false
 // [Asm] init_count.517:
-// [Asm] # block info: defs: [v3, v4, v20, v2], uses: [v4, a1, a0, v20, v2], upward_exposed: [a1, a0], params_defs: []
+// [Asm] # block info: defs: [v3, v4, v22, v2], uses: [v4, a1, a0, v22, v2], upward_exposed: [a1, a0], params_defs: []
 // [Asm] # live_in: [a1, a0, zero], live_out: [v3, zero, v2]
 // [Asm] # block parameters: []
 // [Asm] .init_count.517_0:
@@ -2213,16 +2341,18 @@
 // [Asm]   mv v3, a1  # live: [v3, zero, v2]
 // [Asm]   lw v4, 0(v2)  # live: [v3, v4, zero, v2]
 // [Asm] # control
-// [Asm]   li v20, 1  # live: [v3, v4, zero, v20, v2]
-// [Asm]   beq v4, v20, .init_count.517_1  # live: [v3, zero, v2]
+// [Asm]   li v22, 1  # live: [v3, v4, zero, v22, v2]
+// [Asm]   beq v4, v22, .init_count.517_1  # live: [v3, zero, v2]
 // [Asm] 
-// [Asm] # block info: defs: [t1, v14, v13, v7, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, a6, ft5, ft10, v6, ft7, v11, ft4, v10, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v2, v11, v10, a0, v13, v7, v6, a1, v3], upward_exposed: [v3, v2], params_defs: []
+// [Asm] # block info: defs: [t1, v14, v13, v7, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v19, a6, ft5, ft10, v6, ft7, v11, ft4, v10, ft9, a5, a0, fa4, ft2, a2, a3, ft8, t3, a7, fa7, t0, fa5, v18, fa3, ft3, fa0, t4, t2], uses: [v2, v11, v18, v10, a0, v13, v7, v19, v6, a1, v3], upward_exposed: [v3, v2], params_defs: []
 // [Asm] # live_in: [v2, zero, v3], live_out: [v14, zero]
 // [Asm] # block parameters: []
 // [Asm] .init_count.517_2:
 // [Asm]   lw v6, 0(v2)  # live: [v2, v6, zero, v3]
 // [Asm]   addi v7, v6, -1  # live: [v2, v7, v6, zero, v3]
-// [Asm]   th.surw v6, v3, v7, 2  # live: [v2, zero, v3]
+// [Asm]   slliw v18, v7, 2  # live: [v2, v6, v18, zero, v3]
+// [Asm]   add v19, v3, v18  # live: [v2, v19, v6, zero, v3]
+// [Asm]   sw v6, 0(v19)  # live: [v2, zero, v3]
 // [Asm]   lw v10, 0(v2)  # live: [v2, v10, zero, v3]
 // [Asm]   addi v11, v10, -1  # live: [v2, v11, zero, v3]
 // [Asm]   sw v11, 0(v2)  # live: [v2, zero, v3]
@@ -2263,14 +2393,14 @@
 // [Main]   .bss
 // [Main]   .type large_heap, @object
 // [Main] large_heap:
-// [Main]   .zero 1610612736
+// [Main]   .zero 2013265920 # 2GB - 128MB
 // [Main] large_heap_end:
 // [Main] 
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_stack, @object
 // [Main] large_stack:
-// [Main]   .zero 268435456
+// [Main]   .zero 67108864 # 64MB
 // [Main] large_stack_end:
 // [Main] 
 // [Main] __begin_text:
@@ -2319,8 +2449,11 @@
 // [Main]   blt a0, a1, .compute.515_56
 // [Main] 
 // [Main] .compute.515_55:
-// [Main]   th.lurw a0, a2, a1, 2
-// [Main]   th.surw a0, a3, a1, 2
+// [Main]   slliw a0, a1, 2
+// [Main]   add a4, a2, a0
+// [Main]   lw a4, 0(a4)
+// [Main]   add a0, a3, a0
+// [Main]   sw a4, 0(a0)
 // [Main]   addi a1, a1, 1
 // [Main]   j .compute.515_54
 // [Main] 
@@ -2359,16 +2492,23 @@
 // [Main]   blt a5, a1, .compute.515_42
 // [Main] 
 // [Main] .compute.515_41:
-// [Main]   th.lurw a5, a3, a1, 2
-// [Main]   sw a5, 0(a4)
-// [Main]   lw a5, 0(a0)
-// [Main]   sub a5, a5, a1
-// [Main]   th.lurw a5, a3, a5, 2
-// [Main]   th.surw a5, a3, a1, 2
+// [Main]   slliw a5, a1, 2
+// [Main]   add a6, a3, a5
+// [Main]   lw a6, 0(a6)
+// [Main]   sw a6, 0(a4)
+// [Main]   lw a6, 0(a0)
+// [Main]   sub a6, a6, a1
+// [Main]   slliw a6, a6, 2
+// [Main]   add a6, a3, a6
+// [Main]   lw a6, 0(a6)
+// [Main]   add a5, a3, a5
+// [Main]   sw a6, 0(a5)
 // [Main]   lw a5, 0(a0)
 // [Main]   sub a5, a5, a1
 // [Main]   lw a6, 0(a4)
-// [Main]   th.surw a6, a3, a5, 2
+// [Main]   slliw a5, a5, 2
+// [Main]   add a5, a3, a5
+// [Main]   sw a6, 0(a5)
 // [Main]   addi a1, a1, 1
 // [Main]   j .compute.515_40
 // [Main] 
@@ -2455,13 +2595,20 @@
 // [Main]   call move_perm1_forward.521
 // [Main]   lw a0, 0(s8)
 // [Main]   lw a1, 0(s10)
-// [Main]   th.surw a1, s7, a0, 2
+// [Main]   slliw a0, a0, 2
+// [Main]   add a0, s7, a0
+// [Main]   sw a1, 0(a0)
 // [Main]   lw a0, 0(s8)
-// [Main]   th.lurw a1, s6, a0, 2
+// [Main]   slliw a0, a0, 2
+// [Main]   add a1, s6, a0
+// [Main]   lw a1, 0(a1)
 // [Main]   addi a1, a1, -1
-// [Main]   th.surw a1, s6, a0, 2
+// [Main]   add a0, s6, a0
+// [Main]   sw a1, 0(a0)
 // [Main]   lw a0, 0(s8)
-// [Main]   th.lurw a0, s6, a0, 2
+// [Main]   slliw a0, a0, 2
+// [Main]   add a0, s6, a0
+// [Main]   lw a0, 0(a0)
 // [Main]   li a1, 1
 // [Main]   bge a0, a1, .compute.515_65
 // [Main] 
@@ -2568,7 +2715,9 @@
 // [Main]   blt a0, a1, .init_arr.514_2
 // [Main] 
 // [Main] .init_arr.514_1:
-// [Main]   th.surw a1, a2, a1, 2
+// [Main]   slliw a0, a1, 2
+// [Main]   add a0, a2, a0
+// [Main]   sw a1, 0(a0)
 // [Main]   addi a1, a1, 1
 // [Main]   j .init_arr.514_0
 // [Main] 
@@ -2594,8 +2743,12 @@
 // [Main] 
 // [Main] .move_perm1_forward.521_1:
 // [Main]   addi a1, a0, 1
-// [Main]   th.lurw a4, a2, a1, 2
-// [Main]   th.surw a4, a2, a0, 2
+// [Main]   slliw a4, a1, 2
+// [Main]   add a4, a2, a4
+// [Main]   lw a4, 0(a4)
+// [Main]   slliw a0, a0, 2
+// [Main]   add a0, a2, a0
+// [Main]   sw a4, 0(a0)
 // [Main]   mv a0, a1
 // [Main]   mv a1, a3
 // [Main]   call move_perm1_forward.521
@@ -2643,7 +2796,9 @@
 // [Main] .init_count.517_2:
 // [Main]   lw a2, 0(a0)
 // [Main]   addi a3, a2, -1
-// [Main]   th.surw a2, a1, a3, 2
+// [Main]   slliw a3, a3, 2
+// [Main]   add a3, a1, a3
+// [Main]   sw a2, 0(a3)
 // [Main]   lw a2, 0(a0)
 // [Main]   addi a2, a2, -1
 // [Main]   sw a2, 0(a0)

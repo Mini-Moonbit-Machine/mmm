@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -43,7 +43,9 @@ memed.66:
   sd s2, 24(sp)
   mv s0, a0
   mv s1, a1
-  th.lurw a0, s1, s0, 2
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
   li a1, -1919810
   bne a0, a1, .memed.66_2
 
@@ -62,7 +64,9 @@ memed.66:
   add a0, s2, a0
 
 .memed.66_5:
-  th.surw a0, s1, s0, 2
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
 
 .memed.66_6:
   ld ra, 0(sp)
@@ -77,7 +81,9 @@ memed.66:
   j .memed.66_5
 
 .memed.66_2:
-  th.lurw a0, s1, s0, 2
+  slliw a0, s0, 2
+  add a0, s1, a0
+  lw a0, 0(a0)
   j .memed.66_6
 
   .p2align 2

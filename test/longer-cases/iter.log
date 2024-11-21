@@ -39,6 +39,7 @@
 // [Asm] critical edges for b8: []
 // [Asm] critical color seq for b8: []
 // [Asm] skipping Op(ty=Bool, op=Eq, args=[Bool(val=true), Bool(val=true)])
+// [Asm] fuse raw offset and compute address
 // [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b7, bpref=$b.0), width=@32))
 // [Asm] succs: [13]
 // [Asm] critical edges for b9: []
@@ -76,9 +77,9 @@
 // [Asm] live_set: [v13, zero, v3]
 // [Asm] move: v13 <- v12
 // [Asm] defined: v13 is X
-// [Asm] defs: [v22]
-// [Asm] live_set: [v4, v5, zero, v22, v3]
-// [Asm] defined: v22 is X
+// [Asm] defs: [v24]
+// [Asm] live_set: [v4, v5, v24, zero, v3]
+// [Asm] defined: v24 is X
 // [Asm] defs: []
 // [Asm] live_set: [v4, v5, zero, v3]
 // [Asm] defs: [v18]
@@ -91,6 +92,12 @@
 // [Asm] move: v11 <- zero
 // [Asm] defined: v11 is X
 // [Asm] skip edge 9 -> 0
+// [Asm] defs: [v21]
+// [Asm] live_set: [v4, v5, v21, zero, v3]
+// [Asm] defined: v21 is X
+// [Asm] defs: [v22]
+// [Asm] live_set: [v4, v5, zero, v22, v3]
+// [Asm] defined: v22 is X
 // [Asm] defs: [v8]
 // [Asm] live_set: [v8, v4, v5, zero, v3]
 // [Asm] defined: v8 is X
@@ -197,12 +204,14 @@
 // [Asm] subst   j .do.92_13 ->   j .do.92_13
 // [Asm] subst   j .do.92_0 ->   j .do.92_0
 // [Asm] subst   mv v15, zero ->   mv a0, zero
-// [Asm] subst   li v22, 4 ->   li a0, 4
-// [Asm] subst   blt v22, v4, .do.92_9 ->   blt a0, s1, .do.92_9
+// [Asm] subst   li v24, 4 ->   li a0, 4
+// [Asm] subst   blt v24, v4, .do.92_9 ->   blt a0, s1, .do.92_9
 // [Asm] subst   li v18, 1 ->   li a1, 1
 // [Asm] subst   bne v13, v18, .do.92_2 ->   bne a0, a1, .do.92_2
 // [Asm] subst   mv v11, zero ->   mv a0, zero
-// [Asm] subst   th.lurw v8, v5, v4, 2 ->   th.lurw a0, s0, s1, 2
+// [Asm] subst   slliw v21, v4, 2 ->   slliw a0, s1, 2
+// [Asm] subst   add v22, v5, v21 ->   add a0, s0, a0
+// [Asm] subst   lw v8, 0(v22) ->   lw a0, 0(a0)
 // [Asm] subst   call minimbt_print_int ->   call minimbt_print_int
 // [Asm] subst   li v19, 1 ->   li a0, 1
 // [Asm] subst   bne v19, v19, .do.92_11 ->   bne a0, a0, .do.92_11
@@ -371,19 +380,21 @@
 // [Asm]   mv v4, zero  # live: [v4, zero, v3]
 // [Asm]   mv v5, v3  # live: [v4, v5, zero, v3]
 // [Asm] 
-// [Asm] # block info: defs: [v22], uses: [v4, v22], upward_exposed: [v4], params_defs: [v4, v5]
+// [Asm] # block info: defs: [v24], uses: [v4, v24], upward_exposed: [v4], params_defs: [v4, v5]
 // [Asm] # live_in: [v4, v5, zero, v3], live_out: [v4, v5, zero, v3]
 // [Asm] # block parameters: [v4, v5]
 // [Asm] .do.92_7:
 // [Asm] # control
-// [Asm]   li v22, 4  # live: [v4, v5, zero, v22, v3]
-// [Asm]   blt v22, v4, .do.92_9  # live: [v4, v5, zero, v3]
+// [Asm]   li v24, 4  # live: [v4, v5, v24, zero, v3]
+// [Asm]   blt v24, v4, .do.92_9  # live: [v4, v5, zero, v3]
 // [Asm] 
-// [Asm] # block info: defs: [t1, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, v19, ft5, ft10, ft7, ft4, ft9, a5, a0, fa4, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v19, v4, v5, a0, v8], upward_exposed: [v4, v5], params_defs: []
+// [Asm] # block info: defs: [t1, v22, ft0, ft1, a1, fa1, fa2, ft6, a4, fa6, v8, a6, v19, ft5, ft10, ft7, ft4, v21, ft9, a5, a0, fa4, ft2, a2, a3, v9, ft8, t3, a7, fa7, t0, fa5, fa3, ft3, fa0, t4, t2], uses: [v5, v21, a0, v22, v8, v19, v4], upward_exposed: [v4, v5], params_defs: []
 // [Asm] # live_in: [v4, v5, zero, v3], live_out: [v4, v5, zero, v3]
 // [Asm] # block parameters: []
 // [Asm] .do.92_8:
-// [Asm]   th.lurw v8, v5, v4, 2  # live: [v8, v4, v5, zero, v3]
+// [Asm]   slliw v21, v4, 2  # live: [v4, v5, v21, zero, v3]
+// [Asm]   add v22, v5, v21  # live: [v4, v5, zero, v22, v3]
+// [Asm]   lw v8, 0(v22)  # live: [v8, v4, v5, zero, v3]
 // [Asm]   # save_ctx2  # live: [v8, v4, v5, zero, v3]
 // [Asm]   mv a0, v8  # live: [v4, v5, zero, a0, v3]
 // [Asm]   call minimbt_print_int  # live: [v4, v5, zero, a0, v3]
@@ -520,14 +531,14 @@
 // [Main]   .bss
 // [Main]   .type large_heap, @object
 // [Main] large_heap:
-// [Main]   .zero 1610612736
+// [Main]   .zero 2013265920 # 2GB - 128MB
 // [Main] large_heap_end:
 // [Main] 
 // [Main]   .p2align 4
 // [Main]   .bss
 // [Main]   .type large_stack, @object
 // [Main] large_stack:
-// [Main]   .zero 268435456
+// [Main]   .zero 67108864 # 64MB
 // [Main] large_stack_end:
 // [Main] 
 // [Main] __begin_text:
@@ -554,7 +565,9 @@
 // [Main]   blt a0, s1, .do.92_9
 // [Main] 
 // [Main] .do.92_8:
-// [Main]   th.lurw a0, s0, s1, 2
+// [Main]   slliw a0, s1, 2
+// [Main]   add a0, s0, a0
+// [Main]   lw a0, 0(a0)
 // [Main]   call minimbt_print_int
 // [Main]   li a0, 1
 // [Main]   bne a0, a0, .do.92_11

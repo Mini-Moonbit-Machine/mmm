@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -53,8 +53,10 @@ minimbt_main:
 # leaf true
 loop1.233:
 .loop1.233_5:
-  addi sp, sp, -16
+  addi sp, sp, -32
   sd s0, 0(sp)
+  sd s1, 8(sp)
+  sd s2, 16(sp)
   mv a6, a0
   mv a5, a1
   mv a4, a2
@@ -68,8 +70,11 @@ loop1.233:
   blt a1, zero, .loop1.233_2
 
 .loop1.233_1:
-  th.lurd a6, a4, a1, 3
-  th.lurd a0, a2, a1, 3
+  slliw a0, a1, 3
+  add a5, a4, a0
+  ld a6, 0(a5)
+  add a0, a2, a0
+  ld a0, 0(a0)
 
 .loop1.233_12:
   li a5, 1
@@ -84,20 +89,27 @@ loop1.233:
 .loop1.233_19:
   li a0, 2
   mv t2, a2
-  mv t4, a3
-  mv t1, a4
-  mv t3, a1
+  mv t3, a3
+  mv t4, a4
+  mv s0, a1
 
 .loop1.233_14:
   blt a0, zero, .loop1.233_16
 
 .loop1.233_15:
-  th.flurd fa0, a7, a5, 3
-  th.flurd fa1, t0, a0, 3
-  th.lurd s0, t4, a0, 3
-  th.flurd fa2, s0, a5, 3
+  slliw t1, a5, 3
+  add s1, a7, t1
+  fld fa0, 0(s1)
+  slliw s1, a0, 3
+  add s2, t0, s1
+  fld fa1, 0(s2)
+  add s1, t3, s1
+  ld s1, 0(s1)
+  add s1, s1, t1
+  fld fa2, 0(s1)
   fmadd.d fa0, fa1, fa2, fa0
-  th.fsurd fa0, a6, a5, 3
+  add t1, a6, t1
+  fsd fa0, 0(t1)
   addi a0, a0, -1
   j .loop1.233_14
 
@@ -124,7 +136,9 @@ loop1.233:
 
 .loop1.233_3:
   ld s0, 0(sp)
-  addi sp, sp, 16
+  ld s1, 8(sp)
+  ld s2, 16(sp)
+  addi sp, sp, 32
   ret
 
   .p2align 2
@@ -160,7 +174,9 @@ gen_arr.231:
   slliw a2, a1, 3
   sub a2, s11, a2
   andi s11, a2, -8
-  th.surd a2, a3, a0, 3
+  slliw a4, a0, 3
+  add a4, a3, a4
+  sd a2, 0(a4)
   addi a0, a0, -1
   j .gen_arr.231_3
 

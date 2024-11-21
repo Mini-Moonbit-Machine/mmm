@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -21,21 +21,26 @@ __begin_text:
 # leaf true
 sum_nested.49:
 .sum_nested.49_5:
-  mv a4, a0
+  mv a5, a0
+  mv a4, a1
+  mv a1, a2
   mv a0, a3
-  mv a3, a4
+  mv a3, a5
+  mv a2, a4
   mv a4, a0
 
 .sum_nested.49_0:
   li a0, 9
-  blt a0, a1, .sum_nested.49_2
+  blt a0, a2, .sum_nested.49_2
 
 .sum_nested.49_1:
-  th.lurw a0, a2, a1, 2
-  add a0, a3, a0
-  th.surw a0, a4, a1, 2
-  addi a1, a1, 1
-  mv a3, a0
+  slliw a0, a2, 2
+  add a5, a1, a0
+  lw a5, 0(a5)
+  add a3, a3, a5
+  add a0, a4, a0
+  sw a3, 0(a0)
+  addi a2, a2, 1
   j .sum_nested.49_0
 
 .sum_nested.49_2:

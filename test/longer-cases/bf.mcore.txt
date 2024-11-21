@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -74,7 +74,9 @@ read_prog.264:
   ret
 
 .read_prog.264_2:
-  th.surw a0, s1, s0, 2
+  slliw a1, s0, 2
+  add a1, s1, a1
+  sw a0, 0(a1)
   addi s0, s0, 1
   j .read_prog.264_0
 
@@ -105,7 +107,9 @@ aux.266:
   bge s0, s5, .aux.266_1
 
 .aux.266_2:
-  th.lurw a1, s2, s0, 2
+  slliw a0, s0, 2
+  add a0, s2, a0
+  lw a1, 0(a0)
   li a0, 62
   beq a1, a0, .aux.266_3
 
@@ -179,7 +183,9 @@ aux.266:
 
 .aux.266_49:
   lw a0, 0(s1)
-  th.lurw a0, s4, a0, 2
+  slliw a0, a0, 2
+  add a0, s4, a0
+  lw a0, 0(a0)
   beq a0, zero, .aux.266_50
 
 .aux.266_51:
@@ -196,30 +202,40 @@ aux.266:
 .aux.266_13:
   lw s6, 0(s1)
   call read_ch_until_newline_or_eof.262
-  th.surw a0, s4, s6, 2
+  slliw a1, s6, 2
+  add a1, s4, a1
+  sw a0, 0(a1)
   addi s0, s0, 1
   j .aux.266_0
 
 .aux.266_11:
   lw a0, 0(s1)
-  th.lurw a0, s4, a0, 2
+  slliw a0, a0, 2
+  add a0, s4, a0
+  lw a0, 0(a0)
   call minimbt_print_char
   addi s0, s0, 1
   j .aux.266_0
 
 .aux.266_9:
   lw a0, 0(s1)
-  th.lurw a1, s4, a0, 2
+  slliw a0, a0, 2
+  add a1, s4, a0
+  lw a1, 0(a1)
   addi a1, a1, -1
-  th.surw a1, s4, a0, 2
+  add a0, s4, a0
+  sw a1, 0(a0)
   addi s0, s0, 1
   j .aux.266_0
 
 .aux.266_7:
   lw a0, 0(s1)
-  th.lurw a1, s4, a0, 2
+  slliw a0, a0, 2
+  add a1, s4, a0
+  lw a1, 0(a1)
   addi a1, a1, 1
-  th.surw a1, s4, a0, 2
+  add a0, s4, a0
+  sw a1, 0(a0)
   addi s0, s0, 1
   j .aux.266_0
 
@@ -254,7 +270,9 @@ aux.266:
   bge a1, a2, .aux.266_59
 
 .aux.266_60:
-  th.lurw a5, a4, a1, 2
+  slliw a3, a1, 2
+  add a3, a4, a3
+  lw a5, 0(a3)
   li a3, 91
   beq a5, a3, .aux.266_61
 

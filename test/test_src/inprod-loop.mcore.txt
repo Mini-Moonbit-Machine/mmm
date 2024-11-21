@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -26,8 +26,11 @@ inprod.30:
   blt a2, zero, .inprod.30_2
 
 .inprod.30_1:
-  th.flurd fa1, a0, a2, 3
-  th.flurd fa2, a1, a2, 3
+  slliw a3, a2, 3
+  add a4, a0, a3
+  fld fa1, 0(a4)
+  add a3, a1, a3
+  fld fa2, 0(a3)
   fmadd.d fa0, fa1, fa2, fa0
   addi a2, a2, -1
   j .inprod.30_0

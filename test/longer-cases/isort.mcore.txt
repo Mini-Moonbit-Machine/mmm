@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -22,12 +22,12 @@ __begin_text:
 aux.148:
 .aux.148_5:
   mv a4, a0
-  mv a0, a2
-  mv a2, a4
+  mv a0, a3
+  mv a3, a4
   mv a4, a0
 
 .aux.148_0:
-  beq a2, a4, .aux.148_1
+  beq a3, a2, .aux.148_1
 
 .aux.148_2:
   li a0, 75
@@ -35,8 +35,10 @@ aux.148:
   addi a0, a0, 74
   li a1, 65537
   remw a0, a0, a1
-  th.surw a0, a3, a2, 2
-  addi a2, a2, 1
+  slliw a1, a3, 2
+  add a1, a4, a1
+  sw a0, 0(a1)
+  addi a3, a3, 1
   mv a1, a0
   j .aux.148_0
 
@@ -113,7 +115,9 @@ aux.151:
   beq s0, s1, .aux.151_1
 
 .aux.151_2:
-  th.lurw a0, s2, s0, 2
+  slliw a0, s0, 2
+  add a0, s2, a0
+  lw a0, 0(a0)
   call minimbt_print_int
   li a0, 32
   call minimbt_print_char
@@ -158,17 +162,26 @@ aux.150:
 
 .aux.150_9:
   addi a4, a3, -1
-  th.lurw a4, a2, a4, 2
-  th.lurw a5, a2, a3, 2
+  slliw a4, a4, 2
+  add a4, a2, a4
+  lw a4, 0(a4)
+  slliw a5, a3, 2
+  add a5, a2, a5
+  lw a5, 0(a5)
   bge a5, a4, .aux.150_10
 
 .aux.150_11:
-  th.lurw a4, a2, a3, 2
-  addi a5, a3, -1
-  th.lurw a6, a2, a5, 2
-  th.surw a6, a2, a3, 2
-  th.surw a4, a2, a5, 2
-  mv a3, a5
+  slliw a4, a3, 2
+  add a5, a2, a4
+  lw a5, 0(a5)
+  addi a3, a3, -1
+  slliw a6, a3, 2
+  add a7, a2, a6
+  lw a7, 0(a7)
+  add a4, a2, a4
+  sw a7, 0(a4)
+  add a4, a2, a6
+  sw a5, 0(a4)
   j .aux.150_7
 
 .aux.150_10:

@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -59,8 +59,11 @@ compute.515:
   blt a0, a1, .compute.515_56
 
 .compute.515_55:
-  th.lurw a0, a2, a1, 2
-  th.surw a0, a3, a1, 2
+  slliw a0, a1, 2
+  add a4, a2, a0
+  lw a4, 0(a4)
+  add a0, a3, a0
+  sw a4, 0(a0)
   addi a1, a1, 1
   j .compute.515_54
 
@@ -99,16 +102,23 @@ compute.515:
   blt a5, a1, .compute.515_42
 
 .compute.515_41:
-  th.lurw a5, a3, a1, 2
-  sw a5, 0(a4)
-  lw a5, 0(a0)
-  sub a5, a5, a1
-  th.lurw a5, a3, a5, 2
-  th.surw a5, a3, a1, 2
+  slliw a5, a1, 2
+  add a6, a3, a5
+  lw a6, 0(a6)
+  sw a6, 0(a4)
+  lw a6, 0(a0)
+  sub a6, a6, a1
+  slliw a6, a6, 2
+  add a6, a3, a6
+  lw a6, 0(a6)
+  add a5, a3, a5
+  sw a6, 0(a5)
   lw a5, 0(a0)
   sub a5, a5, a1
   lw a6, 0(a4)
-  th.surw a6, a3, a5, 2
+  slliw a5, a5, 2
+  add a5, a3, a5
+  sw a6, 0(a5)
   addi a1, a1, 1
   j .compute.515_40
 
@@ -195,13 +205,20 @@ compute.515:
   call move_perm1_forward.521
   lw a0, 0(s8)
   lw a1, 0(s10)
-  th.surw a1, s7, a0, 2
+  slliw a0, a0, 2
+  add a0, s7, a0
+  sw a1, 0(a0)
   lw a0, 0(s8)
-  th.lurw a1, s6, a0, 2
+  slliw a0, a0, 2
+  add a1, s6, a0
+  lw a1, 0(a1)
   addi a1, a1, -1
-  th.surw a1, s6, a0, 2
+  add a0, s6, a0
+  sw a1, 0(a0)
   lw a0, 0(s8)
-  th.lurw a0, s6, a0, 2
+  slliw a0, a0, 2
+  add a0, s6, a0
+  lw a0, 0(a0)
   li a1, 1
   bge a0, a1, .compute.515_65
 
@@ -308,7 +325,9 @@ init_arr.514:
   blt a0, a1, .init_arr.514_2
 
 .init_arr.514_1:
-  th.surw a1, a2, a1, 2
+  slliw a0, a1, 2
+  add a0, a2, a0
+  sw a1, 0(a0)
   addi a1, a1, 1
   j .init_arr.514_0
 
@@ -334,8 +353,12 @@ move_perm1_forward.521:
 
 .move_perm1_forward.521_1:
   addi a1, a0, 1
-  th.lurw a4, a2, a1, 2
-  th.surw a4, a2, a0, 2
+  slliw a4, a1, 2
+  add a4, a2, a4
+  lw a4, 0(a4)
+  slliw a0, a0, 2
+  add a0, a2, a0
+  sw a4, 0(a0)
   mv a0, a1
   mv a1, a3
   call move_perm1_forward.521
@@ -383,7 +406,9 @@ init_count.517:
 .init_count.517_2:
   lw a2, 0(a0)
   addi a3, a2, -1
-  th.surw a2, a1, a3, 2
+  slliw a3, a3, 2
+  add a3, a1, a3
+  sw a2, 0(a3)
   lw a2, 0(a0)
   addi a2, a2, -1
   sw a2, 0(a0)
