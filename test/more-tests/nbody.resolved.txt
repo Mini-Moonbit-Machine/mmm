@@ -1,0 +1,145 @@
+let pi: Double = Double(3.141592653589793)
+let solar_mass: Double = Prim(Double(4), Var("pi"), Mul, kind=None) * Var("pi")
+let days_per_year: Double = Double(365.24)
+let rec advance: (bodies: Array[(Double, Double, Double, Double, Double, Double, Double)], dt: Double) -> Unit {
+  let n: Var(None) = Int(5)
+  let rec loop_i: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+      let b: Var(None) = Get Var("bodies")[Var("i")]
+      let (bx: Var(None), by: Var(None), bz: Var(None), bvx: Var(None), bvy: Var(None), bvz: Var(None), bm: Var(None)) = Var("b")
+      let rec loop_j: (j: Int) -> Var(None) {
+        let _: Var(None) = if (LE(Var("j"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+          let b2: Var(None) = Get Var("bodies")[Var("j")]
+          let (b2x: Var(None), b2y: Var(None), b2z: Var(None), b2vx: Var(None), b2vy: Var(None), b2vz: Var(None), b2m: Var(None)) = Var("b2")
+          let dx: Var(None) = Var("bx") - Var("b2x")
+          let dy: Var(None) = Var("by") - Var("b2y")
+          let dz: Var(None) = Var("bz") - Var("b2z")
+          let dist2: Var(None) = Prim(Prim(Var("dx"), Var("dx"), Mul, kind=None), Prim(Var("dy"), Var("dy"), Mul, kind=None), Add, kind=None) + Prim(Var("dz"), Var("dz"), Mul, kind=None)
+          let mag: Var(None) = Var("dt") / Prim(Var("dist2"), App(Var("sqrt"), targs=None, [Var("dist2")]), Mul, kind=None)
+          let new_b: Var(None) = Tuple([Var("bx"), Var("by"), Var("bz"), Prim(Var("bvx"), Prim(Prim(Var("dx"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Prim(Var("bvy"), Prim(Prim(Var("dy"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Prim(Var("bvz"), Prim(Prim(Var("dz"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Var("bm"), ])
+          let _: Var(None) = Put Var("bodies")[Var("i")] = Var("new_b")
+          let new_b2: Var(None) = Tuple([Var("b2x"), Var("b2y"), Var("b2z"), Prim(Var("b2vx"), Prim(Prim(Var("dx"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Prim(Var("b2vy"), Prim(Prim(Var("dy"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Prim(Var("b2vz"), Prim(Prim(Var("dz"), Var("b2m"), Mul, kind=None), Var("mag"), Mul, kind=None), Sub, kind=None), Var("b2m"), ])
+          let _: Var(None) = Put Var("bodies")[Var("j")] = Var("new_b2")
+          let _: Var(None) = Apply(Var("loop_j"), [Prim(Var("j"), Int(1), Add, kind=None), ])
+          Unit
+        } else {
+          Unit
+        }
+        Unit
+      }
+      let _: Var(None) = Apply(Var("loop_j"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      let _: Var(None) = Apply(Var("loop_i"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("loop_i"), [Int(0), ])
+  let rec update_axis: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+      let b: Var(None) = Get Var("bodies")[Var("i")]
+      let (bx: Var(None), by: Var(None), bz: Var(None), bvx: Var(None), bvy: Var(None), bvz: Var(None), bm: Var(None)) = Var("b")
+      let new_b: Var(None) = Tuple([Prim(Var("bx"), Prim(Var("dt"), Var("bvx"), Mul, kind=None), Add, kind=None), Prim(Var("by"), Prim(Var("dt"), Var("bvy"), Mul, kind=None), Add, kind=None), Prim(Var("bz"), Prim(Var("dt"), Var("bvz"), Mul, kind=None), Add, kind=None), Var("bvx"), Var("bvy"), Var("bvz"), Var("bm"), ])
+      let _: Var(None) = Put Var("bodies")[Var("i")] = Var("new_b")
+      let _: Var(None) = Apply(Var("update_axis"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("update_axis"), [Int(0), ])
+  Unit
+}
+let rec energy: (bodies: Array[(Double, Double, Double, Double, Double, Double, Double)]) -> Double {
+  let n: Var(None) = Int(5)
+  let e: Var(None) = Array::make(Int(1), Double(0))
+  let rec loop_i: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+      let b: Var(None) = Get Var("bodies")[Var("i")]
+      let (bx: Var(None), by: Var(None), bz: Var(None), bvx: Var(None), bvy: Var(None), bvz: Var(None), bm: Var(None)) = Var("b")
+      let _: Var(None) = Put Var("e")[Int(0)] = Prim(Get(Var("e"), Int(0)), Prim(Prim(Double(0.5), Var("bm"), Mul, kind=None), Prim(Prim(Prim(Var("bvx"), Var("bvx"), Mul, kind=None), Prim(Var("bvy"), Var("bvy"), Mul, kind=None), Add, kind=None), Prim(Var("bvz"), Var("bvz"), Mul, kind=None), Add, kind=None), Mul, kind=None), Add, kind=None)
+      let rec loop_j: (j: Int) -> Var(None) {
+        let _: Var(None) = if (LE(Var("j"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+          let b2: Var(None) = Get Var("bodies")[Var("j")]
+          let (b2x: Var(None), b2y: Var(None), b2z: Var(None), b2vx: Var(None), b2vy: Var(None), b2vz: Var(None), b2m: Var(None)) = Var("b2")
+          let dx: Var(None) = Var("bx") - Var("b2x")
+          let dy: Var(None) = Var("by") - Var("b2y")
+          let dz: Var(None) = Var("bz") - Var("b2z")
+          let dist2: Var(None) = Prim(Prim(Var("dx"), Var("dx"), Mul, kind=None), Prim(Var("dy"), Var("dy"), Mul, kind=None), Add, kind=None) + Prim(Var("dz"), Var("dz"), Mul, kind=None)
+          let _: Var(None) = Put Var("e")[Int(0)] = Prim(Get(Var("e"), Int(0)), Prim(Prim(Var("bm"), Var("b2m"), Mul, kind=None), App(Var("sqrt"), targs=None, [Var("dist2")]), Div, kind=None), Sub, kind=None)
+          let _: Var(None) = Apply(Var("loop_j"), [Prim(Var("j"), Int(1), Add, kind=None), ])
+          Unit
+        } else {
+          Unit
+        }
+        Unit
+      }
+      let _: Var(None) = Apply(Var("loop_j"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      let _: Var(None) = Apply(Var("loop_i"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("loop_i"), [Int(0), ])
+  Get Var("e")[Int(0)]
+}
+let rec offset_momentum: (bodies: Array[(Double, Double, Double, Double, Double, Double, Double)]) -> Unit {
+  let n: Var(None) = Int(5)
+  let px: Var(None) = Array::make(Int(1), Double(0))
+  let py: Var(None) = Array::make(Int(1), Double(0))
+  let pz: Var(None) = Array::make(Int(1), Double(0))
+  let rec loop_i: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Prim(Var("n"), Int(1), Sub, kind=None))) then {
+      let b: Var(None) = Get Var("bodies")[Var("i")]
+      let (bx: Var(None), by: Var(None), bz: Var(None), bvx: Var(None), bvy: Var(None), bvz: Var(None), bm: Var(None)) = Var("b")
+      let _: Var(None) = Put Var("px")[Int(0)] = Prim(Get(Var("px"), Int(0)), Prim(Var("bvx"), Var("bm"), Mul, kind=None), Add, kind=None)
+      let _: Var(None) = Put Var("py")[Int(0)] = Prim(Get(Var("py"), Int(0)), Prim(Var("bvy"), Var("bm"), Mul, kind=None), Add, kind=None)
+      let _: Var(None) = Put Var("pz")[Int(0)] = Prim(Get(Var("pz"), Int(0)), Prim(Var("bvz"), Var("bm"), Mul, kind=None), Add, kind=None)
+      let _: Var(None) = Apply(Var("loop_i"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("loop_i"), [Int(0), ])
+  let b: Var(None) = Get Var("bodies")[Int(0)]
+  let (bx: Var(None), by: Var(None), bz: Var(None), bvx: Var(None), bvy: Var(None), bvz: Var(None), bm: Var(None)) = Var("b")
+  let new_b: Var(None) = Tuple([Var("bx"), Var("by"), Var("bz"), Neg(Prim(Get(Var("px"), Int(0)), Var("solar_mass"), Div, kind=None), kind=None), Neg(Prim(Get(Var("py"), Int(0)), Var("solar_mass"), Div, kind=None), kind=None), Neg(Prim(Get(Var("pz"), Int(0)), Var("solar_mass"), Div, kind=None), kind=None), Var("bm"), ])
+  let _: Var(None) = Put Var("bodies")[Int(0)] = Var("new_b")
+  Unit
+}
+let rec main: () -> Var(None) {
+  let jupiter: Var(None) = Tuple([Double(4.841431442464721), Neg(Double(1.1603200440274284), kind=None), Neg(Double(0.10362204447112311), kind=None), Prim(Double(0.001660076642744037), Var("days_per_year"), Mul, kind=None), Prim(Double(0.007699011184197404), Var("days_per_year"), Mul, kind=None), Neg(Prim(Double(0.0000690460016972063), Var("days_per_year"), Mul, kind=None), kind=None), Prim(Double(0.0009547919384243266), Var("solar_mass"), Mul, kind=None), ])
+  let saturn: Var(None) = Tuple([Double(8.34336671824458), Double(4.124798564124305), Neg(Double(0.4035234171143214), kind=None), Neg(Prim(Double(0.002767425107268624), Var("days_per_year"), Mul, kind=None), kind=None), Prim(Double(0.004998528012349172), Var("days_per_year"), Mul, kind=None), Prim(Double(0.000023029345528229068), Var("days_per_year"), Mul, kind=None), Prim(Double(0.0002858859806661308), Var("solar_mass"), Mul, kind=None), ])
+  let uranus: Var(None) = Tuple([Double(12.894369562139131), Neg(Double(15.111151401698631), kind=None), Neg(Double(0.22330757889265587), kind=None), Prim(Double(0.002964601375647616), Var("days_per_year"), Mul, kind=None), Prim(Double(0.0023784717395948095), Var("days_per_year"), Mul, kind=None), Neg(Prim(Double(0.000029658956854023756), Var("days_per_year"), Mul, kind=None), kind=None), Prim(Double(0.00004366244043351563), Var("solar_mass"), Mul, kind=None), ])
+  let neptune: Var(None) = Tuple([Double(15.379697114850917), Neg(Double(25.919314609987964), kind=None), Double(0.17925877295037118), Prim(Double(0.0026806777249038932), Var("days_per_year"), Mul, kind=None), Prim(Double(0.001628241700382423), Var("days_per_year"), Mul, kind=None), Neg(Prim(Double(0.00009515922545197159), Var("days_per_year"), Mul, kind=None), kind=None), Prim(Double(0.00005151389020466116), Var("solar_mass"), Mul, kind=None), ])
+  let sun: Var(None) = Tuple([Double(0), Double(0), Double(0), Double(0), Double(0), Double(0), Var("solar_mass"), ])
+  let bodies: Var(None) = Array::make(Int(5), Tuple([Double(0), Double(0), Double(0), Double(0), Double(0), Double(0), Double(0)]))
+  let _: Var(None) = Put Var("bodies")[Int(0)] = Var("sun")
+  let _: Var(None) = Put Var("bodies")[Int(1)] = Var("jupiter")
+  let _: Var(None) = Put Var("bodies")[Int(2)] = Var("saturn")
+  let _: Var(None) = Put Var("bodies")[Int(3)] = Var("uranus")
+  let _: Var(None) = Put Var("bodies")[Int(4)] = Var("neptune")
+  let _: Var(None) = Apply(Var("offset_momentum"), [Var("bodies"), ])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Prim(App(Var("energy"), targs=None, [Var("bodies")]), Double(1000000000), Mul, kind=None)]), ])
+  let iters: Var(None) = Int(50000000)
+  let rec loop_i: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Var("iters"))) then {
+      let _: Var(None) = Apply(Var("advance"), [Var("bodies"), Double(0.01), ])
+      let _: Var(None) = Apply(Var("loop_i"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("loop_i"), [Int(1), ])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Prim(App(Var("energy"), targs=None, [Var("bodies")]), Double(1000000000), Mul, kind=None)]), ])
+  Unit
+}
+Unit

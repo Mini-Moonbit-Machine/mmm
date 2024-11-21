@@ -1,0 +1,356 @@
+let pi.1: Double = Double(3.141592653589793)
+let _2: Double = Double(4)
+let _3: Double = FMul(_2, pi.1)
+let solar_mass.4: Double = FMul(_3, pi.1)
+let days_per_year.5: Double = Double(365.24)
+let rec advance.6: Unit = (bodies.8: Array[(Double, Double, Double, Double, Double, Double, Double)], dt.10: Double) {
+  let n.11: Int = Int(5)
+  let rec loop_i.12: Unit = (i.14: Int) {
+    let _15: Int = Int(1)
+    let _16: Int = Sub(n.11, _15)
+    let _102: Unit = if (i.14 <= _16) then {
+      let b.17: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.8[i.14]
+      let (bx.19: Double, by.21: Double, bz.23: Double, bvx.25: Double, bvy.27: Double, bvz.29: Double, bm.31: Double) = b.17
+      let rec loop_j.32: Unit = (j.34: Int) {
+        let _35: Int = Int(1)
+        let _36: Int = Sub(n.11, _35)
+        let _92: Unit = if (j.34 <= _36) then {
+          let b2.37: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.8[j.34]
+          let (b2x.39: Double, b2y.41: Double, b2z.43: Double, b2vx.45: Double, b2vy.47: Double, b2vz.49: Double, b2m.51: Double) = b2.37
+          let dx.52: Double = FSub(bx.19, b2x.39)
+          let dy.53: Double = FSub(by.21, b2y.41)
+          let dz.54: Double = FSub(bz.23, b2z.43)
+          let _55: Double = FMul(dx.52, dx.52)
+          let _56: Double = FMul(dy.53, dy.53)
+          let _57: Double = FAdd(_55, _56)
+          let _58: Double = FMul(dz.54, dz.54)
+          let dist2.59: Double = FAdd(_57, _58)
+          let _60: Double = ExtApply(minimbt_sqrt, [dist2.59, ])
+          let _61: Double = FMul(dist2.59, _60)
+          let mag.62: Double = FDiv(dt.10, _61)
+          let _63: Double = FMul(dx.52, b2m.51)
+          let _64: Double = FMul(_63, mag.62)
+          let _65: Double = FSub(bvx.25, _64)
+          let _66: Double = FMul(dy.53, b2m.51)
+          let _67: Double = FMul(_66, mag.62)
+          let _68: Double = FSub(bvy.27, _67)
+          let _69: Double = FMul(dz.54, b2m.51)
+          let _70: Double = FMul(_69, mag.62)
+          let _71: Double = FSub(bvz.29, _70)
+          let new_b.72: (Double, Double, Double, Double, Double, Double, Double) = Tuple([bx.19, by.21, bz.23, _65, _68, _71, bm.31, ])
+          let _74: Unit = Put bodies.8[i.14] = new_b.72
+          let _75: Double = FMul(dx.52, b2m.51)
+          let _76: Double = FMul(_75, mag.62)
+          let _77: Double = FSub(b2vx.45, _76)
+          let _78: Double = FMul(dy.53, b2m.51)
+          let _79: Double = FMul(_78, mag.62)
+          let _80: Double = FSub(b2vy.47, _79)
+          let _81: Double = FMul(dz.54, b2m.51)
+          let _82: Double = FMul(_81, mag.62)
+          let _83: Double = FSub(b2vz.49, _82)
+          let new_b2.84: (Double, Double, Double, Double, Double, Double, Double) = Tuple([b2x.39, b2y.41, b2z.43, _77, _80, _83, b2m.51, ])
+          let _86: Unit = Put bodies.8[j.34] = new_b2.84
+          let _87: Int = Int(1)
+          let _88: Int = Add(j.34, _87)
+          let _90: Unit = Apply(loop_j.32, [_88, ])
+          Unit
+        } else {
+          Unit
+        }
+        Unit
+      }
+      let _93: Int = Int(1)
+      let _94: Int = Add(i.14, _93)
+      let _96: Unit = Apply(loop_j.32, [_94, ])
+      let _97: Int = Int(1)
+      let _98: Int = Add(i.14, _97)
+      let _100: Unit = Apply(loop_i.12, [_98, ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _103: Int = Int(0)
+  let _105: Unit = Apply(loop_i.12, [_103, ])
+  let rec update_axis.106: Unit = (i.108: Int) {
+    let _109: Int = Int(1)
+    let _110: Int = Sub(n.11, _109)
+    let _140: Unit = if (i.108 <= _110) then {
+      let b.111: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.8[i.108]
+      let (bx.113: Double, by.115: Double, bz.117: Double, bvx.119: Double, bvy.121: Double, bvz.123: Double, bm.125: Double) = b.111
+      let _126: Double = FMul(dt.10, bvx.119)
+      let _127: Double = FAdd(bx.113, _126)
+      let _128: Double = FMul(dt.10, bvy.121)
+      let _129: Double = FAdd(by.115, _128)
+      let _130: Double = FMul(dt.10, bvz.123)
+      let _131: Double = FAdd(bz.117, _130)
+      let new_b.132: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_127, _129, _131, bvx.119, bvy.121, bvz.123, bm.125, ])
+      let _134: Unit = Put bodies.8[i.108] = new_b.132
+      let _135: Int = Int(1)
+      let _136: Int = Add(i.108, _135)
+      let _138: Unit = Apply(update_axis.106, [_136, ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _141: Int = Int(0)
+  let _143: Unit = Apply(update_axis.106, [_141, ])
+  Unit
+}
+let rec energy.144: Double = (bodies.146: Array[(Double, Double, Double, Double, Double, Double, Double)]) {
+  let n.147: Int = Int(5)
+  let _148: Int = Int(1)
+  let _149: Double = Double(0)
+  let e.150: Array[Double] = ExtApply(minimbt_create_float_array, [_148, _149, ])
+  let rec loop_i.151: Unit = (i.153: Int) {
+    let _154: Int = Int(1)
+    let _155: Int = Sub(n.147, _154)
+    let _237: Unit = if (i.153 <= _155) then {
+      let b.156: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.146[i.153]
+      let (bx.158: Double, by.160: Double, bz.162: Double, bvx.164: Double, bvy.166: Double, bvz.168: Double, bm.170: Double) = b.156
+      let _171: Int = Int(0)
+      let _172: Int = Int(0)
+      let _173: Double = Get e.150[_172]
+      let _174: Double = Double(0.5)
+      let _175: Double = FMul(_174, bm.170)
+      let _176: Double = FMul(bvx.164, bvx.164)
+      let _177: Double = FMul(bvy.166, bvy.166)
+      let _178: Double = FAdd(_176, _177)
+      let _179: Double = FMul(bvz.168, bvz.168)
+      let _180: Double = FAdd(_178, _179)
+      let _181: Double = FMul(_175, _180)
+      let _182: Double = FAdd(_173, _181)
+      let _184: Unit = Put e.150[_171] = _182
+      let rec loop_j.185: Unit = (j.187: Int) {
+        let _188: Int = Int(1)
+        let _189: Int = Sub(n.147, _188)
+        let _227: Unit = if (j.187 <= _189) then {
+          let b2.190: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.146[j.187]
+          let (b2x.192: Double, b2y.194: Double, b2z.196: Double, b2vx.198: Double, b2vy.200: Double, b2vz.202: Double, b2m.204: Double) = b2.190
+          let dx.205: Double = FSub(bx.158, b2x.192)
+          let dy.206: Double = FSub(by.160, b2y.194)
+          let dz.207: Double = FSub(bz.162, b2z.196)
+          let _208: Double = FMul(dx.205, dx.205)
+          let _209: Double = FMul(dy.206, dy.206)
+          let _210: Double = FAdd(_208, _209)
+          let _211: Double = FMul(dz.207, dz.207)
+          let dist2.212: Double = FAdd(_210, _211)
+          let _213: Int = Int(0)
+          let _214: Int = Int(0)
+          let _215: Double = Get e.150[_214]
+          let _216: Double = FMul(bm.170, b2m.204)
+          let _217: Double = ExtApply(minimbt_sqrt, [dist2.212, ])
+          let _218: Double = FDiv(_216, _217)
+          let _219: Double = FSub(_215, _218)
+          let _221: Unit = Put e.150[_213] = _219
+          let _222: Int = Int(1)
+          let _223: Int = Add(j.187, _222)
+          let _225: Unit = Apply(loop_j.185, [_223, ])
+          Unit
+        } else {
+          Unit
+        }
+        Unit
+      }
+      let _228: Int = Int(1)
+      let _229: Int = Add(i.153, _228)
+      let _231: Unit = Apply(loop_j.185, [_229, ])
+      let _232: Int = Int(1)
+      let _233: Int = Add(i.153, _232)
+      let _235: Unit = Apply(loop_i.151, [_233, ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _238: Int = Int(0)
+  let _240: Unit = Apply(loop_i.151, [_238, ])
+  let _241: Int = Int(0)
+  Get e.150[_241]
+}
+let rec offset_momentum.242: Unit = (bodies.244: Array[(Double, Double, Double, Double, Double, Double, Double)]) {
+  let n.245: Int = Int(5)
+  let _246: Int = Int(1)
+  let _247: Double = Double(0)
+  let px.248: Array[Double] = ExtApply(minimbt_create_float_array, [_246, _247, ])
+  let _249: Int = Int(1)
+  let _250: Double = Double(0)
+  let py.251: Array[Double] = ExtApply(minimbt_create_float_array, [_249, _250, ])
+  let _252: Int = Int(1)
+  let _253: Double = Double(0)
+  let pz.254: Array[Double] = ExtApply(minimbt_create_float_array, [_252, _253, ])
+  let rec loop_i.255: Unit = (i.257: Int) {
+    let _258: Int = Int(1)
+    let _259: Int = Sub(n.245, _258)
+    let _301: Unit = if (i.257 <= _259) then {
+      let b.260: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.244[i.257]
+      let (bx.262: Double, by.264: Double, bz.266: Double, bvx.268: Double, bvy.270: Double, bvz.272: Double, bm.274: Double) = b.260
+      let _275: Int = Int(0)
+      let _276: Int = Int(0)
+      let _277: Double = Get px.248[_276]
+      let _278: Double = FMul(bvx.268, bm.274)
+      let _279: Double = FAdd(_277, _278)
+      let _281: Unit = Put px.248[_275] = _279
+      let _282: Int = Int(0)
+      let _283: Int = Int(0)
+      let _284: Double = Get py.251[_283]
+      let _285: Double = FMul(bvy.270, bm.274)
+      let _286: Double = FAdd(_284, _285)
+      let _288: Unit = Put py.251[_282] = _286
+      let _289: Int = Int(0)
+      let _290: Int = Int(0)
+      let _291: Double = Get pz.254[_290]
+      let _292: Double = FMul(bvz.272, bm.274)
+      let _293: Double = FAdd(_291, _292)
+      let _295: Unit = Put pz.254[_289] = _293
+      let _296: Int = Int(1)
+      let _297: Int = Add(i.257, _296)
+      let _299: Unit = Apply(loop_i.255, [_297, ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _302: Int = Int(0)
+  let _304: Unit = Apply(loop_i.255, [_302, ])
+  let _305: Int = Int(0)
+  let b.306: (Double, Double, Double, Double, Double, Double, Double) = Get bodies.244[_305]
+  let (bx.308: Double, by.310: Double, bz.312: Double, bvx.314: Double, bvy.316: Double, bvz.318: Double, bm.320: Double) = b.306
+  let _321: Int = Int(0)
+  let _322: Double = Get px.248[_321]
+  let _323: Double = FDiv(_322, solar_mass.4)
+  let _324: Double = FNeg(_323)
+  let _325: Int = Int(0)
+  let _326: Double = Get py.251[_325]
+  let _327: Double = FDiv(_326, solar_mass.4)
+  let _328: Double = FNeg(_327)
+  let _329: Int = Int(0)
+  let _330: Double = Get pz.254[_329]
+  let _331: Double = FDiv(_330, solar_mass.4)
+  let _332: Double = FNeg(_331)
+  let new_b.333: (Double, Double, Double, Double, Double, Double, Double) = Tuple([bx.308, by.310, bz.312, _324, _328, _332, bm.320, ])
+  let _334: Int = Int(0)
+  let _336: Unit = Put bodies.244[_334] = new_b.333
+  Unit
+}
+let rec main.337: Unit = () {
+  let _338: Double = Double(4.841431442464721)
+  let _339: Double = Double(1.1603200440274284)
+  let _340: Double = FNeg(_339)
+  let _341: Double = Double(0.10362204447112311)
+  let _342: Double = FNeg(_341)
+  let _343: Double = Double(0.001660076642744037)
+  let _344: Double = FMul(_343, days_per_year.5)
+  let _345: Double = Double(0.007699011184197404)
+  let _346: Double = FMul(_345, days_per_year.5)
+  let _347: Double = Double(0.0000690460016972063)
+  let _348: Double = FMul(_347, days_per_year.5)
+  let _349: Double = FNeg(_348)
+  let _350: Double = Double(0.0009547919384243266)
+  let _351: Double = FMul(_350, solar_mass.4)
+  let jupiter.352: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_338, _340, _342, _344, _346, _349, _351, ])
+  let _353: Double = Double(8.34336671824458)
+  let _354: Double = Double(4.124798564124305)
+  let _355: Double = Double(0.4035234171143214)
+  let _356: Double = FNeg(_355)
+  let _357: Double = Double(0.002767425107268624)
+  let _358: Double = FMul(_357, days_per_year.5)
+  let _359: Double = FNeg(_358)
+  let _360: Double = Double(0.004998528012349172)
+  let _361: Double = FMul(_360, days_per_year.5)
+  let _362: Double = Double(0.000023029345528229068)
+  let _363: Double = FMul(_362, days_per_year.5)
+  let _364: Double = Double(0.0002858859806661308)
+  let _365: Double = FMul(_364, solar_mass.4)
+  let saturn.366: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_353, _354, _356, _359, _361, _363, _365, ])
+  let _367: Double = Double(12.894369562139131)
+  let _368: Double = Double(15.111151401698631)
+  let _369: Double = FNeg(_368)
+  let _370: Double = Double(0.22330757889265587)
+  let _371: Double = FNeg(_370)
+  let _372: Double = Double(0.002964601375647616)
+  let _373: Double = FMul(_372, days_per_year.5)
+  let _374: Double = Double(0.0023784717395948095)
+  let _375: Double = FMul(_374, days_per_year.5)
+  let _376: Double = Double(0.000029658956854023756)
+  let _377: Double = FMul(_376, days_per_year.5)
+  let _378: Double = FNeg(_377)
+  let _379: Double = Double(0.00004366244043351563)
+  let _380: Double = FMul(_379, solar_mass.4)
+  let uranus.381: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_367, _369, _371, _373, _375, _378, _380, ])
+  let _382: Double = Double(15.379697114850917)
+  let _383: Double = Double(25.919314609987964)
+  let _384: Double = FNeg(_383)
+  let _385: Double = Double(0.17925877295037118)
+  let _386: Double = Double(0.0026806777249038932)
+  let _387: Double = FMul(_386, days_per_year.5)
+  let _388: Double = Double(0.001628241700382423)
+  let _389: Double = FMul(_388, days_per_year.5)
+  let _390: Double = Double(0.00009515922545197159)
+  let _391: Double = FMul(_390, days_per_year.5)
+  let _392: Double = FNeg(_391)
+  let _393: Double = Double(0.00005151389020466116)
+  let _394: Double = FMul(_393, solar_mass.4)
+  let neptune.395: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_382, _384, _385, _387, _389, _392, _394, ])
+  let _396: Double = Double(0)
+  let _397: Double = Double(0)
+  let _398: Double = Double(0)
+  let _399: Double = Double(0)
+  let _400: Double = Double(0)
+  let _401: Double = Double(0)
+  let sun.402: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_396, _397, _398, _399, _400, _401, solar_mass.4, ])
+  let _403: Int = Int(5)
+  let _404: Double = Double(0)
+  let _405: Double = Double(0)
+  let _406: Double = Double(0)
+  let _407: Double = Double(0)
+  let _408: Double = Double(0)
+  let _409: Double = Double(0)
+  let _410: Double = Double(0)
+  let _411: (Double, Double, Double, Double, Double, Double, Double) = Tuple([_404, _405, _406, _407, _408, _409, _410, ])
+  let bodies.412: Array[(Double, Double, Double, Double, Double, Double, Double)] = ExtApply(minimbt_create_ptr_array, [_403, _411, ])
+  let _413: Int = Int(0)
+  let _415: Unit = Put bodies.412[_413] = sun.402
+  let _416: Int = Int(1)
+  let _418: Unit = Put bodies.412[_416] = jupiter.352
+  let _419: Int = Int(2)
+  let _421: Unit = Put bodies.412[_419] = saturn.366
+  let _422: Int = Int(3)
+  let _424: Unit = Put bodies.412[_422] = uranus.381
+  let _425: Int = Int(4)
+  let _427: Unit = Put bodies.412[_425] = neptune.395
+  let _429: Unit = Apply(offset_momentum.242, [bodies.412, ])
+  let _430: Double = Apply(energy.144, [bodies.412, ])
+  let _431: Double = Double(1000000000)
+  let _432: Double = FMul(_430, _431)
+  let _433: Int = ExtApply(minimbt_int_of_float, [_432, ])
+  let _435: Unit = ExtApply(minimbt_print_int, [_433, ])
+  let iters.436: Int = Int(50000000)
+  let rec loop_i.437: Unit = (i.439: Int) {
+    let _448: Unit = if (i.439 <= iters.436) then {
+      let _440: Double = Double(0.01)
+      let _442: Unit = Apply(advance.6, [bodies.412, _440, ])
+      let _443: Int = Int(1)
+      let _444: Int = Add(i.439, _443)
+      let _446: Unit = Apply(loop_i.437, [_444, ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _449: Int = Int(1)
+  let _451: Unit = Apply(loop_i.437, [_449, ])
+  let _452: Double = Apply(energy.144, [bodies.412, ])
+  let _453: Double = Double(1000000000)
+  let _454: Double = FMul(_452, _453)
+  let _455: Int = ExtApply(minimbt_int_of_float, [_454, ])
+  let _457: Unit = ExtApply(minimbt_print_int, [_455, ])
+  Unit
+}
+Apply(main.337, [])
