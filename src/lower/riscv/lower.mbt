@@ -2593,16 +2593,16 @@ pub fn RiscvFnLoweringCtx::new(
 
 pub struct RiscvLoweringCtx {
   core : @core.Core
-  use_xthead : Bool
+  conf : @types.Configure
   tracer : @util.SubTracer
 }
 
 pub fn RiscvLoweringCtx::new(
   core : @core.Core,
-  tracer : @util.SubTracer,
-  ~use_xthead : Bool = false
+  conf : @types.Configure,
+  tracer : @util.SubTracer
 ) -> RiscvLoweringCtx {
-  { core, tracer, use_xthead }
+  { core, tracer, conf }
 }
 
 pub fn save_sp(insns : Array[MInsn]) -> Unit {
@@ -2874,7 +2874,7 @@ pub fn RiscvLoweringCtx::lower(self : RiscvLoweringCtx) -> MCore!Failure {
       self.core,
       func,
       self.tracer,
-      use_xthead=self.use_xthead,
+      use_xthead=self.conf.use_xthead,
     )
     let retarget = {}
     match lower_ctx.try_lower_trivial() {

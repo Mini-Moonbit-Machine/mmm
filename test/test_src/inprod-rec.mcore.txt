@@ -25,17 +25,12 @@ inprod.27:
   sd ra, 0(sp)
   fsd fs0, 8(sp)
   fsd fs1, 16(sp)
-  mv a3, a0
   blt a2, zero, .inprod.27_2
 
 .inprod.27_1:
-  slliw a0, a2, 3
-  add a4, a3, a0
-  fld fs0, 0(a4)
-  add a0, a1, a0
-  fld fs1, 0(a0)
+  th.flurd fs0, a0, a2, 3
+  th.flurd fs1, a1, a2, 3
   addi a2, a2, -1
-  mv a0, a3
   call inprod.27
   fmadd.d fa0, fs0, fs1, fa0
 

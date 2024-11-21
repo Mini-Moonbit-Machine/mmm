@@ -577,3 +577,82 @@ pub impl Show for PrettySyntax with output(self : PrettySyntax, logger : Logger)
   let indent_logger = @util.IndentLogger::new(logger)
   self.print_one_level(indent_logger, self._)
 }
+
+pub struct Configure {
+  mut use_xthead : Bool
+  mut knf_inline : Int
+  mut knf_licm : Int
+  mut knf_lift : Bool
+  mut knf_unbox : Bool
+  mut core_inline : Int
+  mut core_licm : Bool
+  mut core_lvn : Bool
+  mut core_2_fo : Bool
+  mut core_2_jtbl : Bool
+  mut core_2_lvn : Bool
+}
+
+pub fn Configure::new() -> Configure {
+  Configure::{
+    use_xthead: false,
+    knf_inline: 3,
+    knf_licm: 3,
+    knf_lift: true,
+    knf_unbox: true,
+    core_inline: 3,
+    core_licm: true,
+    core_lvn: true,
+    core_2_fo: true,
+    core_2_jtbl: false,
+    core_2_lvn: true,
+  }
+}
+
+pub fn Configure::update_with_json(self : Configure, conf : Json) -> Unit {
+  match conf.value("use_xthead") {
+    Some(Json::False) => self.use_xthead = false
+    _ => ()
+  }
+  match conf.value("knf_inline") {
+    Some(Json::Number(n)) => self.knf_inline = n.to_int()
+    _ => ()
+  }
+  match conf.value("knf_licm") {
+    Some(Json::Number(n)) => self.knf_licm = n.to_int()
+    _ => ()
+  }
+  match conf.value("knf_unbox") {
+    Some(Json::True) => self.knf_unbox = true
+    Some(Json::False) => self.knf_unbox = false
+    _ => ()
+  }
+  match conf.value("core_inline") {
+    Some(Json::Number(n)) => self.core_inline = n.to_int()
+    _ => ()
+  }
+  match conf.value("core_licm") {
+    Some(Json::True) => self.core_licm = true
+    Some(Json::False) => self.core_licm = false
+    _ => ()
+  }
+  match conf.value("core_lvn") {
+    Some(Json::True) => self.core_lvn = true
+    Some(Json::False) => self.core_lvn = false
+    _ => ()
+  }
+  match conf.value("core_2_fo") {
+    Some(Json::True) => self.core_2_fo = true
+    Some(Json::False) => self.core_2_fo = false
+    _ => ()
+  }
+  match conf.value("core_2_jtbl") {
+    Some(Json::True) => self.core_2_jtbl = true
+    Some(Json::False) => self.core_2_jtbl = false
+    _ => ()
+  }
+  match conf.value("core_2_lvn") {
+    Some(Json::True) => self.core_2_lvn = true
+    Some(Json::False) => self.core_2_lvn = false
+    _ => ()
+  }
+}

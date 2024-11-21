@@ -14,6 +14,8 @@ enum Stages {
   Finished
 } derive(Show, Eq)
 
+typealias Configure = @types.Configure
+
 enum StagesMode {
   Wasm
   Closure
@@ -141,13 +143,15 @@ struct CompileStatus {
   mut closure_ir : @closure.Program?
   mut asm : @lower_riscv.MCore?
   mut core_env : @core.CoreEnv?
+  conf : Configure
 }
 
 fn CompileStatus::initialize(
   start_stage : Stages,
   end_stage : Stages,
   file : String,
-  mode : StagesMode
+  mode : StagesMode,
+  conf : Configure
 ) -> CompileStatus! {
   let v = CompileStatus::{
     mode,
@@ -168,6 +172,7 @@ fn CompileStatus::initialize(
     opt_core: None,
     opt_core_2: None,
     core_env: None,
+    conf,
   }
   match start_stage {
     Parse => v.source_code = Some(file)
@@ -237,25 +242,23 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.output_to_console,
         opts.redirect_to_log,
       )
-      let knf = self.knf.unwrap()
+      let mut knf = self.knf.unwrap()
       let knf_env = @knf.KnfEnv::new(@typer.externals(), tracer)
       knf_env.init_counter_from_existing(knf)
-      let inline = @knf.InlineEnv::new(knf_env, tracer)
-      let knf = inline.go(knf, 0)
-      let inline = @knf.InlineEnv::new(knf_env, tracer)
-      let knf = inline.go(knf, 1)
-      let inline = @knf.InlineEnv::new(knf_env, tracer)
-      let knf = inline.go(knf, 2)
-      let lamlift = @knf.LambdaLifter::new(tracer, knf)
-      let knf = lamlift.go()
-      let licm = @knf.LICM::new(tracer, knf)
-      let knf = licm.go(0)
-      let licm = @knf.LICM::new(tracer, knf)
-      let knf = licm.go(1)
-      let licm = @knf.LICM::new(tracer, knf)
-      let knf = licm.go(2)
+      for i in 0..<self.conf.knf_inline {
+        let inline = @knf.InlineEnv::new(knf_env, tracer)
+        knf = inline.go(knf, i)
+      }
+      if self.conf.knf_lift {
+        let lift = @knf.LambdaLifter::new(tracer, knf)
+        knf = lift.go()
+      }
+      for i in 0..<self.conf.knf_licm {
+        let licm = @knf.LICM::new(tracer, knf)
+        knf = licm.go(i)
+      }
       // Wasm backend does not support unboxing but we must run knf optimizer here
-      if self.mode != StagesMode::Wasm {
+      if self.mode != StagesMode::Wasm && self.conf.knf_unbox {
         let unbox = @knf.Unbox::new(tracer, knf)
         let knf = unbox.go()
         self.opt_knf = Some(knf)
@@ -298,7 +301,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let core = self.core.unwrap()
-      let opt = @core_opt.CoreOpt::new(core, subtracer)
+      let opt = @core_opt.CoreOpt::new(core, self.conf, subtracer)
       opt.go()
       self.core_env = Some(_core_env)
       self.opt_core = Some(core)
@@ -321,7 +324,7 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
         opts.redirect_to_log,
       )
       let core = self.opt_core.unwrap()
-      let opt = @core_opt.CoreOpt2::new(core, subtracer)
+      let opt = @core_opt.CoreOpt2::new(core, self.conf, subtracer)
       opt.go()
       self.opt_core_2 = Some(core)
     }
@@ -354,8 +357,8 @@ fn CompileStatus::step(self : CompileStatus) -> Bool {
       )
       let lower_ctx = @lower_riscv.RiscvLoweringCtx::new(
         core,
+        self.conf,
         subtracer,
-        use_xthead=opts.use_xthead,
       )
       let asm = try {
         lower_ctx.lower!()
@@ -410,6 +413,10 @@ struct Options {
   mut use_xthead : Bool
   mut mode : StagesMode
   mut stop : String?
+}
+
+pub fn update_with_opts(conf : @types.Configure, opts : Options) -> Unit {
+  conf.use_xthead = opts.use_xthead
 }
 
 fn Options::new() -> Options {
@@ -610,7 +617,17 @@ fn main {
     opts.file.unwrap()
   }
   let contents = @fs.read_to_string(file)
-
+  let conf = Configure::new()
+  update_with_opts(conf, opts)
+  if @fs.exists("mmm.json") {
+    let confs = @fs.read_to_string("mmm.json")
+    let confj = try {
+      @json.parse!(confs)
+    } catch {
+      _ => mt.abort("Failed to parse mmm.json: \{confs}")
+    }
+    conf.update_with_json(confj)
+  }
   // Compilation
   let status = match
     CompileStatus::initialize?(
@@ -618,6 +635,7 @@ fn main {
       opts.mode.next(opts.end_stage),
       contents,
       opts.mode,
+      conf,
     ) {
     Ok(status) => status
     Err(e) => mt.abort("Initialization failed: \{Show::to_string(e)}")

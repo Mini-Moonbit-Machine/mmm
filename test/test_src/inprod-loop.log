@@ -8,6 +8,7 @@
 // [Asm] critical edges for b1: []
 // [Asm] critical color seq for b1: []
 // [Asm] skipping Op(ty=Double, op=Mul, args=[Insn(iref=%1), Insn(iref=%2)])
+// [Asm] skipping ComputeAddress(ma=Offset(ty=Unit, val=Int64(val=0), offset=BlockParam(bref=b0, bpref=$b.3), width=@64))
 // [Asm] succs: []
 // [Asm] critical edges for b3: []
 // [Asm] critical color seq for b3: []
@@ -55,18 +56,9 @@
 // [Asm] live_set: [v7, v6, v9, zero, fv8]
 // [Asm] move: v9 <- v5
 // [Asm] defined: v9 is X
-// [Asm] defs: [v12]
-// [Asm] live_set: [zero, v7, fv8, v6, v12, v9]
-// [Asm] defined: v12 is X
-// [Asm] defs: [v22]
-// [Asm] live_set: [zero, v22, v7, fv8, v6, v12, v9]
-// [Asm] defined: v22 is X
 // [Asm] defs: [fv13]
-// [Asm] live_set: [zero, fv13, v7, fv8, v6, v12, v9]
+// [Asm] live_set: [zero, fv13, v7, fv8, v6, v9]
 // [Asm] defined: fv13 is F
-// [Asm] defs: [v20]
-// [Asm] live_set: [zero, v20, fv13, v7, fv8, v6, v9]
-// [Asm] defined: v20 is X
 // [Asm] defs: [fv14]
 // [Asm] live_set: [zero, fv13, v7, fv8, v6, fv14, v9]
 // [Asm] defined: fv14 is F
@@ -106,13 +98,10 @@
 // [Asm] live_set: [fv11]
 // [Asm] move: fv11 <- fv8
 // [Asm] defined: fv11 is F
-// [Asm] Label("inprod.30") clobbered_x: @hashset.of([a2, a1, a3, a0, a4])
+// [Asm] Label("inprod.30") clobbered_x: @hashset.of([a2, a1, a0])
 // [Asm] Label("inprod.30") clobbered_f: @hashset.of([fa2, fa1, fa0])
-// [Asm] subst   slliw v12, v9, 3 ->   slliw a3, a2, 3
-// [Asm] subst   add v22, v6, v12 ->   add a4, a0, a3
-// [Asm] subst   fld fv13, 0(v22) ->   fld fa1, 0(a4)
-// [Asm] subst   add v20, v7, v12 ->   add a3, a1, a3
-// [Asm] subst   fld fv14, 0(v20) ->   fld fa2, 0(a3)
+// [Asm] subst   th.flurd fv13, v6, v9, 3 ->   th.flurd fa1, a0, a2, 3
+// [Asm] subst   th.flurd fv14, v7, v9, 3 ->   th.flurd fa2, a1, a2, 3
 // [Asm] subst   fmadd.d fv16, fv13, fv14, fv8 ->   fmadd.d fa0, fa1, fa2, fa0
 // [Asm] subst   addi v17, v9, -1 ->   addi a2, a2, -1
 // [Asm] subst   j .inprod.30_0 ->   j .inprod.30_0
@@ -354,15 +343,12 @@
 // [Asm] # control
 // [Asm]   blt v9, zero, .inprod.30_2  # live: [fv8, v6, v9, zero, v7]
 // [Asm] 
-// [Asm] # block info: defs: [v22, v20, fv13, fv8, v17, v12, fv14, fv16, v9], uses: [v9, v22, v20, v7, fv13, fv8, v6, v17, v12, fv14, fv16], upward_exposed: [fv8, v6, v9, v7], params_defs: []
+// [Asm] # block info: defs: [fv8, v17, fv14, fv16, v9, fv13], uses: [fv13, fv8, v7, v6, v17, fv14, fv16, v9], upward_exposed: [fv8, v6, v9, v7], params_defs: []
 // [Asm] # live_in: [v7, v6, v9, zero, fv8], live_out: [fv8, v6, v9, zero, v7]
 // [Asm] # block parameters: []
 // [Asm] .inprod.30_1:
-// [Asm]   slliw v12, v9, 3  # live: [zero, v7, fv8, v6, v12, v9]
-// [Asm]   add v22, v6, v12  # live: [zero, v22, v7, fv8, v6, v12, v9]
-// [Asm]   fld fv13, 0(v22)  # live: [zero, fv13, v7, fv8, v6, v12, v9]
-// [Asm]   add v20, v7, v12  # live: [zero, v20, fv13, v7, fv8, v6, v9]
-// [Asm]   fld fv14, 0(v20)  # live: [zero, fv13, v7, fv8, v6, fv14, v9]
+// [Asm]   th.flurd fv13, v6, v9, 3  # live: [zero, fv13, v7, fv8, v6, v9]
+// [Asm]   th.flurd fv14, v7, v9, 3  # live: [zero, fv13, v7, fv8, v6, fv14, v9]
 // [Asm]   fmadd.d fv16, fv13, fv14, fv8  # live: [v6, fv16, zero, v9, v7]
 // [Asm]   addi v17, v9, -1  # live: [v6, v17, fv16, zero, v7]
 // [Asm] # control
@@ -483,11 +469,8 @@
 // [Main]   blt a2, zero, .inprod.30_2
 // [Main] 
 // [Main] .inprod.30_1:
-// [Main]   slliw a3, a2, 3
-// [Main]   add a4, a0, a3
-// [Main]   fld fa1, 0(a4)
-// [Main]   add a3, a1, a3
-// [Main]   fld fa2, 0(a3)
+// [Main]   th.flurd fa1, a0, a2, 3
+// [Main]   th.flurd fa2, a1, a2, 3
 // [Main]   fmadd.d fa0, fa1, fa2, fa0
 // [Main]   addi a2, a2, -1
 // [Main]   j .inprod.30_0
@@ -735,10 +718,12 @@
 // [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
 // [CoreOpt] allow_inline: false %0 main.31 false true true false true
 // [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f4: Once, f1: Once})
 // [CoreOpt] allow_inline: false %0 main.31 false true true false true
 // [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
 // [CoreOpt] allow_inline: false %0 main.31 false true true false true
 // [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
+// [CoreOpt] Call frequnce: FnCallFreq({f0: Once, f4: Once, f1: Once})
 // [CoreOpt] allow_inline: false %0 main.31 false true true false true
 // [CoreOpt] allow_inline: false %2 inprod.30 false true true false true
 // [CoreOpt] allow_inline: false %0 main.31 false true true false true

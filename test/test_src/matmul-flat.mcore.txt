@@ -173,9 +173,7 @@ make_arr.243:
   slliw a2, a1, 3
   sub a2, s11, a2
   andi s11, a2, -8
-  slliw a4, a0, 3
-  add a4, a3, a4
-  sd a2, 0(a4)
+  th.surd a2, a3, a0, 3
   addi a0, a0, -1
   j .make_arr.243_3
 
@@ -200,12 +198,10 @@ make_arr.243:
 # leaf true
 loop1.240:
 .loop1.240_5:
-  addi sp, sp, -48
+  addi sp, sp, -32
   sd s0, 0(sp)
   sd s1, 8(sp)
   sd s2, 16(sp)
-  sd s3, 24(sp)
-  sd s4, 32(sp)
   mv a6, a1
   mv a7, a2
   mv a1, a3
@@ -219,11 +215,8 @@ loop1.240:
 
 .loop1.240_1:
   addi a2, a3, -1
-  slliw t0, a0, 3
-  add a7, a4, t0
-  ld a7, 0(a7)
-  add t0, a1, t0
-  ld t0, 0(t0)
+  th.lurd a7, a4, a0, 3
+  th.lurd t0, a1, a0, 3
 
 .loop1.240_12:
   mv t1, a7
@@ -235,30 +228,22 @@ loop1.240:
   addi t2, a6, -1
 
 .loop1.240_19:
-  mv s0, a0
-  mv t3, t2
-  mv s1, a1
-  mv s3, a5
-  mv s2, a4
+  mv t4, a0
+  mv s0, a1
+  mv s2, a5
+  mv s1, a4
 
 .loop1.240_14:
-  blt t3, zero, .loop1.240_16
+  blt t2, zero, .loop1.240_16
 
 .loop1.240_15:
-  slliw t2, a2, 3
-  add t4, t1, t2
-  fld fa0, 0(t4)
-  slliw t4, t3, 3
-  add s4, t0, t4
-  fld fa1, 0(s4)
-  add t4, s3, t4
-  ld t4, 0(t4)
-  add t4, t4, t2
-  fld fa2, 0(t4)
+  th.flurd fa0, t1, a2, 3
+  th.flurd fa1, t0, t2, 3
+  th.lurd t3, s2, t2, 3
+  th.flurd fa2, t3, a2, 3
   fmadd.d fa0, fa1, fa2, fa0
-  add t2, a7, t2
-  fsd fa0, 0(t2)
-  addi t3, t3, -1
+  th.fsurd fa0, a7, a2, 3
+  addi t2, t2, -1
   j .loop1.240_14
 
 .loop1.240_16:
@@ -286,9 +271,7 @@ loop1.240:
   ld s0, 0(sp)
   ld s1, 8(sp)
   ld s2, 16(sp)
-  ld s3, 24(sp)
-  ld s4, 32(sp)
-  addi sp, sp, 48
+  addi sp, sp, 32
   ret
 
   .p2align 2

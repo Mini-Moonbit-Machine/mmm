@@ -35,9 +35,7 @@ output.147:
   blt a0, s0, .output.147_2
 
 .output.147_1:
-  slliw a0, s0, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
+  th.lurw a0, s1, s0, 2
   call minimbt_print_int
   call minimbt_print_endline
   addi s0, s0, 1
@@ -76,9 +74,7 @@ input.146:
 
 .input.146_1:
   call minimbt_read_int
-  slliw a1, s1, 2
-  add a1, s0, a1
-  sw a0, 0(a1)
+  th.surw a0, s0, s1, 2
   addi s1, s1, 1
   j .input.146_0
 
@@ -115,29 +111,25 @@ quicksort.143:
   blt a0, a2, .quicksort.143_2
 
 .quicksort.143_1:
-  slliw a0, s0, 2
-  add a0, s1, a0
-  lw a0, 0(a0)
+  th.lurw a0, s1, s0, 2
   addi a3, a2, -1
   addi a1, s11, -4
   andi s11, a1, -8
   sw a3, 0(a1)
 
 .quicksort.143_27:
-  mv a3, a2
-  mv a5, s1
-  mv a6, s0
-  mv a4, a0
+  mv a4, a2
+  mv a7, s1
+  mv t0, s0
+  mv a5, a0
 
 .quicksort.143_19:
-  addi a0, a6, -1
-  blt a0, a3, .quicksort.143_21
+  addi a0, t0, -1
+  blt a0, a4, .quicksort.143_21
 
 .quicksort.143_20:
-  slliw a0, a3, 2
-  add a0, a5, a0
-  lw a0, 0(a0)
-  blt a4, a0, .quicksort.143_23
+  th.lurw a0, a7, a4, 2
+  blt a5, a0, .quicksort.143_23
 
 .quicksort.143_22:
   lw a0, 0(a1)
@@ -146,20 +138,14 @@ quicksort.143:
   lw a0, 0(a1)
 
 .quicksort.143_29:
-  slliw a0, a0, 2
-  add a7, a5, a0
-  lw a7, 0(a7)
-  slliw t0, a3, 2
-  add t1, a5, t0
-  lw t1, 0(t1)
-  add a0, a5, a0
-  sw t1, 0(a0)
-  add a0, a5, t0
-  sw a7, 0(a0)
+  th.lurw a3, a7, a0, 2
+  th.lurw a6, a7, a4, 2
+  th.surw a6, a7, a0, 2
+  th.surw a3, a7, a4, 2
   mv a0, zero
 
 .quicksort.143_24:
-  addi a3, a3, 1
+  addi a4, a4, 1
   j .quicksort.143_19
 
 .quicksort.143_23:
@@ -178,16 +164,10 @@ quicksort.143:
   lw a0, 0(a1)
 
 .quicksort.143_15:
-  slliw a0, a0, 2
-  add a3, s1, a0
-  lw a3, 0(a3)
-  slliw a4, s0, 2
-  add a5, s1, a4
-  lw a5, 0(a5)
-  add a0, s1, a0
-  sw a5, 0(a0)
-  add a0, s1, a4
-  sw a3, 0(a0)
+  th.lurw a3, s1, a0, 2
+  th.lurw a4, s1, s0, 2
+  th.surw a4, s1, a0, 2
+  th.surw a3, s1, s0, 2
   mv a0, zero
 
 .quicksort.143_7:
