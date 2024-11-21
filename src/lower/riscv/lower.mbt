@@ -540,6 +540,12 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
 ) -> (Int, Int) {
   let mut used_xarg = 0
   let mut used_farg = 0
+  fn too_many_args() {
+    self.tracer.abort(
+      "Too many arguments x:\{used_xarg} f:\{used_farg} x_max:\{@riscv.reg_arg_list.length()} f_max:\{@riscv.freg_arg_list.length()}",
+    )
+  }
+
   fn mv_xarg(r) {
     @generated.constructor_rv_mv_to(
       self,
@@ -547,8 +553,8 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
       xreg(r),
     )
     used_xarg += 1
-    if used_xarg >= @riscv.reg_arg_list.length() {
-      self.tracer.abort("Too many arguments")
+    if used_xarg > @riscv.reg_arg_list.length() {
+      too_many_args()
     }
   }
 
@@ -559,8 +565,8 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
       freg(r),
     )
     used_farg += 1
-    if used_farg >= @riscv.freg_arg_list.length() {
-      self.tracer.abort("Too many arguments")
+    if used_farg > @riscv.freg_arg_list.length() {
+      too_many_args()
     }
   }
 
@@ -591,7 +597,7 @@ fn RiscvFnLoweringCtx::copy_call_arguments(
       None => {
         used_xarg += 1
         if used_xarg >= @riscv.reg_arg_list.length() {
-          self.tracer.abort("Too many arguments")
+          too_many_args()
         }
       }
     }

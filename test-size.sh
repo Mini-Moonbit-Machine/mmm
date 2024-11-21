@@ -17,11 +17,11 @@ if test -n "$argv[1]"
 end
 
 for file in test/test_src/*.mbt
-  rm -f out.o
   work $file
+  rm -f out.o
 end
 
 for file in test/longer-cases/*.mbt
-  rm -f out.o
   work $file
+  rm -f out.o
 end

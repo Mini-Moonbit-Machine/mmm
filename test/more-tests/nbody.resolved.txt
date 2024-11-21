@@ -127,7 +127,7 @@ let rec main: () -> Var(None) {
   let _: Var(None) = Put Var("bodies")[Int(4)] = Var("neptune")
   let _: Var(None) = Apply(Var("offset_momentum"), [Var("bodies"), ])
   let _: Var(None) = Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Prim(App(Var("energy"), targs=None, [Var("bodies")]), Double(1000000000), Mul, kind=None)]), ])
-  let iters: Var(None) = Int(50000000)
+  let iters: Var(None) = Int(500000)
   let rec loop_i: (i: Int) -> Var(None) {
     let _: Var(None) = if (LE(Var("i"), Var("iters"))) then {
       let _: Var(None) = Apply(Var("advance"), [Var("bodies"), Double(0.01), ])
@@ -139,6 +139,7 @@ let rec main: () -> Var(None) {
     Unit
   }
   let _: Var(None) = Apply(Var("loop_i"), [Int(1), ])
+  let _: Var(None) = Apply(Var("print_char"), [Int(10), ])
   let _: Var(None) = Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Prim(App(Var("energy"), targs=None, [Var("bodies")]), Double(1000000000), Mul, kind=None)]), ])
   Unit
 }

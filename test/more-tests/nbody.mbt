@@ -26,9 +26,9 @@ fn advance(bodies: Array[(Double, Double, Double, Double, Double, Double, Double
           bodies[j] = new_b2;
           loop_j(j + 1);
         }
-	else {
-	  ()
-	};
+        else {
+          ()
+        };
       };
       loop_j(i + 1);
       loop_i(i + 1);
@@ -68,7 +68,7 @@ fn energy(bodies: Array[(Double, Double, Double, Double, Double, Double, Double)
           let dz = bz - b2z;
           let dist2 = dx * dx + dy * dy + dz * dz;
           e[0] = e[0] - (bm * b2m) / sqrt(dist2);
-	  loop_j(j + 1);
+          loop_j(j + 1);
         }
         else {
           ()
@@ -151,7 +151,7 @@ fn main {
   offset_momentum(bodies);
 
   print_int(int_of_float(energy(bodies) * 1000000000.0));
-  let iters = 50000000;
+  let iters = 500000;
   fn loop_i(i: Int) {
     if i <= iters {
       advance(bodies, 0.01);
@@ -161,6 +161,7 @@ fn main {
     };
   };
   loop_i(1);
+  print_char(10);
   print_int(int_of_float(energy(bodies) * 1000000000.0));
 
 }
