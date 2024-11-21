@@ -53,10 +53,8 @@ pub fn Numbering::go(self : Numbering) -> Unit {
       if insn.effectful() {
         let old_shapes = shape.to_array()
         match insn {
-          @core.Insn::Call(..) | ExtCall(..) | Apply(..) =>
-            // keep value across calls may use extra instructions to save/restore
-            // shape.clear()
-            ()
+          @core.Insn::Call(..) | ExtCall(..) | Apply(..) => // keep value across calls may use extra instructions to save/restore
+            shape.clear()
           _ => ()
         }
         for s in old_shapes {

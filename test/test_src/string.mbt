@@ -1,3 +1,5 @@
+//:extension
+
 enum StrOpt {
   None;
   Some(String);
