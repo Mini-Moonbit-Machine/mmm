@@ -3,14 +3,14 @@
   .bss
   .type large_heap, @object
 large_heap:
-  .zero 1610612736
+  .zero 2013265920 # 2GB - 128MB
 large_heap_end:
 
   .p2align 4
   .bss
   .type large_stack, @object
 large_stack:
-  .zero 268435456
+  .zero 67108864 # 64MB
 large_stack_end:
 
 __begin_text:
@@ -33,9 +33,7 @@ loop_i.634:
   blt a0, s0, .loop_i.634_2
 
 .loop_i.634_1:
-  slliw a0, s0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
+  th.lurd a0, s1, s0, 3
   fld fa2, 0(a0)
   fld fa3, 8(a0)
   fld fa4, 16(a0)
@@ -80,9 +78,7 @@ loop_i.632:
   blt a5, a0, .loop_i.632_2
 
 .loop_i.632_1:
-  slliw a5, a0, 3
-  add a5, a4, a5
-  ld a5, 0(a5)
+  th.lurd a5, a4, a0, 3
   fld fa0, 24(a5)
   fld fa1, 32(a5)
   fld fa2, 40(a5)
@@ -173,16 +169,14 @@ loop_j.635:
   blt a3, a0, .loop_j.635_2
 
 .loop_j.635_1:
-  slliw a3, a0, 3
-  add a4, a2, a3
-  ld a4, 0(a4)
-  fld ft0, 0(a4)
-  fld ft1, 8(a4)
-  fld ft2, 16(a4)
-  fld ft3, 24(a4)
-  fld ft4, 32(a4)
-  fld ft5, 40(a4)
-  fld ft6, 48(a4)
+  th.lurd a3, a2, a0, 3
+  fld ft0, 0(a3)
+  fld ft1, 8(a3)
+  fld ft2, 16(a3)
+  fld ft3, 24(a3)
+  fld ft4, 32(a3)
+  fld ft5, 40(a3)
+  fld ft6, 48(a3)
   fsub.d ft7, fa2, ft0
   fsub.d ft8, fa3, ft1
   fsub.d ft9, fa4, ft2
@@ -201,32 +195,29 @@ loop_j.635:
   fmul.d ft9, ft9, ft6
   fmul.d ft9, ft9, fs0
   fsub.d fs0, fa7, ft9
-  addi a4, s11, -56
-  andi s11, a4, -8
-  fsd fa2, 0(a4)
-  fsd fa3, 8(a4)
-  fsd fa4, 16(a4)
-  fsd fs1, 24(a4)
-  fsd fs2, 32(a4)
-  fsd fs0, 40(a4)
-  fsd fa1, 48(a4)
-  slliw a5, a1, 3
-  add a5, a2, a5
-  sd a4, 0(a5)
+  addi a3, s11, -56
+  andi s11, a3, -8
+  fsd fa2, 0(a3)
+  fsd fa3, 8(a3)
+  fsd fa4, 16(a3)
+  fsd fs1, 24(a3)
+  fsd fs2, 32(a3)
+  fsd fs0, 40(a3)
+  fsd fa1, 48(a3)
+  th.surd a3, a2, a1, 3
   fsub.d ft3, ft3, ft7
   fsub.d ft4, ft4, ft8
   fsub.d ft5, ft5, ft9
-  addi a4, s11, -56
-  andi s11, a4, -8
-  fsd ft0, 0(a4)
-  fsd ft1, 8(a4)
-  fsd ft2, 16(a4)
-  fsd ft3, 24(a4)
-  fsd ft4, 32(a4)
-  fsd ft5, 40(a4)
-  fsd ft6, 48(a4)
-  add a3, a2, a3
-  sd a4, 0(a3)
+  addi a3, s11, -56
+  andi s11, a3, -8
+  fsd ft0, 0(a3)
+  fsd ft1, 8(a3)
+  fsd ft2, 16(a3)
+  fsd ft3, 24(a3)
+  fsd ft4, 32(a3)
+  fsd ft5, 40(a3)
+  fsd ft6, 48(a3)
+  th.surd a3, a2, a0, 3
   addi a0, a0, 1
   call loop_j.635
   mv a0, zero
@@ -257,9 +248,7 @@ loop_j.630:
   blt a3, a0, .loop_j.630_2
 
 .loop_j.630_1:
-  slliw a3, a0, 3
-  add a3, a2, a3
-  ld a3, 0(a3)
+  th.lurd a3, a2, a0, 3
   fld fa4, 0(a3)
   fld fa5, 8(a3)
   fld fa6, 16(a3)
@@ -506,16 +495,14 @@ loop_i.629:
   sd s0, 8(sp)
   sd s1, 16(sp)
   sd s2, 24(sp)
-  mv s0, a0
+  mv s1, a0
   mv s2, a1
-  mv s1, a2
+  mv s0, a2
   li a0, 4
-  blt a0, s0, .loop_i.629_2
+  blt a0, s1, .loop_i.629_2
 
 .loop_i.629_1:
-  slliw a0, s0, 3
-  add a0, s1, a0
-  ld a0, 0(a0)
+  th.lurd a0, s0, s1, 3
   fld fa1, 0(a0)
   fld fa2, 8(a0)
   fld fa3, 16(a0)
@@ -532,14 +519,14 @@ loop_i.629:
   fmadd.d fa0, fa5, fa5, fa0
   fmadd.d fa0, ft0, fa0, fa7
   fsd fa0, 0(s2)
-  addi a0, s0, 1
+  addi a0, s1, 1
   mv a1, s2
   fmv.d fa0, fa6
-  mv a2, s1
+  mv a2, s0
   call loop_j.630
-  addi a0, s0, 1
+  addi a0, s1, 1
   mv a1, s2
-  mv a2, s1
+  mv a2, s0
   call loop_i.629
   mv a0, zero
 
@@ -608,30 +595,27 @@ update_axis.636:
   blt a2, a0, .update_axis.636_2
 
 .update_axis.636_1:
-  slliw a2, a0, 3
-  add a3, a1, a2
-  ld a3, 0(a3)
-  fld fa1, 0(a3)
-  fld fa2, 8(a3)
-  fld fa3, 16(a3)
-  fld fa4, 24(a3)
-  fld fa5, 32(a3)
-  fld fa6, 40(a3)
-  fld fa7, 48(a3)
+  th.lurd a2, a1, a0, 3
+  fld fa1, 0(a2)
+  fld fa2, 8(a2)
+  fld fa3, 16(a2)
+  fld fa4, 24(a2)
+  fld fa5, 32(a2)
+  fld fa6, 40(a2)
+  fld fa7, 48(a2)
   fmadd.d fa1, fa0, fa4, fa1
   fmadd.d fa2, fa0, fa5, fa2
   fmadd.d fa3, fa0, fa6, fa3
-  addi a3, s11, -56
-  andi s11, a3, -8
-  fsd fa1, 0(a3)
-  fsd fa2, 8(a3)
-  fsd fa3, 16(a3)
-  fsd fa4, 24(a3)
-  fsd fa5, 32(a3)
-  fsd fa6, 40(a3)
-  fsd fa7, 48(a3)
-  add a2, a1, a2
-  sd a3, 0(a2)
+  addi a2, s11, -56
+  andi s11, a2, -8
+  fsd fa1, 0(a2)
+  fsd fa2, 8(a2)
+  fsd fa3, 16(a2)
+  fsd fa4, 24(a2)
+  fsd fa5, 32(a2)
+  fsd fa6, 40(a2)
+  fsd fa7, 48(a2)
+  th.surd a2, a1, a0, 3
   addi a0, a0, 1
   call update_axis.636
   mv a0, zero
