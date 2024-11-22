@@ -1,0 +1,62 @@
+// [Asm] before colored: # leaf false
+// [Asm] minimbt_main:
+// [Asm] # block info: defs: [sp, s11, ra], uses: [sp, ra, s11, a0], upward_exposed: [ra, s11, a0], params_defs: []
+// [Asm] # live_in: [ra, s11, a0], live_out: []
+// [Asm] # block parameters: []
+// [Asm] .minimbt_main_b0:
+// [Asm]   addi sp, sp, -16  # live: [s11, ra, a0]
+// [Asm]   sd ra, 0(sp)  # live: [s11, a0]
+// [Asm]   sd s11, 8(sp)  # live: [a0]
+// [Asm]   la s11, large_heap_end  # live: [a0]
+// [Asm]   ld ra, 0(sp)  # live: [a0]
+// [Asm]   ld s11, 8(sp)  # live: [a0]
+// [Asm]   addi sp, sp, 16  # live: [a0]
+// [Asm] # control
+// [Asm]   ret  # live: []
+// [Asm] 
+// [Asm] 
+// [Main]   .option arch, +xtheadba, +xtheadfmemidx, +xtheadmemidx
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_heap, @object
+// [Main] large_heap:
+// [Main]   .zero 2013265920 # 2GB - 128MB
+// [Main] large_heap_end:
+// [Main] 
+// [Main]   .p2align 4
+// [Main]   .bss
+// [Main]   .type large_stack, @object
+// [Main] large_stack:
+// [Main]   .zero 67108864 # 64MB
+// [Main] large_stack_end:
+// [Main] 
+// [Main] __begin_text:
+// [Main]   .p2align 2
+// [Main]   .text
+// [Main]   .globl minimbt_main
+// [Main]   .type minimbt_main, @function
+// [Main] # leaf false
+// [Main] minimbt_main:
+// [Main] .minimbt_main_b0:
+// [Main]   addi sp, sp, -16
+// [Main]   sd ra, 0(sp)
+// [Main]   sd s11, 8(sp)
+// [Main]   la s11, large_heap_end
+// [Main]   ld ra, 0(sp)
+// [Main]   ld s11, 8(sp)
+// [Main]   addi sp, sp, 16
+// [Main]   ret
+// [Main] 
+// [Main] __end_text:
+// [Main] 
+// [Typer] resolve: Unit
+// [Typer] check: Unit against Unit
+// [KnfOpt] freq: {}
+// [KnfOpt] freq: {}
+// [KnfOpt] freq: {}
+// [KnfOpt] Numbers of let rec: 0 0 0
+// [KnfOpt] Tuple freq: {}
+// [Parser] flags: ["", "", "", "", "", ""]
+// [CoreOpt] Call frequnce: FnCallFreq({})
+// [CoreOpt] Call frequnce: FnCallFreq({})
+// [CoreOpt] Call frequnce: FnCallFreq({})
