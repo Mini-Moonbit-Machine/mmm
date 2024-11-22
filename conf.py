@@ -20,9 +20,9 @@ with open('mmm.json') as f:
   for key in keys:
     if key in conf:
       x = conf[key]
-      if x == True:
+      if type(x) is bool and x:
         x = "t"
-      elif x == False:
+      elif type(x) is bool and not x:
         x = "f"
       conf_str += f"{x}"
   print(conf_str)
