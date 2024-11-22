@@ -250,7 +250,7 @@ pub fn to_xreg(self : AnyReg) -> Reg {
   r
 }
 
-pub let reg_temp_list : Array[Reg] = [T0, T1, T2, T3, T4]
+pub let reg_temp_list : Array[Reg] = [T4]
 
 pub let reg_saved_list : Array[Reg] = [
   Fp,
@@ -267,14 +267,24 @@ pub let reg_saved_list : Array[Reg] = [
   S11, // S11 is used for allocation
 ]
 
-pub let reg_arg_list : Array[Reg] = [A0, A1, A2, A3, A4, A5, A6, A7, T0, T1]
+pub let reg_arg_list : Array[Reg] = [
+  A0,
+  A1,
+  A2,
+  A3,
+  A4,
+  A5,
+  A6,
+  A7,
+  T0,
+  T1,
+  T2,
+  T3,
+]
 
 pub let reg_caller_saved_list : Array[Reg] = reg_temp_list + reg_arg_list
 
 pub let reg_callee_saved_list : Array[Reg] = reg_saved_list
-
-pub let reg_allocatable_list : Array[Reg] = reg_callee_saved_list +
-  reg_caller_saved_list
 
 pub let reg_fp : Reg = Fp
 
@@ -447,19 +457,7 @@ pub fn to_freg(self : AnyReg) -> FReg {
   r
 }
 
-pub let freg_temp_list : Array[FReg] = [
-  Ft0,
-  Ft1,
-  Ft2,
-  Ft3,
-  Ft4,
-  Ft5,
-  Ft6,
-  Ft7,
-  Ft8,
-  Ft9,
-  Ft10,
-]
+pub let freg_temp_list : Array[FReg] = [Ft4, Ft5, Ft6, Ft7, Ft8, Ft9, Ft10]
 
 pub let freg_saved_list : Array[FReg] = [
   Fs0,
@@ -476,14 +474,24 @@ pub let freg_saved_list : Array[FReg] = [
   Fs11,
 ]
 
-pub let freg_arg_list : Array[FReg] = [Fa0, Fa1, Fa2, Fa3, Fa4, Fa5, Fa6, Fa7]
+pub let freg_arg_list : Array[FReg] = [
+  Fa0,
+  Fa1,
+  Fa2,
+  Fa3,
+  Fa4,
+  Fa5,
+  Fa6,
+  Fa7,
+  Ft0,
+  Ft1,
+  Ft2,
+  Ft3,
+]
 
 pub let freg_caller_saved_list : Array[FReg] = freg_temp_list + freg_arg_list
 
 pub let freg_callee_saved_list : Array[FReg] = freg_saved_list
-
-pub let freg_allocatable_list : Array[FReg] = freg_callee_saved_list +
-  freg_caller_saved_list
 
 pub let freg_ret : FReg = Fa0
 
