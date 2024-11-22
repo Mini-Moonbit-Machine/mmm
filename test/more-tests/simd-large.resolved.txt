@@ -1,0 +1,84 @@
+let rec fma_int: (vi11: Int, vi12: Int, vi13: Int, vi14: Int, vi21: Int, vi22: Int, vi23: Int, vi24: Int, vi31: Int, vi32: Int, vi33: Int, vi34: Int) -> (Int, Int, Int, Int) {
+  let vir1: Var(None) = Prim(Var("vi11"), Var("vi21"), Mul, kind=None) + Var("vi31")
+  let vir2: Var(None) = Prim(Var("vi12"), Var("vi22"), Mul, kind=None) + Var("vi32")
+  let vir3: Var(None) = Prim(Var("vi13"), Var("vi23"), Mul, kind=None) + Var("vi33")
+  let vir4: Var(None) = Prim(Var("vi14"), Var("vi24"), Mul, kind=None) + Var("vi34")
+  Tuple([Var("vir1"), Var("vir2"), Var("vir3"), Var("vir4"), ])
+}
+let rec fma_double: (vd11: Double, vd12: Double, vd13: Double, vd14: Double, vd21: Double, vd22: Double, vd23: Double, vd24: Double, vd31: Double, vd32: Double, vd33: Double, vd34: Double) -> (Double, Double, Double, Double) {
+  let vdr1: Var(None) = Prim(Var("vd11"), Var("vd21"), Mul, kind=None) + Var("vd31")
+  let vdr2: Var(None) = Prim(Var("vd12"), Var("vd22"), Mul, kind=None) + Var("vd32")
+  let vdr3: Var(None) = Prim(Var("vd13"), Var("vd23"), Mul, kind=None) + Var("vd33")
+  let vdr4: Var(None) = Prim(Var("vd14"), Var("vd24"), Mul, kind=None) + Var("vd34")
+  Tuple([Var("vdr1"), Var("vdr2"), Var("vdr3"), Var("vdr4"), ])
+}
+let rec fma_mixed: (vi11: Int, vi12: Int, vi13: Int, vi14: Int, vi21: Int, vi22: Int, vi23: Int, vi24: Int, vi31: Int, vi32: Int, vi33: Int, vi34: Int, vd11: Double, vd12: Double, vd13: Double, vd14: Double, vd21: Double, vd22: Double, vd23: Double, vd24: Double, vd31: Double, vd32: Double, vd33: Double, vd34: Double) -> ((Int, Int, Int, Int), (Double, Double, Double, Double)) {
+  let vir: Var(None) = Apply(Var("fma_int"), [Var("vi11"), Var("vi12"), Var("vi13"), Var("vi14"), Var("vi21"), Var("vi22"), Var("vi23"), Var("vi24"), Var("vi31"), Var("vi32"), Var("vi33"), Var("vi34"), ])
+  let vdr: Var(None) = Apply(Var("fma_double"), [Var("vd11"), Var("vd12"), Var("vd13"), Var("vd14"), Var("vd21"), Var("vd22"), Var("vd23"), Var("vd24"), Var("vd31"), Var("vd32"), Var("vd33"), Var("vd34"), ])
+  Tuple([Var("vir"), Var("vdr"), ])
+}
+let rec main: () -> Var(None) {
+  let vi_arr: Var(None) = Array::make(Int(3), Tuple([Int(0), Int(0), Int(0), Int(0)]))
+  let rec init_vi_arr: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Int(2))) then {
+      let _: Var(None) = Put Var("vi_arr")[Var("i")] = Tuple([Var("i"), Prim(Var("i"), Int(1), Add, kind=None), Prim(Var("i"), Int(2), Add, kind=None), Prim(Var("i"), Int(3), Add, kind=None)])
+      let _: Var(None) = Apply(Var("init_vi_arr"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("init_vi_arr"), [Int(0), ])
+  let vd_arr: Var(None) = Array::make(Int(3), Tuple([Double(0), Double(0), Double(0), Double(0)]))
+  let rec init_vd_arr: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Int(2))) then {
+      let _: Var(None) = Put Var("vd_arr")[Var("i")] = Tuple([App(Var("float_of_int"), targs=None, [Var("i")]), App(Var("float_of_int"), targs=None, [Prim(Var("i"), Int(1), Add, kind=None)]), App(Var("float_of_int"), targs=None, [Prim(Var("i"), Int(2), Add, kind=None)]), App(Var("float_of_int"), targs=None, [Prim(Var("i"), Int(3), Add, kind=None)])])
+      let _: Var(None) = Apply(Var("init_vd_arr"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("init_vd_arr"), [Int(0), ])
+  let rec iter_fma: () -> Var(None) {
+    let (vi11: Var(None), vi12: Var(None), vi13: Var(None), vi14: Var(None)) = Get(Var("vi_arr"), Int(0))
+    let (vi21: Var(None), vi22: Var(None), vi23: Var(None), vi24: Var(None)) = Get(Var("vi_arr"), Int(1))
+    let (vi31: Var(None), vi32: Var(None), vi33: Var(None), vi34: Var(None)) = Get(Var("vi_arr"), Int(2))
+    let (vd11: Var(None), vd12: Var(None), vd13: Var(None), vd14: Var(None)) = Get(Var("vd_arr"), Int(0))
+    let (vd21: Var(None), vd22: Var(None), vd23: Var(None), vd24: Var(None)) = Get(Var("vd_arr"), Int(1))
+    let (vd31: Var(None), vd32: Var(None), vd33: Var(None), vd34: Var(None)) = Get(Var("vd_arr"), Int(2))
+    let (vir: Var(None), vdr: Var(None)) = App(Var("fma_mixed"), targs=None, [Var("vi11"), Var("vi12"), Var("vi13"), Var("vi14"), Var("vi21"), Var("vi22"), Var("vi23"), Var("vi24"), Var("vi31"), Var("vi32"), Var("vi33"), Var("vi34"), Var("vd11"), Var("vd12"), Var("vd13"), Var("vd14"), Var("vd21"), Var("vd22"), Var("vd23"), Var("vd24"), Var("vd31"), Var("vd32"), Var("vd33"), Var("vd34")])
+    let (vi11: Var(None), vi12: Var(None), vi13: Var(None), vi14: Var(None)) = Var("vir")
+    let (vd11: Var(None), vd12: Var(None), vd13: Var(None), vd14: Var(None)) = Var("vdr")
+    let (vir: Var(None), vdr: Var(None)) = App(Var("fma_mixed"), targs=None, [Var("vi11"), Var("vi12"), Var("vi13"), Var("vi14"), Var("vi21"), Var("vi22"), Var("vi23"), Var("vi24"), Var("vi31"), Var("vi32"), Var("vi33"), Var("vi34"), Var("vd11"), Var("vd12"), Var("vd13"), Var("vd14"), Var("vd21"), Var("vd22"), Var("vd23"), Var("vd24"), Var("vd31"), Var("vd32"), Var("vd33"), Var("vd34")])
+    let (vi21: Var(None), vi22: Var(None), vi23: Var(None), vi24: Var(None)) = Var("vir")
+    let (vd21: Var(None), vd22: Var(None), vd23: Var(None), vd24: Var(None)) = Var("vdr")
+    let (vir: Var(None), vdr: Var(None)) = App(Var("fma_mixed"), targs=None, [Var("vi11"), Var("vi12"), Var("vi13"), Var("vi14"), Var("vi21"), Var("vi22"), Var("vi23"), Var("vi24"), Var("vi31"), Var("vi32"), Var("vi33"), Var("vi34"), Var("vd11"), Var("vd12"), Var("vd13"), Var("vd14"), Var("vd21"), Var("vd22"), Var("vd23"), Var("vd24"), Var("vd31"), Var("vd32"), Var("vd33"), Var("vd34")])
+    let (vi31: Var(None), vi32: Var(None), vi33: Var(None), vi34: Var(None)) = Var("vir")
+    let (vd31: Var(None), vd32: Var(None), vd33: Var(None), vd34: Var(None)) = Var("vdr")
+    let (vir: Var(None), vdr: Var(None)) = App(Var("fma_mixed"), targs=None, [Var("vi11"), Var("vi12"), Var("vi13"), Var("vi14"), Var("vi21"), Var("vi22"), Var("vi23"), Var("vi24"), Var("vi31"), Var("vi32"), Var("vi33"), Var("vi34"), Var("vd11"), Var("vd12"), Var("vd13"), Var("vd14"), Var("vd21"), Var("vd22"), Var("vd23"), Var("vd24"), Var("vd31"), Var("vd32"), Var("vd33"), Var("vd34")])
+    let _: Var(None) = Put Var("vi_arr")[Int(0)] = Var("vir")
+    let _: Var(None) = Put Var("vd_arr")[Int(0)] = Var("vdr")
+    Unit
+  }
+  let rec stress: (i: Int) -> Var(None) {
+    let _: Var(None) = if (LE(Var("i"), Int(3))) then {
+      let _: Var(None) = Apply(Var("iter_fma"), [])
+      let _: Var(None) = Apply(Var("stress"), [Prim(Var("i"), Int(1), Add, kind=None), ])
+      Unit
+    } else {
+      Unit
+    }
+    Unit
+  }
+  let _: Var(None) = Apply(Var("stress"), [Int(1), ])
+  let (vi11: Var(None), vi12: Var(None), vi13: Var(None), vi14: Var(None)) = Get(Var("vi_arr"), Int(0))
+  let (vd11: Var(None), vd12: Var(None), vd13: Var(None), vd14: Var(None)) = Get(Var("vd_arr"), Int(0))
+  let _: Var(None) = Apply(Var("print_int"), [Var("vi11"), ])
+  let _: Var(None) = Apply(Var("print_char"), [Int(10), ])
+  let _: Var(None) = Apply(Var("print_int"), [App(Var("int_of_float"), targs=None, [Var("vd11")]), ])
+  Unit
+}
+Unit
